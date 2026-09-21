@@ -37,3 +37,29 @@ header{background:#fffefb}.page{background:linear-gradient(180deg,#f2f8ff,#f8fbf
 .loginCard label{font-size:0!important;margin-top:12px!important}.loginCard input{height:56px!important;border:1px solid rgba(72,119,160,.35)!important;border-radius:9px!important;background:rgba(255,255,255,.62)!important;font-size:14px!important;padding:0 16px!important}.loginCard form button{height:58px!important;margin-top:22px!important;border-radius:9px!important;background:linear-gradient(90deg,#0b4e93,#073b75)!important;border:0!important;font-size:16px!important}.loginFoot{margin-top:34px!important;font-size:11px!important;color:#315c83!important}
 @media(max-width:900px){#login{grid-template-columns:1fr 430px!important}.loginPanel{width:430px!important;min-width:430px!important;padding:24px!important}.loginCard{padding:36px 30px!important}.estaMark strong{font-size:40px!important}.loginWords h2{font-size:23px!important}}
 @media(max-width:700px){#login{display:block!important;background-position:42% center!important}.loginVisual{min-height:300px!important;padding:28px 24px!important}.estaMark strong{font-size:34px!important}.estaMark span{font-size:8px!important}.estaIcon{font-size:42px!important}.loginWords{left:24px!important;bottom:22px!important}.loginWords h2{font-size:19px!important}.loginWords p{display:none!important}.loginPanel{width:100%!important;min-width:0!important;padding:16px!important;background:rgba(3,21,40,.42)!important}.loginCard{max-width:520px!important;padding:28px 24px!important}.loginCard h1{font-size:34px!important}.loginSub{font-size:14px!important}}
+
+/* LOGIN V3 - desktop compact */
+@media(min-width:901px){
+#login{grid-template-columns:minmax(0,1fr) 420px!important}
+.loginVisual{padding:38px 5vw!important}
+.estaMark{transform:scale(.82)!important;transform-origin:left top!important}
+.loginWords{left:5vw!important;bottom:8vh!important;max-width:330px!important}
+.loginWords h2{font-size:23px!important;line-height:1.38!important;margin-bottom:8px!important}
+.loginWords p{font-size:11px!important}
+.loginPanel{width:420px!important;min-width:420px!important;padding:30px 26px!important}
+.loginCard{max-width:350px!important;padding:32px 30px!important;border-radius:20px!important}
+.welcome{font-size:11px!important}
+.loginCard h1{font-size:34px!important;letter-spacing:6px!important;margin:10px 0 2px!important}
+.loginSub{font-size:13px!important;margin:6px 0!important}
+.loginLocation{margin:18px 0 12px!important;padding-left:25px!important}
+.loginLocation:before{font-size:20px!important}
+.loginLocation b{font-size:16px!important}
+.loginLocation span{font-size:10px!important}
+.loginCard input{height:45px!important;font-size:13px!important;border-radius:8px!important}
+.loginCard form button{height:47px!important;margin-top:17px!important;font-size:14px!important}
+.loginFoot{margin-top:24px!important;font-size:9px!important}
+}
+@media(min-width:1400px){
+.loginPanel{width:440px!important;min-width:440px!important}
+#login{grid-template-columns:minmax(0,1fr) 440px!important}
+}
