@@ -1,76 +1,12 @@
-<!doctype html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f172a" />
-  <title>Quản lý kỹ thuật | 62 Trần Huy Liệu</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div id="toast" class="toast"></div>
-
-  <section id="loginView" class="login-view">
-    <div class="login-card">
-      <div class="brand-mark">KT</div>
-      <p class="eyebrow">L'MAK MANAGEMENT</p>
-      <h1>Quản lý kỹ thuật</h1>
-      <p class="muted">Dự án 62 Trần Huy Liệu</p>
-      <form id="loginForm">
-        <label>Tài khoản<input id="username" autocomplete="username" required placeholder="Nhập tài khoản" /></label>
-        <label>Mật khẩu<input id="password" type="password" autocomplete="current-password" required placeholder="Nhập mật khẩu" /></label>
-        <button class="primary full" type="submit">Đăng nhập</button>
-      </form>
-      <p class="login-note">Bản V1 giao diện thử nghiệm. Tài khoản thật sẽ được chuyển sang Supabase Auth ở bước tiếp theo.</p>
-    </div>
-  </section>
-
-  <section id="appView" class="app hidden">
-    <aside class="sidebar">
-      <div class="sidebar-brand"><div class="brand-mark small">KT</div><div><strong>QUẢN LÝ KỸ THUẬT</strong><span>62 Trần Huy Liệu</span></div></div>
-      <nav><button class="nav-item active">▣ <span>Báo cáo công việc</span></button></nav>
-      <div class="sidebar-bottom"><div id="sideUser"></div><button id="logoutBtn" class="ghost">Đăng xuất</button></div>
-    </aside>
-
-    <main>
-      <header class="topbar">
-        <button id="menuBtn" class="menu-btn">☰</button>
-        <div><p class="eyebrow">62 TRẦN HUY LIỆU</p><h2>Báo cáo công việc hằng ngày</h2></div>
-        <div class="user-pill"><span id="roleBadge"></span><strong id="topUser"></strong></div>
-      </header>
-
-      <div class="content">
-        <section class="panel form-panel">
-          <div class="panel-title"><div><h3>Thêm công việc</h3><p>Nhập nội dung thực hiện trong ngày</p></div><span id="todayLabel"></span></div>
-          <form id="taskForm">
-            <div class="grid">
-              <label>Ngày thực hiện<input id="taskDate" type="date" required /></label>
-              <label>Dự án<input value="62 Trần Huy Liệu" disabled /></label>
-              <label class="wide">Nội dung công việc<textarea id="taskContent" rows="3" required placeholder="Ví dụ: Kiểm tra máy lạnh tầng 5..."></textarea></label>
-              <label>Trạng thái<select id="taskStatus"><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select></label>
-              <label>Hình ảnh<input id="taskImages" type="file" accept="image/*" multiple /></label>
-              <label class="wide">Ghi chú<textarea id="taskNote" rows="2" placeholder="Ghi chú thêm (nếu có)"></textarea></label>
-            </div>
-            <div class="form-actions"><span id="imageHint" class="muted"></span><button class="primary" type="submit">＋ Thêm công việc</button></div>
-          </form>
-        </section>
-
-        <section class="toolbar panel">
-          <div class="search-wrap"><span>⌕</span><input id="searchInput" placeholder="Tìm kiếm nội dung hoặc ghi chú..." /></div>
-          <input id="filterDate" type="date" title="Lọc theo ngày" />
-          <select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select>
-          <button id="clearFilter" class="secondary">Xóa lọc</button>
-        </section>
-
-        <section>
-          <div class="list-heading"><div><h3>Danh sách công việc</h3><p id="resultCount"></p></div></div>
-          <div id="taskList" class="task-list"></div>
-          <div id="emptyState" class="empty hidden"><div>✓</div><h3>Chưa có công việc</h3><p>Nhập công việc phía trên để bắt đầu báo cáo.</p></div>
-        </section>
-      </div>
-    </main>
-  </section>
-
-  <script src="app.js"></script>
-</body>
-</html>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TBMS | 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="toast"></div><section id="login"><div class="loginCard"><div class="loginLogo">TBMS</div><small>QUẢN LÝ KỸ THUẬT TÒA NHÀ</small><h1>62 Trần Huy Liệu</h1><p>Đăng nhập hệ thống quản lý công việc kỹ thuật</p><form id="loginForm"><label>Tài khoản<input id="user" required></label><label>Mật khẩu<input id="pass" type="password" required></label><button class="primary">Đăng nhập</button></form><em>Phiên bản giao diện V1 — dữ liệu thật sẽ chuyển sang Supabase.</em></div></section>
+<div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>TBMS</b><small>QUẢN LÝ KỸ THUẬT</small></div></div><nav><button class="active">▣ <span>Công việc</span></button></nav><div class="building"><div class="buildingArt">▥</div><b>62 TRẦN HUY LIỆU</b><small>TP. Hồ Chí Minh</small><span>● Đang hoạt động</span></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
+<main><header><button id="menu">☰</button><div class="searchTop">⌕ <input id="globalSearch" placeholder="Tìm kiếm công việc..."></div><div class="account"><span id="headerRole"></span><b id="headerUser"></b></div></header>
+<div class="page"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b>62 Trần Huy Liệu</b></span></div></section>
+<section class="filterBox"><div class="quickSearch">⌕<input id="search" placeholder="Nhập nội dung công việc..."></div><label>Trạng thái<select id="filterStatus"><option value="">Tất cả</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label>Từ ngày<input id="fromDate" type="date"></label><label>Đến ngày<input id="toDate" type="date"></label><button id="filterBtn" class="outline">⌕ Lọc</button><button id="clear" class="square">×</button></section>
+<section class="stats"><article><i class="blue">▣</i><div><small>CÔNG VIỆC HÔM NAY</small><strong id="statToday">0</strong></div></article><article><i class="orange">◷</i><div><small>ĐANG XỬ LÝ</small><strong id="statDoing">0</strong></div></article><article><i class="green">✓</i><div><small>HOÀN THÀNH</small><strong id="statDone">0</strong></div></article><article><i class="red">!</i><div><small>CHỜ XỬ LÝ</small><strong id="statWait">0</strong></div></article></section>
+<section class="tableCard"><div class="tableTop"><div><b>Danh sách công việc kỹ thuật</b> <span id="count"></span></div><div><button id="addBtn" class="outline">＋ Thêm công việc</button><button id="exportBtn" class="primary">⇩ Xuất báo cáo</button></div></div>
+<div class="desktopTable"><table><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Trạng thái</th><th>Ngày thực hiện</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
+</div></main></div>
+<div id="modal" class="modal hide"><div class="modalCard"><div class="modalHead"><div><h2 id="modalTitle">Thêm công việc</h2><p>62 Trần Huy Liệu</p></div><button id="closeModal">×</button></div><form id="taskForm"><input id="editId" type="hidden"><label>Ngày thực hiện<input id="date" type="date" required></label><label>Nội dung công việc<textarea id="content" rows="4" required></textarea></label><div class="two"><label>Trạng thái<select id="status"><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label>Người thực hiện<input id="performer" required></label></div><label>Ghi chú<textarea id="note" rows="2"></textarea></label><label>Hình ảnh<input id="images" type="file" accept="image/*" multiple><small id="imageInfo"></small></label><div class="modalActions"><button type="button" id="cancel" class="outline">Hủy</button><button class="primary">Lưu công việc</button></div></form></div></div>
+<script src="app.js"></script></body></html>
