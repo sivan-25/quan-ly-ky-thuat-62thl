@@ -1,5 +1,30 @@
 <!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Quản lý kỹ thuật 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css"></head><body>
-<div id="toast"></div><section id="login"><div class="loginVisual"><div class="estaMark"><div class="estaIcon">▥</div><div><strong>ESTA</strong><span>BUILDING MANAGEMENT SYSTEM</span></div></div><div class="loginTech"><div class="techGrid"></div><div class="digitalTower">ESTA</div><div class="techTags"><span>AI SMART BUILDING</span><span>REAL-TIME MONITORING</span><span>AUTOMATION</span></div></div><div class="loginWords"><h2>Quản lý thông minh<br>Vận hành bền vững</h2><p>Ứng dụng công nghệ và AI trong quản lý kỹ thuật tòa nhà</p></div></div><div class="loginPanel"><div class="loginCard"><span class="welcome">CHÀO MỪNG TRỞ LẠI</span><h1>ESTA</h1><p class="loginSub">Hệ thống quản lý kỹ thuật tòa nhà</p><div class="loginLocation"><b>62 Trần Huy Liệu</b><span>Quận Phú Nhuận, TP. Hồ Chí Minh</span></div><form id="loginForm"><label>Tên đăng nhập<input id="user" required placeholder="Nhập tên đăng nhập"></label><label>Mật khẩu<input id="pass" type="password" required placeholder="Nhập mật khẩu"></label><button class="primary">Đăng nhập →</button></form><div class="loginFoot">ESTA · Vận hành hôm nay — Giá trị ngày mai</div></div></div></section>
+<div id="toast"></div><section id="login">
+  <div class="conceptScene">
+    <div class="conceptBrand"><div class="conceptTower">▥</div><strong>ESTA</strong><small>BUILDING MANAGEMENT SYSTEM</small><i></i><p>Quản lý thông minh<br>Vận hành bền vững<br>Kiến tạo giá trị tương lai</p></div>
+    <div class="systemList">
+      <span><b>❉</b><em>HVAC<small>Điều hòa thông gió</small></em></span>
+      <span><b>ϟ</b><em>Điện<small>Chiếu sáng · Tủ điện</small></em></span>
+      <span><b>♢</b><em>PCCC<small>An toàn vận hành</small></em></span>
+      <span><b>▥</b><em>Thang máy<small>Vận hành ổn định</small></em></span>
+      <span><b>◉</b><em>Cấp thoát nước<small>Giám sát liên tục</small></em></span>
+      <span><b>⚙</b><em>Bảo trì<small>Tối ưu hiệu suất</small></em></span>
+    </div>
+    <div class="smartNodes"><span>BMS<small>Giám sát tập trung</small></span><span>ENERGY<small>Tiết kiệm năng lượng</small></span><span>SECURITY<small>An ninh an toàn</small></span><span>MAINTENANCE<small>Bảo trì chủ động</small></span></div>
+    <div class="sceneBottom"><b>SMART BUILDING<br>BRIGHTER TOMORROW</b><span>♧ Hiệu quả　◇ An toàn　♙ Con người　▥ Phát triển</span></div>
+  </div>
+  <div class="conceptLogin">
+    <div class="lang">VI　|　EN</div>
+    <div class="loginCard">
+      <span class="welcome">Chào mừng trở lại</span>
+      <p class="loginSub">Hệ thống quản lý kỹ thuật tòa nhà</p>
+      <h1>ESTA</h1>
+      <div class="loginLocation"><b>62 Trần Huy Liệu</b><span>Quận Phú Nhuận, TP. Hồ Chí Minh</span></div>
+      <form id="loginForm"><label>Tên đăng nhập<input id="user" required placeholder="Tên đăng nhập"></label><label>Mật khẩu<input id="pass" type="password" required placeholder="Mật khẩu"></label><button class="primary">Đăng nhập　→</button></form>
+      <div class="loginFoot">VẬN HÀNH HÔM NAY<br>KIẾN TẠO NGÀY MAI</div>
+    </div>
+  </div>
+</section>
 <div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><div class="sideBuilding"><div class="miniTech"><span>AI</span><i></i><i></i><i></i></div><b>62 TRẦN HUY LIỆU</b><small>Quận Phú Nhuận · TP.HCM</small></div><nav><button class="active">▣ <span>Công việc</span></button></nav><div class="smartPanel"><small>SMART BUILDING</small><b>SMART OPERATION</b><div><span>◈ BMS</span><span>✦ AI</span><span>◎ IoT</span><span>◇ SECURITY</span></div></div><div class="sideQuote">“Tòa nhà vận hành tốt,<br>khách hàng luôn hài lòng”</div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
 <main><header><button id="menu">☰</button><div class="headerTools"><div class="headerSearch">⌕ <input id="globalSearch" placeholder="Tìm công việc..."></div><button id="toggleFilter" class="iconAction" type="button" title="Bộ lọc">⌕</button><button id="exportBtn" class="pdfAction" type="button" title="Xuất PDF"><b>PDF</b> ⇩</button></div><div class="account"><span id="headerRole"></span><b id="headerUser"></b></div></header>
 <div class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div class="page"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b>62 Trần Huy Liệu</b></span></div></section>
