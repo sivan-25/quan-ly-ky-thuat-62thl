@@ -358,3 +358,107 @@ nav{margin:7px 0 13px}nav:before{content:"VẬN HÀNH";display:block;padding:0 1
 /* CRITICAL LOGIN FIX: selector #login.loginRebuild có specificity cao hơn .hide */
 #login.loginRebuild.hide{display:none!important}
 #app.hide{display:none!important}
+
+/* ===== COMPACT WORK HEADER + LARGE TASK TEXT ===== */
+#workHero,#energyHero{display:none!important}
+.modulePage{padding:10px 20px 28px!important}
+.modulePage>.pageHead{display:none!important}
+
+main>header{
+  height:66px!important;
+  padding:0 20px!important;
+  gap:14px!important;
+}
+.topModuleTitle{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:260px;
+  flex:0 0 auto;
+}
+.topModuleTitle.hide{display:none!important}
+.topModuleIcon{
+  display:grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  background:linear-gradient(145deg,#0f67aa,#0b477c);
+  color:#fff;
+  box-shadow:0 7px 18px rgba(13,88,145,.16);
+  font-size:16px;
+}
+.topModuleTitle h1{
+  margin:0;
+  font-size:19px;
+  line-height:1.05;
+  font-weight:800;
+  color:#0b3157;
+}
+.topModuleTitle p{
+  margin:4px 0 0;
+  font-size:10px;
+  color:#71879a;
+}
+.headerTools{min-width:0}
+.headerSearch{
+  width:min(500px,42vw)!important;
+  height:40px!important;
+}
+.headerSearch input{font-size:13.5px!important}
+.iconAction,.pdfAction{height:40px!important}
+
+/* Nội dung công việc lớn và dễ đọc hơn */
+.tableTop{padding:13px 15px!important}
+.tableTop b{font-size:16px!important}
+.tableTop span{font-size:10px!important}
+.desktopTable th{
+  padding:12px 10px!important;
+  font-size:10.5px!important;
+  letter-spacing:.2px!important;
+}
+.desktopTable td{
+  padding:13px 10px!important;
+  font-size:12.5px!important;
+  line-height:1.55!important;
+}
+.desktopTable td:nth-child(2){
+  min-width:290px;
+  font-size:15px!important;
+  line-height:1.55!important;
+  font-weight:650!important;
+  color:#163d60!important;
+}
+.desktopTable td:nth-child(6),
+.desktopTable td:nth-child(8){font-size:12.5px!important}
+.badge,.typeBadge{
+  padding:5px 8px!important;
+  font-size:10.5px!important;
+}
+.actions button{
+  padding:6px 8px!important;
+  font-size:10px!important;
+}
+.entryRow label>span{font-size:10px!important}
+.entryRow input,.entryRow select{font-size:13px!important}
+#mobileCards .mcard h4{font-size:14px!important;line-height:1.45!important}
+#mobileCards .mcard p{font-size:13px!important;line-height:1.55!important}
+
+@media(max-width:900px){
+  main>header{height:62px!important;padding:0 12px!important}
+  .topModuleTitle{min-width:0;flex:1}
+  .topModuleTitle p{display:none}
+  .topModuleTitle h1{font-size:16px}
+  .topModuleIcon{width:34px;height:34px}
+  .headerTools{flex:0 1 auto}
+  .headerSearch{width:min(300px,38vw)!important}
+}
+@media(max-width:760px){
+  .modulePage{padding:10px 12px 24px!important}
+  main>header{gap:8px!important}
+  .topModuleTitle{gap:7px}
+  .topModuleTitle h1{font-size:15px}
+  .topModuleIcon{width:32px;height:32px;border-radius:8px}
+  .headerSearch{display:none!important}
+  .desktopTable td:nth-child(2){font-size:14px!important}
+}
