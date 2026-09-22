@@ -1787,3 +1787,95 @@ img[data-storage-path]:not([src]){
   .imageField{grid-column:1/-1!important}
   #imageInfo{font-size:10px!important;line-height:1.45}
 }
+
+/* ===== WORKFLOW ẢNH: ưu tiên chọn nhiều từ Thư viện ===== */
+.imageHelp{
+  display:block;
+  margin-top:5px;
+  color:#71869a;
+  font-size:8px;
+  line-height:1.35;
+}
+.libraryBtn{
+  border-color:#9dc8e4!important;
+  background:linear-gradient(180deg,#eef9ff,#e5f4ff)!important;
+  color:#145f8d!important;
+  box-shadow:0 2px 7px rgba(35,117,167,.08);
+}
+.cameraBtn{
+  border-color:#d7e1e8!important;
+  background:#f7fafc!important;
+  color:#5d7284!important;
+}
+.pendingImagePreview{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  margin-top:7px;
+  padding-bottom:2px;
+}
+.pendingImagePreview:empty{display:none}
+.pendingImg{
+  position:relative;
+  flex:0 0 62px;
+  width:62px;
+  height:56px;
+  border:1px solid #cfdee8;
+  border-radius:8px;
+  overflow:hidden;
+  background:#f2f6f9;
+}
+.pendingImg img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.pendingImg button{
+  position:absolute;
+  top:2px;
+  right:2px;
+  width:20px;
+  height:20px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(18,42,58,.78);
+  color:#fff;
+  font-size:14px;
+  line-height:20px;
+  cursor:pointer;
+}
+.pendingImg span{
+  position:absolute;
+  left:3px;
+  bottom:3px;
+  min-width:17px;
+  height:17px;
+  padding:0 4px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:rgba(18,42,58,.72);
+  color:#fff;
+  font-size:8px;
+}
+@media(max-width:760px){
+  .imageNativeActions{
+    grid-template-columns:1.25fr .9fr!important;
+  }
+  .libraryBtn{
+    font-size:11px!important;
+    font-weight:800!important;
+  }
+  .cameraBtn{font-size:10px!important}
+  .imageHelp{
+    margin-top:6px;
+    font-size:9px!important;
+  }
+  .pendingImg{
+    flex-basis:70px;
+    width:70px;
+    height:62px;
+  }
+}
