@@ -346,6 +346,12 @@ window.enterAccount=function(account,session=null){
  else{toast("Tài khoản chưa được phân quyền dự án");}
 };
 
+$("#togglePassword").onclick=()=>{
+ const p=$("#pass"),b=$("#togglePassword");
+ const show=p.type==="password";p.type=show?"text":"password";
+ b.textContent=show?"◌":"◉";b.setAttribute("aria-label",show?"Ẩn mật khẩu":"Hiện mật khẩu");
+};
+
 $("#loginForm").onsubmit=async e=>{
  e.preventDefault();
  const u=$("#user").value.trim(),p=$("#pass").value,er=$("#loginError"),btn=$("#loginBtn");
