@@ -1063,8 +1063,14 @@ function renderMaterials(){
  const list=inventoryMaterials.filter(m=>!q||[m.name,m.code,m.unit,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
  const snaps=list.map(m=>{const s=inventorySnapshot(m,y);return {m,s,mm:s.months[month-1]}});
 
- document.querySelectorAll("[data-material-month]").forEach(b=>b.classList.toggle("active",Number(b.dataset.materialMonth)===month));
- $("#materialMonthLabel").textContent="Tháng "+String(month).padStart(2,"0")+" / "+y;
+ document.querySelectorAll("[data-material-month]").forEach(b=>{
+   const active=Number(b.dataset.materialMonth)===month;
+   b.classList.toggle("active",active);
+   b.setAttribute("aria-current",active?"true":"false");
+ });
+ const monthText="Tháng "+String(month).padStart(2,"0")+" / "+y;
+ $("#materialMonthLabel").textContent=monthText;
+ $("#materialSelectedMonth").textContent=monthText;
  $("#materialTitleCount").textContent="("+inventoryMaterials.length+" mục)";
 
  const allMonth=inventoryMaterials.map(m=>({m,mm:inventorySnapshot(m,y).months[month-1]}));
