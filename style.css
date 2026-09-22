@@ -462,3 +462,189 @@ main>header{
   .headerSearch{display:none!important}
   .desktopTable td:nth-child(2){font-size:14px!important}
 }
+
+/* ===== READABILITY + ENERGY FILTER ROW 2026-09-22 ===== */
+
+/* Công việc: chữ lớn hơn, nét thường, ưu tiên khả năng đọc */
+.desktopTable td{
+  font-size:14px!important;
+  line-height:1.65!important;
+  font-weight:400!important;
+}
+.desktopTable td:nth-child(2){
+  min-width:320px!important;
+  font-size:17px!important;
+  line-height:1.65!important;
+  font-weight:400!important;
+  color:#173d5d!important;
+}
+.desktopTable th{
+  font-size:11px!important;
+  line-height:1.35!important;
+}
+#mobileCards .mcard h4,
+#mobileCards .mcard p{
+  font-weight:400!important;
+}
+#mobileCards .mcard h4{
+  font-size:16px!important;
+  line-height:1.55!important;
+}
+#mobileCards .mcard p{
+  font-size:14px!important;
+  line-height:1.65!important;
+}
+
+/* Năng lượng: ghi chú gọn vừa đủ */
+.energyForm{
+  grid-template-columns:145px 170px 180px 230px auto!important;
+}
+.energyNoteField{
+  width:230px!important;
+  max-width:230px!important;
+}
+.energyNoteField input{
+  width:100%!important;
+}
+.energyDesktopTable th:nth-child(6),
+.energyDesktopTable td:nth-child(6){
+  width:180px!important;
+  max-width:180px!important;
+}
+.energyDesktopTable td:nth-child(6){
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+/* Năng lượng: lọc cùng hàng với nút Xuất PDF */
+.energyTableTop{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  padding:12px 14px!important;
+  flex-wrap:nowrap!important;
+}
+.energyTitleBlock{
+  flex:0 0 auto;
+  min-width:210px;
+}
+.energyTopTools{
+  display:flex;
+  align-items:end;
+  justify-content:flex-end;
+  gap:8px;
+  flex:1;
+  min-width:0;
+}
+.energyTopTools .energyFilters{
+  display:flex!important;
+  align-items:end!important;
+  gap:5px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  min-width:0;
+  flex-wrap:nowrap!important;
+}
+.energyTopTools .filterLabel{
+  align-self:center!important;
+  margin-right:2px!important;
+  font-size:9px!important;
+  white-space:nowrap;
+}
+.energyTopTools .rangeButtons{
+  display:flex!important;
+  gap:3px!important;
+  flex-wrap:nowrap!important;
+}
+.energyTopTools .rangeButtons button{
+  height:34px!important;
+  padding:0 8px!important;
+  font-size:9px!important;
+  white-space:nowrap!important;
+}
+.energyTopTools .energyFilters label{
+  width:118px!important;
+  font-size:8px!important;
+  white-space:nowrap!important;
+}
+.energyTopTools .energyFilters label input{
+  height:34px!important;
+  margin-top:2px!important;
+  font-size:9px!important;
+}
+.energyTopTools .energyFilters .small{
+  height:34px!important;
+  padding:0 9px!important;
+  white-space:nowrap!important;
+}
+.energyTopTools #energyExportPdf{
+  flex:0 0 auto;
+  height:34px!important;
+  white-space:nowrap!important;
+}
+
+@media(max-width:1350px){
+  .energyForm{
+    grid-template-columns:130px 150px 165px 210px auto!important;
+  }
+  .energyNoteField{
+    width:210px!important;
+    max-width:210px!important;
+  }
+  .energyTopTools .rangeButtons button{
+    padding:0 6px!important;
+  }
+  .energyTopTools .energyFilters label{
+    width:105px!important;
+  }
+}
+@media(max-width:1100px){
+  .energyForm{
+    grid-template-columns:1fr 1fr 1fr!important;
+  }
+  .energyNoteField{
+    width:auto!important;
+    max-width:none!important;
+    grid-column:1/3!important;
+  }
+  .energyTableTop{
+    align-items:flex-start!important;
+    flex-wrap:wrap!important;
+  }
+  .energyTitleBlock{min-width:0}
+  .energyTopTools{
+    width:100%;
+    flex-wrap:wrap!important;
+    justify-content:flex-start!important;
+  }
+  .energyTopTools .energyFilters{
+    flex-wrap:wrap!important;
+  }
+}
+@media(max-width:760px){
+  .desktopTable td:nth-child(2){
+    font-size:16px!important;
+  }
+  .energyTopTools{
+    display:block!important;
+  }
+  .energyTopTools .energyFilters{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:6px!important;
+    margin-bottom:7px!important;
+  }
+  .energyTopTools .filterLabel,
+  .energyTopTools .rangeButtons{
+    grid-column:1/-1!important;
+  }
+  .energyTopTools .energyFilters label{
+    width:auto!important;
+  }
+  .energyTopTools #energyExportPdf{
+    width:100%!important;
+  }
+}
