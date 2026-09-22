@@ -2680,3 +2680,205 @@ img[data-storage-path]:not([src]){
 @media(max-width:820px){
   #login.loginV3 .loginHero{display:none!important}
 }
+
+/* =========================================================
+   ESTA LOGIN V5 — FULL OVERVIEW / LESS ZOOM / MORE DETAIL
+   ========================================================= */
+#login.loginV3{
+  grid-template-columns:35.5% 64.5%!important;
+}
+#login.loginV3 .loginPanelInner{
+  width:min(420px,calc(100% - 66px))!important;
+}
+
+/* Show a full architectural scene instead of a tight crop */
+#login.loginV3 .loginHero{
+  background-color:#06192b!important;
+  background-image:
+    linear-gradient(90deg,rgba(4,29,50,.97) 0%,rgba(4,29,50,.88) 34%,rgba(4,29,50,.48) 61%,rgba(3,20,35,.18) 100%),
+    linear-gradient(180deg,rgba(5,31,51,.04),rgba(3,17,29,.36)),
+    url("https://images.splitshire.com/full/The-Office-Building-Glowing-Blue-at-Night_qMl6R.png")!important;
+  background-repeat:no-repeat,no-repeat,no-repeat!important;
+  background-size:auto,auto,auto 92%!important;
+  background-position:center,center,96% 52%!important;
+}
+#login.loginV3 .loginHero:after{
+  background:
+    linear-gradient(90deg,rgba(3,27,47,.92) 0%,rgba(3,27,47,.72) 31%,rgba(3,27,47,.30) 56%,rgba(3,27,47,.04) 82%),
+    linear-gradient(0deg,rgba(2,15,26,.56),transparent 35%)!important;
+}
+#login.loginV3 .loginHeroCopy{
+  left:6.4%!important;
+  top:12.2%!important;
+  width:min(565px,54%)!important;
+}
+.heroKicker{
+  font-size:6.8px!important;
+  letter-spacing:2.1px!important;
+  color:#72d2e7!important;
+}
+.loginHeroCopy h2{
+  font-size:clamp(31px,2.9vw,45px)!important;
+  line-height:1.06!important;
+  letter-spacing:-.75px!important;
+  max-width:550px!important;
+}
+.loginHeroCopy>p{
+  max-width:455px!important;
+  margin-top:15px!important;
+  font-size:9.5px!important;
+  line-height:1.65!important;
+  color:#c4d8e3!important;
+}
+.heroFeatureGrid{
+  width:min(500px,100%)!important;
+  margin-top:24px!important;
+  padding-top:15px!important;
+  border-top:1px solid rgba(86,203,230,.28)!important;
+}
+.heroFeatureGrid>div{
+  padding:0 14px!important;
+  gap:9px!important;
+  min-height:45px!important;
+}
+.heroFeatureGrid>div:first-child{padding-left:0!important}
+.heroFeatureGrid i{
+  flex:0 0 30px!important;
+  width:30px!important;
+  height:35px!important;
+  border-radius:5px!important;
+  background:rgba(9,57,82,.34)!important;
+}
+.heroFeatureGrid span{
+  display:block!important;
+  color:#dceaf0!important;
+  line-height:1.25!important;
+}
+.heroFeatureGrid span b{
+  display:block!important;
+  font-size:7.8px!important;
+  font-weight:750!important;
+  color:#edf8fb!important;
+}
+.heroFeatureGrid span small{
+  display:block!important;
+  margin-top:3px!important;
+  color:#8fb6c8!important;
+  font-size:6.4px!important;
+  white-space:nowrap!important;
+}
+
+/* Secondary systems line: more informative but visually quiet */
+.heroSystemRibbon{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  max-width:500px;
+  margin-top:21px;
+}
+.heroSystemRibbon span{
+  padding:5px 8px;
+  border:1px solid rgba(75,190,219,.24);
+  border-radius:4px;
+  background:rgba(7,48,72,.34);
+  color:#8ec5d5;
+  font-size:5.8px;
+  letter-spacing:.8px;
+  font-weight:750;
+}
+
+/* Small system summary floating over the lower-right scene */
+.heroOverviewCard{
+  position:absolute;
+  z-index:9;
+  right:28px;
+  bottom:64px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(82px,1fr));
+  gap:1px;
+  min-width:300px;
+  overflow:hidden;
+  border:1px solid rgba(92,195,219,.22);
+  border-radius:7px;
+  background:rgba(4,29,48,.58);
+  backdrop-filter:blur(7px);
+  box-shadow:0 14px 30px rgba(0,11,22,.18);
+}
+.heroOverviewCard>div{
+  padding:9px 11px 8px;
+  border-right:1px solid rgba(95,194,217,.16);
+}
+.heroOverviewCard>div:last-child{border-right:0}
+.heroOverviewCard b{
+  display:block;
+  color:#5ed9eb;
+  font-size:7px;
+  letter-spacing:1.15px;
+}
+.heroOverviewCard span{
+  display:block;
+  margin-top:3px;
+  color:#b8cfd9;
+  font-size:5.7px;
+  line-height:1.35;
+}
+
+/* Vertical technical message kept small so the whole building remains visible */
+#login.loginV3 .heroMeta{
+  right:27px!important;
+  bottom:auto!important;
+  top:26%!important;
+  padding-left:12px!important;
+  border-left:1px solid rgba(74,204,229,.30)!important;
+  text-align:left!important;
+  font-size:5.5px!important;
+  line-height:2.1!important;
+  color:#74a9b9!important;
+}
+#login.loginV3 .heroMeta span:nth-child(4){color:#55d4e9!important}
+#login.loginV3 .heroFooter{
+  right:28px!important;
+  bottom:21px!important;
+  color:#8ba6b3!important;
+  font-size:5.3px!important;
+}
+#login.loginV3 .heroCircuit{
+  width:48%!important;
+  height:29%!important;
+  opacity:.72!important;
+}
+#login.loginV3 .heroCircuit:before{
+  width:76%!important;
+  height:86%!important;
+  border-color:rgba(72,204,229,.22)!important;
+}
+
+/* Improve visual breathing room on shorter desktop screens */
+@media(max-height:760px) and (min-width:821px){
+  #login.loginV3 .loginPanelInner{padding-top:27px!important;padding-bottom:18px!important}
+  .loginPanelTagline{margin-top:14px!important}
+  .loginFormWrap{padding:18px 0 12px!important}
+  .loginFormWrap>p{margin-bottom:18px!important}
+  .premiumLoginForm label{margin-bottom:10px!important}
+  #login.loginV3 .premiumLoginForm .loginInputWrap input{height:41px!important}
+  #login.loginV3 .premiumLoginBtn{height:43px!important}
+  #login.loginV3 .loginHeroCopy{top:9.5%!important}
+  .heroSystemRibbon{margin-top:14px!important}
+  .heroOverviewCard{bottom:49px!important}
+}
+@media(max-width:1180px) and (min-width:821px){
+  #login.loginV3{grid-template-columns:39% 61%!important}
+  #login.loginV3 .loginHero{
+    background-size:auto,auto,auto 86%!important;
+    background-position:center,center,103% 54%!important;
+  }
+  #login.loginV3 .loginHeroCopy{left:5.5%!important;width:61%!important}
+  .loginHeroCopy h2{font-size:34px!important}
+  .heroFeatureGrid{width:430px!important}
+  .heroOverviewCard{grid-template-columns:1fr!important;min-width:150px!important}
+  .heroOverviewCard>div{border-right:0!important;border-bottom:1px solid rgba(95,194,217,.16)}
+  .heroOverviewCard>div:last-child{border-bottom:0}
+}
+@media(max-width:820px){
+  .heroSystemRibbon,.heroOverviewCard{display:none!important}
+}
