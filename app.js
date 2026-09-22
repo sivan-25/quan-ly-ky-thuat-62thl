@@ -3,7 +3,8 @@ const SB_URL="https://upcjcrycahdfroxggsdz.supabase.co";
 const SB_KEY="sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
 let me=null,centralSession=null,currentAccount=null,currentBuilding={id:"62THL",name:"62 Trần Huy Liệu",role:"editor"};
 
-const taskStorageKey=()=>currentBuilding.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+currentBuilding.id;
+const taskStorageKeyFor=id=>id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+id;
+const taskStorageKey=()=>taskStorageKeyFor(currentBuilding.id);
 const load=()=>{try{let v=JSON.parse(localStorage.getItem(taskStorageKey())||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}};
 const save=a=>localStorage.setItem(taskStorageKey(),JSON.stringify(a));
 const today=()=>new Date().toLocaleDateString("en-CA");
@@ -83,20 +84,20 @@ function imageFileToBlob(file){
    const url=URL.createObjectURL(file),img=new Image();
    img.onload=()=>{
      try{
-       const max=2400,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+       const max=1800,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
        const cv=document.createElement("canvas");cv.width=w;cv.height=h;
        cv.getContext("2d").drawImage(img,0,0,w,h);
-       cv.toBlob(blob=>{URL.revokeObjectURL(url);blob?resolve(blob):reject(new Error("Không thể xử lý hình ảnh"))},"image/jpeg",.82);
+       cv.toBlob(blob=>{URL.revokeObjectURL(url);blob?resolve(blob):reject(new Error("Không thể xử lý hình ảnh"))},"image/jpeg",.74);
      }catch(e){URL.revokeObjectURL(url);reject(e)}
    };
    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Không đọc được hình ảnh này"))};
    img.src=url;
  });
 }
-async function uploadMediaBlob(blob,kind,recordId,index=0){
+async function uploadMediaBlob(blob,kind,recordId,index=0,buildingId=currentBuilding.id){
  if(!centralSession?.access_token)throw new Error("Cần đăng nhập tài khoản trung tâm để tải hình");
  const uid=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
- const path=currentBuilding.id+"/"+kind+"/"+recordId+"/"+Date.now()+"-"+index+"-"+uid+".jpg";
+ const path=buildingId+"/"+kind+"/"+recordId+"/"+Date.now()+"-"+index+"-"+uid+".jpg";
  const res=await fetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
    method:"POST",
    headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"image/jpeg","x-upsert":"false"},
@@ -105,14 +106,20 @@ async function uploadMediaBlob(blob,kind,recordId,index=0){
  if(!res.ok){let d={};try{d=await res.json()}catch(e){}throw new Error(d?.message||d?.error||"Không thể tải hình lên máy chủ")}
  return "storage:"+path;
 }
-async function uploadMediaFiles(files,kind,recordId,onProgress){
- const list=[...files],refs=[];
- for(let i=0;i<list.length;i++){
-   if(onProgress)onProgress(i+1,list.length);
-   const blob=await imageFileToBlob(list[i]);
-   refs.push(await uploadMediaBlob(blob,kind,recordId,i));
- }
- return refs;
+async function uploadMediaFiles(files,kind,recordId,onProgress,buildingId=currentBuilding.id){
+ const list=[...files],refs=new Array(list.length);
+ let next=0,done=0;
+ const worker=async()=>{
+   while(true){
+     const i=next++;if(i>=list.length)return;
+     const blob=await imageFileToBlob(list[i]);
+     refs[i]=await uploadMediaBlob(blob,kind,recordId,i,buildingId);
+     done++;if(onProgress)onProgress(done,list.length);
+   }
+ };
+ const workers=Array.from({length:Math.min(3,list.length)},()=>worker());
+ await Promise.all(workers);
+ return refs.filter(Boolean);
 }
 async function uploadLegacyDataUrl(dataUrl,kind,recordId,index){
  const blob=await (await fetch(dataUrl)).blob();
@@ -156,9 +163,9 @@ window.downloadViewerMedia=async index=>{
  }catch(e){toast(e.message||"Không thể tải hình")}
 };
 
-async function projectSync(action,payload={}){
- if(!centralSession?.access_token||!currentBuilding?.id)return null;
- return sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:currentBuilding.id,...payload}});
+async function projectSync(action,payload={},buildingId=currentBuilding?.id){
+ if(!centralSession?.access_token||!buildingId)return null;
+ return sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:buildingId,...payload}});
 }
 const cloudVersionByBuilding={};
 function applyCloudSnapshot(building,row){
@@ -181,14 +188,20 @@ async function syncProjectSnapshot(){
    if(r?.updated_at)cloudVersionByBuilding[currentBuilding.id]=r.updated_at;
  }catch(e){console.warn("Snapshot merge failed",e)}
 }
-async function syncTaskRecord(action,itemOrId){
- if(!centralSession?.access_token)return;
+async function syncTaskRecord(action,itemOrId,buildingId=currentBuilding?.id){
+ if(!centralSession?.access_token||!buildingId)return;
  try{
    const r=action==="upsert_task"
-     ?await projectSync(action,{item:itemOrId})
-     :await projectSync(action,{id:itemOrId});
-   if(r?.updated_at)cloudVersionByBuilding[currentBuilding.id]=r.updated_at;
- }catch(e){toast("Đã lưu trên máy nhưng chưa đồng bộ lên máy chủ");throw e}
+     ?await projectSync(action,{item:itemOrId},buildingId)
+     :await projectSync(action,{id:itemOrId},buildingId);
+   if(r?.updated_at)cloudVersionByBuilding[buildingId]=r.updated_at;
+   return r;
+ }catch(e){throw e}
+}
+async function appendTaskImages(taskId,images,buildingId){
+ if(!images?.length)return;
+ const r=await projectSync("append_task_images",{id:taskId,images},buildingId);
+ if(r?.updated_at)cloudVersionByBuilding[buildingId]=r.updated_at;
 }
 async function syncEnergyRecord(action,itemOrId){
  if(!centralSession?.access_token)return;
