@@ -186,7 +186,7 @@ function applyCloudSnapshot(building,row){
  localStorage.setItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id,JSON.stringify(Array.isArray(row.tasks)?row.tasks:[]));
  localStorage.setItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id,JSON.stringify(Array.isArray(row.energy)?row.energy:[]));
  cloudVersionByBuilding[building.id]=row.updated_at||"";
- if(currentBuilding?.id===building.id){render();renderEnergy()}
+ if(currentBuilding?.id===building.id){render();renderEnergy();if(!$("#homePage").classList.contains("hide"))renderHomeDashboard()}
 }
 function mergeByRecordId(cloudRows,localRows){
  const map=new Map();
@@ -308,6 +308,119 @@ async function restoreCentral(){
    }catch(e){localStorage.removeItem("esta_central_session");return null}
  }
 }
+function homeInitials(name=""){
+ return String(name||"E").trim().split(/\s+/).slice(-2).map(x=>x[0]||"").join("").toUpperCase()||"E";
+}
+function homeEnergyUse(rows,type){
+ const list=(Array.isArray(rows)?rows:[]).filter(x=>x.type===type).sort((a,b)=>String(a.date).localeCompare(String(b.date))||Number(a.id)-Number(b.id));
+ const month=today().slice(0,7);
+ let total=0,has=false;
+ for(let i=1;i<list.length;i++){
+   if(!String(list[i].date||"").startsWith(month))continue;
+   const d=Number(list[i].value)-Number(list[i-1].value);
+   if(Number.isFinite(d)&&d>=0){total+=d;has=true}
+ }
+ return has?total:null;
+}
+function homeNumber(v,unit=""){
+ return v===null||v===undefined?"—":Number(v).toLocaleString("vi-VN",{maximumFractionDigits:2})+(unit?" "+unit:"");
+}
+function homeTaskRows(tasks,buildingLabel=""){
+ return [...(tasks||[])].sort((a,b)=>String(b.d||"").localeCompare(String(a.d||""))||Number(b.id)-Number(a.id)).slice(0,6).map(x=>{
+   const status=x.s||"Đang thực hiện";
+   const cls=status==="Đã hoàn thành"?"done":status==="Đang thực hiện"?"doing":"waiting";
+   return '<button class="homeTaskRow" type="button" onclick="homeOpenTask('+JSON.stringify(String(x.id))+')"><div class="homeTaskLead"><span class="homeTaskDot '+cls+'"></span><div><b>'+esc(x.c||"Công việc kỹ thuật")+'</b><small>'+esc(buildingLabel||x.a||"Kỹ thuật")+' · '+(x.d?fmt(x.d):"—")+'</small></div></div><span class="homeStatus '+cls+'">'+esc(status)+'</span><i>→</i></button>';
+ }).join("");
+}
+function homeActivityRows(tasks,energy,buildingLabel=""){
+ const items=[];
+ (tasks||[]).forEach(x=>items.push({ts:Number(x.id)||Date.parse((x.d||today())+"T12:00:00"),icon:"task",title:x.c||"Công việc kỹ thuật",sub:(x.s||"Đang thực hiện")+(buildingLabel?" · "+buildingLabel:"")}));
+ (energy||[]).forEach(x=>items.push({ts:Date.parse(x.createdAt||((x.date||today())+"T12:00:00"))||Number(x.id)||0,icon:x.type||"electric",title:x.type==="water"?"Đã cập nhật chỉ số nước":x.type==="solar"?"Đã cập nhật điện mặt trời":"Đã cập nhật chỉ số điện",sub:(x.date?fmt(x.date):"")+(buildingLabel?" · "+buildingLabel:"")}));
+ return items.sort((a,b)=>b.ts-a.ts).slice(0,5).map(x=>{
+   const when=x.ts?new Date(x.ts).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"}):"";
+   return '<div class="activityRow"><div class="activityIcon '+esc(x.icon)+'"></div><div><b>'+esc(x.title)+'</b><span>'+esc(x.sub)+'</span></div><time>'+esc(when)+'</time></div>';
+ }).join("");
+}
+function renderHomeProjectCards(){
+ const box=$("#homeProjectGrid"),list=currentAccount?.buildings||[];
+ if(!box)return;
+ box.innerHTML=list.length?list.map((b,i)=>'<button class="homeProjectCard" type="button" onclick="adminOpenBuilding(\''+esc(b.id)+'\')"><div class="projectMonogram">'+esc((b.id||"ES").slice(0,2))+'</div><div><small>'+esc(b.id)+'</small><b>'+esc(b.name||b.id)+'</b><span>ESTA Property Management</span></div><i>→</i></button>').join(""):'<div class="homeEmpty">Chưa có dự án đang hoạt động.</div>';
+}
+async function renderAdminHomeOverview(){
+ const buildings=currentAccount?.buildings||[];
+ $("#homeAdminProjects").classList.toggle("hide",!currentAccount?.is_admin);
+ renderHomeProjectCards();
+ if(!currentAccount?.is_admin||!buildings.length)return;
+ try{
+   const rows=await Promise.all(buildings.map(async b=>{
+     try{const r=await projectSync("get",{},b.id);return {b,s:r?.snapshot||{tasks:[],energy:[]}}}
+     catch(e){return {b,s:{tasks:[],energy:[]}}}
+   }));
+   const tasks=[],energy=[];
+   rows.forEach(({b,s})=>{
+     (Array.isArray(s.tasks)?s.tasks:[]).forEach(x=>tasks.push({...x,_building:b.name||b.id}));
+     (Array.isArray(s.energy)?s.energy:[]).forEach(x=>energy.push({...x,_building:b.name||b.id}));
+   });
+   const td=today();
+   $("#homeToday").textContent=tasks.filter(x=>x.d===td).length;
+   $("#homeDoing").textContent=tasks.filter(x=>x.s==="Đang thực hiện").length;
+   $("#homeDone").textContent=tasks.filter(x=>x.s==="Đã hoàn thành").length;
+   $("#homeWait").textContent=tasks.filter(x=>x.s==="Chờ xử lý").length;
+   const recent=[...tasks].sort((a,b)=>String(b.d||"").localeCompare(String(a.d||""))||Number(b.id)-Number(a.id)).slice(0,6);
+   $("#homeRecentTasks").innerHTML=recent.length?recent.map(x=>{
+     const st=x.s||"Đang thực hiện",cl=st==="Đã hoàn thành"?"done":st==="Đang thực hiện"?"doing":"waiting";
+     return '<div class="homeTaskRow static"><div class="homeTaskLead"><span class="homeTaskDot '+cl+'"></span><div><b>'+esc(x.c||"Công việc kỹ thuật")+'</b><small>'+esc(x._building||"Dự án")+' · '+(x.d?fmt(x.d):"—")+'</small></div></div><span class="homeStatus '+cl+'">'+esc(st)+'</span></div>'
+   }).join(""):'<div class="homeEmpty">Chưa có công việc gần đây.</div>';
+   const e=homeEnergyUse(energy,"electric"),w=homeEnergyUse(energy,"water"),s=homeEnergyUse(energy,"solar");
+   $("#homeElectric").textContent=homeNumber(e);
+   $("#homeWater").textContent=homeNumber(w);
+   $("#homeSolar").textContent=homeNumber(s);
+   $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
+ }catch(e){console.warn("Admin home summary failed",e)}
+}
+function renderHomeDashboard(){
+ const name=currentAccount?.display_name||currentAccount?.username||"Người dùng";
+ $("#homeUserName").textContent=name;
+ const initials=homeInitials(name);
+ $("#headerAvatar").textContent=initials;$("#sideAvatar").textContent=initials;
+ $("#homeUpdatedAt").textContent="Cập nhật "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
+ const admin=!!currentAccount?.is_admin;
+ $("#homeAdminProjects").classList.toggle("hide",!admin);
+ if(admin){
+   document.querySelectorAll("#homePage .buildingNameText").forEach(el=>el.textContent="Toàn bộ dự án ESTA");
+   $("#homeElectric").textContent=$("#homeWater").textContent=$("#homeSolar").textContent="—";
+   $("#homeRecentTasks").innerHTML='<div class="homeEmpty">Đang tổng hợp dữ liệu các dự án...</div>';
+   $("#homeActivity").innerHTML='<div class="homeEmpty">Đang tải hoạt động...</div>';
+   $("#homeToday").textContent=$("#homeDoing").textContent=$("#homeDone").textContent=$("#homeWait").textContent="0";
+   renderAdminHomeOverview();
+   return;
+ }
+ const tasks=load(),energy=energyLoad(),td=today();
+ $("#homeToday").textContent=tasks.filter(x=>x.d===td).length;
+ $("#homeDoing").textContent=tasks.filter(x=>x.s==="Đang thực hiện").length;
+ $("#homeDone").textContent=tasks.filter(x=>x.s==="Đã hoàn thành").length;
+ $("#homeWait").textContent=tasks.filter(x=>x.s==="Chờ xử lý").length;
+ $("#homeRecentTasks").innerHTML=homeTaskRows(tasks)||'<div class="homeEmpty">Chưa có công việc gần đây.</div>';
+ $("#homeElectric").textContent=homeNumber(homeEnergyUse(energy,"electric"));
+ $("#homeWater").textContent=homeNumber(homeEnergyUse(energy,"water"));
+ $("#homeSolar").textContent=homeNumber(homeEnergyUse(energy,"solar"));
+ $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
+}
+function showHome(){
+ $("#homePage").classList.remove("hide");
+ $("#adminPage").classList.add("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");
+ $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
+ $("#topHomeTitle").classList.remove("hide");$("#topAdminTitle").classList.add("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");
+ $("#navHome").classList.add("active");$("#navAdmin").classList.remove("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");
+ $("#app").classList.remove("adminMode","energyMode");$("#app").classList.add("homeMode");
+ document.querySelector("aside").classList.remove("open");
+ renderHomeDashboard();
+}
+window.homeOpenTask=id=>{
+ if($("#navWork").classList.contains("hide")){toast("Hãy mở một dự án trước");return}
+ showModule("work");
+ const n=Number(id);if(Number.isFinite(n)&&load().some(x=>Number(x.id)===n))setTimeout(()=>editTask(n),80);
+};
 function applyBuildingUI(){
  const name=currentBuilding?.name||"Dự án";
  document.querySelectorAll(".buildingNameText").forEach(el=>el.textContent=name);
@@ -315,7 +428,7 @@ function applyBuildingUI(){
  if(wt)wt.textContent=name;
  if(et)et.textContent=name+" · Điện / Nước / Điện mặt trời";
  document.title="ESTA | "+name;
- resetForm(false);render();renderEnergy();
+ resetForm(false);render();renderEnergy();renderHomeDashboard();
 }
 async function enterProject(building){
  currentBuilding={...building};
@@ -323,15 +436,15 @@ async function enterProject(building){
  $("#navWork").classList.remove("hide");$("#navEnergy").classList.remove("hide");
  if(centralSession?.access_token)await loadProjectSnapshot(currentBuilding);
  applyBuildingUI();
- showModule("work");
+ showHome();
 }
 function openAdminPortal(){
  if(!currentAccount?.is_admin)return;
- $("#adminPage").classList.remove("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");
+ $("#homePage").classList.add("hide");$("#adminPage").classList.remove("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
- $("#topAdminTitle").classList.remove("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");
- $("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");
- $("#app").classList.add("adminMode");renderAdminPortal();
+ $("#topHomeTitle").classList.add("hide");$("#topAdminTitle").classList.remove("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");
+ $("#navHome").classList.remove("active");$("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");
+ $("#app").classList.remove("homeMode");$("#app").classList.add("adminMode");renderAdminPortal();
 }
 window.adminOpenBuilding=id=>{const b=currentAccount?.buildings?.find(x=>x.id===id);if(b)enterProject(b)};
 window.enterAccount=function(account,session=null){
@@ -341,7 +454,8 @@ window.enterAccount=function(account,session=null){
  $("#headerRole").textContent=account.is_admin?"Quản trị viên":(account.buildings?.[0]?.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");
  $("#sideUser").innerHTML="<b>"+esc(account.display_name||account.username||"Người dùng")+"</b><br>"+(account.is_admin?"Quản trị viên":"Tài khoản dự án");
  $("#navAdmin").classList.toggle("hide",!account.is_admin);
- if(account.is_admin){$("#navWork").classList.add("hide");$("#navEnergy").classList.add("hide");openAdminPortal()}
+ const initials=homeInitials(account.display_name||account.username||"ESTA");$("#headerAvatar").textContent=initials;$("#sideAvatar").textContent=initials;
+ if(account.is_admin){$("#navWork").classList.add("hide");$("#navEnergy").classList.add("hide");showHome()}
  else if(account.buildings?.length){enterProject(account.buildings[0])}
  else{toast("Tài khoản chưa được phân quyền dự án");}
 };
@@ -505,10 +619,10 @@ function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageK
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
  const energy=name==="energy";
- $("#adminPage").classList.add("hide");
- $("#topAdminTitle").classList.add("hide");
- $("#navAdmin").classList.remove("active");
- $("#app").classList.remove("adminMode");
+ $("#homePage").classList.add("hide");$("#adminPage").classList.add("hide");
+ $("#topHomeTitle").classList.add("hide");$("#topAdminTitle").classList.add("hide");
+ $("#navHome").classList.remove("active");$("#navAdmin").classList.remove("active");
+ $("#app").classList.remove("adminMode","homeMode");
  $("#workPage").classList.toggle("hide",energy);
  $("#workHero").classList.toggle("hide",energy);
  $("#energyPage").classList.toggle("hide",!energy);
@@ -521,9 +635,18 @@ function showModule(name){
  document.querySelector("aside").classList.remove("open");
  if(energy)renderEnergy();
 }
+$("#navHome").onclick=()=>showHome();
 $("#navAdmin").onclick=()=>openAdminPortal();
 $("#navWork").onclick=()=>showModule("work");
 $("#navEnergy").onclick=()=>showModule("energy");
+$("#homeViewAllTasks").onclick=()=>$("#navWork").classList.contains("hide")?toast("Hãy mở một dự án trước"):showModule("work");
+$("#homeOpenEnergy").onclick=()=>$("#navEnergy").classList.contains("hide")?toast("Hãy mở một dự án trước"):showModule("energy");
+$("#homeOpenProjects").onclick=()=>openAdminPortal();
+$("#quickAddTask").onclick=()=>{if($("#navWork").classList.contains("hide"))return toast("Hãy mở một dự án trước");showModule("work");setTimeout(()=>$("#content").focus(),60)};
+$("#quickElectric").onclick=()=>{if($("#navEnergy").classList.contains("hide"))return toast("Hãy mở một dự án trước");energyType="electric";showModule("energy");document.querySelectorAll("[data-energy-type]").forEach(b=>b.classList.toggle("active",b.dataset.energyType==="electric"));resetEnergyForm();setTimeout(()=>$("#energyValue").focus(),60)};
+$("#quickWater").onclick=()=>{if($("#navEnergy").classList.contains("hide"))return toast("Hãy mở một dự án trước");energyType="water";showModule("energy");document.querySelectorAll("[data-energy-type]").forEach(b=>b.classList.toggle("active",b.dataset.energyType==="water"));resetEnergyForm();setTimeout(()=>$("#energyValue").focus(),60)};
+$("#quickReport").onclick=()=>{if($("#navWork").classList.contains("hide"))return toast("Hãy mở một dự án trước");showModule("work");setTimeout(()=>$("#exportModal").classList.remove("hide"),60)};
+
 $("#energyToday").textContent=new Date().toLocaleDateString("vi-VN");
 document.querySelectorAll("[data-energy-type]").forEach(b=>b.onclick=()=>{
  energyType=b.dataset.energyType;
