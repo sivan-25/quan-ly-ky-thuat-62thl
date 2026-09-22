@@ -652,3 +652,37 @@ main>header{
 /* Sidebar gọn sau khi bỏ thẻ tòa nhà và Smart Building */
 #app aside nav{margin-top:16px}
 .sideBackup{margin-top:auto!important;padding-top:14px}
+
+/* Tổng tiêu thụ đặt cạnh tiêu đề bảng Năng lượng */
+.energyTitleLine{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.energyTotalInline{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:30px;
+  padding:5px 10px;
+  border:1px solid #b9dedb;
+  border-radius:8px;
+  background:#eefafa;
+  color:#0b746f;
+  white-space:nowrap;
+}
+.energyTotalInline span{
+  font-size:9px;
+  font-weight:600;
+}
+.energyTotalInline strong{
+  font-size:14px;
+  font-weight:700;
+  color:#075d59;
+}
+@media(max-width:760px){
+  .energyTitleLine{align-items:flex-start;gap:7px}
+  .energyTotalInline{min-height:28px;padding:4px 8px}
+  .energyTotalInline strong{font-size:13px}
+}
