@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Quản lý kỹ thuật 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css?v=20260922-1045"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Quản lý kỹ thuật 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css?v=20260922-1135"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild">
   <div class="loginShowcase">
     <div class="loginBrand">
@@ -32,19 +32,50 @@
       <span class="welcome">Chào mừng trở lại</span>
       <p class="loginSub">Hệ thống quản lý kỹ thuật tòa nhà</p>
       <h1>ESTA</h1>
-      <div class="loginLocation"><b>62 Trần Huy Liệu</b><span>Quận Phú Nhuận, TP. Hồ Chí Minh</span></div>
+      <div class="loginLocation"><b>ESTA Building Management</b><span>Hệ thống quản lý kỹ thuật đa dự án</span></div>
       <form id="loginForm">
-        <label><span>Tên đăng nhập</span><input id="user" required autocomplete="username" placeholder="Nhập tên đăng nhập"></label>
+        <label><span>Tên đăng nhập / Email</span><input id="user" required autocomplete="username" placeholder="Nhập tài khoản"></label>
         <label><span>Mật khẩu</span><input id="pass" type="password" required autocomplete="current-password" placeholder="Nhập mật khẩu"></label>
-        <button id="loginBtn" type="submit" class="primary">Đăng nhập <b>→</b></button><div id="loginError" class="loginError" aria-live="polite"></div>
+        <button id="loginBtn" type="submit" class="primary">Đăng nhập <b>→</b></button><div id="loginError" class="loginError" aria-live="polite"></div><button id="openAdminSetup" class="adminSetupLink" type="button">Kích hoạt Admin trung tâm</button>
       </form>
       <div class="loginFoot">VẬN HÀNH HÔM NAY<br>KIẾN TẠO NGÀY MAI</div>
     </div>
   </div>
 </section>
-<div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><nav><button id="navWork" class="active">▣ <span>Công việc</span></button><button id="navEnergy">▥ <span>Năng lượng</span></button></nav><div class="sideBackup"><button id="backupBtn" type="button">Sao lưu</button><button id="restoreBtn" type="button">Khôi phục</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
-<main><header><button id="menu">☰</button><div id="topWorkTitle" class="topModuleTitle"><div class="topModuleIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý công việc hằng ngày</p></div></div><div id="topEnergyTitle" class="topModuleTitle hide"><div class="topModuleIcon">▥</div><div><h1>Năng lượng</h1><p>Theo dõi điện, nước và điện mặt trời</p></div></div><div class="headerTools"><div class="headerSearch">⌕ <input id="globalSearch" placeholder="Tìm công việc..."></div><div class="filterWrap"><button id="toggleFilter" class="iconAction" type="button" title="Bộ lọc">⌕</button><div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label>Từ ngày<input id="fromDate" type="date"></label><label>Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div></div><button id="exportBtn" class="pdfAction" type="button" title="Xuất PDF"><b>PDF</b> ⇩</button></div><div class="account"><span id="headerRole"></span><b id="headerUser"></b></div></header>
-<div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b>62 Trần Huy Liệu</b></span></div></section>
+<div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><nav><button id="navAdmin" class="hide">▦ <span>Tổng quan Admin</span></button><button id="navWork" class="active">▣ <span>Công việc</span></button><button id="navEnergy">▥ <span>Năng lượng</span></button></nav><div class="sideBackup"><button id="backupBtn" type="button">Sao lưu</button><button id="restoreBtn" type="button">Khôi phục</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
+<main><header><button id="menu">☰</button><div id="topAdminTitle" class="topModuleTitle hide"><div class="topModuleIcon">▦</div><div><h1>Quản trị hệ thống</h1><p>Tổng hợp các dự án ESTA</p></div></div><div id="topWorkTitle" class="topModuleTitle"><div class="topModuleIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý công việc hằng ngày</p></div></div><div id="topEnergyTitle" class="topModuleTitle hide"><div class="topModuleIcon">▥</div><div><h1>Năng lượng</h1><p>Theo dõi điện, nước và điện mặt trời</p></div></div><div class="headerTools"><div class="headerSearch">⌕ <input id="globalSearch" placeholder="Tìm công việc..."></div><div class="filterWrap"><button id="toggleFilter" class="iconAction" type="button" title="Bộ lọc">⌕</button><div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label>Từ ngày<input id="fromDate" type="date"></label><label>Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div></div><button id="exportBtn" class="pdfAction" type="button" title="Xuất PDF"><b>PDF</b> ⇩</button></div><div class="account"><span id="headerRole"></span><b id="headerUser"></b></div></header>
+<div id="adminPage" class="page modulePage hide">
+  <section class="adminHero">
+    <div><span class="adminEyebrow">ESTA · CENTRAL ADMIN</span><h1>Quản trị toàn bộ dự án</h1><p>Tạo tài khoản theo từng tòa nhà và truy cập nhanh vào giao diện vận hành của mỗi dự án.</p></div>
+    <div id="adminConnection" class="adminConnection warn">Chưa kết nối tài khoản Admin trung tâm</div>
+  </section>
+
+  <section class="adminSection">
+    <div class="adminSectionHead"><div><h2>Dự án</h2><p>Chọn một dự án để mở giao diện vận hành tương ứng.</p></div><span id="adminProjectCount">0 dự án</span></div>
+    <div id="adminProjectGrid" class="adminProjectGrid"></div>
+  </section>
+
+  <section class="adminAccountsGrid">
+    <article class="adminSection adminCreateCard">
+      <div class="adminSectionHead"><div><h2>Tạo tài khoản dự án</h2><p>Tài khoản sẽ chỉ truy cập các dự án được phân quyền.</p></div></div>
+      <form id="adminCreateAccountForm" class="adminCreateForm">
+        <label><span>Tên đăng nhập</span><input id="adminUsername" required minlength="3" placeholder="vd: kythuat62"></label>
+        <label><span>Tên hiển thị</span><input id="adminDisplayName" required placeholder="vd: Kỹ thuật 62 THL"></label>
+        <label><span>Mật khẩu</span><input id="adminPassword" type="password" required minlength="6" placeholder="Tối thiểu 6 ký tự"></label>
+        <label><span>Dự án</span><select id="adminBuildingSelect" required></select></label>
+        <label><span>Quyền</span><select id="adminRole"><option value="editor">Được nhập / chỉnh sửa</option><option value="viewer">Chỉ xem</option></select></label>
+        <button id="adminCreateBtn" class="primary" type="submit">＋ Tạo tài khoản</button>
+      </form>
+      <p id="adminCreateHint" class="adminHint">Cần đăng nhập bằng Admin trung tâm để tạo tài khoản thật.</p>
+    </article>
+
+    <article class="adminSection adminUsersCard">
+      <div class="adminSectionHead"><div><h2>Danh sách tài khoản</h2><p>Theo dõi tài khoản đang được phân quyền theo dự án.</p></div><button id="refreshAdminUsers" class="secondary small" type="button">Làm mới</button></div>
+      <div id="adminUsersList" class="adminUsersList"><div class="empty">Chưa tải danh sách tài khoản.</div></div>
+    </article>
+  </section>
+</div>
+<div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
 
 <section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label><span>Người thực hiện</span><input id="performer" required></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><input id="images" type="file" accept="image/*" multiple></label><button id="saveBtn" class="primary">＋ Thêm</button><button id="cancelEdit" type="button" class="square hide">×</button></form><div id="imageInfo"></div></section>
 
@@ -59,7 +90,7 @@
   <section class="pageHead energyHead">
     <div class="headIcon">▥</div>
     <div><h1>Năng lượng</h1><p>Ghi chỉ số và theo dõi mức tiêu thụ điện, nước và năng lượng mặt trời.</p></div>
-    <div class="headMeta"><span>▣ Ngày: <b id="energyToday"></b></span><span>▥ Tòa nhà: <b>62 Trần Huy Liệu</b></span></div>
+    <div class="headMeta"><span>▣ Ngày: <b id="energyToday"></b></span><span>▥ Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div>
   </section>
 
   <section class="energyTabs" aria-label="Loại chỉ số">
@@ -109,26 +140,8 @@
     <div class="energyLegend"><span>■ Chủ nhật</span><span>Chênh lệch = chỉ số hiện tại − chỉ số lần trước</span></div>
   </section>
 </div></main></div>
-<div id="exportModal" class="modal hide"><div class="modalCard exportModalWide"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn loại báo cáo và khoảng thời gian.</p>
+<div id="adminSetupModal" class="modal hide"><div class="modalCard adminSetupCard"><button id="closeAdminSetup" class="modalClose" type="button">×</button><h3>Kích hoạt Admin trung tâm</h3><p>Tạo tài khoản Admin Supabase lần đầu để quản lý tài khoản cho tất cả dự án.</p><form id="adminSetupForm" class="adminSetupForm"><label><span>Email Admin</span><input id="setupAdminEmail" type="email" required placeholder="email của anh"></label><label><span>Tên hiển thị</span><input id="setupAdminName" required value="Quản trị viên"></label><label><span>Mật khẩu Admin</span><input id="setupAdminPassword" type="password" required minlength="6" placeholder="Tối thiểu 6 ký tự"></label><button class="primary" type="submit">Kích hoạt Admin</button><div id="adminSetupMessage" class="adminSetupMessage"></div></form></div></div><div id="exportModal" class="modal hide"><div class="modalCard exportModalWide"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn loại báo cáo và khoảng thời gian.</p>
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script>
-(function(){
- const form=document.getElementById("loginForm");
- if(!form)return;
- form.addEventListener("submit",function(e){
-   const u=document.getElementById("user").value.trim();
-   const p=document.getElementById("pass").value;
-   const ok=(u==="admin"&&p==="admin123")||(u==="kythuat62"&&p==="kt62123");
-   if(!ok){e.preventDefault();const er=document.getElementById("loginError");if(er)er.textContent="Tài khoản hoặc mật khẩu chưa đúng.";return}
-   e.preventDefault();
-   setTimeout(function(){
-     if(typeof window.enter==="function"){window.enter(u);return}
-     sessionStorage.setItem("u62",u);
-     document.getElementById("login").classList.add("hide");
-     document.getElementById("app").classList.remove("hide");
-   },0);
- },true);
-})();
-</script><script src="app.js?v=20260922-1105"></script></body></html>
+<script src="app.js?v=20260922-1135"></script></body></html>
