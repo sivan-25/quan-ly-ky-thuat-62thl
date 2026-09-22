@@ -1,5 +1,4 @@
 const $=s=>document.querySelector(s);
-const LOCAL_USERS={admin:{p:"admin123",n:"Quản trị viên",r:"Quản trị viên",is_admin:true,buildings:[{id:"68PĐL",name:"68 Phan Đăng Lưu"},{id:"62THL",name:"62 Trần Huy Liệu"},{id:"127HH",name:"127 Hồng Hà"},{id:"130HH",name:"130 Hồng Hà"},{id:"399CH",name:"399CH"}]},kythuat62:{p:"kt62123",n:"Kỹ thuật 62 THL",r:"Kỹ thuật viên",is_admin:false,buildings:[{id:"62THL",name:"62 Trần Huy Liệu",role:"editor"}]}};
 const SB_URL="https://upcjcrycahdfroxggsdz.supabase.co";
 const SB_KEY="sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
 let me=null,centralSession=null,currentAccount=null,currentBuilding={id:"62THL",name:"62 Trần Huy Liệu",role:"editor"};
