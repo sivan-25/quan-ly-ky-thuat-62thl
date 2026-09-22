@@ -1008,12 +1008,12 @@ function inventorySnapshot(material,year=inventoryYearValue()){
  let running=opening,totalIn=0,totalOut=0;
  const months=[];
  for(let m=1;m<=12;m++){
-   const prefix=year+"-"+String(m).padStart(2,"0");let inn=0,out=0;
+   const prefix=year+"-"+String(m).padStart(2,"0"),begin=running;let inn=0,out=0;
    tx.filter(x=>String(x.tx_date).startsWith(prefix)).forEach(x=>{
      if(x.tx_type==="in"){inn+=inventoryNum(x.qty);running+=inventoryNum(x.qty)}
      else{out+=inventoryNum(x.qty);running-=inventoryNum(x.qty)}
    });
-   totalIn+=inn;totalOut+=out;months.push({inQty:inn,outQty:out,stock:running});
+   totalIn+=inn;totalOut+=out;months.push({begin,inQty:inn,outQty:out,stock:running});
  }
  const current=inventoryNum(material.opening_qty)+tx.reduce((s,x)=>s+(x.tx_type==="in"?inventoryNum(x.qty):-inventoryNum(x.qty)),0);
  return {opening,totalIn,totalOut,closing:running,current,months};
@@ -1056,11 +1056,11 @@ function renderMaterials(){
  $("#materialYearIn").textContent=inventoryFmt(inventoryMaterials.reduce((s,m)=>s+inventorySnapshot(m,y).totalIn,0));
  $("#materialYearOut").textContent=inventoryFmt(inventoryMaterials.reduce((s,m)=>s+inventorySnapshot(m,y).totalOut,0));
  $("#materialLowStock").textContent=inventoryMaterials.filter(m=>inventorySnapshot(m,y).current<=inventoryNum(m.min_qty)&&inventoryNum(m.min_qty)>0).length;
- $("#materialMatrixHead").innerHTML='<tr><th class="stickyMaterial">Vật tư</th><th>ĐVT</th><th>Đầu năm</th>'+INV_MONTHS.map(x=>'<th>'+x+'<small>N / X / T</small></th>').join("")+'<th>Tổng nhập</th><th>Tổng xuất</th><th>Tồn cuối</th><th>Thao tác</th></tr>';
+ $("#materialMatrixHead").innerHTML='<tr><th class="stickyMaterial">Vật tư</th><th>ĐVT</th><th>Đầu năm</th>'+INV_MONTHS.map(x=>'<th>'+x+'<small>Đ / N / X / T</small></th>').join("")+'<th>Tổng nhập</th><th>Tổng xuất</th><th>Tồn cuối</th><th>Thao tác</th></tr>';
  $("#materialMatrixBody").innerHTML=snaps.map(({m,s})=>{
    const low=s.current<=inventoryNum(m.min_qty)&&inventoryNum(m.min_qty)>0;
    return '<tr class="'+(low?"lowStock":"")+'"><td class="stickyMaterial"><b>'+esc(m.name)+'</b><small>'+esc(m.code||"Không mã")+'</small></td><td>'+esc(m.unit)+'</td><td><b>'+inventoryFmt(s.opening)+'</b></td>'+
-   s.months.map(mm=>'<td class="monthCell"><span class="in">N '+inventoryFmt(mm.inQty)+'</span><span class="out">X '+inventoryFmt(mm.outQty)+'</span><b>T '+inventoryFmt(mm.stock)+'</b></td>').join("")+
+   s.months.map(mm=>'<td class="monthCell"><span class="begin">Đ '+inventoryFmt(mm.begin)+'</span><span class="in">N '+inventoryFmt(mm.inQty)+'</span><span class="out">X '+inventoryFmt(mm.outQty)+'</span><b>T '+inventoryFmt(mm.stock)+'</b></td>').join("")+
    '<td class="inText">'+inventoryFmt(s.totalIn)+'</td><td class="outText">'+inventoryFmt(s.totalOut)+'</td><td><b>'+inventoryFmt(s.closing)+'</b></td><td><div class="invRowActions"><button onclick="openStockTxnModal(\''+m.id+'\')">N/X</button><button onclick="editMaterial(\''+m.id+'\')">Sửa</button><button class="danger" onclick="deleteMaterial(\''+m.id+'\')">×</button></div></td></tr>';
  }).join("");
  $("#materialEmpty").classList.toggle("hide",list.length>0);
@@ -1134,7 +1134,7 @@ function inventoryPdfCss(landscape=false){return '@page{size:A4 '+(landscape?"la
 }
 function materialReportHtml(){
  const y=inventoryYearValue(),snaps=inventoryMaterials.map(m=>({m,s:inventorySnapshot(m,y)}));
- const rows=snaps.map(({m,s},i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(m.name)+'</b><br>'+esc(m.code||"")+'</td><td>'+esc(m.unit)+'</td><td>'+inventoryFmt(s.opening)+'</td>'+s.months.map(mm=>'<td class="month"><span class="in">N '+inventoryFmt(mm.inQty)+'</span><br><span class="out">X '+inventoryFmt(mm.outQty)+'</span><br><b>T '+inventoryFmt(mm.stock)+'</b></td>').join("")+'<td><b>'+inventoryFmt(s.totalIn)+'</b></td><td><b>'+inventoryFmt(s.totalOut)+'</b></td><td><b>'+inventoryFmt(s.closing)+'</b></td></tr>').join("");
+ const rows=snaps.map(({m,s},i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(m.name)+'</b><br>'+esc(m.code||"")+'</td><td>'+esc(m.unit)+'</td><td>'+inventoryFmt(s.opening)+'</td>'+s.months.map(mm=>'<td class="month"><span>Đ '+inventoryFmt(mm.begin)+'</span><br><span class="in">N '+inventoryFmt(mm.inQty)+'</span><br><span class="out">X '+inventoryFmt(mm.outQty)+'</span><br><b>T '+inventoryFmt(mm.stock)+'</b></td>').join("")+'<td><b>'+inventoryFmt(s.totalIn)+'</b></td><td><b>'+inventoryFmt(s.totalOut)+'</b></td><td><b>'+inventoryFmt(s.closing)+'</b></td></tr>').join("");
  const tin=snaps.reduce((a,x)=>a+x.s.totalIn,0),tout=snaps.reduce((a,x)=>a+x.s.totalOut,0);
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Vật tư '+y+'</title><style>'+inventoryPdfCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>BẢNG THEO DÕI VẬT TƯ TIÊU HAO '+y+'</h1><p>Nhập · Xuất · Tồn theo 12 tháng</p></div><div class="summary"><div><span>Mặt hàng</span><b>'+inventoryMaterials.length+'</b></div><div><span>Tổng nhập</span><b>'+inventoryFmt(tin)+'</b></div><div><span>Tổng xuất</span><b>'+inventoryFmt(tout)+'</b></div></div><table><thead><tr><th>STT</th><th>Vật tư</th><th>ĐVT</th><th>Đầu năm</th>'+INV_MONTHS.map(x=>'<th>'+x+'</th>').join("")+'<th>Tổng N</th><th>Tổng X</th><th>Tồn cuối</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Quản lý vật tư · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),600)<\/script></body></html>';
 }
