@@ -107,11 +107,14 @@ function renderEnergy(){
  $("#energyValueColumn").textContent="Chỉ số ("+m.unit+")";
  $("#energyTableTitle").textContent="Bảng theo dõi "+m.name.toLowerCase();
  const rows=energyRows(),latest=rows.length?rows[rows.length-1]:null;
- const first=rows.length?rows[0]:null;
- const use=rows.length>1?rows[rows.length-1].value-rows[0].value:null;
+ const usableDiffs=rows.filter(x=>typeof x.diff==="number"&&Number.isFinite(x.diff)&&x.diff>=0);
+ const totalUse=usableDiffs.length?usableDiffs.reduce((s,x)=>s+x.diff,0):null;
+ const totalLabel=energyType==="electric"?"Tổng điện":energyType==="water"?"Tổng nước":"Tổng điện mặt trời";
  $("#energyRecordCount").textContent=rows.length;
  $("#energyLatestValue").textContent=latest?energyFmt(latest.value)+" "+m.unit:"—";
- $("#energyPeriodUse").textContent=use!==null?energyFmt(use)+" "+m.unit:"—";
+ $("#energyPeriodUse").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—";
+ const totalBox=$("#energyTotalInline");
+ if(totalBox){totalBox.querySelector("span").textContent=totalLabel;totalBox.querySelector("strong").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—"}
  $("#energyEmpty").classList.toggle("hide",rows.length>0);
  $("#energyTbody").innerHTML=rows.map(x=>{
    const sun=new Date(x.date+"T00:00:00").getDay()===0;
@@ -120,7 +123,7 @@ function renderEnergy(){
    return '<tr class="'+(sun?"sunday":"")+'"><td>'+fmt(x.date)+'</td><td>'+weekday(x.date)+'</td><td><b>'+energyFmt(x.value)+'</b></td><td>'+diff+'</td><td>'+img+'</td><td>'+esc(x.note||"—")+'</td><td><div class="rowBtns"><button onclick="editEnergy(\''+x.id+'\')">✎</button><button class="del" onclick="deleteEnergy(\''+x.id+'\')">×</button></div></td></tr>'
  }).join("");
  $("#energyMobileCards").innerHTML=rows.map(x=>'<div class="mcard '+(new Date(x.date+"T00:00:00").getDay()===0?"sunday":"")+'"><h4>'+fmt(x.date)+' · '+weekday(x.date)+'</h4><p><b>'+energyFmt(x.value)+' '+m.unit+'</b> · Chênh lệch: '+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</p><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="foot"><button onclick="editEnergy(\''+x.id+'\')">Sửa ›</button></div></div>').join("");
- $("#energySummaryText").textContent=rows.length?"Đang hiển thị "+rows.length+" bản ghi.":"Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.";
+ $("#energySummaryText").textContent=rows.length?"Đang hiển thị "+rows.length+" bản ghi · Tổng được tính theo bộ lọc hiện tại.":"Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.";
 }
 window.editEnergy=id=>{
  const x=energyLoad().find(v=>String(v.id)===String(id));if(!x)return;
