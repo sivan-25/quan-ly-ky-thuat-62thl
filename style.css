@@ -686,3 +686,14 @@ main>header{
   .energyTotalInline{min-height:28px;padding:4px 8px}
   .energyTotalInline strong{font-size:13px}
 }
+
+/* Xuất báo cáo tổng hợp */
+.exportModalWide{width:min(620px,92vw)!important}
+.exportSection{padding:12px 0 2px}
+.exportSection+ .exportSection{margin-top:12px;padding-top:14px;border-top:1px solid #e3ebf2}
+.exportSection>b{display:block;margin-bottom:5px;color:#173f60;font-size:13px}
+.exportSection>small{display:block;margin:-1px 0 9px;color:#71879a;font-size:9px}
+.combinedChoices{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.combinedChoices button{height:38px;border:1px solid #b8d9e8;border-radius:8px;background:#eff9fb;color:#0d6f7b;font-size:10px;font-weight:700}
+.combinedChoices button:hover{background:#e0f4f5}
+@media(max-width:760px){.combinedChoices{grid-template-columns:1fr 1fr}}
