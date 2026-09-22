@@ -41,6 +41,121 @@ async function sbFetch(path,{method="GET",body=null,token=null}={}){
  if(!res.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||"Không thể kết nối máy chủ");err.status=res.status;throw err}
  return data;
 }
+const MEDIA_BUCKET="task-images";
+const mediaUrlCache=new Map();
+function isStorageRef(v){return typeof v==="string"&&v.startsWith("storage:")}
+function storagePathFromRef(v){return isStorageRef(v)?v.slice(8):v}
+function mediaPathUrl(path){return path.split("/").map(encodeURIComponent).join("/")}
+async function signedMediaUrl(ref){
+ if(!ref)return "";
+ if(!isStorageRef(ref))return ref;
+ const path=storagePathFromRef(ref),cached=mediaUrlCache.get(path);
+ if(cached&&cached.exp>Date.now()+60000)return cached.url;
+ if(!centralSession?.access_token)return "";
+ const res=await fetch(SB_URL+"/storage/v1/object/sign/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
+   method:"POST",
+   headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"application/json"},
+   body:JSON.stringify({expiresIn:3600})
+ });
+ const data=await res.json().catch(()=>({}));
+ if(!res.ok)throw new Error(data?.message||data?.error||"Không thể mở hình ảnh");
+ let url=data.signedURL||data.signedUrl||"";
+ if(url&&url.startsWith("/"))url=SB_URL+url;
+ mediaUrlCache.set(path,{url,exp:Date.now()+3500*1000});
+ return url;
+}
+function mediaImgHtml(ref,cls=""){
+ if(!ref)return "";
+ if(isStorageRef(ref))return '<img class="'+cls+'" data-storage-path="'+esc(storagePathFromRef(ref))+'" alt="Hình ảnh">';
+ return '<img class="'+cls+'" src="'+esc(ref)+'" alt="Hình ảnh">';
+}
+async function hydrateMediaImages(root=document){
+ const imgs=[...(root||document).querySelectorAll?.("img[data-storage-path]")||[]];
+ await Promise.all(imgs.map(async im=>{
+   if(im.dataset.loaded==="1")return;
+   try{im.src=await signedMediaUrl("storage:"+im.dataset.storagePath);im.dataset.loaded="1"}
+   catch(e){im.alt="Không tải được hình"}
+ }));
+}
+function imageFileToBlob(file){
+ return new Promise((resolve,reject)=>{
+   if(!file?.type?.startsWith("image/"))return reject(new Error("Chỉ hỗ trợ file hình ảnh"));
+   const url=URL.createObjectURL(file),img=new Image();
+   img.onload=()=>{
+     try{
+       const max=2400,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+       const cv=document.createElement("canvas");cv.width=w;cv.height=h;
+       cv.getContext("2d").drawImage(img,0,0,w,h);
+       cv.toBlob(blob=>{URL.revokeObjectURL(url);blob?resolve(blob):reject(new Error("Không thể xử lý hình ảnh"))},"image/jpeg",.82);
+     }catch(e){URL.revokeObjectURL(url);reject(e)}
+   };
+   img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Không đọc được hình ảnh này"))};
+   img.src=url;
+ });
+}
+async function uploadMediaBlob(blob,kind,recordId,index=0){
+ if(!centralSession?.access_token)throw new Error("Cần đăng nhập tài khoản trung tâm để tải hình");
+ const uid=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
+ const path=currentBuilding.id+"/"+kind+"/"+recordId+"/"+Date.now()+"-"+index+"-"+uid+".jpg";
+ const res=await fetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
+   method:"POST",
+   headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"image/jpeg","x-upsert":"false"},
+   body:blob
+ });
+ if(!res.ok){let d={};try{d=await res.json()}catch(e){}throw new Error(d?.message||d?.error||"Không thể tải hình lên máy chủ")}
+ return "storage:"+path;
+}
+async function uploadMediaFiles(files,kind,recordId,onProgress){
+ const list=[...files],refs=[];
+ for(let i=0;i<list.length;i++){
+   if(onProgress)onProgress(i+1,list.length);
+   const blob=await imageFileToBlob(list[i]);
+   refs.push(await uploadMediaBlob(blob,kind,recordId,i));
+ }
+ return refs;
+}
+async function uploadLegacyDataUrl(dataUrl,kind,recordId,index){
+ const blob=await (await fetch(dataUrl)).blob();
+ let out=blob;
+ if(blob.type!=="image/jpeg"){
+   const f=new File([blob],"legacy-image",{type:blob.type||"image/png"});
+   out=await imageFileToBlob(f);
+ }
+ return uploadMediaBlob(out,kind,recordId,index);
+}
+async function migrateMediaRows(tasks,energy){
+ let changed=false;
+ if(!centralSession?.access_token||!canProjectEdit())return {tasks,energy,changed};
+ for(const task of tasks||[]){
+   if(!Array.isArray(task.imgs))continue;
+   for(let i=0;i<task.imgs.length;i++){
+     const ref=task.imgs[i];
+     if(typeof ref==="string"&&ref.startsWith("data:image/")){
+       task.imgs[i]=await uploadLegacyDataUrl(ref,"tasks",task.id,i);
+       changed=true;
+     }
+   }
+   task.i=task.imgs.length;
+ }
+ for(const row of energy||[]){
+   if(typeof row.image==="string"&&row.image.startsWith("data:image/")){
+     row.image=await uploadLegacyDataUrl(row.image,"energy",row.id,0);
+     changed=true;
+   }
+ }
+ return {tasks,energy,changed};
+}
+let viewerMediaRefs=[];
+window.downloadViewerMedia=async index=>{
+ const ref=viewerMediaRefs[index];if(!ref)return;
+ try{
+   const url=await signedMediaUrl(ref),res=await fetch(url);
+   if(!res.ok)throw new Error("Không thể tải hình");
+   const blob=await res.blob(),u=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=u;a.download="ESTA-"+currentBuilding.id+"-hinh-"+(index+1)+".jpg";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);
+ }catch(e){toast(e.message||"Không thể tải hình")}
+};
+
 async function projectSync(action,payload={}){
  if(!centralSession?.access_token||!currentBuilding?.id)return null;
  return sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:currentBuilding.id,...payload}});
