@@ -1006,3 +1006,26 @@ main>header{
   .settingsPane{padding:12px}
   .settingsRow{align-items:flex-start}
 }
+
+/* Admin: nút Cài đặt nổi bật hơn */
+.settingsGearBtn{
+  height:40px!important;
+  min-width:96px;
+  padding:0 13px!important;
+  gap:8px!important;
+  font-size:17px!important;
+  border-radius:10px!important;
+}
+.settingsGearBtn span{
+  font-size:10px!important;
+  font-weight:700!important;
+}
+@media(max-width:760px){
+  .settingsGearBtn{
+    min-width:40px;
+    width:40px;
+    padding:0!important;
+    justify-content:center;
+    font-size:18px!important;
+  }
+}
