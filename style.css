@@ -899,3 +899,110 @@ main>header{
 @media(max-width:760px){
   .adminProjectHeadActions{width:100%;justify-content:space-between}
 }
+
+/* ===== ADMIN SETTINGS HUB ===== */
+.settingsGearBtn{
+  height:34px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:0 11px;
+  border:1px solid #cfe0eb;
+  border-radius:8px;
+  background:#fff;
+  color:#1e5e87;
+  font-size:9px;
+  font-weight:700;
+  cursor:pointer;
+}
+.settingsGearBtn:hover{background:#f2f8fb;border-color:#9dc8dd}
+.adminManageHint{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:12px;
+}
+.adminManageHintIcon{
+  width:38px;height:38px;display:grid;place-items:center;flex:0 0 auto;
+  border-radius:10px;background:#edf5fa;color:#155e8d;font-size:17px
+}
+.adminManageHint h3{margin:0 0 3px;font-size:12px;color:#1b4564}
+.adminManageHint p{margin:0;font-size:9px;color:#71889a;line-height:1.5}
+.adminManageHint>button{
+  margin-left:auto;height:34px;padding:0 11px;border:1px solid #d5e3ec;border-radius:8px;
+  background:#fff;color:#326783;font-size:9px;font-weight:700;white-space:nowrap
+}
+.adminSettingsCard{
+  width:min(920px,94vw)!important;
+  max-height:88vh;
+  overflow:hidden;
+  padding:0!important;
+}
+.settingsHead{padding:18px 20px 12px;border-bottom:1px solid #e5edf3;background:linear-gradient(180deg,#fff,#f9fcfe)}
+.settingsHead span{font-size:7px;letter-spacing:1.6px;color:#7ca0b6}
+.settingsHead h3{margin:4px 0 4px;font-size:19px;color:#173f60}
+.settingsHead p{margin:0;font-size:9px;color:#738b9c}
+.settingsTabs{
+  display:flex;
+  gap:5px;
+  padding:10px 14px;
+  border-bottom:1px solid #e5edf3;
+  background:#f8fbfd;
+}
+.settingsTabs button{
+  height:34px;padding:0 11px;border:1px solid transparent;border-radius:8px;
+  background:transparent;color:#648095;font-size:9px;font-weight:700;cursor:pointer
+}
+.settingsTabs button.active{background:#fff;border-color:#cfe0eb;color:#0d6598;box-shadow:0 3px 10px rgba(22,70,101,.05)}
+.settingsPane{
+  padding:15px 17px 18px;
+  max-height:66vh;
+  overflow:auto;
+}
+.settingsPaneTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.settingsPaneTitle h4{margin:0;font-size:14px;color:#193f5f}
+.settingsPaneTitle p{margin:3px 0 0;font-size:9px;color:#778d9f}
+.settingsInlineForm{
+  grid-template-columns:150px minmax(220px,1fr) 130px!important;
+  align-items:end;
+  margin-bottom:13px;
+  padding:12px;
+  border:1px solid #e1ebf1;
+  border-radius:10px;
+  background:#f9fcfe;
+}
+.settingsInlineForm .adminSetupMessage{grid-column:1/-1;text-align:left}
+.settingsList{display:grid;gap:7px}
+.settingsRow{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 11px;border:1px solid #e0eaf1;border-radius:9px;background:#fff
+}
+.settingsRowMain{display:flex;align-items:center;gap:9px;min-width:0}
+.settingsRowIcon{
+  width:34px;height:34px;display:grid;place-items:center;flex:0 0 auto;
+  border-radius:8px;background:#eaf5fb;color:#126b9f;font-size:15px
+}
+.settingsRowMain b{display:block;font-size:11px;color:#1c435f}
+.settingsRowMain small{display:block;margin-top:2px;font-size:8px;color:#8397a7}
+.settingsDeleteBtn,.settingsRestoreBtn{
+  height:31px;padding:0 9px;border-radius:7px;background:#fff;font-size:8px;font-weight:700;white-space:nowrap;cursor:pointer
+}
+.settingsDeleteBtn{border:1px solid #edc6ca;color:#a9434f}
+.settingsDeleteBtn:hover{background:#fff3f4}
+.settingsRestoreBtn{border:1px solid #b8ddc7;color:#24784d}
+.settingsRestoreBtn:hover{background:#f0fbf4}
+.trashIcon{background:#f8ecee;color:#a84a54}
+.settingsAccountForm{margin-bottom:8px}
+.settingsListHead{display:flex;align-items:center;justify-content:space-between;margin:14px 0 8px}
+.settingsListHead b{font-size:10px;color:#31546d}
+#settingsAccounts .adminUsersList{max-height:330px}
+@media(max-width:760px){
+  .settingsGearBtn span{display:none}
+  .adminManageHint{align-items:flex-start;flex-wrap:wrap}
+  .adminManageHint>button{margin-left:50px}
+  .settingsTabs{overflow-x:auto}
+  .settingsTabs button{white-space:nowrap}
+  .settingsInlineForm{grid-template-columns:1fr!important}
+  .settingsPane{padding:12px}
+  .settingsRow{align-items:flex-start}
+}
