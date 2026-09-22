@@ -5,7 +5,7 @@ let me=null,centralSession=null,currentAccount=null,currentBuilding={id:"62THL",
 
 const taskStorageKey=()=>currentBuilding.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+currentBuilding.id;
 const load=()=>{try{let v=JSON.parse(localStorage.getItem(taskStorageKey())||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}};
-const save=a=>{localStorage.setItem(taskStorageKey(),JSON.stringify(a));syncProjectSnapshot()};
+const save=a=>localStorage.setItem(taskStorageKey(),JSON.stringify(a));
 const today=()=>new Date().toLocaleDateString("en-CA");
 const fmt=d=>new Date(d+"T00:00").toLocaleDateString("vi-VN");
 const esc=(s="")=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -41,47 +41,57 @@ async function sbFetch(path,{method="GET",body=null,token=null}={}){
  if(!res.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||"Không thể kết nối máy chủ");err.status=res.status;throw err}
  return data;
 }
-async function snapshotRequest(method,path,body=null){
- if(!centralSession?.access_token)return null;
- const headers={"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"application/json"};
- if(method==="POST")headers["Prefer"]="resolution=merge-duplicates,return=minimal";
- const res=await fetch(SB_URL+"/rest/v1/"+path,{method,headers,body:body===null?null:JSON.stringify(body)});
- if(!res.ok){let msg="";try{msg=await res.text()}catch(e){}throw new Error(msg||"Không thể đồng bộ dữ liệu dự án")}
- if(res.status===204)return null;
- try{return await res.json()}catch(e){return null}
+async function projectSync(action,payload={}){
+ if(!centralSession?.access_token||!currentBuilding?.id)return null;
+ return sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:currentBuilding.id,...payload}});
 }
 const cloudVersionByBuilding={};
-async function syncProjectSnapshot(){
- if(!centralSession?.access_token||!currentAccount?.id||!currentBuilding?.id)return;
- const buildingId=currentBuilding.id;
- const tasks=load();
- const energy=typeof energyLoad==="function"?energyLoad():[];
- const stamp=new Date().toISOString();
- try{
-   await snapshotRequest("POST","project_snapshots?on_conflict=building_id",[{building_id:buildingId,tasks,energy,updated_by:currentAccount.id,updated_at:stamp}]);
-   cloudVersionByBuilding[buildingId]=stamp;
- }catch(e){console.warn("Snapshot sync failed",e)}
-}
 function applyCloudSnapshot(building,row){
  if(!row)return;
  localStorage.setItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id,JSON.stringify(Array.isArray(row.tasks)?row.tasks:[]));
  localStorage.setItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id,JSON.stringify(Array.isArray(row.energy)?row.energy:[]));
  cloudVersionByBuilding[building.id]=row.updated_at||"";
- if(currentBuilding?.id===building.id){
-   render();renderEnergy();
- }
+ if(currentBuilding?.id===building.id){render();renderEnergy()}
 }
 function mergeByRecordId(cloudRows,localRows){
  const map=new Map();
- (Array.isArray(cloudRows)?cloudRows:[]).forEach(x=>map.set(String(x.id),x));
- (Array.isArray(localRows)?localRows:[]).forEach(x=>map.set(String(x.id),x));
+ (Array.isArray(cloudRows)?cloudRows:[]).forEach(x=>{if(x&&x.id!==undefined)map.set(String(x.id),x)});
+ (Array.isArray(localRows)?localRows:[]).forEach(x=>{if(x&&x.id!==undefined)map.set(String(x.id),x)});
  return [...map.values()];
+}
+async function syncProjectSnapshot(){
+ if(!centralSession?.access_token||!currentBuilding?.id)return;
+ try{
+   const r=await projectSync("merge_snapshot",{tasks:load(),energy:typeof energyLoad==="function"?energyLoad():[]});
+   if(r?.updated_at)cloudVersionByBuilding[currentBuilding.id]=r.updated_at;
+ }catch(e){console.warn("Snapshot merge failed",e)}
+}
+async function syncTaskRecord(action,itemOrId){
+ if(!centralSession?.access_token)return;
+ try{
+   const r=action==="upsert_task"
+     ?await projectSync(action,{item:itemOrId})
+     :await projectSync(action,{id:itemOrId});
+   if(r?.updated_at)cloudVersionByBuilding[currentBuilding.id]=r.updated_at;
+ }catch(e){toast("Đã lưu trên máy nhưng chưa đồng bộ lên máy chủ");throw e}
+}
+async function syncEnergyRecord(action,itemOrId){
+ if(!centralSession?.access_token)return;
+ try{
+   const r=action==="upsert_energy"
+     ?await projectSync(action,{item:itemOrId})
+     :await projectSync(action,{id:itemOrId});
+   if(r?.updated_at)cloudVersionByBuilding[currentBuilding.id]=r.updated_at;
+ }catch(e){toast("Đã lưu trên máy nhưng chưa đồng bộ lên máy chủ");throw e}
 }
 async function loadProjectSnapshot(building){
  if(!centralSession?.access_token||!building?.id)return;
+ const oldBuilding=currentBuilding;
+ currentBuilding=building;
  try{
-   const rows=await snapshotRequest("GET","project_snapshots?select=tasks,energy,updated_at&building_id=eq."+encodeURIComponent(building.id));
-   const row=rows?.[0],migrationKey="esta_cloud_migrated_"+building.id;
+   const r=await projectSync("get");
+   const row=r?.snapshot;
+   const migrationKey="esta_cloud_merge_v3_"+building.id;
    if(row){
      if(!localStorage.getItem(migrationKey)){
        let localTasks=[],localEnergy=[];
@@ -93,24 +103,21 @@ async function loadProjectSnapshot(building){
        localStorage.setItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id,JSON.stringify(mergedEnergy));
        localStorage.setItem(migrationKey,"1");
        cloudVersionByBuilding[building.id]=row.updated_at||"";
-       if(mergedTasks.length!==(Array.isArray(row.tasks)?row.tasks.length:0)||mergedEnergy.length!==(Array.isArray(row.energy)?row.energy.length:0))await syncProjectSnapshot();
+       if(mergedTasks.length>(Array.isArray(row.tasks)?row.tasks.length:0)||mergedEnergy.length>(Array.isArray(row.energy)?row.energy.length:0))await syncProjectSnapshot();
      }else applyCloudSnapshot(building,row);
-   }else{
-     localStorage.setItem(migrationKey,"1");
-     await syncProjectSnapshot();
-   }
+   }else await syncProjectSnapshot();
  }catch(e){toast("Không thể tải dữ liệu dự án từ máy chủ")}
+ finally{currentBuilding=building}
 }
 async function pollProjectSnapshot(){
  if(!centralSession?.access_token||!currentBuilding?.id||document.hidden)return;
  if($("#adminPage")&&!$("#adminPage").classList.contains("hide"))return;
  try{
-   const rows=await snapshotRequest("GET","project_snapshots?select=tasks,energy,updated_at&building_id=eq."+encodeURIComponent(currentBuilding.id));
-   const row=rows?.[0];
+   const r=await projectSync("get"),row=r?.snapshot;
    if(row&&row.updated_at&&row.updated_at!==cloudVersionByBuilding[currentBuilding.id])applyCloudSnapshot(currentBuilding,row);
  }catch(e){console.warn("Cloud refresh failed",e)}
 }
-setInterval(pollProjectSnapshot,4000);
+setInterval(pollProjectSnapshot,5000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)pollProjectSnapshot()});
 window.addEventListener("focus",()=>pollProjectSnapshot());
 
@@ -244,7 +251,7 @@ const ENERGY_META={
  solar:{name:"Năng lượng mặt trời",form:"Ghi sản lượng điện mặt trời",unit:"kWh",valueLabel:"Sản lượng điện (kWh)"}
 };
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
-function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a));syncProjectSnapshot()}
+function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
  const energy=name==="energy";
  $("#adminPage").classList.add("hide");
