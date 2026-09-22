@@ -2882,3 +2882,67 @@ img[data-storage-path]:not([src]){
 @media(max-width:820px){
   .heroSystemRibbon,.heroOverviewCard{display:none!important}
 }
+
+/* ===== ESTA LOGIN V7 — FULL HERO IMAGE, NO ZOOM ===== */
+#login.loginV7{
+  display:grid!important;
+  grid-template-columns:minmax(360px,34%) minmax(0,66%)!important;
+  min-height:100vh!important;
+  background:#f7fafc!important;
+  color:#183954!important;
+  overflow:hidden!important;
+}
+#login.loginV7 .loginPanel{
+  position:relative!important;
+  z-index:3!important;
+  min-height:100vh!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)!important;
+  border-right:1px solid #dce7ef!important;
+}
+#login.loginV7 .loginPanelInner{
+  width:min(410px,calc(100% - 54px))!important;
+  min-height:100vh!important;
+  margin:0 auto!important;
+  padding:36px 0 24px!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#login.loginV7 .loginFormWrap{margin:auto 0!important;padding:28px 0 20px!important}
+#login.loginV7 .loginFormWrap h1{font-size:30px!important;line-height:1.08!important}
+#login.loginV7 .loginFormWrap>p{font-size:11px!important;margin:7px 0 24px!important}
+#login.loginV7 .premiumLoginForm .loginInputWrap input{height:46px!important;border-radius:6px!important}
+#login.loginV7 .premiumLoginBtn{height:48px!important;border-radius:6px!important}
+#login.loginV7 .loginHero{
+  position:relative!important;
+  min-height:100vh!important;
+  overflow:hidden!important;
+  background:#071c31!important;
+}
+#login.loginV7 .loginHeroImage{
+  position:absolute!important;
+  inset:0!important;
+  background-color:#071c31!important;
+  background-image:var(--esta-login-hero)!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:contain!important;
+}
+#login.loginV7 .loginHeroImage:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(4,24,42,.18),transparent 18%,transparent 82%,rgba(4,24,42,.12)),
+    linear-gradient(180deg,rgba(4,24,42,.06),transparent 18%,transparent 82%,rgba(4,24,42,.18));
+}
+@media(max-width:1120px){
+  #login.loginV7{grid-template-columns:39% 61%!important}
+  #login.loginV7 .loginPanelInner{width:min(390px,calc(100% - 42px))!important}
+}
+@media(max-width:820px){
+  #login.loginV7{display:block!important}
+  #login.loginV7 .loginHero{display:none!important}
+  #login.loginV7 .loginPanelInner{width:min(420px,calc(100% - 30px))!important;padding:26px 0 22px!important}
+  #login.loginV7 .loginFormWrap{padding:40px 0 28px!important}
+}
