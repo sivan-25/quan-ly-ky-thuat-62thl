@@ -1145,7 +1145,12 @@ window.deleteMaterial=async id=>{
 };
 window.openStockTxnModal=id=>{
  if(!inventoryMaterials.length)return toast("Hãy thêm vật tư trước");
- $("#stockTxnId").value="";$("#stockTxnDate").value=today();$("#stockTxnType").value="in";$("#stockTxnQty").value="";$("#stockTxnPerformer").value="";$("#stockTxnNote").value="";
+ const y=inventoryYearValue(),m=Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
+ const now=new Date(),same=y===now.getFullYear()&&m===now.getMonth()+1;
+ const day=same?now.getDate():1;
+ const maxDay=new Date(y,m,0).getDate();
+ const date=y+"-"+String(m).padStart(2,"0")+"-"+String(Math.min(day,maxDay)).padStart(2,"0");
+ $("#stockTxnId").value="";$("#stockTxnDate").value=date;$("#stockTxnType").value="in";$("#stockTxnQty").value="";$("#stockTxnPerformer").value="";$("#stockTxnNote").value="";
  renderMaterials();if(id)$("#stockTxnMaterial").value=id;$("#stockTxnModal").classList.remove("hide");
 };
 window.deleteStockTxn=async id=>{
