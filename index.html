@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0630"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0710"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -788,19 +788,8 @@
   </section>
 </div>
 <div id="inventoryPage" class="page inventoryPage hide">
-  <section class="inventoryHero">
-    <div>
-      <span>ESTA · INVENTORY MANAGEMENT</span>
-      <h1>Dụng cụ - Vật tư</h1>
-      <p>Quản lý vật tư tiêu hao theo 12 tháng và theo dõi dụng cụ kỹ thuật riêng cho từng dự án.</p>
-    </div>
-    <div class="inventoryHeroMeta">
-      <div><small>DỰ ÁN</small><b class="buildingNameText">Dự án</b></div>
-      <div><small>NĂM THEO DÕI</small><select id="inventoryYear"></select></div>
-    </div>
-  </section>
-
-  <section class="inventoryTabs">
+  <section class="inventoryControlBar">
+    <div class="inventoryTabs">
     <button class="active" type="button" data-inventory-tab="materials">
       <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg>
       <span>Vật tư tiêu hao</span>
@@ -809,9 +798,14 @@
       <svg viewBox="0 0 24 24"><path d="m14 6 4-4 4 4-4 4M13 7 4 16v4h4l9-9M5 15l4 4"/></svg>
       <span>Dụng cụ kỹ thuật</span>
     </button>
+    </div>
+    <div class="inventoryContext">
+      <span class="inventoryContextProject"><small>DỰ ÁN</small><b class="buildingNameText">Dự án</b></span>
+      <label class="inventoryYearControl"><small>NĂM</small><select id="inventoryYear"></select></label>
+    </div>
   </section>
 
-  <section id="inventoryMaterialsPane" class="inventoryPane">
+  <section id="inventoryMaterialsPane" class="inventoryPane inventoryWorkspace">
     <div class="inventoryToolbar">
       <div>
         <span class="inventoryKicker">VẬT TƯ TIÊU HAO</span>
@@ -884,7 +878,7 @@
     </div>
   </section>
 
-  <section id="inventoryToolsPane" class="inventoryPane hide">
+  <section id="inventoryToolsPane" class="inventoryPane inventoryWorkspace hide">
     <div class="inventoryToolbar">
       <div>
         <span class="inventoryKicker">DỤNG CỤ KỸ THUẬT</span>
@@ -1142,4 +1136,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-0630"></script></body></html>
+<script src="app.js?v=20260923-0710"></script></body></html>
