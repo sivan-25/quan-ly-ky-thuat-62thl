@@ -36,7 +36,7 @@
       <form id="loginForm">
         <label><span>Tên đăng nhập</span><input id="user" required autocomplete="username" placeholder="Nhập tên đăng nhập"></label>
         <label><span>Mật khẩu</span><input id="pass" type="password" required autocomplete="current-password" placeholder="Nhập mật khẩu"></label>
-        <button class="primary">Đăng nhập <b>→</b></button>
+        <button id="loginBtn" type="submit" class="primary">Đăng nhập <b>→</b></button><div id="loginError" class="loginError" aria-live="polite"></div>
       </form>
       <div class="loginFoot">VẬN HÀNH HÔM NAY<br>KIẾN TẠO NGÀY MAI</div>
     </div>
@@ -108,4 +108,22 @@
   </section>
 </div></main></div>
 <div id="exportModal" class="modal hide"><div class="modalCard"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn khoảng thời gian cần xuất.</p><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js"></script></body></html>
+<script>
+(function(){
+ const form=document.getElementById("loginForm");
+ if(!form)return;
+ form.addEventListener("submit",function(e){
+   const u=document.getElementById("user").value.trim();
+   const p=document.getElementById("pass").value;
+   const ok=(u==="admin"&&p==="admin123")||(u==="kythuat62"&&p==="kt62123");
+   if(!ok){e.preventDefault();const er=document.getElementById("loginError");if(er)er.textContent="Tài khoản hoặc mật khẩu chưa đúng.";return}
+   e.preventDefault();
+   setTimeout(function(){
+     if(typeof window.enter==="function"){window.enter(u);return}
+     sessionStorage.setItem("u62",u);
+     document.getElementById("login").classList.add("hide");
+     document.getElementById("app").classList.remove("hide");
+   },0);
+ },true);
+})();
+</script><script src="app.js?v=20260922-0916"></script></body></html>
