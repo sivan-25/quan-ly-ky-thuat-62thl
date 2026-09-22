@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0505"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0615"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -815,22 +815,37 @@
     <div class="inventoryToolbar">
       <div>
         <span class="inventoryKicker">VẬT TƯ TIÊU HAO</span>
-        <h2>Theo dõi nhập - xuất - tồn 12 tháng</h2>
-        <p>Mỗi vật tư có tồn đầu năm, tổng nhập, tổng xuất và tồn cuối từng tháng.</p>
+        <h2>Nhập - xuất - tồn vật tư tiêu hao <span id="materialTitleCount">(0 mục)</span></h2>
+        <p>Theo dõi tồn đầu, nhập, xuất và tồn cuối theo từng tháng trong năm.</p>
       </div>
       <div class="inventoryToolbarActions">
-        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="materialSearch" placeholder="Tìm vật tư..."></div>
+        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="materialSearch" placeholder="Tìm tên vật tư..."></div>
         <button id="materialExportPdf" class="inventorySecondary" type="button">PDF ⇩</button>
         <button id="openStockTxn" class="inventorySecondary" type="button">⇄ Nhập / Xuất</button>
         <button id="addMaterialBtn" class="inventoryPrimary" type="button">＋ Thêm vật tư</button>
       </div>
     </div>
 
-    <div class="inventoryStats">
-      <article><span class="invStatIcon blue"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg></span><div><small>MẶT HÀNG</small><b id="materialCount">0</b><em>Đang quản lý</em></div></article>
-      <article><span class="invStatIcon green"><svg viewBox="0 0 24 24"><path d="M12 19V5M7 10l5-5 5 5"/></svg></span><div><small>TỔNG NHẬP NĂM</small><b id="materialYearIn">0</b><em>Số lượng phát sinh</em></div></article>
-      <article><span class="invStatIcon amber"><svg viewBox="0 0 24 24"><path d="M12 5v14M7 14l5 5 5-5"/></svg></span><div><small>TỔNG XUẤT NĂM</small><b id="materialYearOut">0</b><em>Số lượng đã sử dụng</em></div></article>
-      <article><span class="invStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>SẮP HẾT</small><b id="materialLowStock">0</b><em>Dưới mức tối thiểu</em></div></article>
+    <div id="materialMonthTabs" class="materialMonthTabs">
+      <button type="button" data-material-month="1">Th01</button>
+      <button type="button" data-material-month="2">Th02</button>
+      <button type="button" data-material-month="3">Th03</button>
+      <button type="button" data-material-month="4">Th04</button>
+      <button type="button" data-material-month="5">Th05</button>
+      <button type="button" data-material-month="6">Th06</button>
+      <button type="button" data-material-month="7">Th07</button>
+      <button type="button" data-material-month="8">Th08</button>
+      <button type="button" data-material-month="9">Th09</button>
+      <button type="button" data-material-month="10">Th10</button>
+      <button type="button" data-material-month="11">Th11</button>
+      <button type="button" data-material-month="12">Th12</button>
+    </div>
+
+    <div class="inventoryStats monthlyStats">
+      <article><span class="invStatIcon green"><svg viewBox="0 0 24 24"><path d="M12 19V5M7 10l5-5 5 5"/></svg></span><div><small>TỔNG NHẬP THÁNG</small><b id="materialMonthIn">0</b><em>Phát sinh trong tháng</em></div></article>
+      <article><span class="invStatIcon amber"><svg viewBox="0 0 24 24"><path d="M12 5v14M7 14l5 5 5-5"/></svg></span><div><small>TỔNG XUẤT THÁNG</small><b id="materialMonthOut">0</b><em>Đã sử dụng trong tháng</em></div></article>
+      <article><span class="invStatIcon blue"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg></span><div><small>MẶT HÀNG CÒN TỒN</small><b id="materialInStockCount">0</b><em>Tồn cuối tháng &gt; 0</em></div></article>
+      <article><span class="invStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>SẮP HẾT</small><b id="materialLowStock">0</b><em>Theo mức tồn tối thiểu</em></div></article>
     </div>
 
     <div class="inventoryExamples">
@@ -842,11 +857,13 @@
       <button type="button" data-material-sample="Đầu cos điện|Bịch">Đầu cos điện</button>
     </div>
 
-    <div class="inventoryTableCard">
-      <div class="inventoryTableHint">Kéo ngang để xem đủ 12 tháng. Mỗi tháng hiển thị <b>Đ = Tồn đầu</b>, <b>N = Nhập</b>, <b>X = Xuất</b>, <b>T = Tồn cuối</b>.</div>
+    <div class="inventoryTableCard materialMonthlyCard">
+      <div class="inventoryTableHint">Tháng đang xem: <b id="materialMonthLabel">Tháng 01</b>. Tồn cuối = Tồn đầu + Nhập - Xuất.</div>
       <div class="inventoryTableScroll">
-        <table class="materialMatrix">
-          <thead id="materialMatrixHead"></thead>
+        <table class="materialMonthlyTable">
+          <thead>
+            <tr><th>STT</th><th>Tên vật tư</th><th>ĐVT</th><th>Tồn đầu kỳ</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối kỳ</th><th>Thao tác</th></tr>
+          </thead>
           <tbody id="materialMatrixBody"></tbody>
         </table>
       </div>
@@ -855,7 +872,7 @@
 
     <div class="inventoryTableCard transactionCard">
       <div class="inventorySectionHead">
-        <div><span class="inventoryKicker">LỊCH SỬ KHO</span><h3>Nhập / xuất gần đây</h3><p>Theo dõi chi tiết các lần phát sinh vật tư.</p></div>
+        <div><span class="inventoryKicker">LỊCH SỬ KHO</span><h3>Nhập / xuất trong tháng</h3><p id="materialTxnSubtitle">Theo dõi các lần phát sinh vật tư của tháng đang chọn.</p></div>
       </div>
       <div class="inventoryTableScroll">
         <table class="transactionTable">
@@ -863,7 +880,7 @@
           <tbody id="materialTxnBody"></tbody>
         </table>
       </div>
-      <div id="materialTxnEmpty" class="inventoryEmpty hide">Chưa có giao dịch nhập / xuất.</div>
+      <div id="materialTxnEmpty" class="inventoryEmpty hide">Chưa có giao dịch nhập / xuất trong tháng này.</div>
     </div>
   </section>
 
@@ -899,7 +916,7 @@
     <div class="inventoryTableCard">
       <div class="inventoryTableScroll">
         <table class="toolsTable">
-          <thead><tr><th>Mã</th><th>Dụng cụ</th><th>SL</th><th>ĐVT</th><th>Tình trạng</th><th>Vị trí</th><th>Người phụ trách</th><th>Ngày mua</th><th>Ghi chú</th><th>Thao tác</th></tr></thead>
+          <thead><tr><th>STT</th><th>Tên dụng cụ</th><th>Nhãn hiệu</th><th>Số lượng</th><th>Vị trí lưu</th><th>Người phụ trách</th><th>Tình trạng</th><th>Thao tác</th></tr></thead>
           <tbody id="toolsBody"></tbody>
         </table>
       </div>
@@ -1052,6 +1069,7 @@
       <input id="toolId" type="hidden">
       <label><span>Mã dụng cụ</span><input id="toolCode" maxlength="40" placeholder="VD: DC-001"></label>
       <label class="wide"><span>Tên dụng cụ *</span><input id="toolName" maxlength="120" required placeholder="VD: Đồng hồ vạn năng"></label>
+      <label><span>Nhãn hiệu</span><input id="toolBrand" maxlength="100" placeholder="VD: Kyoritsu, Bosch..."></label>
       <label><span>Số lượng *</span><input id="toolQty" type="number" step="0.01" min="0" required value="1"></label>
       <label><span>Đơn vị</span><input id="toolUnit" maxlength="30" value="Cái"></label>
       <label><span>Tình trạng</span><select id="toolCondition"><option>Tốt</option><option>Đang sử dụng</option><option>Cần kiểm tra</option><option>Cần sửa</option><option>Hỏng</option></select></label>
@@ -1124,4 +1142,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-0505"></script></body></html>
+<script src="app.js?v=20260923-0615"></script></body></html>
