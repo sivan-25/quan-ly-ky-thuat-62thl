@@ -71,12 +71,34 @@ function applyCloudSnapshot(building,row){
    render();renderEnergy();
  }
 }
+function mergeByRecordId(cloudRows,localRows){
+ const map=new Map();
+ (Array.isArray(cloudRows)?cloudRows:[]).forEach(x=>map.set(String(x.id),x));
+ (Array.isArray(localRows)?localRows:[]).forEach(x=>map.set(String(x.id),x));
+ return [...map.values()];
+}
 async function loadProjectSnapshot(building){
  if(!centralSession?.access_token||!building?.id)return;
  try{
    const rows=await snapshotRequest("GET","project_snapshots?select=tasks,energy,updated_at&building_id=eq."+encodeURIComponent(building.id));
-   if(rows?.length)applyCloudSnapshot(building,rows[0]);
-   else await syncProjectSnapshot();
+   const row=rows?.[0],migrationKey="esta_cloud_migrated_"+building.id;
+   if(row){
+     if(!localStorage.getItem(migrationKey)){
+       let localTasks=[],localEnergy=[];
+       try{localTasks=JSON.parse(localStorage.getItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id)||"[]")}catch(e){}
+       try{localEnergy=JSON.parse(localStorage.getItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id)||"[]")}catch(e){}
+       const mergedTasks=mergeByRecordId(row.tasks,localTasks);
+       const mergedEnergy=mergeByRecordId(row.energy,localEnergy);
+       localStorage.setItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id,JSON.stringify(mergedTasks));
+       localStorage.setItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id,JSON.stringify(mergedEnergy));
+       localStorage.setItem(migrationKey,"1");
+       cloudVersionByBuilding[building.id]=row.updated_at||"";
+       if(mergedTasks.length!==(Array.isArray(row.tasks)?row.tasks.length:0)||mergedEnergy.length!==(Array.isArray(row.energy)?row.energy.length:0))await syncProjectSnapshot();
+     }else applyCloudSnapshot(building,row);
+   }else{
+     localStorage.setItem(migrationKey,"1");
+     await syncProjectSnapshot();
+   }
  }catch(e){toast("Không thể tải dữ liệu dự án từ máy chủ")}
 }
 async function pollProjectSnapshot(){
