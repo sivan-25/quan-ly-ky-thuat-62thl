@@ -157,21 +157,14 @@ $("#loginForm").onsubmit=async e=>{
    const central=await centralLogin(u,p);
    window.enterAccount(central.account,central.session);
  }catch(err){
-   const local=LOCAL_USERS[u];
-   if(local&&local.p===p){
-     const acc={username:u,display_name:local.n,is_admin:local.is_admin,buildings:local.buildings||[]};
-     sessionStorage.setItem("esta_local_user",u);
-     window.enterAccount(acc,null);
-     if(acc.is_admin)toast("Đang dùng Admin cục bộ. Hãy kích hoạt Admin trung tâm để tạo tài khoản thật.");
-   }else{
-     er.textContent="Tài khoản hoặc mật khẩu chưa đúng.";
-   }
- }finally{btn.disabled=false;btn.innerHTML='Đăng nhập <b>→</b>'}
+   er.textContent=err?.status===400||err?.status===401?"Tài khoản hoặc mật khẩu chưa đúng.":"Không thể kết nối hệ thống trung tâm. Vui lòng thử lại.";
+ }
+ finally{btn.disabled=false;btn.innerHTML='Đăng nhập <b>→</b>'}
 };
 
 $("#logout").onclick=async()=>{
  try{if(centralSession?.access_token)await sbFetch("/auth/v1/logout",{method:"POST",token:centralSession.access_token})}catch(e){}
- localStorage.removeItem("esta_central_session");sessionStorage.removeItem("esta_local_user");sessionStorage.removeItem("esta_building");location.reload();
+ localStorage.removeItem("esta_central_session");sessionStorage.removeItem("esta_building");location.reload();
 };
 
 $("#openAdminSetup").onclick=()=>$("#adminSetupModal").classList.remove("hide");
@@ -566,10 +559,5 @@ applyBuildingUI=function(){
 
 (async function initMultiProjectSession(){
  const restored=await restoreCentral();
- if(restored){window.enterAccount(restored.account,restored.session);return}
- const localUser=sessionStorage.getItem("esta_local_user");
- if(localUser&&LOCAL_USERS[localUser]){
-   const u=LOCAL_USERS[localUser];
-   window.enterAccount({username:localUser,display_name:u.n,is_admin:u.is_admin,buildings:u.buildings||[]},null);
- }
+ if(restored)window.enterAccount(restored.account,restored.session);
 })();
