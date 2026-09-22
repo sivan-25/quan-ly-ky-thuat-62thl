@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2205"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2315"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -209,9 +209,9 @@
   </section>
 
 </div>
-<div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
+<div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage proModulePage"><section class="pageHead proPageHead"><div class="headIcon"><svg viewBox="0 0 24 24"><path d="M9 5h6M9 3h6v4H9z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M8.5 11l1.5 1.5 3-3M14.5 11H17M8.5 16l1.5 1.5 3-3M14.5 16H17"/></svg></div><div><span class="pageEyebrow">WORK ORDER MANAGEMENT</span><h1>Công việc kỹ thuật</h1><p>Quản lý, phân công và theo dõi công việc vận hành hằng ngày.</p></div><div class="headMeta"><span><i></i> Ngày: <b id="today"></b></span><span><i></i> Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
 
-<section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField requiredField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField requiredField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label class="typeField requiredField"><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label class="statusField requiredField"><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option selected>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label class="performerField requiredField"><span>Người thực hiện</span><div class="peopleSelect" data-people-kind="task"><input id="performer" type="hidden"><button id="taskPeopleButton" class="peopleSelectBtn" type="button"><span>Chọn người thực hiện</span><b>⌄</b></button><div id="taskPeopleMenu" class="peopleSelectMenu hide"><div id="taskPeopleOptions" class="peopleOptions"></div><button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button></div></div></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><div class="imageNativeActions">
+<section class="entryBox premiumFormCard workEntryBox"><div class="formSectionHead"><div><span>ESTA · WORK ORDER</span><h2>Thêm công việc</h2><p>Ghi nhận công việc mới và phân công người thực hiện.</p></div><div class="formSectionMark"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div></div><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField requiredField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField requiredField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label class="typeField requiredField"><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label class="statusField requiredField"><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option selected>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label class="performerField requiredField"><span>Người thực hiện</span><div class="peopleSelect" data-people-kind="task"><input id="performer" type="hidden"><button id="taskPeopleButton" class="peopleSelectBtn" type="button"><span>Chọn người thực hiện</span><b>⌄</b></button><div id="taskPeopleMenu" class="peopleSelectMenu hide"><div id="taskPeopleOptions" class="peopleOptions"></div><button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button></div></div></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><div class="imageNativeActions">
   <input id="images" class="nativeImageInput" type="file" accept="image/*" multiple>
   <input id="cameraNativeInput" class="nativeImageInput" type="file" accept="image/*" capture="environment">
   <button id="openNativeCamera" type="button" class="imageActionBtn cameraBtn">📷 Chụp ảnh</button>
@@ -222,14 +222,14 @@
 
 
 <section class="stats"><article><i class="blue"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h5"/></svg></i><div><small>CÔNG VIỆC HÔM NAY</small><strong id="statToday">0</strong></div></article><article><i class="orange"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i><div><small>ĐANG XỬ LÝ</small><strong id="statDoing">0</strong></div></article><article><i class="green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></i><div><small>HOÀN THÀNH</small><strong id="statDone">0</strong></div></article><article><i class="red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></i><div><small>CHỜ XỬ LÝ</small><strong id="statWait">0</strong></div></article></section>
-<section class="tableCard"><div class="tableTop"><div><b>Danh sách công việc kỹ thuật</b> <span id="count"></span></div></div><div class="desktopTable"><table><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
+<section class="tableCard premiumTableCard"><div class="tableTop"><div><b>Danh sách công việc kỹ thuật</b> <span id="count"></span></div></div><div class="desktopTable"><table><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
 </div>
 <div id="energyHero" class="heroStrip hide"><div><b>ESTA</b><span>QUẢN LÝ NĂNG LƯỢNG TÒA NHÀ</span></div><div class="heroTech"><span>ĐIỆN</span><span>NƯỚC</span><span>ĐIỆN MẶT TRỜI</span></div></div>
-<div id="energyPage" class="page modulePage hide">
-  <section class="pageHead energyHead">
-    <div class="headIcon">▥</div>
-    <div><h1>Năng lượng</h1><p>Ghi chỉ số và theo dõi mức tiêu thụ điện, nước và năng lượng mặt trời.</p></div>
-    <div class="headMeta"><span>▣ Ngày: <b id="energyToday"></b></span><span>▥ Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div>
+<div id="energyPage" class="page modulePage proModulePage hide">
+  <section class="pageHead proPageHead energyHead">
+    <div class="headIcon energyIcon"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div>
+    <div><span class="pageEyebrow">ENERGY MANAGEMENT</span><h1>Năng lượng</h1><p>Ghi chỉ số, theo dõi tiêu thụ và kiểm soát dữ liệu năng lượng tòa nhà.</p></div>
+    <div class="headMeta"><span><i></i> Ngày: <b id="energyToday"></b></span><span><i></i> Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div>
   </section>
 
   <section class="energyTabs" aria-label="Loại chỉ số">
@@ -238,8 +238,8 @@
     <button data-energy-type="solar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Năng lượng mặt trời</span></button>
   </section>
 
-  <section class="energyCard">
-    <div class="energyCardTitle"><div><h2 id="energyFormTitle">Ghi chỉ số điện</h2><p id="energyUnitHint">Đơn vị: kWh</p></div></div>
+  <section class="energyCard premiumFormCard">
+    <div class="formSectionHead energyCardTitle"><div><span>ESTA · METER READING</span><h2 id="energyFormTitle">Ghi chỉ số điện</h2><p id="energyUnitHint">Đơn vị: kWh</p></div><div class="formSectionMark energyMark"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div></div>
     <form id="energyForm" class="energyForm">
       <input id="energyEditId" type="hidden">
       <label><span>Ngày ghi</span><input id="energyDate" type="date" required></label>
@@ -252,7 +252,7 @@
     <div id="energyImagePreview" class="energyImagePreview"></div>
   </section>
 
-  <section class="energyTableCard">
+  <section class="energyTableCard premiumTableCard">
     <div class="energyTableTop">
       <div class="energyTitleBlock"><div class="energyTitleLine"><h2 id="energyTableTitle">Bảng theo dõi chỉ số điện</h2><div id="energyTotalInline" class="energyTotalInline"><span>Tổng tiêu thụ</span><strong>—</strong></div></div><p id="energySummaryText">Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.</p></div>
       <div class="energyTopTools">
@@ -341,4 +341,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2205"></script></body></html>
+<script src="app.js?v=20260922-2315"></script></body></html>
