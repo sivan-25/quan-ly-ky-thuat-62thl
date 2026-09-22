@@ -4396,3 +4396,215 @@ img[data-storage-path]:not([src]){
   #energyPage .energySummaryCards{grid-template-columns:1fr!important}
   .peopleManagerCard{width:min(94vw,520px)!important}
 }
+
+/* =========================================================
+   ESTA INVENTORY + MAINTENANCE V1
+   ========================================================= */
+.inventoryPage,.maintenancePage{max-width:1580px;margin:0 auto;padding:20px 22px 34px!important}
+.inventoryHero,.maintenanceHero{
+  min-height:142px;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:24px 28px;margin-bottom:13px;border:1px solid #dbe5ea;border-radius:18px;
+  background:
+    radial-gradient(circle at 84% 10%,rgba(25,184,212,.10),transparent 28%),
+    linear-gradient(135deg,#fff 0%,#f8fbfc 100%);
+  box-shadow:0 8px 28px rgba(20,55,80,.045)
+}
+.inventoryHero>div:first-child>span,.maintenanceHero>div:first-child>span{
+  display:block;color:#9a7660;font-size:7px;font-weight:850;letter-spacing:1.7px
+}
+.inventoryHero h1,.maintenanceHero h1{margin:6px 0 5px;color:#173d58;font-size:25px;letter-spacing:-.4px}
+.inventoryHero p,.maintenanceHero p{margin:0;max-width:720px;color:#7b8f9c;font-size:10px;line-height:1.55}
+.inventoryHeroMeta{display:flex;gap:8px;flex:0 0 auto}
+.inventoryHeroMeta>div{
+  min-width:145px;padding:10px 12px;border:1px solid #dfe7ec;border-radius:11px;background:#fff
+}
+.inventoryHeroMeta small{display:block;color:#8b9ca6;font-size:6px;letter-spacing:.8px}
+.inventoryHeroMeta b{display:block;margin-top:4px;color:#31536a;font-size:9px}
+.inventoryHeroMeta select{
+  width:100%;height:28px;margin-top:4px;border:0;background:transparent;color:#31536a;font-size:9px;font-weight:700;outline:0
+}
+.inventoryTabs{
+  display:inline-flex;gap:5px;padding:5px;margin:0 0 13px;border:1px solid #dfe7ec;border-radius:12px;background:#fff
+}
+.inventoryTabs button{
+  height:39px;display:flex;align-items:center;gap:7px;padding:0 14px;border:1px solid transparent;border-radius:9px;
+  background:transparent;color:#6e8492;font-size:8.5px;font-weight:720
+}
+.inventoryTabs button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.inventoryTabs button.active{border-color:#d9e7ec;background:#eef6f9;color:#245e79}
+.inventoryToolbar,.maintenanceToolbar{
+  min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 18px;border:1px solid #e0e8ed;border-radius:15px;background:#fff;box-shadow:0 6px 22px rgba(20,55,80,.035)
+}
+.inventoryKicker{display:block;color:#9a7660;font-size:6.5px;font-weight:850;letter-spacing:1.5px}
+.inventoryToolbar h2,.maintenanceToolbar h2{margin:4px 0 2px;color:#1b405a;font-size:15px}
+.inventoryToolbar p,.maintenanceToolbar p{margin:0;color:#8596a1;font-size:8px}
+.inventoryToolbarActions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.inventorySearch{
+  height:37px;min-width:220px;display:flex;align-items:center;gap:7px;padding:0 10px;
+  border:1px solid #dbe5ea;border-radius:9px;background:#f8fafb
+}
+.inventorySearch svg{width:14px;height:14px;fill:none;stroke:#76909f;stroke-width:1.8}
+.inventorySearch input{width:100%;border:0;outline:0;background:transparent;color:#36556a;font-size:8.5px}
+.inventoryPrimary,.inventorySecondary{
+  height:37px;padding:0 11px;border-radius:9px;font-size:8px;font-weight:760;white-space:nowrap
+}
+.inventoryPrimary{border:0;background:linear-gradient(135deg,#173f5d,#17627b);color:#fff;box-shadow:0 6px 14px rgba(19,76,105,.12)}
+.inventorySecondary{border:1px solid #dbe5ea;background:#fff;color:#496a7e}
+.inventoryPrimary:hover,.inventorySecondary:hover{filter:brightness(.98);transform:translateY(-1px)}
+.inventoryStats,.maintenanceStats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:11px 0
+}
+.inventoryStats article,.maintenanceStats article{
+  min-height:94px;display:flex;align-items:center;gap:12px;padding:14px;
+  border:1px solid #e1e8ed;border-radius:14px;background:#fff;box-shadow:0 6px 22px rgba(20,55,80,.032)
+}
+.invStatIcon,.maintStatIcon{width:40px;height:40px;display:grid;place-items:center;flex:0 0 40px;border-radius:11px}
+.invStatIcon svg,.maintStatIcon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.invStatIcon.blue,.maintStatIcon.blue{background:#eaf4fb;color:#357cae}
+.invStatIcon.green,.maintStatIcon.green{background:#eaf8f1;color:#2c946a}
+.invStatIcon.amber,.maintStatIcon.amber{background:#fff4e4;color:#bd812f}
+.invStatIcon.red,.maintStatIcon.red{background:#fff0f0;color:#c35f64}
+.inventoryStats small,.maintenanceStats small{display:block;color:#8295a1;font-size:6.3px;letter-spacing:.75px}
+.inventoryStats b,.maintenanceStats b{display:block;margin:3px 0 1px;color:#1b4059;font-size:21px}
+.inventoryStats em,.maintenanceStats em{display:block;color:#9aa8b1;font-size:6.5px;font-style:normal}
+.toolsStats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.inventoryExamples{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 10px;padding:0 3px
+}
+.inventoryExamples>span{color:#8798a3;font-size:7px;font-weight:700}
+.inventoryExamples button{
+  height:26px;padding:0 8px;border:1px solid #dfe7eb;border-radius:999px;background:#fff;color:#567286;font-size:6.8px
+}
+.inventoryExamples button:hover{border-color:#bcd8e2;background:#f3f9fb;color:#24738d}
+.inventoryTableCard,.maintenanceBoard{
+  overflow:visible;margin-bottom:12px;border:1px solid #e0e8ed;border-radius:15px;background:#fff;
+  box-shadow:0 7px 24px rgba(20,55,80,.035)
+}
+.inventoryTableHint{
+  padding:9px 13px;border-bottom:1px solid #e8eef1;background:#f8fafb;border-radius:15px 15px 0 0;
+  color:#738894;font-size:7px
+}
+.inventoryTableScroll{width:100%;overflow:auto}
+.inventoryTableCard table{width:100%;border-collapse:separate;border-spacing:0;white-space:nowrap}
+.inventoryTableCard th{
+  height:39px;padding:0 8px;border-bottom:1px solid #dfe7ec;background:#f4f7f9;color:#6b8190;
+  font-size:6.5px;font-weight:800;letter-spacing:.35px;text-transform:uppercase
+}
+.inventoryTableCard td{padding:8px;border-bottom:1px solid #eef2f4;color:#425f72;font-size:7.5px;vertical-align:middle}
+.inventoryTableCard tbody tr:last-child td{border-bottom:0}
+.materialMatrix{min-width:1700px!important}
+.materialMatrix .stickyMaterial{
+  position:sticky;left:0;z-index:3;min-width:185px;max-width:210px;background:#fff!important;
+  box-shadow:5px 0 10px rgba(32,61,78,.035)
+}
+.materialMatrix thead .stickyMaterial{z-index:5;background:#f4f7f9!important}
+.materialMatrix .stickyMaterial b{display:block;color:#21445c;font-size:8px;white-space:normal}
+.materialMatrix .stickyMaterial small{display:block;margin-top:2px;color:#92a0a9;font-size:6px}
+.materialMatrix th small{display:block;margin-top:2px;color:#9aa8b1;font-size:5.5px;font-weight:600;letter-spacing:0;text-transform:none}
+.monthCell{min-width:76px;text-align:center}
+.monthCell span,.monthCell b{display:block}
+.monthCell .in,.inText{color:#2f8b64}.monthCell .out,.outText{color:#bc615d}
+.monthCell b{margin-top:2px;color:#22465e}
+.lowStock td{background:#fffafa}.lowStock .stickyMaterial{background:#fffafa!important}
+.stockType{display:inline-block;padding:3px 7px;border-radius:999px;font-size:6.5px;font-weight:780}
+.stockType.in{background:#eaf8f1;color:#287e59}.stockType.out{background:#fff0ef;color:#ad5958}
+.invRowActions{display:flex;align-items:center;gap:4px}
+.invRowActions button,.miniDanger{
+  height:27px;padding:0 7px;border:1px solid #dce5ea;border-radius:7px;background:#fff;color:#4f6c7e;font-size:6.5px;font-weight:700
+}
+.invRowActions button.danger,.miniDanger{border-color:#eed7d7;background:#fff8f8;color:#b75b60}
+.toolCondition,.maintResult{display:inline-block;padding:4px 7px;border-radius:999px;font-size:6.5px;font-weight:760}
+.toolCondition.good,.maintResult.good{background:#eaf8f1;color:#2d805b}
+.toolCondition.warn,.maintResult.warn{background:#fff5e5;color:#a37024}
+.toolCondition.bad,.maintResult.bad{background:#fff0f0;color:#ad555b}
+.inventoryEmpty{padding:28px 14px;text-align:center;color:#94a3ad;font-size:8px}
+.transactionCard{margin-top:12px}
+.inventorySectionHead{min-height:65px;padding:14px 16px;border-bottom:1px solid #e9eef1}
+.inventorySectionHead h3{margin:4px 0 1px;color:#21445d;font-size:13px}
+.inventorySectionHead p{margin:0;color:#8c9ca6;font-size:7.5px}
+.toolsTable,.transactionTable,.maintenanceHistoryTable{min-width:980px}
+
+/* Inventory and maintenance modals */
+.inventoryModalCard{width:min(680px,94vw)!important;padding:0!important;overflow:hidden!important;border-radius:17px!important}
+.inventoryModalHead{padding:19px 20px 14px;border-bottom:1px solid #e9eef1;background:linear-gradient(180deg,#fff,#fbfcfd)}
+.inventoryModalHead>span{display:block;color:#9a7660;font-size:6.5px;font-weight:850;letter-spacing:1.5px}
+.inventoryModalHead h3{margin:5px 0 2px;color:#183f5a;font-size:18px}
+.inventoryModalHead p{margin:0;color:#8798a3;font-size:8px}
+.inventoryForm{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;padding:16px 20px 20px}
+.inventoryForm label{display:block;min-width:0}
+.inventoryForm label.wide{grid-column:span 2}
+.inventoryForm label>span{display:block;margin-bottom:5px;color:#607889;font-size:7.5px;font-weight:720}
+.inventoryForm input,.inventoryForm select{
+  width:100%;height:39px;padding:0 9px;border:1px solid #dbe5ea;border-radius:8px;background:#fafcfd;
+  color:#294b61;font-size:8.5px;outline:0
+}
+.inventoryForm input:focus,.inventoryForm select:focus{border-color:#55adc1;box-shadow:0 0 0 3px rgba(64,161,184,.08);background:#fff}
+.inventoryFormActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:7px;padding-top:3px}
+
+/* Maintenance */
+.maintenanceHero{background:radial-gradient(circle at 80% 15%,rgba(154,118,96,.09),transparent 25%),linear-gradient(135deg,#fff,#f8fbfc)}
+.maintenanceHeroActions{display:flex;gap:7px;flex:0 0 auto}
+.maintenanceBoard{padding:0}
+.maintenanceBoard .maintenanceToolbar{border:0;border-bottom:1px solid #e8eef1;border-radius:15px 15px 0 0;box-shadow:none}
+.maintenanceExamples{padding:11px 16px 3px;margin:0}
+.maintenanceAssetGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:11px 14px 14px}
+.maintenanceAssetCard{
+  position:relative;overflow:hidden;min-height:210px;padding:14px;border:1px solid #e0e7eb;border-radius:13px;background:#fff
+}
+.maintenanceAssetCard:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#8ba1ae}
+.maintenanceAssetCard.ok:before{background:#42a67a}.maintenanceAssetCard.soon:before{background:#d7a041}.maintenanceAssetCard.overdue:before{background:#cf676a}
+.maintCardTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.maintSystem{color:#617a8a;font-size:6.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.maintDue{padding:4px 7px;border-radius:999px;font-size:6px;font-weight:780}
+.maintDue.ok{background:#eaf8f1;color:#2c815b}.maintDue.soon{background:#fff5e3;color:#9d6d22}.maintDue.overdue{background:#fff0f0;color:#ad5559}.maintDue.unknown,.maintDue.paused{background:#edf2f5;color:#6c8190}
+.maintenanceAssetCard h3{margin:10px 0 3px;color:#1d425c;font-size:13px}
+.maintenanceAssetCard>p{margin:0;color:#8a9aa5;font-size:7px}
+.maintDates{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:13px 0;padding:9px;background:#f7f9fa;border-radius:9px}
+.maintDates small{display:block;color:#91a0a9;font-size:5.8px}.maintDates b{display:block;margin-top:3px;color:#36566b;font-size:7.2px}
+.maintCardMeta{display:flex;flex-wrap:wrap;gap:5px 12px;color:#80929e;font-size:6.7px}
+.maintCardMeta b{color:#49677a}
+.maintCardActions{display:flex;gap:5px;margin-top:13px;padding-top:10px;border-top:1px solid #edf1f3}
+.maintCardActions button{
+  height:30px;padding:0 8px;border:1px solid #dce5ea;border-radius:7px;background:#fff;color:#526f80;font-size:6.5px;font-weight:720
+}
+.maintCardActions button.primary{border-color:#d1e5eb;background:#edf7fa;color:#23768d}
+.maintCardActions button.danger{margin-left:auto;border-color:#efd8d8;background:#fff8f8;color:#b75d61}
+.maintenanceHistoryCard{margin-top:12px}
+#maintenanceSystemFilter{
+  height:37px;padding:0 9px;border:1px solid #dbe5ea;border-radius:9px;background:#fff;color:#4d697b;font-size:8px;outline:0
+}
+.inventoryTopIcon{background:#f3eee9!important;color:#8c6854!important}
+.maintenanceTopIcon{background:#eef5f9!important;color:#326d87!important}
+
+/* Module header modes */
+#app.inventoryMode .filterWrap,#app.inventoryMode #exportBtn,
+#app.maintenanceMode .filterWrap,#app.maintenanceMode #exportBtn{display:none!important}
+
+@media(max-width:1180px){
+  .inventoryStats,.maintenanceStats{grid-template-columns:1fr 1fr}
+  .maintenanceAssetGrid{grid-template-columns:1fr 1fr}
+  .inventoryToolbar,.maintenanceToolbar{align-items:flex-start;flex-direction:column}
+  .inventoryToolbarActions{width:100%;justify-content:flex-start}
+}
+@media(max-width:760px){
+  .inventoryPage,.maintenancePage{padding:12px 10px 25px!important}
+  .inventoryHero,.maintenanceHero{min-height:0;display:block;padding:18px;border-radius:14px}
+  .inventoryHero h1,.maintenanceHero h1{font-size:20px}
+  .inventoryHeroMeta{margin-top:13px;display:grid;grid-template-columns:1fr 1fr}
+  .inventoryHeroMeta>div{min-width:0}
+  .maintenanceHeroActions{margin-top:14px}
+  .inventoryTabs{display:flex;width:100%}
+  .inventoryTabs button{flex:1;justify-content:center;padding:0 7px}
+  .inventoryStats,.maintenanceStats{grid-template-columns:1fr 1fr;gap:7px}
+  .inventoryStats article,.maintenanceStats article{min-height:80px;padding:10px;gap:8px}
+  .inventoryStats b,.maintenanceStats b{font-size:18px}
+  .inventoryToolbar,.maintenanceToolbar{padding:13px}
+  .inventoryToolbarActions{display:grid;grid-template-columns:1fr 1fr}
+  .inventorySearch{grid-column:1/-1;min-width:0}
+  .inventoryPrimary,.inventorySecondary{width:100%}
+  .maintenanceAssetGrid{grid-template-columns:1fr;padding:9px}
+  .inventoryForm{grid-template-columns:1fr 1fr;padding:14px;gap:9px}
+  .inventoryForm label.wide{grid-column:1/-1}
+  .toolsStats{grid-template-columns:1fr}
+}
