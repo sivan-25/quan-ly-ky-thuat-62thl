@@ -329,7 +329,7 @@ function homeTaskRows(tasks,buildingLabel=""){
  return [...(tasks||[])].sort((a,b)=>String(b.d||"").localeCompare(String(a.d||""))||Number(b.id)-Number(a.id)).slice(0,6).map(x=>{
    const status=x.s||"Đang thực hiện";
    const cls=status==="Đã hoàn thành"?"done":status==="Đang thực hiện"?"doing":"waiting";
-   return '<button class="homeTaskRow" type="button" onclick="homeOpenTask('+JSON.stringify(String(x.id))+')"><div class="homeTaskLead"><span class="homeTaskDot '+cls+'"></span><div><b>'+esc(x.c||"Công việc kỹ thuật")+'</b><small>'+esc(buildingLabel||x.a||"Kỹ thuật")+' · '+(x.d?fmt(x.d):"—")+'</small></div></div><span class="homeStatus '+cls+'">'+esc(status)+'</span><i>→</i></button>';
+   return '<button class="homeTaskRow" type="button" onclick="homeOpenTask('+Number(x.id)+')"><div class="homeTaskLead"><span class="homeTaskDot '+cls+'"></span><div><b>'+esc(x.c||"Công việc kỹ thuật")+'</b><small>'+esc(buildingLabel||x.a||"Kỹ thuật")+' · '+(x.d?fmt(x.d):"—")+'</small></div></div><span class="homeStatus '+cls+'">'+esc(status)+'</span><i>→</i></button>';
  }).join("");
 }
 function homeActivityRows(tasks,energy,buildingLabel=""){
@@ -356,10 +356,15 @@ async function renderAdminHomeOverview(){
      try{const r=await projectSync("get",{},b.id);return {b,s:r?.snapshot||{tasks:[],energy:[]}}}
      catch(e){return {b,s:{tasks:[],energy:[]}}}
    }));
-   const tasks=[],energy=[];
+   const tasks=[],energy=[];let electricTotal=0,waterTotal=0,solarTotal=0,hasElectric=false,hasWater=false,hasSolar=false;
    rows.forEach(({b,s})=>{
-     (Array.isArray(s.tasks)?s.tasks:[]).forEach(x=>tasks.push({...x,_building:b.name||b.id}));
-     (Array.isArray(s.energy)?s.energy:[]).forEach(x=>energy.push({...x,_building:b.name||b.id}));
+     const bt=Array.isArray(s.tasks)?s.tasks:[],be=Array.isArray(s.energy)?s.energy:[];
+     bt.forEach(x=>tasks.push({...x,_building:b.name||b.id}));
+     be.forEach(x=>energy.push({...x,_building:b.name||b.id}));
+     const ev=homeEnergyUse(be,"electric"),wv=homeEnergyUse(be,"water"),sv=homeEnergyUse(be,"solar");
+     if(ev!==null){electricTotal+=ev;hasElectric=true}
+     if(wv!==null){waterTotal+=wv;hasWater=true}
+     if(sv!==null){solarTotal+=sv;hasSolar=true}
    });
    const td=today();
    $("#homeToday").textContent=tasks.filter(x=>x.d===td).length;
@@ -371,10 +376,9 @@ async function renderAdminHomeOverview(){
      const st=x.s||"Đang thực hiện",cl=st==="Đã hoàn thành"?"done":st==="Đang thực hiện"?"doing":"waiting";
      return '<div class="homeTaskRow static"><div class="homeTaskLead"><span class="homeTaskDot '+cl+'"></span><div><b>'+esc(x.c||"Công việc kỹ thuật")+'</b><small>'+esc(x._building||"Dự án")+' · '+(x.d?fmt(x.d):"—")+'</small></div></div><span class="homeStatus '+cl+'">'+esc(st)+'</span></div>'
    }).join(""):'<div class="homeEmpty">Chưa có công việc gần đây.</div>';
-   const e=homeEnergyUse(energy,"electric"),w=homeEnergyUse(energy,"water"),s=homeEnergyUse(energy,"solar");
-   $("#homeElectric").textContent=homeNumber(e);
-   $("#homeWater").textContent=homeNumber(w);
-   $("#homeSolar").textContent=homeNumber(s);
+   $("#homeElectric").textContent=homeNumber(hasElectric?electricTotal:null);
+   $("#homeWater").textContent=homeNumber(hasWater?waterTotal:null);
+   $("#homeSolar").textContent=homeNumber(hasSolar?solarTotal:null);
    $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
  }catch(e){console.warn("Admin home summary failed",e)}
 }
@@ -388,6 +392,7 @@ function renderHomeDashboard(){
  $("#homeAdminProjects").classList.toggle("hide",!admin);
  if(admin){
    document.querySelectorAll("#homePage .buildingNameText").forEach(el=>el.textContent="Toàn bộ dự án ESTA");
+   const hp=$("#topHomeTitle p");if(hp)hp.textContent="Toàn bộ dự án ESTA";
    $("#homeElectric").textContent=$("#homeWater").textContent=$("#homeSolar").textContent="—";
    $("#homeRecentTasks").innerHTML='<div class="homeEmpty">Đang tổng hợp dữ liệu các dự án...</div>';
    $("#homeActivity").innerHTML='<div class="homeEmpty">Đang tải hoạt động...</div>';
@@ -446,7 +451,7 @@ function openAdminPortal(){
  $("#navHome").classList.remove("active");$("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");
  $("#app").classList.remove("homeMode");$("#app").classList.add("adminMode");renderAdminPortal();
 }
-window.adminOpenBuilding=id=>{const b=currentAccount?.buildings?.find(x=>x.id===id);if(b)enterProject(b)};
+window.adminOpenBuilding=async id=>{const b=currentAccount?.buildings?.find(x=>x.id===id);if(b){await enterProject(b);showModule("work")}};
 window.enterAccount=function(account,session=null){
  currentAccount=account;centralSession=session;me=account.username||account.email||"user";
  $("#login").classList.add("hide");$("#app").classList.remove("hide");
