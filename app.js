@@ -1,3 +1,13 @@
+async function loadLoginHeroAsset(){
+ try{
+   const r=await fetch("assets/esta-login-hero.b64?v=20260922-2110",{cache:"force-cache"});
+   if(!r.ok)return;
+   const b64=(await r.text()).trim();
+   if(b64)document.documentElement.style.setProperty("--esta-login-hero",'url("data:image/jpeg;base64,'+b64+'")');
+ }catch(e){console.warn("Login hero load failed",e)}
+}
+loadLoginHeroAsset();
+
 const $=s=>document.querySelector(s);
 const SB_URL="https://upcjcrycahdfroxggsdz.supabase.co";
 const SB_KEY="sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
