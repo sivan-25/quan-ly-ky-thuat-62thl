@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2320"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2145"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -211,7 +211,7 @@
 </div>
 <div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
 
-<section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField requiredField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField requiredField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label class="typeField requiredField"><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label class="statusField requiredField"><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option selected>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label class="performerField requiredField"><span>Người thực hiện</span><input id="performer" required></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><div class="imageNativeActions">
+<section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField requiredField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField requiredField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label class="typeField requiredField"><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label class="statusField requiredField"><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option selected>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label class="performerField requiredField"><span>Người thực hiện</span><div class="peopleSelect" data-people-kind="task"><input id="performer" type="hidden"><button id="taskPeopleButton" class="peopleSelectBtn" type="button"><span>Chọn người thực hiện</span><b>⌄</b></button><div id="taskPeopleMenu" class="peopleSelectMenu hide"><div id="taskPeopleOptions" class="peopleOptions"></div><button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button></div></div></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><div class="imageNativeActions">
   <input id="images" class="nativeImageInput" type="file" accept="image/*" multiple>
   <input id="cameraNativeInput" class="nativeImageInput" type="file" accept="image/*" capture="environment">
   <button id="openNativeCamera" type="button" class="imageActionBtn cameraBtn">📷 Chụp ảnh</button>
@@ -245,6 +245,7 @@
       <label><span>Ngày ghi</span><input id="energyDate" type="date" required></label>
       <label><span id="energyValueLabel">Chỉ số điện (kWh)</span><input id="energyValue" type="number" step="0.01" min="0" required placeholder="Nhập chỉ số"></label>
       <label class="energyImageField"><span>Hình ảnh đồng hồ</span><input id="energyImage" type="file" accept="image/*"></label>
+      <label class="energyPerformerField"><span>Người thực hiện</span><div class="peopleSelect" data-people-kind="energy"><input id="energyPerformer" type="hidden"><button id="energyPeopleButton" class="peopleSelectBtn" type="button"><span>Chọn người thực hiện</span><b>⌄</b></button><div id="energyPeopleMenu" class="peopleSelectMenu hide"><div id="energyPeopleOptions" class="peopleOptions"></div><button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button></div></div></label>
       <label class="energyNoteField"><span>Ghi chú</span><input id="energyNote" maxlength="500" placeholder="Nhập ghi chú..."></label>
       <div class="energyActions"><button id="energySaveBtn" class="primary" type="submit">Lưu</button><button id="energyCancelEdit" type="button" class="secondary hide">Hủy</button></div>
     </form>
@@ -272,13 +273,29 @@
       <article><small>TIÊU THỤ KỲ LỌC</small><strong id="energyPeriodUse">—</strong></article>
     </div>
     <div class="desktopTable energyDesktopTable">
-      <table><thead><tr><th>Ngày</th><th>Thứ</th><th id="energyValueColumn">Chỉ số (kWh)</th><th>Chênh lệch</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="energyTbody"></tbody></table>
+      <table><thead><tr><th>Ngày</th><th>Thứ</th><th id="energyValueColumn">Chỉ số (kWh)</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="energyTbody"></tbody></table>
     </div>
     <div id="energyMobileCards"></div>
     <div id="energyEmpty" class="empty hide">Chưa có dữ liệu chỉ số.</div>
     <div class="energyLegend"><span>■ Chủ nhật</span><span>Chênh lệch = chỉ số hiện tại − chỉ số lần trước</span></div>
   </section>
 </div></main></div>
+<div id="peopleManagerModal" class="modal hide">
+  <div class="modalCard peopleManagerCard">
+    <button id="closePeopleManager" class="modalClose" type="button">×</button>
+    <div class="peopleManagerHead">
+      <span>ESTA · NHÂN SỰ DỰ ÁN</span>
+      <h3>Người thực hiện</h3>
+      <p id="peopleManagerProject">Danh sách được lưu riêng cho từng dự án và đồng bộ trên các thiết bị.</p>
+    </div>
+    <form id="peopleAddForm" class="peopleAddForm">
+      <input id="newPersonName" maxlength="100" autocomplete="off" placeholder="Nhập tên người mới..." required>
+      <button type="submit">＋ Thêm</button>
+    </form>
+    <div id="peopleManagerList" class="peopleManagerList"></div>
+    <div class="peopleManagerFoot">Thêm hoặc xóa sẽ tự động lưu ngay.</div>
+  </div>
+</div>
 <div id="adminSettingsModal" class="modal hide">
   <div class="modalCard adminSettingsCard">
     <button id="closeAdminSettings" class="modalClose" type="button">×</button>
@@ -324,4 +341,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2320"></script></body></html>
+<script src="app.js?v=20260922-2145"></script></body></html>
