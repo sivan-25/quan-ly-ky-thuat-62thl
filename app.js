@@ -219,7 +219,7 @@ function renderPeopleSelector(kind){
  }else{
    box.innerHTML=names.map(name=>{
      const on=selected.includes(name);
-     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'"><span class="peopleAvatar">'+esc(personInitials(name))+'</span><span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
+     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'"><span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
    }).join("");
    box.querySelectorAll("[data-person]").forEach(el=>el.onclick=e=>{
      e.stopPropagation();
@@ -234,7 +234,7 @@ function renderPeopleSelector(kind){
    label.className="peopleButtonSummary";
    label.innerHTML=!selected.length
      ?'<em>Chọn người thực hiện</em>'
-     :selected.slice(0,3).map(name=>'<span class="selectedPersonChip"><i>'+esc(personInitials(name))+'</i><b>'+esc(name)+'</b></span>').join("")+(selected.length>3?'<span class="selectedMore">+'+(selected.length-3)+'</span>':"");
+     :selected.slice(0,4).map(name=>'<span class="selectedPersonChip"><b>'+esc(name)+'</b></span>').join("")+(selected.length>4?'<span class="selectedMore">+'+(selected.length-4)+'</span>':"");
  }
  btn.classList.toggle("hasValue",selected.length>0);
 }
@@ -756,7 +756,7 @@ function filtered(fx,ex){let q=($("#search").value+" "+$("#globalSearch").value)
  const arr=performerArray(x);
  if(!arr.length)return '<span class="mutedDash">—</span>';
  const visible=arr.slice(0,limit);
- return '<div class="performerChips pro">'+visible.map(n=>'<span title="'+esc(n)+'"><i>'+esc(personInitials(n))+'</i><b>'+esc(n)+'</b></span>').join("")+(arr.length>limit?'<em>+'+(arr.length-limit)+'</em>':"")+'</div>';
+ return '<div class="performerChips pro">'+visible.map(n=>'<span title="'+esc(n)+'"><b>'+esc(n)+'</b></span>').join("")+(arr.length>limit?'<em>+'+(arr.length-limit)+'</em>':"")+'</div>';
 }
 function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div class="thumbs" onclick="viewImages('+x.id+')">'+x.imgs.slice(0,3).map(v=>mediaImgHtml(v)).join("")+(x.imgs.length>3?'<span class="thumbMore">+'+(x.imgs.length-3)+'</span>':'')+'</div>'}function render(){
  const all=load(),a=filtered(),td=today();
