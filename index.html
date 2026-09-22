@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Quản lý kỹ thuật 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css?v=20260922-0942"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Quản lý kỹ thuật 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css?v=20260922-1010"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild">
   <div class="loginShowcase">
     <div class="loginBrand">
@@ -83,16 +83,18 @@
 
   <section class="energyTableCard">
     <div class="energyTableTop">
-      <div><h2 id="energyTableTitle">Bảng theo dõi chỉ số điện</h2><p id="energySummaryText">Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.</p></div>
-      <button id="energyExportPdf" class="pdfAction" type="button"><b>PDF</b> ⇩ Xuất PDF</button>
-    </div>
-    <div class="energyFilters">
-      <span class="filterLabel">Lọc theo</span>
-      <div class="rangeButtons"><button data-erange="today">Hôm nay</button><button data-erange="week">Tuần</button><button data-erange="month">Tháng</button><button data-erange="all" class="active">Tất cả</button></div>
-      <label>Từ ngày<input id="energyFromDate" type="date"></label>
-      <label>Đến ngày<input id="energyToDate" type="date"></label>
-      <button id="energyApplyFilter" class="primary small" type="button">Áp dụng</button>
-      <button id="energyClearFilter" class="secondary small" type="button">Xóa lọc</button>
+      <div class="energyTitleBlock"><h2 id="energyTableTitle">Bảng theo dõi chỉ số điện</h2><p id="energySummaryText">Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.</p></div>
+      <div class="energyTopTools">
+        <div class="energyFilters">
+          <span class="filterLabel">Lọc</span>
+          <div class="rangeButtons"><button data-erange="today">Hôm nay</button><button data-erange="week">Tuần</button><button data-erange="month">Tháng</button><button data-erange="all" class="active">Tất cả</button></div>
+          <label>Từ<input id="energyFromDate" type="date"></label>
+          <label>Đến<input id="energyToDate" type="date"></label>
+          <button id="energyApplyFilter" class="primary small" type="button">Áp dụng</button>
+          <button id="energyClearFilter" class="secondary small" type="button">Xóa</button>
+        </div>
+        <button id="energyExportPdf" class="pdfAction" type="button"><b>PDF</b> ⇩ Xuất PDF</button>
+      </div>
     </div>
     <div class="energySummaryCards">
       <article><small>BẢN GHI</small><strong id="energyRecordCount">0</strong></article>
