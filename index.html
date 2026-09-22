@@ -1,5 +1,5 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2030"></head><body>
-<div id="toast"></div><section id="login" class="loginRebuild loginV3">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2110"></head><body>
+<div id="toast"></div><section id="login" class="loginRebuild loginV7">
   <div class="loginPanel">
     <div class="loginPanelInner">
       <div class="loginLogo">
@@ -11,23 +11,16 @@
       <div class="loginFormWrap">
         <span class="loginEyebrow">HỆ THỐNG QUẢN LÝ KỸ THUẬT</span>
         <h1>Đăng nhập hệ thống</h1>
-        <p>Sử dụng tài khoản được quản trị viên cấp.</p>
+        <p>Sử dụng tài khoản do quản trị viên cấp.</p>
 
         <form id="loginForm" class="premiumLoginForm">
           <label>
             <span>Tên đăng nhập</span>
-            <div class="loginInputWrap">
-              <b aria-hidden="true">♙</b>
-              <input id="user" required autocomplete="username" placeholder="Nhập tên đăng nhập">
-            </div>
+            <div class="loginInputWrap"><b>♙</b><input id="user" required autocomplete="username" placeholder="Nhập tên đăng nhập"></div>
           </label>
           <label>
             <span>Mật khẩu</span>
-            <div class="loginInputWrap">
-              <b aria-hidden="true">▣</b>
-              <input id="pass" type="password" required autocomplete="current-password" placeholder="Nhập mật khẩu">
-              <button id="togglePassword" type="button" class="passwordToggle" aria-label="Hiện mật khẩu">◉</button>
-            </div>
+            <div class="loginInputWrap"><b>▣</b><input id="pass" type="password" required autocomplete="current-password" placeholder="Nhập mật khẩu"><button id="togglePassword" type="button" class="passwordToggle" aria-label="Hiện mật khẩu">◉</button></div>
           </label>
           <button id="loginBtn" type="submit" class="premiumLoginBtn">Đăng nhập <b>→</b></button>
           <div id="loginError" class="loginError" aria-live="polite"></div>
@@ -35,57 +28,13 @@
         </form>
       </div>
 
-      <div class="loginPanelFooter">
-        <span>●</span> Liên hệ quản trị viên khi cần hỗ trợ đăng nhập.
-      </div>
-      <div class="loginVersion">ESTA · HỆ THỐNG QUẢN LÝ KỸ THUẬT <b>v2.0</b></div>
+      <div class="loginPanelFooter">● Liên hệ quản trị viên khi cần hỗ trợ đăng nhập.</div>
+      <div class="loginVersion"><span>ESTA · HỆ THỐNG QUẢN LÝ KỸ THUẬT</span><b>v2.0</b></div>
     </div>
   </div>
 
   <div class="loginHero">
-    <div class="heroNoise" aria-hidden="true"></div>
-    <div class="heroBrandMini">ESTA <span>/ BUILDING OPERATION PLATFORM</span></div>
-
-    <div class="loginHeroCopy">
-      <span class="heroKicker">HỆ THỐNG QUẢN LÝ ĐA DỰ ÁN</span>
-      <h2>QUẢN LÝ VẬN HÀNH<br><em>KỸ THUẬT TÒA NHÀ</em></h2>
-      <p>Tập trung công việc kỹ thuật, năng lượng, hình ảnh hiện trường và báo cáo vận hành trong một hệ thống duy nhất.</p>
-
-      <div class="heroFeatureGrid">
-        <div><i>▤</i><span><b>Công việc</b><small>Nhật ký & tiến độ</small></span></div>
-        <div><i>▥</i><span><b>Năng lượng</b><small>Điện · Nước · Solar</small></span></div>
-        <div><i>□</i><span><b>Báo cáo</b><small>Hồ sơ & PDF</small></span></div>
-      </div>
-
-      <div class="heroSystemRibbon">
-        <span>HVAC</span><span>ĐIỆN</span><span>PCCC</span><span>CẤP THOÁT NƯỚC</span><span>BẢO TRÌ</span>
-      </div>
-    </div>
-
-    <div class="heroBuilding" aria-hidden="true">
-      <div class="hb hb1"></div>
-      <div class="hb hb2"></div>
-      <div class="hb hb3"></div>
-      <div class="heroGround"></div>
-    </div>
-
-    <div class="heroCircuit" aria-hidden="true">
-      <span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span>
-    </div>
-
-    <div class="heroOverviewCard">
-      <div><b>SMART</b><span>Vận hành tập trung</span></div>
-      <div><b>CLOUD</b><span>Đồng bộ đa thiết bị</span></div>
-      <div><b>LIVE</b><span>Theo dõi theo dự án</span></div>
-    </div>
-
-    <div class="heroMeta">
-      <span>VẬN HÀNH HÔM NAY</span>
-      <span>BẢO TRÌ CHỦ ĐỘNG</span>
-      <span>GIÁM SÁT NĂNG LƯỢNG</span>
-      <span>CHO GIÁ TRỊ NGÀY MAI</span>
-    </div>
-    <div class="heroFooter">CÔNG VIỆC &nbsp;|&nbsp; NĂNG LƯỢNG &nbsp;|&nbsp; HỒ SƠ &nbsp;|&nbsp; BÁO CÁO</div>
+    <div class="loginHeroImage" aria-hidden="true"></div>
   </div>
 </section>
 <div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><nav><button id="navAdmin" class="hide">▦ <span>Tổng quan Admin</span></button><button id="navWork" class="active">▣ <span>Công việc</span></button><button id="navEnergy">▥ <span>Năng lượng</span></button></nav><div class="sideBackup"><button id="backupBtn" type="button">Sao lưu</button><button id="restoreBtn" type="button">Khôi phục</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
@@ -217,4 +166,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2030"></script></body></html>
+<script src="app.js?v=20260922-2110"></script></body></html>
