@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2358"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0020"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -215,6 +215,97 @@
   #app #workPage #taskForm .workFormActions{display:grid!important;grid-template-columns:1fr!important}
   #app #workPage #taskForm .workSave,
   #app #workPage #taskForm .workCancel{width:100%!important;height:46px!important}
+}
+
+/* V11.1 — compact one-line desktop work form */
+#app #workPage #taskForm .peopleOption{
+  grid-template-columns:minmax(0,1fr) 22px!important;
+}
+#app #workPage #taskForm .selectedPersonChip{
+  height:27px!important;
+  max-width:118px!important;
+  padding:0 8px!important;
+}
+#app #workPage #taskForm .selectedPersonChip b{
+  max-width:100px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:7.5px!important;
+}
+#app #workPage .performerChips.pro>span{
+  padding:0 8px!important;
+}
+#app #workPage .performerChips.pro>span b{
+  max-width:95px!important;
+}
+
+@media(min-width:1351px){
+  #app #workPage #taskForm.workEntryForm{
+    grid-template-columns:112px minmax(240px,1.8fr) 110px 130px minmax(200px,1.15fr) minmax(145px,.9fr) 185px 92px!important;
+    gap:10px!important;
+    align-items:end!important;
+    padding:15px 18px 16px!important;
+  }
+  #app #workPage #taskForm .workDate,
+  #app #workPage #taskForm .workContent,
+  #app #workPage #taskForm .workType,
+  #app #workPage #taskForm .workStatus,
+  #app #workPage #taskForm .workPerformer,
+  #app #workPage #taskForm .workNote,
+  #app #workPage #taskForm .workImage,
+  #app #workPage #taskForm .workFormActions{
+    grid-column:auto!important;
+    grid-row:auto!important;
+  }
+  #app #workPage #taskForm .workNote{min-width:0!important}
+  #app #workPage #taskForm .workImage{min-width:0!important}
+  #app #workPage #taskForm .imageNativeActions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:5px!important;
+  }
+  #app #workPage #taskForm .imageActionBtn{
+    width:100%!important;
+    min-width:0!important;
+    padding:0 6px!important;
+    gap:5px!important;
+    font-size:7.5px!important;
+  }
+  #app #workPage #taskForm .imageActionBtn svg{
+    width:14px!important;height:14px!important;
+  }
+  #app #workPage #taskForm .workFormActions{
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr)!important;
+    gap:5px!important;
+    align-items:end!important;
+    padding:0!important;
+  }
+  #app #workPage #taskForm .workSave{
+    width:100%!important;
+    min-width:0!important;
+    height:42px!important;
+    padding:0 9px!important;
+  }
+  #app #workPage #taskForm .workCancel{
+    width:34px!important;
+    min-width:34px!important;
+    height:42px!important;
+    padding:0!important;
+    font-size:0!important;
+  }
+  #app #workPage #taskForm .workCancel:before{
+    content:"×";
+    font-size:15px;
+    line-height:1;
+  }
+  #app #workPage .workImageInfo{
+    margin:0 18px 7px!important;
+  }
+  #app #workPage .workPendingImages{
+    margin:0 18px 14px!important;
+  }
 }
 </style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
@@ -511,7 +602,7 @@
       <button id="cancelEdit" type="button" class="workCancel hide">Hủy</button>
       <button id="saveBtn" class="workSave" type="submit">
         <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        <span>Lưu công việc</span>
+        <span>Lưu</span>
       </button>
     </div>
   </form>
@@ -643,4 +734,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2358"></script></body></html>
+<script src="app.js?v=20260923-0020"></script></body></html>
