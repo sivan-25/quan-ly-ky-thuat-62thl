@@ -2359,3 +2359,256 @@ img[data-storage-path]:not([src]){
   #login.loginV3 .premiumLoginForm .loginInputWrap input{height:50px!important;font-size:12px!important}
   #login.loginV3 .premiumLoginBtn{height:50px!important;font-size:12px!important}
 }
+
+/* =========================================================
+   ESTA LOGIN V4 — CLOSER TO PROVIDED REFERENCE
+   Real architectural image + exact 37/63 composition
+   ========================================================= */
+#login.loginV3{
+  grid-template-columns:37% 63%!important;
+  background:#fff!important;
+}
+#login.loginV3 .loginPanel{
+  background:#fff!important;
+  border-right:0!important;
+}
+#login.loginV3 .loginPanelInner{
+  width:min(430px,calc(100% - 72px))!important;
+  padding:42px 0 24px!important;
+}
+.loginLogo{
+  align-items:flex-start!important;
+}
+.loginLogoMark{
+  width:48px!important;
+  height:54px!important;
+}
+.loginLogo strong{
+  font-size:24px!important;
+  letter-spacing:2.4px!important;
+}
+.loginLogo small{
+  margin-top:5px!important;
+  font-size:6.5px!important;
+  letter-spacing:1.9px!important;
+  color:#5d7486!important;
+}
+.loginPanelTagline{
+  margin-top:22px!important;
+  padding-top:0!important;
+  border-top:0!important;
+  color:#8094a2!important;
+  font-size:6.5px!important;
+  letter-spacing:1.8px!important;
+}
+.loginFormWrap{
+  width:100%!important;
+  margin:auto 0!important;
+  padding:24px 0 16px!important;
+}
+.loginEyebrow{
+  display:none!important;
+}
+.loginFormWrap h1{
+  font-size:26px!important;
+  line-height:1.1!important;
+  color:#15344e!important;
+  letter-spacing:-.3px!important;
+}
+.loginFormWrap>p{
+  margin:7px 0 24px!important;
+  color:#7b8f9e!important;
+  font-size:10px!important;
+}
+.premiumLoginForm label{
+  margin-bottom:13px!important;
+  color:#253f55!important;
+  font-size:9px!important;
+}
+.premiumLoginForm label>span{
+  margin-bottom:6px!important;
+  font-size:9px!important;
+}
+#login.loginV3 .premiumLoginForm .loginInputWrap input{
+  height:44px!important;
+  border-radius:4px!important;
+  border-color:#d4dfe7!important;
+  background:#fff!important;
+  font-size:10px!important;
+}
+.loginInputWrap>b{
+  color:#7890a4!important;
+  font-size:13px!important;
+}
+#login.loginV3 .premiumLoginBtn{
+  height:46px!important;
+  border-radius:4px!important;
+  margin-top:6px!important;
+  background:linear-gradient(90deg,#12b8d1,#19c6d8)!important;
+  font-size:10px!important;
+  letter-spacing:.1px!important;
+  box-shadow:0 8px 18px rgba(21,185,210,.18)!important;
+}
+#login.loginV3 .adminSetupLink{
+  font-size:7px!important;
+  color:#9aa8b2!important;
+}
+.loginPanelFooter{
+  margin-top:14px!important;
+  padding-top:11px!important;
+  border-top:1px solid #e7edf1!important;
+  color:#8999a5!important;
+  font-size:7px!important;
+}
+.loginVersion{
+  margin-top:18px!important;
+  font-size:6px!important;
+  color:#a1adb6!important;
+}
+
+/* Use real building imagery; CSS-only building was the main visual gap */
+#login.loginV3 .loginHero{
+  background:
+    linear-gradient(90deg,rgba(4,27,48,.96) 0%,rgba(4,27,48,.84) 34%,rgba(4,27,48,.48) 64%,rgba(3,20,35,.22) 100%),
+    linear-gradient(180deg,rgba(2,24,44,.08),rgba(2,19,34,.35)),
+    url("https://images.unsplash.com/photo-1770706240294-9af499a58a52?auto=format&fit=crop&fm=jpg&q=82&w=2200") center/cover no-repeat!important;
+}
+#login.loginV3 .loginHero:before{
+  opacity:.72!important;
+  background:
+    linear-gradient(rgba(54,181,218,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(54,181,218,.05) 1px,transparent 1px)!important;
+  background-size:36px 36px!important;
+  mask-image:linear-gradient(90deg,#000 0%,#000 74%,transparent 100%)!important;
+}
+#login.loginV3 .loginHero:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(4,31,53,.88) 0%,rgba(4,31,53,.62) 34%,transparent 70%),
+    radial-gradient(circle at 87% 72%,rgba(35,188,220,.10),transparent 28%);
+}
+#login.loginV3 .heroNoise{
+  z-index:2!important;
+  opacity:.12!important;
+}
+#login.loginV3 .heroBrandMini{
+  z-index:8!important;
+  left:34px!important;
+  top:24px!important;
+  font-size:6.5px!important;
+  letter-spacing:1.6px!important;
+  color:#74cce1!important;
+}
+#login.loginV3 .loginHeroCopy{
+  z-index:8!important;
+  left:7%!important;
+  top:14%!important;
+  width:min(560px,61%)!important;
+}
+.heroKicker{
+  margin-bottom:14px!important;
+  font-size:7px!important;
+  letter-spacing:1.7px!important;
+}
+.loginHeroCopy h2{
+  font-size:clamp(32px,3.2vw,50px)!important;
+  line-height:1.03!important;
+  letter-spacing:-1px!important;
+  font-weight:850!important;
+}
+.loginHeroCopy h2 em{
+  color:#4ad7ea!important;
+}
+.loginHeroCopy>p{
+  max-width:500px!important;
+  margin-top:14px!important;
+  color:#c2d7e3!important;
+  font-size:10px!important;
+  line-height:1.55!important;
+}
+.heroFeatureGrid{
+  width:min(515px,100%)!important;
+  margin-top:25px!important;
+  padding-top:14px!important;
+}
+.heroFeatureGrid>div{
+  min-height:42px!important;
+  gap:8px!important;
+  padding:0 13px!important;
+}
+.heroFeatureGrid i{
+  width:28px!important;
+  height:32px!important;
+  border-color:rgba(83,211,236,.72)!important;
+  color:#56d7ec!important;
+  font-size:12px!important;
+}
+.heroFeatureGrid span{
+  font-size:7px!important;
+  line-height:1.4!important;
+}
+/* Remove fake CSS towers so the hero uses the photographic building */
+#login.loginV3 .heroBuilding{
+  display:none!important;
+}
+/* Blueprint accents on left/bottom, closer to the reference */
+#login.loginV3 .heroCircuit{
+  z-index:6!important;
+  left:0!important;
+  bottom:2%!important;
+  width:58%!important;
+  height:35%!important;
+  opacity:.9!important;
+}
+#login.loginV3 .heroCircuit:before{
+  content:"";
+  position:absolute;
+  left:-4%;
+  bottom:0;
+  width:72%;
+  height:88%;
+  border:1px solid rgba(64,204,230,.28);
+  transform:skewY(-7deg);
+  box-shadow:
+    inset 0 0 0 12px rgba(30,137,174,.02),
+    30px -24px 0 -29px rgba(65,205,230,.3),
+    60px -48px 0 -59px rgba(65,205,230,.28);
+}
+#login.loginV3 .heroCircuit span{
+  background:linear-gradient(90deg,rgba(78,216,238,.18),rgba(80,217,239,.82) 58%,transparent)!important;
+}
+#login.loginV3 .heroMeta{
+  z-index:8!important;
+  right:27%!important;
+  bottom:16%!important;
+  font-size:6px!important;
+  line-height:2.1!important;
+  letter-spacing:1.15px!important;
+}
+#login.loginV3 .heroFooter{
+  z-index:8!important;
+  right:26px!important;
+  bottom:18px!important;
+  font-size:5.5px!important;
+  letter-spacing:1.35px!important;
+  color:#90aebc!important;
+}
+@media(max-width:1180px){
+  #login.loginV3{grid-template-columns:40% 60%!important}
+  #login.loginV3 .loginPanelInner{width:min(390px,calc(100% - 48px))!important}
+  #login.loginV3 .loginHeroCopy{left:6%!important;width:67%!important}
+  .loginHeroCopy h2{font-size:36px!important}
+}
+@media(max-width:820px){
+  #login.loginV3{display:block!important}
+  #login.loginV3 .loginHero{display:none!important}
+  #login.loginV3 .loginPanelInner{
+    width:min(420px,calc(100% - 34px))!important;
+    padding:25px 0 22px!important;
+  }
+  .loginFormWrap{padding:42px 0 28px!important}
+  .loginFormWrap h1{font-size:25px!important}
+}
