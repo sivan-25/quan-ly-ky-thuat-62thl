@@ -697,3 +697,127 @@ main>header{
 .combinedChoices button{height:38px;border:1px solid #b8d9e8;border-radius:8px;background:#eff9fb;color:#0d6f7b;font-size:10px;font-weight:700}
 .combinedChoices button:hover{background:#e0f4f5}
 @media(max-width:760px){.combinedChoices{grid-template-columns:1fr 1fr}}
+
+/* ===== ADMIN TRUNG TÂM / ĐA DỰ ÁN ===== */
+.adminSetupLink{
+  display:block;
+  width:100%;
+  margin-top:8px;
+  border:0;
+  background:transparent;
+  color:#557a98;
+  font-size:9px;
+  cursor:pointer;
+}
+.adminSetupLink:hover{color:#0b5d97;text-decoration:underline}
+.adminHero{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  margin-bottom:14px;
+  padding:20px 22px;
+  border:1px solid #dce8f2;
+  border-radius:14px;
+  background:linear-gradient(135deg,#0a3155,#0d527f);
+  color:#fff;
+  box-shadow:0 10px 28px rgba(17,63,100,.08);
+}
+.adminHero h1{margin:5px 0 6px;font-size:25px;font-weight:700}
+.adminHero p{margin:0;max-width:620px;color:#c9e4f4;font-size:12px}
+.adminEyebrow{font-size:8px;letter-spacing:2px;color:#7fd2ff}
+.adminConnectionWrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.adminConnection{
+  padding:8px 11px;
+  border-radius:9px;
+  font-size:9px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.adminConnection.ok{background:#eaf8ef;color:#1d7f4b;border:1px solid #a9dfbf}
+.adminConnection.warn{background:#fff6df;color:#916519;border:1px solid #ead39c}
+.adminSection{
+  border:1px solid #dce8f2;
+  border-radius:13px;
+  background:#fff;
+  box-shadow:0 7px 24px rgba(22,62,99,.05);
+  padding:15px;
+}
+.adminSectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.adminSectionHead h2{margin:0;font-size:16px;color:#173f61}
+.adminSectionHead p{margin:3px 0 0;font-size:9px;color:#778d9f}
+.adminSectionHead>span{font-size:9px;color:#6e8496}
+.adminProjectGrid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(150px,1fr));
+  gap:9px;
+}
+.adminProjectCard{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:92px;
+  padding:13px;
+  border:1px solid #dce8f2;
+  border-radius:11px;
+  background:linear-gradient(180deg,#fff,#f8fbfd);
+  text-align:left;
+  cursor:pointer;
+  color:#183f60;
+  transition:.18s ease;
+}
+.adminProjectCard:hover{transform:translateY(-2px);border-color:#8dc4e1;box-shadow:0 9px 20px rgba(29,83,123,.08)}
+.adminProjectCard>span{margin-left:auto;font-size:18px;color:#4f8db8}
+.adminProjectIcon{display:grid;place-items:center;width:38px;height:38px;border-radius:9px;background:#e8f4fb;color:#0d679f;font-size:18px;flex:0 0 auto}
+.adminProjectCard small{display:block;font-size:7px;color:#7890a4}
+.adminProjectCard h3{margin:2px 0 3px;font-size:12px;font-weight:700}
+.adminProjectCard p{margin:0;font-size:8px;color:#8498a8}
+.adminAccountsGrid{display:grid;grid-template-columns:minmax(340px,.8fr) minmax(520px,1.2fr);gap:12px;margin-top:12px}
+.adminCreateForm{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.adminCreateForm label>span,.adminSetupForm label>span{display:block;margin:0 0 5px;font-size:9px;font-weight:700;color:#637b8f}
+.adminCreateForm input,.adminCreateForm select,.adminSetupForm input{
+  width:100%;height:41px;padding:0 10px;border:1px solid #d7e4ed;border-radius:8px;background:#fbfdff;color:#244761;font-size:11px;outline:none
+}
+.adminCreateForm input:focus,.adminCreateForm select:focus,.adminSetupForm input:focus{border-color:#48a8d6;box-shadow:0 0 0 3px rgba(61,157,208,.09)}
+.adminCreateForm .primary{grid-column:1/-1;height:42px;border:0;border-radius:8px;background:linear-gradient(90deg,#0c679f,#0a4b7e);color:#fff;font-weight:700}
+.adminHint{margin:10px 0 0;font-size:9px;color:#8094a4}
+.adminUsersList{display:grid;gap:8px;max-height:470px;overflow:auto}
+.adminUserRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid #e0eaf1;border-radius:9px;background:#fbfdff}
+.adminUserMain{display:flex;align-items:center;gap:9px;min-width:0}
+.adminAvatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#e8f4fb;color:#0b679f;font-size:14px;font-weight:700;flex:0 0 auto}
+.adminUserMain b{display:block;font-size:11px;color:#193f5f}
+.adminUserMain small{display:block;margin-top:2px;font-size:8px;color:#8397a7}
+.adminUserProjects{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.adminUserProjects span{padding:3px 6px;border-radius:10px;background:#edf5fa;color:#53748c;font-size:7px}
+.adminUserActions{display:flex;gap:5px;align-items:center;flex:0 0 auto}
+.adminUserActions button{height:29px;padding:0 8px;border:1px solid #d7e3eb;border-radius:6px;background:#fff;color:#4a6b83;font-size:8px}
+.adminUserActions button.danger{border-color:#edc4c8;color:#a8424d}
+.adminUserActions button.success{border-color:#b6dfc6;color:#1f7b4c}
+.adminBadge{padding:5px 8px;border-radius:9px;background:#e7f2fb;color:#1b628f;font-size:7px;font-weight:700}
+.adminNeedsCentral{padding:18px;text-align:center;border:1px dashed #cfdde7;border-radius:9px;background:#fafcfd;color:#60778b}
+.adminNeedsCentral b{font-size:11px}.adminNeedsCentral p{font-size:9px}.adminNeedsCentral button{height:34px;padding:0 12px;border:0;border-radius:7px;background:#0d659d;color:#fff;font-size:9px}
+.adminSetupCard{width:min(430px,92vw)!important}
+.adminSetupForm{display:grid;gap:10px}
+.adminSetupForm .primary{height:42px;border:0;border-radius:8px;background:#0c679f;color:#fff;font-weight:700}
+.adminSetupMessage{min-height:18px;font-size:9px;color:#8b5a1b;text-align:center}
+#app.adminMode .headerTools{visibility:hidden}
+#app.adminMode .account{margin-left:auto}
+@media(max-width:1200px){
+  .adminProjectGrid{grid-template-columns:repeat(3,1fr)}
+  .adminAccountsGrid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .adminHero{display:block;padding:16px}
+  .adminConnectionWrap{justify-content:flex-start;margin-top:12px}
+  .adminProjectGrid{grid-template-columns:1fr 1fr}
+  .adminCreateForm{grid-template-columns:1fr}
+  .adminCreateForm .primary{grid-column:auto}
+  .adminUserRow{align-items:flex-start;flex-direction:column}
+  .adminUserActions{width:100%}
+}
