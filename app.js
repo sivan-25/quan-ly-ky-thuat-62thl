@@ -386,16 +386,34 @@ $("#backupBtn").onclick=()=>{
 };
 $("#restoreBtn").onclick=()=>$("#restoreFile").click();
 $("#restoreFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text()),tasks=Array.isArray(d)?d:d.tasks;if(!Array.isArray(tasks))throw new Error("File sao lưu không hợp lệ");if(!confirm("Khôi phục sẽ thay thế dữ liệu hiện tại của "+currentBuilding.name+". Tiếp tục?"))return;save(tasks);if(Array.isArray(d.energy))energySaveAll(d.energy);await syncProjectSnapshot();render();renderEnergy();toast("Đã khôi phục và đồng bộ dữ liệu")}catch(err){toast("Không thể đọc file sao lưu")}finally{e.target.value=""}};
-$("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";$("#performer").value=d.a||"";$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";$("#performer").value="";$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";pendingTaskFiles=[];$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));let pendingTaskFiles=[];
+$("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";$("#performer").value=d.a||"";$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";$("#performer").value="";$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";clearPendingTaskFiles();$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));let pendingTaskFiles=[],pendingPreviewUrls=[];
+function clearPendingTaskFiles(){
+ pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
+ pendingPreviewUrls=[];pendingTaskFiles=[];
+ const box=$("#pendingImagePreview");if(box)box.innerHTML="";
+}
+function renderPendingTaskFiles(){
+ const box=$("#pendingImagePreview");if(!box)return;
+ pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));pendingPreviewUrls=[];
+ box.innerHTML=pendingTaskFiles.map((f,i)=>{
+   const u=URL.createObjectURL(f);pendingPreviewUrls.push(u);
+   return '<div class="pendingImg"><img src="'+u+'" alt="Ảnh '+(i+1)+'"><button type="button" onclick="removePendingTaskFile('+i+')" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>';
+ }).join("");
+}
+window.removePendingTaskFile=i=>{
+ if(i<0||i>=pendingTaskFiles.length)return;
+ pendingTaskFiles.splice(i,1);
+ renderPendingTaskFiles();updateTaskImageInfo();
+};
 function updateTaskImageInfo(){
  const n=pendingTaskFiles.length;
- $("#imageInfo").textContent=n?"Đã chọn "+n+" hình · Bấm Chụp ảnh để chụp thêm hoặc chọn thêm từ Thư viện":"";
+ $("#imageInfo").textContent=n?"Đã chọn "+n+" hình · Có thể chọn thêm nhiều ảnh từ Thư viện hoặc chụp thêm 1 ảnh":"";
 }
 function addPendingTaskFiles(fileList){
  const incoming=Array.from(fileList||[]).filter(f=>f&&f.type?.startsWith("image/"));
  if(!incoming.length)return;
  pendingTaskFiles=[...pendingTaskFiles,...incoming];
- updateTaskImageInfo();
+ renderPendingTaskFiles();updateTaskImageInfo();
 }
 $("#openNativeCamera").onclick=()=>{
  const input=$("#cameraNativeInput");
