@@ -3623,3 +3623,140 @@ img[data-storage-path]:not([src]){
   .kpiIcon{margin-bottom:8px}
   .homeStatus{display:none}
 }
+
+/* =========================================================
+   MULTI PERFORMER — project-specific people selector
+   ========================================================= */
+.peopleSelect{position:relative;min-width:0}
+.peopleSelectBtn{
+  width:100%!important;height:42px!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;
+  padding:0 10px!important;
+  border:1px solid #d8e5ef!important;border-radius:8px!important;
+  background:#eefaf2!important;color:#6c8190!important;
+  font-size:12px!important;font-weight:550!important;text-align:left!important;
+  box-shadow:none!important
+}
+.peopleSelectBtn>span{display:block!important;margin:0!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.peopleSelectBtn>b{font-size:12px;color:#7c929f;font-weight:700}
+.peopleSelectBtn.hasValue{border-color:#b8dcc5!important;background:#f2fbf5!important;color:#265c42!important}
+.peopleSelectBtn:focus{outline:0;box-shadow:0 0 0 3px rgba(58,155,101,.09)!important}
+.peopleSelectMenu{
+  position:absolute;z-index:95;left:0;top:47px;
+  width:max(260px,100%);
+  overflow:hidden;
+  border:1px solid #d6e3ea;border-radius:11px;
+  background:#fff;
+  box-shadow:0 16px 38px rgba(27,58,79,.16)
+}
+.peopleOptions{max-height:235px;overflow:auto;padding:6px}
+.peopleOption{
+  width:100%;min-height:42px;
+  display:grid;grid-template-columns:30px minmax(0,1fr) 22px;align-items:center;gap:8px;
+  padding:5px 7px;border:0;border-radius:8px;background:#fff;color:#36556a;text-align:left
+}
+.peopleOption:hover{background:#f5f9fb}
+.peopleOption.selected{background:#eef9f3;color:#215b3f}
+.peopleAvatar{
+  width:28px;height:28px;display:grid;place-items:center;
+  border-radius:50%;background:#f1e9e4;color:#80604e;border:1px solid #e4d7ce;
+  font-size:7px;font-weight:800;letter-spacing:.2px
+}
+.peopleName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;font-weight:650}
+.peopleCheck{
+  width:18px;height:18px;display:grid;place-items:center;
+  border:1px solid #d6e2e8;border-radius:5px;color:#fff;font-size:9px
+}
+.peopleOption.selected .peopleCheck{border-color:#55ad79;background:#55ad79}
+.peopleEmpty{padding:22px 12px;text-align:center;color:#8b9ca7;font-size:8px;line-height:1.55}
+.peopleEditBtn{
+  width:100%;height:37px;border:0;border-top:1px solid #e8eef2!important;border-radius:0!important;
+  background:#fbfcfd!important;color:#496d82!important;font-size:8.5px!important;font-weight:700!important;
+  box-shadow:none!important
+}
+.peopleEditBtn:hover{background:#f3f8fa!important;color:#1c7796!important}
+
+.performerChips{display:flex;flex-wrap:wrap;gap:4px}
+.performerChips span{
+  display:inline-block;padding:3px 6px;border-radius:10px;
+  background:#eef7f2;color:#397059;border:1px solid #d8eadf;
+  font-size:7px;font-weight:650;white-space:nowrap
+}
+
+/* People manager */
+.peopleManagerCard{width:min(520px,94vw)!important;padding:22px!important}
+.peopleManagerHead>span{display:block;color:#a07d68;font-size:6.5px;letter-spacing:1.5px;font-weight:800}
+.peopleManagerHead h3{margin:5px 0 4px!important;color:#193f5a!important;font-size:18px!important}
+.peopleManagerHead p{margin:0 0 16px!important;color:#8295a2!important;font-size:8.5px!important}
+.peopleAddForm{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px;margin-bottom:12px}
+.peopleAddForm input{
+  width:100%;height:40px;padding:0 11px;border:1px solid #d7e3ea;border-radius:8px;
+  outline:0;background:#fbfdfe;color:#294b62;font-size:10px
+}
+.peopleAddForm input:focus{border-color:#32a8c2;box-shadow:0 0 0 3px rgba(50,168,194,.09)}
+.peopleAddForm button{
+  height:40px;border:0;border-radius:8px;background:#153f5c;color:#fff;font-size:9px;font-weight:750
+}
+.peopleAddForm.readonly{opacity:.55}
+.peopleManagerList{
+  max-height:330px;overflow:auto;border:1px solid #e2e9ed;border-radius:10px;background:#fff
+}
+.peopleManagerRow{
+  min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 10px;border-bottom:1px solid #eef2f4
+}
+.peopleManagerRow:last-child{border-bottom:0}
+.peopleManagerRow>div{display:flex;align-items:center;gap:9px;min-width:0}
+.peopleManagerRow b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2b4c62;font-size:9.5px}
+.peopleManagerRow>button{
+  height:29px;padding:0 9px;border:1px solid #efd4d4;border-radius:7px;
+  background:#fff7f7;color:#bd5e5e;font-size:8px
+}
+.peopleReadOnly{color:#9ba9b2;font-size:7px}
+.peopleManagerFoot{margin-top:9px;color:#91a0aa;font-size:7px;text-align:center}
+
+/* Task row: make performer selector readable without widening too much */
+#app .entryRow{
+  grid-template-columns:108px minmax(230px,2fr) 116px 128px minmax(150px,1.05fr) minmax(130px,1fr) minmax(185px,1.15fr) 76px 35px!important
+}
+#app .performerField{min-width:0}
+
+/* Energy form gets the same performer control */
+#app .energyForm{
+  grid-template-columns:130px 155px 165px minmax(170px,.9fr) minmax(190px,1fr) auto!important;
+}
+#app .energyPerformerField{min-width:0}
+#app .energyPerformerField>span{display:block;margin:0 0 5px;font-size:9px;font-weight:700;color:#62798e}
+#app .energyForm .peopleSelectBtn{height:41px!important;background:#f2fbf7!important;border-color:#d2e7da!important}
+#app .energyForm .peopleSelectMenu{top:46px}
+
+@media(max-width:1280px){
+  #app .energyForm{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #app .energyNoteField{grid-column:span 2}
+  #app .energyActions{align-self:end}
+}
+@media(max-width:1200px){
+  #app .entryRow{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  #app .performerField{grid-column:span 2}
+}
+@media(max-width:760px){
+  #app .performerField,#app .energyPerformerField{grid-column:1/-1!important}
+  #app .peopleSelectBtn{height:46px!important;font-size:13px!important}
+  .peopleSelectMenu{
+    position:fixed!important;
+    left:10px!important;right:10px!important;top:auto!important;bottom:12px!important;
+    width:auto!important;max-height:65vh!important;
+    border-radius:14px!important;
+    z-index:110!important;
+    box-shadow:0 18px 60px rgba(13,39,57,.28)!important
+  }
+  .peopleOptions{max-height:48vh}
+  .peopleOption{min-height:48px}
+  .peopleName{font-size:11px}
+  .peopleEditBtn{height:44px!important;font-size:10px!important}
+  #app .energyForm{grid-template-columns:1fr 1fr!important}
+  #app .energyNoteField{grid-column:1/-1!important}
+  #app .energyActions{grid-column:1/-1}
+  .peopleAddForm{grid-template-columns:1fr 88px}
+  .peopleManagerRow{min-height:56px}
+}
