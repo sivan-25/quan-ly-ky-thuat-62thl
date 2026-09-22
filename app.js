@@ -423,7 +423,6 @@ function openAdminSettings(tab="projects"){
  setSettingsTab(tab);
 }
 $("#adminSettingsBtn").onclick=()=>openAdminSettings("projects");
-$("#adminSettingsShortcut").onclick=()=>openAdminSettings("projects");
 $("#closeAdminSettings").onclick=()=>$("#adminSettingsModal").classList.add("hide");
 $("#adminSettingsModal").onclick=e=>{if(e.target===$("#adminSettingsModal"))$("#adminSettingsModal").classList.add("hide")};
 document.querySelectorAll("[data-settings-tab]").forEach(b=>b.onclick=()=>setSettingsTab(b.dataset.settingsTab));
