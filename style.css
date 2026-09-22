@@ -1748,3 +1748,42 @@ img[data-storage-path]:not([src]){
   #multiCameraModal .multiCameraCard{width:96vw!important;max-width:96vw!important;max-height:84vh!important}
   #multiCameraModal .cameraStage{height:38vh!important;min-height:220px!important;max-height:330px!important}
 }
+
+/* ===== HÌNH ẢNH MOBILE: CAMERA + THƯ VIỆN NATIVE ===== */
+.imageNativeActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+.nativeImageInput{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.imageActionBtn{
+  height:42px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.cameraBtn{
+  border:1px solid #b8d6ea;
+  background:#eef8ff;
+  color:#1e668f;
+}
+.libraryBtn{
+  border:1px solid #d5c7ec;
+  background:#f7f2ff;
+  color:#66508f;
+}
+.imageActionBtn:active{transform:translateY(1px)}
+@media(max-width:760px){
+  .imageNativeActions{grid-template-columns:1fr 1fr;gap:8px}
+  .imageActionBtn{height:46px;font-size:11px}
+  .imageField{grid-column:1/-1!important}
+  #imageInfo{font-size:10px!important;line-height:1.45}
+}
