@@ -4608,3 +4608,248 @@ img[data-storage-path]:not([src]){
   .inventoryForm label.wide{grid-column:1/-1}
   .toolsStats{grid-template-columns:1fr}
 }
+
+/* =========================================================
+   INVENTORY V2 — MONTH TABS + COMPACT TOOL REGISTER
+   ========================================================= */
+#inventoryPage .inventoryToolbar{
+  padding:15px 17px!important;
+  border-radius:14px!important;
+}
+#inventoryPage .inventoryToolbar h2{
+  font-size:14px!important;
+}
+#inventoryPage #materialTitleCount{
+  color:#718696;
+  font-size:11px;
+  font-weight:650;
+}
+.materialMonthTabs{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(48px,1fr));
+  gap:6px;
+  margin:10px 0;
+  padding:7px;
+  border:1px solid #dfe7ec;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 5px 18px rgba(20,55,80,.03);
+}
+.materialMonthTabs button{
+  height:34px;
+  border:1px solid #dde6eb;
+  border-radius:8px;
+  background:#f6f9fb;
+  color:#476678;
+  font-size:8px;
+  font-weight:760;
+  transition:.15s ease;
+}
+.materialMonthTabs button:hover{
+  border-color:#b7d7df;
+  background:#f1f8fa;
+}
+.materialMonthTabs button.active{
+  border-color:#23b6ca;
+  background:linear-gradient(135deg,#20b8c8,#25a9bd);
+  color:#fff;
+  box-shadow:0 5px 13px rgba(32,174,194,.16);
+}
+#inventoryPage .monthlyStats{
+  margin:0 0 10px!important;
+}
+#inventoryPage .monthlyStats article{
+  min-height:82px!important;
+  padding:12px 14px!important;
+}
+#inventoryPage .monthlyStats .invStatIcon{
+  width:36px!important;height:36px!important;flex-basis:36px!important;
+}
+#inventoryPage .monthlyStats b{
+  font-size:19px!important;
+}
+
+.materialMonthlyCard{
+  overflow:hidden!important;
+}
+.materialMonthlyTable{
+  min-width:900px!important;
+}
+.materialMonthlyTable th{
+  height:40px!important;
+  padding:0 11px!important;
+  background:#f4f7f9!important;
+  color:#536e7f!important;
+  font-size:7px!important;
+}
+.materialMonthlyTable td{
+  height:48px;
+  padding:8px 11px!important;
+  font-size:8px!important;
+}
+.materialMonthlyTable th:first-child,
+.materialMonthlyTable td:first-child{
+  width:50px;text-align:center
+}
+.materialNameCell{
+  min-width:225px;
+}
+.materialNameCell b{
+  display:block;
+  color:#183f59;
+  font-size:8.8px;
+  font-weight:720;
+}
+.materialNameCell small{
+  display:block;
+  margin-top:2px;
+  color:#9aa8b1;
+  font-size:6.2px;
+}
+.stockFinal{
+  color:#21475f;
+  font-size:9px;
+}
+.stockFinal.low{
+  display:inline-block;
+  padding:4px 7px;
+  border-radius:999px;
+  background:#fff0f0;
+  color:#b9585d;
+}
+#inventoryPage .materialMonthlyTable .inText{
+  color:#238860!important;
+  font-weight:760;
+}
+#inventoryPage .materialMonthlyTable .outText{
+  color:#c06258!important;
+  font-weight:760;
+}
+#inventoryPage .invRowActions.compact{
+  justify-content:center;
+}
+#inventoryPage .invRowActions.compact button{
+  width:29px;
+  padding:0;
+  font-size:9px;
+}
+#inventoryPage .inventoryTableHint{
+  display:flex;
+  align-items:center;
+  min-height:36px;
+  padding:0 12px!important;
+  background:#fafcfd!important;
+  font-size:7px!important;
+}
+#inventoryPage .transactionCard{
+  margin-top:10px!important;
+}
+
+/* Tool register inspired by the user's compact example */
+#inventoryToolsPane .inventoryToolbar{
+  margin-bottom:10px;
+}
+#inventoryToolsPane .inventoryStats{
+  margin-bottom:10px!important;
+}
+#inventoryToolsPane .inventoryTableCard{
+  overflow:hidden!important;
+}
+#inventoryToolsPane .toolsTable{
+  min-width:880px!important;
+}
+#inventoryToolsPane .toolsTable th{
+  height:42px!important;
+  padding:0 11px!important;
+  background:#f4f7f9!important;
+  color:#526e80!important;
+  font-size:7px!important;
+}
+#inventoryToolsPane .toolsTable td{
+  height:52px;
+  padding:8px 11px!important;
+  font-size:8px!important;
+}
+#inventoryToolsPane .toolsTable th:first-child,
+#inventoryToolsPane .toolsTable td:first-child{
+  width:50px;text-align:center;
+}
+.toolNameCell{
+  min-width:210px;
+  position:relative;
+  padding-left:34px!important;
+}
+.toolNameCell .toolMiniIcon{
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:18px;height:18px;
+  display:grid;place-items:center;
+  border-radius:5px;
+  background:#eaf7f8;
+  color:#1795a5;
+  font-size:10px;
+  font-weight:800;
+}
+.toolNameCell b{
+  display:block;
+  color:#183f59;
+  font-size:8.8px;
+  font-weight:720;
+}
+.toolNameCell small{
+  display:block;
+  margin-top:2px;
+  color:#98a7b0;
+  font-size:6px;
+}
+#inventoryToolsPane .toolCondition{
+  padding:5px 8px!important;
+  border-radius:999px!important;
+  font-size:6.8px!important;
+}
+#inventoryToolsPane .toolCondition.good{
+  background:#e9f8ef!important;
+  color:#287e58!important;
+}
+#inventoryToolsPane .toolCondition.warn{
+  background:#fff5e5!important;
+  color:#a56f22!important;
+}
+#inventoryToolsPane .toolCondition.bad{
+  background:#ffecec!important;
+  color:#b75056!important;
+}
+#inventoryToolsPane .invRowActions.compact button{
+  width:30px;
+  padding:0;
+  font-size:9px;
+}
+
+/* Keep month tabs readable without making the page look oversized */
+@media(max-width:1250px){
+  .materialMonthTabs{
+    grid-template-columns:repeat(6,1fr);
+  }
+}
+@media(max-width:760px){
+  .materialMonthTabs{
+    grid-template-columns:repeat(4,1fr);
+    gap:5px;
+    padding:6px;
+  }
+  .materialMonthTabs button{
+    height:36px;
+    font-size:8px;
+  }
+  #inventoryPage .monthlyStats{
+    grid-template-columns:1fr 1fr!important;
+  }
+  #inventoryPage .inventoryToolbarActions{
+    grid-template-columns:1fr 1fr!important;
+  }
+  #inventoryPage .inventoryToolbarActions .inventorySearch{
+    grid-column:1/-1!important;
+  }
+}
