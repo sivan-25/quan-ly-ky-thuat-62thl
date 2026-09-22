@@ -255,7 +255,7 @@ function renderPeopleManager(){
  $("#peopleAddForm").classList.toggle("readonly",!writable);
  $("#newPersonName").disabled=!writable;
  $("#peopleAddForm").querySelector("button").disabled=!writable;
- box.innerHTML=projectPeople.length?projectPeople.map(p=>'<div class="peopleManagerRow"><div><span class="peopleAvatar">'+esc(personInitials(p.name))+'</span><b>'+esc(p.name)+'</b></div>'+(writable?'<button type="button" data-delete-person="'+p.id+'">Xóa</button>':'<span class="peopleReadOnly">Chỉ xem</span>')+'</div>').join(""):'<div class="peopleEmpty manager">Chưa có người thực hiện trong dự án này.</div>';
+ box.innerHTML=projectPeople.length?projectPeople.map(p=>'<div class="peopleManagerRow"><div><b>'+esc(p.name)+'</b></div>'+(writable?'<button type="button" data-delete-person="'+p.id+'">Xóa</button>':'<span class="peopleReadOnly">Chỉ xem</span>')+'</div>').join(""):'<div class="peopleEmpty manager">Chưa có người thực hiện trong dự án này.</div>';
  box.querySelectorAll("[data-delete-person]").forEach(btn=>btn.onclick=()=>deleteProjectPerson(btn.dataset.deletePerson));
 }
 async function fetchProjectPeople(buildingId=currentBuilding?.id){
