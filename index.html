@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2215"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2310"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -54,8 +54,149 @@
     <div class="lv8HeroSlogan">VẬN HÀNH AN TOÀN &nbsp; · &nbsp; TIẾT KIỆM NĂNG LƯỢNG &nbsp; · &nbsp; NÂNG CAO GIÁ TRỊ</div>
   </div>
 </section>
-<div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><nav><button id="navAdmin" class="hide">▦ <span>Tổng quan Admin</span></button><button id="navWork" class="active">▣ <span>Công việc</span></button><button id="navEnergy">▥ <span>Năng lượng</span></button></nav><div class="sideBackup"><button id="backupBtn" type="button">Sao lưu</button><button id="restoreBtn" type="button">Khôi phục</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
-<main><header><button id="menu">☰</button><div id="topAdminTitle" class="topModuleTitle hide"><div class="topModuleIcon">▦</div><div><h1>Quản trị hệ thống</h1><p>Tổng hợp các dự án ESTA</p></div></div><div id="topWorkTitle" class="topModuleTitle"><div class="topModuleIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý công việc hằng ngày</p></div></div><div id="topEnergyTitle" class="topModuleTitle hide"><div class="topModuleIcon">▥</div><div><h1>Năng lượng</h1><p>Theo dõi điện, nước và điện mặt trời</p></div></div><div class="headerTools"><div class="headerSearch">⌕ <input id="globalSearch" placeholder="Tìm công việc..."></div><div class="filterWrap"><button id="toggleFilter" class="iconAction" type="button" title="Bộ lọc">⌕</button><div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label>Từ ngày<input id="fromDate" type="date"></label><label>Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div></div><button id="exportBtn" class="pdfAction" type="button" title="Xuất PDF"><b>PDF</b> ⇩</button></div><div class="account"><span id="headerRole"></span><b id="headerUser"></b></div></header>
+<div id="app" class="hide">
+<aside class="estaSidebar">
+  <div class="brand estaSidebarBrand">
+    <div class="estaPetalLogo" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div><b>ESTA</b><small>PROPERTY MANAGEMENT</small></div>
+  </div>
+
+  <nav class="estaNav">
+    <button id="navHome" class="active">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span>Tổng quan</span>
+    </button>
+    <button id="navAdmin" class="hide">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 13h2v2H9zM13 13h2v2h-2z"/></svg>
+      <span>Dự án</span>
+    </button>
+    <button id="navWork">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M8.5 11l1.5 1.5 3-3M8.5 16l1.5 1.5 3-3M14.5 11H17M14.5 16H17"/></svg>
+      <span>Công việc</span>
+    </button>
+    <button id="navEnergy">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg>
+      <span>Năng lượng</span>
+    </button>
+  </nav>
+
+  <div class="sideBackup">
+    <button id="backupBtn" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg><span>Sao lưu</span>
+    </button>
+    <button id="restoreBtn" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 21V9M8 13l4-4 4 4M5 3h14"/></svg><span>Khôi phục</span>
+    </button>
+    <input id="restoreFile" type="file" accept="application/json,.json" hidden>
+  </div>
+
+  <div class="sideBottom">
+    <div class="sideUserCard"><div id="sideAvatar" class="sideAvatar">E</div><span id="sideUser"></span></div>
+    <button id="logout" class="sideLogout" title="Đăng xuất">
+      <svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10"/></svg>
+    </button>
+  </div>
+</aside>
+
+<main>
+<header class="estaTopbar">
+  <button id="menu" class="mobileMenuBtn">☰</button>
+  <div id="topHomeTitle" class="topModuleTitle">
+    <div class="topModuleIcon homeIcon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+    <div><h1>Tổng quan vận hành</h1><p class="buildingNameText">Dự án</p></div>
+  </div>
+  <div id="topAdminTitle" class="topModuleTitle hide">
+    <div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 13h2v2H9zM13 13h2v2h-2z"/></svg></div>
+    <div><h1>Quản trị dự án</h1><p>Tổng hợp các dự án ESTA</p></div>
+  </div>
+  <div id="topWorkTitle" class="topModuleTitle hide">
+    <div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M9 5h6M9 3h6v4H9z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M8.5 11l1.5 1.5 3-3M14.5 11H17"/></svg></div>
+    <div><h1>Công việc kỹ thuật</h1><p>Quản lý công việc hằng ngày</p></div>
+  </div>
+  <div id="topEnergyTitle" class="topModuleTitle hide">
+    <div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div>
+    <div><h1>Năng lượng</h1><p>Theo dõi điện, nước và điện mặt trời</p></div>
+  </div>
+
+  <div class="headerTools">
+    <div class="headerSearch">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="globalSearch" placeholder="Tìm công việc...">
+    </div>
+    <div class="filterWrap">
+      <button id="toggleFilter" class="iconAction" type="button" title="Bộ lọc"><svg viewBox="0 0 24 24"><path d="M4 5h16M7 12h10M10 19h4"/></svg></button>
+      <div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label>Từ ngày<input id="fromDate" type="date"></label><label>Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div>
+    </div>
+    <button id="exportBtn" class="pdfAction" type="button" title="Xuất PDF"><b>PDF</b><span>⇩</span></button>
+    <button class="headerBell" type="button" title="Thông báo"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button>
+  </div>
+  <div class="account">
+    <div id="headerAvatar" class="headerAvatar">E</div>
+    <div><b id="headerUser"></b><span id="headerRole"></span></div>
+  </div>
+</header>
+
+<div id="homePage" class="page homeDashboard">
+  <section class="homeWelcome">
+    <div class="homeWelcomeCopy">
+      <span class="homeEyebrow">ESTA · SMART OPERATION</span>
+      <h1>Xin chào, <b id="homeUserName">Người dùng</b></h1>
+      <p>Hệ thống quản lý kỹ thuật · <strong class="buildingNameText">Dự án</strong></p>
+      <div class="homeSystemState"><i></i><span>Hệ thống hoạt động bình thường</span><small id="homeUpdatedAt">Cập nhật vừa xong</small></div>
+    </div>
+    <div class="homeBlueprint" aria-hidden="true">
+      <svg viewBox="0 0 300 150"><path d="M18 132h265M48 132V64l40-26v94M88 132V28l56-18v122M144 132V49l62-21v104M206 132V72l48-13v73M61 78h14M61 95h14M61 112h14M105 42h18M105 62h18M105 82h18M105 102h18M162 61h22M162 82h22M162 103h22M220 84h18M220 103h18"/></svg>
+      <span>ESTA</span>
+    </div>
+  </section>
+
+  <section class="homeKpis">
+    <article class="kpiCard kpiBlue"><div class="kpiIcon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h5"/></svg></div><div><small>CÔNG VIỆC HÔM NAY</small><strong id="homeToday">0</strong><span>Trong ngày hiện tại</span></div></article>
+    <article class="kpiCard kpiAmber"><div class="kpiIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><small>ĐANG THỰC HIỆN</small><strong id="homeDoing">0</strong><span>Cần tiếp tục xử lý</span></div></article>
+    <article class="kpiCard kpiGreen"><div class="kpiIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></div><div><small>HOÀN THÀNH</small><strong id="homeDone">0</strong><span>Đã xử lý xong</span></div></article>
+    <article class="kpiCard kpiRed"><div class="kpiIcon"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></div><div><small>CHỜ XỬ LÝ</small><strong id="homeWait">0</strong><span>Cần theo dõi</span></div></article>
+  </section>
+
+  <section id="homeAdminProjects" class="homePanel homeAdminProjects hide">
+    <div class="homePanelHead"><div><span class="panelKicker">DỰ ÁN ESTA</span><h2>Dự án đang quản lý</h2><p>Truy cập nhanh vào từng tòa nhà.</p></div><button id="homeOpenProjects" type="button">Quản lý dự án →</button></div>
+    <div id="homeProjectGrid" class="homeProjectGrid"></div>
+  </section>
+
+  <section class="homeMainGrid">
+    <div class="homePanel recentPanel">
+      <div class="homePanelHead"><div><span class="panelKicker">CÔNG VIỆC</span><h2>Công việc gần đây</h2><p>Các đầu việc mới nhất của dự án.</p></div><button id="homeViewAllTasks" type="button">Xem tất cả →</button></div>
+      <div id="homeRecentTasks" class="homeRecentTasks"></div>
+    </div>
+
+    <div class="homePanel energyPanel">
+      <div class="homePanelHead"><div><span class="panelKicker">NĂNG LƯỢNG</span><h2>Năng lượng tháng này</h2><p>Tổng hợp nhanh chỉ số tiêu thụ.</p></div><button id="homeOpenEnergy" type="button">Chi tiết →</button></div>
+      <div class="homeEnergyList">
+        <article><div class="energyMiniIcon electric"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div><div><span>Điện</span><strong id="homeElectric">—</strong><small>kWh tiêu thụ</small></div></article>
+        <article><div class="energyMiniIcon water"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg></div><div><span>Nước</span><strong id="homeWater">—</strong><small>m³ tiêu thụ</small></div></article>
+        <article><div class="energyMiniIcon solar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></div><div><span>Solar</span><strong id="homeSolar">—</strong><small>kWh sản lượng</small></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="homeBottomGrid">
+    <div class="homePanel quickPanel">
+      <div class="homePanelHead"><div><span class="panelKicker">TRUY CẬP NHANH</span><h2>Thao tác thường dùng</h2></div></div>
+      <div class="quickActions">
+        <button id="quickAddTask"><span class="quickIcon blue"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><div><b>Thêm công việc</b><small>Ghi nhận công việc kỹ thuật</small></div><i>→</i></button>
+        <button id="quickElectric"><span class="quickIcon cyan"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></span><div><b>Ghi chỉ số điện</b><small>Cập nhật kWh mới nhất</small></div><i>→</i></button>
+        <button id="quickWater"><span class="quickIcon aqua"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg></span><div><b>Ghi chỉ số nước</b><small>Cập nhật m³ mới nhất</small></div><i>→</i></button>
+        <button id="quickReport"><span class="quickIcon bronze"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4"/></svg></span><div><b>Xuất báo cáo</b><small>Tổng hợp dữ liệu vận hành</small></div><i>→</i></button>
+      </div>
+    </div>
+
+    <div class="homePanel activityPanel">
+      <div class="homePanelHead"><div><span class="panelKicker">HOẠT ĐỘNG</span><h2>Hoạt động gần đây</h2></div></div>
+      <div id="homeActivity" class="homeActivity"></div>
+    </div>
+  </section>
+</div>
 <div id="adminPage" class="page modulePage hide">
   <section class="adminHero">
     <div><span class="adminEyebrow">ESTA · CENTRAL ADMIN</span><h1>Quản trị toàn bộ dự án</h1><p>Tạo tài khoản theo từng tòa nhà và truy cập nhanh vào giao diện vận hành của mỗi dự án.</p></div>
@@ -183,4 +324,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2215"></script></body></html>
+<script src="app.js?v=20260922-2310"></script></body></html>
