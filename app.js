@@ -1010,6 +1010,12 @@ function inventorySetYears(){
  el.value=String([...el.options].some(o=>Number(o.value)===old)?old:now);
 }
 function inventoryTxFor(materialId){return inventoryTransactions.filter(x=>String(x.material_id)===String(materialId))}
+function inventoryStockAsOf(material,date){
+ const cutoff=String(date||today());
+ return inventoryNum(material?.opening_qty)+inventoryTxFor(material?.id)
+   .filter(x=>String(x.tx_date||"")<=cutoff)
+   .reduce((s,x)=>s+(x.tx_type==="in"?inventoryNum(x.qty):-inventoryNum(x.qty)),0);
+}
 function inventorySnapshot(material,year=inventoryYearValue()){
  const tx=inventoryTxFor(material.id).slice().sort((a,b)=>String(a.tx_date).localeCompare(String(b.tx_date))||String(a.created_at||"").localeCompare(String(b.created_at||"")));
  const start=year+"-01-01";let opening=inventoryNum(material.opening_qty);
@@ -1318,9 +1324,9 @@ $("#stockTxnForm").onsubmit=async e=>{
  const materialId=$("#stockTxnMaterial").value,qty=inventoryNum($("#stockTxnQty").value),txType=$("#stockTxnType").value,date=$("#stockTxnDate").value;
  if(!materialId||qty<=0)return toast("Vui lòng chọn vật tư và số lượng");
  if(txType==="out"){
-   const m=inventoryMaterials.find(x=>x.id===materialId),current=inventorySnapshot(m,new Date(date+"T00:00:00").getFullYear()).current;
-   const trueCurrent=inventorySnapshot(m,new Date().getFullYear()).current;
-   if(qty>trueCurrent)return toast("Số lượng xuất vượt quá tồn kho hiện tại");
+   const m=inventoryMaterials.find(x=>x.id===materialId);
+   const stockAtDate=inventoryStockAsOf(m,date);
+   if(qty>stockAtDate)return toast("Số lượng xuất vượt quá tồn kho tại ngày "+fmt(date));
  }
  const body={building_id:currentBuilding.id,material_id:materialId,tx_date:date,tx_type:txType,qty,performer:$("#stockTxnPerformer").value,note:$("#stockTxnNote").value.trim()};
  try{await sbFetch("/rest/v1/inventory_material_transactions",{method:"POST",token:centralSession.access_token,body});$("#stockTxnModal").classList.add("hide");await loadInventoryData(currentBuilding.id,true);toast(txType==="in"?"Đã nhập kho":"Đã xuất kho")}catch(err){toast(err.message)}
