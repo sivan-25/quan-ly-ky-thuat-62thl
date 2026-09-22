@@ -21,6 +21,8 @@ function showModule(name){
  $("#energyHero").classList.toggle("hide",!energy);
  $("#navWork").classList.toggle("active",!energy);
  $("#navEnergy").classList.toggle("active",energy);
+ $("#topWorkTitle").classList.toggle("hide",energy);
+ $("#topEnergyTitle").classList.toggle("hide",!energy);
  $("#app").classList.toggle("energyMode",energy);
  document.querySelector("aside").classList.remove("open");
  if(energy)renderEnergy();
