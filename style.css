@@ -1083,3 +1083,24 @@ img[data-storage-path]:not([src]){
   .viewerMedia .viewerLargeImage{max-height:76vh;margin-bottom:8px}
   .viewerDownloadBtn{width:100%;height:40px;font-size:11px}
 }
+
+/* Ảnh rõ hơn sau khi chuyển sang Storage */
+.thumbs{align-items:center!important;min-height:42px}
+.thumbs img{
+  width:48px!important;
+  height:40px!important;
+  object-fit:cover!important;
+  background:#eef4f7;
+}
+.imageLoadError{
+  display:block!important;
+  border:1px dashed #c7d7e2!important;
+  background:#f6f9fb!important;
+  min-width:48px;
+  min-height:40px;
+}
+.viewerMedia .imageLoadError{
+  width:100%;
+  min-height:220px;
+  object-fit:contain;
+}
