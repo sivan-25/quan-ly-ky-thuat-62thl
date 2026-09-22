@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-1325"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-1345"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild">
   <div class="loginShowcase">
     <div class="loginBrand">
@@ -51,28 +51,14 @@
   </section>
 
   <section class="adminSection">
-    <div class="adminSectionHead"><div><h2>Dự án</h2><p>Chọn một dự án để mở giao diện vận hành tương ứng.</p></div><div class="adminProjectHeadActions"><span id="adminProjectCount">0 dự án</span><button id="addProjectBtn" class="primary small" type="button">＋ Thêm dự án</button></div></div>
+    <div class="adminSectionHead"><div><h2>Dự án</h2><p>Chọn một dự án để mở giao diện vận hành tương ứng.</p></div><div class="adminProjectHeadActions"><span id="adminProjectCount">0 dự án</span><button id="adminSettingsBtn" class="settingsGearBtn" type="button" title="Cài đặt">⚙ <span>Cài đặt</span></button></div></div>
     <div id="adminProjectGrid" class="adminProjectGrid"></div>
   </section>
 
-  <section class="adminAccountsGrid">
-    <article class="adminSection adminCreateCard">
-      <div class="adminSectionHead"><div><h2>Tạo tài khoản dự án</h2><p>Tài khoản sẽ chỉ truy cập các dự án được phân quyền.</p></div></div>
-      <form id="adminCreateAccountForm" class="adminCreateForm">
-        <label><span>Tên đăng nhập</span><input id="adminUsername" required minlength="3" placeholder="vd: kythuat62"></label>
-        <label><span>Tên hiển thị</span><input id="adminDisplayName" required placeholder="vd: Kỹ thuật 62 THL"></label>
-        <label><span>Mật khẩu</span><input id="adminPassword" type="password" required minlength="6" placeholder="Tối thiểu 6 ký tự"></label>
-        <label><span>Dự án</span><select id="adminBuildingSelect" required></select></label>
-        <label><span>Quyền</span><select id="adminRole"><option value="editor">Được nhập / chỉnh sửa</option><option value="viewer">Chỉ xem</option></select></label>
-        <button id="adminCreateBtn" class="primary" type="submit">＋ Tạo tài khoản</button>
-      </form>
-      <p id="adminCreateHint" class="adminHint">Cần đăng nhập bằng Admin trung tâm để tạo tài khoản thật.</p>
-    </article>
-
-    <article class="adminSection adminUsersCard">
-      <div class="adminSectionHead"><div><h2>Danh sách tài khoản</h2><p>Theo dõi tài khoản đang được phân quyền theo dự án.</p></div><button id="refreshAdminUsers" class="secondary small" type="button">Làm mới</button></div>
-      <div id="adminUsersList" class="adminUsersList"><div class="empty">Chưa tải danh sách tài khoản.</div></div>
-    </article>
+  <section class="adminSection adminManageHint">
+    <div class="adminManageHintIcon">⚙</div>
+    <div><h3>Quản lý hệ thống</h3><p>Thêm / xóa dự án, quản lý tài khoản kỹ thuật và khôi phục dự án đã xóa trong mục <b>Cài đặt</b>.</p></div>
+    <button id="adminSettingsShortcut" type="button">Mở cài đặt</button>
   </section>
 </div>
 <div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
@@ -140,8 +126,49 @@
     <div class="energyLegend"><span>■ Chủ nhật</span><span>Chênh lệch = chỉ số hiện tại − chỉ số lần trước</span></div>
   </section>
 </div></main></div>
-<div id="projectModal" class="modal hide"><div class="modalCard projectModalCard"><button id="closeProjectModal" class="modalClose" type="button">×</button><h3>Thêm dự án mới</h3><p>Tạo dự án mới để cấp tài khoản và quản lý Công việc / Năng lượng riêng.</p><form id="projectForm" class="projectForm"><label><span>Mã dự án</span><input id="projectCode" required maxlength="20" placeholder="VD: 68PDL"></label><label><span>Tên dự án</span><input id="projectName" required maxlength="120" placeholder="VD: 68 Phan Đăng Lưu"></label><button class="primary" type="submit">＋ Tạo dự án</button><div id="projectFormMessage" class="adminSetupMessage"></div></form></div></div><div id="adminSetupModal" class="modal hide"><div class="modalCard adminSetupCard"><button id="closeAdminSetup" class="modalClose" type="button">×</button><h3>Kích hoạt Admin trung tâm</h3><p>Tạo tài khoản Admin Supabase lần đầu để quản lý tài khoản cho tất cả dự án.</p><form id="adminSetupForm" class="adminSetupForm"><label><span>Email Admin</span><input id="setupAdminEmail" type="email" required placeholder="email của anh"></label><label><span>Tên hiển thị</span><input id="setupAdminName" required value="Quản trị viên"></label><label><span>Mật khẩu Admin</span><input id="setupAdminPassword" type="password" required minlength="6" placeholder="Tối thiểu 6 ký tự"></label><button class="primary" type="submit">Kích hoạt Admin</button><div id="adminSetupMessage" class="adminSetupMessage"></div></form></div></div><div id="exportModal" class="modal hide"><div class="modalCard exportModalWide"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn loại báo cáo và khoảng thời gian.</p>
+<div id="adminSettingsModal" class="modal hide">
+  <div class="modalCard adminSettingsCard">
+    <button id="closeAdminSettings" class="modalClose" type="button">×</button>
+    <div class="settingsHead"><div><span>ESTA ADMIN</span><h3>⚙ Cài đặt hệ thống</h3><p>Quản lý dự án, tài khoản kỹ thuật và Thùng rác.</p></div></div>
+    <div class="settingsTabs">
+      <button class="active" type="button" data-settings-tab="projects">▥ Dự án</button>
+      <button type="button" data-settings-tab="accounts">👤 Tài khoản kỹ thuật</button>
+      <button type="button" data-settings-tab="trash">🗑 Thùng rác</button>
+    </div>
+
+    <section id="settingsProjects" class="settingsPane">
+      <div class="settingsPaneTitle"><div><h4>Quản lý dự án</h4><p>Thêm dự án mới hoặc đưa dự án đang hoạt động vào Thùng rác.</p></div></div>
+      <form id="projectForm" class="projectForm settingsInlineForm">
+        <label><span>Mã dự án</span><input id="projectCode" required maxlength="20" placeholder="VD: 68PDL"></label>
+        <label><span>Tên dự án</span><input id="projectName" required maxlength="120" placeholder="VD: 68 Phan Đăng Lưu"></label>
+        <button class="primary" type="submit">＋ Thêm dự án</button>
+        <div id="projectFormMessage" class="adminSetupMessage"></div>
+      </form>
+      <div id="settingsProjectList" class="settingsList"></div>
+    </section>
+
+    <section id="settingsAccounts" class="settingsPane hide">
+      <div class="settingsPaneTitle"><div><h4>Tài khoản kỹ thuật</h4><p>Tạo tài khoản và xóa tài khoản kỹ thuật không còn sử dụng.</p></div></div>
+      <form id="adminCreateAccountForm" class="adminCreateForm settingsAccountForm">
+        <label><span>Tên đăng nhập</span><input id="adminUsername" required minlength="3" placeholder="vd: kythuat62"></label>
+        <label><span>Tên hiển thị</span><input id="adminDisplayName" required placeholder="vd: Kỹ thuật 62 THL"></label>
+        <label><span>Mật khẩu</span><input id="adminPassword" type="password" required minlength="6" placeholder="Tối thiểu 6 ký tự"></label>
+        <label><span>Dự án</span><select id="adminBuildingSelect" required></select></label>
+        <label><span>Quyền</span><select id="adminRole"><option value="editor">Được nhập / chỉnh sửa</option><option value="viewer">Chỉ xem</option></select></label>
+        <button id="adminCreateBtn" class="primary" type="submit">＋ Tạo tài khoản</button>
+      </form>
+      <p id="adminCreateHint" class="adminHint">Cần đăng nhập bằng Admin trung tâm để tạo tài khoản thật.</p>
+      <div class="settingsListHead"><b>Danh sách tài khoản</b><button id="refreshAdminUsers" class="secondary small" type="button">Làm mới</button></div>
+      <div id="adminUsersList" class="adminUsersList"><div class="empty">Chưa tải danh sách tài khoản.</div></div>
+    </section>
+
+    <section id="settingsTrash" class="settingsPane hide">
+      <div class="settingsPaneTitle"><div><h4>🗑 Thùng rác</h4><p>Dự án đã xóa được giữ lại để có thể khôi phục cùng dữ liệu và phân quyền trước đó.</p></div><button id="refreshTrash" class="secondary small" type="button">Làm mới</button></div>
+      <div id="trashProjectList" class="settingsList"><div class="empty">Chưa tải Thùng rác.</div></div>
+    </section>
+  </div>
+</div><div id="adminSetupModal" class="modal hide"><div class="modalCard adminSetupCard"><button id="closeAdminSetup" class="modalClose" type="button">×</button><h3>Kích hoạt Admin trung tâm</h3><p>Tạo tài khoản Admin Supabase lần đầu để quản lý tài khoản cho tất cả dự án.</p><form id="adminSetupForm" class="adminSetupForm"><label><span>Email Admin</span><input id="setupAdminEmail" type="email" required placeholder="email của anh"></label><label><span>Tên hiển thị</span><input id="setupAdminName" required value="Quản trị viên"></label><label><span>Mật khẩu Admin</span><input id="setupAdminPassword" type="password" required minlength="6" placeholder="Tối thiểu 6 ký tự"></label><button class="primary" type="submit">Kích hoạt Admin</button><div id="adminSetupMessage" class="adminSetupMessage"></div></form></div></div><div id="exportModal" class="modal hide"><div class="modalCard exportModalWide"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn loại báo cáo và khoảng thời gian.</p>
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-1325"></script></body></html>
+<script src="app.js?v=20260922-1345"></script></body></html>
