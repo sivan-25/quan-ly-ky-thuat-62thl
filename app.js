@@ -181,6 +181,133 @@ async function projectSync(action,payload={},buildingId=currentBuilding?.id){
  return sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:buildingId,...payload}});
 }
 const cloudVersionByBuilding={};
+let projectPeople=[],taskSelectedPeople=[],energySelectedPeople=[];
+const peopleLocalKey=id=>"esta_people_"+id;
+function performerArray(x){
+ if(Array.isArray(x?.performers))return [...new Set(x.performers.map(v=>String(v||"").trim()).filter(Boolean))];
+ const raw=String(x?.a||x?.performer||"").trim();
+ return raw?[...new Set(raw.split(",").map(v=>v.trim()).filter(Boolean))]:[];
+}
+function existingProjectPeople(){
+ const names=[];
+ load().forEach(x=>names.push(...performerArray(x)));
+ if(typeof energyLoad==="function")energyLoad().forEach(x=>names.push(...performerArray(x)));
+ return [...new Set(names.map(v=>v.trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi"));
+}
+function cacheProjectPeople(){
+ try{localStorage.setItem(peopleLocalKey(currentBuilding.id),JSON.stringify(projectPeople))}catch(e){}
+}
+function peopleSelected(kind){return kind==="energy"?energySelectedPeople:taskSelectedPeople}
+function setPeopleSelected(kind,names){
+ const clean=[...new Set((names||[]).map(v=>String(v||"").trim()).filter(Boolean))];
+ if(kind==="energy")energySelectedPeople=clean;else taskSelectedPeople=clean;
+ const hidden=kind==="energy"?$("#energyPerformer"):$("#performer");
+ if(hidden)hidden.value=clean.join(", ");
+ renderPeopleSelector(kind);
+}
+function personInitials(name){
+ return String(name||"").trim().split(/\s+/).slice(-2).map(x=>x[0]||"").join("").toUpperCase()||"•";
+}
+function renderPeopleSelector(kind){
+ const box=kind==="energy"?$("#energyPeopleOptions"):$("#taskPeopleOptions");
+ const btn=kind==="energy"?$("#energyPeopleButton"):$("#taskPeopleButton");
+ if(!box||!btn)return;
+ const selected=peopleSelected(kind);
+ const names=[...new Set([...projectPeople.map(x=>x.name),...selected])].filter(Boolean);
+ if(!names.length){
+   box.innerHTML='<div class="peopleEmpty">Chưa có người thực hiện.<br>Bấm “Chỉnh sửa danh sách” để thêm.</div>';
+ }else{
+   box.innerHTML=names.map(name=>{
+     const on=selected.includes(name);
+     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'"><span class="peopleAvatar">'+esc(personInitials(name))+'</span><span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
+   }).join("");
+   box.querySelectorAll("[data-person]").forEach(el=>el.onclick=e=>{
+     e.stopPropagation();
+     const name=decodeURIComponent(el.dataset.person),next=[...peopleSelected(kind)];
+     const idx=next.indexOf(name);if(idx>=0)next.splice(idx,1);else next.push(name);
+     setPeopleSelected(kind,next);
+     if(kind==="task")saveDraft();
+   });
+ }
+ const label=btn.querySelector("span");
+ if(label)label.textContent=!selected.length?"Chọn người thực hiện":selected.length===1?selected[0]:selected[0]+" +"+(selected.length-1);
+ btn.classList.toggle("hasValue",selected.length>0);
+}
+function renderAllPeopleSelectors(){renderPeopleSelector("task");renderPeopleSelector("energy")}
+function closePeopleMenus(){
+ $("#taskPeopleMenu")?.classList.add("hide");
+ $("#energyPeopleMenu")?.classList.add("hide");
+}
+function openPeopleManager(){
+ closePeopleMenus();
+ $("#peopleManagerProject").textContent="Danh sách của "+(currentBuilding?.name||"dự án")+" · tự động lưu riêng theo dự án.";
+ $("#peopleManagerModal").classList.remove("hide");
+ renderPeopleManager();
+}
+function renderPeopleManager(){
+ const box=$("#peopleManagerList");if(!box)return;
+ const writable=canProjectEdit();
+ $("#peopleAddForm").classList.toggle("readonly",!writable);
+ $("#newPersonName").disabled=!writable;
+ $("#peopleAddForm").querySelector("button").disabled=!writable;
+ box.innerHTML=projectPeople.length?projectPeople.map(p=>'<div class="peopleManagerRow"><div><span class="peopleAvatar">'+esc(personInitials(p.name))+'</span><b>'+esc(p.name)+'</b></div>'+(writable?'<button type="button" data-delete-person="'+p.id+'">Xóa</button>':'<span class="peopleReadOnly">Chỉ xem</span>')+'</div>').join(""):'<div class="peopleEmpty manager">Chưa có người thực hiện trong dự án này.</div>';
+ box.querySelectorAll("[data-delete-person]").forEach(btn=>btn.onclick=()=>deleteProjectPerson(btn.dataset.deletePerson));
+}
+async function fetchProjectPeople(buildingId=currentBuilding?.id){
+ if(!centralSession?.access_token||!buildingId)return [];
+ const rows=await sbFetch("/rest/v1/building_people?select=id,name&building_id=eq."+encodeURIComponent(buildingId)+"&order=name.asc",{token:centralSession.access_token});
+ return Array.isArray(rows)?rows:[];
+}
+async function loadProjectPeople(buildingId=currentBuilding?.id){
+ if(!buildingId)return;
+ let cached=[];try{cached=JSON.parse(localStorage.getItem(peopleLocalKey(buildingId))||"[]")}catch(e){}
+ projectPeople=Array.isArray(cached)?cached:[];
+ renderAllPeopleSelectors();
+ if(!centralSession?.access_token)return;
+ try{
+   let rows=await fetchProjectPeople(buildingId);
+   if(!rows.length&&buildingId===currentBuilding?.id){
+     const legacy=existingProjectPeople();
+     if(legacy.length&&canProjectEdit()){
+       try{
+         await sbFetch("/rest/v1/building_people",{method:"POST",token:centralSession.access_token,body:legacy.map(name=>({building_id:buildingId,name}))});
+         rows=await fetchProjectPeople(buildingId);
+       }catch(e){console.warn("Seed project people failed",e)}
+     }else if(legacy.length){
+       rows=legacy.map((name,i)=>({id:"legacy-"+i,name}));
+     }
+   }
+   if(buildingId!==currentBuilding?.id)return;
+   projectPeople=rows;
+   cacheProjectPeople();renderAllPeopleSelectors();renderPeopleManager();
+ }catch(e){console.warn("Load project people failed",e)}
+}
+async function addProjectPerson(name){
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ name=sentenceCapitalizeText(String(name||"").trim());
+ if(!name)return;
+ if(projectPeople.some(p=>p.name.toLocaleLowerCase("vi-VN")===name.toLocaleLowerCase("vi-VN")))return toast("Người này đã có trong danh sách");
+ try{
+   await sbFetch("/rest/v1/building_people",{method:"POST",token:centralSession.access_token,body:{building_id:currentBuilding.id,name}});
+   await loadProjectPeople(currentBuilding.id);
+   toast("Đã thêm "+name);
+ }catch(e){toast(e.status===409?"Người này đã có trong danh sách":e.message)}
+}
+async function deleteProjectPerson(id){
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ const person=projectPeople.find(p=>String(p.id)===String(id));if(!person)return;
+ if(!confirm("Xóa "+person.name+" khỏi danh sách người thực hiện của dự án?"))return;
+ try{
+   await sbFetch("/rest/v1/building_people?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"DELETE",token:centralSession.access_token});
+   taskSelectedPeople=taskSelectedPeople.filter(x=>x!==person.name);
+   energySelectedPeople=energySelectedPeople.filter(x=>x!==person.name);
+   $("#performer").value=taskSelectedPeople.join(", ");
+   $("#energyPerformer").value=energySelectedPeople.join(", ");
+   await loadProjectPeople(currentBuilding.id);
+   toast("Đã xóa "+person.name);
+ }catch(e){toast(e.message)}
+}
+
 function applyCloudSnapshot(building,row){
  if(!row)return;
  localStorage.setItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id,JSON.stringify(Array.isArray(row.tasks)?row.tasks:[]));
