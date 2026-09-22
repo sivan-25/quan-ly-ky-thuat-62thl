@@ -1,13 +1,3 @@
-async function loadLoginHeroAsset(){
- try{
-   const r=await fetch("assets/esta-login-hero.b64?v=20260922-2110",{cache:"force-cache"});
-   if(!r.ok)return;
-   const b64=(await r.text()).trim();
-   if(b64)document.documentElement.style.setProperty("--esta-login-hero",'url("data:image/jpeg;base64,'+b64+'")');
- }catch(e){console.warn("Login hero load failed",e)}
-}
-loadLoginHeroAsset();
-
 const $=s=>document.querySelector(s);
 const SB_URL="https://upcjcrycahdfroxggsdz.supabase.co";
 const SB_KEY="sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
@@ -356,6 +346,13 @@ window.enterAccount=function(account,session=null){
  else{toast("Tài khoản chưa được phân quyền dự án");}
 };
 
+const rememberedLogin=localStorage.getItem("esta_remember_username")||"";
+if(rememberedLogin){$("#user").value=rememberedLogin;$("#rememberLogin").checked=true}
+$("#forgotPasswordBtn").onclick=()=>toast("Vui lòng liên hệ quản trị viên để được cấp lại mật khẩu.");
+$("#rememberLogin").onchange=()=>{
+ if(!$("#rememberLogin").checked)localStorage.removeItem("esta_remember_username");
+};
+
 $("#togglePassword").onclick=()=>{
  const p=$("#pass"),b=$("#togglePassword");
  const show=p.type==="password";p.type=show?"text":"password";
@@ -368,6 +365,8 @@ $("#loginForm").onsubmit=async e=>{
  er.textContent="";btn.disabled=true;btn.textContent="Đang đăng nhập...";
  try{
    const central=await centralLogin(u,p);
+   if($("#rememberLogin").checked)localStorage.setItem("esta_remember_username",u);
+   else localStorage.removeItem("esta_remember_username");
    window.enterAccount(central.account,central.session);
  }catch(err){
    er.textContent=err?.status===400||err?.status===401?"Tài khoản hoặc mật khẩu chưa đúng.":"Không thể kết nối hệ thống trung tâm. Vui lòng thử lại.";
