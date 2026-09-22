@@ -389,16 +389,24 @@ $("#restoreFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{le
 $("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";$("#performer").value=d.a||"";$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";$("#performer").value="";$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";pendingTaskFiles=[];$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));let pendingTaskFiles=[];
 function updateTaskImageInfo(){
  const n=pendingTaskFiles.length;
- $("#imageInfo").textContent=n?n+" hình đã chọn · Có thể chụp thêm hoặc chọn thêm từ Thư viện":"";
+ $("#imageInfo").textContent=n?"Đã chọn "+n+" hình · Bấm Chụp ảnh để chụp thêm hoặc chọn thêm từ Thư viện":"";
 }
 function addPendingTaskFiles(fileList){
- const incoming=[...(fileList||[])].filter(f=>f&&f.type?.startsWith("image/"));
+ const incoming=Array.from(fileList||[]).filter(f=>f&&f.type?.startsWith("image/"));
  if(!incoming.length)return;
- pendingTaskFiles.push(...incoming);
+ pendingTaskFiles=[...pendingTaskFiles,...incoming];
  updateTaskImageInfo();
 }
-$("#openNativeCamera").onclick=()=>$("#cameraNativeInput").click();
-$("#openNativeLibrary").onclick=()=>$("#images").click();
+$("#openNativeCamera").onclick=()=>{
+ const input=$("#cameraNativeInput");
+ input.value="";
+ input.click();
+};
+$("#openNativeLibrary").onclick=()=>{
+ const input=$("#images");
+ input.value="";
+ input.click();
+};
 $("#cameraNativeInput").onchange=e=>{
  addPendingTaskFiles(e.target.files);
  e.target.value="";
