@@ -5352,3 +5352,337 @@ img[data-storage-path]:not([src]){
   #inventoryPage .toolsStats b{font-size:18px!important}
   #inventoryPage .inventoryExamples{display:none!important}
 }
+
+/* =========================================================
+   ESTA MATERIALS V3 — LIGHT / CLEAR / STRONG ACTIVE MONTH
+   ========================================================= */
+#inventoryMaterialsPane.inventoryWorkspace{
+  padding:16px!important;
+  border:1px solid #dce6ec!important;
+  border-radius:17px!important;
+  background:#f4f7fa!important;
+  box-shadow:0 8px 26px rgba(18,50,79,.055)!important;
+}
+
+/* Header */
+#inventoryMaterialsPane>.inventoryToolbar{
+  min-height:68px!important;
+  padding:0 0 13px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .inventoryKicker{
+  color:#8f6d59!important;
+  font-size:6.4px!important;
+  letter-spacing:1.45px!important;
+}
+#inventoryMaterialsPane .inventoryToolbar h2{
+  margin:4px 0 2px!important;
+  color:#173d58!important;
+  font-size:16px!important;
+  font-weight:780!important;
+}
+#inventoryMaterialsPane .inventoryToolbar h2 span{
+  color:#8194a2!important;
+  font-size:10px!important;
+  font-weight:600!important;
+}
+#inventoryMaterialsPane .inventoryToolbar p{
+  color:#8193a0!important;
+  font-size:7.6px!important;
+}
+#inventoryMaterialsPane .inventorySearch{
+  width:210px!important;
+  min-width:210px!important;
+  height:37px!important;
+  border:1px solid #dce5ea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .inventorySearch svg{stroke:#6f8796!important}
+#inventoryMaterialsPane .inventorySearch input{color:#294a61!important}
+#inventoryMaterialsPane .inventorySearch input::placeholder{color:#9aa8b1!important}
+#inventoryMaterialsPane .inventorySecondary{
+  height:37px!important;
+  border:1px solid #d9e3e8!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:#49697d!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .inventoryPrimary{
+  height:37px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:linear-gradient(135deg,#173f5d,#17617a)!important;
+  color:#fff!important;
+  box-shadow:0 6px 14px rgba(19,76,105,.12)!important;
+}
+
+/* Month navigation */
+#inventoryMaterialsPane .materialMonthTabs{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin:0 0 12px!important;
+  padding:10px!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:0 5px 17px rgba(20,55,80,.035)!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button{
+  position:relative!important;
+  height:38px!important;
+  padding:0!important;
+  border:1px solid #dfe6eb!important;
+  border-radius:9px!important;
+  background:#f7f9fb!important;
+  color:#607787!important;
+  font-size:8.2px!important;
+  font-weight:780!important;
+  box-shadow:none!important;
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button:hover{
+  border-color:#b9d6df!important;
+  background:#f0f7f9!important;
+  color:#28647d!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button.active{
+  z-index:2!important;
+  transform:translateY(-2px)!important;
+  border-color:#16aaba!important;
+  background:linear-gradient(135deg,#1eb8c5 0%,#27c5ce 100%)!important;
+  color:#083a48!important;
+  font-weight:900!important;
+  box-shadow:0 8px 18px rgba(30,184,197,.24)!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button.active:before{
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  bottom:-8px!important;
+  width:24px!important;
+  height:3px!important;
+  border-radius:99px!important;
+  background:#18aebb!important;
+  transform:translateX(-50%)!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button.active:after{
+  content:"✓"!important;
+  position:absolute!important;
+  top:4px!important;
+  right:5px!important;
+  width:13px!important;
+  height:13px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:rgba(7,56,68,.13)!important;
+  color:#083a48!important;
+  font-size:7px!important;
+  font-weight:900!important;
+}
+
+/* Clear selected-period banner */
+#inventoryMaterialsPane .materialPeriodSummary{
+  min-height:52px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  margin:0 0 10px!important;
+  padding:9px 12px!important;
+  border:1px solid #cfe5ea!important;
+  border-radius:11px!important;
+  background:linear-gradient(90deg,#eef9fb 0%,#f7fcfd 100%)!important;
+}
+#inventoryMaterialsPane .materialPeriodCurrent span{
+  display:block!important;
+  color:#5c8190!important;
+  font-size:5.8px!important;
+  font-weight:820!important;
+  letter-spacing:1px!important;
+}
+#inventoryMaterialsPane .materialPeriodCurrent strong{
+  display:block!important;
+  margin-top:3px!important;
+  color:#156b80!important;
+  font-size:11px!important;
+  font-weight:850!important;
+}
+#inventoryMaterialsPane .materialPeriodFormula{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  flex-wrap:wrap!important;
+}
+#inventoryMaterialsPane .materialPeriodFormula span{
+  height:24px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 7px!important;
+  border:1px solid #d5e7eb!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#506f80!important;
+  font-size:6.6px!important;
+  font-weight:700!important;
+}
+#inventoryMaterialsPane .materialPeriodFormula b{
+  color:#69a0ad!important;
+  font-size:9px!important;
+}
+
+/* KPI cards: clean and readable */
+#inventoryMaterialsPane .monthlyStats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:9px!important;
+  margin:0 0 10px!important;
+}
+#inventoryMaterialsPane .monthlyStats article{
+  position:relative!important;
+  min-height:76px!important;
+  padding:12px 14px!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:0 5px 16px rgba(20,55,80,.03)!important;
+}
+#inventoryMaterialsPane .monthlyStats article:before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:12px!important;
+  right:12px!important;
+  height:2px!important;
+  border-radius:0 0 4px 4px!important;
+  background:#8fb9c6!important;
+}
+#inventoryMaterialsPane .monthlyStats article:nth-child(1):before{background:#38b887!important}
+#inventoryMaterialsPane .monthlyStats article:nth-child(2):before{background:#df8a63!important}
+#inventoryMaterialsPane .monthlyStats article:nth-child(3):before{background:#4c93bd!important}
+#inventoryMaterialsPane .monthlyStats article:nth-child(4):before{background:#e0ad42!important}
+#inventoryMaterialsPane .monthlyStats .invStatIcon{display:none!important}
+#inventoryMaterialsPane .monthlyStats small{
+  color:#7d909d!important;
+  font-size:6.3px!important;
+  letter-spacing:.35px!important;
+}
+#inventoryMaterialsPane .monthlyStats b{
+  margin:4px 0 2px!important;
+  color:#173d58!important;
+  font-size:21px!important;
+  line-height:1!important;
+}
+#inventoryMaterialsPane .monthlyStats article:nth-child(1) b{color:#2c966b!important}
+#inventoryMaterialsPane .monthlyStats article:nth-child(2) b{color:#c96f51!important}
+#inventoryMaterialsPane .monthlyStats article:nth-child(4) b{color:#b57b1e!important}
+#inventoryMaterialsPane .monthlyStats em{
+  color:#9aa8b1!important;
+  font-size:6.2px!important;
+}
+
+/* Suggested materials */
+#inventoryMaterialsPane .inventoryExamples{
+  margin:0 0 10px!important;
+  padding:0 1px!important;
+}
+#inventoryMaterialsPane .inventoryExamples>span{color:#80939f!important}
+#inventoryMaterialsPane .inventoryExamples button{
+  border-color:#dce5ea!important;
+  background:#fff!important;
+  color:#5b7485!important;
+}
+#inventoryMaterialsPane .inventoryExamples button:hover{
+  border-color:#b9d9e1!important;
+  background:#f0f8fa!important;
+  color:#24677f!important;
+}
+
+/* Main monthly table */
+#inventoryMaterialsPane .inventoryTableCard{
+  overflow:hidden!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:0 7px 22px rgba(20,55,80,.035)!important;
+}
+#inventoryMaterialsPane .inventoryTableHint{
+  min-height:42px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  padding:0 13px!important;
+  border-bottom:1px solid #e4eaee!important;
+  background:#f8fafb!important;
+}
+#inventoryMaterialsPane .inventoryTableHint>span{
+  color:#81939f!important;
+  font-size:6.2px!important;
+  font-weight:820!important;
+  letter-spacing:1px!important;
+}
+#inventoryMaterialsPane .inventoryTableHint>b{
+  height:25px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 9px!important;
+  border:1px solid #cde5ea!important;
+  border-radius:999px!important;
+  background:#ebf8fa!important;
+  color:#176b7f!important;
+  font-size:7px!important;
+  font-weight:820!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable th{
+  background:#f2f5f7!important;
+  color:#314b5c!important;
+  font-size:7.3px!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable td{
+  color:#314e61!important;
+  font-size:8.2px!important;
+}
+#inventoryMaterialsPane .materialNameCell b{
+  color:#173d58!important;
+}
+#inventoryMaterialsPane .transactionCard{
+  margin-top:10px!important;
+}
+
+/* Mobile keeps the selected month obvious */
+@media(max-width:900px){
+  #inventoryMaterialsPane .materialMonthTabs{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+  #inventoryMaterialsPane .materialPeriodSummary{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+}
+@media(max-width:760px){
+  #inventoryMaterialsPane.inventoryWorkspace{
+    padding:11px!important;
+  }
+  #inventoryMaterialsPane .materialMonthTabs{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    padding:8px!important;
+    gap:6px!important;
+  }
+  #inventoryMaterialsPane .materialMonthTabs button{
+    height:36px!important;
+  }
+  #inventoryMaterialsPane .monthlyStats{
+    grid-template-columns:1fr 1fr!important;
+    gap:7px!important;
+  }
+  #inventoryMaterialsPane .materialPeriodFormula{
+    display:none!important;
+  }
+}
