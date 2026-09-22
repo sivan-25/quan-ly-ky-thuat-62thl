@@ -1061,7 +1061,7 @@ function renderMaterials(){
  const y=inventoryYearValue(),month=Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
  const q=($("#materialSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
  const list=inventoryMaterials.filter(m=>!q||[m.name,m.code,m.unit,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
- const snaps=list.map(m=>({m,s:inventorySnapshot(m,y),mm:inventorySnapshot(m,y).months[month-1]}));
+ const snaps=list.map(m=>{const s=inventorySnapshot(m,y);return {m,s,mm:s.months[month-1]}});
 
  document.querySelectorAll("[data-material-month]").forEach(b=>b.classList.toggle("active",Number(b.dataset.materialMonth)===month));
  $("#materialMonthLabel").textContent="Tháng "+String(month).padStart(2,"0")+" / "+y;
@@ -1077,6 +1077,10 @@ function renderMaterials(){
  $("#materialInStockCount").textContent=inStock;
  $("#materialLowStock").textContent=low;
 
+ const moveIcon='<svg viewBox="0 0 24 24"><path d="M7 7h10M13 3l4 4-4 4M17 17H7M11 13l-4 4 4 4"/></svg>';
+ const editIcon='<svg viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16v4zM13.5 6.5l4 4"/></svg>';
+ const trashIcon='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>';
+
  $("#materialMatrixBody").innerHTML=snaps.map(({m,mm},i)=>{
    const lowRow=inventoryNum(m.min_qty)>0&&inventoryNum(mm.stock)<=inventoryNum(m.min_qty);
    return '<tr class="'+(lowRow?"lowStock":"")+'">'+
@@ -1087,7 +1091,11 @@ function renderMaterials(){
      '<td class="inText">'+inventoryFmt(mm.inQty)+'</td>'+
      '<td class="outText">'+inventoryFmt(mm.outQty)+'</td>'+
      '<td><b class="stockFinal '+(lowRow?"low":"")+'">'+inventoryFmt(mm.stock)+'</b></td>'+
-     '<td><div class="invRowActions compact"><button title="Nhập / Xuất" onclick="openStockTxnModal(\''+m.id+'\')">⇄</button><button title="Sửa" onclick="editMaterial(\''+m.id+'\')">✎</button><button title="Xóa" class="danger" onclick="deleteMaterial(\''+m.id+'\')">⌫</button></div></td>'+
+     '<td><div class="invRowActions compact">'+
+       '<button class="move" title="Nhập / Xuất" onclick="openStockTxnModal(\''+m.id+'\')">'+moveIcon+'</button>'+
+       '<button title="Sửa" onclick="editMaterial(\''+m.id+'\')">'+editIcon+'</button>'+
+       '<button title="Xóa" class="danger" onclick="deleteMaterial(\''+m.id+'\')">'+trashIcon+'</button>'+
+     '</div></td>'+
    '</tr>';
  }).join("");
  $("#materialEmpty").classList.toggle("hide",list.length>0);
@@ -1096,7 +1104,7 @@ function renderMaterials(){
  const prefix=y+"-"+String(month).padStart(2,"0");
  const tx=inventoryTransactions.filter(x=>String(x.tx_date||"").startsWith(prefix)).slice(0,60);
  $("#materialTxnSubtitle").textContent="Các phát sinh trong tháng "+String(month).padStart(2,"0")+" / "+y+".";
- $("#materialTxnBody").innerHTML=tx.map(x=>'<tr><td>'+fmt(x.tx_date)+'</td><td><b>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</b></td><td><span class="stockType '+x.tx_type+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></td><td><b>'+inventoryFmt(x.qty)+'</b></td><td>'+esc(x.performer||"—")+'</td><td>'+esc(x.note||"—")+'</td><td><button class="miniDanger" onclick="deleteStockTxn(\''+x.id+'\')">Xóa</button></td></tr>').join("");
+ $("#materialTxnBody").innerHTML=tx.map(x=>'<tr><td>'+fmt(x.tx_date)+'</td><td><b>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</b></td><td><span class="stockType '+x.tx_type+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></td><td><b>'+inventoryFmt(x.qty)+'</b></td><td>'+esc(x.performer||"—")+'</td><td>'+esc(x.note||"—")+'</td><td><button class="miniDanger" onclick="deleteStockTxn(\''+x.id+'\')">'+trashIcon+'</button></td></tr>').join("");
  $("#materialTxnEmpty").classList.toggle("hide",tx.length>0);
 
  const sel=$("#stockTxnMaterial"),old=sel.value;
@@ -1109,15 +1117,20 @@ function renderTools(){
  $("#toolCount").textContent=inventoryTools.length;
  $("#toolGoodCount").textContent=inventoryTools.filter(x=>x.condition_status==="Tốt"||x.condition_status==="Đang sử dụng").length;
  $("#toolRepairCount").textContent=inventoryTools.filter(x=>["Cần kiểm tra","Cần sửa","Hỏng","Hư hỏng"].includes(x.condition_status)).length;
+
+ const toolIcon='<svg viewBox="0 0 24 24"><path d="m14.5 6.5 3-3 3 3-3 3M13 8 4 17v3h3l9-9"/></svg>';
+ const editIcon='<svg viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16v4zM13.5 6.5l4 4"/></svg>';
+ const trashIcon='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>';
+
  $("#toolsBody").innerHTML=list.map((t,i)=>'<tr>'+
    '<td class="sttCell">'+(i+1)+'</td>'+
-   '<td class="toolNameCell"><span class="toolMiniIcon">⌁</span><b>'+esc(t.name)+'</b><small>'+esc(t.code||"")+'</small></td>'+
+   '<td class="toolNameCell"><span class="toolMiniIcon">'+toolIcon+'</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.code||"")+'</small></div></td>'+
    '<td>'+esc(t.brand||"—")+'</td>'+
    '<td><b>'+inventoryFmt(t.qty)+'</b> <small>'+esc(t.unit)+'</small></td>'+
    '<td>'+esc(t.location||"—")+'</td>'+
    '<td>'+esc(t.keeper||"—")+'</td>'+
    '<td><span class="toolCondition '+(["Tốt","Đang sử dụng"].includes(t.condition_status)?"good":["Hỏng","Hư hỏng","Cần sửa"].includes(t.condition_status)?"bad":"warn")+'">'+esc(t.condition_status)+'</span></td>'+
-   '<td><div class="invRowActions compact"><button title="Sửa" onclick="editTool(\''+t.id+'\')">✎</button><button title="Xóa" class="danger" onclick="deleteTool(\''+t.id+'\')">⌫</button></div></td>'+
+   '<td><div class="invRowActions compact"><button title="Sửa" onclick="editTool(\''+t.id+'\')">'+editIcon+'</button><button title="Xóa" class="danger" onclick="deleteTool(\''+t.id+'\')">'+trashIcon+'</button></div></td>'+
  '</tr>').join("");
  $("#toolsEmpty").classList.toggle("hide",list.length>0);
 }
