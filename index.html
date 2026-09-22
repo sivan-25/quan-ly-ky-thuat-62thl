@@ -1,114 +1,220 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2350"><style id="esta-work-energy-hotfix">
-/* Atomic hotfix: force Work/Energy forms to render safely */
-#app #workPage .workEntryBox{
-  height:auto!important;min-height:0!important;max-height:none!important;
-  padding:0!important;overflow:visible!important;display:block!important;
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2358"><style id="esta-work-v11">
+#app #workPage .workEntryCard{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0 0 14px!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 8px 28px rgba(20,55,80,.055)!important;
 }
-#app #workPage .workEntryBox .formSectionHead{
-  height:auto!important;min-height:76px!important;max-height:none!important;
-  display:flex!important;align-items:center!important;justify-content:space-between!important;
-  padding:16px 18px!important;margin:0!important;
+#app #workPage .workEntryHeader{
+  min-height:78px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding:16px 18px!important;
+  border-bottom:1px solid #edf1f4!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdfe 100%)!important;
+  border-radius:16px 16px 0 0!important;
 }
-#app #workPage .workEntryBox #taskForm{
-  display:grid!important;visibility:visible!important;opacity:1!important;
-  position:relative!important;transform:none!important;
-  height:auto!important;min-height:0!important;max-height:none!important;
-  grid-template-columns:repeat(12,minmax(0,1fr))!important;
-  grid-template-areas:none!important;
-  gap:12px!important;align-items:end!important;
-  padding:16px 18px 18px!important;margin:0!important;
+#app #workPage .workEntryHeader>div:first-child>span{
+  display:block!important;
+  margin:0 0 4px!important;
+  color:#9a7660!important;
+  font-size:7px!important;
+  font-weight:800!important;
+  letter-spacing:1.5px!important;
 }
-#app #workPage .workEntryBox #taskForm>label,
-#app #workPage .workEntryBox #taskForm>button{
-  display:block!important;visibility:visible!important;opacity:1!important;
-  position:relative!important;transform:none!important;
-  min-width:0!important;max-width:none!important;
+#app #workPage .workEntryHeader h2{
+  margin:0!important;
+  color:#173b56!important;
+  font-size:18px!important;
+  line-height:1.2!important;
+  font-weight:760!important;
 }
-#app #workPage .workEntryBox #taskForm .dateField{grid-column:span 2!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm .typeField{grid-column:span 2!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm .statusField{grid-column:span 2!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm .performerField{grid-column:span 4!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm #saveBtn{grid-column:span 2!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm .contentField{grid-column:span 6!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm .noteField{grid-column:span 6!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm .imageField{grid-column:span 10!important;grid-area:auto!important}
-#app #workPage .workEntryBox #taskForm #cancelEdit{grid-column:span 2!important;grid-area:auto!important;justify-self:stretch!important;width:100%!important}
-#app #workPage .workEntryBox #taskForm label>span{
-  display:block!important;margin:0 0 6px!important;
+#app #workPage .workEntryHeader p{
+  margin:4px 0 0!important;
+  color:#8295a2!important;
+  font-size:9px!important;
+  line-height:1.4!important;
 }
-#app #workPage .workEntryBox #taskForm input:not([type="hidden"]),
-#app #workPage .workEntryBox #taskForm select,
-#app #workPage .workEntryBox #taskForm .peopleSelectBtn{
-  width:100%!important;min-height:42px!important;height:42px!important;
+#app #workPage .workEntryHeaderIcon{
+  width:38px!important;height:38px!important;
+  display:grid!important;place-items:center!important;flex:0 0 38px!important;
+  border:1px solid #d7e5eb!important;border-radius:11px!important;
+  background:#f2f8fa!important;color:#24738d!important;
 }
-#app #workPage .workEntryBox #taskForm .peopleSelectBtn{
-  display:flex!important;align-items:center!important;justify-content:space-between!important;
+#app #workPage .workEntryHeaderIcon svg{
+  width:18px!important;height:18px!important;
+  fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
 }
-#app #workPage .workEntryBox #imageInfo,
-#app #workPage .workEntryBox #pendingImagePreview{display:block!important}
 
-/* Energy form safe layout */
-#app #energyPage .energyCard{
-  height:auto!important;min-height:0!important;max-height:none!important;
-  padding:0!important;overflow:visible!important;display:block!important;
+#app #workPage #taskForm.workEntryForm{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  transform:none!important;
+  grid-template-columns:130px minmax(260px,1.7fr) 130px 150px minmax(230px,1.25fr)!important;
+  gap:12px!important;
+  align-items:end!important;
+  padding:16px 18px 18px!important;
+  margin:0!important;
+  overflow:visible!important;
 }
-#app #energyPage .energyCard .formSectionHead{
-  height:auto!important;min-height:76px!important;max-height:none!important;
-  display:flex!important;align-items:center!important;justify-content:space-between!important;
-  padding:16px 18px!important;margin:0!important;
+#app #workPage #taskForm .workField{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
 }
-#app #energyPage #energyForm{
-  display:grid!important;visibility:visible!important;opacity:1!important;
-  position:relative!important;transform:none!important;
-  height:auto!important;min-height:0!important;max-height:none!important;
-  grid-template-columns:repeat(12,minmax(0,1fr))!important;
-  grid-template-areas:none!important;
-  gap:12px!important;align-items:end!important;
-  padding:16px 18px 18px!important;margin:0!important;
+#app #workPage #taskForm .workField>span{
+  display:block!important;
+  margin:0 0 6px!important;
+  color:#607889!important;
+  font-size:8px!important;
+  line-height:1.2!important;
+  font-weight:720!important;
 }
-#app #energyPage #energyForm>label,
-#app #energyPage #energyForm>.energyActions{
-  display:block!important;visibility:visible!important;opacity:1!important;
-  position:relative!important;transform:none!important;min-width:0!important;
+#app #workPage #taskForm .requiredField>span:after{
+  content:" *"!important;color:#c86468!important;font-weight:800!important;
 }
-#app #energyPage #energyForm>label:nth-of-type(1){grid-column:span 2!important;grid-area:auto!important}
-#app #energyPage #energyForm>label:nth-of-type(2){grid-column:span 2!important;grid-area:auto!important}
-#app #energyPage #energyForm .energyPerformerField{grid-column:span 4!important;grid-area:auto!important}
-#app #energyPage #energyForm .energyActions{grid-column:span 4!important;grid-area:auto!important;display:flex!important;gap:8px!important}
-#app #energyPage #energyForm .energyImageField{grid-column:span 4!important;grid-area:auto!important}
-#app #energyPage #energyForm .energyNoteField{grid-column:span 8!important;grid-area:auto!important}
-#app #energyPage #energyForm input:not([type="hidden"]),
-#app #energyPage #energyForm .peopleSelectBtn{width:100%!important;min-height:42px!important;height:42px!important}
+#app #workPage #taskForm input:not([type="hidden"]),
+#app #workPage #taskForm select,
+#app #workPage #taskForm .peopleSelectBtn{
+  display:flex!important;
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+  margin:0!important;
+  padding:0 10px!important;
+  border:1px solid #d9e3e9!important;
+  border-radius:9px!important;
+  background:#f9fbfc!important;
+  color:#25485f!important;
+  font-size:10px!important;
+  line-height:42px!important;
+  outline:none!important;
+  box-shadow:none!important;
+}
+#app #workPage #taskForm input:not([type="hidden"]):focus,
+#app #workPage #taskForm select:focus{
+  border-color:#55adc1!important;background:#fff!important;
+  box-shadow:0 0 0 3px rgba(64,161,184,.08)!important;
+}
+#app #workPage #taskForm .workContent input{
+  font-weight:650!important;color:#1e4058!important;
+}
+#app #workPage #taskForm .workPerformer .peopleSelectBtn{
+  align-items:center!important;justify-content:space-between!important;line-height:normal!important;
+  background:#f5faf7!important;border-color:#d6e6dc!important;
+}
+#app #workPage #taskForm .peopleSelect{position:relative!important;display:block!important;width:100%!important}
+#app #workPage #taskForm .peopleSelectMenu{z-index:120!important}
+#app #workPage #taskForm .workNote{grid-column:1/4!important}
+#app #workPage #taskForm .workImage{grid-column:4/6!important}
+#app #workPage #taskForm .imageNativeActions{
+  display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:nowrap!important;
+}
+#app #workPage #taskForm .nativeImageInput{display:none!important}
+#app #workPage #taskForm .imageActionBtn{
+  height:42px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  padding:0 12px!important;
+  border:1px solid #dbe5ea!important;border-radius:9px!important;
+  background:#f8fafb!important;color:#46687b!important;
+  font-size:8.5px!important;font-weight:700!important;box-shadow:none!important;
+}
+#app #workPage #taskForm .imageActionBtn svg{
+  width:16px!important;height:16px!important;fill:none!important;stroke:currentColor!important;
+  stroke-width:1.7!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#app #workPage #taskForm .cameraBtn{
+  border-color:#d0e8ee!important;background:#eef8fb!important;color:#237a92!important;
+}
+#app #workPage #taskForm .workFormActions{
+  grid-column:1/-1!important;
+  display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:8px!important;
+  padding-top:2px!important;
+}
+#app #workPage #taskForm .workSave{
+  height:42px!important;min-width:145px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  border:0!important;border-radius:9px!important;
+  background:linear-gradient(135deg,#153f5c,#17627b)!important;color:#fff!important;
+  font-size:9px!important;font-weight:780!important;
+  box-shadow:0 8px 17px rgba(19,76,105,.13)!important;
+}
+#app #workPage #taskForm .workSave svg{
+  width:15px!important;height:15px!important;fill:none!important;stroke:currentColor!important;
+  stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#app #workPage #taskForm .workCancel{
+  height:42px!important;min-width:82px!important;
+  border:1px solid #dfe6ea!important;border-radius:9px!important;
+  background:#fff!important;color:#6b8190!important;font-size:8.5px!important;font-weight:700!important;
+}
+#app #workPage #taskForm .workCancel.hide{display:none!important}
+#app #workPage .workImageInfo{
+  display:block!important;margin:-8px 18px 8px!important;
+  color:#728795!important;font-size:8px!important;
+}
+#app #workPage .workPendingImages{
+  display:flex!important;margin:0 18px 16px!important;
+}
 
-@media(max-width:1180px){
-  #app #workPage .workEntryBox #taskForm .dateField,
-  #app #workPage .workEntryBox #taskForm .typeField,
-  #app #workPage .workEntryBox #taskForm .statusField{grid-column:span 4!important}
-  #app #workPage .workEntryBox #taskForm .performerField{grid-column:span 8!important}
-  #app #workPage .workEntryBox #taskForm #saveBtn{grid-column:span 4!important}
-  #app #workPage .workEntryBox #taskForm .contentField,
-  #app #workPage .workEntryBox #taskForm .noteField{grid-column:span 12!important}
-  #app #workPage .workEntryBox #taskForm .imageField{grid-column:span 9!important}
-  #app #workPage .workEntryBox #taskForm #cancelEdit{grid-column:span 3!important}
+@media(max-width:1300px){
+  #app #workPage #taskForm.workEntryForm{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+  #app #workPage #taskForm .workDate{grid-column:span 2!important}
+  #app #workPage #taskForm .workType{grid-column:span 2!important}
+  #app #workPage #taskForm .workStatus{grid-column:span 2!important}
+  #app #workPage #taskForm .workContent{grid-column:span 3!important}
+  #app #workPage #taskForm .workPerformer{grid-column:span 3!important}
+  #app #workPage #taskForm .workNote{grid-column:span 3!important}
+  #app #workPage #taskForm .workImage{grid-column:span 3!important}
 }
 @media(max-width:760px){
-  #app #workPage .workEntryBox #taskForm,
-  #app #energyPage #energyForm{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:13px!important;gap:10px!important}
-  #app #workPage .workEntryBox #taskForm .dateField,
-  #app #workPage .workEntryBox #taskForm .typeField{grid-column:span 1!important}
-  #app #workPage .workEntryBox #taskForm .statusField,
-  #app #workPage .workEntryBox #taskForm .performerField,
-  #app #workPage .workEntryBox #taskForm .contentField,
-  #app #workPage .workEntryBox #taskForm .noteField,
-  #app #workPage .workEntryBox #taskForm .imageField,
-  #app #workPage .workEntryBox #taskForm #saveBtn,
-  #app #workPage .workEntryBox #taskForm #cancelEdit{grid-column:1/-1!important}
-  #app #energyPage #energyForm>label:nth-of-type(1),
-  #app #energyPage #energyForm>label:nth-of-type(2){grid-column:span 1!important}
-  #app #energyPage #energyForm .energyPerformerField,
-  #app #energyPage #energyForm .energyActions,
-  #app #energyPage #energyForm .energyImageField,
-  #app #energyPage #energyForm .energyNoteField{grid-column:1/-1!important}
+  #app #workPage #taskForm.workEntryForm{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;padding:13px!important;
+  }
+  #app #workPage #taskForm .workDate,
+  #app #workPage #taskForm .workType{grid-column:span 1!important}
+  #app #workPage #taskForm .workStatus,
+  #app #workPage #taskForm .workContent,
+  #app #workPage #taskForm .workPerformer,
+  #app #workPage #taskForm .workNote,
+  #app #workPage #taskForm .workImage,
+  #app #workPage #taskForm .workFormActions{grid-column:1/-1!important}
+  #app #workPage #taskForm input:not([type="hidden"]),
+  #app #workPage #taskForm select,
+  #app #workPage #taskForm .peopleSelectBtn,
+  #app #workPage #taskForm .imageActionBtn{height:46px!important;min-height:46px!important;max-height:46px!important}
+  #app #workPage #taskForm .imageNativeActions{display:grid!important;grid-template-columns:1fr 1fr!important}
+  #app #workPage #taskForm .workFormActions{display:grid!important;grid-template-columns:1fr!important}
+  #app #workPage #taskForm .workSave,
+  #app #workPage #taskForm .workCancel{width:100%!important;height:46px!important}
 }
 </style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
@@ -323,12 +429,96 @@
 </div>
 <div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage proModulePage"><section class="pageHead proPageHead"><div class="headIcon"><svg viewBox="0 0 24 24"><path d="M9 5h6M9 3h6v4H9z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M8.5 11l1.5 1.5 3-3M14.5 11H17M8.5 16l1.5 1.5 3-3M14.5 16H17"/></svg></div><div><span class="pageEyebrow">WORK ORDER MANAGEMENT</span><h1>Công việc kỹ thuật</h1><p>Quản lý, phân công và theo dõi công việc vận hành hằng ngày.</p></div><div class="headMeta"><span><i></i> Ngày: <b id="today"></b></span><span><i></i> Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
 
-<section class="entryBox premiumFormCard workEntryBox"><div class="formSectionHead"><div><span>ESTA · WORK ORDER</span><h2>Thêm công việc</h2><p>Ghi nhận công việc mới và phân công người thực hiện.</p></div><div class="formSectionMark"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div></div><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField requiredField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField requiredField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label class="typeField requiredField"><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label class="statusField requiredField"><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option selected>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label class="performerField requiredField"><span>Người thực hiện</span><div class="peopleSelect" data-people-kind="task"><input id="performer" type="hidden"><button id="taskPeopleButton" class="peopleSelectBtn" type="button"><span>Chọn người thực hiện</span><b>⌄</b></button><div id="taskPeopleMenu" class="peopleSelectMenu hide"><div id="taskPeopleOptions" class="peopleOptions"></div><button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button></div></div></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><div class="imageNativeActions">
-  <input id="images" class="nativeImageInput" type="file" accept="image/*" multiple>
-  <input id="cameraNativeInput" class="nativeImageInput" type="file" accept="image/*" capture="environment">
-  <button id="openNativeCamera" type="button" class="imageActionBtn cameraBtn">📷 Chụp ảnh</button>
-  <button id="openNativeLibrary" type="button" class="imageActionBtn libraryBtn">▧ Chọn ảnh</button>
-</div></label><button id="saveBtn" class="primary">Lưu</button><button id="cancelEdit" type="button" class="square hide">×</button></form><div id="imageInfo"></div><div id="pendingImagePreview" class="pendingImagePreview"></div></section>
+<section class="workEntryCard">
+  <div class="workEntryHeader">
+    <div>
+      <span>ESTA · WORK ORDER</span>
+      <h2 id="workEntryTitle">Thêm công việc</h2>
+      <p>Ghi nhận công việc kỹ thuật và phân công người thực hiện.</p>
+    </div>
+    <div class="workEntryHeaderIcon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </div>
+  </div>
+
+  <form id="taskForm" class="workEntryForm">
+    <input id="editId" type="hidden">
+
+    <label class="workField workDate requiredField">
+      <span>Ngày</span>
+      <input id="date" type="date" required>
+    </label>
+
+    <label class="workField workContent requiredField">
+      <span>Nội dung công việc</span>
+      <input id="content" required placeholder="Nhập nội dung công việc...">
+    </label>
+
+    <label class="workField workType requiredField">
+      <span>Loại công việc</span>
+      <select id="type">
+        <option>Hằng ngày</option>
+        <option>Bảo trì</option>
+        <option>Sự cố</option>
+      </select>
+    </label>
+
+    <label class="workField workStatus requiredField">
+      <span>Trạng thái</span>
+      <select id="status">
+        <option>Đã hoàn thành</option>
+        <option selected>Đang thực hiện</option>
+        <option>Chờ xử lý</option>
+      </select>
+    </label>
+
+    <label class="workField workPerformer requiredField">
+      <span>Người thực hiện</span>
+      <div class="peopleSelect" data-people-kind="task">
+        <input id="performer" type="hidden">
+        <button id="taskPeopleButton" class="peopleSelectBtn" type="button">
+          <span>Chọn người thực hiện</span><b>⌄</b>
+        </button>
+        <div id="taskPeopleMenu" class="peopleSelectMenu hide">
+          <div id="taskPeopleOptions" class="peopleOptions"></div>
+          <button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button>
+        </div>
+      </div>
+    </label>
+
+    <label class="workField workNote">
+      <span>Ghi chú</span>
+      <input id="note" placeholder="Nhập ghi chú...">
+    </label>
+
+    <label class="workField workImage">
+      <span>Hình ảnh</span>
+      <div class="imageNativeActions">
+        <input id="images" class="nativeImageInput" type="file" accept="image/*" multiple>
+        <input id="cameraNativeInput" class="nativeImageInput" type="file" accept="image/*" capture="environment">
+        <button id="openNativeCamera" type="button" class="imageActionBtn cameraBtn">
+          <svg viewBox="0 0 24 24"><path d="M4 8h4l2-3h4l2 3h4v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <span>Chụp ảnh</span>
+        </button>
+        <button id="openNativeLibrary" type="button" class="imageActionBtn libraryBtn">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m5 18 5-5 3 3 2-2 4 4"/></svg>
+          <span>Chọn ảnh</span>
+        </button>
+      </div>
+    </label>
+
+    <div class="workFormActions">
+      <button id="cancelEdit" type="button" class="workCancel hide">Hủy</button>
+      <button id="saveBtn" class="workSave" type="submit">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <span>Lưu công việc</span>
+      </button>
+    </div>
+  </form>
+
+  <div id="imageInfo" class="workImageInfo"></div>
+  <div id="pendingImagePreview" class="pendingImagePreview workPendingImages"></div>
+</section>
 
 <input id="search" type="hidden">
 
@@ -453,4 +643,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2350"></script></body></html>
+<script src="app.js?v=20260922-2358"></script></body></html>
