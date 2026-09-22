@@ -352,3 +352,105 @@ document.querySelectorAll("[data-combined-range]").forEach(b=>b.onclick=()=>{
 resetEnergyForm();
 renderEnergy();
 $("#app").addEventListener("input",e=>{if(shouldAutoCapitalize(e.target))applyAutoCapitalize(e.target)});
+
+
+/* ===== ADMIN TRUNG TÂM / ĐA DỰ ÁN ===== */
+async function adminApi(action,payload={}){
+ if(!centralSession?.access_token)throw new Error("Chưa kích hoạt hoặc đăng nhập Admin trung tâm");
+ return sbFetch("/functions/v1/admin-users",{method:"POST",token:centralSession.access_token,body:{action,...payload}});
+}
+function adminProjectCard(b){
+ const safeId=esc(b.id),safeName=esc(b.name||b.id);
+ return '<button class="adminProjectCard" type="button" onclick="adminOpenBuilding(\''+safeId+'\')"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button>';
+}
+function renderAdminProjects(){
+ const list=currentAccount?.buildings||[];
+ $("#adminProjectCount").textContent=list.length+" dự án";
+ $("#adminProjectGrid").innerHTML=list.length?list.map(adminProjectCard).join(""):'<div class="empty">Chưa có dự án.</div>';
+ $("#adminBuildingSelect").innerHTML=list.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name||b.id)+'</option>').join("");
+}
+async function renderAdminUsers(){
+ const box=$("#adminUsersList");
+ if(!currentAccount?.is_admin){box.innerHTML='<div class="empty">Không có quyền Admin.</div>';return}
+ if(!centralSession?.access_token){
+   box.innerHTML='<div class="adminNeedsCentral"><b>Admin cục bộ đang hoạt động</b><p>Kích hoạt Admin trung tâm để tạo và quản lý tài khoản thật cho các dự án.</p><button type="button" onclick="document.querySelector(\'#adminSetupModal\').classList.remove(\'hide\')">Kích hoạt ngay</button></div>';
+   return;
+ }
+ box.innerHTML='<div class="empty">Đang tải tài khoản...</div>';
+ try{
+   const data=await adminApi("list");
+   const users=data.users||[];
+   box.innerHTML=users.length?users.map(u=>{
+     const projects=(u.buildings||[]).map(b=>'<span>'+esc(b.name||b.id)+'</span>').join("")||'<span>Chưa phân dự án</span>';
+     const name=esc(u.display_name||u.username||u.email||"Tài khoản");
+     return '<div class="adminUserRow"><div class="adminUserMain"><div class="adminAvatar">'+name.slice(0,1).toLocaleUpperCase("vi-VN")+'</div><div><b>'+name+'</b><small>'+(u.username?esc(u.username):esc(u.email||""))+'</small><div class="adminUserProjects">'+projects+'</div></div></div><div class="adminUserActions">'+(u.is_admin?'<span class="adminBadge">ADMIN</span>':'<button type="button" onclick="adminResetPassword(\''+u.id+'\')">Đổi mật khẩu</button><button type="button" class="'+(u.active?"danger":"success")+'" onclick="adminToggleUser(\''+u.id+'\','+(!u.active)+')">'+(u.active?"Khóa":"Mở khóa")+'</button>')+'</div></div>';
+   }).join(""):'<div class="empty">Chưa có tài khoản dự án.</div>';
+ }catch(err){box.innerHTML='<div class="empty">'+esc(err.message)+'</div>'}
+}
+async function renderAdminPortal(){
+ renderAdminProjects();
+ const connected=!!centralSession?.access_token;
+ $("#adminConnection").className="adminConnection "+(connected?"ok":"warn");
+ $("#adminConnection").textContent=connected?"Admin trung tâm đã kết nối":"Đang dùng Admin cục bộ";
+ $("#adminActivateCentral").classList.toggle("hide",connected);
+ $("#adminCreateBtn").disabled=!connected;
+ $("#adminCreateHint").textContent=connected?"Tài khoản mới sẽ được tạo trên hệ thống trung tâm và chỉ truy cập dự án đã chọn.":"Kích hoạt Admin trung tâm trước khi tạo tài khoản dự án.";
+ await renderAdminUsers();
+}
+$("#adminActivateCentral").onclick=()=>$("#adminSetupModal").classList.remove("hide");
+$("#refreshAdminUsers").onclick=()=>renderAdminUsers();
+$("#adminCreateAccountForm").onsubmit=async e=>{
+ e.preventDefault();
+ const btn=$("#adminCreateBtn");if(!centralSession?.access_token){$("#adminSetupModal").classList.remove("hide");return}
+ btn.disabled=true;btn.textContent="Đang tạo...";
+ try{
+   const payload={
+     username:$("#adminUsername").value.trim().toLowerCase(),
+     password:$("#adminPassword").value,
+     display_name:$("#adminDisplayName").value.trim(),
+     building_ids:[$("#adminBuildingSelect").value],
+     role:$("#adminRole").value
+   };
+   await adminApi("create",payload);
+   $("#adminCreateAccountForm").reset();
+   renderAdminProjects();
+   await renderAdminUsers();
+   toast("Đã tạo tài khoản dự án");
+ }catch(err){toast(err.message)}
+ finally{btn.disabled=false;btn.textContent="＋ Tạo tài khoản"}
+};
+window.adminResetPassword=async id=>{
+ if(!centralSession?.access_token)return;
+ const p=prompt("Nhập mật khẩu mới (tối thiểu 6 ký tự):");if(!p)return;
+ try{await adminApi("reset_password",{user_id:id,password:p});toast("Đã đổi mật khẩu")}catch(err){toast(err.message)}
+};
+window.adminToggleUser=async(id,active)=>{
+ if(!centralSession?.access_token)return;
+ try{await adminApi("set_active",{user_id:id,active});await renderAdminUsers();toast(active?"Đã mở khóa tài khoản":"Đã khóa tài khoản")}catch(err){toast(err.message)}
+};
+function setProjectEditability(){
+ const canEdit=currentAccount?.is_admin||currentBuilding.role!=="viewer";
+ ["taskForm","energyForm"].forEach(fid=>{
+   const f=$("#"+fid);if(!f)return;
+   f.querySelectorAll("input,select,button").forEach(el=>{if(el.id!=="cancelEdit"&&el.id!=="energyCancelEdit")el.disabled=!canEdit});
+ });
+ if($("#backupBtn"))$("#backupBtn").disabled=!canEdit;
+ if($("#restoreBtn"))$("#restoreBtn").disabled=!canEdit;
+}
+const oldApplyBuildingUI=applyBuildingUI;
+applyBuildingUI=function(){
+ oldApplyBuildingUI();
+ setProjectEditability();
+ const role=currentAccount?.is_admin?"Quản trị viên":(currentBuilding.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");
+ $("#headerRole").textContent=role+" · "+currentBuilding.id;
+};
+
+(async function initMultiProjectSession(){
+ const restored=await restoreCentral();
+ if(restored){window.enterAccount(restored.account,restored.session);return}
+ const localUser=sessionStorage.getItem("esta_local_user");
+ if(localUser&&LOCAL_USERS[localUser]){
+   const u=LOCAL_USERS[localUser];
+   window.enterAccount({username:localUser,display_name:u.n,is_admin:u.is_admin,buildings:u.buildings||[]},null);
+ }
+})();
