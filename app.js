@@ -401,14 +401,36 @@ function clearCameraSession(){
  $("#cameraCapturedStrip").innerHTML="";
  $("#cameraUsePhotos").textContent="Dùng 0 ảnh";
 }
+function syncCameraViewport(){
+ const modal=$("#multiCameraModal");if(!modal||modal.classList.contains("hide"))return;
+ const vv=window.visualViewport;
+ const top=vv?vv.offsetTop:0,left=vv?vv.offsetLeft:0;
+ const width=vv?vv.width:window.innerWidth,height=vv?vv.height:window.innerHeight;
+ modal.style.setProperty("--cam-top",top+"px");
+ modal.style.setProperty("--cam-left",left+"px");
+ modal.style.setProperty("--cam-width",width+"px");
+ modal.style.setProperty("--cam-height",height+"px");
+}
+if(window.visualViewport){
+ window.visualViewport.addEventListener("resize",syncCameraViewport);
+ window.visualViewport.addEventListener("scroll",syncCameraViewport);
+}
+window.addEventListener("resize",syncCameraViewport);
+window.addEventListener("orientationchange",()=>setTimeout(syncCameraViewport,120));
+
 async function openMultiCamera(){
  clearCameraSession();
  $("#multiCameraModal").classList.remove("hide");
  $("#cameraPermissionMsg").classList.add("hide");
+ syncCameraViewport();
+ requestAnimationFrame(syncCameraViewport);
+ setTimeout(syncCameraViewport,120);
  try{
    multiCameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
    $("#multiCameraVideo").srcObject=multiCameraStream;
    await $("#multiCameraVideo").play();
+   syncCameraViewport();
+   setTimeout(syncCameraViewport,120);
  }catch(err){
    $("#cameraPermissionMsg").classList.remove("hide");
    toast("Không thể mở camera. Hãy cấp quyền Camera cho trình duyệt.");
