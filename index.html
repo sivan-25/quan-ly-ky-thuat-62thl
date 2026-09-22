@@ -42,9 +42,9 @@
     </div>
   </div>
 </section>
-<div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><div class="sideBuilding"><div class="miniTech"><span>AI</span><i></i><i></i><i></i></div><b>62 TRẦN HUY LIỆU</b><small>Quận Phú Nhuận · TP.HCM</small></div><nav><button class="active">▣ <span>Công việc</span></button></nav><div class="smartPanel"><small>SMART BUILDING</small><b>SMART OPERATION</b><div><span>◈ BMS</span><span>✦ AI</span><span>◎ IoT</span><span>◇ SECURITY</span></div></div><div class="sideQuote">“Tòa nhà vận hành tốt,<br>khách hàng luôn hài lòng”</div><div class="sideBackup"><button id="backupBtn" type="button">Sao lưu</button><button id="restoreBtn" type="button">Khôi phục</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
+<div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><div class="sideBuilding"><div class="miniTech"><span>AI</span><i></i><i></i><i></i></div><b>62 TRẦN HUY LIỆU</b><small>Quận Phú Nhuận · TP.HCM</small></div><nav><button id="navWork" class="active">▣ <span>Công việc</span></button><button id="navEnergy">▥ <span>Năng lượng</span></button></nav><div class="smartPanel"><small>SMART BUILDING</small><b>SMART OPERATION</b><div><span>◈ BMS</span><span>✦ AI</span><span>◎ IoT</span><span>◇ SECURITY</span></div></div><div class="sideQuote">“Tòa nhà vận hành tốt,<br>khách hàng luôn hài lòng”</div><div class="sideBackup"><button id="backupBtn" type="button">Sao lưu</button><button id="restoreBtn" type="button">Khôi phục</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
 <main><header><button id="menu">☰</button><div class="headerTools"><div class="headerSearch">⌕ <input id="globalSearch" placeholder="Tìm công việc..."></div><div class="filterWrap"><button id="toggleFilter" class="iconAction" type="button" title="Bộ lọc">⌕</button><div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label>Từ ngày<input id="fromDate" type="date"></label><label>Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div></div><button id="exportBtn" class="pdfAction" type="button" title="Xuất PDF"><b>PDF</b> ⇩</button></div><div class="account"><span id="headerRole"></span><b id="headerUser"></b></div></header>
-<div class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div class="page"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b>62 Trần Huy Liệu</b></span></div></section>
+<div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b>62 Trần Huy Liệu</b></span></div></section>
 
 <section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label><span>Người thực hiện</span><input id="performer" required></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><input id="images" type="file" accept="image/*" multiple></label><button id="saveBtn" class="primary">＋ Thêm</button><button id="cancelEdit" type="button" class="square hide">×</button></form><div id="imageInfo"></div></section>
 
@@ -53,6 +53,59 @@
 
 <section class="stats"><article><i class="blue">▣</i><div><small>CÔNG VIỆC HÔM NAY</small><strong id="statToday">0</strong></div></article><article><i class="orange">◷</i><div><small>ĐANG XỬ LÝ</small><strong id="statDoing">0</strong></div></article><article><i class="green">✓</i><div><small>HOÀN THÀNH</small><strong id="statDone">0</strong></div></article><article><i class="red">!</i><div><small>CHỜ XỬ LÝ</small><strong id="statWait">0</strong></div></article></section>
 <section class="tableCard"><div class="tableTop"><div><b>Danh sách công việc kỹ thuật</b> <span id="count"></span></div></div><div class="desktopTable"><table><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
+</div>
+<div id="energyHero" class="heroStrip hide"><div><b>ESTA</b><span>QUẢN LÝ NĂNG LƯỢNG TÒA NHÀ</span></div><div class="heroTech"><span>ĐIỆN</span><span>NƯỚC</span><span>ĐIỆN MẶT TRỜI</span></div></div>
+<div id="energyPage" class="page modulePage hide">
+  <section class="pageHead energyHead">
+    <div class="headIcon">▥</div>
+    <div><h1>Năng lượng</h1><p>Ghi chỉ số và theo dõi mức tiêu thụ điện, nước và năng lượng mặt trời.</p></div>
+    <div class="headMeta"><span>▣ Ngày: <b id="energyToday"></b></span><span>▥ Tòa nhà: <b>62 Trần Huy Liệu</b></span></div>
+  </section>
+
+  <section class="energyTabs" aria-label="Loại chỉ số">
+    <button class="active" data-energy-type="electric">ϟ <span>Chỉ số điện</span></button>
+    <button data-energy-type="water">◉ <span>Chỉ số nước</span></button>
+    <button data-energy-type="solar">☼ <span>Năng lượng mặt trời</span></button>
+  </section>
+
+  <section class="energyCard">
+    <div class="energyCardTitle"><div><h2 id="energyFormTitle">Ghi chỉ số điện</h2><p id="energyUnitHint">Đơn vị: kWh</p></div></div>
+    <form id="energyForm" class="energyForm">
+      <input id="energyEditId" type="hidden">
+      <label><span>Ngày ghi</span><input id="energyDate" type="date" required></label>
+      <label><span id="energyValueLabel">Chỉ số điện (kWh)</span><input id="energyValue" type="number" step="0.01" min="0" required placeholder="Nhập chỉ số"></label>
+      <label class="energyImageField"><span>Hình ảnh đồng hồ</span><input id="energyImage" type="file" accept="image/*"></label>
+      <label class="energyNoteField"><span>Ghi chú</span><input id="energyNote" maxlength="500" placeholder="Nhập ghi chú..."></label>
+      <div class="energyActions"><button id="energySaveBtn" class="primary" type="submit">Lưu</button><button id="energyCancelEdit" type="button" class="secondary hide">Hủy</button></div>
+    </form>
+    <div id="energyImagePreview" class="energyImagePreview"></div>
+  </section>
+
+  <section class="energyTableCard">
+    <div class="energyTableTop">
+      <div><h2 id="energyTableTitle">Bảng theo dõi chỉ số điện</h2><p id="energySummaryText">Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.</p></div>
+      <button id="energyExportPdf" class="pdfAction" type="button"><b>PDF</b> ⇩ Xuất PDF</button>
+    </div>
+    <div class="energyFilters">
+      <span class="filterLabel">Lọc theo</span>
+      <div class="rangeButtons"><button data-erange="today">Hôm nay</button><button data-erange="week">Tuần</button><button data-erange="month">Tháng</button><button data-erange="all" class="active">Tất cả</button></div>
+      <label>Từ ngày<input id="energyFromDate" type="date"></label>
+      <label>Đến ngày<input id="energyToDate" type="date"></label>
+      <button id="energyApplyFilter" class="primary small" type="button">Áp dụng</button>
+      <button id="energyClearFilter" class="secondary small" type="button">Xóa lọc</button>
+    </div>
+    <div class="energySummaryCards">
+      <article><small>BẢN GHI</small><strong id="energyRecordCount">0</strong></article>
+      <article><small>CHỈ SỐ MỚI NHẤT</small><strong id="energyLatestValue">—</strong></article>
+      <article><small>TIÊU THỤ KỲ LỌC</small><strong id="energyPeriodUse">—</strong></article>
+    </div>
+    <div class="desktopTable energyDesktopTable">
+      <table><thead><tr><th>Ngày</th><th>Thứ</th><th id="energyValueColumn">Chỉ số (kWh)</th><th>Chênh lệch</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="energyTbody"></tbody></table>
+    </div>
+    <div id="energyMobileCards"></div>
+    <div id="energyEmpty" class="empty hide">Chưa có dữ liệu chỉ số.</div>
+    <div class="energyLegend"><span>■ Chủ nhật</span><span>Chênh lệch = chỉ số hiện tại − chỉ số lần trước</span></div>
+  </section>
 </div></main></div>
 <div id="exportModal" class="modal hide"><div class="modalCard"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn khoảng thời gian cần xuất.</p><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="app.js"></script></body></html>
