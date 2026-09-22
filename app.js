@@ -115,7 +115,7 @@ async function uploadMediaFiles(files,kind,recordId,onProgress,buildingId=curren
  const worker=async()=>{
    while(true){
      const i=next++;if(i>=list.length)return;
-     const blob=await imageFileToBlob(list[i]);
+     const blob=(list[i].type==="image/jpeg"&&String(list[i].name||"").startsWith("camera-"))?list[i]:await imageFileToBlob(list[i]);
      refs[i]=await uploadMediaBlob(blob,kind,recordId,i,buildingId);
      done++;if(onProgress)onProgress(done,list.length);
    }
@@ -386,7 +386,70 @@ $("#backupBtn").onclick=()=>{
 };
 $("#restoreBtn").onclick=()=>$("#restoreFile").click();
 $("#restoreFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text()),tasks=Array.isArray(d)?d:d.tasks;if(!Array.isArray(tasks))throw new Error("File sao lưu không hợp lệ");if(!confirm("Khôi phục sẽ thay thế dữ liệu hiện tại của "+currentBuilding.name+". Tiếp tục?"))return;save(tasks);if(Array.isArray(d.energy))energySaveAll(d.energy);await syncProjectSnapshot();render();renderEnergy();toast("Đã khôi phục và đồng bộ dữ liệu")}catch(err){toast("Không thể đọc file sao lưu")}finally{e.target.value=""}};
-$("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đã hoàn thành";$("#performer").value=d.a||"";$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đã hoàn thành";$("#performer").value="";$("#note").value="";$("#images").value="";$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));$("#images").onchange=e=>$("#imageInfo").textContent=e.target.files.length?e.target.files.length+" hình đã chọn · Không giới hạn số lượng":"";
+$("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";$("#performer").value=d.a||"";$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";$("#performer").value="";$("#note").value="";$("#images").value="";pendingCameraFiles=[];$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));let pendingCameraFiles=[],cameraSessionFiles=[],cameraSessionUrls=[],multiCameraStream=null;
+function selectedTaskImageCount(){return $("#images").files.length+pendingCameraFiles.length}
+function updateTaskImageInfo(){
+ const n=selectedTaskImageCount();
+ $("#imageInfo").textContent=n?n+" hình đã chọn · Không giới hạn số lượng":"";
+}
+function stopMultiCamera(){
+ if(multiCameraStream){multiCameraStream.getTracks().forEach(t=>t.stop());multiCameraStream=null}
+ $("#multiCameraVideo").srcObject=null;
+}
+function clearCameraSession(){
+ cameraSessionUrls.forEach(u=>URL.revokeObjectURL(u));cameraSessionUrls=[];cameraSessionFiles=[];
+ $("#cameraCapturedStrip").innerHTML="";
+ $("#cameraUsePhotos").textContent="Dùng 0 ảnh";
+}
+async function openMultiCamera(){
+ clearCameraSession();
+ $("#multiCameraModal").classList.remove("hide");
+ $("#cameraPermissionMsg").classList.add("hide");
+ try{
+   multiCameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
+   $("#multiCameraVideo").srcObject=multiCameraStream;
+   await $("#multiCameraVideo").play();
+ }catch(err){
+   $("#cameraPermissionMsg").classList.remove("hide");
+   toast("Không thể mở camera. Hãy cấp quyền Camera cho trình duyệt.");
+ }
+}
+function closeMultiCamera(discard=true){
+ stopMultiCamera();
+ if(discard)clearCameraSession();
+ $("#multiCameraModal").classList.add("hide");
+}
+function renderCameraStrip(){
+ $("#cameraCapturedStrip").innerHTML=cameraSessionUrls.map((u,i)=>'<div class="cameraShot"><img src="'+u+'" alt="Ảnh '+(i+1)+'"><span>'+(i+1)+'</span></div>').join("");
+ $("#cameraUsePhotos").textContent="Dùng "+cameraSessionFiles.length+" ảnh";
+}
+async function captureCameraShot(){
+ const v=$("#multiCameraVideo");
+ if(!v.videoWidth||!v.videoHeight){toast("Camera chưa sẵn sàng");return}
+ const max=1800,scale=Math.min(1,max/Math.max(v.videoWidth,v.videoHeight));
+ const cv=document.createElement("canvas");cv.width=Math.round(v.videoWidth*scale);cv.height=Math.round(v.videoHeight*scale);
+ cv.getContext("2d").drawImage(v,0,0,cv.width,cv.height);
+ const blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",.76));
+ if(!blob)return;
+ const file=new File([blob],"camera-"+Date.now()+"-"+cameraSessionFiles.length+".jpg",{type:"image/jpeg"});
+ cameraSessionFiles.push(file);
+ const u=URL.createObjectURL(blob);cameraSessionUrls.push(u);
+ renderCameraStrip();
+ if(navigator.vibrate)navigator.vibrate(35);
+}
+$("#openMultiCamera").onclick=()=>openMultiCamera();
+$("#closeMultiCamera").onclick=()=>closeMultiCamera(true);
+$("#multiCameraModal").onclick=e=>{if(e.target===$("#multiCameraModal"))closeMultiCamera(true)};
+$("#cameraShoot").onclick=()=>captureCameraShot();
+$("#cameraClearAll").onclick=()=>clearCameraSession();
+$("#cameraUsePhotos").onclick=()=>{
+ if(!cameraSessionFiles.length){toast("Chưa chụp ảnh nào");return}
+ pendingCameraFiles=[...pendingCameraFiles,...cameraSessionFiles];
+ cameraSessionFiles=[];cameraSessionUrls.forEach(u=>URL.revokeObjectURL(u));cameraSessionUrls=[];
+ stopMultiCamera();$("#multiCameraModal").classList.add("hide");renderCameraStrip();updateTaskImageInfo();
+ toast("Đã chọn "+pendingCameraFiles.length+" ảnh chụp");
+};
+$("#images").onchange=()=>updateTaskImageInfo();
 $("#taskForm").onsubmit=async e=>{
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
@@ -394,7 +457,7 @@ $("#taskForm").onsubmit=async e=>{
  try{
    const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
    let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
-   const files=[...$("#images").files];
+   const files=[...$("#images").files,...pendingCameraFiles];
    const imgs=Array.isArray(old?.imgs)?[...old.imgs]:[];
    const obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:$("#performer").value.trim(),imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[obj,...a];
