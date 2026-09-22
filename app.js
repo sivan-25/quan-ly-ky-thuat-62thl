@@ -441,38 +441,43 @@ function resetEnergyForm(){
  $("#energyTableTitle").textContent="Bảng theo dõi "+m.name.toLowerCase();
 }
 $("#energyCancelEdit").onclick=resetEnergyForm;
-$("#energyImage").onchange=async e=>{
+let energyPreviewObjectUrl="";
+$("#energyImage").onchange=e=>{
  const f=e.target.files[0];
+ if(energyPreviewObjectUrl){URL.revokeObjectURL(energyPreviewObjectUrl);energyPreviewObjectUrl=""}
  if(!f){$("#energyImagePreview").innerHTML="";return}
- try{
-  const data=await compressImage(f);
-  $("#energyImagePreview").innerHTML='<img src="'+data+'" alt="Ảnh đồng hồ"><span>Ảnh đã chọn</span>';
- }catch(err){toast(err.message);e.target.value=""}
+ if(!f.type.startsWith("image/")){toast("Chỉ hỗ trợ file hình ảnh");e.target.value="";return}
+ energyPreviewObjectUrl=URL.createObjectURL(f);
+ $("#energyImagePreview").innerHTML='<img src="'+energyPreviewObjectUrl+'" alt="Ảnh đồng hồ"><span>Ảnh đã chọn</span>';
 };
 $("#energyForm").onsubmit=async e=>{
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
+ const btn=$("#energySaveBtn");btn.disabled=true;
  try{
-  const id=$("#energyEditId").value;
-  let image="";
+  const editId=$("#energyEditId").value,id=editId||Date.now();
+  const all=energyLoad(),old=editId?all.find(x=>String(x.id)===String(editId)):null;
+  let image=old?.image||"";
   const f=$("#energyImage").files[0];
-  if(f)image=await compressImage(f);
-  const all=energyLoad();
-  const old=id?all.find(x=>String(x.id)===String(id)):null;
+  if(f){
+    const blob=await imageFileToBlob(f);
+    image=await uploadMediaBlob(blob,"energy",id,0);
+  }
   const obj={
-    id:id||Date.now(),
+    id,
     type:energyType,
     date:$("#energyDate").value,
     value:Number($("#energyValue").value),
     note:$("#energyNote").value.trim(),
-    image:image||(old?.image||""),
+    image,
     createdAt:old?.createdAt||new Date().toISOString()
   };
-  let next=id?all.map(x=>String(x.id)===String(id)?obj:x):[obj,...all];
+  const next=editId?all.map(x=>String(x.id)===String(editId)?obj:x):[obj,...all];
   energySaveAll(next);
   await syncEnergyRecord("upsert_energy",obj);
-  resetEnergyForm();renderEnergy();toast(id?"Đã cập nhật chỉ số":"Đã lưu chỉ số");
+  resetEnergyForm();renderEnergy();toast(editId?"Đã cập nhật chỉ số":"Đã lưu chỉ số");
  }catch(err){toast(err.message||"Không thể lưu dữ liệu")}
+ finally{btn.disabled=false}
 };
 function energyRangeFiltered(){
  let a=energyLoad().filter(x=>x.type===energyType);
@@ -509,11 +514,12 @@ function renderEnergy(){
  $("#energyTbody").innerHTML=rows.map(x=>{
    const sun=new Date(x.date+"T00:00:00").getDay()===0;
    const diff=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
-   const img=x.image?'<img class="energyThumb" src="'+x.image+'" onclick="viewEnergyImage(\''+x.id+'\')">':"—";
+   const img=x.image?'<span class="energyThumbWrap" onclick="viewEnergyImage(\''+x.id+'\')">'+mediaImgHtml(x.image,"energyThumb")+'</span>':"—";
    return '<tr class="'+(sun?"sunday":"")+'"><td>'+fmt(x.date)+'</td><td>'+weekday(x.date)+'</td><td><b>'+energyFmt(x.value)+'</b></td><td>'+diff+'</td><td>'+img+'</td><td>'+esc(x.note||"—")+'</td><td><div class="rowBtns"><button onclick="editEnergy(\''+x.id+'\')">✎</button><button class="del" onclick="deleteEnergy(\''+x.id+'\')">×</button></div></td></tr>'
  }).join("");
  $("#energyMobileCards").innerHTML=rows.map(x=>'<div class="mcard '+(new Date(x.date+"T00:00:00").getDay()===0?"sunday":"")+'"><h4>'+fmt(x.date)+' · '+weekday(x.date)+'</h4><p><b>'+energyFmt(x.value)+' '+m.unit+'</b> · Chênh lệch: '+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</p><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="foot"><button onclick="editEnergy(\''+x.id+'\')">Sửa ›</button></div></div>').join("");
  $("#energySummaryText").textContent=rows.length?"Đang hiển thị "+rows.length+" bản ghi · Tổng được tính theo bộ lọc hiện tại.":"Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.";
+ hydrateMediaImages($("#energyTbody"));
 }
 window.editEnergy=id=>{
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
@@ -521,12 +527,12 @@ window.editEnergy=id=>{
  energyType=x.type;
  document.querySelectorAll("[data-energy-type]").forEach(b=>b.classList.toggle("active",b.dataset.energyType===energyType));
  $("#energyEditId").value=x.id;$("#energyDate").value=x.date;$("#energyValue").value=x.value;$("#energyNote").value=x.note||"";
- $("#energyImagePreview").innerHTML=x.image?'<img src="'+x.image+'" alt="Ảnh đồng hồ"><span>Ảnh hiện tại</span>':"";
+ $("#energyImagePreview").innerHTML=x.image?mediaImgHtml(x.image,"")+'<span>Ảnh hiện tại</span>':"";hydrateMediaImages($("#energyImagePreview"));
  $("#energySaveBtn").textContent="Cập nhật";$("#energyCancelEdit").classList.remove("hide");renderEnergy();
  window.scrollTo({top:0,behavior:"smooth"});
 };
 window.deleteEnergy=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(!confirm("Xóa bản ghi chỉ số này?"))return;energySaveAll(energyLoad().filter(x=>String(x.id)!==String(id)));await syncEnergyRecord("delete_energy",id);renderEnergy();toast("Đã xóa bản ghi")};
-window.viewEnergyImage=id=>{const x=energyLoad().find(v=>String(v.id)===String(id));if(!x?.image)return;$("#viewerImages").innerHTML='<img src="'+x.image+'">';$("#viewer").classList.remove("hide")};
+window.viewEnergyImage=async id=>{const x=energyLoad().find(v=>String(v.id)===String(id));if(!x?.image)return;viewerMediaRefs=[x.image];$("#viewerImages").innerHTML='<div class="viewerMedia">'+mediaImgHtml(x.image,"viewerLargeImage")+'<button class="viewerDownloadBtn" type="button" onclick="downloadViewerMedia(0)">⇩ Tải hình</button></div>';$("#viewer").classList.remove("hide");await hydrateMediaImages($("#viewerImages"))};
 function setEnergyRange(kind){
  document.querySelectorAll("[data-erange]").forEach(b=>b.classList.toggle("active",b.dataset.erange===kind));
  if(kind==="all"){$("#energyFromDate").value="";$("#energyToDate").value=""}
