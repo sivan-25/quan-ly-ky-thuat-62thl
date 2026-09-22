@@ -6,7 +6,7 @@ let me=null,centralSession=null,currentAccount=null,currentBuilding={id:"62THL",
 
 const taskStorageKey=()=>currentBuilding.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+currentBuilding.id;
 const load=()=>{try{let v=JSON.parse(localStorage.getItem(taskStorageKey())||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}};
-const save=a=>localStorage.setItem(taskStorageKey(),JSON.stringify(a));
+const save=a=>{localStorage.setItem(taskStorageKey(),JSON.stringify(a));syncProjectSnapshot()};
 const today=()=>new Date().toLocaleDateString("en-CA");
 const fmt=d=>new Date(d+"T00:00").toLocaleDateString("vi-VN");
 const esc=(s="")=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -42,6 +42,37 @@ async function sbFetch(path,{method="GET",body=null,token=null}={}){
  if(!res.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||"Không thể kết nối máy chủ");err.status=res.status;throw err}
  return data;
 }
+async function snapshotRequest(method,path,body=null){
+ if(!centralSession?.access_token)return null;
+ const headers={"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"application/json"};
+ if(method==="POST")headers["Prefer"]="resolution=merge-duplicates,return=minimal";
+ const res=await fetch(SB_URL+"/rest/v1/"+path,{method,headers,body:body===null?null:JSON.stringify(body)});
+ if(!res.ok){let msg="";try{msg=await res.text()}catch(e){}throw new Error(msg||"Không thể đồng bộ dữ liệu dự án")}
+ if(res.status===204)return null;
+ try{return await res.json()}catch(e){return null}
+}
+async function syncProjectSnapshot(){
+ if(!centralSession?.access_token||!currentAccount?.id||!currentBuilding?.id)return;
+ const buildingId=currentBuilding.id;
+ const tasks=load();
+ const energy=typeof energyLoad==="function"?energyLoad():[];
+ try{
+   await snapshotRequest("POST","project_snapshots?on_conflict=building_id",[{building_id:buildingId,tasks,energy,updated_by:currentAccount.id,updated_at:new Date().toISOString()}]);
+ }catch(e){console.warn("Snapshot sync failed",e)}
+}
+async function loadProjectSnapshot(building){
+ if(!centralSession?.access_token||!building?.id)return;
+ try{
+   const rows=await snapshotRequest("GET","project_snapshots?select=tasks,energy&building_id=eq."+encodeURIComponent(building.id));
+   if(rows?.length){
+     localStorage.setItem(taskStorageKey(),JSON.stringify(Array.isArray(rows[0].tasks)?rows[0].tasks:[]));
+     localStorage.setItem(energyStorageKey(),JSON.stringify(Array.isArray(rows[0].energy)?rows[0].energy:[]));
+   }else{
+     await syncProjectSnapshot();
+   }
+ }catch(e){toast("Không thể tải dữ liệu dự án từ máy chủ")}
+}
+
 async function loadCentralAccount(token){
  let p=await sbFetch("/rest/v1/profiles?select=id,email,username,display_name,is_admin,active&id=eq."+encodeURIComponent((await sbFetch("/auth/v1/user",{token})).id),{token});
  let profile=p?.[0];if(!profile||profile.active===false)throw new Error("Tài khoản đã bị khóa");
@@ -89,10 +120,11 @@ function applyBuildingUI(){
  document.title="ESTA | "+name;
  resetForm(false);render();renderEnergy();
 }
-function enterProject(building){
+async function enterProject(building){
  currentBuilding={...building};
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  $("#navWork").classList.remove("hide");$("#navEnergy").classList.remove("hide");
+ if(centralSession?.access_token)await loadProjectSnapshot(currentBuilding);
  applyBuildingUI();
  showModule("work");
 }
@@ -178,7 +210,7 @@ const ENERGY_META={
  solar:{name:"Năng lượng mặt trời",form:"Ghi sản lượng điện mặt trời",unit:"kWh",valueLabel:"Sản lượng điện (kWh)"}
 };
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
-function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
+function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a));syncProjectSnapshot()}
 function showModule(name){
  const energy=name==="energy";
  $("#adminPage").classList.add("hide");
