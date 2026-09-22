@@ -1,40 +1,57 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2110"></head><body>
-<div id="toast"></div><section id="login" class="loginRebuild loginV7">
-  <div class="loginPanel">
-    <div class="loginPanelInner">
-      <div class="loginLogo">
-        <div class="loginLogoMark" aria-hidden="true"><i></i><i></i><i></i></div>
-        <div><strong>ESTA</strong><small>BUILDING MANAGEMENT</small></div>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2205"></head><body>
+<div id="toast"></div><section id="login" class="loginRebuild loginV8">
+  <div class="lv8Left">
+    <div class="lv8LeftInner">
+      <div class="lv8Brand">
+        <div class="lv8Mark" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div><strong>ESTA</strong><small>BUILDING OPERATION MANAGEMENT SYSTEM</small></div>
       </div>
-      <div class="loginPanelTagline">KỸ THUẬT VẬN HÀNH · HIỆU QUẢ · BỀN VỮNG</div>
+      <div class="lv8BrandLine">VẬN HÀNH HIỆU QUẢ · TÒA NHÀ BỀN VỮNG</div>
 
-      <div class="loginFormWrap">
-        <span class="loginEyebrow">HỆ THỐNG QUẢN LÝ KỸ THUẬT</span>
+      <div class="lv8FormBlock">
+        <span class="lv8Welcome">Chào mừng trở lại!</span>
         <h1>Đăng nhập hệ thống</h1>
-        <p>Sử dụng tài khoản do quản trị viên cấp.</p>
+        <p>Đăng nhập để truy cập hệ thống quản lý kỹ thuật.</p>
 
-        <form id="loginForm" class="premiumLoginForm">
-          <label>
-            <span>Tên đăng nhập</span>
-            <div class="loginInputWrap"><b>♙</b><input id="user" required autocomplete="username" placeholder="Nhập tên đăng nhập"></div>
-          </label>
-          <label>
-            <span>Mật khẩu</span>
-            <div class="loginInputWrap"><b>▣</b><input id="pass" type="password" required autocomplete="current-password" placeholder="Nhập mật khẩu"><button id="togglePassword" type="button" class="passwordToggle" aria-label="Hiện mật khẩu">◉</button></div>
-          </label>
-          <button id="loginBtn" type="submit" class="premiumLoginBtn">Đăng nhập <b>→</b></button>
+        <form id="loginForm" class="lv8Form">
+          <label><span>Tên đăng nhập</span><div class="lv8Input"><b>♙</b><input id="user" required autocomplete="username" placeholder="Nhập tên đăng nhập"></div></label>
+          <label><span>Mật khẩu</span><div class="lv8Input"><b>▣</b><input id="pass" type="password" required autocomplete="current-password" placeholder="Nhập mật khẩu"><button id="togglePassword" type="button" aria-label="Hiện mật khẩu">◉</button></div></label>
+          <div class="lv8Options"><label><input type="checkbox" id="rememberLogin"><span>Ghi nhớ đăng nhập</span></label><button type="button" id="forgotPasswordBtn">Quên mật khẩu?</button></div>
+          <button id="loginBtn" class="lv8LoginBtn" type="submit">Đăng nhập <b>→</b></button>
           <div id="loginError" class="loginError" aria-live="polite"></div>
-          <button id="openAdminSetup" class="adminSetupLink" type="button">Quản trị hệ thống</button>
+          <div class="lv8Divider"><span>HOẶC</span></div>
+          <button id="openAdminSetup" class="lv8AdminBtn" type="button">⚙ &nbsp; Truy cập chế độ quản trị</button>
         </form>
       </div>
 
-      <div class="loginPanelFooter">● Liên hệ quản trị viên khi cần hỗ trợ đăng nhập.</div>
-      <div class="loginVersion"><span>ESTA · HỆ THỐNG QUẢN LÝ KỸ THUẬT</span><b>v2.0</b></div>
+      <div class="lv8LeftBottom">
+        <div><b>ESTA</b><span>GIẢI PHÁP QUẢN LÝ KỸ THUẬT TOÀN DIỆN</span></div>
+        <small>v2.0</small>
+      </div>
     </div>
   </div>
 
-  <div class="loginHero">
-    <div class="loginHeroImage" aria-hidden="true"></div>
+  <div class="lv8Hero">
+    <div class="lv8HeroShade"></div>
+    <div class="lv8Top"><span>SMART BUILDING<br>BETTER TOMORROW</span><nav><b>HVAC</b><b>ĐIỆN</b><b>PCCC</b><b>CẤP THOÁT NƯỚC</b><b>BẢO TRÌ</b></nav></div>
+
+    <div class="lv8HeroCopy">
+      <span class="lv8Kicker">NỀN TẢNG QUẢN LÝ TÒA NHÀ THÔNG MINH</span>
+      <h2>HỆ THỐNG QUẢN LÝ<br><em>VẬN HÀNH KỸ THUẬT</em></h2>
+      <p>Quản lý công việc, thiết bị, năng lượng và báo cáo cho tòa nhà văn phòng trên một nền tảng duy nhất.</p>
+
+      <div class="lv8Cards">
+        <article><i>▣</i><div><b>CÔNG VIỆC</b><span>Theo dõi, phân công<br>và xử lý nhanh chóng</span></div></article>
+        <article><i>▥</i><div><b>NĂNG LƯỢNG</b><span>Giám sát & tối ưu<br>hiệu suất sử dụng</span></div></article>
+        <article><i>⚒</i><div><b>THIẾT BỊ</b><span>Quản lý bảo trì<br>tài sản kỹ thuật</span></div></article>
+        <article><i>▤</i><div><b>BÁO CÁO</b><span>Dữ liệu trực quan<br>hỗ trợ ra quyết định</span></div></article>
+      </div>
+    </div>
+
+    <div class="lv8Systems">
+      <span>◉<b>HVAC</b></span><span>ϟ<b>ĐIỆN</b></span><span>◇<b>PCCC</b></span><span>◔<b>CẤP THOÁT NƯỚC</b></span><span>⚙<b>BẢO TRÌ</b></span>
+    </div>
+    <div class="lv8HeroSlogan">VẬN HÀNH AN TOÀN &nbsp; · &nbsp; TIẾT KIỆM NĂNG LƯỢNG &nbsp; · &nbsp; NÂNG CAO GIÁ TRỊ</div>
   </div>
 </section>
 <div id="app" class="hide"><aside><div class="brand"><div class="tower">▥</div><div><b>ESTA</b><small>BUILDING MANAGEMENT</small></div></div><nav><button id="navAdmin" class="hide">▦ <span>Tổng quan Admin</span></button><button id="navWork" class="active">▣ <span>Công việc</span></button><button id="navEnergy">▥ <span>Năng lượng</span></button></nav><div class="sideBackup"><button id="backupBtn" type="button">Sao lưu</button><button id="restoreBtn" type="button">Khôi phục</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div><div class="sideBottom"><span id="sideUser"></span><button id="logout">Đăng xuất</button></div></aside>
@@ -166,4 +183,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2110"></script></body></html>
+<script src="app.js?v=20260922-2205"></script></body></html>
