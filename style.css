@@ -648,3 +648,7 @@ main>header{
     width:100%!important;
   }
 }
+
+/* Sidebar gọn sau khi bỏ thẻ tòa nhà và Smart Building */
+#app aside nav{margin-top:16px}
+.sideBackup{margin-top:auto!important;padding-top:14px}
