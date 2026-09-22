@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-1915"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-1925"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild">
   <div class="loginShowcase">
     <div class="loginBrand">
@@ -61,9 +61,9 @@
 <section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField requiredField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField requiredField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label class="typeField requiredField"><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label class="statusField requiredField"><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option selected>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label class="performerField requiredField"><span>Người thực hiện</span><input id="performer" required></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><div class="imageNativeActions">
   <input id="images" class="nativeImageInput" type="file" accept="image/*" multiple>
   <input id="cameraNativeInput" class="nativeImageInput" type="file" accept="image/*" capture="environment">
-  <button id="openNativeLibrary" type="button" class="imageActionBtn libraryBtn">▧ Chọn nhiều ảnh</button>
-  <button id="openNativeCamera" type="button" class="imageActionBtn cameraBtn">📷 Chụp 1 ảnh</button>
-</div><small class="imageHelp">Cần nhiều ảnh: chụp trước bằng Camera điện thoại, sau đó chọn nhiều ảnh từ Thư viện.</small></label><button id="saveBtn" class="primary">Lưu</button><button id="cancelEdit" type="button" class="square hide">×</button></form><div id="imageInfo"></div><div id="pendingImagePreview" class="pendingImagePreview"></div></section>
+  <button id="openNativeCamera" type="button" class="imageActionBtn cameraBtn">📷 Chụp ảnh</button>
+  <button id="openNativeLibrary" type="button" class="imageActionBtn libraryBtn">▧ Chọn ảnh</button>
+</div></label><button id="saveBtn" class="primary">Lưu</button><button id="cancelEdit" type="button" class="square hide">×</button></form><div id="imageInfo"></div><div id="pendingImagePreview" class="pendingImagePreview"></div></section>
 
 <input id="search" type="hidden">
 
@@ -171,4 +171,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-1915"></script></body></html>
+<script src="app.js?v=20260922-1925"></script></body></html>
