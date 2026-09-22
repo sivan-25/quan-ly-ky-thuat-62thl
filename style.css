@@ -81,3 +81,28 @@ nav{margin:7px 0 13px}nav:before{content:"VẬN HÀNH";display:block;padding:0 1
   .filterPopover{position:fixed!important;top:62px!important;left:10px!important;right:10px!important;width:auto!important;grid-template-columns:1fr 1fr!important}
   .filterPopover:before{display:none!important}
 }
+
+/* LOGIN dùng đúng ảnh concept ESTA mới */
+#login.newLoginBg{grid-template-columns:minmax(0,1fr) 34%!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
+#login.newLoginBg .conceptScene>*{opacity:0!important;pointer-events:none!important}
+#login.newLoginBg .conceptScene{background:transparent!important}
+#login.newLoginBg .conceptLogin{background:transparent!important;backdrop-filter:none!important;padding:4.8vh 3.3vw!important}
+#login.newLoginBg .lang{display:none!important}
+#login.newLoginBg .loginCard{width:min(445px,94%)!important;padding:36px 34px!important;border-radius:22px!important;background:linear-gradient(145deg,rgba(238,247,255,.95),rgba(207,225,241,.90))!important;box-shadow:0 28px 70px rgba(0,15,32,.28)!important}
+#login.newLoginBg .welcome{font-size:20px!important}
+#login.newLoginBg .loginSub{font-size:13px!important}
+#login.newLoginBg .loginCard h1{font-size:36px!important}
+#login.newLoginBg .loginLocation b{font-size:18px!important}
+#login.newLoginBg .loginLocation span{font-size:10px!important}
+#login.newLoginBg .loginCard input{height:52px!important;font-size:13px!important}
+#login.newLoginBg .loginCard form button{height:54px!important;font-size:14px!important}
+@media(max-width:1100px){
+  #login.newLoginBg{grid-template-columns:1fr 390px!important;background-position:52% center!important}
+  #login.newLoginBg .loginCard{width:350px!important;padding:30px 28px!important}
+}
+@media(max-width:760px){
+  #login.newLoginBg{display:block!important;background-position:47% center!important}
+  #login.newLoginBg .conceptScene{min-height:310px!important}
+  #login.newLoginBg .conceptLogin{min-height:auto!important;padding:18px!important;background:linear-gradient(180deg,rgba(3,22,39,.05),rgba(3,22,39,.34))!important}
+  #login.newLoginBg .loginCard{width:min(390px,100%)!important}
+}
