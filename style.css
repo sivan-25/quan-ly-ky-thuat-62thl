@@ -354,3 +354,7 @@ nav{margin:7px 0 13px}nav:before{content:"VẬN HÀNH";display:block;padding:0 1
 }
 
 .loginError{min-height:18px;margin-top:9px;font-size:10px;color:#b53346;text-align:center}
+
+/* CRITICAL LOGIN FIX: selector #login.loginRebuild có specificity cao hơn .hide */
+#login.loginRebuild.hide{display:none!important}
+#app.hide{display:none!important}
