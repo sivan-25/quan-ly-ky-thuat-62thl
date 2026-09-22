@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Quản lý kỹ thuật 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css?v=20260922-1020"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Quản lý kỹ thuật 62 Trần Huy Liệu</title><link rel="stylesheet" href="style.css?v=20260922-1045"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild">
   <div class="loginShowcase">
     <div class="loginBrand">
@@ -109,7 +109,10 @@
     <div class="energyLegend"><span>■ Chủ nhật</span><span>Chênh lệch = chỉ số hiện tại − chỉ số lần trước</span></div>
   </section>
 </div></main></div>
-<div id="exportModal" class="modal hide"><div class="modalCard"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn khoảng thời gian cần xuất.</p><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
+<div id="exportModal" class="modal hide"><div class="modalCard exportModalWide"><button id="closeExport" class="modalClose">×</button><h3>Xuất báo cáo PDF</h3><p>Chọn loại báo cáo và khoảng thời gian.</p>
+<div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
+<div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
+</div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script>
 (function(){
  const form=document.getElementById("loginForm");
@@ -128,4 +131,4 @@
    },0);
  },true);
 })();
-</script><script src="app.js?v=20260922-1020"></script></body></html>
+</script><script src="app.js?v=20260922-1045"></script></body></html>
