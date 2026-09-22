@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-1650"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-1715"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild">
   <div class="loginShowcase">
     <div class="loginBrand">
@@ -58,7 +58,7 @@
 </div>
 <div id="workHero" class="heroStrip"><div><b>ESTA</b><span>HỆ THỐNG QUẢN LÝ KỸ THUẬT TÒA NHÀ</span></div><div class="heroTech"><span>AI</span><span>SMART BUILDING</span><span>REAL-TIME</span></div></div><div id="workPage" class="page modulePage"><section class="pageHead"><div class="headIcon">▣</div><div><h1>Công việc kỹ thuật</h1><p>Quản lý và theo dõi công việc kỹ thuật hằng ngày của tòa nhà.</p></div><div class="headMeta"><span>▣ Ngày: <b id="today"></b></span><span>▥ Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
 
-<section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label><span>Người thực hiện</span><input id="performer" required></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><input id="images" type="file" accept="image/*" multiple></label><button id="saveBtn" class="primary">Lưu</button><button id="cancelEdit" type="button" class="square hide">×</button></form><div id="imageInfo"></div></section>
+<section class="entryBox"><form id="taskForm" class="entryRow"><input id="editId" type="hidden"><label class="dateField requiredField"><span>Ngày</span><input id="date" type="date" required></label><label class="contentField requiredField"><span>Nội dung công việc</span><input id="content" required placeholder="Nhập nội dung công việc..."></label><label class="typeField requiredField"><span>Loại công việc</span><select id="type"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label class="statusField requiredField"><span>Trạng thái</span><select id="status"><option>Đã hoàn thành</option><option selected>Đang thực hiện</option><option>Chờ xử lý</option></select></label><label class="performerField requiredField"><span>Người thực hiện</span><input id="performer" required></label><label class="noteField"><span>Ghi chú</span><input id="note" placeholder="Ghi chú..."></label><label class="imageField"><span>Hình ảnh</span><div class="imageInputActions"><input id="images" type="file" accept="image/*" multiple><button id="openMultiCamera" type="button" class="cameraMultiBtn">📷 Chụp nhiều</button></div></label><button id="saveBtn" class="primary">Lưu</button><button id="cancelEdit" type="button" class="square hide">×</button></form><div id="imageInfo"></div></section>
 
 <input id="search" type="hidden">
 
@@ -121,7 +121,14 @@
     <div class="energyLegend"><span>■ Chủ nhật</span><span>Chênh lệch = chỉ số hiện tại − chỉ số lần trước</span></div>
   </section>
 </div></main></div>
-<div id="adminSettingsModal" class="modal hide">
+<div id="multiCameraModal" class="modal hide">
+  <div class="multiCameraCard">
+    <div class="multiCameraHead"><div><b>📷 Chụp nhiều ảnh</b><span>Chụp liên tục, không cần đóng camera sau mỗi ảnh</span></div><button id="closeMultiCamera" type="button">×</button></div>
+    <div class="cameraStage"><video id="multiCameraVideo" autoplay playsinline muted></video><div id="cameraPermissionMsg" class="cameraPermissionMsg hide">Không thể mở camera. Hãy cấp quyền Camera cho trình duyệt.</div></div>
+    <div id="cameraCapturedStrip" class="cameraCapturedStrip"></div>
+    <div class="multiCameraActions"><button id="cameraClearAll" class="secondary" type="button">Xóa ảnh đã chụp</button><button id="cameraShoot" class="cameraShootBtn" type="button"><span></span></button><button id="cameraUsePhotos" class="primary" type="button">Dùng 0 ảnh</button></div>
+  </div>
+</div><div id="adminSettingsModal" class="modal hide">
   <div class="modalCard adminSettingsCard">
     <button id="closeAdminSettings" class="modalClose" type="button">×</button>
     <div class="settingsHead"><div><span>ESTA ADMIN</span><h3>⚙ Cài đặt hệ thống</h3><p>Quản lý dự án, tài khoản kỹ thuật và Thùng rác.</p></div></div>
@@ -166,4 +173,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-1650"></script></body></html>
+<script src="app.js?v=20260922-1715"></script></body></html>
