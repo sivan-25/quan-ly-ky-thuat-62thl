@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0300"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0410"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -491,6 +491,10 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4zM7 4h10v3M8 11h3M13 11h3M8 15h8"/></svg>
       <span>Dụng cụ - Vật tư</span>
     </button>
+    <button id="navMaintenance">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5M9 5H5v4M19 15v4h-4"/></svg>
+      <span>Bảo trì thiết bị</span>
+    </button>
   </nav>
 
   <div class="sideBackup">
@@ -533,6 +537,10 @@
   <div id="topInventoryTitle" class="topModuleTitle hide">
     <div class="topModuleIcon inventoryTopIcon"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h3M13 11h3M8 15h8"/></svg></div>
     <div><h1>Dụng cụ - Vật tư</h1><p>Quản lý tồn kho và dụng cụ kỹ thuật</p></div>
+  </div>
+  <div id="topMaintenanceTitle" class="topModuleTitle hide">
+    <div class="topModuleIcon maintenanceTopIcon"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5"/></svg></div>
+    <div><h1>Bảo trì thiết bị</h1><p>Kế hoạch, lịch sử và nhắc hạn bảo trì</p></div>
   </div>
 
   <div class="headerTools">
@@ -812,6 +820,7 @@
       </div>
       <div class="inventoryToolbarActions">
         <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="materialSearch" placeholder="Tìm vật tư..."></div>
+        <button id="materialExportPdf" class="inventorySecondary" type="button">PDF ⇩</button>
         <button id="openStockTxn" class="inventorySecondary" type="button">⇄ Nhập / Xuất</button>
         <button id="addMaterialBtn" class="inventoryPrimary" type="button">＋ Thêm vật tư</button>
       </div>
@@ -867,6 +876,7 @@
       </div>
       <div class="inventoryToolbarActions">
         <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="toolSearch" placeholder="Tìm dụng cụ..."></div>
+        <button id="toolExportPdf" class="inventorySecondary" type="button">PDF ⇩</button>
         <button id="addToolBtn" class="inventoryPrimary" type="button">＋ Thêm dụng cụ</button>
       </div>
     </div>
@@ -897,7 +907,109 @@
     </div>
   </section>
 </div>
+<div id="maintenancePage" class="page maintenancePage hide">
+  <section class="maintenanceHero">
+    <div>
+      <span>ESTA · PREVENTIVE MAINTENANCE</span>
+      <h1>Bảo trì thiết bị kỹ thuật</h1>
+      <p>Quản lý danh mục thiết bị, chu kỳ bảo trì, công việc đến hạn và lịch sử thực hiện theo từng dự án.</p>
+    </div>
+    <div class="maintenanceHeroActions">
+      <button id="maintenanceExportPdf" class="inventorySecondary" type="button">PDF ⇩ Báo cáo</button>
+      <button id="addMaintenanceAsset" class="inventoryPrimary" type="button">＋ Thêm thiết bị</button>
+    </div>
+  </section>
+
+  <section class="maintenanceStats">
+    <article><span class="maintStatIcon blue"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 12h6M9 16h6"/></svg></span><div><small>THIẾT BỊ</small><b id="maintAssetCount">0</b><em>Đang quản lý</em></div></article>
+    <article><span class="maintStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>QUÁ HẠN</small><b id="maintOverdueCount">0</b><em>Cần xử lý ngay</em></div></article>
+    <article><span class="maintStatIcon amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><small>ĐẾN HẠN 30 NGÀY</small><b id="maintDueSoonCount">0</b><em>Lên kế hoạch sớm</em></div></article>
+    <article><span class="maintStatIcon green"><svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>ĐÃ BẢO TRÌ NĂM</small><b id="maintDoneYearCount">0</b><em>Lượt hoàn thành</em></div></article>
+  </section>
+
+  <section class="maintenanceBoard">
+    <div class="maintenanceToolbar">
+      <div>
+        <span class="inventoryKicker">KẾ HOẠCH BẢO TRÌ</span>
+        <h2>Thiết bị và lịch bảo trì</h2>
+        <p>Màu trạng thái được tính từ ngày bảo trì kế tiếp.</p>
+      </div>
+      <div class="inventoryToolbarActions">
+        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="maintenanceSearch" placeholder="Tìm thiết bị..."></div>
+        <select id="maintenanceSystemFilter"><option value="">Tất cả hệ thống</option><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Khác</option></select>
+      </div>
+    </div>
+
+    <div class="inventoryExamples maintenanceExamples">
+      <span>Gợi ý thiết bị:</span>
+      <button type="button" data-maint-sample="FCU tầng 6|HVAC|90">FCU / AHU</button>
+      <button type="button" data-maint-sample="Máy bơm PCCC|PCCC|30">Bơm PCCC</button>
+      <button type="button" data-maint-sample="Máy phát điện|Máy phát điện|30">Máy phát điện</button>
+      <button type="button" data-maint-sample="Tủ điện MSB|Điện|90">Tủ điện MSB</button>
+      <button type="button" data-maint-sample="Bơm cấp nước|Cấp thoát nước|60">Bơm cấp nước</button>
+    </div>
+
+    <div class="maintenanceAssetGrid" id="maintenanceAssetGrid"></div>
+    <div id="maintenanceEmpty" class="inventoryEmpty hide">Chưa có thiết bị. Có thể chọn một gợi ý phía trên hoặc bấm “Thêm thiết bị”.</div>
+  </section>
+
+  <section class="inventoryTableCard maintenanceHistoryCard">
+    <div class="inventorySectionHead">
+      <div><span class="inventoryKicker">NHẬT KÝ BẢO TRÌ</span><h3>Lịch sử thực hiện</h3><p>Lưu người thực hiện, nội dung, kết quả và chi phí nếu có.</p></div>
+    </div>
+    <div class="inventoryTableScroll">
+      <table class="maintenanceHistoryTable">
+        <thead><tr><th>Ngày</th><th>Thiết bị</th><th>Loại</th><th>Người thực hiện</th><th>Nội dung</th><th>Kết quả</th><th>Hạn kế tiếp</th><th>Chi phí</th><th>Thao tác</th></tr></thead>
+        <tbody id="maintenanceHistoryBody"></tbody>
+      </table>
+    </div>
+    <div id="maintenanceHistoryEmpty" class="inventoryEmpty hide">Chưa có lịch sử bảo trì.</div>
+  </section>
+</div>
 </main></div>
+<div id="maintenanceAssetModal" class="modal hide">
+  <div class="modalCard inventoryModalCard maintenanceModalCard">
+    <button id="closeMaintenanceAssetModal" class="modalClose" type="button">×</button>
+    <div class="inventoryModalHead"><span>ESTA · ASSET REGISTER</span><h3 id="maintenanceAssetModalTitle">Thêm thiết bị</h3><p>Chu kỳ bảo trì được dùng để tự tính hạn bảo trì kế tiếp.</p></div>
+    <form id="maintenanceAssetForm" class="inventoryForm">
+      <input id="maintenanceAssetId" type="hidden">
+      <label><span>Mã thiết bị</span><input id="maintenanceCode" maxlength="40" placeholder="VD: HVAC-FCU-06"></label>
+      <label class="wide"><span>Tên thiết bị *</span><input id="maintenanceName" maxlength="140" required placeholder="VD: FCU tầng 6"></label>
+      <label><span>Hệ thống</span><select id="maintenanceSystem"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Khác</option></select></label>
+      <label><span>Vị trí</span><input id="maintenanceLocation" maxlength="120" placeholder="Tầng / phòng kỹ thuật"></label>
+      <label><span>Hãng</span><input id="maintenanceManufacturer" maxlength="100"></label>
+      <label><span>Model</span><input id="maintenanceModel" maxlength="100"></label>
+      <label><span>Serial</span><input id="maintenanceSerial" maxlength="100"></label>
+      <label><span>Chu kỳ (ngày) *</span><input id="maintenanceFrequency" type="number" min="1" required value="30"></label>
+      <label><span>Bảo trì gần nhất</span><input id="maintenanceLastDate" type="date"></label>
+      <label><span>Hạn kế tiếp</span><input id="maintenanceNextDate" type="date"></label>
+      <label><span>Người phụ trách</span><select id="maintenanceAssigned"><option value="">— Chọn —</option></select></label>
+      <label><span>Trạng thái</span><select id="maintenanceStatus"><option>Hoạt động</option><option>Tạm dừng</option><option>Hỏng</option><option>Ngừng sử dụng</option></select></label>
+      <label class="wide"><span>Ghi chú</span><input id="maintenanceNote" maxlength="400"></label>
+      <div class="inventoryFormActions"><button id="cancelMaintenanceAssetModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu thiết bị</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="maintenanceRecordModal" class="modal hide">
+  <div class="modalCard inventoryModalCard maintenanceModalCard">
+    <button id="closeMaintenanceRecordModal" class="modalClose" type="button">×</button>
+    <div class="inventoryModalHead"><span>ESTA · MAINTENANCE LOG</span><h3 id="maintenanceRecordTitle">Ghi nhận bảo trì</h3><p id="maintenanceRecordAssetName">Thiết bị</p></div>
+    <form id="maintenanceRecordForm" class="inventoryForm">
+      <input id="maintenanceRecordId" type="hidden">
+      <input id="maintenanceRecordAssetId" type="hidden">
+      <label><span>Ngày thực hiện *</span><input id="maintenanceRecordDate" type="date" required></label>
+      <label><span>Loại</span><select id="maintenanceRecordType"><option>Định kỳ</option><option>Kiểm tra</option><option>Khắc phục sự cố</option><option>Thay thế</option></select></label>
+      <label><span>Người thực hiện</span><select id="maintenanceRecordPerformer"><option value="">— Chọn —</option></select></label>
+      <label><span>Kết quả</span><select id="maintenanceRecordResult"><option>Hoàn thành</option><option>Cần theo dõi</option><option>Cần sửa chữa</option><option>Chưa hoàn thành</option></select></label>
+      <label class="wide"><span>Nội dung thực hiện *</span><input id="maintenanceWorkDone" maxlength="500" required placeholder="Vệ sinh, kiểm tra dòng, siết đầu cốt, thay lọc..."></label>
+      <label><span>Hạn bảo trì kế tiếp</span><input id="maintenanceRecordNextDate" type="date"></label>
+      <label><span>Chi phí (VNĐ)</span><input id="maintenanceCost" type="number" min="0" step="1000" value="0"></label>
+      <label class="wide"><span>Ghi chú</span><input id="maintenanceRecordNote" maxlength="400"></label>
+      <div class="inventoryFormActions"><button id="cancelMaintenanceRecordModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu nhật ký</button></div>
+    </form>
+  </div>
+</div>
 <div id="materialItemModal" class="modal hide">
   <div class="modalCard inventoryModalCard">
     <button id="closeMaterialModal" class="modalClose" type="button">×</button>
@@ -1012,4 +1124,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-0300"></script></body></html>
+<script src="app.js?v=20260923-0410"></script></body></html>
