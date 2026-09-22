@@ -106,3 +106,63 @@ nav{margin:7px 0 13px}nav:before{content:"VẬN HÀNH";display:block;padding:0 1
   #login.newLoginBg .conceptLogin{min-height:auto!important;padding:18px!important;background:linear-gradient(180deg,rgba(3,22,39,.05),rgba(3,22,39,.34))!important}
   #login.newLoginBg .loginCard{width:min(390px,100%)!important}
 }
+
+/* FIX LOGIN OVERLAP: ảnh concept chỉ nằm bên trái, form thật nằm riêng bên phải */
+#login.newLoginBg{
+  grid-template-columns:minmax(0,1fr) 38%!important;
+  background:linear-gradient(180deg,#061b31,#082a49)!important;
+}
+#login.newLoginBg .conceptScene{
+  min-height:100vh!important;
+  background-image:linear-gradient(90deg,rgba(1,17,31,.10),rgba(2,25,45,.02)),var(--esta-scene)!important;
+  background-repeat:no-repeat!important;
+  background-size:auto 100%!important;
+  background-position:left center!important;
+  background-color:#061b31!important;
+}
+#login.newLoginBg .conceptScene>*{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+#login.newLoginBg .conceptLogin{
+  min-height:100vh!important;
+  background:linear-gradient(180deg,rgba(6,27,49,.96),rgba(7,35,61,.98))!important;
+  backdrop-filter:none!important;
+  padding:40px!important;
+}
+#login.newLoginBg .conceptLogin:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 35% 25%,rgba(54,145,205,.12),transparent 35%);
+  pointer-events:none;
+}
+#login.newLoginBg .loginCard{
+  position:relative!important;
+  z-index:2!important;
+  width:min(390px,92%)!important;
+  padding:36px 34px!important;
+  border-radius:22px!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  background:linear-gradient(145deg,rgba(239,248,255,.96),rgba(208,225,241,.92))!important;
+  box-shadow:0 28px 70px rgba(0,12,28,.32)!important;
+}
+#login.newLoginBg .lang{display:block!important;z-index:3!important}
+#login.newLoginBg .welcome{font-size:20px!important}
+#login.newLoginBg .loginSub{font-size:13px!important}
+#login.newLoginBg .loginCard h1{font-size:35px!important}
+#login.newLoginBg .loginLocation b{font-size:18px!important}
+#login.newLoginBg .loginLocation span{font-size:10px!important}
+#login.newLoginBg .loginCard input{height:52px!important;font-size:13px!important}
+#login.newLoginBg .loginCard form button{height:54px!important;font-size:14px!important}
+@media(max-width:1100px){
+  #login.newLoginBg{grid-template-columns:minmax(0,1fr) 410px!important}
+  #login.newLoginBg .conceptLogin{padding:24px!important}
+  #login.newLoginBg .loginCard{width:350px!important;padding:30px 28px!important}
+}
+@media(max-width:760px){
+  #login.newLoginBg{display:block!important;background:#061b31!important}
+  #login.newLoginBg .conceptScene{min-height:300px!important;background-size:auto 100%!important;background-position:left center!important}
+  #login.newLoginBg .conceptLogin{min-height:auto!important;padding:18px!important}
+  #login.newLoginBg .loginCard{width:min(390px,100%)!important}
+}
