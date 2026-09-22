@@ -352,3 +352,5 @@ nav{margin:7px 0 13px}nav:before{content:"VẬN HÀNH";display:block;padding:0 1
  #energyMobileCards{display:block}
  .energyLegend{display:block;line-height:1.8}
 }
+
+.loginError{min-height:18px;margin-top:9px;font-size:10px;color:#b53346;text-align:center}
