@@ -1104,3 +1104,79 @@ img[data-storage-path]:not([src]){
   min-height:220px;
   object-fit:contain;
 }
+
+/* ===== FORM NHẬP DỄ NHẬN BIẾT + CAMERA CHỤP NHIỀU ===== */
+.entryRow{grid-template-columns:108px minmax(235px,2fr) 116px 128px 130px minmax(130px,1fr) minmax(185px,1.15fr) 76px 35px!important}
+.entryRow .requiredField>span:after{content:" *";color:#d65a68;font-weight:800}
+.entryRow .dateField input{background:#eef6ff!important;border-color:#bdd7ee!important}
+.entryRow .contentField input{background:#effaff!important;border-color:#b8dce9!important}
+.entryRow .typeField select{background:#f5f1ff!important;border-color:#d4c7ee!important}
+.entryRow .statusField select{background:#fff7e8!important;border-color:#ecd4a5!important;color:#805c17!important}
+.entryRow .performerField input{background:#eefaf2!important;border-color:#bfdfca!important}
+.entryRow .noteField input{background:#f8fafc!important;border-color:#d8e3eb!important}
+.entryRow .imageField{min-width:0}
+.entryRow .imageField .imageInputActions{display:grid;grid-template-columns:minmax(0,1fr) 86px;gap:5px}
+.entryRow .imageField input{min-width:0;background:#f7f3ff!important;border-color:#d7ccec!important}
+.cameraMultiBtn{
+  height:39px;border:1px solid #bfcfe9;border-radius:8px;background:#eef4ff;color:#315f91;
+  font-size:8px;font-weight:700;white-space:nowrap;cursor:pointer;padding:0 7px
+}
+.cameraMultiBtn:hover{background:#e2edff;border-color:#91add1}
+#imageInfo{font-weight:600}
+
+/* Camera chụp liên tục */
+#multiCameraModal{background:rgba(3,16,29,.94)!important;padding:0!important}
+.multiCameraCard{
+  width:min(760px,100vw);height:min(92vh,850px);display:flex;flex-direction:column;
+  overflow:hidden;border-radius:16px;background:#071724;color:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4)
+}
+.multiCameraHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;background:#0c2233}
+.multiCameraHead b{display:block;font-size:14px}
+.multiCameraHead span{display:block;margin-top:3px;color:#9fc0d5;font-size:9px}
+.multiCameraHead>button{width:34px;height:34px;border:0;border-radius:50%;background:#173c55;color:#fff;font-size:20px}
+.cameraStage{position:relative;flex:1;min-height:260px;background:#000;overflow:hidden}
+#multiCameraVideo{width:100%;height:100%;object-fit:cover;display:block}
+.cameraPermissionMsg{
+  position:absolute;inset:0;display:grid;place-items:center;padding:30px;text-align:center;
+  background:#091a27;color:#f1c5c5;font-size:12px
+}
+.cameraCapturedStrip{display:flex;gap:6px;min-height:68px;padding:7px 10px;overflow-x:auto;background:#0a1d2b}
+.cameraShot{position:relative;flex:0 0 56px;height:54px;border-radius:7px;overflow:hidden;border:1px solid #2f5369}
+.cameraShot img{width:100%;height:100%;object-fit:cover}
+.cameraShot span{position:absolute;right:3px;bottom:3px;min-width:17px;height:17px;display:grid;place-items:center;border-radius:9px;background:rgba(0,0,0,.62);font-size:8px}
+.multiCameraActions{
+  display:grid;grid-template-columns:1fr 76px 1fr;align-items:center;gap:12px;padding:12px 15px 16px;background:#0c2233
+}
+.multiCameraActions button{height:42px;border-radius:9px}
+.multiCameraActions .secondary{border:1px solid #31556d;background:#132f43;color:#c5d7e3;font-size:9px}
+.multiCameraActions .primary{border:0;background:#0b75b7;color:#fff;font-size:10px;font-weight:700}
+.cameraShootBtn{
+  width:66px!important;height:66px!important;justify-self:center;border:4px solid #fff!important;border-radius:50%!important;
+  background:transparent!important;padding:5px!important
+}
+.cameraShootBtn span{display:block;width:100%;height:100%;border-radius:50%;background:#fff}
+.cameraShootBtn:active span{transform:scale(.88);background:#d9edf8}
+
+@media(max-width:1200px){
+ .entryRow{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+ .imageField{grid-column:span 2}
+}
+@media(max-width:760px){
+ .entryRow .dateField input,
+ .entryRow .contentField input,
+ .entryRow .typeField select,
+ .entryRow .statusField select,
+ .entryRow .performerField input,
+ .entryRow .noteField input,
+ .entryRow .imageField input{font-size:13px!important}
+ .entryRow .requiredField>span{font-size:10px!important}
+ .entryRow .imageField .imageInputActions{grid-template-columns:minmax(0,1fr) 105px}
+ .cameraMultiBtn{font-size:10px}
+ #multiCameraModal{align-items:stretch!important}
+ .multiCameraCard{width:100vw;height:100dvh;max-height:none;border-radius:0}
+ .multiCameraHead{padding-top:max(12px,env(safe-area-inset-top))}
+ .cameraStage{min-height:0}
+ .cameraCapturedStrip{min-height:72px}
+ .multiCameraActions{padding-bottom:max(14px,env(safe-area-inset-bottom));grid-template-columns:1fr 74px 1fr;gap:8px}
+ .cameraShootBtn{width:64px!important;height:64px!important}
+}
