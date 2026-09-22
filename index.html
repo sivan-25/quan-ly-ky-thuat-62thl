@@ -1,4 +1,116 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2335"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2350"><style id="esta-work-energy-hotfix">
+/* Atomic hotfix: force Work/Energy forms to render safely */
+#app #workPage .workEntryBox{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  padding:0!important;overflow:visible!important;display:block!important;
+}
+#app #workPage .workEntryBox .formSectionHead{
+  height:auto!important;min-height:76px!important;max-height:none!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  padding:16px 18px!important;margin:0!important;
+}
+#app #workPage .workEntryBox #taskForm{
+  display:grid!important;visibility:visible!important;opacity:1!important;
+  position:relative!important;transform:none!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-template-areas:none!important;
+  gap:12px!important;align-items:end!important;
+  padding:16px 18px 18px!important;margin:0!important;
+}
+#app #workPage .workEntryBox #taskForm>label,
+#app #workPage .workEntryBox #taskForm>button{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  position:relative!important;transform:none!important;
+  min-width:0!important;max-width:none!important;
+}
+#app #workPage .workEntryBox #taskForm .dateField{grid-column:span 2!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm .typeField{grid-column:span 2!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm .statusField{grid-column:span 2!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm .performerField{grid-column:span 4!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm #saveBtn{grid-column:span 2!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm .contentField{grid-column:span 6!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm .noteField{grid-column:span 6!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm .imageField{grid-column:span 10!important;grid-area:auto!important}
+#app #workPage .workEntryBox #taskForm #cancelEdit{grid-column:span 2!important;grid-area:auto!important;justify-self:stretch!important;width:100%!important}
+#app #workPage .workEntryBox #taskForm label>span{
+  display:block!important;margin:0 0 6px!important;
+}
+#app #workPage .workEntryBox #taskForm input:not([type="hidden"]),
+#app #workPage .workEntryBox #taskForm select,
+#app #workPage .workEntryBox #taskForm .peopleSelectBtn{
+  width:100%!important;min-height:42px!important;height:42px!important;
+}
+#app #workPage .workEntryBox #taskForm .peopleSelectBtn{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+}
+#app #workPage .workEntryBox #imageInfo,
+#app #workPage .workEntryBox #pendingImagePreview{display:block!important}
+
+/* Energy form safe layout */
+#app #energyPage .energyCard{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  padding:0!important;overflow:visible!important;display:block!important;
+}
+#app #energyPage .energyCard .formSectionHead{
+  height:auto!important;min-height:76px!important;max-height:none!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  padding:16px 18px!important;margin:0!important;
+}
+#app #energyPage #energyForm{
+  display:grid!important;visibility:visible!important;opacity:1!important;
+  position:relative!important;transform:none!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-template-areas:none!important;
+  gap:12px!important;align-items:end!important;
+  padding:16px 18px 18px!important;margin:0!important;
+}
+#app #energyPage #energyForm>label,
+#app #energyPage #energyForm>.energyActions{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  position:relative!important;transform:none!important;min-width:0!important;
+}
+#app #energyPage #energyForm>label:nth-of-type(1){grid-column:span 2!important;grid-area:auto!important}
+#app #energyPage #energyForm>label:nth-of-type(2){grid-column:span 2!important;grid-area:auto!important}
+#app #energyPage #energyForm .energyPerformerField{grid-column:span 4!important;grid-area:auto!important}
+#app #energyPage #energyForm .energyActions{grid-column:span 4!important;grid-area:auto!important;display:flex!important;gap:8px!important}
+#app #energyPage #energyForm .energyImageField{grid-column:span 4!important;grid-area:auto!important}
+#app #energyPage #energyForm .energyNoteField{grid-column:span 8!important;grid-area:auto!important}
+#app #energyPage #energyForm input:not([type="hidden"]),
+#app #energyPage #energyForm .peopleSelectBtn{width:100%!important;min-height:42px!important;height:42px!important}
+
+@media(max-width:1180px){
+  #app #workPage .workEntryBox #taskForm .dateField,
+  #app #workPage .workEntryBox #taskForm .typeField,
+  #app #workPage .workEntryBox #taskForm .statusField{grid-column:span 4!important}
+  #app #workPage .workEntryBox #taskForm .performerField{grid-column:span 8!important}
+  #app #workPage .workEntryBox #taskForm #saveBtn{grid-column:span 4!important}
+  #app #workPage .workEntryBox #taskForm .contentField,
+  #app #workPage .workEntryBox #taskForm .noteField{grid-column:span 12!important}
+  #app #workPage .workEntryBox #taskForm .imageField{grid-column:span 9!important}
+  #app #workPage .workEntryBox #taskForm #cancelEdit{grid-column:span 3!important}
+}
+@media(max-width:760px){
+  #app #workPage .workEntryBox #taskForm,
+  #app #energyPage #energyForm{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:13px!important;gap:10px!important}
+  #app #workPage .workEntryBox #taskForm .dateField,
+  #app #workPage .workEntryBox #taskForm .typeField{grid-column:span 1!important}
+  #app #workPage .workEntryBox #taskForm .statusField,
+  #app #workPage .workEntryBox #taskForm .performerField,
+  #app #workPage .workEntryBox #taskForm .contentField,
+  #app #workPage .workEntryBox #taskForm .noteField,
+  #app #workPage .workEntryBox #taskForm .imageField,
+  #app #workPage .workEntryBox #taskForm #saveBtn,
+  #app #workPage .workEntryBox #taskForm #cancelEdit{grid-column:1/-1!important}
+  #app #energyPage #energyForm>label:nth-of-type(1),
+  #app #energyPage #energyForm>label:nth-of-type(2){grid-column:span 1!important}
+  #app #energyPage #energyForm .energyPerformerField,
+  #app #energyPage #energyForm .energyActions,
+  #app #energyPage #energyForm .energyImageField,
+  #app #energyPage #energyForm .energyNoteField{grid-column:1/-1!important}
+}
+</style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -341,4 +453,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2335"></script></body></html>
+<script src="app.js?v=20260922-2350"></script></body></html>
