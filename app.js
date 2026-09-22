@@ -51,27 +51,47 @@ async function snapshotRequest(method,path,body=null){
  if(res.status===204)return null;
  try{return await res.json()}catch(e){return null}
 }
+const cloudVersionByBuilding={};
 async function syncProjectSnapshot(){
  if(!centralSession?.access_token||!currentAccount?.id||!currentBuilding?.id)return;
  const buildingId=currentBuilding.id;
  const tasks=load();
  const energy=typeof energyLoad==="function"?energyLoad():[];
+ const stamp=new Date().toISOString();
  try{
-   await snapshotRequest("POST","project_snapshots?on_conflict=building_id",[{building_id:buildingId,tasks,energy,updated_by:currentAccount.id,updated_at:new Date().toISOString()}]);
+   await snapshotRequest("POST","project_snapshots?on_conflict=building_id",[{building_id:buildingId,tasks,energy,updated_by:currentAccount.id,updated_at:stamp}]);
+   cloudVersionByBuilding[buildingId]=stamp;
  }catch(e){console.warn("Snapshot sync failed",e)}
+}
+function applyCloudSnapshot(building,row){
+ if(!row)return;
+ localStorage.setItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id,JSON.stringify(Array.isArray(row.tasks)?row.tasks:[]));
+ localStorage.setItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id,JSON.stringify(Array.isArray(row.energy)?row.energy:[]));
+ cloudVersionByBuilding[building.id]=row.updated_at||"";
+ if(currentBuilding?.id===building.id){
+   render();renderEnergy();
+ }
 }
 async function loadProjectSnapshot(building){
  if(!centralSession?.access_token||!building?.id)return;
  try{
-   const rows=await snapshotRequest("GET","project_snapshots?select=tasks,energy&building_id=eq."+encodeURIComponent(building.id));
-   if(rows?.length){
-     localStorage.setItem(taskStorageKey(),JSON.stringify(Array.isArray(rows[0].tasks)?rows[0].tasks:[]));
-     localStorage.setItem(energyStorageKey(),JSON.stringify(Array.isArray(rows[0].energy)?rows[0].energy:[]));
-   }else{
-     await syncProjectSnapshot();
-   }
+   const rows=await snapshotRequest("GET","project_snapshots?select=tasks,energy,updated_at&building_id=eq."+encodeURIComponent(building.id));
+   if(rows?.length)applyCloudSnapshot(building,rows[0]);
+   else await syncProjectSnapshot();
  }catch(e){toast("Không thể tải dữ liệu dự án từ máy chủ")}
 }
+async function pollProjectSnapshot(){
+ if(!centralSession?.access_token||!currentBuilding?.id||document.hidden)return;
+ if($("#adminPage")&&!$("#adminPage").classList.contains("hide"))return;
+ try{
+   const rows=await snapshotRequest("GET","project_snapshots?select=tasks,energy,updated_at&building_id=eq."+encodeURIComponent(currentBuilding.id));
+   const row=rows?.[0];
+   if(row&&row.updated_at&&row.updated_at!==cloudVersionByBuilding[currentBuilding.id])applyCloudSnapshot(currentBuilding,row);
+ }catch(e){console.warn("Cloud refresh failed",e)}
+}
+setInterval(pollProjectSnapshot,4000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)pollProjectSnapshot()});
+window.addEventListener("focus",()=>pollProjectSnapshot());
 
 async function loadCentralAccount(token){
  let p=await sbFetch("/rest/v1/profiles?select=id,email,username,display_name,is_admin,active&id=eq."+encodeURIComponent((await sbFetch("/auth/v1/user",{token})).id),{token});
