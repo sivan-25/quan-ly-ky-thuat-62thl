@@ -430,9 +430,18 @@ async function loadCentralAccount(token){
  return {...profile,buildings};
 }
 async function centralLogin(identifier,password){
- const email=identifier.includes("@")?identifier.trim().toLowerCase():identifier.trim().toLowerCase()+"@esta-building.app";
- const data=await sbFetch("/auth/v1/token?grant_type=password",{method:"POST",body:{email,password}});
+ const loginId=String(identifier||"").trim().toLowerCase();
+ let data;
+ try{
+   data=await sbFetch("/functions/v1/central-login",{method:"POST",body:{identifier:loginId,password}});
+ }catch(err){
+   // Fallback keeps direct email login and legacy project usernames working
+   // if the login edge function is temporarily unavailable.
+   const email=loginId.includes("@")?loginId:loginId+"@esta-building.app";
+   data=await sbFetch("/auth/v1/token?grant_type=password",{method:"POST",body:{email,password}});
+ }
  const session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:data.expires_at||0};
+ if(!session.access_token)throw new Error("Không nhận được phiên đăng nhập");
  localStorage.setItem("esta_central_session",JSON.stringify(session));
  const account=await loadCentralAccount(session.access_token);
  return {session,account};
