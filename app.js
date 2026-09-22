@@ -47,22 +47,18 @@ const mediaUrlCache=new Map();
 function isStorageRef(v){return typeof v==="string"&&v.startsWith("storage:")}
 function storagePathFromRef(v){return isStorageRef(v)?v.slice(8):v}
 function mediaPathUrl(path){return path.split("/").map(encodeURIComponent).join("/")}
-async function signedMediaUrl(ref){
+async function mediaObjectUrl(ref){
  if(!ref)return "";
  if(!isStorageRef(ref))return ref;
  const path=storagePathFromRef(ref),cached=mediaUrlCache.get(path);
- if(cached&&cached.exp>Date.now()+60000)return cached.url;
- if(!centralSession?.access_token)return "";
- const res=await fetch(SB_URL+"/storage/v1/object/sign/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
-   method:"POST",
-   headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"application/json"},
-   body:JSON.stringify({expiresIn:3600})
+ if(cached?.url)return cached.url;
+ if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
+ const res=await fetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
+   headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token}
  });
- const data=await res.json().catch(()=>({}));
- if(!res.ok)throw new Error(data?.message||data?.error||"Không thể mở hình ảnh");
- let url=data.signedURL||data.signedUrl||"";
- if(url&&url.startsWith("/"))url=SB_URL+url;
- mediaUrlCache.set(path,{url,exp:Date.now()+3500*1000});
+ if(!res.ok)throw new Error("Không thể tải hình ảnh");
+ const blob=await res.blob(),url=URL.createObjectURL(blob);
+ mediaUrlCache.set(path,{url});
  return url;
 }
 function mediaImgHtml(ref,cls=""){
@@ -74,10 +70,17 @@ async function hydrateMediaImages(root=document){
  const imgs=[...(root||document).querySelectorAll?.("img[data-storage-path]")||[]];
  await Promise.all(imgs.map(async im=>{
    if(im.dataset.loaded==="1")return;
-   try{im.src=await signedMediaUrl("storage:"+im.dataset.storagePath);im.dataset.loaded="1"}
-   catch(e){im.alt="Không tải được hình"}
+   try{
+     const url=await mediaObjectUrl("storage:"+im.dataset.storagePath);
+     im.src=url;im.dataset.loaded="1";
+   }catch(e){
+     im.classList.add("imageLoadError");
+     im.alt="Nhấn để thử lại";
+     im.onclick=async ev=>{ev.stopPropagation();im.dataset.loaded="";await hydrateMediaImages(im.parentElement||document)};
+   }
  }));
 }
+window.addEventListener("beforeunload",()=>{for(const x of mediaUrlCache.values())if(x?.url?.startsWith("blob:"))URL.revokeObjectURL(x.url)});
 function imageFileToBlob(file){
  return new Promise((resolve,reject)=>{
    if(!file?.type?.startsWith("image/"))return reject(new Error("Chỉ hỗ trợ file hình ảnh"));
@@ -156,10 +159,20 @@ let viewerMediaRefs=[];
 window.downloadViewerMedia=async index=>{
  const ref=viewerMediaRefs[index];if(!ref)return;
  try{
-   const url=await signedMediaUrl(ref),res=await fetch(url);
-   if(!res.ok)throw new Error("Không thể tải hình");
-   const blob=await res.blob(),u=URL.createObjectURL(blob),a=document.createElement("a");
-   a.href=u;a.download="ESTA-"+currentBuilding.id+"-hinh-"+(index+1)+".jpg";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);
+   let blob;
+   if(isStorageRef(ref)){
+     const path=storagePathFromRef(ref);
+     const res=await fetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
+       headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token}
+     });
+     if(!res.ok)throw new Error("Không thể tải hình");
+     blob=await res.blob();
+   }else{
+     const res=await fetch(ref);blob=await res.blob();
+   }
+   const u=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=u;a.download="ESTA-"+currentBuilding.id+"-hinh-"+(index+1)+".jpg";
+   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);
  }catch(e){toast(e.message||"Không thể tải hình")}
 };
 
@@ -373,24 +386,44 @@ $("#backupBtn").onclick=()=>{
 };
 $("#restoreBtn").onclick=()=>$("#restoreFile").click();
 $("#restoreFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text()),tasks=Array.isArray(d)?d:d.tasks;if(!Array.isArray(tasks))throw new Error("File sao lưu không hợp lệ");if(!confirm("Khôi phục sẽ thay thế dữ liệu hiện tại của "+currentBuilding.name+". Tiếp tục?"))return;save(tasks);if(Array.isArray(d.energy))energySaveAll(d.energy);await syncProjectSnapshot();render();renderEnergy();toast("Đã khôi phục và đồng bộ dữ liệu")}catch(err){toast("Không thể đọc file sao lưu")}finally{e.target.value=""}};
-$("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đã hoàn thành";$("#performer").value=d.a||"";$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đã hoàn thành";$("#performer").value="";$("#note").value="";$("#images").value="";$("#imageInfo").textContent="";$("#saveBtn").textContent="＋ Thêm";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));$("#images").onchange=e=>$("#imageInfo").textContent=e.target.files.length?e.target.files.length+" hình đã chọn · Không giới hạn số lượng":"";
+$("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đã hoàn thành";$("#performer").value=d.a||"";$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đã hoàn thành";$("#performer").value="";$("#note").value="";$("#images").value="";$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));$("#images").onchange=e=>$("#imageInfo").textContent=e.target.files.length?e.target.files.length+" hình đã chọn · Không giới hạn số lượng":"";
 $("#taskForm").onsubmit=async e=>{
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
  const btn=$("#saveBtn");btn.disabled=true;
  try{
+   const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
    let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
-   let imgs=Array.isArray(old?.imgs)?[...old.imgs]:[];
    const files=[...$("#images").files];
-   if(files.length){
-     const uploaded=await uploadMediaFiles(files,"tasks",id,(n,total)=>{$("#imageInfo").textContent="Đang tải "+n+"/"+total+" hình lên máy chủ..."});
-     imgs=[...imgs,...uploaded];
-   }
+   const imgs=Array.isArray(old?.imgs)?[...old.imgs]:[];
    const obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:$("#performer").value.trim(),imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[obj,...a];
-   save(a);
-   await syncTaskRecord("upsert_task",obj);
-   resetForm();render();toast(editId?"Đã cập nhật công việc":"Đã thêm công việc");
+   localStorage.setItem(storageKey,JSON.stringify(a));
+   resetForm();render();
+   toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc");
+
+   (async()=>{
+     try{
+       const taskSync=syncTaskRecord("upsert_task",obj,buildingId);
+       const imageUpload=files.length?uploadMediaFiles(files,"tasks",id,null,buildingId):Promise.resolve([]);
+       const [,uploaded]=await Promise.all([taskSync,imageUpload]);
+       if(uploaded.length){
+         let latest=[];try{latest=JSON.parse(localStorage.getItem(storageKey)||"[]")}catch(e){}
+         latest=latest.map(x=>{
+           if(String(x.id)!==String(id))return x;
+           const merged=[...new Set([...(Array.isArray(x.imgs)?x.imgs:[]),...uploaded])];
+           return {...x,imgs:merged,i:merged.length};
+         });
+         localStorage.setItem(storageKey,JSON.stringify(latest));
+         await appendTaskImages(id,uploaded,buildingId);
+         if(currentBuilding.id===buildingId){render();hydrateMediaImages($("#tbody"))}
+         toast("Đã tải xong "+uploaded.length+" hình");
+       }
+     }catch(err){
+       console.warn(err);
+       toast("Công việc đã lưu, nhưng có hình chưa đồng bộ. Hãy thử lại khi mạng ổn định.");
+     }
+   })();
  }catch(err){toast(err.message||"Không thể lưu công việc")}
  finally{btn.disabled=false}
 };
