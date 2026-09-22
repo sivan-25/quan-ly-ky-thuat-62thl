@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2310"></head><body>
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260922-2320"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -221,7 +221,7 @@
 <input id="search" type="hidden">
 
 
-<section class="stats"><article><i class="blue">▣</i><div><small>CÔNG VIỆC HÔM NAY</small><strong id="statToday">0</strong></div></article><article><i class="orange">◷</i><div><small>ĐANG XỬ LÝ</small><strong id="statDoing">0</strong></div></article><article><i class="green">✓</i><div><small>HOÀN THÀNH</small><strong id="statDone">0</strong></div></article><article><i class="red">!</i><div><small>CHỜ XỬ LÝ</small><strong id="statWait">0</strong></div></article></section>
+<section class="stats"><article><i class="blue"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h5"/></svg></i><div><small>CÔNG VIỆC HÔM NAY</small><strong id="statToday">0</strong></div></article><article><i class="orange"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i><div><small>ĐANG XỬ LÝ</small><strong id="statDoing">0</strong></div></article><article><i class="green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></i><div><small>HOÀN THÀNH</small><strong id="statDone">0</strong></div></article><article><i class="red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></i><div><small>CHỜ XỬ LÝ</small><strong id="statWait">0</strong></div></article></section>
 <section class="tableCard"><div class="tableTop"><div><b>Danh sách công việc kỹ thuật</b> <span id="count"></span></div></div><div class="desktopTable"><table><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
 </div>
 <div id="energyHero" class="heroStrip hide"><div><b>ESTA</b><span>QUẢN LÝ NĂNG LƯỢNG TÒA NHÀ</span></div><div class="heroTech"><span>ĐIỆN</span><span>NƯỚC</span><span>ĐIỆN MẶT TRỜI</span></div></div>
@@ -233,9 +233,9 @@
   </section>
 
   <section class="energyTabs" aria-label="Loại chỉ số">
-    <button class="active" data-energy-type="electric">ϟ <span>Chỉ số điện</span></button>
-    <button data-energy-type="water">◉ <span>Chỉ số nước</span></button>
-    <button data-energy-type="solar">☼ <span>Năng lượng mặt trời</span></button>
+    <button class="active" data-energy-type="electric"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg><span>Chỉ số điện</span></button>
+    <button data-energy-type="water"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg><span>Chỉ số nước</span></button>
+    <button data-energy-type="solar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Năng lượng mặt trời</span></button>
   </section>
 
   <section class="energyCard">
@@ -324,4 +324,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260922-2310"></script></body></html>
+<script src="app.js?v=20260922-2320"></script></body></html>
