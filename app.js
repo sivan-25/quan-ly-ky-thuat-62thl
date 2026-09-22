@@ -395,7 +395,8 @@ async function adminApi(action,payload={}){
 }
 function adminProjectCard(b){
  const safeId=esc(b.id),safeName=esc(b.name||b.id);
- return '<button class="adminProjectCard" type="button" onclick="adminOpenBuilding(\''+safeId+'\')"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button>';
+ const del=centralSession?.access_token?'<button class="adminProjectDelete" type="button" title="Xóa dự án" onclick="event.stopPropagation();adminDeleteBuilding(\''+safeId+'\',\''+safeName.replace(/'/g,"&#39;")+'\')">×</button>':'';
+ return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\')"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button>'+del+'</div>';
 }
 function renderAdminProjects(){
  const list=currentAccount?.buildings||[];
@@ -403,6 +404,48 @@ function renderAdminProjects(){
  $("#adminProjectGrid").innerHTML=list.length?list.map(adminProjectCard).join(""):'<div class="empty">Chưa có dự án.</div>';
  $("#adminBuildingSelect").innerHTML=list.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name||b.id)+'</option>').join("");
 }
+async function refreshAdminBuildings(){
+ if(!centralSession?.access_token)return;
+ currentAccount=await loadCentralAccount(centralSession.access_token);
+ renderAdminProjects();
+}
+$("#addProjectBtn").onclick=()=>{
+ if(!centralSession?.access_token){$("#adminSetupModal").classList.remove("hide");return}
+ $("#projectForm").reset();$("#projectFormMessage").textContent="";
+ $("#projectModal").classList.remove("hide");
+};
+$("#closeProjectModal").onclick=()=>$("#projectModal").classList.add("hide");
+$("#projectModal").onclick=e=>{if(e.target===$("#projectModal"))$("#projectModal").classList.add("hide")};
+$("#projectForm").onsubmit=async e=>{
+ e.preventDefault();
+ if(!centralSession?.access_token){$("#projectModal").classList.add("hide");$("#adminSetupModal").classList.remove("hide");return}
+ const msg=$("#projectFormMessage"),btn=$("#projectForm button[type=submit]");
+ msg.textContent="Đang tạo dự án...";btn.disabled=true;
+ try{
+   const id=$("#projectCode").value.trim().toUpperCase().replace(/\s+/g,"");
+   const name=sentenceCapitalizeText($("#projectName").value.trim());
+   await adminApi("create_building",{id,name});
+   await refreshAdminBuildings();
+   $("#projectModal").classList.add("hide");
+   toast("Đã thêm dự án "+name);
+ }catch(err){msg.textContent=err.message}
+ finally{btn.disabled=false}
+};
+window.adminDeleteBuilding=async(id,name)=>{
+ if(!centralSession?.access_token){$("#adminSetupModal").classList.remove("hide");return}
+ const typed=prompt("Xóa dự án sẽ xóa toàn bộ phân quyền và dữ liệu máy chủ của dự án.\n\nĐể xác nhận, nhập chính xác tên dự án:\n"+name);
+ if(typed===null)return;
+ if(typed.trim()!==name){toast("Tên xác nhận không đúng. Không xóa dự án.");return}
+ try{
+   const r=await adminApi("delete_building",{id,confirm_name:name});
+   localStorage.removeItem(id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+id);
+   localStorage.removeItem(id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+id);
+   await refreshAdminBuildings();
+   await renderAdminUsers();
+   toast("Đã xóa dự án "+name);
+ }catch(err){toast(err.message)}
+};
+
 async function renderAdminUsers(){
  const box=$("#adminUsersList");
  if(!currentAccount?.is_admin){box.innerHTML='<div class="empty">Không có quyền Admin.</div>';return}
@@ -427,6 +470,7 @@ async function renderAdminPortal(){
  $("#adminConnection").className="adminConnection "+(connected?"ok":"warn");
  $("#adminConnection").textContent=connected?"Admin trung tâm đã kết nối":"Đang dùng Admin cục bộ";
  $("#adminActivateCentral").classList.toggle("hide",connected);
+ $("#addProjectBtn").disabled=!connected;
  $("#adminCreateBtn").disabled=!connected;
  $("#adminCreateHint").textContent=connected?"Tài khoản mới sẽ được tạo trên hệ thống trung tâm và chỉ truy cập dự án đã chọn.":"Kích hoạt Admin trung tâm trước khi tạo tài khoản dự án.";
  await renderAdminUsers();
