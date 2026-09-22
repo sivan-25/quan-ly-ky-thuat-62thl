@@ -82,11 +82,11 @@ async function loadCentralAccount(token){
  }
  let buildings=[];
  if(profile.is_admin){
-   buildings=await sbFetch("/rest/v1/buildings?select=id,name&order=name.asc",{token});
+   buildings=await sbFetch("/rest/v1/buildings?select=id,name,deleted_at&deleted_at=is.null&order=name.asc",{token});
    buildings=(buildings||[]).map(b=>({...b,role:"admin"}));
  }else{
-   const rows=await sbFetch("/rest/v1/building_members?select=building_id,role,buildings(id,name)&user_id=eq."+encodeURIComponent(profile.id),{token});
-   buildings=(rows||[]).map(r=>({id:r.building_id,name:r.buildings?.name||r.building_id,role:r.role}));
+   const rows=await sbFetch("/rest/v1/building_members?select=building_id,role,buildings(id,name,deleted_at)&user_id=eq."+encodeURIComponent(profile.id),{token});
+   buildings=(rows||[]).filter(r=>r.buildings&&!r.buildings.deleted_at).map(r=>({id:r.building_id,name:r.buildings?.name||r.building_id,role:r.role}));
  }
  return {...profile,buildings};
 }
@@ -395,8 +395,7 @@ async function adminApi(action,payload={}){
 }
 function adminProjectCard(b){
  const safeId=esc(b.id),safeName=esc(b.name||b.id);
- const del=centralSession?.access_token?'<button class="adminProjectDelete" type="button" title="Xóa dự án" onclick="event.stopPropagation();adminDeleteBuilding(\''+safeId+'\',\''+safeName.replace(/'/g,"&#39;")+'\')">×</button>':'';
- return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\')"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button>'+del+'</div>';
+ return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\')"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button></div>';
 }
 function renderAdminProjects(){
  const list=currentAccount?.buildings||[];
@@ -405,44 +404,83 @@ function renderAdminProjects(){
  $("#adminBuildingSelect").innerHTML=list.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name||b.id)+'</option>').join("");
 }
 async function refreshAdminBuildings(){
- if(!centralSession?.access_token)return;
+ if(!centralSession?.access_token){renderAdminProjects();return}
  currentAccount=await loadCentralAccount(centralSession.access_token);
  renderAdminProjects();
+ renderSettingsProjectList();
 }
-$("#addProjectBtn").onclick=()=>{
- if(!centralSession?.access_token){$("#adminSetupModal").classList.remove("hide");return}
- $("#projectForm").reset();$("#projectFormMessage").textContent="";
- $("#projectModal").classList.remove("hide");
-};
-$("#closeProjectModal").onclick=()=>$("#projectModal").classList.add("hide");
-$("#projectModal").onclick=e=>{if(e.target===$("#projectModal"))$("#projectModal").classList.add("hide")};
+function setSettingsTab(name){
+ document.querySelectorAll("[data-settings-tab]").forEach(b=>b.classList.toggle("active",b.dataset.settingsTab===name));
+ $("#settingsProjects").classList.toggle("hide",name!=="projects");
+ $("#settingsAccounts").classList.toggle("hide",name!=="accounts");
+ $("#settingsTrash").classList.toggle("hide",name!=="trash");
+ if(name==="projects")renderSettingsProjectList();
+ if(name==="accounts")renderAdminUsers();
+ if(name==="trash")renderTrashProjects();
+}
+function openAdminSettings(tab="projects"){
+ $("#adminSettingsModal").classList.remove("hide");
+ setSettingsTab(tab);
+}
+$("#adminSettingsBtn").onclick=()=>openAdminSettings("projects");
+$("#adminSettingsShortcut").onclick=()=>openAdminSettings("projects");
+$("#closeAdminSettings").onclick=()=>$("#adminSettingsModal").classList.add("hide");
+$("#adminSettingsModal").onclick=e=>{if(e.target===$("#adminSettingsModal"))$("#adminSettingsModal").classList.add("hide")};
+document.querySelectorAll("[data-settings-tab]").forEach(b=>b.onclick=()=>setSettingsTab(b.dataset.settingsTab));
+
+function renderSettingsProjectList(){
+ const box=$("#settingsProjectList"),list=currentAccount?.buildings||[];
+ if(!list.length){box.innerHTML='<div class="empty">Chưa có dự án đang hoạt động.</div>';return}
+ box.innerHTML=list.map(b=>'<div class="settingsRow"><div class="settingsRowMain"><div class="settingsRowIcon">▥</div><div><b>'+esc(b.name||b.id)+'</b><small>'+esc(b.id)+'</small></div></div><button class="settingsDeleteBtn" type="button" onclick="adminDeleteBuilding(\''+esc(b.id)+'\',\''+esc(b.name||b.id).replace(/'/g,"&#39;")+'\')">🗑 Xóa</button></div>').join("");
+}
 $("#projectForm").onsubmit=async e=>{
  e.preventDefault();
- if(!centralSession?.access_token){$("#projectModal").classList.add("hide");$("#adminSetupModal").classList.remove("hide");return}
+ if(!centralSession?.access_token){$("#adminSettingsModal").classList.add("hide");$("#adminSetupModal").classList.remove("hide");return}
  const msg=$("#projectFormMessage"),btn=$("#projectForm button[type=submit]");
  msg.textContent="Đang tạo dự án...";btn.disabled=true;
  try{
    const id=$("#projectCode").value.trim().toUpperCase().replace(/\s+/g,"");
    const name=sentenceCapitalizeText($("#projectName").value.trim());
    await adminApi("create_building",{id,name});
+   $("#projectForm").reset();msg.textContent="";
    await refreshAdminBuildings();
-   $("#projectModal").classList.add("hide");
    toast("Đã thêm dự án "+name);
  }catch(err){msg.textContent=err.message}
  finally{btn.disabled=false}
 };
 window.adminDeleteBuilding=async(id,name)=>{
- if(!centralSession?.access_token){$("#adminSetupModal").classList.remove("hide");return}
- const typed=prompt("Xóa dự án sẽ xóa toàn bộ phân quyền và dữ liệu máy chủ của dự án.\n\nĐể xác nhận, nhập chính xác tên dự án:\n"+name);
+ if(!centralSession?.access_token){$("#adminSettingsModal").classList.add("hide");$("#adminSetupModal").classList.remove("hide");return}
+ const typed=prompt("Dự án sẽ được chuyển vào Thùng rác và có thể khôi phục lại.\n\nĐể xác nhận, nhập chính xác tên dự án:\n"+name);
  if(typed===null)return;
  if(typed.trim()!==name){toast("Tên xác nhận không đúng. Không xóa dự án.");return}
  try{
-   const r=await adminApi("delete_building",{id,confirm_name:name});
-   localStorage.removeItem(id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+id);
-   localStorage.removeItem(id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+id);
+   await adminApi("delete_building",{id,confirm_name:name});
    await refreshAdminBuildings();
+   await renderTrashProjects();
    await renderAdminUsers();
-   toast("Đã xóa dự án "+name);
+   toast("Đã chuyển "+name+" vào Thùng rác");
+ }catch(err){toast(err.message)}
+};
+async function renderTrashProjects(){
+ const box=$("#trashProjectList");
+ if(!centralSession?.access_token){box.innerHTML='<div class="adminNeedsCentral"><b>Chưa kết nối Admin trung tâm</b><p>Kích hoạt Admin trung tâm để sử dụng Thùng rác.</p></div>';return}
+ box.innerHTML='<div class="empty">Đang tải Thùng rác...</div>';
+ try{
+   const data=await adminApi("list_deleted_buildings"),list=data.buildings||[];
+   box.innerHTML=list.length?list.map(b=>{
+     const when=b.deleted_at?new Date(b.deleted_at).toLocaleString("vi-VN"):"";
+     return '<div class="settingsRow trashRow"><div class="settingsRowMain"><div class="settingsRowIcon trashIcon">🗑</div><div><b>'+esc(b.name||b.id)+'</b><small>'+esc(b.id)+(when?" · Đã xóa "+esc(when):"")+'</small></div></div><button class="settingsRestoreBtn" type="button" onclick="adminRestoreBuilding(\''+esc(b.id)+'\')">↺ Khôi phục</button></div>';
+   }).join(""):'<div class="empty">Thùng rác đang trống.</div>';
+ }catch(err){box.innerHTML='<div class="empty">'+esc(err.message)+'</div>'}
+}
+$("#refreshTrash").onclick=()=>renderTrashProjects();
+window.adminRestoreBuilding=async id=>{
+ if(!centralSession?.access_token)return;
+ try{
+   const r=await adminApi("restore_building",{id});
+   await refreshAdminBuildings();
+   await renderTrashProjects();
+   toast("Đã khôi phục dự án "+(r.building?.name||id));
  }catch(err){toast(err.message)}
 };
 
@@ -450,18 +488,17 @@ async function renderAdminUsers(){
  const box=$("#adminUsersList");
  if(!currentAccount?.is_admin){box.innerHTML='<div class="empty">Không có quyền Admin.</div>';return}
  if(!centralSession?.access_token){
-   box.innerHTML='<div class="adminNeedsCentral"><b>Admin cục bộ đang hoạt động</b><p>Kích hoạt Admin trung tâm để tạo và quản lý tài khoản thật cho các dự án.</p><button type="button" onclick="document.querySelector(\'#adminSetupModal\').classList.remove(\'hide\')">Kích hoạt ngay</button></div>';
+   box.innerHTML='<div class="adminNeedsCentral"><b>Admin cục bộ đang hoạt động</b><p>Kích hoạt Admin trung tâm để tạo và quản lý tài khoản thật cho các dự án.</p><button type="button" onclick="document.querySelector(\'#adminSettingsModal\').classList.add(\'hide\');document.querySelector(\'#adminSetupModal\').classList.remove(\'hide\')">Kích hoạt ngay</button></div>';
    return;
  }
  box.innerHTML='<div class="empty">Đang tải tài khoản...</div>';
  try{
-   const data=await adminApi("list");
-   const users=data.users||[];
+   const data=await adminApi("list"),users=data.users||[];
    box.innerHTML=users.length?users.map(u=>{
      const projects=(u.buildings||[]).map(b=>'<span>'+esc(b.name||b.id)+'</span>').join("")||'<span>Chưa phân dự án</span>';
      const name=esc(u.display_name||u.username||u.email||"Tài khoản");
-     return '<div class="adminUserRow"><div class="adminUserMain"><div class="adminAvatar">'+name.slice(0,1).toLocaleUpperCase("vi-VN")+'</div><div><b>'+name+'</b><small>'+(u.username?esc(u.username):esc(u.email||""))+'</small><div class="adminUserProjects">'+projects+'</div></div></div><div class="adminUserActions">'+(u.is_admin?'<span class="adminBadge">ADMIN</span>':'<button type="button" onclick="adminResetPassword(\''+u.id+'\')">Đổi mật khẩu</button><button type="button" class="'+(u.active?"danger":"success")+'" onclick="adminToggleUser(\''+u.id+'\','+(!u.active)+')">'+(u.active?"Khóa":"Mở khóa")+'</button>')+'</div></div>';
-   }).join(""):'<div class="empty">Chưa có tài khoản dự án.</div>';
+     return '<div class="adminUserRow"><div class="adminUserMain"><div class="adminAvatar">'+name.slice(0,1).toLocaleUpperCase("vi-VN")+'</div><div><b>'+name+'</b><small>'+(u.username?esc(u.username):esc(u.email||""))+'</small><div class="adminUserProjects">'+projects+'</div></div></div><div class="adminUserActions">'+(u.is_admin?'<span class="adminBadge">ADMIN</span>':'<button type="button" onclick="adminResetPassword(\''+u.id+'\')">Đổi mật khẩu</button><button type="button" class="'+(u.active?"danger":"success")+'" onclick="adminToggleUser(\''+u.id+'\','+(!u.active)+')">'+(u.active?"Khóa":"Mở khóa")+'</button><button type="button" class="danger" onclick="adminDeleteUser(\''+u.id+'\',\''+name.replace(/'/g,"&#39;")+'\')">🗑 Xóa</button>')+'</div></div>';
+   }).join(""):'<div class="empty">Chưa có tài khoản kỹ thuật.</div>';
  }catch(err){box.innerHTML='<div class="empty">'+esc(err.message)+'</div>'}
 }
 async function renderAdminPortal(){
@@ -470,16 +507,14 @@ async function renderAdminPortal(){
  $("#adminConnection").className="adminConnection "+(connected?"ok":"warn");
  $("#adminConnection").textContent=connected?"Admin trung tâm đã kết nối":"Đang dùng Admin cục bộ";
  $("#adminActivateCentral").classList.toggle("hide",connected);
- $("#addProjectBtn").disabled=!connected;
  $("#adminCreateBtn").disabled=!connected;
  $("#adminCreateHint").textContent=connected?"Tài khoản mới sẽ được tạo trên hệ thống trung tâm và chỉ truy cập dự án đã chọn.":"Kích hoạt Admin trung tâm trước khi tạo tài khoản dự án.";
- await renderAdminUsers();
 }
 $("#adminActivateCentral").onclick=()=>$("#adminSetupModal").classList.remove("hide");
 $("#refreshAdminUsers").onclick=()=>renderAdminUsers();
 $("#adminCreateAccountForm").onsubmit=async e=>{
  e.preventDefault();
- const btn=$("#adminCreateBtn");if(!centralSession?.access_token){$("#adminSetupModal").classList.remove("hide");return}
+ const btn=$("#adminCreateBtn");if(!centralSession?.access_token){$("#adminSettingsModal").classList.add("hide");$("#adminSetupModal").classList.remove("hide");return}
  btn.disabled=true;btn.textContent="Đang tạo...";
  try{
    const payload={
@@ -493,9 +528,14 @@ $("#adminCreateAccountForm").onsubmit=async e=>{
    $("#adminCreateAccountForm").reset();
    renderAdminProjects();
    await renderAdminUsers();
-   toast("Đã tạo tài khoản dự án");
+   toast("Đã tạo tài khoản kỹ thuật");
  }catch(err){toast(err.message)}
  finally{btn.disabled=false;btn.textContent="＋ Tạo tài khoản"}
+};
+window.adminDeleteUser=async(id,name)=>{
+ if(!centralSession?.access_token)return;
+ if(!confirm("Xóa vĩnh viễn tài khoản kỹ thuật \""+name+"\"?\n\nTài khoản này sẽ không thể đăng nhập lại."))return;
+ try{await adminApi("delete_user",{user_id:id});await renderAdminUsers();toast("Đã xóa tài khoản "+name)}catch(err){toast(err.message)}
 };
 window.adminResetPassword=async id=>{
  if(!centralSession?.access_token)return;
@@ -506,6 +546,7 @@ window.adminToggleUser=async(id,active)=>{
  if(!centralSession?.access_token)return;
  try{await adminApi("set_active",{user_id:id,active});await renderAdminUsers();toast(active?"Đã mở khóa tài khoản":"Đã khóa tài khoản")}catch(err){toast(err.message)}
 };
+
 function canProjectEdit(){return !!(currentAccount?.is_admin||currentBuilding.role!=="viewer")}
 function setProjectEditability(){
  const canEdit=canProjectEdit();
