@@ -878,7 +878,7 @@ function showModule(name){
    loadInventoryData(currentBuilding.id);
  }
  if(name==="maintenance")loadMaintenanceData(currentBuilding.id);
- if(name==="contractor"){selectedContractorId="";$("#contractorDetail").classList.add("hide");$("#contractorOverview").classList.remove("hide");loadContractorData(currentBuilding.id)}
+ if(name==="contractor"){selectedContractorId="";$("#contractorPage").classList.remove("contractorDetailMode");$("#contractorDetail").classList.add("hide");$("#contractorOverview").classList.remove("hide");loadContractorData(currentBuilding.id)}
 }
 $("#navHome").onclick=()=>showHome();
 $("#navAdmin").onclick=()=>openAdminPortal();
