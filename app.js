@@ -537,40 +537,45 @@ function renderHomeProjectCards(){
  box.innerHTML=list.length?list.map((b,i)=>'<button class="homeProjectCard" type="button" onclick="adminOpenBuilding(\''+esc(b.id)+'\')"><div class="projectMonogram">'+esc((b.id||"ES").slice(0,2))+'</div><div><small>'+esc(b.id)+'</small><b>'+esc(b.name||b.id)+'</b><span>ESTA Property Management</span></div><i>→</i></button>').join(""):'<div class="homeEmpty">Chưa có dự án đang hoạt động.</div>';
 }
 async function renderAdminHomeOverview(){
- const buildings=currentAccount?.buildings||[];
  $("#homeAdminProjects").classList.toggle("hide",!currentAccount?.is_admin);
  renderHomeProjectCards();
- if(!currentAccount?.is_admin||!buildings.length)return;
+ if(!currentAccount?.is_admin)return;
  try{
-   const rows=await Promise.all(buildings.map(async b=>{
-     try{const r=await projectSync("get",{},b.id);return {b,s:r?.snapshot||{tasks:[],energy:[]}}}
-     catch(e){return {b,s:{tasks:[],energy:[]}}}
-   }));
+   const result=await sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession.access_token,body:{}});
+   const rows=Array.isArray(result?.rows)?result.rows:[];
    const tasks=[],energy=[];let electricTotal=0,waterTotal=0,solarTotal=0,hasElectric=false,hasWater=false,hasSolar=false;
-   rows.forEach(({b,s})=>{
-     const bt=Array.isArray(s.tasks)?s.tasks:[],be=Array.isArray(s.energy)?s.energy:[];
-     bt.forEach(x=>tasks.push({...x,_building:b.name||b.id}));
-     be.forEach(x=>energy.push({...x,_building:b.name||b.id}));
+
+   rows.forEach(({building:b,snapshot:s})=>{
+     const bt=Array.isArray(s?.tasks)?s.tasks:[],be=Array.isArray(s?.energy)?s.energy:[];
+     bt.forEach(x=>tasks.push({...x,_building:b?.name||b?.id||"Dự án"}));
+     be.forEach(x=>energy.push({...x,_building:b?.name||b?.id||"Dự án"}));
      const ev=homeEnergyUse(be,"electric"),wv=homeEnergyUse(be,"water"),sv=homeEnergyUse(be,"solar");
      if(ev!==null){electricTotal+=ev;hasElectric=true}
      if(wv!==null){waterTotal+=wv;hasWater=true}
      if(sv!==null){solarTotal+=sv;hasSolar=true}
    });
+
    const td=today();
    $("#homeToday").textContent=tasks.filter(x=>x.d===td).length;
    $("#homeDoing").textContent=tasks.filter(x=>x.s==="Đang thực hiện").length;
    $("#homeDone").textContent=tasks.filter(x=>x.s==="Đã hoàn thành").length;
    $("#homeWait").textContent=tasks.filter(x=>x.s==="Chờ xử lý").length;
+
    const recent=[...tasks].sort((a,b)=>String(b.d||"").localeCompare(String(a.d||""))||Number(b.id)-Number(a.id)).slice(0,6);
    $("#homeRecentTasks").innerHTML=recent.length?recent.map(x=>{
      const st=x.s||"Đang thực hiện",cl=st==="Đã hoàn thành"?"done":st==="Đang thực hiện"?"doing":"waiting";
-     return '<div class="homeTaskRow static"><div class="homeTaskLead"><span class="homeTaskDot '+cl+'"></span><div><b>'+esc(x.c||"Công việc kỹ thuật")+'</b><small>'+esc(x._building||"Dự án")+' · '+(x.d?fmt(x.d):"—")+'</small></div></div><span class="homeStatus '+cl+'">'+esc(st)+'</span></div>'
+     return '<div class="homeTaskRow static"><div class="homeTaskLead"><span class="homeTaskDot '+cl+'"></span><div><b>'+esc(x.c||"Công việc kỹ thuật")+'</b><small>'+esc(x._building||"Dự án")+' · '+(x.d?fmt(x.d):"—")+'</small></div></div><span class="homeStatus '+cl+'">'+esc(st)+'</span></div>';
    }).join(""):'<div class="homeEmpty">Chưa có công việc gần đây.</div>';
+
    $("#homeElectric").textContent=homeNumber(hasElectric?electricTotal:null);
    $("#homeWater").textContent=homeNumber(hasWater?waterTotal:null);
    $("#homeSolar").textContent=homeNumber(hasSolar?solarTotal:null);
    $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
- }catch(e){console.warn("Admin home summary failed",e)}
+ }catch(e){
+   console.warn("Admin home summary failed",e);
+   $("#homeRecentTasks").innerHTML='<div class="homeEmpty">Không tải được dữ liệu tổng quan. Vui lòng thử lại.</div>';
+   $("#homeActivity").innerHTML='<div class="homeEmpty">Không tải được hoạt động gần đây.</div>';
+ }
 }
 function renderHomeDashboard(){
  const name=currentAccount?.display_name||currentAccount?.username||"Người dùng";
