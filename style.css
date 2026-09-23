@@ -7237,3 +7237,121 @@ img[data-storage-path]:not([src]){
   line-height:1.45!important;
   color:#183b56!important;
 }
+
+/* =========================================================
+   INVENTORY COLUMN ALIGNMENT — 2026-09-23
+   Keep header/body perfectly aligned across material + history tables
+   ========================================================= */
+#inventoryPage .materialMonthlyTable,
+#inventoryPage .transactionTable{
+  width:100%!important;
+  table-layout:fixed!important;
+  border-collapse:collapse!important;
+}
+
+/* Material monthly table widths */
+#inventoryPage .materialMonthlyTable .col-stt{width:5%!important}
+#inventoryPage .materialMonthlyTable .col-name{width:30%!important}
+#inventoryPage .materialMonthlyTable .col-unit{width:8%!important}
+#inventoryPage .materialMonthlyTable .col-open{width:11%!important}
+#inventoryPage .materialMonthlyTable .col-in{width:8%!important}
+#inventoryPage .materialMonthlyTable .col-out{width:8%!important}
+#inventoryPage .materialMonthlyTable .col-close{width:12%!important}
+#inventoryPage .materialMonthlyTable .col-actions{width:18%!important}
+
+#inventoryPage .materialMonthlyTable th,
+#inventoryPage .materialMonthlyTable td{
+  box-sizing:border-box!important;
+  vertical-align:middle!important;
+  white-space:nowrap!important;
+}
+#inventoryPage .materialMonthlyTable th:nth-child(1),
+#inventoryPage .materialMonthlyTable td:nth-child(1),
+#inventoryPage .materialMonthlyTable th:nth-child(3),
+#inventoryPage .materialMonthlyTable td:nth-child(3),
+#inventoryPage .materialMonthlyTable th:nth-child(4),
+#inventoryPage .materialMonthlyTable td:nth-child(4),
+#inventoryPage .materialMonthlyTable th:nth-child(5),
+#inventoryPage .materialMonthlyTable td:nth-child(5),
+#inventoryPage .materialMonthlyTable th:nth-child(6),
+#inventoryPage .materialMonthlyTable td:nth-child(6),
+#inventoryPage .materialMonthlyTable th:nth-child(7),
+#inventoryPage .materialMonthlyTable td:nth-child(7),
+#inventoryPage .materialMonthlyTable th:nth-child(8),
+#inventoryPage .materialMonthlyTable td:nth-child(8){
+  text-align:center!important;
+}
+#inventoryPage .materialMonthlyTable th:nth-child(2),
+#inventoryPage .materialMonthlyTable td:nth-child(2){
+  text-align:left!important;
+}
+#inventoryPage .materialMonthlyTable .sttCell{
+  width:auto!important;
+  text-align:center!important;
+}
+#inventoryPage .materialMonthlyTable .materialNameCell{
+  min-width:0!important;
+  max-width:none!important;
+  overflow:hidden!important;
+  padding-left:14px!important;
+}
+#inventoryPage .materialMonthlyTable .materialNameCell b{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#inventoryPage .materialMonthlyTable .invRowActions.compact{
+  justify-content:center!important;
+  width:100%!important;
+}
+
+/* Transaction history widths */
+#inventoryPage .transactionTable .col-date{width:12%!important}
+#inventoryPage .transactionTable .col-material{width:24%!important}
+#inventoryPage .transactionTable .col-type{width:10%!important}
+#inventoryPage .transactionTable .col-qty{width:10%!important}
+#inventoryPage .transactionTable .col-person{width:18%!important}
+#inventoryPage .transactionTable .col-note{width:18%!important}
+#inventoryPage .transactionTable .col-actions{width:8%!important}
+
+#inventoryPage .transactionTable th,
+#inventoryPage .transactionTable td{
+  box-sizing:border-box!important;
+  vertical-align:middle!important;
+  white-space:nowrap!important;
+}
+#inventoryPage .transactionTable th:nth-child(1),
+#inventoryPage .transactionTable td:nth-child(1),
+#inventoryPage .transactionTable th:nth-child(3),
+#inventoryPage .transactionTable td:nth-child(3),
+#inventoryPage .transactionTable th:nth-child(4),
+#inventoryPage .transactionTable td:nth-child(4),
+#inventoryPage .transactionTable th:nth-child(7),
+#inventoryPage .transactionTable td:nth-child(7){
+  text-align:center!important;
+}
+#inventoryPage .transactionTable th:nth-child(2),
+#inventoryPage .transactionTable td:nth-child(2),
+#inventoryPage .transactionTable th:nth-child(5),
+#inventoryPage .transactionTable td:nth-child(5),
+#inventoryPage .transactionTable th:nth-child(6),
+#inventoryPage .transactionTable td:nth-child(6){
+  text-align:left!important;
+}
+#inventoryPage .transactionTable td:nth-child(2),
+#inventoryPage .transactionTable td:nth-child(5),
+#inventoryPage .transactionTable td:nth-child(6){
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#inventoryPage .transactionTable .miniDanger{
+  margin:0 auto!important;
+}
+
+/* keep clean alignment on normal desktop widths */
+@media(min-width:761px){
+  #inventoryPage .materialMonthlyTable,
+  #inventoryPage .transactionTable{
+    min-width:0!important;
+  }
+}
