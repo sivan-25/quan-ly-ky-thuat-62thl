@@ -1247,8 +1247,8 @@ async function loadMaintenanceData(buildingId=currentBuilding?.id,force=false){
  }catch(e){console.warn("Load maintenance failed",e);toast("Không tải được dữ liệu bảo trì")}
 }
 function renderMaintenance(){
- const q=($("#maintenanceSearch")?.value||"").trim().toLocaleLowerCase("vi-VN"),sys=$("#maintenanceSystemFilter")?.value||"";
- const list=maintenanceAssets.filter(a=>(!sys||a.system_type===sys)&&(!q||[a.name,a.code,a.location,a.system_type,a.assigned_to,a.model].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
+ const q=($("#maintenanceSearch")?.value||"").trim().toLocaleLowerCase("vi-VN"),sys=$("#maintenanceSystemFilter")?.value||"",due=$("#maintenanceDueFilter")?.value||"";
+ const list=maintenanceAssets.filter(a=>(!sys||a.system_type===sys)&&(!due||maintenanceDueClass(a)===due)&&(!q||[a.name,a.code,a.location,a.system_type,a.assigned_to,a.model].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
  $("#maintAssetCount").textContent=maintenanceAssets.length;
  $("#maintOverdueCount").textContent=maintenanceAssets.filter(a=>maintenanceDueClass(a)==="overdue").length;
  $("#maintDueSoonCount").textContent=maintenanceAssets.filter(a=>maintenanceDueClass(a)==="soon").length;
@@ -1344,6 +1344,7 @@ $("#toolItemForm").onsubmit=async e=>{
 /* Event wiring: Maintenance */
 $("#maintenanceSearch").oninput=renderMaintenance;
 $("#maintenanceSystemFilter").onchange=renderMaintenance;
+$("#maintenanceDueFilter").onchange=renderMaintenance;
 $("#addMaintenanceAsset").onclick=()=>openMaintenanceAssetModal();
 $("#maintenanceExportPdf").onclick=()=>{if(!maintenanceAssets.length)return toast("Chưa có thiết bị để xuất PDF");inventoryPrintWindow(maintenanceReportHtml())};
 document.querySelectorAll("[data-maint-sample]").forEach(b=>b.onclick=()=>{const [n,s,f]=b.dataset.maintSample.split("|");openMaintenanceAssetModal(n,s,Number(f))});
