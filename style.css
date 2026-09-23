@@ -7582,3 +7582,122 @@ img[data-storage-path]:not([src]){
 @media(max-width:760px){
   #app.inventoryMode .inventoryHeaderControls{display:none!important}
 }
+
+/* =========================================================
+   TOOLS TABLE ALIGNMENT V2 — exact header/body columns
+   ========================================================= */
+#inventoryPage .toolsTable{
+  width:100%!important;
+  min-width:0!important;
+  table-layout:fixed!important;
+  border-collapse:collapse!important;
+}
+#inventoryPage .toolsTable .tool-col-stt{width:5%!important}
+#inventoryPage .toolsTable .tool-col-name{width:26%!important}
+#inventoryPage .toolsTable .tool-col-brand{width:13%!important}
+#inventoryPage .toolsTable .tool-col-qty{width:9%!important}
+#inventoryPage .toolsTable .tool-col-location{width:14%!important}
+#inventoryPage .toolsTable .tool-col-status{width:12%!important}
+#inventoryPage .toolsTable .tool-col-note{width:14%!important}
+#inventoryPage .toolsTable .tool-col-actions{width:7%!important}
+
+#inventoryPage .toolsTable th,
+#inventoryPage .toolsTable td{
+  box-sizing:border-box!important;
+  vertical-align:middle!important;
+  padding:11px 12px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#inventoryPage .toolsTable th{
+  height:44px!important;
+  white-space:nowrap!important;
+  line-height:1.2!important;
+}
+#inventoryPage .toolsTable td{
+  min-height:54px!important;
+  white-space:nowrap!important;
+  line-height:1.35!important;
+}
+#inventoryPage .toolsTable th:nth-child(1),
+#inventoryPage .toolsTable td:nth-child(1),
+#inventoryPage .toolsTable th:nth-child(4),
+#inventoryPage .toolsTable td:nth-child(4),
+#inventoryPage .toolsTable th:nth-child(6),
+#inventoryPage .toolsTable td:nth-child(6),
+#inventoryPage .toolsTable th:nth-child(8),
+#inventoryPage .toolsTable td:nth-child(8){
+  text-align:center!important;
+}
+#inventoryPage .toolsTable th:nth-child(2),
+#inventoryPage .toolsTable td:nth-child(2),
+#inventoryPage .toolsTable th:nth-child(3),
+#inventoryPage .toolsTable td:nth-child(3),
+#inventoryPage .toolsTable th:nth-child(5),
+#inventoryPage .toolsTable td:nth-child(5),
+#inventoryPage .toolsTable th:nth-child(7),
+#inventoryPage .toolsTable td:nth-child(7){
+  text-align:left!important;
+}
+#inventoryPage .toolsTable .sttCell{
+  width:auto!important;
+  text-align:center!important;
+}
+#inventoryPage .toolsTable .toolNameCell{
+  min-width:0!important;
+  max-width:none!important;
+  width:auto!important;
+  padding-left:14px!important;
+  position:static!important;
+}
+#inventoryPage .toolsTable .toolNameCell>div{
+  min-width:0!important;
+  width:100%!important;
+}
+#inventoryPage .toolsTable .toolNameCell b{
+  display:block!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:13px!important;
+  font-weight:650!important;
+  line-height:1.35!important;
+}
+#inventoryPage .toolsTable .toolNameCell small{
+  display:none!important;
+}
+#inventoryPage .toolsTable .toolNoteCell{
+  color:#677f8f!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#inventoryPage .toolsTable .toolCondition{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:82px!important;
+  max-width:100%!important;
+  white-space:nowrap!important;
+}
+#inventoryPage .toolsTable .invRowActions.compact{
+  width:100%!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+#inventoryPage .toolsTable .invRowActions.compact button{
+  flex:0 0 34px!important;
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+}
+
+@media(max-width:1050px){
+  #inventoryPage .toolsTable{min-width:980px!important}
+}
