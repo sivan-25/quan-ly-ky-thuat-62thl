@@ -10086,3 +10086,7 @@ i{
     font-size:19px!important;
   }
 }
+
+/* CONTRACTOR UI V7 */
+#contractorPage{--ct-navy:#153a53;--ct-blue:#2785a5;--ct-teal:#159b8a;--ct-amber:#d18a20;--ct-green:#2e9b6e;--ct-red:#d15f68;--ct-border:#dfe7ec;--ct-text:#173d58;--ct-muted:#718795;--ct-shadow:0 2px 5px rgba(18,48,66,.04),0 12px 28px rgba(18,48,66,.07)}
+#contractorPage.contractorPage{max-width:1580px!important;width:auto!important;margin:0 auto!important;padding:22px 24px 38px!important;color:var(--ct-text)!important}
