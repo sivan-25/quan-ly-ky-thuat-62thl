@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0850"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0915"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -512,6 +512,45 @@
   }
   #app #workPage #taskForm .workSave{
     font-size:9px!important;
+  }
+}
+
+/* V11.5 — cân lại độ rộng cột và tăng chữ nhãn */
+@media(min-width:1020px){
+  #app #workPage #taskForm.workEntryForm{
+    grid-template-columns:
+      92px
+      minmax(180px,320px)
+      118px
+      130px
+      minmax(180px,1fr)
+      minmax(130px,.72fr)
+      150px
+      70px!important;
+    gap:7px!important;
+  }
+
+  #app #workPage #taskForm .workField>span{
+    font-size:10.2px!important;
+    font-weight:760!important;
+    line-height:1.1!important;
+    margin-bottom:5px!important;
+  }
+
+  #app #workPage #taskForm select{
+    padding-left:9px!important;
+    padding-right:26px!important;
+    font-size:11px!important;
+  }
+
+  #app #workPage #taskForm .workContent input{
+    width:100%!important;
+    font-size:11.5px!important;
+  }
+
+  #app #workPage #taskForm .workType,
+  #app #workPage #taskForm .workStatus{
+    min-width:0!important;
   }
 }
 </style></head><body>
@@ -1270,4 +1309,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-0850"></script></body></html>
+<script src="app.js?v=20260923-0915"></script></body></html>
