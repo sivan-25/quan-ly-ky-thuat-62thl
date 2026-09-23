@@ -7202,3 +7202,38 @@ img[data-storage-path]:not([src]){
   font-weight:400!important;
   line-height:1.45!important;
 }
+
+/* =========================================================
+   ESTA UI TUNING — sidebar smaller + work text regular
+   ========================================================= */
+#app .estaNav button{
+  min-height:46px!important;
+  font-size:13px!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
+}
+#app .estaNav button.active{
+  font-weight:600!important;
+}
+#app .estaNav button svg{
+  width:18px!important;
+  height:18px!important;
+}
+.estaNav:before{
+  font-size:7.5px!important;
+  letter-spacing:1.5px!important;
+}
+
+#app #workPage .taskContentCell .taskTitle{
+  display:block!important;
+  font-size:13px!important;
+  font-weight:400!important;
+  line-height:1.45!important;
+  color:#183b56!important;
+}
+#app #workPage .proTaskCard .taskTitle{
+  font-size:14px!important;
+  font-weight:400!important;
+  line-height:1.45!important;
+  color:#183b56!important;
+}
