@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-1205"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-1145"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -1100,7 +1100,11 @@
     <div class="inventoryTableCard">
       <div class="inventoryTableScroll">
         <table class="toolsTable">
-          <thead><tr><th>STT</th><th>Tên dụng cụ</th><th>Nhãn hiệu</th><th>Số lượng</th><th>Vị trí lưu</th><th>Người phụ trách</th><th>Tình trạng</th><th>Thao tác</th></tr></thead>
+          <colgroup>
+            <col class="tool-col-stt"><col class="tool-col-name"><col class="tool-col-brand"><col class="tool-col-qty">
+            <col class="tool-col-location"><col class="tool-col-status"><col class="tool-col-note"><col class="tool-col-actions">
+          </colgroup>
+          <thead><tr><th>STT</th><th>Tên dụng cụ</th><th>Nhãn hiệu</th><th>Số lượng</th><th>Vị trí lưu</th><th>Tình trạng</th><th>Ghi chú</th><th>Thao tác</th></tr></thead>
           <tbody id="toolsBody"></tbody>
         </table>
       </div>
@@ -1268,9 +1272,8 @@
       <label><span>Đơn vị</span><input id="toolUnit" maxlength="30" value="Cái"></label>
       <label><span>Tình trạng</span><select id="toolCondition"><option>Tốt</option><option>Đang sử dụng</option><option>Cần kiểm tra</option><option>Cần sửa</option><option>Hư hỏng</option><option>Ngừng sử dụng</option></select></label>
       <label><span>Vị trí lưu</span><input id="toolLocation" maxlength="120" placeholder="Kho kỹ thuật, tủ dụng cụ..."></label>
-      <label><span>Người phụ trách</span><select id="toolKeeper"><option value="">— Chọn —</option></select></label>
       <label><span>Ngày mua</span><input id="toolAcquiredDate" type="date"></label>
-      <label class="wide"><span>Ghi chú</span><input id="toolNote" maxlength="300" placeholder="Model, serial, tình trạng chi tiết..."></label>
+      <label class="wide toolNoteField"><span>Ghi chú</span><input id="toolNote" maxlength="300" placeholder="Model, serial, vị trí sử dụng, tình trạng chi tiết..."></label>
       <div class="inventoryFormActions"><button id="cancelToolModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu dụng cụ</button></div>
     </form>
   </div>
@@ -1336,4 +1339,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-1205"></script></body></html>
+<script src="app.js?v=20260923-1145"></script></body></html>
