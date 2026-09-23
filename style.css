@@ -9217,3 +9217,191 @@ i{
   #contractorDetailModal .contractorJobTable th{font-size:8.5px!important}
   #contractorDetailModal .contractorJobTable td{font-size:10px!important}
 }
+
+/* =========================================================
+   CONTRACTOR WORK FORM V4 — 3 / 3 / 2 balanced layout
+   ========================================================= */
+#contractorJobModal .contractorJobModalCard{
+  width:min(1380px,calc(100vw - 34px))!important;
+  max-width:none!important;
+  max-height:calc(100vh - 34px)!important;
+  overflow:auto!important;
+  border-radius:20px!important;
+}
+
+#contractorJobModal .contractorModalHead{
+  padding:22px 30px 20px!important;
+}
+
+#contractorJobModal .contractorModalHead h3{
+  margin:5px 0 3px!important;
+  font-size:24px!important;
+  letter-spacing:-.35px!important;
+}
+
+#contractorJobModal .contractorWorkForm{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:16px 18px!important;
+  padding:22px 30px 26px!important;
+  align-items:start!important;
+}
+
+/* Row 1: work date / completion date / status */
+#contractorJobModal .contractorWorkForm>label:nth-of-type(1),
+#contractorJobModal .contractorWorkForm>label:nth-of-type(2),
+#contractorJobModal .contractorWorkForm>label:nth-of-type(3){
+  grid-column:span 2!important;
+}
+
+/* Row 2: content / cause / resolution */
+#contractorJobModal .contractorWorkForm .workTextField{
+  grid-column:span 2!important;
+}
+
+/* Row 3: image and note are exactly 50 / 50 */
+#contractorJobModal .contractorWorkForm .contractorJobImageField,
+#contractorJobModal .contractorWorkForm .contractorJobNoteField{
+  grid-column:span 3!important;
+  min-width:0!important;
+}
+
+#contractorJobModal .contractorWorkForm .contractorField>span{
+  margin-bottom:8px!important;
+  font-size:11px!important;
+}
+
+#contractorJobModal .contractorWorkForm input,
+#contractorJobModal .contractorWorkForm select{
+  height:56px!important;
+  padding:0 14px!important;
+  border-radius:12px!important;
+  font-size:12px!important;
+}
+
+#contractorJobModal .contractorWorkForm .workTextField textarea{
+  min-height:118px!important;
+  max-height:210px!important;
+  padding:13px 14px!important;
+  border-radius:12px!important;
+  font-size:12px!important;
+}
+
+#contractorJobModal .contractorWorkForm .contractorJobNoteField textarea{
+  width:100%!important;
+  min-height:118px!important;
+  height:118px!important;
+  max-height:210px!important;
+  padding:13px 14px!important;
+  border-radius:12px!important;
+  font-size:12px!important;
+}
+
+/* Give image block the same visual footprint as Note */
+#contractorJobModal .contractorJobImageField{
+  min-height:154px!important;
+}
+
+#contractorJobModal .contractorJobImageActions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:48px!important;
+  margin:0 0 10px!important;
+}
+
+#contractorJobModal .contractorImageBtn{
+  height:48px!important;
+  min-width:92px!important;
+  padding:0 14px!important;
+  border-radius:11px!important;
+  font-size:9.5px!important;
+  background:#f2f8fa!important;
+}
+
+#contractorJobModal .contractorJobImagePreview{
+  min-height:60px!important;
+  align-content:flex-start!important;
+}
+
+#contractorJobModal .contractorFormActions{
+  grid-column:1/-1!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding-top:8px!important;
+}
+
+#contractorJobModal .contractorFormActions button{
+  height:52px!important;
+  min-width:125px!important;
+  padding:0 20px!important;
+  border-radius:11px!important;
+  font-size:10.5px!important;
+}
+
+#contractorJobModal .contractorFormActions .contractorPrimary{
+  min-width:150px!important;
+}
+
+/* Make image heading in history table readable */
+.contractorJobTable th:nth-child(6){
+  min-width:118px!important;
+}
+
+/* Tablet */
+@media(max-width:980px){
+  #contractorJobModal .contractorWorkForm{
+    grid-template-columns:1fr 1fr!important;
+    padding:18px!important;
+    gap:13px!important;
+  }
+  #contractorJobModal .contractorWorkForm>label:nth-of-type(1),
+  #contractorJobModal .contractorWorkForm>label:nth-of-type(2),
+  #contractorJobModal .contractorWorkForm>label:nth-of-type(3),
+  #contractorJobModal .contractorWorkForm .workTextField{
+    grid-column:span 1!important;
+  }
+  #contractorJobModal .contractorWorkForm .contractorJobImageField,
+  #contractorJobModal .contractorWorkForm .contractorJobNoteField{
+    grid-column:span 1!important;
+  }
+}
+
+/* Mobile */
+@media(max-width:640px){
+  #contractorJobModal{padding:8px!important}
+  #contractorJobModal .contractorJobModalCard{
+    width:100%!important;
+    max-height:calc(100vh - 16px)!important;
+    border-radius:16px!important;
+  }
+  #contractorJobModal .contractorModalHead{
+    padding:18px 18px 15px!important;
+  }
+  #contractorJobModal .contractorModalHead h3{
+    font-size:20px!important;
+  }
+  #contractorJobModal .contractorWorkForm{
+    grid-template-columns:1fr!important;
+    padding:15px 16px 18px!important;
+    gap:12px!important;
+  }
+  #contractorJobModal .contractorWorkForm>label:nth-of-type(1),
+  #contractorJobModal .contractorWorkForm>label:nth-of-type(2),
+  #contractorJobModal .contractorWorkForm>label:nth-of-type(3),
+  #contractorJobModal .contractorWorkForm .workTextField,
+  #contractorJobModal .contractorWorkForm .contractorJobImageField,
+  #contractorJobModal .contractorWorkForm .contractorJobNoteField{
+    grid-column:1/-1!important;
+  }
+  #contractorJobModal .contractorFormActions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+  }
+  #contractorJobModal .contractorFormActions button{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
