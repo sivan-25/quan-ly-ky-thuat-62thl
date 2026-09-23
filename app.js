@@ -1957,10 +1957,11 @@ function setProjectEditability(){
  const canEdit=canProjectEdit();
  ["taskForm","energyForm","materialItemForm","stockTxnForm","toolItemForm","maintenanceAssetForm","maintenanceRecordForm","contractorItemForm","contractorJobForm"].forEach(fid=>{
    const f=$("#"+fid);if(!f)return;
-   f.querySelectorAll("input,select,button").forEach(el=>{if(el.id!=="cancelEdit"&&el.id!=="energyCancelEdit")el.disabled=!canEdit});
+   f.querySelectorAll("input,select,textarea,button").forEach(el=>{if(el.id!=="cancelEdit"&&el.id!=="energyCancelEdit")el.disabled=!canEdit});
  });
  if($("#backupBtn"))$("#backupBtn").disabled=!canEdit;
  if($("#restoreBtn"))$("#restoreBtn").disabled=!canEdit;
+ ["addContractorBtn","addContractorJobBtn"].forEach(id=>{const el=$("#"+id);if(el)el.disabled=!canEdit});
 }
 const oldApplyBuildingUI=applyBuildingUI;
 applyBuildingUI=function(){
