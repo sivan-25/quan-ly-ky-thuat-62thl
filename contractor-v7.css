@@ -7,3 +7,13 @@
 #contractorPage .contractorHero p{margin:7px 0 0!important;color:#526b7a!important;font-size:13px!important}
 #contractorPage .contractorHero>div>span{color:#8c6a57!important;font-size:10px!important;font-weight:800!important}
 #contractorPage .contractorHero .contractorPrimary{height:44px!important;padding:0 17px!important;border-radius:11px!important;background:linear-gradient(135deg,#173f5d,#176982)!important;color:#fff!important;font-size:12px!important}
+
+#contractorPage .contractorStats{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin:0 0 14px!important}
+#contractorPage .contractorStats article{position:relative!important;min-height:104px!important;display:flex!important;align-items:center!important;gap:13px!important;padding:16px 17px!important;border:1px solid var(--ct-border)!important;border-radius:15px!important;background:#fff!important;box-shadow:0 5px 14px rgba(18,48,66,.04)!important;overflow:hidden!important}
+#contractorPage .contractorStats article:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px}
+#contractorPage .contractorStats article:nth-child(1):after{background:#4d91bf}#contractorPage .contractorStats article:nth-child(2):after{background:#2ba8ad}#contractorPage .contractorStats article:nth-child(3):after{background:#d18a20}#contractorPage .contractorStats article:nth-child(4):after{background:#319c71}
+#contractorPage .contractorStatIcon{width:46px!important;height:46px!important;flex:0 0 46px!important;border-radius:13px!important}
+#contractorPage .contractorStatIcon.blue{background:#eaf5fb!important;color:#337ead!important}#contractorPage .contractorStatIcon.cyan{background:#e9faf8!important;color:#188f85!important}#contractorPage .contractorStatIcon.amber{background:#fff7e8!important;color:#c27d18!important}#contractorPage .contractorStatIcon.green{background:#ecf9f2!important;color:#278b62!important}
+#contractorPage .contractorStats small{font-size:12px!important;color:#687f8e!important;font-weight:750!important}
+#contractorPage .contractorStats b{font-size:27px!important;color:#153a53!important;font-weight:800!important;margin:4px 0 2px!important}
+#contractorPage .contractorStats em{font-size:12px!important;color:#7d909c!important}
