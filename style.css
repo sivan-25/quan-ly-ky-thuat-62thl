@@ -10086,3 +10086,610 @@ i{
     font-size:19px!important;
   }
 }
+
+/* =========================================================
+   CONTRACTOR CRM V7 — REFERENCE-STYLE MASTER / DETAIL
+   ========================================================= */
+#contractorPage.contractorCRMPage{
+  max-width:none!important;
+  width:100%!important;
+  padding:20px 24px 34px!important;
+  background:#f4f7fa!important;
+}
+.contractorCRMHead{
+  min-height:92px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:18px 22px;
+  margin-bottom:12px;
+  border:1px solid #dde6ec;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 5px 20px rgba(30,59,79,.035);
+}
+.contractorCRMHead>div>span{
+  display:block;
+  margin-bottom:4px;
+  color:#8e6c58;
+  font-size:7px;font-weight:850;letter-spacing:1.55px;
+}
+.contractorCRMHead h1{
+  margin:0!important;
+  color:#163b57!important;
+  font-size:23px!important;
+  font-weight:790!important;
+  letter-spacing:-.35px;
+}
+.contractorCRMHead p{
+  margin:5px 0 0!important;
+  color:#7e929f!important;
+  font-size:9px!important;
+}
+.crmAddContractor{
+  height:40px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  padding:0 13px!important;
+  border-radius:9px!important;
+}
+.crmAddContractor svg,
+.contractorProfileActions button svg{
+  width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+
+#contractorPage .contractorCRMStats{
+  gap:9px!important;
+  margin-bottom:12px!important;
+}
+#contractorPage .contractorCRMStats article{
+  min-height:82px!important;
+  padding:12px 13px!important;
+  border-radius:13px!important;
+  box-shadow:0 4px 18px rgba(29,56,75,.028)!important;
+}
+#contractorPage .contractorCRMStats .contractorStatIcon{
+  width:38px!important;height:38px!important;flex-basis:38px!important;border-radius:10px!important;
+}
+#contractorPage .contractorCRMStats .contractorStatIcon svg{
+  width:17px!important;height:17px!important;
+}
+#contractorPage .contractorCRMStats small{font-size:6px!important}
+#contractorPage .contractorCRMStats b{font-size:20px!important;margin:2px 0!important}
+#contractorPage .contractorCRMStats em{font-size:6.3px!important}
+
+/* Two-panel contractor workspace */
+.contractorCRMWorkspace{
+  display:grid;
+  grid-template-columns:330px minmax(0,1fr);
+  gap:12px;
+  align-items:stretch;
+  min-height:620px;
+}
+.contractorDirectoryPane,
+.contractorProfilePane{
+  min-width:0;
+  border:1px solid #dde6eb;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 6px 22px rgba(29,56,75,.035);
+}
+.contractorDirectoryPane{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.contractorDirectoryHead{
+  min-height:70px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 15px 10px;
+}
+.contractorDirectoryHead>div>span{
+  display:block;
+  color:#8d6b57;
+  font-size:6px;font-weight:850;letter-spacing:1.3px;
+}
+.contractorDirectoryHead h2{
+  margin:4px 0 0;
+  color:#1c435d;
+  font-size:14px;
+}
+.contractorDirectoryHead>small{
+  color:#8699a5;
+  font-size:7px;
+  white-space:nowrap;
+}
+#contractorPage .contractorCRMSearch{
+  width:auto!important;
+  height:38px!important;
+  margin:0 12px 11px;
+  flex:0 0 38px;
+  border-radius:9px!important;
+  background:#f7fafb!important;
+}
+#contractorPage .contractorCRMSearch input{font-size:8.5px!important}
+.contractorCardList{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  overflow:auto;
+  padding:0 8px 10px;
+  scrollbar-width:thin;
+}
+.contractorCRMCard{
+  position:relative;
+  border:1px solid #e2e9ed;
+  border-radius:12px;
+  background:#fff;
+  transition:.16s ease;
+}
+.contractorCRMCard:hover{
+  border-color:#c7dbe4;
+  box-shadow:0 5px 16px rgba(29,69,92,.06);
+  transform:translateY(-1px);
+}
+.contractorCRMCard.active{
+  border-color:#8fc8d8;
+  background:linear-gradient(135deg,#f7fcfd,#fff);
+  box-shadow:inset 3px 0 0 #27a6c2,0 5px 18px rgba(36,111,137,.07);
+}
+.contractorCRMCardMain{
+  width:100%;
+  display:block;
+  padding:11px 11px 9px;
+  border:0;
+  background:transparent;
+  text-align:left;
+  cursor:pointer;
+}
+.contractorCRMCardTop{
+  display:flex;align-items:center;gap:9px;
+}
+.contractorCRMLogo{
+  width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;
+  border-radius:10px;
+  background:#edf5f8;
+  color:#2f647d;
+  border:1px solid #d7e6ec;
+  font-size:10px;font-weight:850;
+}
+.contractorCRMCard.active .contractorCRMLogo{
+  background:#e4f5f9;
+  color:#16829f;
+  border-color:#c7e5ed;
+}
+.contractorCRMTitle{min-width:0;flex:1}
+.contractorCRMTitle b{
+  display:block;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#1d425c;
+  font-size:9.2px;font-weight:760;
+}
+.contractorCRMTitle small{
+  display:block;
+  margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#8799a5;
+  font-size:6.6px;
+}
+.contractorCRMArrow{
+  color:#8da0aa;
+  font-size:18px;
+  line-height:1;
+}
+.contractorCRMContact{
+  display:grid;
+  gap:4px;
+  margin-top:9px;
+}
+.contractorCRMContact span{
+  display:flex;align-items:center;gap:6px;
+  min-width:0;
+  color:#627c8c;
+  font-size:6.8px;
+}
+.contractorCRMContact svg{
+  width:12px;height:12px;flex:0 0 12px;
+  fill:none;stroke:#7395a6;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+}
+.contractorCRMContact span{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.contractorCRMCardFoot{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  margin-top:9px;
+  padding-top:8px;
+  border-top:1px solid #edf1f3;
+}
+.contractorCRMJobCount{
+  color:#547286;
+  font-size:6.4px;font-weight:720;
+}
+.contractorCRMState{
+  display:inline-flex;
+  padding:3px 6px;
+  border-radius:999px;
+  font-size:5.8px;font-weight:760;
+}
+.contractorCRMState.busy{background:#fff4e5;color:#a16c20}
+.contractorCRMState.clear{background:#eaf8f1;color:#2b805a}
+.contractorCRMLast{
+  margin-top:8px;
+  padding:7px 8px;
+  border-radius:8px;
+  background:#f7f9fa;
+}
+.contractorCRMLast small{
+  display:block;color:#8b9aa4;font-size:5.8px;
+}
+.contractorCRMLast b{
+  display:block;margin-top:3px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#486778;font-size:6.8px;font-weight:650;
+}
+.contractorCRMCardActions{
+  position:absolute;
+  right:7px;top:7px;
+  display:flex;gap:3px;
+  opacity:0;
+  pointer-events:none;
+  transition:.14s ease;
+}
+.contractorCRMCard:hover .contractorCRMCardActions{
+  opacity:1;
+  pointer-events:auto;
+}
+.contractorCRMCardActions button{
+  width:26px;height:25px;display:grid;place-items:center;
+  padding:0;border:1px solid #dce6eb;border-radius:7px;background:#fff;color:#567385;
+}
+.contractorCRMCardActions button.danger{color:#bd6266;border-color:#eddadb}
+.contractorCRMCardActions svg{
+  width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* Right profile panel */
+.contractorProfilePane{
+  overflow:hidden;
+}
+.contractorProfileEmpty{
+  min-height:620px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px;
+  text-align:center;
+}
+.contractorProfileEmptyIcon{
+  width:62px;height:62px;display:grid;place-items:center;
+  border-radius:18px;
+  background:#edf5f8;
+  color:#56829a;
+}
+.contractorProfileEmptyIcon svg{
+  width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round;
+}
+.contractorProfileEmpty h3{
+  margin:14px 0 5px;color:#2b4d62;font-size:14px;
+}
+.contractorProfileEmpty p{
+  margin:0;max-width:390px;color:#8a9aa5;font-size:8px;line-height:1.55;
+}
+.contractorInlineDetail{min-height:620px}
+.contractorProfileHero{
+  min-height:105px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:18px 20px;
+  border-bottom:1px solid #e9eef1;
+  background:linear-gradient(135deg,#fbfdfe,#f5fafc);
+}
+.contractorProfileIdentity{
+  display:flex;align-items:center;gap:13px;min-width:0;
+}
+.contractorProfileLogo{
+  width:52px;height:52px;display:grid;place-items:center;flex:0 0 52px;
+  border-radius:15px;
+  background:linear-gradient(145deg,#153f5c,#247f9e);
+  color:#fff;
+  box-shadow:0 8px 20px rgba(24,85,112,.15);
+  font-size:17px;font-weight:850;
+}
+.contractorProfileIdentity>div{min-width:0}
+.contractorProfileEyebrow{
+  display:block;
+  color:#92715d;
+  font-size:6px;font-weight:850;letter-spacing:1.3px;
+}
+.contractorProfileIdentity h2{
+  margin:4px 0 2px;
+  color:#173d58;
+  font-size:19px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.contractorProfileIdentity p{
+  margin:0;color:#77909f;font-size:7.5px;
+}
+.contractorProfileActions{
+  display:flex;align-items:center;gap:7px;flex:0 0 auto;
+}
+.contractorProfileActions button{
+  height:36px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:0 10px;
+  border-radius:8px;
+  font-size:7.5px;font-weight:750;
+}
+.contractorGhostBtn{
+  border:1px solid #d9e4e9;background:#fff;color:#526f81;
+}
+
+.contractorProfileInfoGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  padding:12px 18px;
+  border-bottom:1px solid #e9eef1;
+}
+.contractorProfileInfoItem{
+  min-height:62px;
+  display:flex;align-items:center;gap:9px;
+  padding:9px 10px;
+  border:1px solid #e2e9ed;
+  border-radius:10px;
+  background:#fff;
+}
+.profileInfoIcon{
+  width:30px;height:30px;display:grid;place-items:center;flex:0 0 30px;
+  border-radius:9px;background:#f0f6f8;color:#4d788e;
+}
+.profileInfoIcon svg{
+  width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+}
+.contractorProfileInfoItem>div{min-width:0}
+.contractorProfileInfoItem small{
+  display:block;color:#8a9ba5;font-size:5.4px;letter-spacing:.55px;
+}
+.contractorProfileInfoItem b,
+.contractorProfileInfoItem a{
+  display:block;
+  margin-top:4px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#33586e;
+  font-size:7.4px;font-weight:730;
+  text-decoration:none;
+}
+
+.contractorProfileSummary{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  margin:0 18px 12px;
+  border:1px solid #e2e9ed;
+  border-radius:11px;
+  overflow:hidden;
+}
+.contractorProfileSummary>div{
+  min-height:58px;
+  padding:9px 11px;
+  background:#f9fbfc;
+  border-right:1px solid #e5ecef;
+}
+.contractorProfileSummary>div:last-child{border-right:0}
+.contractorProfileSummary small{
+  display:block;color:#8c9da7;font-size:5.5px;letter-spacing:.55px;
+}
+.contractorProfileSummary b{
+  display:block;margin-top:4px;color:#234d66;font-size:13px;
+}
+
+.contractorWorkHistoryHead{
+  min-height:58px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 18px;
+  border-top:1px solid #edf1f3;
+}
+.contractorWorkHistoryHead span{
+  display:block;color:#91715d;font-size:5.8px;font-weight:850;letter-spacing:1.2px;
+}
+.contractorWorkHistoryHead h3{
+  margin:3px 0 0;color:#1d435d;font-size:13px;
+}
+.contractorWorkHistoryHead>small{color:#8296a3;font-size:7px}
+
+.contractorTimeline{
+  position:relative;
+  display:flex;flex-direction:column;gap:0;
+  padding:0 18px 18px;
+}
+.contractorTimelineItem{
+  position:relative;
+  display:grid;
+  grid-template-columns:26px minmax(0,1fr);
+}
+.contractorTimelineRail{
+  position:relative;
+  min-height:100%;
+}
+.contractorTimelineRail:after{
+  content:"";
+  position:absolute;
+  left:12px;top:25px;bottom:-3px;
+  width:1px;background:#dfe8ed;
+}
+.contractorTimelineItem:last-child .contractorTimelineRail:after{display:none}
+.contractorTimelineRail>span{
+  position:absolute;
+  left:7px;top:16px;
+  width:11px;height:11px;
+  border-radius:50%;
+  border:2px solid #fff;
+  background:#7f9cab;
+  box-shadow:0 0 0 2px #dfe8ed;
+}
+.contractorTimelineItem.done .contractorTimelineRail>span{background:#35a174;box-shadow:0 0 0 2px #d7eee3}
+.contractorTimelineItem.doing .contractorTimelineRail>span{background:#d99b36;box-shadow:0 0 0 2px #fae8c8}
+.contractorTimelineItem.waiting .contractorTimelineRail>span{background:#cc666b;box-shadow:0 0 0 2px #f3d9da}
+.contractorTimelineCard{
+  margin-bottom:9px;
+  padding:11px 12px;
+  border:1px solid #e0e8ed;
+  border-radius:11px;
+  background:#fff;
+}
+.contractorTimelineTop{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.contractorTimelineTop>div:first-child{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+}
+.contractorTimelineTop small{color:#8598a4;font-size:6.5px}
+.contractorTimelineCard h4{
+  margin:8px 0 9px;
+  color:#1f465f;
+  font-size:9.5px;
+  line-height:1.45;
+}
+.contractorTimelineDetails{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.contractorTimelineDetails>div,
+.contractorTimelineNote{
+  padding:8px 9px;
+  border-radius:8px;
+  background:#f7f9fa;
+}
+.contractorTimelineDetails small,
+.contractorTimelineNote small{
+  display:block;
+  color:#8b9ba5;
+  font-size:5.5px;font-weight:800;letter-spacing:.5px;
+}
+.contractorTimelineDetails p,
+.contractorTimelineNote p{
+  margin:4px 0 0;
+  color:#526f80;
+  font-size:7px;
+  line-height:1.5;
+}
+.contractorTimelineNote{margin-top:7px}
+.contractorTimelineImages{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;
+}
+.contractorTimelineImages button{
+  position:relative;
+  width:64px;height:48px;
+  overflow:hidden;
+  padding:0;
+  border:1px solid #d9e4e9;
+  border-radius:8px;
+  background:#f4f7f9;
+}
+.contractorTimelineThumb{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.contractorTimelineImages button>span{
+  position:absolute;inset:0;display:grid;place-items:center;
+  background:rgba(13,43,65,.62);color:#fff;font-size:9px;font-weight:800;
+}
+#contractorInlineJobs .contractorRowActions{
+  gap:3px;
+}
+#contractorInlineJobs .contractorRowActions button{
+  width:27px!important;height:26px!important;
+}
+#contractorInlineJobs .contractorRowActions svg{
+  width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* Directory form: include company phone cleanly */
+#contractorItemModal .contractorDirectoryForm{
+  grid-template-columns:1.4fr 1fr 1fr!important;
+  grid-template-areas:
+    "name name specialty"
+    "companyPhone contact phone"
+    "note note note"
+    "actions actions actions"!important;
+}
+#contractorItemModal .contractorNameField{grid-area:name!important}
+#contractorItemModal .contractorSpecialtyField{grid-area:specialty!important}
+#contractorItemModal .contractorCompanyPhoneField{grid-area:companyPhone!important}
+#contractorItemModal .contractorContactField{grid-area:contact!important}
+#contractorItemModal .contractorContactPhoneField{grid-area:phone!important}
+#contractorItemModal .contractorNoteField{grid-area:note!important}
+#contractorItemModal .contractorNoteField textarea{
+  height:64px!important;min-height:64px!important;max-height:92px!important;
+}
+
+/* V7 overrides V6's over-sized contractor forms */
+@media(min-width:901px){
+  #contractorPage.contractorCRMPage{
+    padding:20px 24px 34px!important;
+  }
+  #contractorPage .contractorCRMHead h1{font-size:23px!important}
+  #contractorPage .contractorCRMStats article{min-height:82px!important;padding:12px 13px!important}
+  #contractorPage .contractorCRMStats b{font-size:20px!important}
+  #contractorPage .contractorCRMStats .contractorStatIcon{width:38px!important;height:38px!important;flex-basis:38px!important}
+  #contractorPage .contractorCRMSearch{width:auto!important;height:38px!important}
+
+  #contractorJobModal .contractorJobModalCard{
+    width:min(980px,calc(100vw - 36px))!important;
+    max-height:calc(100vh - 36px)!important;
+    border-radius:17px!important;
+  }
+  #contractorJobModal .contractorModalHead{
+    padding:17px 22px 13px!important;
+  }
+  #contractorJobModal .contractorModalHead h3{
+    font-size:19px!important;
+  }
+  #contractorJobModal .contractorWorkForm{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:11px 12px!important;
+    padding:15px 22px 18px!important;
+  }
+  #contractorJobModal .contractorWorkForm input,
+  #contractorJobModal .contractorWorkForm select{
+    height:42px!important;min-height:42px!important;max-height:42px!important;
+    padding:0 10px!important;font-size:9px!important;border-radius:9px!important;
+  }
+  #contractorJobModal .contractorWorkForm textarea,
+  #contractorJobModal .contractorWorkForm .workTextField textarea,
+  #contractorJobModal .contractorWorkForm .contractorJobNoteField textarea{
+    height:88px!important;min-height:88px!important;max-height:150px!important;
+    padding:10px!important;font-size:9px!important;border-radius:9px!important;
+  }
+  #contractorJobModal .contractorWorkForm .contractorField>span{
+    margin-bottom:6px!important;font-size:8.5px!important;
+  }
+  #contractorJobModal .contractorJobImageField{min-height:118px!important}
+  #contractorJobModal .contractorImageBtn{height:38px!important;min-width:85px!important;font-size:8px!important}
+  #contractorJobModal .contractorFormActions button{height:40px!important;min-width:96px!important;font-size:8.5px!important}
+}
+
+@media(max-width:1100px){
+  .contractorCRMWorkspace{grid-template-columns:285px minmax(0,1fr)}
+  .contractorProfileInfoGrid{grid-template-columns:1fr 1fr}
+  .contractorProfileSummary{grid-template-columns:1fr 1fr}
+  .contractorProfileSummary>div:nth-child(2){border-right:0}
+  .contractorProfileSummary>div:nth-child(-n+2){border-bottom:1px solid #e5ecef}
+}
+@media(max-width:760px){
+  #contractorPage.contractorCRMPage{padding:12px 10px 26px!important}
+  .contractorCRMHead{display:block;padding:16px}
+  .contractorCRMHead h1{font-size:20px!important}
+  .crmAddContractor{width:100%;margin-top:13px}
+  #contractorPage .contractorCRMStats{grid-template-columns:1fr 1fr!important}
+  .contractorCRMWorkspace{display:block;min-height:0}
+  .contractorDirectoryPane{margin-bottom:10px;max-height:420px}
+  .contractorProfilePane{min-height:0}
+  .contractorProfileEmpty{min-height:260px}
+  .contractorInlineDetail{min-height:0}
+  .contractorProfileHero{align-items:flex-start;flex-direction:column;padding:15px}
+  .contractorProfileActions{width:100%}
+  .contractorProfileActions button{flex:1}
+  .contractorProfileInfoGrid{grid-template-columns:1fr;padding:10px}
+  .contractorProfileSummary{grid-template-columns:1fr 1fr;margin:0 10px 10px}
+  .contractorWorkHistoryHead{padding:10px 12px}
+  .contractorTimeline{padding:0 10px 12px}
+  .contractorTimelineDetails{grid-template-columns:1fr}
+  #contractorItemModal .contractorDirectoryForm{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"name" "specialty" "companyPhone" "contact" "phone" "note" "actions"!important;
+  }
+}
