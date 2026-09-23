@@ -8019,3 +8019,112 @@ i{
   #app .homeKpis{gap:8px!important;margin:9px 0!important}
   #app .kpiCard{min-height:88px!important;padding:11px!important}
 }
+
+/* =========================================================
+   ESTA HOME CLEANUP V12 — warm brand palette, no personal identity
+   ========================================================= */
+#app.homeMode .homeWelcome{
+  min-height:154px!important;
+  padding:24px 28px!important;
+  border:1px solid #e7ddd5!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 87% 20%,rgba(154,118,96,.10),transparent 24%),
+    linear-gradient(135deg,#fffdfb 0%,#f8f3ef 100%)!important;
+  color:#173b56!important;
+  box-shadow:0 9px 28px rgba(61,45,36,.045)!important;
+}
+#app.homeMode .homeWelcome:before{
+  background:
+    linear-gradient(rgba(154,118,96,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(154,118,96,.035) 1px,transparent 1px)!important;
+  background-size:30px 30px!important;
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.35) 55%,#000 100%)!important;
+}
+#app.homeMode .homeEyebrow{
+  color:#9a7660!important;
+  font-size:7px!important;
+  letter-spacing:1.9px!important;
+  font-weight:850!important;
+}
+#app.homeMode .homeWelcome h1{
+  margin:8px 0 0!important;
+  color:#173b56!important;
+  font-size:28px!important;
+  font-weight:780!important;
+  letter-spacing:-.35px!important;
+  text-shadow:none!important;
+}
+#app.homeMode .homeSystemState{
+  width:min(470px,100%)!important;
+  margin-top:24px!important;
+  padding-top:12px!important;
+  border-top:1px solid #eadfd7!important;
+  color:#647d8c!important;
+}
+#app.homeMode .homeSystemState i{
+  background:#4bae7c!important;
+  box-shadow:0 0 0 4px rgba(75,174,124,.09)!important;
+}
+#app.homeMode .homeSystemState small{
+  color:#8ea0aa!important;
+}
+#app.homeMode .homeBlueprint{
+  color:#a9856f!important;
+  opacity:.22!important;
+}
+#app.homeMode .homeBlueprint span{
+  color:rgba(140,104,84,.18)!important;
+}
+#app.homeMode .kpiCard{
+  border-color:#e6e9eb!important;
+  box-shadow:0 6px 20px rgba(31,55,71,.03)!important;
+}
+#app.homeMode .panelKicker{
+  color:#9a7660!important;
+}
+#app.homeMode .homePanel{
+  border-color:#e3e8eb!important;
+  box-shadow:0 7px 24px rgba(31,55,71,.032)!important;
+}
+#app.homeMode .homePanelHead>button{
+  color:#6c7f89!important;
+}
+#app.homeMode .homePanelHead>button:hover{
+  border-color:#d7c6bb!important;
+  color:#8c6854!important;
+  background:#fbf7f4!important;
+}
+
+/* User identity intentionally hidden from the application chrome. */
+#app .headerAvatar,
+#app .sideAvatar{
+  display:none!important;
+}
+#app .account{
+  min-width:auto!important;
+  padding-left:10px!important;
+}
+#app .account #headerRole{
+  display:block!important;
+  color:#657c8c!important;
+  font-size:8px!important;
+  font-weight:700!important;
+}
+#app .sideUserCard{
+  min-width:0!important;
+}
+#app #sideUser{
+  color:#9bb1bf!important;
+  font-size:8px!important;
+  font-weight:700!important;
+  white-space:nowrap!important;
+}
+@media(max-width:760px){
+  #app.homeMode .homeWelcome{
+    min-height:138px!important;
+    padding:18px 16px!important;
+  }
+  #app.homeMode .homeWelcome h1{font-size:21px!important}
+  #app.homeMode .homeSystemState{margin-top:18px!important}
+}
