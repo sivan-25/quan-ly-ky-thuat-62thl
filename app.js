@@ -626,7 +626,7 @@ function applyBuildingUI(){
  if(et)et.textContent=name+" · Điện / Nước / Điện mặt trời";
  if(it)it.textContent=name+" · Kho kỹ thuật";
  if(mt)mt.textContent=name+" · Kế hoạch bảo trì";
- if(ct)ct.textContent=name+" · Nhà thầu bảo trì";
+ if(ct)ct.textContent=name+" · Nhà thầu";
  document.title="ESTA | "+name;
  resetForm(false);render();renderEnergy();renderHomeDashboard();
 }
