@@ -1069,7 +1069,7 @@ function inventorySnapshot(material,year=inventoryYearValue()){
 }
 function inventoryFillPeople(){
  const names=projectPeople.map(x=>x.name).filter(Boolean);
- ["stockTxnPerformer","toolKeeper","maintenanceAssigned","maintenanceRecordPerformer"].forEach(id=>{
+ ["stockTxnPerformer","maintenanceAssigned","maintenanceRecordPerformer"].forEach(id=>{
    const el=$("#"+id);if(!el)return;
    const old=el.value;
    el.innerHTML='<option value="">— Chọn —</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");
@@ -1216,7 +1216,7 @@ function renderTools(){
    '<td><b>'+inventoryFmt(t.qty)+'</b> <small>'+esc(t.unit)+'</small></td>'+
    '<td>'+esc(t.location||"—")+'</td>'+
    '<td><span class="toolCondition '+(["Tốt","Đang sử dụng"].includes(t.condition_status)?"good":["Hỏng","Hư hỏng","Cần sửa"].includes(t.condition_status)?"bad":"warn")+'">'+esc(t.condition_status)+'</span></td>'+
-   '<td class="toolNoteCell">'+esc(t.note||"—")+'</td>'+
+   '<td class="toolNoteCell" title="'+esc(t.note||"")+'">'+esc(t.note||"—")+'</td>'+
    '<td><div class="invRowActions compact"><button title="Sửa" onclick="editTool(\''+t.id+'\')">'+editIcon+'</button><button title="Xóa" class="danger" onclick="deleteTool(\''+t.id+'\')">'+trashIcon+'</button></div></td>'+
  '</tr>').join("");
  $("#toolsEmpty").classList.toggle("hide",list.length>0);
