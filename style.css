@@ -6158,3 +6158,458 @@ img[data-storage-path]:not([src]){
   #inventoryPage .toolsStats b{font-size:17px!important}
   #inventoryPage .inventoryExamples{display:none!important}
 }
+
+/* =========================================================
+   ESTA INVENTORY V5 — LIGHT PROFESSIONAL / COMPACT
+   Final visual pass for Materials, Tools and Maintenance
+   ========================================================= */
+#inventoryPage.inventoryPage,
+#maintenancePage.maintenancePage{
+  max-width:1600px!important;
+  padding:16px 18px 30px!important;
+  background:transparent!important;
+}
+
+/* top selector */
+#inventoryPage .inventoryControlBar{
+  min-height:56px!important;
+  margin:0 0 10px!important;
+  padding:8px 10px!important;
+  border:1px solid #e0e7eb!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:0 4px 14px rgba(22,55,77,.03)!important;
+}
+#inventoryPage .inventoryControlBar .inventoryTabs{
+  margin:0!important;
+  padding:3px!important;
+  border:1px solid #e1e8ec!important;
+  border-radius:9px!important;
+  background:#f3f6f8!important;
+}
+#inventoryPage .inventoryControlBar .inventoryTabs button{
+  height:34px!important;
+  padding:0 13px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#617989!important;
+  font-size:8.2px!important;
+  font-weight:720!important;
+}
+#inventoryPage .inventoryControlBar .inventoryTabs button.active{
+  background:#123b58!important;
+  color:#fff!important;
+  box-shadow:0 4px 10px rgba(18,59,88,.13)!important;
+}
+#inventoryPage .inventoryControlBar .inventoryTabs button.active svg{color:#55d0df!important}
+#inventoryPage .inventoryContextProject,
+#inventoryPage .inventoryYearControl{
+  min-height:34px!important;
+  padding:0 10px!important;
+  border:1px solid #e3e9ed!important;
+  border-radius:8px!important;
+  background:#fafcfd!important;
+}
+#inventoryPage .inventoryContext small{font-size:5.6px!important;color:#95a4ad!important}
+#inventoryPage .inventoryContext b,
+#inventoryPage .inventoryContext select{font-size:7.4px!important;color:#3e5d70!important}
+
+/* white work surface — no full-page dark block */
+#inventoryPage .inventoryWorkspace{
+  padding:0!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  box-shadow:0 8px 24px rgba(18,53,77,.045)!important;
+  overflow:hidden!important;
+}
+
+/* section header */
+#inventoryPage .inventoryWorkspace>.inventoryToolbar{
+  min-height:70px!important;
+  padding:13px 15px!important;
+  border:0!important;
+  border-bottom:1px solid #e9eef1!important;
+  border-radius:0!important;
+  background:linear-gradient(180deg,#fff,#fbfcfd)!important;
+  box-shadow:none!important;
+}
+#inventoryPage .inventoryWorkspace .inventoryKicker{
+  color:#9a7660!important;
+  font-size:6px!important;
+  letter-spacing:1.35px!important;
+}
+#inventoryPage .inventoryWorkspace .inventoryToolbar h2{
+  margin:4px 0 2px!important;
+  color:#173e59!important;
+  font-size:14px!important;
+  font-weight:780!important;
+}
+#inventoryPage .inventoryWorkspace .inventoryToolbar h2 span{
+  color:#8d9da7!important;
+  font-size:8.5px!important;
+  font-weight:600!important;
+}
+#inventoryPage .inventoryWorkspace .inventoryToolbar p{
+  color:#8597a2!important;
+  font-size:7.4px!important;
+}
+#inventoryPage .inventoryWorkspace .inventorySearch{
+  width:205px!important;
+  min-width:205px!important;
+  height:35px!important;
+  border:1px solid #dce5ea!important;
+  border-radius:8px!important;
+  background:#f8fafb!important;
+}
+#inventoryPage .inventoryWorkspace .inventorySearch svg{stroke:#8095a2!important}
+#inventoryPage .inventoryWorkspace .inventorySearch input{color:#36586c!important}
+#inventoryPage .inventoryWorkspace .inventorySearch input::placeholder{color:#9aa8b1!important}
+#inventoryPage .inventoryWorkspace .inventorySecondary{
+  height:35px!important;
+  padding:0 10px!important;
+  border:1px solid #dbe4e9!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#496a7e!important;
+  box-shadow:none!important;
+}
+#inventoryPage .inventoryWorkspace .inventoryPrimary{
+  height:35px!important;
+  padding:0 11px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:#123f5d!important;
+  color:#fff!important;
+  font-weight:790!important;
+  box-shadow:0 5px 12px rgba(18,63,93,.13)!important;
+}
+
+/* month navigation: one compact navy band */
+#inventoryPage #materialMonthTabs{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:4px!important;
+  margin:12px 14px 9px!important;
+  padding:5px!important;
+  border:1px solid #183e59!important;
+  border-radius:10px!important;
+  background:#123650!important;
+  box-shadow:none!important;
+}
+#inventoryPage #materialMonthTabs button{
+  height:31px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:#b9cad5!important;
+  font-size:7.3px!important;
+  font-weight:720!important;
+  box-shadow:none!important;
+}
+#inventoryPage #materialMonthTabs button:hover{
+  background:rgba(255,255,255,.07)!important;
+  color:#fff!important;
+}
+#inventoryPage #materialMonthTabs button.active{
+  background:#20b8c8!important;
+  color:#073747!important;
+  font-weight:850!important;
+  box-shadow:none!important;
+}
+#inventoryPage .materialPeriodSummary{display:none!important}
+
+/* KPI row, compact and white */
+#inventoryPage .monthlyStats,
+#inventoryPage .toolsStats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0 14px 10px!important;
+}
+#inventoryPage .toolsStats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#inventoryPage .monthlyStats article,
+#inventoryPage .toolsStats article{
+  min-height:64px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:9px 11px!important;
+  border:1px solid #e3e9ed!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+#inventoryPage .monthlyStats .invStatIcon,
+#inventoryPage .toolsStats .invStatIcon{
+  width:32px!important;height:32px!important;display:grid!important;place-items:center!important;flex:0 0 32px!important;
+  border-radius:9px!important
+}
+#inventoryPage .monthlyStats .invStatIcon svg,
+#inventoryPage .toolsStats .invStatIcon svg{width:15px!important;height:15px!important}
+#inventoryPage .monthlyStats small,
+#inventoryPage .toolsStats small{
+  color:#8797a1!important;
+  font-size:5.8px!important;
+  letter-spacing:.45px!important;
+}
+#inventoryPage .monthlyStats b,
+#inventoryPage .toolsStats b{
+  margin:2px 0 0!important;
+  color:#183f59!important;
+  font-size:17px!important;
+  line-height:1!important;
+}
+#inventoryPage .monthlyStats em,
+#inventoryPage .toolsStats em{
+  display:block!important;
+  margin-top:2px!important;
+  color:#9daab2!important;
+  font-size:5.7px!important;
+}
+#inventoryPage .monthlyStats article:nth-child(1) b{color:#25835e!important}
+#inventoryPage .monthlyStats article:nth-child(2) b{color:#c76259!important}
+#inventoryPage .monthlyStats article:nth-child(4) b{color:#c8842e!important}
+
+/* quick sample row */
+#inventoryPage .inventoryExamples{
+  margin:0 14px 10px!important;
+  padding:0!important;
+}
+#inventoryPage .inventoryExamples>span{font-size:6.3px!important;color:#8a9aa4!important}
+#inventoryPage .inventoryExamples button{
+  height:24px!important;
+  padding:0 8px!important;
+  border:1px solid #e0e7eb!important;
+  background:#fafcfd!important;
+  color:#637b8a!important;
+  font-size:6.1px!important;
+}
+#inventoryPage .inventoryExamples button:hover{
+  border-color:#b9d8e1!important;
+  background:#f1f8fa!important;
+  color:#24748b!important;
+}
+
+/* data tables */
+#inventoryPage .inventoryTableCard{
+  margin:0 14px 11px!important;
+  overflow:hidden!important;
+  border:1px solid #e0e7eb!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+#inventoryPage .inventoryTableHint{
+  min-height:35px!important;
+  padding:0 10px!important;
+  border-bottom:1px solid #e2e8ec!important;
+  background:#f8fafb!important;
+}
+#inventoryPage .inventoryTableHint>span{
+  color:#7b8e9a!important;
+  font-size:5.8px!important;
+  font-weight:800!important;
+  letter-spacing:.75px!important;
+}
+#inventoryPage .inventoryTableHint>b{
+  height:22px!important;
+  display:inline-flex!important;align-items:center!important;
+  padding:0 7px!important;
+  border-radius:999px!important;
+  background:#eaf6f8!important;
+  color:#19778b!important;
+  font-size:6.2px!important;
+}
+#inventoryPage .materialMonthlyTable,
+#inventoryPage .toolsTable{
+  width:100%!important;
+  min-width:760px!important;
+  table-layout:auto!important;
+}
+#inventoryPage .materialMonthlyTable th,
+#inventoryPage .toolsTable th,
+#inventoryPage .transactionTable th{
+  height:38px!important;
+  padding:0 9px!important;
+  border-bottom:1px solid #dbe3e8!important;
+  background:#173b56!important;
+  color:#eaf2f6!important;
+  font-size:6.7px!important;
+  font-weight:730!important;
+  text-transform:none!important;
+  letter-spacing:.08px!important;
+}
+#inventoryPage .materialMonthlyTable td,
+#inventoryPage .toolsTable td,
+#inventoryPage .transactionTable td{
+  height:46px!important;
+  padding:7px 9px!important;
+  border-bottom:1px solid #edf1f3!important;
+  background:#fff!important;
+  color:#37566a!important;
+  font-size:7.7px!important;
+}
+#inventoryPage .materialMonthlyTable tbody tr:hover td,
+#inventoryPage .toolsTable tbody tr:hover td,
+#inventoryPage .transactionTable tbody tr:hover td{background:#f9fbfc!important}
+#inventoryPage .materialNameCell{min-width:210px!important}
+#inventoryPage .materialNameCell b,
+#inventoryPage .toolNameCell b{color:#173e59!important;font-size:8.2px!important}
+#inventoryPage .materialNameCell small,
+#inventoryPage .toolNameCell small{color:#9aa7af!important;font-size:5.8px!important}
+#inventoryPage .materialMonthlyTable .inText{color:#25865e!important;font-weight:800!important}
+#inventoryPage .materialMonthlyTable .outText{color:#c66158!important;font-weight:800!important}
+#inventoryPage .stockFinal{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-width:38px!important;height:24px!important;padding:0 6px!important;
+  border-radius:7px!important;background:#eaf4f7!important;color:#245f78!important;
+  font-size:7.8px!important
+}
+#inventoryPage .stockFinal.low{background:#fff0df!important;color:#b66f24!important}
+
+/* compact table actions */
+#inventoryPage .invRowActions.compact{display:flex!important;justify-content:center!important;gap:4px!important}
+#inventoryPage .invRowActions.compact button,
+#inventoryPage .miniDanger{
+  width:27px!important;height:27px!important;padding:0!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #e0e6ea!important;border-radius:7px!important;
+  background:#f8fafb!important;color:#557487!important;
+  font-size:8px!important
+}
+#inventoryPage .invRowActions.compact button:first-child{background:#edf8fa!important;color:#1e7f94!important;border-color:#d7edf1!important}
+#inventoryPage .invRowActions.compact button.danger,
+#inventoryPage .miniDanger{background:#fff6f6!important;color:#b75b60!important;border-color:#f0dddd!important}
+
+/* transaction history is clearly secondary */
+#inventoryPage .transactionCard{margin-top:11px!important}
+#inventoryPage .transactionCard .inventorySectionHead{
+  min-height:52px!important;
+  padding:9px 11px!important;
+  background:#f8fafb!important;
+}
+#inventoryPage .transactionCard .inventoryKicker{color:#8b9aa3!important}
+#inventoryPage .transactionCard h3{font-size:10.5px!important;color:#284b62!important}
+#inventoryPage .transactionCard p{font-size:6.5px!important}
+
+/* tools */
+#inventoryPage #inventoryToolsPane .inventoryStats{margin-top:10px!important}
+#inventoryPage #inventoryToolsPane .inventoryTableCard{margin-top:10px!important}
+#inventoryPage .toolNameCell{
+  min-width:210px!important;
+  position:relative!important;
+  padding-left:38px!important;
+}
+#inventoryPage .toolNameCell .toolMiniIcon{
+  position:absolute!important;left:10px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:21px!important;height:21px!important;display:grid!important;place-items:center!important;
+  border-radius:6px!important;background:#e9f6f8!important;color:#188092!important;font-size:9px!important
+}
+#inventoryPage .toolCondition{
+  padding:4px 7px!important;border-radius:999px!important;font-size:6.2px!important;font-weight:740!important
+}
+#inventoryPage .toolCondition.good{background:#e8f7ef!important;color:#287b58!important}
+#inventoryPage .toolCondition.warn{background:#fff4df!important;color:#a36e25!important}
+#inventoryPage .toolCondition.bad{background:#ffeded!important;color:#b95459!important}
+
+/* modals */
+.inventoryModalCard{
+  border-radius:15px!important;
+  border:1px solid #dce5ea!important;
+  box-shadow:0 25px 68px rgba(10,35,52,.25)!important;
+}
+.inventoryModalHead{
+  padding:17px 18px 13px!important;
+  background:linear-gradient(180deg,#fff,#fafcfd)!important
+}
+.inventoryModalHead h3{font-size:17px!important}
+.inventoryForm{padding:14px 18px 18px!important;gap:9px!important}
+.inventoryForm input,.inventoryForm select{height:38px!important;border-radius:8px!important}
+.inventoryForm .inventoryPrimary{background:#123f5d!important;color:#fff!important}
+
+/* maintenance visual alignment */
+#maintenancePage .maintenanceHero{
+  min-height:112px!important;
+  margin-bottom:10px!important;
+  padding:19px 22px!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:15px!important;
+  background:linear-gradient(135deg,#fff,#f8fbfc)!important;
+  box-shadow:0 7px 22px rgba(20,55,80,.04)!important
+}
+#maintenancePage .maintenanceHero h1{font-size:22px!important}
+#maintenancePage .maintenanceHero p{font-size:8.5px!important}
+#maintenancePage .maintenanceStats{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0 0 10px!important
+}
+#maintenancePage .maintenanceStats article{
+  min-height:70px!important;
+  padding:10px 11px!important;
+  border-radius:10px!important;
+  box-shadow:none!important
+}
+#maintenancePage .maintStatIcon{width:34px!important;height:34px!important;flex-basis:34px!important}
+#maintenancePage .maintenanceStats b{font-size:18px!important}
+#maintenancePage .maintenanceBoard{
+  border:1px solid #dfe7ec!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 7px 22px rgba(20,55,80,.035)!important
+}
+#maintenancePage .maintenanceToolbar{
+  min-height:68px!important;
+  padding:12px 14px!important;
+  border-bottom:1px solid #e7edf1!important;
+}
+#maintenancePage .maintenanceAssetGrid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+  padding:10px!important
+}
+#maintenancePage .maintenanceAssetCard{
+  min-height:195px!important;
+  padding:12px!important;
+  border-radius:11px!important;
+  box-shadow:none!important
+}
+#maintenancePage .maintenanceAssetCard h3{font-size:12px!important}
+#maintenancePage .maintDates{margin:11px 0!important;padding:8px!important}
+#maintenancePage .maintCardActions button{height:28px!important}
+#maintenancePage .maintenanceHistoryCard{
+  margin-top:10px!important;
+  border-radius:12px!important;
+  box-shadow:none!important
+}
+#maintenancePage .maintenanceHistoryTable th{
+  background:#173b56!important;color:#fff!important
+}
+
+@media(max-width:1100px){
+  #inventoryPage #materialMonthTabs{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  #inventoryPage .monthlyStats,#inventoryPage .toolsStats{grid-template-columns:1fr 1fr!important}
+  #maintenancePage .maintenanceStats{grid-template-columns:1fr 1fr!important}
+  #maintenancePage .maintenanceAssetGrid{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:760px){
+  #inventoryPage.inventoryPage,#maintenancePage.maintenancePage{padding:9px 8px 24px!important}
+  #inventoryPage .inventoryControlBar{align-items:stretch!important;flex-direction:column!important}
+  #inventoryPage .inventoryContext{justify-content:space-between!important}
+  #inventoryPage .inventoryWorkspace>.inventoryToolbar{align-items:flex-start!important;flex-direction:column!important}
+  #inventoryPage .inventoryWorkspace .inventoryToolbarActions{
+    width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important
+  }
+  #inventoryPage .inventoryWorkspace .inventorySearch{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+  #inventoryPage #materialMonthTabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;margin:10px!important}
+  #inventoryPage .monthlyStats,#inventoryPage .toolsStats{grid-template-columns:1fr 1fr!important;margin:0 10px 9px!important}
+  #inventoryPage .inventoryExamples{display:none!important}
+  #inventoryPage .inventoryTableCard{margin-left:10px!important;margin-right:10px!important}
+  #maintenancePage .maintenanceHero{display:block!important}
+  #maintenancePage .maintenanceHeroActions{margin-top:12px!important}
+  #maintenancePage .maintenanceStats{grid-template-columns:1fr 1fr!important}
+  #maintenancePage .maintenanceAssetGrid{grid-template-columns:1fr!important}
+}
