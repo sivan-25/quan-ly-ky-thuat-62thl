@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2055"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2115"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -553,6 +553,155 @@
     min-width:0!important;
   }
 }
+
+/* V11.6 — larger, easier-to-use work entry */
+#app #workPage .workEntryHeader{
+  min-height:72px!important;
+  padding:13px 16px!important;
+}
+#app #workPage .workEntryHeader>div:first-child>span{
+  font-size:7px!important;
+}
+#app #workPage .workEntryHeader h2{
+  font-size:20px!important;
+  line-height:1.15!important;
+}
+#app #workPage .workEntryHeader p{
+  margin-top:4px!important;
+  font-size:10.5px!important;
+}
+#app #workPage .workEntryHeaderIcon{
+  width:38px!important;
+  height:38px!important;
+  flex-basis:38px!important;
+}
+
+@media(min-width:1020px){
+  #app #workPage #taskForm.workEntryForm{
+    grid-template-columns:
+      .72fr
+      1.75fr
+      .88fr
+      1fr
+      1.42fr
+      1.05fr
+      1.02fr
+      .58fr!important;
+    grid-template-rows:auto!important;
+    grid-auto-flow:column!important;
+    gap:7px!important;
+    padding:14px 16px 16px!important;
+    align-items:end!important;
+  }
+
+  #app #workPage #taskForm .workDate,
+  #app #workPage #taskForm .workContent,
+  #app #workPage #taskForm .workType,
+  #app #workPage #taskForm .workStatus,
+  #app #workPage #taskForm .workPerformer,
+  #app #workPage #taskForm .workNote,
+  #app #workPage #taskForm .workImage,
+  #app #workPage #taskForm .workFormActions{
+    grid-column:auto!important;
+    grid-row:1!important;
+    min-width:0!important;
+  }
+
+  #app #workPage #taskForm .workField>span{
+    margin-bottom:6px!important;
+    font-size:10.8px!important;
+    line-height:1.1!important;
+    font-weight:780!important;
+    color:#49677b!important;
+  }
+
+  #app #workPage #taskForm input:not([type="hidden"]),
+  #app #workPage #taskForm select,
+  #app #workPage #taskForm .peopleSelectBtn{
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    padding-left:9px!important;
+    padding-right:9px!important;
+    border-radius:9px!important;
+    font-size:12.5px!important;
+    line-height:42px!important;
+  }
+
+  #app #workPage #taskForm .workContent input{
+    font-size:13px!important;
+    font-weight:700!important;
+  }
+
+  #app #workPage #taskForm .peopleSelectBtn{
+    line-height:normal!important;
+  }
+  #app #workPage #taskForm .peopleButtonSummary>em{
+    font-size:12px!important;
+  }
+  #app #workPage #taskForm .selectedPersonChip{
+    height:28px!important;
+    max-width:96px!important;
+    padding:0 7px!important;
+  }
+  #app #workPage #taskForm .selectedPersonChip b{
+    max-width:82px!important;
+    font-size:10px!important;
+  }
+
+  #app #workPage #taskForm .imageNativeActions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:4px!important;
+  }
+  #app #workPage #taskForm .imageActionBtn{
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    padding:0 5px!important;
+    gap:4px!important;
+    border-radius:9px!important;
+    font-size:10px!important;
+  }
+  #app #workPage #taskForm .imageActionBtn svg{
+    width:14px!important;
+    height:14px!important;
+    flex:0 0 14px!important;
+  }
+
+  #app #workPage #taskForm .workFormActions{
+    display:flex!important;
+    align-items:flex-end!important;
+    gap:4px!important;
+    padding:0!important;
+  }
+  #app #workPage #taskForm .workSave{
+    width:100%!important;
+    min-width:0!important;
+    height:42px!important;
+    padding:0 6px!important;
+    border-radius:9px!important;
+    font-size:10.5px!important;
+    font-weight:800!important;
+  }
+  #app #workPage #taskForm .workCancel{
+    width:30px!important;
+    min-width:30px!important;
+    height:42px!important;
+  }
+
+  #app #workPage #taskForm .peopleOption{
+    min-height:44px!important;
+  }
+  #app #workPage #taskForm .peopleName{
+    font-size:10.5px!important;
+  }
+  #app #workPage #taskForm .peopleEditBtn{
+    height:40px!important;
+    font-size:9.5px!important;
+  }
+}
+
 </style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -1494,4 +1643,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-2055"></script></body></html>
+<script src="app.js?v=20260923-2115"></script></body></html>
