@@ -7783,3 +7783,239 @@ i{
 .estaSidebarBrand small{
   font-family:"Inter"!important;
 }
+
+/* =========================================================
+   ESTA UNIFIED HOME V12 — đồng bộ toàn trang
+   ========================================================= */
+#app .homeDashboard{
+  max-width:1580px!important;
+  padding:20px 22px 34px!important;
+  background:#f4f7fa!important;
+}
+#app .homeWelcome{
+  position:relative!important;
+  min-height:142px!important;
+  padding:22px 24px!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:16px!important;
+  background:
+    radial-gradient(circle at 86% 22%,rgba(25,184,212,.055),transparent 24%),
+    linear-gradient(180deg,#ffffff 0%,#fbfcfd 100%)!important;
+  color:#183b56!important;
+  box-shadow:0 8px 28px rgba(20,55,80,.045)!important;
+}
+#app .homeWelcome:before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(rgba(30,83,112,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(30,83,112,.018) 1px,transparent 1px)!important;
+  background-size:32px 32px!important;
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.28) 56%,rgba(0,0,0,.7) 100%)!important;
+}
+#app .homeWelcomeCopy{
+  position:relative!important;
+  z-index:2!important;
+  max-width:720px!important;
+}
+#app .homeEyebrow{
+  display:block!important;
+  margin:0 0 6px!important;
+  color:#9a7660!important;
+  font-size:6.5px!important;
+  line-height:1!important;
+  letter-spacing:1.7px!important;
+  font-weight:850!important;
+}
+#app .homeWelcome h1{
+  margin:0 0 5px!important;
+  color:#183b56!important;
+  font-size:27px!important;
+  line-height:1.12!important;
+  letter-spacing:-.35px!important;
+  font-weight:560!important;
+}
+#app .homeWelcome h1 b{
+  color:#173d58!important;
+  font-weight:800!important;
+}
+#app .homeWelcome p{
+  margin:0!important;
+  color:#718595!important;
+  font-size:9.5px!important;
+  line-height:1.45!important;
+}
+#app .homeWelcome p strong{
+  color:#36566b!important;
+  font-weight:700!important;
+}
+#app .homeSystemState{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  width:auto!important;
+  margin:17px 0 0!important;
+  padding:7px 10px!important;
+  border:1px solid #deebe4!important;
+  border-radius:999px!important;
+  background:#f4faf6!important;
+  color:#557466!important;
+  font-size:7.5px!important;
+}
+#app .homeSystemState i{
+  width:7px!important;height:7px!important;
+  flex:0 0 7px!important;
+  border-radius:50%!important;
+  background:#46b986!important;
+  box-shadow:0 0 0 3px rgba(70,185,134,.10)!important;
+}
+#app .homeSystemState small{
+  margin-left:8px!important;
+  padding-left:9px!important;
+  border-left:1px solid #d8e7df!important;
+  color:#84968d!important;
+  font-size:6.8px!important;
+}
+#app .homeBlueprint{
+  right:20px!important;
+  bottom:0!important;
+  width:330px!important;
+  height:135px!important;
+  opacity:.16!important;
+  color:#416f86!important;
+}
+#app .homeBlueprint span{
+  right:42px!important;
+  top:27px!important;
+  color:#9a7660!important;
+  font-size:20px!important;
+  letter-spacing:5px!important;
+  font-weight:800!important;
+  opacity:.7!important;
+}
+#app .homeKpis{
+  gap:10px!important;
+  margin:12px 0!important;
+}
+#app .kpiCard{
+  min-height:98px!important;
+  padding:14px 15px!important;
+  gap:12px!important;
+  border:1px solid #e0e7ec!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 6px 22px rgba(20,55,80,.03)!important;
+}
+#app .kpiIcon{
+  width:40px!important;height:40px!important;flex:0 0 40px!important;
+  border-radius:10px!important;
+}
+#app .kpiCard small{
+  color:#81939f!important;
+  font-size:6.4px!important;
+  letter-spacing:.75px!important;
+}
+#app .kpiCard strong{
+  margin:3px 0 1px!important;
+  color:#1b4059!important;
+  font-size:23px!important;
+  line-height:1!important;
+}
+#app .kpiCard>div:last-child>span{
+  color:#97a5ae!important;
+  font-size:6.7px!important;
+}
+#app .homePanel{
+  border:1px solid #e0e7ec!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 6px 22px rgba(20,55,80,.03)!important;
+}
+#app .homePanelHead{
+  min-height:66px!important;
+  padding:14px 16px!important;
+  border-bottom:1px solid #ebf0f3!important;
+  background:#fff!important;
+  border-radius:14px 14px 0 0!important;
+}
+#app .panelKicker{
+  color:#9a7660!important;
+  font-size:6px!important;
+  letter-spacing:1.4px!important;
+  font-weight:850!important;
+}
+#app .homePanelHead h2{
+  margin:3px 0 0!important;
+  color:#1b405a!important;
+  font-size:13px!important;
+  font-weight:760!important;
+}
+#app .homePanelHead p{
+  margin:3px 0 0!important;
+  color:#8798a3!important;
+  font-size:7.3px!important;
+}
+#app .homePanelHead>button{
+  height:30px!important;
+  padding:0 9px!important;
+  border:1px solid #dce5ea!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#587487!important;
+  font-size:7.3px!important;
+  font-weight:700!important;
+}
+#app .homeMainGrid,
+#app .homeBottomGrid{
+  gap:12px!important;
+  margin-top:12px!important;
+}
+#app .homeEnergyList,
+#app .homeRecentTasks,
+#app .quickActions,
+#app .homeActivity{
+  background:#fff!important;
+}
+#app .homeEnergyList article{
+  min-height:68px!important;
+  padding:9px 3px!important;
+}
+#app .energyMiniIcon{
+  width:38px!important;height:38px!important;flex:0 0 38px!important;
+  border-radius:10px!important;
+}
+#app .quickActions{
+  gap:8px!important;
+  padding:10px!important;
+}
+#app .quickActions>button{
+  min-height:61px!important;
+  padding:9px 10px!important;
+  border:1px solid #e4eaee!important;
+  border-radius:10px!important;
+  background:#fbfcfd!important;
+}
+#app .activityRow{
+  min-height:52px!important;
+}
+@media(max-width:760px){
+  #app .homeDashboard{padding:12px 10px 24px!important}
+  #app .homeWelcome{
+    min-height:150px!important;
+    padding:19px 17px!important;
+    border-radius:14px!important;
+  }
+  #app .homeWelcome h1{font-size:22px!important}
+  #app .homeWelcome p{font-size:8.5px!important}
+  #app .homeSystemState{
+    margin-top:14px!important;
+    max-width:100%!important;
+    font-size:7px!important;
+  }
+  #app .homeSystemState small{display:none!important}
+  #app .homeBlueprint{width:210px!important;height:120px!important;right:-62px!important;opacity:.10!important}
+  #app .homeKpis{gap:8px!important;margin:9px 0!important}
+  #app .kpiCard{min-height:88px!important;padding:11px!important}
+}
