@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-1135"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-1145"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -1223,13 +1223,14 @@
 <div id="materialItemModal" class="modal hide">
   <div class="modalCard inventoryModalCard">
     <button id="closeMaterialModal" class="modalClose" type="button">×</button>
-    <div class="inventoryModalHead"><span>ESTA · MATERIAL MASTER</span><h3 id="materialModalTitle">Thêm vật tư</h3><p>Danh mục vật tư được lưu riêng theo từng dự án.</p></div>
+    <div class="inventoryModalHead"><span>ESTA · MATERIAL MASTER</span><h3 id="materialModalTitle">Thêm vật tư</h3><p>Vật tư chỉ bắt đầu xuất hiện từ tháng có ngày bắt đầu quản lý; các tháng trước không phát sinh dữ liệu.</p></div>
     <form id="materialItemForm" class="inventoryForm">
       <input id="materialId" type="hidden">
       <label><span>Mã vật tư</span><input id="materialCode" maxlength="40" placeholder="VD: VT-001"></label>
       <label class="wide"><span>Tên vật tư *</span><input id="materialName" maxlength="120" required placeholder="VD: Băng keo điện 3M"></label>
       <label><span>Đơn vị tính *</span><input id="materialUnit" maxlength="30" required value="Cái"></label>
-      <label><span>Tồn ban đầu</span><input id="materialOpeningQty" type="number" step="0.01" min="0" value="0"></label>
+      <label><span>Ngày bắt đầu quản lý *</span><input id="materialTrackingStart" type="date" required></label>
+      <label><span>Tồn tại thời điểm bắt đầu</span><input id="materialOpeningQty" type="number" step="0.01" min="0" value="0"></label>
       <label><span>Mức tồn tối thiểu</span><input id="materialMinQty" type="number" step="0.01" min="0" value="0"></label>
       <label class="wide"><span>Ghi chú</span><input id="materialNote" maxlength="300" placeholder="Quy cách, hãng, vị trí lưu..."></label>
       <div class="inventoryFormActions"><button id="cancelMaterialModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu vật tư</button></div>
@@ -1335,4 +1336,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-1135"></script></body></html>
+<script src="app.js?v=20260923-1145"></script></body></html>
