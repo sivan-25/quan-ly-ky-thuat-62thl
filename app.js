@@ -1549,6 +1549,7 @@ $("#maintenanceRecordForm").onsubmit=async e=>{
 
 /* ===== NHÀ THẦU ===== */
 let contractors=[],contractorJobs=[],contractorLoadedBuilding="",activeContractorId="";
+let contractorJobExistingImages=[],contractorJobPendingFiles=[],contractorJobPreviewUrls=[];
 
 async function loadContractorData(buildingId=currentBuilding?.id,force=false){
   if(!centralSession?.access_token||!buildingId)return;
@@ -1581,7 +1582,7 @@ function contractorStatusClass(s){
 
 function renderContractors(){
   const q=($("#contractorSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
-  const list=contractors.filter(c=>!q||[c.name,c.phone,c.contact_name,c.contact_phone,c.specialty].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
+  const list=contractors.filter(c=>!q||[c.name,c.contact_name,c.contact_phone,c.specialty,c.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
   const yr=String(new Date().getFullYear());
 
   $("#contractorCount").textContent=contractors.length;
@@ -1590,7 +1591,7 @@ function renderContractors(){
   $("#contractorJobDoneCount").textContent=contractorJobs.filter(x=>x.status==="Hoàn thành").length;
 
   $("#contractorBody").innerHTML=list.map(c=>{
-    const jobs=contractorJobsFor(c.id),last=jobs[0],phone=c.contact_phone||c.phone||"";
+    const jobs=contractorJobsFor(c.id),last=jobs[0],phone=c.contact_phone||"";
     return '<tr>'+
       '<td class="contractorNameCell"><button type="button" class="contractorNameBtn" data-contractor-open="'+esc(c.id)+'">'+
         '<span class="contractorLogo">'+esc((c.name||"N").trim().charAt(0).toUpperCase())+'</span>'+
@@ -1617,7 +1618,6 @@ function renderContractors(){
 function resetContractorForm(){
   $("#contractorId").value="";
   $("#contractorName").value="";
-  $("#contractorPhone").value="";
   $("#contractorContactName").value="";
   $("#contractorContactPhone").value="";
   $("#contractorSpecialty").value="";
@@ -1633,7 +1633,6 @@ function editContractor(id){
   const c=contractors.find(x=>String(x.id)===String(id));if(!c)return;
   $("#contractorId").value=c.id;
   $("#contractorName").value=c.name;
-  $("#contractorPhone").value=c.phone||"";
   $("#contractorContactName").value=c.contact_name||"";
   $("#contractorContactPhone").value=c.contact_phone||"";
   $("#contractorSpecialty").value=c.specialty||"";
@@ -1660,7 +1659,7 @@ function openContractorDetail(id){
 }
 function renderContractorDetail(id){
   const c=contractors.find(x=>String(x.id)===String(id));if(!c)return;
-  const jobs=contractorJobsFor(c.id),phone=c.contact_phone||c.phone||"";
+  const jobs=contractorJobsFor(c.id),phone=c.contact_phone||"";
   $("#contractorDetailName").textContent=c.name;
   $("#contractorDetailMeta").textContent=(c.specialty||"Nhà thầu kỹ thuật")+" · "+(currentBuilding?.name||"Dự án");
   $("#contractorDetailContact").innerHTML=
@@ -1677,6 +1676,7 @@ function renderContractorDetail(id){
       '<td class="jobTextCell"><b>'+esc(x.content||"—")+'</b></td>'+
       '<td class="jobTextCell">'+esc(x.cause||"—")+'</td>'+
       '<td class="jobTextCell">'+esc(x.resolution||"—")+'</td>'+
+      '<td class="contractorJobImageCell">'+((Array.isArray(x.images)&&x.images.length)?'<button type="button" class="contractorJobThumbBtn" onclick="viewContractorJobImages(\''+esc(x.id)+'\')">'+mediaImgHtml(x.images[0],"contractorJobThumb")+'<span>'+(x.images.length>1?"+"+(x.images.length-1):"Xem")+'</span></button>':"—")+'</td>'+
       '<td><span class="contractorJobStatus '+contractorStatusClass(x.status)+'">'+esc(x.status)+'</span></td>'+
       '<td><div class="contractorRowActions">'+
         '<button type="button" title="Sửa" data-contractor-job-edit="'+esc(x.id)+'">✎</button>'+
@@ -1685,12 +1685,58 @@ function renderContractorDetail(id){
     '</tr>'
   ).join("");
   $("#contractorJobEmpty").classList.toggle("hide",jobs.length>0);
+  hydrateMediaImages($("#contractorJobBody"));
   document.querySelectorAll("[data-contractor-job-edit]").forEach(b=>b.onclick=()=>editContractorJob(b.dataset.contractorJobEdit));
   document.querySelectorAll("[data-contractor-job-delete]").forEach(b=>b.onclick=()=>deleteContractorJob(b.dataset.contractorJobDelete));
 }
 
+function clearContractorJobImageState(){
+  contractorJobPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
+  contractorJobPreviewUrls=[];
+  contractorJobExistingImages=[];
+  contractorJobPendingFiles=[];
+  const box=$("#contractorJobImagePreview");if(box)box.innerHTML="";
+}
+function renderContractorJobImagePreview(){
+  const box=$("#contractorJobImagePreview");if(!box)return;
+  contractorJobPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
+  contractorJobPreviewUrls=[];
+  const existing=contractorJobExistingImages.map((ref,i)=>
+    '<div class="contractorImagePreviewItem existing">'+mediaImgHtml(ref,"contractorJobPreviewImg")+
+    '<button type="button" data-existing-image="'+i+'" title="Xóa ảnh">×</button><small>Đã lưu</small></div>'
+  ).join("");
+  const pending=contractorJobPendingFiles.map((file,i)=>{
+    const u=URL.createObjectURL(file);contractorJobPreviewUrls.push(u);
+    return '<div class="contractorImagePreviewItem pending"><img class="contractorJobPreviewImg" src="'+u+'" alt="Ảnh mới">'+
+      '<button type="button" data-pending-image="'+i+'" title="Xóa ảnh">×</button><small>Ảnh mới</small></div>';
+  }).join("");
+  box.innerHTML=existing+pending;
+  box.querySelectorAll("[data-existing-image]").forEach(btn=>btn.onclick=()=>{
+    contractorJobExistingImages.splice(Number(btn.dataset.existingImage),1);renderContractorJobImagePreview();
+  });
+  box.querySelectorAll("[data-pending-image]").forEach(btn=>btn.onclick=()=>{
+    contractorJobPendingFiles.splice(Number(btn.dataset.pendingImage),1);renderContractorJobImagePreview();
+  });
+  hydrateMediaImages(box);
+}
+function addContractorJobFiles(files){
+  const incoming=Array.from(files||[]).filter(f=>f?.type?.startsWith("image/"));
+  if(!incoming.length)return;
+  contractorJobPendingFiles=[...contractorJobPendingFiles,...incoming];
+  renderContractorJobImagePreview();
+}
+window.viewContractorJobImages=async id=>{
+  const x=contractorJobs.find(v=>String(v.id)===String(id)),imgs=Array.isArray(x?.images)?x.images:[];
+  if(!imgs.length)return;
+  viewerMediaRefs=[...imgs];
+  $("#viewerImages").innerHTML=viewerMediaRefs.map((v,i)=>'<div class="viewerMedia">'+mediaImgHtml(v,"viewerLargeImage")+'<button class="viewerDownloadBtn" type="button" onclick="downloadViewerMedia('+i+')">⇩ Tải hình</button></div>').join("");
+  $("#viewer").classList.remove("hide");
+  await hydrateMediaImages($("#viewerImages"));
+};
+
 function resetContractorJobForm(contractorId){
   const c=contractors.find(x=>String(x.id)===String(contractorId));
+  clearContractorJobImageState();
   $("#contractorJobId").value="";
   $("#contractorJobContractorId").value=contractorId;
   $("#contractorJobDate").value=today();
@@ -1721,6 +1767,9 @@ function editContractorJob(id){
   $("#contractorJobCause").value=x.cause||"";
   $("#contractorJobResolution").value=x.resolution||"";
   $("#contractorJobNote").value=x.note||"";
+  clearContractorJobImageState();
+  contractorJobExistingImages=Array.isArray(x.images)?[...x.images]:[];
+  renderContractorJobImagePreview();
   $("#contractorJobModalTitle").textContent="Chỉnh sửa công việc";
   $("#contractorJobContractorName").textContent=c?.name||"Nhà thầu";
   $("#contractorJobModal").classList.remove("hide");
@@ -1750,7 +1799,6 @@ $("#contractorItemForm").onsubmit=async e=>{
   const body={
     building_id:currentBuilding.id,
     name:$("#contractorName").value.trim(),
-    phone:$("#contractorPhone").value.trim(),
     contact_name:$("#contractorContactName").value.trim(),
     contact_phone:$("#contractorContactPhone").value.trim(),
     specialty:$("#contractorSpecialty").value.trim(),
@@ -1766,10 +1814,16 @@ $("#contractorItemForm").onsubmit=async e=>{
   }catch(err){toast(err.status===409?"Nhà thầu này đã có trong dự án":err.message)}
 };
 
+$("#contractorJobCameraBtn").onclick=()=>{const x=$("#contractorJobCamera");x.value="";x.click()};
+$("#contractorJobLibraryBtn").onclick=()=>{const x=$("#contractorJobImages");x.value="";x.click()};
+$("#contractorJobCamera").onchange=e=>{addContractorJobFiles(e.target.files);e.target.value=""};
+$("#contractorJobImages").onchange=e=>{addContractorJobFiles(e.target.files);e.target.value=""};
+
 $("#contractorJobForm").onsubmit=async e=>{
   e.preventDefault();
   if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
-  const id=$("#contractorJobId").value,status=$("#contractorJobStatus").value;
+  const editId=$("#contractorJobId").value,status=$("#contractorJobStatus").value;
+  const recordId=editId||(crypto.randomUUID?crypto.randomUUID():String(Date.now()));
   let completion=$("#contractorJobCompletionDate").value||null;
   if(status==="Hoàn thành"&&!completion)completion=today();
   const body={
@@ -1780,20 +1834,37 @@ $("#contractorJobForm").onsubmit=async e=>{
     content:$("#contractorJobContent").value.trim(),
     cause:$("#contractorJobCause").value.trim(),
     resolution:$("#contractorJobResolution").value.trim(),
+    images:[...contractorJobExistingImages],
     status,
     note:$("#contractorJobNote").value.trim(),
     updated_at:new Date().toISOString()
   };
+  if(!body.content)return toast("Vui lòng nhập nội dung công việc");
+  const submitBtn=$("#contractorJobForm button[type=submit]");
+  submitBtn.disabled=true;
+  const oldText=submitBtn.textContent;
+  submitBtn.textContent=contractorJobPendingFiles.length?"Đang lưu & tải hình...":"Đang lưu...";
   try{
-    if(id)await sbFetch("/rest/v1/contractor_jobs?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
-    else await sbFetch("/rest/v1/contractor_jobs",{method:"POST",token:centralSession.access_token,body});
+    if(editId){
+      await sbFetch("/rest/v1/contractor_jobs?id=eq."+encodeURIComponent(editId)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
+    }else{
+      await sbFetch("/rest/v1/contractor_jobs",{method:"POST",token:centralSession.access_token,body:{id:recordId,...body}});
+    }
+    if(contractorJobPendingFiles.length){
+      const refs=await uploadMediaFiles(contractorJobPendingFiles,"contractor-jobs",recordId,null,currentBuilding.id);
+      const images=[...contractorJobExistingImages,...refs];
+      await sbFetch("/rest/v1/contractor_jobs?id=eq."+encodeURIComponent(recordId)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{
+        method:"PATCH",token:centralSession.access_token,body:{images,updated_at:new Date().toISOString()}
+      });
+    }
+    clearContractorJobImageState();
     $("#contractorJobModal").classList.add("hide");
     await loadContractorData(currentBuilding.id,true);
     if(activeContractorId)renderContractorDetail(activeContractorId);
-    toast(id?"Đã cập nhật công việc":"Đã lưu công việc nhà thầu");
+    toast(editId?"Đã cập nhật công việc":"Đã lưu công việc nhà thầu");
   }catch(err){toast(err.message)}
+  finally{submitBtn.disabled=false;submitBtn.textContent=oldText}
 };
-
 /* ===== ADMIN TRUNG TÂM / ĐA DỰ ÁN ===== */
 async function adminApi(action,payload={}){
  if(!centralSession?.access_token)throw new Error("Chưa kích hoạt hoặc đăng nhập Admin trung tâm");
