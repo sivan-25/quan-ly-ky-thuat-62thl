@@ -53,23 +53,29 @@ function renderContractors(){
   $("#contractorResultCount").textContent="("+list.length+")";
   $("#contractorGrid").innerHTML=list.map(c=>{
     const jobs=contractorJobsFor(c.id),last=contractorLastJob(c.id);
-    return '<article class="contractorCard" tabindex="0" role="button" data-open-contractor="'+c.id+'">'+
-      '<div class="contractorCardTop"><span class="contractorBuildingIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></span><span class="contractorStatusBadge '+contractorStatusClass(c.status)+'">'+esc(c.status)+'</span></div>'+
-      '<div class="contractorCardBody"><span class="contractorSpecialty">'+esc(c.specialty||"Nhà thầu bảo trì")+'</span><h3>'+esc(c.name)+'</h3>'+
-      '<div class="contractorInfoLine"><svg viewBox="0 0 24 24"><path d="M6 3h4l2 5-3 2a15 15 0 0 0 5 5l2-3 5 2v4c0 2-2 3-4 3C9 20 4 15 3 7c0-2 1-4 3-4z"/></svg><span>'+esc(c.phone||"Chưa có số điện thoại")+'</span></div>'+
-      '<div class="contractorInfoLine"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 4-7 8-7s7 2 8 7"/></svg><span>'+esc(c.contact_name||"Chưa có người liên hệ")+'</span></div></div>'+
-      '<div class="contractorCardFoot"><div><small>CÔNG VIỆC</small><b>'+jobs.length+'</b></div><div><small>GẦN NHẤT</small><b>'+(last?.work_date?fmt(last.work_date):"—")+'</b></div><span>Xem hồ sơ →</span></div>'+
+    return '<article class="contractorRowCard" tabindex="0" role="button" data-open-contractor="'+c.id+'">'+
+      '<div class="contractorRowIdentity">'+
+        '<span class="contractorBuildingIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></span>'+
+        '<div><span class="contractorSpecialty">'+esc(c.specialty||"Nhà thầu bảo trì")+'</span><h3>'+esc(c.name)+'</h3></div>'+
+      '</div>'+
+      '<div class="contractorRowInfo contractorRowPhone"><small>SỐ ĐIỆN THOẠI</small><b>'+esc(c.phone||"—")+'</b></div>'+
+      '<div class="contractorRowInfo"><small>NGƯỜI LIÊN HỆ</small><b>'+esc(c.contact_name||"—")+'</b></div>'+
+      '<div class="contractorRowInfo compact"><small>CÔNG VIỆC</small><b>'+jobs.length+'</b></div>'+
+      '<div class="contractorRowInfo"><small>GẦN NHẤT</small><b>'+(last?.work_date?fmt(last.work_date):"—")+'</b></div>'+
+      '<div class="contractorRowState"><span class="contractorStatusBadge '+contractorStatusClass(c.status)+'">'+esc(c.status)+'</span></div>'+
+      '<div class="contractorRowOpen"><span>Xem hồ sơ</span><b>→</b></div>'+
     '</article>';
   }).join("");
   $("#contractorGrid").querySelectorAll("[data-open-contractor]").forEach(el=>{
     el.onclick=()=>openContractorDetail(el.dataset.openContractor);
-    el.onkeydown=e=>{if(e.key==="Enter")openContractorDetail(el.dataset.openContractor)};
+    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openContractorDetail(el.dataset.openContractor)}};
   });
   $("#contractorEmpty").classList.toggle("hide",list.length>0);
 }
 window.openContractorDetail=id=>{
   if(!contractors.some(x=>String(x.id)===String(id)))return;
   selectedContractorId=String(id);
+  $("#contractorPage").classList.add("contractorDetailMode");
   $("#contractorOverview").classList.add("hide");
   $("#contractorDetail").classList.remove("hide");
   renderContractorDetail();
@@ -77,6 +83,7 @@ window.openContractorDetail=id=>{
 };
 function closeContractorDetail(){
   selectedContractorId="";
+  $("#contractorPage").classList.remove("contractorDetailMode");
   $("#contractorDetail").classList.add("hide");
   $("#contractorOverview").classList.remove("hide");
   renderContractors();
