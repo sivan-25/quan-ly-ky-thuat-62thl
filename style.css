@@ -4101,7 +4101,12 @@ img[data-storage-path]:not([src]){
 #app .premiumTableCard tbody tr:hover{background:#fafcfd!important}
 .taskContentCell{min-width:240px;max-width:380px}
 .taskContentCell>b{
-  display:block;color:#1f445e;font-size:9.5px;font-weight:700;line-height:1.45
+  display:block;
+  color:#1f445e;
+  font-size:13.5px;
+  font-weight:400;
+  line-height:1.45;
+  letter-spacing:0;
 }
 .taskContentCell>small{display:none}
 .sttCell{width:48px;color:#91a0aa!important;text-align:center}
@@ -7184,4 +7189,16 @@ img[data-storage-path]:not([src]){
   #maintenancePage .maintenanceAssetCard>p{font-size:11px!important}
   #maintenancePage .maintDates b{font-size:12px!important}
   #maintenancePage .maintCardActions button{font-size:11px!important}
+}
+
+/* Work list typography: large, regular-weight content */
+#app #workPage .taskContentCell>b{
+  font-size:13.5px!important;
+  font-weight:400!important;
+  line-height:1.45!important;
+}
+#app #workPage .proTaskCard .mobileCardTop h4{
+  font-size:14px!important;
+  font-weight:400!important;
+  line-height:1.45!important;
 }
