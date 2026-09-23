@@ -1218,7 +1218,7 @@ function toolReportHtml(){
 }
 
 /* ===== BẢO TRÌ THIẾT BỊ ===== */
-let maintenanceAssets=[],maintenanceRecords=[],maintenanceLoadedBuilding="";
+let maintenanceAssets=[],maintenanceRecords=[],maintenanceLoadedBuilding="",maintenanceActiveMonth="";
 function addDaysIso(date,days){
  const d=new Date((date||today())+"T00:00:00");d.setDate(d.getDate()+Number(days||0));return d.toLocaleDateString("en-CA");
 }
@@ -1248,7 +1248,17 @@ async function loadMaintenanceData(buildingId=currentBuilding?.id,force=false){
 }
 function renderMaintenance(){
  const q=($("#maintenanceSearch")?.value||"").trim().toLocaleLowerCase("vi-VN"),sys=$("#maintenanceSystemFilter")?.value||"",due=$("#maintenanceDueFilter")?.value||"";
- const list=maintenanceAssets.filter(a=>(!sys||a.system_type===sys)&&(!due||maintenanceDueClass(a)===due)&&(!q||[a.name,a.code,a.location,a.system_type,a.assigned_to,a.model].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
+ const year=String(new Date().getFullYear());
+ const list=maintenanceAssets.filter(a=>(!sys||a.system_type===sys)&&(!due||maintenanceDueClass(a)===due)&&(!maintenanceActiveMonth||String(a.next_due_date||"").startsWith(year+"-"+String(maintenanceActiveMonth).padStart(2,"0")))&&(!q||[a.name,a.code,a.location,a.system_type,a.assigned_to,a.model].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
+ const monthStrip=$("#maintenanceMonthStrip");
+ if(monthStrip){
+   monthStrip.innerHTML=Array.from({length:12},(_,i)=>{
+     const m=i+1,prefix=year+"-"+String(m).padStart(2,"0");
+     const count=maintenanceAssets.filter(a=>String(a.next_due_date||"").startsWith(prefix)).length;
+     return '<button type="button" class="'+(String(maintenanceActiveMonth)===String(m)?"active":"")+'" data-maint-month="'+m+'"><span>Th'+String(m).padStart(2,"0")+'</span><b>'+count+'</b></button>';
+   }).join("");
+   monthStrip.querySelectorAll("[data-maint-month]").forEach(b=>b.onclick=()=>{const m=Number(b.dataset.maintMonth);maintenanceActiveMonth=String(maintenanceActiveMonth)===String(m)?"":m;renderMaintenance()});
+ }
  $("#maintAssetCount").textContent=maintenanceAssets.length;
  $("#maintOverdueCount").textContent=maintenanceAssets.filter(a=>maintenanceDueClass(a)==="overdue").length;
  $("#maintDueSoonCount").textContent=maintenanceAssets.filter(a=>maintenanceDueClass(a)==="soon").length;
@@ -1345,6 +1355,7 @@ $("#toolItemForm").onsubmit=async e=>{
 $("#maintenanceSearch").oninput=renderMaintenance;
 $("#maintenanceSystemFilter").onchange=renderMaintenance;
 $("#maintenanceDueFilter").onchange=renderMaintenance;
+$("#maintenanceMonthClear").onclick=()=>{maintenanceActiveMonth="";renderMaintenance()};
 $("#addMaintenanceAsset").onclick=()=>openMaintenanceAssetModal();
 $("#maintenanceExportPdf").onclick=()=>{if(!maintenanceAssets.length)return toast("Chưa có thiết bị để xuất PDF");inventoryPrintWindow(maintenanceReportHtml())};
 document.querySelectorAll("[data-maint-sample]").forEach(b=>b.onclick=()=>{const [n,s,f]=b.dataset.maintSample.split("|");openMaintenanceAssetModal(n,s,Number(f))});
