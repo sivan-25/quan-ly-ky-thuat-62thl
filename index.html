@@ -1,5 +1,5 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2255">
-<link rel="stylesheet" href="contractor.css?v=20260923-2255"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-0015">
+<link rel="stylesheet" href="contractor.css?v=20260924-0015"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -646,7 +646,7 @@
     </button>
     <button id="navContractor">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg>
-      <span>Nhà thầu</span>
+      <span>Nhà thầu bảo trì</span>
     </button>
   </nav>
 
@@ -697,7 +697,7 @@
   </div>
   <div id="topContractorTitle" class="topModuleTitle hide">
     <div class="topModuleIcon contractorTopIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></div>
-    <div><h1>Nhà thầu</h1><p>Danh bạ và lịch sử công việc nhà thầu</p></div>
+    <div><h1>Nhà thầu bảo trì</h1><p>Danh bạ, hợp đồng và lịch sử bảo trì</p></div>
   </div>
 
   <div class="headerTools">
@@ -1193,12 +1193,12 @@
     <div class="contractorIntro">
       <div>
         <span>ESTA · CONTRACTOR DIRECTORY</span>
-        <h1>Nhà thầu kỹ thuật</h1>
+        <h1>Nhà thầu bảo trì</h1>
         <p>Lưu thông tin liên hệ và toàn bộ lịch sử công việc đã thực hiện tại từng dự án.</p>
       </div>
       <div class="contractorIntroActions">
         <button id="contractorExportPdf" class="contractorBtn ghost" type="button">PDF ⇩</button>
-        <button id="addContractorBtn" class="contractorBtn primary" type="button">＋ Thêm nhà thầu</button>
+        <button id="addContractorBtn" class="contractorBtn primary" type="button">＋ Thêm nhà thầu bảo trì</button>
       </div>
     </div>
 
@@ -1230,11 +1230,14 @@
 
   <section id="contractorDetail" class="contractorDetail hide">
     <div class="contractorDetailTop">
-      <button id="contractorBackBtn" class="contractorBackBtn" type="button">← Danh sách nhà thầu</button>
+      <div class="contractorDetailNav">
+        <button id="contractorBackBtn" class="contractorBackBtn" type="button">← Danh sách nhà thầu bảo trì</button>
+      </div>
       <div class="contractorDetailActions">
         <button id="contractorDetailPdf" class="contractorBtn ghost" type="button">PDF ⇩ Hồ sơ</button>
         <button id="editContractorBtn" class="contractorBtn ghost" type="button">✎ Sửa thông tin</button>
         <button id="addContractorJobBtn" class="contractorBtn primary" type="button">＋ Thêm công việc</button>
+        <button id="contractorDetailCloseBtn" class="contractorDetailCloseBtn" type="button" title="Đóng" aria-label="Đóng">×</button>
       </div>
     </div>
 
@@ -1250,11 +1253,10 @@
       <span id="contractorDetailStatus" class="contractorStatusBadge active">Đang hợp tác</span>
     </div>
 
-    <div class="contractorContactGrid">
+    <div class="contractorContactGrid contractorContactGrid3">
       <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><path d="M6 3h4l2 5-3 2a15 15 0 0 0 5 5l2-3 5 2v4c0 2-2 3-4 3C9 20 4 15 3 7c0-2 1-4 3-4z"/></svg></span><div><small>SỐ ĐIỆN THOẠI</small><a id="contractorDetailPhone" href="#">—</a></div></article>
       <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 4-7 8-7s7 2 8 7"/></svg></span><div><small>NGƯỜI LIÊN HỆ</small><b id="contractorDetailContact">—</b></div></article>
-      <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 7l8 6 8-6"/></svg></span><div><small>EMAIL</small><b id="contractorDetailEmail">—</b></div></article>
-      <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2"/></svg></span><div><small>ĐỊA CHỈ</small><b id="contractorDetailAddress">—</b></div></article>
+      <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><div><small>THỜI HẠN HỢP ĐỒNG</small><b id="contractorDetailContractTerm">—</b></div></article>
     </div>
 
     <div class="contractorJobsPanel">
@@ -1278,15 +1280,15 @@
 <div id="contractorModal" class="modal hide">
   <div class="modalCard contractorModalCard">
     <button id="closeContractorModal" class="modalClose" type="button">×</button>
-    <div class="contractorModalHead"><span>ESTA · CONTRACTOR PROFILE</span><h3 id="contractorModalTitle">Thêm nhà thầu</h3><p>Thông tin này được lưu riêng theo từng dự án.</p></div>
+    <div class="contractorModalHead"><span>ESTA · CONTRACTOR PROFILE</span><h3 id="contractorModalTitle">Thêm nhà thầu bảo trì</h3><p>Thông tin này được lưu riêng theo từng dự án.</p></div>
     <form id="contractorForm" class="contractorForm">
       <input id="contractorId" type="hidden">
-      <label class="wide"><span>Tên nhà thầu *</span><input id="contractorName" maxlength="160" required placeholder="VD: Công ty THT"></label>
+      <label class="wide"><span>Tên nhà thầu bảo trì *</span><input id="contractorName" maxlength="160" required placeholder="VD: Công ty THT"></label>
       <label><span>Số điện thoại</span><input id="contractorPhone" maxlength="40" placeholder="090..."></label>
       <label><span>Người liên hệ</span><input id="contractorContactName" maxlength="120" placeholder="Anh/Chị..."></label>
       <label><span>Lĩnh vực</span><input id="contractorSpecialty" maxlength="120" placeholder="HVAC, PCCC, điện..."></label>
-      <label><span>Email</span><input id="contractorEmail" type="email" maxlength="160"></label>
-      <label class="wide"><span>Địa chỉ</span><input id="contractorAddress" maxlength="240"></label>
+      <label><span>Hợp đồng từ ngày</span><input id="contractorContractStart" type="date"></label>
+      <label><span>Hợp đồng đến ngày</span><input id="contractorContractEnd" type="date"></label>
       <label><span>Trạng thái</span><select id="contractorStatus"><option>Đang hợp tác</option><option>Tạm ngưng</option><option>Ngừng hợp tác</option></select></label>
       <label class="wide"><span>Ghi chú</span><textarea id="contractorNote" maxlength="600" rows="3" placeholder="Phạm vi phụ trách, thông tin cần lưu ý..."></textarea></label>
       <div class="contractorFormActions"><button id="cancelContractorModal" type="button" class="contractorBtn ghost">Hủy</button><button type="submit" class="contractorBtn primary">Lưu nhà thầu</button></div>
@@ -1470,4 +1472,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-2255"></script><script src="contractor.js?v=20260923-2255"></script></body></html>
+<script src="app.js?v=20260924-0015"></script><script src="contractor.js?v=20260924-0015"></script></body></html>
