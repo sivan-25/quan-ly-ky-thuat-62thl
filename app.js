@@ -812,7 +812,14 @@ function showModule(name){
  $("#app").classList.add(name+"Mode");
  document.querySelector("aside").classList.remove("open");
  if(name==="energy")renderEnergy();
- if(name==="inventory")loadInventoryData(currentBuilding.id);
+ if(name==="inventory"){
+   const now=new Date();
+   inventoryActiveMonth=now.getMonth()+1;
+   inventorySetYears();
+   if($("#inventoryYear"))$("#inventoryYear").value=String(now.getFullYear());
+   setInventoryTab("materials");
+   loadInventoryData(currentBuilding.id);
+ }
  if(name==="maintenance")loadMaintenanceData(currentBuilding.id);
 }
 $("#navHome").onclick=()=>showHome();
@@ -1010,28 +1017,55 @@ function inventorySetYears(){
  el.value=String([...el.options].some(o=>Number(o.value)===old)?old:now);
 }
 function inventoryTxFor(materialId){return inventoryTransactions.filter(x=>String(x.material_id)===String(materialId))}
+function inventoryTrackingStart(material){
+ const raw=String(material?.tracking_start_date||material?.created_at||today()).slice(0,10);
+ return /^\d{4}-\d{2}-\d{2}$/.test(raw)?raw:today();
+}
+function inventoryMonthEnd(year,month){
+ const d=new Date(Number(year),Number(month),0);
+ return d.toLocaleDateString("en-CA");
+}
 function inventoryStockAsOf(material,date){
- const cutoff=String(date||today());
+ const cutoff=String(date||today()).slice(0,10),start=inventoryTrackingStart(material);
+ if(cutoff<start)return null;
  return inventoryNum(material?.opening_qty)+inventoryTxFor(material?.id)
-   .filter(x=>String(x.tx_date||"")<=cutoff)
+   .filter(x=>String(x.tx_date||"")>=start&&String(x.tx_date||"")<=cutoff)
    .reduce((s,x)=>s+(x.tx_type==="in"?inventoryNum(x.qty):-inventoryNum(x.qty)),0);
 }
 function inventorySnapshot(material,year=inventoryYearValue()){
- const tx=inventoryTxFor(material.id).slice().sort((a,b)=>String(a.tx_date).localeCompare(String(b.tx_date))||String(a.created_at||"").localeCompare(String(b.created_at||"")));
- const start=year+"-01-01";let opening=inventoryNum(material.opening_qty);
- tx.filter(x=>String(x.tx_date)<start).forEach(x=>opening+=x.tx_type==="in"?inventoryNum(x.qty):-inventoryNum(x.qty));
- let running=opening,totalIn=0,totalOut=0;
- const months=[];
+ const trackingStart=inventoryTrackingStart(material);
+ const tx=inventoryTxFor(material.id)
+   .filter(x=>String(x.tx_date||"")>=trackingStart)
+   .slice()
+   .sort((a,b)=>String(a.tx_date).localeCompare(String(b.tx_date))||String(a.created_at||"").localeCompare(String(b.created_at||"")));
+ const months=[];let totalIn=0,totalOut=0;
  for(let m=1;m<=12;m++){
-   const prefix=year+"-"+String(m).padStart(2,"0"),begin=running;let inn=0,out=0;
-   tx.filter(x=>String(x.tx_date).startsWith(prefix)).forEach(x=>{
-     if(x.tx_type==="in"){inn+=inventoryNum(x.qty);running+=inventoryNum(x.qty)}
-     else{out+=inventoryNum(x.qty);running-=inventoryNum(x.qty)}
+   const monthStart=year+"-"+String(m).padStart(2,"0")+"-01";
+   const monthEnd=inventoryMonthEnd(year,m);
+   if(monthEnd<trackingStart){
+     months.push({active:false,begin:null,inQty:0,outQty:0,stock:null});
+     continue;
+   }
+   const begin=inventoryNum(material.opening_qty)+tx
+     .filter(x=>String(x.tx_date||"")<monthStart)
+     .reduce((s,x)=>s+(x.tx_type==="in"?inventoryNum(x.qty):-inventoryNum(x.qty)),0);
+   let inn=0,out=0;
+   tx.filter(x=>String(x.tx_date||"")>=monthStart&&String(x.tx_date||"")<=monthEnd).forEach(x=>{
+     if(x.tx_type==="in")inn+=inventoryNum(x.qty);else out+=inventoryNum(x.qty);
    });
-   totalIn+=inn;totalOut+=out;months.push({begin,inQty:inn,outQty:out,stock:running});
+   totalIn+=inn;totalOut+=out;
+   months.push({active:true,begin,inQty:inn,outQty:out,stock:begin+inn-out});
  }
- const current=inventoryNum(material.opening_qty)+tx.reduce((s,x)=>s+(x.tx_type==="in"?inventoryNum(x.qty):-inventoryNum(x.qty)),0);
- return {opening,totalIn,totalOut,closing:running,current,months};
+ const current=inventoryStockAsOf(material,today());
+ const activeMonths=months.filter(x=>x.active);
+ return {
+   trackingStart,
+   opening:activeMonths.length?activeMonths[0].begin:null,
+   totalIn,totalOut,
+   closing:activeMonths.length?activeMonths[activeMonths.length-1].stock:null,
+   current,
+   months
+ };
 }
 function inventoryFillPeople(){
  const names=projectPeople.map(x=>x.name).filter(Boolean);
@@ -1105,8 +1139,9 @@ function renderMaterials(){
  const y=inventoryYearValue(),month=Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
  const q=($("#materialSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
  const alertIds=new Set(inventoryStockAlerts().map(x=>String(x.m.id)));
- const list=inventoryMaterials.filter(m=>(!inventoryShowAlertsOnly||alertIds.has(String(m.id)))&&(!q||[m.name,m.code,m.unit,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
- const snaps=list.map(m=>{const s=inventorySnapshot(m,y);return {m,s,mm:s.months[month-1]}});
+ const monthEnd=inventoryMonthEnd(y,month);
+ const list=inventoryMaterials.filter(m=>inventoryTrackingStart(m)<=monthEnd&&(!inventoryShowAlertsOnly||alertIds.has(String(m.id)))&&(!q||[m.name,m.code,m.unit,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
+ const snaps=list.map(m=>{const s=inventorySnapshot(m,y);return {m,s,mm:s.months[month-1]}}).filter(x=>x.mm?.active);
 
  document.querySelectorAll("[data-material-month]").forEach(b=>{
    const active=Number(b.dataset.materialMonth)===month;
@@ -1116,9 +1151,9 @@ function renderMaterials(){
  const monthText="Tháng "+String(month).padStart(2,"0")+" / "+y;
  $("#materialMonthLabel").textContent=monthText;
  $("#materialSelectedMonth").textContent=monthText;
- $("#materialTitleCount").textContent="("+inventoryMaterials.length+" mục)";
+ $("#materialTitleCount").textContent="("+list.length+" mục)";
 
- const allMonth=inventoryMaterials.map(m=>({m,mm:inventorySnapshot(m,y).months[month-1]}));
+ const allMonth=inventoryMaterials.map(m=>({m,mm:inventorySnapshot(m,y).months[month-1]})).filter(x=>x.mm?.active);
  const totalIn=allMonth.reduce((s,x)=>s+inventoryNum(x.mm?.inQty),0);
  const totalOut=allMonth.reduce((s,x)=>s+inventoryNum(x.mm?.outQty),0);
  const inStock=allMonth.filter(x=>inventoryNum(x.mm?.stock)>0).length;
@@ -1137,7 +1172,7 @@ function renderMaterials(){
    const lowRow=inventoryNum(m.min_qty)>0&&inventoryNum(mm.stock)<=inventoryNum(m.min_qty);
    return '<tr class="'+(lowRow?"lowStock":"")+'">'+
      '<td class="sttCell">'+(i+1)+'</td>'+
-     '<td class="materialNameCell"><b>'+esc(m.name)+'</b><small>'+esc(m.code||"")+'</small></td>'+
+     '<td class="materialNameCell"><b>'+esc(m.name)+'</b><small>'+esc(m.code||"")+(inventoryTrackingStart(m).slice(0,7)===y+"-"+String(month).padStart(2,"0")?' · Bắt đầu '+fmt(inventoryTrackingStart(m)):'')+'</small></td>'+
      '<td>'+esc(m.unit)+'</td>'+
      '<td><b>'+inventoryFmt(mm.begin)+'</b></td>'+
      '<td class="inText">'+inventoryFmt(mm.inQty)+'</td>'+
@@ -1154,14 +1189,15 @@ function renderMaterials(){
 
  const byId=Object.fromEntries(inventoryMaterials.map(m=>[m.id,m]));
  const prefix=y+"-"+String(month).padStart(2,"0");
- const tx=inventoryTransactions.filter(x=>String(x.tx_date||"").startsWith(prefix)).slice(0,60);
+ const tx=inventoryTransactions.filter(x=>String(x.tx_date||"").startsWith(prefix)&&byId[x.material_id]&&inventoryTrackingStart(byId[x.material_id])<=String(x.tx_date||"")).slice(0,60);
  $("#materialTxnSubtitle").textContent="Các phát sinh trong tháng "+String(month).padStart(2,"0")+" / "+y+".";
  $("#materialTxnBody").innerHTML=tx.map(x=>'<tr><td>'+fmt(x.tx_date)+'</td><td><b>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</b></td><td><span class="stockType '+x.tx_type+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></td><td><b>'+inventoryFmt(x.qty)+'</b></td><td>'+esc(x.performer||"—")+'</td><td>'+esc(x.note||"—")+'</td><td><button class="miniDanger" onclick="deleteStockTxn(\''+x.id+'\')">'+trashIcon+'</button></td></tr>').join("");
  $("#materialTxnEmpty").classList.toggle("hide",tx.length>0);
 
  const sel=$("#stockTxnMaterial"),old=sel.value;
- sel.innerHTML='<option value="">— Chọn vật tư —</option>'+inventoryMaterials.map(m=>'<option value="'+m.id+'">'+esc(m.name)+' · tồn '+inventoryFmt(inventorySnapshot(m,y).current)+' '+esc(m.unit)+'</option>').join("");
- if(inventoryMaterials.some(m=>m.id===old))sel.value=old;
+ const selectable=inventoryMaterials.filter(m=>inventoryTrackingStart(m)<=monthEnd);
+ sel.innerHTML='<option value="">— Chọn vật tư —</option>'+selectable.map(m=>'<option value="'+m.id+'">'+esc(m.name)+' · tồn '+inventoryFmt(inventoryStockAsOf(m,today())??0)+' '+esc(m.unit)+'</option>').join("");
+ if(selectable.some(m=>m.id===old))sel.value=old;
 }
 function renderTools(){
  const q=($("#toolSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
@@ -1187,19 +1223,25 @@ function renderTools(){
 }
 function setInventoryTab(tab){
  inventoryActiveTab=tab;
+ if(tab==="materials"&&$("#inventoryPage")&&!$("#inventoryPage").classList.contains("hide")){
+   const now=new Date();
+   inventoryActiveMonth=now.getMonth()+1;
+   inventorySetYears();
+   if($("#inventoryYear"))$("#inventoryYear").value=String(now.getFullYear());
+ }
  document.querySelectorAll("[data-inventory-tab]").forEach(b=>b.classList.toggle("active",b.dataset.inventoryTab===tab));
  $("#inventoryMaterialsPane").classList.toggle("hide",tab!=="materials");
  $("#inventoryToolsPane").classList.toggle("hide",tab!=="tools");
 }
 function resetMaterialForm(sampleName="",sampleUnit="Cái"){
  $("#materialId").value="";$("#materialCode").value="";$("#materialName").value=sampleName;$("#materialUnit").value=sampleUnit||"Cái";
- $("#materialOpeningQty").value="0";$("#materialMinQty").value="0";$("#materialNote").value="";
+ $("#materialTrackingStart").value=today();$("#materialTrackingStart").max=today();$("#materialOpeningQty").value="0";$("#materialMinQty").value="0";$("#materialNote").value="";
  $("#materialModalTitle").textContent="Thêm vật tư";
 }
 function openMaterialModal(sampleName="",sampleUnit="Cái"){resetMaterialForm(sampleName,sampleUnit);$("#materialItemModal").classList.remove("hide");setTimeout(()=>$("#materialName").focus(),40)}
 window.editMaterial=id=>{
  const m=inventoryMaterials.find(x=>String(x.id)===String(id));if(!m)return;
- $("#materialId").value=m.id;$("#materialCode").value=m.code||"";$("#materialName").value=m.name;$("#materialUnit").value=m.unit;$("#materialOpeningQty").value=m.opening_qty;$("#materialMinQty").value=m.min_qty;$("#materialNote").value=m.note||"";
+ $("#materialId").value=m.id;$("#materialCode").value=m.code||"";$("#materialName").value=m.name;$("#materialUnit").value=m.unit;$("#materialTrackingStart").value=inventoryTrackingStart(m);$("#materialTrackingStart").max=today();$("#materialOpeningQty").value=m.opening_qty;$("#materialMinQty").value=m.min_qty;$("#materialNote").value=m.note||"";
  $("#materialModalTitle").textContent="Chỉnh sửa vật tư";$("#materialItemModal").classList.remove("hide");
 };
 window.deleteMaterial=async id=>{
@@ -1215,7 +1257,12 @@ window.openStockTxnModal=id=>{
  const maxDay=new Date(y,m,0).getDate();
  const date=y+"-"+String(m).padStart(2,"0")+"-"+String(Math.min(day,maxDay)).padStart(2,"0");
  $("#stockTxnId").value="";$("#stockTxnDate").value=date;$("#stockTxnType").value="in";$("#stockTxnQty").value="";$("#stockTxnPerformer").value="";$("#stockTxnNote").value="";
- renderMaterials();if(id)$("#stockTxnMaterial").value=id;$("#stockTxnModal").classList.remove("hide");
+ renderMaterials();if(id)$("#stockTxnMaterial").value=id;
+ const chosen=inventoryMaterials.find(x=>x.id===$("#stockTxnMaterial").value);
+ $("#stockTxnDate").max=today();
+ $("#stockTxnDate").min=chosen?inventoryTrackingStart(chosen):"";
+ if(chosen&&$("#stockTxnDate").value<inventoryTrackingStart(chosen))$("#stockTxnDate").value=inventoryTrackingStart(chosen);
+ $("#stockTxnModal").classList.remove("hide");
 };
 window.deleteStockTxn=async id=>{
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -1243,11 +1290,12 @@ function inventoryPdfCss(landscape=false){return '@page{size:A4 '+(landscape?"la
 }
 function materialReportHtml(){
  const y=inventoryYearValue(),month=Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
- const rows=inventoryMaterials.map((m,i)=>{
+ const activeMaterials=inventoryMaterials.filter(m=>inventorySnapshot(m,y).months[month-1]?.active);
+ const rows=activeMaterials.map((m,i)=>{
    const mm=inventorySnapshot(m,y).months[month-1];
    return '<tr><td>'+(i+1)+'</td><td><b>'+esc(m.name)+'</b><br>'+esc(m.code||"")+'</td><td>'+esc(m.unit)+'</td><td>'+inventoryFmt(mm.begin)+'</td><td class="in">'+inventoryFmt(mm.inQty)+'</td><td class="out">'+inventoryFmt(mm.outQty)+'</td><td><b>'+inventoryFmt(mm.stock)+'</b></td></tr>';
  }).join("");
- const snaps=inventoryMaterials.map(m=>({m,mm:inventorySnapshot(m,y).months[month-1]}));
+ const snaps=activeMaterials.map(m=>({m,mm:inventorySnapshot(m,y).months[month-1]}));
  const tin=snaps.reduce((a,x)=>a+x.mm.inQty,0),tout=snaps.reduce((a,x)=>a+x.mm.outQty,0),instock=snaps.filter(x=>x.mm.stock>0).length,low=snaps.filter(x=>inventoryNum(x.m.min_qty)>0&&x.mm.stock<=inventoryNum(x.m.min_qty)).length;
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Vật tư tháng '+month+'-'+y+'</title><style>'+inventoryPdfCss(false)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>NHẬP - XUẤT - TỒN VẬT TƯ THÁNG '+String(month).padStart(2,"0")+' / '+y+'</h1><p>Vật tư tiêu hao kỹ thuật</p></div><div class="summary"><div><span>Tổng nhập</span><b>'+inventoryFmt(tin)+'</b></div><div><span>Tổng xuất</span><b>'+inventoryFmt(tout)+'</b></div><div><span>Mặt hàng còn tồn</span><b>'+instock+'</b></div><div><span>Sắp hết</span><b>'+low+'</b></div></div><table><thead><tr><th>STT</th><th>Vật tư</th><th>ĐVT</th><th>Tồn đầu</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Quản lý vật tư · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),600)<\/script></body></html>';
 }
@@ -1362,21 +1410,35 @@ $("#closeStockTxnModal").onclick=$("#cancelStockTxnModal").onclick=()=>$("#stock
 $("#closeToolModal").onclick=$("#cancelToolModal").onclick=()=>$("#toolItemModal").classList.add("hide");
 $("#materialItemForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
- const id=$("#materialId").value,body={building_id:currentBuilding.id,code:$("#materialCode").value.trim(),name:$("#materialName").value.trim(),unit:$("#materialUnit").value.trim()||"Cái",opening_qty:inventoryNum($("#materialOpeningQty").value),min_qty:inventoryNum($("#materialMinQty").value),note:$("#materialNote").value.trim(),updated_at:new Date().toISOString()};
+ const id=$("#materialId").value,trackingStart=$("#materialTrackingStart").value||today();
+ if(trackingStart>today())return toast("Ngày bắt đầu quản lý không thể ở tương lai");
+ const existingFirstTx=id?inventoryTransactions.filter(x=>String(x.material_id)===String(id)).map(x=>x.tx_date).sort()[0]:null;
+ if(existingFirstTx&&trackingStart>existingFirstTx)return toast("Ngày bắt đầu quản lý không thể sau giao dịch đầu tiên "+fmt(existingFirstTx));
+ const body={building_id:currentBuilding.id,code:$("#materialCode").value.trim(),name:$("#materialName").value.trim(),unit:$("#materialUnit").value.trim()||"Cái",tracking_start_date:trackingStart,opening_qty:inventoryNum($("#materialOpeningQty").value),min_qty:inventoryNum($("#materialMinQty").value),note:$("#materialNote").value.trim(),updated_at:new Date().toISOString()};
  try{
   if(id)await sbFetch("/rest/v1/inventory_materials?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
   else await sbFetch("/rest/v1/inventory_materials",{method:"POST",token:centralSession.access_token,body});
   $("#materialItemModal").classList.add("hide");await loadInventoryData(currentBuilding.id,true);toast(id?"Đã cập nhật vật tư":"Đã thêm vật tư");
  }catch(err){toast(err.status===409?"Vật tư này đã có trong dự án":err.message)}
 };
+$("#stockTxnMaterial").onchange=()=>{
+ const m=inventoryMaterials.find(x=>x.id===$("#stockTxnMaterial").value);
+ $("#stockTxnDate").min=m?inventoryTrackingStart(m):"";
+ $("#stockTxnDate").max=today();
+ if(m&&$("#stockTxnDate").value<inventoryTrackingStart(m))$("#stockTxnDate").value=inventoryTrackingStart(m);
+};
 $("#stockTxnForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  const materialId=$("#stockTxnMaterial").value,qty=inventoryNum($("#stockTxnQty").value),txType=$("#stockTxnType").value,date=$("#stockTxnDate").value;
  if(!materialId||qty<=0)return toast("Vui lòng chọn vật tư và số lượng");
+ const m=inventoryMaterials.find(x=>x.id===materialId);
+ if(!m)return toast("Không tìm thấy vật tư");
+ const trackingStart=inventoryTrackingStart(m);
+ if(date<trackingStart)return toast("Vật tư này chỉ bắt đầu quản lý từ "+fmt(trackingStart));
+ if(date>today())return toast("Không thể nhập/xuất ở ngày tương lai");
  if(txType==="out"){
-   const m=inventoryMaterials.find(x=>x.id===materialId);
    const stockAtDate=inventoryStockAsOf(m,date);
-   if(qty>stockAtDate)return toast("Số lượng xuất vượt quá tồn kho tại ngày "+fmt(date));
+   if(stockAtDate===null||qty>stockAtDate)return toast("Số lượng xuất vượt quá tồn kho tại ngày "+fmt(date));
  }
  const body={building_id:currentBuilding.id,material_id:materialId,tx_date:date,tx_type:txType,qty,performer:$("#stockTxnPerformer").value,note:$("#stockTxnNote").value.trim()};
  try{await sbFetch("/rest/v1/inventory_material_transactions",{method:"POST",token:centralSession.access_token,body});$("#stockTxnModal").classList.add("hide");await loadInventoryData(currentBuilding.id,true);toast(txType==="in"?"Đã nhập kho":"Đã xuất kho")}catch(err){toast(err.message)}
