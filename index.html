@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0935"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-1005"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -1006,6 +1006,23 @@
       <article><span class="invStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>SẮP HẾT</small><b id="materialLowStock">0</b><em>Theo mức tồn tối thiểu</em></div></article>
     </div>
 
+    <section id="stockAlertPanel" class="stockAlertPanel">
+      <div class="stockAlertHead">
+        <div class="stockAlertTitle">
+          <span class="stockAlertIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3 2.8 19h18.4L12 3z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </span>
+          <div>
+            <span class="inventoryKicker">CẢNH BÁO TỒN KHO</span>
+            <h3>Vật tư cần bổ sung <b id="stockAlertCount">0</b></h3>
+            <p>Hệ thống tự cảnh báo khi tồn hiện tại bằng hoặc thấp hơn mức tồn tối thiểu đã thiết lập.</p>
+          </div>
+        </div>
+        <button id="stockAlertOnly" class="stockAlertFilterBtn" type="button">Chỉ xem cảnh báo</button>
+      </div>
+      <div id="stockAlertList" class="stockAlertList"></div>
+    </section>
+
     <div class="inventoryExamples">
       <span>Gợi ý vật tư:</span>
       <button type="button" data-material-sample="Băng keo điện 3M|Cuộn">Băng keo điện 3M</button>
@@ -1317,4 +1334,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-0935"></script></body></html>
+<script src="app.js?v=20260923-1005"></script></body></html>
