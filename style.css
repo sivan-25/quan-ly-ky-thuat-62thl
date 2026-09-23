@@ -7753,3 +7753,37 @@ html,body{
 button,input,select,textarea{
   font:inherit!important;
 }
+
+/* =========================================================
+   ESTA GLOBAL TYPOGRAPHY V3 — INTER ONLY
+   Một font duy nhất cho toàn bộ ESTA: Inter.
+   In đậm / chữ thường / chữ hoa chỉ thay weight/case,
+   tuyệt đối không đổi font-family.
+   ========================================================= */
+:root{
+  --esta-font:"Inter";
+}
+html,body,
+body *,
+body *::before,
+body *::after,
+#login,#login *,
+#app,#app *,
+button,input,select,textarea,option,
+table,thead,tbody,tfoot,tr,th,td,
+label,summary,details,strong,b,em,i,small,span,p,h1,h2,h3,h4,h5,h6,
+input::placeholder,textarea::placeholder{
+  font-family:"Inter"!important;
+}
+button,input,select,textarea{
+  font-family:"Inter"!important;
+  font-style:normal;
+}
+html,body{
+  font-family:"Inter"!important;
+  font-optical-sizing:auto;
+  font-synthesis:none;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
