@@ -17,3 +17,14 @@
 #contractorPage .contractorStats small{font-size:12px!important;color:#687f8e!important;font-weight:750!important}
 #contractorPage .contractorStats b{font-size:27px!important;color:#153a53!important;font-weight:800!important;margin:4px 0 2px!important}
 #contractorPage .contractorStats em{font-size:12px!important;color:#7d909c!important}
+
+#contractorPage .contractorPanel{overflow:hidden!important;border:1px solid var(--ct-border)!important;border-radius:17px!important;background:#fff!important;box-shadow:var(--ct-shadow)!important}
+#contractorPage .contractorToolbar{min-height:86px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:20px!important;padding:18px 20px!important;border-bottom:1px solid #e8eef1!important;background:linear-gradient(180deg,#fff,#fcfdfe)!important}
+#contractorPage .contractorToolbar>div:first-child>span{font-size:10px!important;color:#8c6b58!important;font-weight:800!important;letter-spacing:1.35px!important}
+#contractorPage .contractorToolbar h2{margin:4px 0 3px!important;color:#112f44!important;font-size:19px!important;font-weight:780!important}
+#contractorPage .contractorToolbar p{margin:0!important;color:#607887!important;font-size:12.5px!important}
+#contractorPage .contractorToolbarControls{min-width:min(570px,46vw);display:grid;grid-template-columns:minmax(280px,1fr) 180px;gap:8px;align-items:center}
+#contractorPage .contractorSearch,#contractorPage .contractorFilter{width:auto!important;height:42px!important;display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:0 11px!important;border:1px solid #d7e2e8!important;border-radius:10px!important;background:#f8fafb!important;color:#718896!important}
+#contractorPage .contractorSearch:focus-within,#contractorPage .contractorFilter:focus-within{border-color:#8bc2d3!important;background:#fff!important;box-shadow:0 0 0 3px rgba(39,133,165,.09)!important}
+#contractorPage .contractorSearch svg,#contractorPage .contractorFilter svg{width:17px!important;height:17px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.7!important}
+#contractorPage .contractorSearch input,#contractorPage .contractorFilter select{width:100%!important;height:100%!important;border:0!important;outline:0!important;background:transparent!important;color:#334f61!important;font-size:12.5px!important}
