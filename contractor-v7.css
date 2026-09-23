@@ -28,3 +28,22 @@
 #contractorPage .contractorSearch:focus-within,#contractorPage .contractorFilter:focus-within{border-color:#8bc2d3!important;background:#fff!important;box-shadow:0 0 0 3px rgba(39,133,165,.09)!important}
 #contractorPage .contractorSearch svg,#contractorPage .contractorFilter svg{width:17px!important;height:17px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.7!important}
 #contractorPage .contractorSearch input,#contractorPage .contractorFilter select{width:100%!important;height:100%!important;border:0!important;outline:0!important;background:transparent!important;color:#334f61!important;font-size:12.5px!important}
+
+#contractorPage .contractorTableWrap{width:100%!important;overflow:auto!important;background:#fff!important}
+#contractorPage .contractorTable{width:100%!important;min-width:1040px!important;table-layout:fixed!important;border-collapse:separate!important;border-spacing:0!important}
+#contractorPage .contractorTable th{height:45px!important;padding:0 14px!important;border:0!important;border-bottom:1px solid #dce5ea!important;background:#f3f6f8!important;color:#526b7a!important;font-size:11px!important;font-weight:800!important;letter-spacing:.35px!important;text-align:left!important;text-transform:uppercase!important}
+#contractorPage .contractorTable th:nth-child(1){width:26%}#contractorPage .contractorTable th:nth-child(2){width:14%}#contractorPage .contractorTable th:nth-child(3){width:13%}#contractorPage .contractorTable th:nth-child(4){width:13%}#contractorPage .contractorTable th:nth-child(5){width:8%;text-align:center!important}#contractorPage .contractorTable th:nth-child(6){width:17%}#contractorPage .contractorTable th:nth-child(7){width:9%;text-align:center!important}
+#contractorPage .contractorTable td{padding:13px 14px!important;border:0!important;border-bottom:1px solid #edf1f3!important;background:#fff!important;color:#395668!important;font-size:13px!important;line-height:1.45!important;vertical-align:middle!important}
+#contractorPage .contractorTable tbody tr:nth-child(even) td{background:#fbfcfd!important}
+#contractorPage .contractorTable tbody tr:hover td{background:#f3f8fa!important}
+#contractorPage .contractorTable td:nth-child(5),#contractorPage .contractorTable td:nth-child(7){text-align:center!important}
+#contractorPage .contractorNameBtn{width:100%!important;display:flex!important;align-items:center!important;gap:11px!important;padding:0!important;border:0!important;background:transparent!important;text-align:left!important;color:inherit!important}
+#contractorPage .contractorLogo{width:38px!important;height:38px!important;flex:0 0 38px!important;display:grid!important;place-items:center!important;border:1px solid #d6e6ec!important;border-radius:11px!important;background:#eef7fa!important;color:#236981!important;font-size:12px!important;font-weight:850!important}
+#contractorPage .contractorNameBtn b{display:block!important;color:#183e58!important;font-size:13.5px!important;font-weight:760!important}
+#contractorPage .contractorNameBtn small{display:block!important;margin-top:3px!important;color:#7e929f!important;font-size:12px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#contractorPage .contractorPhone{display:inline-flex!important;align-items:center!important;gap:6px!important;color:#176e91!important;font-size:12.5px!important;font-weight:700!important;text-decoration:none!important}
+#contractorPage .contractorPhone svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7}
+#contractorPage .contractorSpecialty{display:inline-flex!important;align-items:center!important;min-height:26px!important;padding:0 9px!important;border:1px solid #dce8ed!important;border-radius:999px!important;background:#eef5f8!important;color:#476d81!important;font-size:11.5px!important;font-weight:700!important}
+#contractorPage .contractorJobCountPill{min-width:30px;height:28px;display:inline-grid;place-items:center;padding:0 8px;border:1px solid #d9e5ea;border-radius:999px;background:#f7fafb;color:#34566b;font-size:12px;font-weight:800}
+#contractorPage .contractorLast b{display:block!important;color:#294d64!important;font-size:12.5px!important}
+#contractorPage .contractorLast small{display:block!important;margin-top:3px!important;color:#7e929f!important;font-size:11.5px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
