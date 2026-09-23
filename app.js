@@ -841,7 +841,108 @@ window.editTask=id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có qu
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 @page{size:A4;margin:14mm 13mm 16mm}*{box-sizing:border-box}body{font-family:"Inter";color:#1f2937;font-size:11px;margin:0}.header{border-bottom:3px solid #123d6b;padding-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start}.brand{font-weight:800;color:#123d6b;font-size:16px}.brand small{display:block;font-size:8px;letter-spacing:.7px;color:#64748b;margin-top:3px}.doc{text-align:right;font-size:9px;color:#64748b}.title{text-align:center;padding:15px 0 12px}.title h1{font-size:19px;color:#123d6b;margin:0 0 5px}.title p{margin:0;font-size:10px;color:#64748b}.summary{display:grid;grid-template-columns:2fr repeat(4,1fr);border:1px solid #cbd5e1;margin-bottom:14px}.summary>div{padding:8px;border-right:1px solid #cbd5e1}.summary>div:last-child{border:0}.summary span{display:block;color:#64748b;font-size:8px;text-transform:uppercase}.summary b{display:block;margin-top:3px;font-size:12px;color:#123d6b}.job{page-break-inside:avoid;border:1px solid #cbd5e1;margin:0 0 11px}.jobHead{background:#edf4fb;padding:7px 9px;border-bottom:1px solid #cbd5e1;display:flex;gap:7px;align-items:flex-start}.no{background:#123d6b;color:#fff;min-width:21px;height:21px;border-radius:50%;display:grid;place-items:center;font-size:9px}.jobHead h3{margin:2px 0 0;font-size:11px;color:#173d67}.details{display:grid;grid-template-columns:1fr 1fr 1fr;padding:7px 9px;gap:5px 12px}.details div{font-size:9px}.details span{color:#64748b}.note{margin:0 9px 8px;padding:7px;background:#f8fafc;border-left:3px solid #94a3b8;font-size:9px}.photos{padding:0 9px 9px;display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.photos img{width:100%;height:185px;object-fit:contain;border:1px solid #d8e0e8;background:#fff}.photoTitle{grid-column:1/-1;font-weight:700;font-size:9px;color:#475569}.sign{page-break-inside:avoid;display:flex;justify-content:space-around;text-align:center;margin-top:25px;font-size:10px}.sign div{width:38%}.sign small{display:block;margin-top:4px;color:#64748b}.signSpace{height:60px}.foot{position:fixed;bottom:-8mm;left:0;right:0;text-align:center;color:#94a3b8;font-size:8px}
 </style></head><body><div class="header"><div class="brand">ESTA<small>BUILDING MANAGEMENT</small></div><div class="doc"><b>TÒA NHÀ ${esc(currentBuilding.name).toLocaleUpperCase("vi-VN")}</b><br>TP. Hồ Chí Minh</div></div><div class="title"><h1>BÁO CÁO CÔNG VIỆC KỸ THUẬT</h1><p>Thời gian báo cáo: <b>${period}</b></p></div><div class="summary"><div><span>Tòa nhà</span><b>${esc(currentBuilding.name)}</b></div><div><span>Tổng công việc</span><b>${a.length}</b></div><div><span>Hoàn thành</span><b>${done}</b></div><div><span>Đang xử lý</span><b>${doing}</b></div><div><span>Chờ xử lý</span><b>${wait}</b></div></div>
-${a.map((x,i)=>`<section class="job"><div class="jobHead"><div class="no">${i+1}</div><h3>${esc(x.c)}</h3></div><div class="details"><div><span>Ngày thực hiện:</span> <b>${fmt(x.d)}</b></div><div><span>Loại công việc:</span> <b>${esc(x.t||"Hằng ngày")}</b></div><div><span>Trạng thái:</span> <b>${esc(x.s)}</b></div><div><span>Người thực hiện:</span> <b>${esc(x.a||"—")}</b></div></div>${x.n?`<div class="note"><b>Ghi chú:</b> ${esc(x.n)}</div>`:""}${x.imgs?.length?`<div class="photos"><div class="photoTitle">HÌNH ẢNH THỰC TẾ</div>${x.imgs.map(v=>'<img src="'+v+'">').join("")}</div>`:""}</section>`).join("")}<div class="sign"><div><b>NGƯỜI LẬP BÁO CÁO</b><small>(Ký và ghi rõ họ tên)</small><div class="signSpace"></div></div><div><b>ĐẠI DIỆN BAN QUẢN LÝ</b><small>(Ký và ghi rõ họ tên)</small><div class="signSpace"></div></div></div><div class="foot">ESTA Building Management · ${esc(currentBuilding.name)}</div><script>window.onload=()=>setTimeout(()=>window.print(),700)<\/script></body></html>`}function openReport(a){if(!a.length){toast("Không có dữ liệu để xuất PDF");return}let w=open("","_blank");w.document.write(reportHtml(a));w.document.close()}$("#exportBtn").onclick=()=>$("#exportModal").classList.remove("hide");$("#closeExport").onclick=()=>$("#exportModal").classList.add("hide");$("#exportModal").onclick=e=>{if(e.target===$("#exportModal"))$("#exportModal").classList.add("hide")};document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{let kind=b.dataset.range,a;if(kind==="current")a=filtered();else{let r=rangeDates(kind);a=filtered(r.from,r.to)}$("#exportModal").classList.add("hide");openReport(a)});document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#viewer").classList.add("hide");$("#exportModal").classList.add("hide")}});$("#today").textContent=new Date().toLocaleDateString("vi-VN")
+${a.map((x,i)=>`<section class="job"><div class="jobHead"><div class="no">${i+1}</div><h3>${esc(x.c)}</h3></div><div class="details"><div><span>Ngày thực hiện:</span> <b>${fmt(x.d)}</b></div><div><span>Loại công việc:</span> <b>${esc(x.t||"Hằng ngày")}</b></div><div><span>Trạng thái:</span> <b>${esc(x.s)}</b></div><div><span>Người thực hiện:</span> <b>${esc(x.a||"—")}</b></div></div>${x.n?`<div class="note"><b>Ghi chú:</b> ${esc(x.n)}</div>`:""}${x.imgs?.length?`<div class="photos"><div class="photoTitle">HÌNH ẢNH THỰC TẾ</div>${x.imgs.map(v=>'<img src="'+v+'">').join("")}</div>`:""}</section>`).join("")}<div class="sign"><div><b>NGƯỜI LẬP BÁO CÁO</b><small>(Ký và ghi rõ họ tên)</small><div class="signSpace"></div></div><div><b>ĐẠI DIỆN BAN QUẢN LÝ</b><small>(Ký và ghi rõ họ tên)</small><div class="signSpace"></div></div></div><div class="foot">ESTA Building Management · ${esc(currentBuilding.name)}</div><script>window.onload=()=>setTimeout(()=>window.print(),700)<\/script></body></html>`}
+let reportPdfLibPromise=null;
+function loadExternalScript(url){
+ return new Promise((resolve,reject)=>{
+   const existing=[...document.scripts].find(s=>s.src===url);
+   if(existing){
+     if(window.html2pdf)return resolve();
+     existing.addEventListener("load",resolve,{once:true});
+     existing.addEventListener("error",reject,{once:true});
+     return;
+   }
+   const s=document.createElement("script");
+   s.src=url;s.async=true;
+   s.onload=resolve;s.onerror=()=>reject(new Error("Không tải được thư viện PDF"));
+   document.head.appendChild(s);
+ });
+}
+async function ensureHtml2Pdf(){
+ if(window.html2pdf)return window.html2pdf;
+ if(reportPdfLibPromise)return reportPdfLibPromise;
+ reportPdfLibPromise=(async()=>{
+   const urls=[
+     "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
+     "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"
+   ];
+   let lastErr=null;
+   for(const url of urls){
+     try{await loadExternalScript(url);if(window.html2pdf)return window.html2pdf}catch(e){lastErr=e}
+   }
+   throw lastErr||new Error("Không tải được thư viện PDF");
+ })();
+ try{return await reportPdfLibPromise}catch(e){reportPdfLibPromise=null;throw e}
+}
+function pdfSafeFilename(name){
+ return String(name||"ESTA-bao-cao")
+   .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+   .replace(/đ/g,"d").replace(/Đ/g,"D")
+   .replace(/[^a-zA-Z0-9._-]+/g,"-")
+   .replace(/-+/g,"-").replace(/^-|-$/g,"")
+   .slice(0,120)||"ESTA-bao-cao";
+}
+function reportFilenameFromHtml(html){
+ try{
+   const d=new DOMParser().parseFromString(html,"text/html");
+   return pdfSafeFilename(d.title||"ESTA-bao-cao")+"-"+today()+".pdf";
+ }catch(e){return "ESTA-bao-cao-"+today()+".pdf"}
+}
+async function downloadReportPdf(html,filename=""){
+ if(!html)return;
+ let frame=null;
+ try{
+   toast("Đang tạo file PDF...");
+   const html2pdf=await ensureHtml2Pdf();
+   const landscape=/@page\s*\{[^}]*landscape/i.test(html);
+   const cleaned=String(html).replace(/<script[\s\S]*?<\/script>/gi,"");
+
+   frame=document.createElement("iframe");
+   frame.setAttribute("aria-hidden","true");
+   Object.assign(frame.style,{
+     position:"fixed",left:"-12000px",top:"0",
+     width:(landscape?1120:794)+"px",
+     height:(landscape?794:1120)+"px",
+     border:"0",background:"#fff",opacity:"0.01",pointerEvents:"none"
+   });
+
+   const loaded=new Promise((resolve,reject)=>{
+     const timer=setTimeout(()=>reject(new Error("Tạo trang PDF quá thời gian")),8000);
+     frame.onload=()=>{clearTimeout(timer);resolve()};
+   });
+   frame.srcdoc=cleaned;
+   document.body.appendChild(frame);
+   await loaded;
+   await new Promise(r=>setTimeout(r,180));
+
+   const body=frame.contentDocument?.body;
+   if(!body)throw new Error("Không tạo được nội dung PDF");
+
+   const finalName=filename?pdfSafeFilename(filename.replace(/\.pdf$/i,""))+".pdf":reportFilenameFromHtml(html);
+   await html2pdf().set({
+     margin:[7,7,8,7],
+     filename:finalName,
+     image:{type:"jpeg",quality:0.97},
+     html2canvas:{scale:1.45,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false},
+     jsPDF:{unit:"mm",format:"a4",orientation:landscape?"landscape":"portrait"},
+     pagebreak:{mode:["css","legacy"]}
+   }).from(body).save();
+   toast("Đã tải file PDF");
+ }catch(err){
+   console.warn("PDF download failed",err);
+   toast("Không tải PDF tự động được. Đang mở bản in dự phòng...");
+   try{
+     const w=open("","_blank");
+     if(!w)throw new Error("Trình duyệt đang chặn cửa sổ tải PDF");
+     w.document.write(html);w.document.close();
+   }catch(e){toast(e.message||"Không thể xuất PDF")}
+ }finally{
+   if(frame)setTimeout(()=>frame.remove(),500);
+ }
+}
+window.downloadReportPdf=downloadReportPdf;
+
+function openReport(a){if(!a.length){toast("Không có dữ liệu để xuất PDF");return}downloadReportPdf(reportHtml(a),"ESTA-"+currentBuilding.id+"-bao-cao-cong-viec-"+today()+".pdf")}$("#exportBtn").onclick=()=>$("#exportModal").classList.remove("hide");$("#closeExport").onclick=()=>$("#exportModal").classList.add("hide");$("#exportModal").onclick=e=>{if(e.target===$("#exportModal"))$("#exportModal").classList.add("hide")};document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{let kind=b.dataset.range,a;if(kind==="current")a=filtered();else{let r=rangeDates(kind);a=filtered(r.from,r.to)}$("#exportModal").classList.add("hide");openReport(a)});document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#viewer").classList.add("hide");$("#exportModal").classList.add("hide")}});$("#today").textContent=new Date().toLocaleDateString("vi-VN")
 
 /* ===== MODULE NĂNG LƯỢNG ===== */
 const energyStorageKey=()=>currentBuilding.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+currentBuilding.id;
@@ -1028,7 +1129,7 @@ function energyReportHtml(rows){
  const m=ENERGY_META[energyType],f=$("#energyFromDate").value,e=$("#energyToDate").value,period=f||e?((f?fmt(f):"Đầu kỳ")+" - "+(e?fmt(e):"Hiện tại")):"Toàn bộ dữ liệu";
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Báo cáo '+m.name+'</title><style>@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");@page{size:A4;margin:14mm}body{font-family:"Inter";color:#1f2937;font-size:10px}.head{display:flex;justify-content:space-between;border-bottom:3px solid #0e4d7e;padding-bottom:9px}.brand{font-size:18px;font-weight:800;color:#0e4d7e}.brand small{display:block;font-size:8px;color:#64748b;letter-spacing:1px}.title{text-align:center;margin:16px 0}.title h1{font-size:18px;color:#0e4d7e;margin:0 0 5px}.title p{margin:0;color:#64748b}table{width:100%;border-collapse:collapse}th,td{border:1px solid #cbd5e1;padding:7px;text-align:left}th{background:#edf4fb;color:#214d72}.sun{background:#fff7d6}.photo{width:75px;height:55px;object-fit:cover}.foot{margin-top:25px;text-align:center;color:#94a3b8;font-size:8px}</style></head><body><div class="head"><div class="brand">ESTA<small>BUILDING MANAGEMENT</small></div><div>'+esc(currentBuilding.name).toLocaleUpperCase("vi-VN")+'<br>TP. Hồ Chí Minh</div></div><div class="title"><h1>BÁO CÁO '+m.name.toUpperCase()+'</h1><p>Thời gian: <b>'+period+'</b></p></div><table><thead><tr><th>Ngày</th><th>Thứ</th><th>Chỉ số ('+m.unit+')</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th></tr></thead><tbody>'+rows.map(x=>'<tr class="'+(new Date(x.date+"T00:00:00").getDay()===0?"sun":"")+'"><td>'+fmt(x.date)+'</td><td>'+weekday(x.date)+'</td><td><b>'+energyFmt(x.value)+'</b></td><td>'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</td><td>'+esc(performerArray(x).join(", ")||"—")+'</td><td>'+(x.image?'<img class="photo" src="'+x.image+'">':"—")+'</td><td>'+esc(x.note||"—")+'</td></tr>').join("")+'</tbody></table><div class="foot">ESTA · Quản lý năng lượng · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),600)<\/script></body></html>'
 }
-$("#energyExportPdf").onclick=()=>{const rows=energyRows();if(!rows.length){toast("Không có dữ liệu để xuất PDF");return}const w=open("","_blank");w.document.write(energyReportHtml(rows));w.document.close()};
+$("#energyExportPdf").onclick=()=>{const rows=energyRows();if(!rows.length){toast("Không có dữ liệu để xuất PDF");return}downloadReportPdf(energyReportHtml(rows),"ESTA-"+currentBuilding.id+"-bao-cao-"+energyType+"-"+today()+".pdf")};
 
 function energyRowsForTypeRange(type,from,to){
  const all=energyLoad().filter(x=>x.type===type).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
@@ -1052,9 +1153,7 @@ function combinedReportHtml(kind){
 document.querySelectorAll("[data-combined-range]").forEach(b=>b.onclick=()=>{
  const kind=b.dataset.combinedRange;
  $("#exportModal").classList.add("hide");
- const w=open("","_blank");
- if(!w){toast("Trình duyệt đang chặn cửa sổ xuất PDF");return}
- w.document.write(combinedReportHtml(kind));w.document.close();
+ downloadReportPdf(combinedReportHtml(kind),"ESTA-"+currentBuilding.id+"-bao-cao-tong-hop-"+kind+"-"+today()+".pdf");
 });
 
 resetEnergyForm();
@@ -1341,9 +1440,8 @@ window.deleteTool=async id=>{
  const t=inventoryTools.find(x=>String(x.id)===String(id));if(!t||!confirm("Xóa dụng cụ “"+t.name+"”?"))return;
  try{await sbFetch("/rest/v1/inventory_tools?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"DELETE",token:centralSession.access_token});await loadInventoryData(currentBuilding.id,true);toast("Đã xóa dụng cụ")}catch(e){toast(e.message)}
 };
-function inventoryPrintWindow(html){
- const w=open("","_blank");if(!w){toast("Trình duyệt đang chặn cửa sổ PDF");return}
- w.document.write(html);w.document.close();
+function inventoryPrintWindow(html,filename=""){
+ return downloadReportPdf(html,filename);
 }
 function inventoryPdfCss(landscape=false){return '@page{size:A4 '+(landscape?"landscape":"portrait")+';margin:10mm}*{box-sizing:border-box}body{font-family:"Inter";color:#243746;font-size:9px;margin:0}.head{display:flex;justify-content:space-between;border-bottom:2px solid #123d5b;padding-bottom:7px;margin-bottom:10px}.brand{font-size:18px;font-weight:800;color:#8c6854}.brand small{display:block;font-size:7px;color:#647988;letter-spacing:1px}.doc{text-align:right;color:#667b89}.title{text-align:center;margin:12px 0}.title h1{font-size:17px;color:#173d58;margin:0 0 4px}.title p{margin:0;color:#6f8390}table{width:100%;border-collapse:collapse}th,td{border:1px solid #cdd8df;padding:4px;vertical-align:top}th{background:#edf4f7;color:#345569;font-size:7px}td b{color:#173d58}.month{font-size:7px;line-height:1.45}.in{color:#25825a}.out{color:#b55f55}.summary{display:flex;gap:8px;margin:10px 0}.summary div{border:1px solid #d6e0e5;padding:7px;flex:1}.summary span{display:block;color:#78909c;font-size:7px}.summary b{font-size:12px}.foot{position:fixed;bottom:-5mm;left:0;right:0;text-align:center;color:#9aa8b0;font-size:7px}';
 }
