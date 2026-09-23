@@ -7355,3 +7355,99 @@ img[data-storage-path]:not([src]){
     min-width:0!important;
   }
 }
+
+/* ===== ESTA STOCK ALERTS ===== */
+.stockAlertPanel{
+  margin:0 0 12px;
+  overflow:hidden;
+  border:1px solid #e5e2dc;
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 7px 24px rgba(20,55,80,.035)
+}
+.stockAlertHead{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 16px;
+  border-bottom:1px solid #eee9e5;
+  background:
+    radial-gradient(circle at 94% 0%,rgba(197,93,91,.06),transparent 24%),
+    linear-gradient(180deg,#fff,#fdfcfb)
+}
+.stockAlertTitle{display:flex;align-items:center;gap:11px;min-width:0}
+.stockAlertIcon{
+  width:38px;height:38px;display:grid;place-items:center;flex:0 0 38px;
+  border:1px solid #efd8d6;border-radius:11px;background:#fff4f3;color:#bd615f
+}
+.stockAlertIcon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.stockAlertTitle h3{margin:4px 0 2px;color:#1e435d;font-size:13px}
+.stockAlertTitle h3 b{
+  display:inline-grid;place-items:center;min-width:22px;height:22px;margin-left:5px;padding:0 6px;
+  border-radius:999px;background:#fff0ef;color:#b95657;font-size:8px
+}
+.stockAlertTitle p{margin:0;color:#8496a1;font-size:7.5px}
+.stockAlertFilterBtn{
+  height:34px;padding:0 10px;border:1px solid #dfe7eb;border-radius:8px;
+  background:#fff;color:#587487;font-size:7.5px;font-weight:720
+}
+.stockAlertFilterBtn.active{border-color:#e5c7c6;background:#fff4f3;color:#af5758}
+.stockAlertList{display:grid;gap:0}
+.stockAlertItem{
+  min-height:66px;
+  display:grid;
+  grid-template-columns:74px minmax(190px,1.5fr) minmax(105px,.8fr) minmax(105px,.8fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:11px 15px;
+  border-bottom:1px solid #eef2f4
+}
+.stockAlertItem:last-child{border-bottom:0}
+.stockAlertItem:hover{background:#fbfcfd}
+.stockAlertStatus{
+  width:max-content;padding:4px 7px;border-radius:999px;
+  font-size:6.2px;font-weight:850;letter-spacing:.45px
+}
+.stockAlertItem.out .stockAlertStatus{background:#fff0ef;color:#b24f52}
+.stockAlertItem.low .stockAlertStatus{background:#fff6e7;color:#9b6a21}
+.stockAlertName{min-width:0}
+.stockAlertName b{display:block;color:#244a63;font-size:8.8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stockAlertName small{display:block;margin-top:3px;color:#95a3ac;font-size:6.5px}
+.stockAlertMetric span{display:block;color:#8a9aa4;font-size:6.2px}
+.stockAlertMetric b{display:block;margin-top:3px;color:#35566b;font-size:8px}
+.stockAlertItem.out .stockAlertMetric:first-of-type b{color:#b64f53}
+.stockAlertActions{display:flex;align-items:center;justify-content:flex-end;gap:5px}
+.stockAlertActions button{
+  height:30px;padding:0 8px;border:1px solid #d6e4e9;border-radius:7px;
+  background:#edf7fa;color:#23778f;font-size:6.8px;font-weight:760
+}
+.stockAlertActions button.ghost{background:#fff;color:#607b8b;border-color:#dfe7eb}
+.stockAlertEmpty{
+  min-height:65px;display:flex;align-items:center;gap:10px;padding:12px 16px;color:#477460
+}
+.stockAlertEmpty>span{
+  width:30px;height:30px;display:grid;place-items:center;border-radius:50%;
+  background:#eaf8f1;color:#2f8a63;font-size:13px;font-weight:800
+}
+.stockAlertEmpty b{display:block;color:#335d4a;font-size:8.5px}
+.stockAlertEmpty small{display:block;margin-top:3px;color:#8a9b93;font-size:6.8px}
+
+@media(max-width:980px){
+  .stockAlertItem{
+    grid-template-columns:70px minmax(150px,1.3fr) 1fr 1fr;
+  }
+  .stockAlertActions{grid-column:2/-1;justify-content:flex-start}
+}
+@media(max-width:760px){
+  .stockAlertHead{align-items:flex-start;padding:12px}
+  .stockAlertTitle p{display:none}
+  .stockAlertItem{
+    grid-template-columns:70px minmax(0,1fr);
+    gap:8px 10px;padding:12px
+  }
+  .stockAlertMetric{grid-column:span 1}
+  .stockAlertActions{grid-column:1/-1}
+  .stockAlertActions button{flex:1;height:34px}
+}
