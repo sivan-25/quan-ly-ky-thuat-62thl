@@ -1,5 +1,5 @@
 /* ESTA Contractor Module */
-let contractors=[],contractorJobs=[],contractorLoadedBuilding="",selectedContractorId="";
+let contractors=[],contractorJobs=[],contractorLoadedBuilding="",selectedContractorId="",contractorSpecialtyFilter="";
 
 function contractorStatusClass(status=""){
   return status==="Đang hợp tác"?"active":status==="Tạm ngưng"?"paused":"inactive";
@@ -16,6 +16,29 @@ function contractorLastJob(id){
 function contractorPhoneHref(phone=""){
   const p=String(phone||"").replace(/[^\d+]/g,"");
   return p?"tel:"+p:"#";
+}
+function contractorInitial(name=""){
+  return (String(name||"").trim().charAt(0)||"N").toLocaleUpperCase("vi-VN");
+}
+function contractorFieldLabel(value=""){
+  const s=String(value||"").trim();
+  if(/hvac|điều hòa|điều hoà|đhkk/i.test(s))return "ĐHKK";
+  if(/pccc|chữa cháy|phòng cháy/i.test(s))return "PCCC";
+  if(/thang máy|elevator/i.test(s))return "Thang máy";
+  if(/cấp thoát nước|cấp nước|thoát nước|plumbing/i.test(s))return "Cấp thoát nước";
+  if(/vệ sinh|clean/i.test(s))return "Vệ sinh";
+  if(/điện|electrical/i.test(s))return "Điện";
+  return s||"Khác";
+}
+function contractorFieldClass(value=""){
+  const s=contractorFieldLabel(value);
+  if(s==="PCCC")return "pccc";
+  if(s==="Thang máy")return "elevator";
+  if(s==="Điện")return "electric";
+  if(s==="Cấp thoát nước")return "water";
+  if(s==="Vệ sinh")return "clean";
+  if(s==="ĐHKK")return "hvac";
+  return "other";
 }
 async function loadContractorData(buildingId=currentBuilding?.id,force=false){
   if(!centralSession?.access_token||!buildingId)return;
@@ -44,33 +67,48 @@ async function loadContractorData(buildingId=currentBuilding?.id,force=false){
 function renderContractors(){
   const search=($("#contractorSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
   const status=$("#contractorStatusFilter")?.value||"";
-  const list=contractors.filter(c=>(!status||c.status===status)&&(!search||[c.name,c.phone,c.contact_name,c.specialty,c.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search))));
+  const specialty=contractorSpecialtyFilter;
+  const list=contractors.filter(c=>{
+    const field=contractorFieldLabel(c.specialty);
+    return (!status||c.status===status)&&(!specialty||field===specialty)&&(!search||[c.name,c.phone,c.contact_name,c.specialty,c.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search)));
+  });
   const year=String(new Date().getFullYear());
   $("#contractorCount").textContent=contractors.length;
-  $("#contractorActiveCount").textContent=contractors.filter(c=>c.status==="Đang hợp tác").length;
   $("#contractorYearJobCount").textContent=contractorJobs.filter(x=>String(x.work_date||"").startsWith(year)).length;
   $("#contractorOpenJobCount").textContent=contractorJobs.filter(x=>x.status!=="Hoàn thành").length;
+  $("#contractorDoneJobCount").textContent=contractorJobs.filter(x=>x.status==="Hoàn thành").length;
   $("#contractorResultCount").textContent="("+list.length+")";
+
   $("#contractorGrid").innerHTML=list.map(c=>{
-    const jobs=contractorJobsFor(c.id),last=contractorLastJob(c.id);
+    const jobs=contractorJobsFor(c.id),last=contractorLastJob(c.id),field=contractorFieldLabel(c.specialty);
+    const note=c.note||((field&&field!=="Khác")?"Nhà thầu "+field:"Nhà thầu kỹ thuật");
     return '<article class="contractorRowCard" tabindex="0" role="button" data-open-contractor="'+c.id+'">'+
       '<div class="contractorRowIdentity">'+
-        '<span class="contractorBuildingIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></span>'+
-        '<div><h3>'+esc(c.name)+'</h3></div>'+
+        '<span class="contractorLetter contractorLetter-'+contractorFieldClass(c.specialty)+'">'+esc(contractorInitial(c.name))+'</span>'+
+        '<div><h3>'+esc(c.name)+'</h3><p>'+esc(note)+'</p></div>'+
       '</div>'+
-      '<div class="contractorRowValue contractorRowPhone">'+esc(c.phone||"—")+'</div>'+
-      '<div class="contractorRowValue">'+esc(c.contact_name||"—")+'</div>'+
-      '<div class="contractorRowValue">'+esc(c.specialty||"—")+'</div>'+
-      '<div class="contractorRowCount">'+jobs.length+'</div>'+
-      '<div class="contractorRowValue">'+(last?.work_date?fmt(last.work_date):"—")+'</div>'+
-      '<div class="contractorRowState"><span class="contractorStatusBadge '+contractorStatusClass(c.status)+'">'+esc(c.status)+'</span></div>'+
-      '<div class="contractorRowOpen"><span>Xem hồ sơ</span><b>→</b></div>'+
+      '<div class="contractorRowValue contractorContactCell">'+esc(c.contact_name||"—")+'</div>'+
+      '<div class="contractorRowValue contractorRowPhone"><a href="'+esc(contractorPhoneHref(c.phone))+'" data-stop-contractor>'+esc(c.phone||"—")+'</a></div>'+
+      '<div class="contractorRowValue"><span class="contractorFieldPill '+contractorFieldClass(c.specialty)+'">'+esc(field)+'</span></div>'+
+      '<div class="contractorRowCount"><span>'+jobs.length+'</span></div>'+
+      '<div class="contractorLatest"><b>'+(last?.work_date?fmt(last.work_date):"—")+'</b><span>'+esc(last?.work_content||"Chưa có công việc")+'</span></div>'+
+      '<div class="contractorRowActions">'+
+        '<button type="button" title="Xem hồ sơ" data-view-contractor="'+c.id+'"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.5"/></svg></button>'+
+        '<button type="button" title="Sửa" data-edit-contractor="'+c.id+'"><svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10zM14.5 6l3.5 3.5"/></svg></button>'+
+        '<button type="button" class="danger" title="Xóa" data-delete-contractor="'+c.id+'"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M8 10v8M12 10v8M16 10v8M7 7l1 14h8l1-14"/></svg></button>'+
+      '</div>'+
     '</article>';
   }).join("");
+
   $("#contractorGrid").querySelectorAll("[data-open-contractor]").forEach(el=>{
-    el.onclick=()=>openContractorDetail(el.dataset.openContractor);
-    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openContractorDetail(el.dataset.openContractor)}};
+    el.onclick=e=>{if(e.target.closest("button,a"))return;openContractorDetail(el.dataset.openContractor)};
+    el.onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&!e.target.closest("button,a")){e.preventDefault();openContractorDetail(el.dataset.openContractor)}};
   });
+  $("#contractorGrid").querySelectorAll("[data-view-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();openContractorDetail(b.dataset.viewContractor)});
+  $("#contractorGrid").querySelectorAll("[data-edit-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();editContractor(b.dataset.editContractor)});
+  $("#contractorGrid").querySelectorAll("[data-delete-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();deleteContractor(b.dataset.deleteContractor)});
+  $("#contractorGrid").querySelectorAll("[data-stop-contractor]").forEach(a=>a.onclick=e=>e.stopPropagation());
+
   $("#contractorEmpty").classList.toggle("hide",list.length>0);
 }
 window.openContractorDetail=id=>{
@@ -192,6 +230,11 @@ function contractorDetailReportHtml(){
 function contractorInitEvents(){
   $("#contractorSearch").oninput=renderContractors;
   $("#contractorStatusFilter").onchange=renderContractors;
+  document.querySelectorAll("[data-contractor-specialty]").forEach(b=>b.onclick=()=>{
+    contractorSpecialtyFilter=b.dataset.contractorSpecialty||"";
+    document.querySelectorAll("[data-contractor-specialty]").forEach(x=>x.classList.toggle("active",x===b));
+    renderContractors();
+  });
   $("#contractorJobSearch").oninput=renderContractorJobs;
   $("#contractorJobStatusFilter").onchange=renderContractorJobs;
   $("#addContractorBtn").onclick=openContractorModal;
@@ -229,6 +272,16 @@ function contractorInitEvents(){
   };
 }
 contractorInitEvents();
+function contractorHeaderSearchSync(){
+  const g=$("#globalSearch");
+  if(!g)return;
+  g.addEventListener("input",()=>{
+    if(!$("#app").classList.contains("contractorMode"))return;
+    $("#contractorSearch").value=g.value;
+    renderContractors();
+  });
+}
+contractorHeaderSearchSync();
 
 function contractorEscapeHandler(e){
   if(e.key!=="Escape"||!selectedContractorId)return;
