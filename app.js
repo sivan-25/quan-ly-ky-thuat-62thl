@@ -1663,10 +1663,10 @@ function renderContractorDetail(id){
   $("#contractorDetailName").textContent=c.name;
   $("#contractorDetailMeta").textContent=(c.specialty||"Nhà thầu kỹ thuật")+" · "+(currentBuilding?.name||"Dự án");
   $("#contractorDetailContact").innerHTML=
-    '<div><small>NGƯỜI LIÊN HỆ</small><b>'+esc(c.contact_name||"—")+'</b></div>'+
-    '<div><small>SỐ ĐIỆN THOẠI</small>'+(phone?'<a href="tel:'+esc(phone.replace(/\s+/g,""))+'">'+esc(phone)+'</a>':'<b>—</b>')+'</div>'+
-    '<div><small>LĨNH VỰC</small><b>'+esc(c.specialty||"—")+'</b></div>'+
-    '<div><small>GHI CHÚ</small><b>'+esc(c.note||"—")+'</b></div>';
+    '<div class="contractorInfoCard contact"><small>NGƯỜI LIÊN HỆ</small><b>'+esc(c.contact_name||"—")+'</b><span>Đầu mối làm việc</span></div>'+
+    '<div class="contractorInfoCard phone"><small>SỐ ĐIỆN THOẠI</small>'+(phone?'<a href="tel:'+esc(phone.replace(/\s+/g,""))+'">'+esc(phone)+'</a>':'<b>—</b>')+'<span>Liên hệ trực tiếp</span></div>'+
+    '<div class="contractorInfoCard specialty"><small>LĨNH VỰC</small><b>'+esc(c.specialty||"—")+'</b><span>Phạm vi phụ trách</span></div>'+
+    '<div class="contractorInfoCard note"><small>GHI CHÚ</small><b>'+esc(c.note||"—")+'</b><span>Thông tin bổ sung</span></div>';
 
   $("#contractorJobCountLabel").textContent=jobs.length+" công việc";
   $("#contractorJobBody").innerHTML=jobs.map(x=>
