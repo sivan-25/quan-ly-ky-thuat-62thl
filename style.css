@@ -7724,3 +7724,32 @@ body{
   -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
 }
+
+/* =========================================================
+   ESTA GLOBAL TYPOGRAPHY V2 — SINGLE FONT LOCK
+   Inter duy nhất cho toàn bộ giao diện ESTA.
+   ========================================================= */
+:root{
+  --esta-font:"Inter","Segoe UI",Arial,sans-serif;
+}
+html,body,
+body *,
+body *::before,
+body *::after,
+button,input,select,textarea,option,
+table,thead,tbody,tfoot,tr,th,td,
+label,summary,details,
+input::placeholder,textarea::placeholder{
+  font-family:var(--esta-font)!important;
+}
+html,body{
+  font-family:var(--esta-font)!important;
+  font-optical-sizing:auto;
+  font-synthesis:none;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+button,input,select,textarea{
+  font:inherit!important;
+}
