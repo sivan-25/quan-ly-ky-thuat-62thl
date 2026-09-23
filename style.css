@@ -6613,3 +6613,20 @@ img[data-storage-path]:not([src]){
   #maintenancePage .maintenanceStats{grid-template-columns:1fr 1fr!important}
   #maintenancePage .maintenanceAssetGrid{grid-template-columns:1fr!important}
 }
+
+#maintenancePage #maintenanceSystemFilter,
+#maintenancePage #maintenanceDueFilter{
+  height:35px!important;
+  padding:0 9px!important;
+  border:1px solid #dbe4e9!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#4d697b!important;
+  font-size:7.6px!important;
+  outline:0!important;
+}
+#maintenancePage #maintenanceSystemFilter:focus,
+#maintenancePage #maintenanceDueFilter:focus{
+  border-color:#8ec8d5!important;
+  box-shadow:0 0 0 3px rgba(65,158,181,.07)!important;
+}
