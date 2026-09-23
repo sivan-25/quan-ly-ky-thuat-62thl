@@ -56,12 +56,13 @@ function renderContractors(){
     return '<article class="contractorRowCard" tabindex="0" role="button" data-open-contractor="'+c.id+'">'+
       '<div class="contractorRowIdentity">'+
         '<span class="contractorBuildingIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></span>'+
-        '<div><span class="contractorSpecialty">'+esc(c.specialty||"Nhà thầu bảo trì")+'</span><h3>'+esc(c.name)+'</h3></div>'+
+        '<div><h3>'+esc(c.name)+'</h3></div>'+
       '</div>'+
-      '<div class="contractorRowInfo contractorRowPhone"><small>SỐ ĐIỆN THOẠI</small><b>'+esc(c.phone||"—")+'</b></div>'+
-      '<div class="contractorRowInfo"><small>NGƯỜI LIÊN HỆ</small><b>'+esc(c.contact_name||"—")+'</b></div>'+
-      '<div class="contractorRowInfo compact"><small>CÔNG VIỆC</small><b>'+jobs.length+'</b></div>'+
-      '<div class="contractorRowInfo"><small>GẦN NHẤT</small><b>'+(last?.work_date?fmt(last.work_date):"—")+'</b></div>'+
+      '<div class="contractorRowValue contractorRowPhone">'+esc(c.phone||"—")+'</div>'+
+      '<div class="contractorRowValue">'+esc(c.contact_name||"—")+'</div>'+
+      '<div class="contractorRowValue">'+esc(c.specialty||"—")+'</div>'+
+      '<div class="contractorRowCount">'+jobs.length+'</div>'+
+      '<div class="contractorRowValue">'+(last?.work_date?fmt(last.work_date):"—")+'</div>'+
       '<div class="contractorRowState"><span class="contractorStatusBadge '+contractorStatusClass(c.status)+'">'+esc(c.status)+'</span></div>'+
       '<div class="contractorRowOpen"><span>Xem hồ sơ</span><b>→</b></div>'+
     '</article>';
