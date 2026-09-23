@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2135"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2210"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -1218,7 +1218,7 @@
     </div>
     <div class="contractorTableWrap">
       <table class="contractorTable">
-        <thead><tr><th>Nhà thầu</th><th>Người liên hệ</th><th>Số điện thoại</th><th>Lĩnh vực</th><th>Công việc</th><th>Gần nhất</th><th>Thao tác</th></tr></thead>
+        <thead><tr><th>Nhà thầu</th><th>Người liên hệ</th><th>SĐT liên hệ</th><th>Lĩnh vực</th><th>Công việc</th><th>Gần nhất</th><th>Thao tác</th></tr></thead>
         <tbody id="contractorBody"></tbody>
       </table>
     </div>
@@ -1234,15 +1234,38 @@
       <h3 id="contractorModalTitle">Thêm nhà thầu</h3>
       <p>Thông tin được lưu riêng theo từng dự án.</p>
     </div>
-    <form id="contractorItemForm" class="contractorForm">
+    <form id="contractorItemForm" class="contractorForm contractorDirectoryForm">
       <input id="contractorId" type="hidden">
-      <label class="wide"><span>Tên nhà thầu *</span><input id="contractorName" maxlength="160" required placeholder="VD: Công ty THT"></label>
-      <label><span>Số điện thoại</span><input id="contractorPhone" maxlength="40" placeholder="090..."></label>
-      <label><span>Người liên hệ</span><input id="contractorContactName" maxlength="120" placeholder="Anh / Chị..."></label>
-      <label><span>SĐT người liên hệ</span><input id="contractorContactPhone" maxlength="40" placeholder="090..."></label>
-      <label><span>Lĩnh vực</span><input id="contractorSpecialty" maxlength="120" placeholder="Máy lạnh, điện, PCCC..."></label>
-      <label class="wide"><span>Ghi chú</span><textarea id="contractorNote" maxlength="500" rows="3" placeholder="Thông tin thêm về nhà thầu..."></textarea></label>
-      <div class="contractorFormActions"><button id="cancelContractorModal" class="contractorSecondary" type="button">Hủy</button><button class="contractorPrimary" type="submit">Lưu nhà thầu</button></div>
+
+      <label class="contractorField contractorNameField">
+        <span>Tên nhà thầu *</span>
+        <input id="contractorName" maxlength="160" required placeholder="VD: Công ty THT">
+      </label>
+
+      <label class="contractorField contractorSpecialtyField">
+        <span>Lĩnh vực</span>
+        <input id="contractorSpecialty" maxlength="120" placeholder="Máy lạnh, điện, PCCC...">
+      </label>
+
+      <label class="contractorField contractorContactField">
+        <span>Người liên hệ</span>
+        <input id="contractorContactName" maxlength="120" placeholder="Anh / Chị...">
+      </label>
+
+      <label class="contractorField contractorContactPhoneField">
+        <span>SĐT người liên hệ</span>
+        <input id="contractorContactPhone" maxlength="40" placeholder="090...">
+      </label>
+
+      <label class="contractorField contractorNoteField">
+        <span>Ghi chú</span>
+        <textarea id="contractorNote" maxlength="500" rows="2" placeholder="Thông tin thêm về nhà thầu..."></textarea>
+      </label>
+
+      <div class="contractorFormActions">
+        <button id="cancelContractorModal" class="contractorSecondary" type="button">Hủy</button>
+        <button class="contractorPrimary" type="submit">Lưu nhà thầu</button>
+      </div>
     </form>
   </div>
 </div>
@@ -1265,7 +1288,7 @@
     </div>
     <div class="contractorJobTableWrap">
       <table class="contractorJobTable">
-        <thead><tr><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung công việc</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Tình trạng</th><th>Thao tác</th></tr></thead>
+        <thead><tr><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung công việc</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hình ảnh</th><th>Tình trạng</th><th>Thao tác</th></tr></thead>
         <tbody id="contractorJobBody"></tbody>
       </table>
     </div>
@@ -1281,17 +1304,35 @@
       <h3 id="contractorJobModalTitle">Thêm công việc nhà thầu</h3>
       <p id="contractorJobContractorName">Nhà thầu</p>
     </div>
-    <form id="contractorJobForm" class="contractorForm">
+    <form id="contractorJobForm" class="contractorForm contractorWorkForm">
       <input id="contractorJobId" type="hidden">
       <input id="contractorJobContractorId" type="hidden">
-      <label><span>Ngày thực hiện *</span><input id="contractorJobDate" type="date" required></label>
-      <label><span>Ngày hoàn thành</span><input id="contractorJobCompletionDate" type="date"></label>
-      <label><span>Tình trạng</span><select id="contractorJobStatus"><option>Đang thực hiện</option><option>Hoàn thành</option><option>Chờ xử lý</option><option>Cần theo dõi</option></select></label>
-      <label class="wide"><span>Nội dung công việc *</span><textarea id="contractorJobContent" maxlength="1000" rows="3" required placeholder="Mô tả công việc nhà thầu thực hiện..."></textarea></label>
-      <label class="wide"><span>Nguyên nhân</span><textarea id="contractorJobCause" maxlength="1000" rows="3" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></textarea></label>
-      <label class="wide"><span>Hướng xử lý</span><textarea id="contractorJobResolution" maxlength="1000" rows="3" placeholder="Biện pháp xử lý, thay thế, khắc phục..."></textarea></label>
-      <label class="wide"><span>Ghi chú</span><textarea id="contractorJobNote" maxlength="500" rows="2"></textarea></label>
-      <div class="contractorFormActions"><button id="cancelContractorJobModal" class="contractorSecondary" type="button">Hủy</button><button class="contractorPrimary" type="submit">Lưu công việc</button></div>
+
+      <label class="contractorField"><span>Ngày thực hiện *</span><input id="contractorJobDate" type="date" required></label>
+      <label class="contractorField"><span>Ngày hoàn thành</span><input id="contractorJobCompletionDate" type="date"></label>
+      <label class="contractorField"><span>Tình trạng</span><select id="contractorJobStatus"><option>Đang thực hiện</option><option>Hoàn thành</option><option>Chờ xử lý</option><option>Cần theo dõi</option></select></label>
+
+      <label class="contractorField workTextField"><span>Nội dung công việc *</span><textarea id="contractorJobContent" maxlength="1000" rows="3" required placeholder="Mô tả công việc nhà thầu thực hiện..."></textarea></label>
+      <label class="contractorField workTextField"><span>Nguyên nhân</span><textarea id="contractorJobCause" maxlength="1000" rows="3" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></textarea></label>
+      <label class="contractorField workTextField"><span>Hướng xử lý</span><textarea id="contractorJobResolution" maxlength="1000" rows="3" placeholder="Biện pháp xử lý, thay thế, khắc phục..."></textarea></label>
+
+      <label class="contractorField contractorJobImageField">
+        <span>Hình ảnh hiện trường</span>
+        <div class="contractorJobImageActions">
+          <input id="contractorJobImages" type="file" accept="image/*" multiple hidden>
+          <input id="contractorJobCamera" type="file" accept="image/*" capture="environment" hidden>
+          <button id="contractorJobCameraBtn" type="button" class="contractorImageBtn">Chụp ảnh</button>
+          <button id="contractorJobLibraryBtn" type="button" class="contractorImageBtn">Chọn ảnh</button>
+        </div>
+        <div id="contractorJobImagePreview" class="contractorJobImagePreview"></div>
+      </label>
+
+      <label class="contractorField contractorJobNoteField"><span>Ghi chú</span><textarea id="contractorJobNote" maxlength="500" rows="2" placeholder="Thông tin bổ sung..."></textarea></label>
+
+      <div class="contractorFormActions">
+        <button id="cancelContractorJobModal" class="contractorSecondary" type="button">Hủy</button>
+        <button class="contractorPrimary" type="submit">Lưu công việc</button>
+      </div>
     </form>
   </div>
 </div>
@@ -1453,4 +1494,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-2135"></script></body></html>
+<script src="app.js?v=20260923-2210"></script></body></html>
