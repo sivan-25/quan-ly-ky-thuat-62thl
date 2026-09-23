@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2025"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2110"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -643,6 +643,10 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5M9 5H5v4M19 15v4h-4"/></svg>
       <span>Bảo trì thiết bị</span>
     </button>
+    <button id="navContractor">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V7h8v13M14 11h4v9M9 10h2M9 14h2M9 18h2M16 14h1"/></svg>
+      <span>Nhà thầu</span>
+    </button>
   </nav>
 
   <div class="sideBackup">
@@ -689,6 +693,10 @@
   <div id="topMaintenanceTitle" class="topModuleTitle hide">
     <div class="topModuleIcon maintenanceTopIcon"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5"/></svg></div>
     <div><h1>Bảo trì thiết bị</h1><p>Kế hoạch, lịch sử và nhắc hạn bảo trì</p></div>
+  </div>
+  <div id="topContractorTitle" class="topModuleTitle hide">
+    <div class="topModuleIcon contractorTopIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V7h8v13M14 11h4v9M9 10h2M9 14h2M9 18h2"/></svg></div>
+    <div><h1>Nhà thầu</h1><p>Danh bạ và lịch sử công việc nhà thầu</p></div>
   </div>
 
   <div class="headerTools">
@@ -1179,7 +1187,114 @@
     <div id="maintenanceHistoryEmpty" class="inventoryEmpty hide">Chưa có lịch sử bảo trì.</div>
   </section>
 </div>
+<div id="contractorPage" class="page contractorPage hide">
+  <section class="contractorHero">
+    <div>
+      <span>ESTA · CONTRACTOR MANAGEMENT</span>
+      <h1>Nhà thầu</h1>
+      <p>Lưu thông tin liên hệ và toàn bộ lịch sử công việc đã thực hiện tại từng dự án.</p>
+    </div>
+    <button id="addContractorBtn" class="contractorPrimary" type="button">＋ Thêm nhà thầu</button>
+  </section>
+
+  <section class="contractorStats">
+    <article><span class="contractorStatIcon blue"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V7h8v13M14 11h4v9"/></svg></span><div><small>NHÀ THẦU</small><b id="contractorCount">0</b><em>Đang lưu trong dự án</em></div></article>
+    <article><span class="contractorStatIcon cyan"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span><div><small>CÔNG VIỆC NĂM NAY</small><b id="contractorJobYearCount">0</b><em>Lịch sử thực hiện</em></div></article>
+    <article><span class="contractorStatIcon amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><small>ĐANG THỰC HIỆN</small><b id="contractorJobDoingCount">0</b><em>Công việc chưa kết thúc</em></div></article>
+    <article><span class="contractorStatIcon green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><div><small>HOÀN THÀNH</small><b id="contractorJobDoneCount">0</b><em>Công việc đã xử lý</em></div></article>
+  </section>
+
+  <section class="contractorPanel">
+    <div class="contractorToolbar">
+      <div>
+        <span>ĐƠN VỊ HỢP TÁC</span>
+        <h2>Danh sách nhà thầu</h2>
+        <p>Bấm vào tên nhà thầu để xem toàn bộ công việc đã thực hiện.</p>
+      </div>
+      <div class="contractorSearch">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="contractorSearch" placeholder="Tìm nhà thầu, người liên hệ, SĐT...">
+      </div>
+    </div>
+    <div class="contractorTableWrap">
+      <table class="contractorTable">
+        <thead><tr><th>Nhà thầu</th><th>Người liên hệ</th><th>Số điện thoại</th><th>Lĩnh vực</th><th>Công việc</th><th>Gần nhất</th><th>Thao tác</th></tr></thead>
+        <tbody id="contractorBody"></tbody>
+      </table>
+    </div>
+    <div id="contractorEmpty" class="contractorEmpty hide">Chưa có nhà thầu trong dự án này.</div>
+  </section>
+</div>
 </main></div>
+<div id="contractorItemModal" class="modal hide">
+  <div class="modalCard contractorModalCard">
+    <button id="closeContractorModal" class="modalClose" type="button">×</button>
+    <div class="contractorModalHead">
+      <span>ESTA · CONTRACTOR DIRECTORY</span>
+      <h3 id="contractorModalTitle">Thêm nhà thầu</h3>
+      <p>Thông tin được lưu riêng theo từng dự án.</p>
+    </div>
+    <form id="contractorItemForm" class="contractorForm">
+      <input id="contractorId" type="hidden">
+      <label class="wide"><span>Tên nhà thầu *</span><input id="contractorName" maxlength="160" required placeholder="VD: Công ty THT"></label>
+      <label><span>Số điện thoại</span><input id="contractorPhone" maxlength="40" placeholder="090..."></label>
+      <label><span>Người liên hệ</span><input id="contractorContactName" maxlength="120" placeholder="Anh / Chị..."></label>
+      <label><span>SĐT người liên hệ</span><input id="contractorContactPhone" maxlength="40" placeholder="090..."></label>
+      <label><span>Lĩnh vực</span><input id="contractorSpecialty" maxlength="120" placeholder="Máy lạnh, điện, PCCC..."></label>
+      <label class="wide"><span>Ghi chú</span><textarea id="contractorNote" maxlength="500" rows="3" placeholder="Thông tin thêm về nhà thầu..."></textarea></label>
+      <div class="contractorFormActions"><button id="cancelContractorModal" class="contractorSecondary" type="button">Hủy</button><button class="contractorPrimary" type="submit">Lưu nhà thầu</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="contractorDetailModal" class="modal hide">
+  <div class="modalCard contractorDetailCard">
+    <button id="closeContractorDetail" class="modalClose" type="button">×</button>
+    <div class="contractorDetailHead">
+      <div>
+        <span>HỒ SƠ NHÀ THẦU</span>
+        <h3 id="contractorDetailName">Nhà thầu</h3>
+        <p id="contractorDetailMeta">Thông tin liên hệ</p>
+      </div>
+      <button id="addContractorJobBtn" class="contractorPrimary" type="button">＋ Thêm công việc</button>
+    </div>
+    <div class="contractorDetailContact" id="contractorDetailContact"></div>
+    <div class="contractorJobHeader">
+      <div><span>LỊCH SỬ CÔNG VIỆC</span><h4>Công việc đã thực hiện</h4></div>
+      <small id="contractorJobCountLabel">0 công việc</small>
+    </div>
+    <div class="contractorJobTableWrap">
+      <table class="contractorJobTable">
+        <thead><tr><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung công việc</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Tình trạng</th><th>Thao tác</th></tr></thead>
+        <tbody id="contractorJobBody"></tbody>
+      </table>
+    </div>
+    <div id="contractorJobEmpty" class="contractorEmpty hide">Nhà thầu này chưa có lịch sử công việc.</div>
+  </div>
+</div>
+
+<div id="contractorJobModal" class="modal hide">
+  <div class="modalCard contractorModalCard contractorJobModalCard">
+    <button id="closeContractorJobModal" class="modalClose" type="button">×</button>
+    <div class="contractorModalHead">
+      <span>ESTA · CONTRACTOR WORK LOG</span>
+      <h3 id="contractorJobModalTitle">Thêm công việc nhà thầu</h3>
+      <p id="contractorJobContractorName">Nhà thầu</p>
+    </div>
+    <form id="contractorJobForm" class="contractorForm">
+      <input id="contractorJobId" type="hidden">
+      <input id="contractorJobContractorId" type="hidden">
+      <label><span>Ngày thực hiện *</span><input id="contractorJobDate" type="date" required></label>
+      <label><span>Ngày hoàn thành</span><input id="contractorJobCompletionDate" type="date"></label>
+      <label><span>Tình trạng</span><select id="contractorJobStatus"><option>Đang thực hiện</option><option>Hoàn thành</option><option>Chờ xử lý</option><option>Cần theo dõi</option></select></label>
+      <label class="wide"><span>Nội dung công việc *</span><textarea id="contractorJobContent" maxlength="1000" rows="3" required placeholder="Mô tả công việc nhà thầu thực hiện..."></textarea></label>
+      <label class="wide"><span>Nguyên nhân</span><textarea id="contractorJobCause" maxlength="1000" rows="3" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></textarea></label>
+      <label class="wide"><span>Hướng xử lý</span><textarea id="contractorJobResolution" maxlength="1000" rows="3" placeholder="Biện pháp xử lý, thay thế, khắc phục..."></textarea></label>
+      <label class="wide"><span>Ghi chú</span><textarea id="contractorJobNote" maxlength="500" rows="2"></textarea></label>
+      <div class="contractorFormActions"><button id="cancelContractorJobModal" class="contractorSecondary" type="button">Hủy</button><button class="contractorPrimary" type="submit">Lưu công việc</button></div>
+    </form>
+  </div>
+</div>
 <div id="maintenanceAssetModal" class="modal hide">
   <div class="modalCard inventoryModalCard maintenanceModalCard">
     <button id="closeMaintenanceAssetModal" class="modalClose" type="button">×</button>
@@ -1338,4 +1453,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-2025"></script></body></html>
+<script src="app.js?v=20260923-2110"></script></body></html>
