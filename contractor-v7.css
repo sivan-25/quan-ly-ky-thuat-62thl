@@ -79,3 +79,18 @@
  #contractorPage .contractorSearch,#contractorPage .contractorFilter{height:44px!important}
  #contractorPage .contractorTable{min-width:900px!important}
 }
+
+#contractorItemModal,#contractorDetailModal,#contractorJobModal{backdrop-filter:blur(8px)!important;background:rgba(12,34,50,.58)!important}
+#contractorItemModal .contractorModalCard{width:min(680px,calc(100vw - 32px))!important;max-width:none!important;border:1px solid #dfe7ec!important;border-radius:18px!important;overflow:hidden!important;background:#fff!important;box-shadow:0 22px 70px rgba(12,34,50,.25)!important}
+#contractorItemModal .contractorModalHead,#contractorJobModal .contractorModalHead{padding:19px 22px 15px!important;border-bottom:1px solid #e8eef1!important;background:linear-gradient(180deg,#fff,#fbfcfd)!important}
+#contractorItemModal .contractorModalHead>span,#contractorJobModal .contractorModalHead>span{color:#8c6a57!important;font-size:10px!important;font-weight:800!important;letter-spacing:1.2px!important}
+#contractorItemModal .contractorModalHead h3,#contractorJobModal .contractorModalHead h3{margin:5px 0 3px!important;color:#173d58!important;font-size:22px!important}
+#contractorItemModal .contractorModalHead p,#contractorJobModal .contractorModalHead p{margin:0!important;color:#768b98!important;font-size:12.5px!important}
+#contractorItemModal .contractorDirectoryForm{display:grid!important;grid-template-columns:1fr 1fr!important;gap:13px!important;padding:18px 22px 22px!important}
+#contractorItemModal .contractorNameField,#contractorItemModal .contractorNoteField{grid-column:1/-1!important}
+#contractorItemModal .contractorField>span,#contractorJobModal .contractorField>span{display:block!important;margin:0 0 6px!important;color:#536d7c!important;font-size:12px!important;font-weight:700!important}
+#contractorItemModal input,#contractorItemModal textarea,#contractorJobModal input,#contractorJobModal select,#contractorJobModal textarea{width:100%!important;border:1px solid #d9e3e8!important;border-radius:10px!important;background:#f9fbfc!important;color:#2f4e62!important;font-size:13px!important;outline:0!important}
+#contractorItemModal input,#contractorJobModal input,#contractorJobModal select{height:43px!important;padding:0 11px!important}
+#contractorItemModal textarea{min-height:74px!important;padding:10px 11px!important}
+#contractorJobModal textarea{height:94px!important;min-height:94px!important;max-height:160px!important;padding:10px 11px!important}
+#contractorItemModal input:focus,#contractorItemModal textarea:focus,#contractorJobModal input:focus,#contractorJobModal select:focus,#contractorJobModal textarea:focus{border-color:#87bfd0!important;background:#fff!important;box-shadow:0 0 0 3px rgba(39,133,165,.09)!important}
