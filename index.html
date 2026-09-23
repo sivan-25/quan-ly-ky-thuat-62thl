@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0835"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTA | Hệ thống quản lý kỹ thuật đa dự án</title><link rel="stylesheet" href="style.css?v=20260923-0850"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -403,6 +403,115 @@
   }
   #app #workPage .workPendingImages{
     margin:0 14px 11px!important;
+  }
+}
+
+/* V11.4 — readability tuning */
+#app #workPage .workEntryHeader h2{
+  font-size:17px!important;
+}
+#app #workPage .workEntryHeader p{
+  font-size:9px!important;
+}
+#app #workPage #taskForm .workField>span{
+  font-size:9.5px!important;
+  font-weight:760!important;
+  color:#536f82!important;
+}
+#app #workPage #taskForm input:not([type="hidden"]),
+#app #workPage #taskForm select,
+#app #workPage #taskForm .peopleSelectBtn{
+  font-size:11.5px!important;
+  font-weight:560!important;
+  color:#24465e!important;
+}
+#app #workPage #taskForm .workContent input{
+  font-size:12px!important;
+  font-weight:680!important;
+}
+#app #workPage #taskForm .peopleButtonSummary>em{
+  font-size:11px!important;
+}
+#app #workPage #taskForm .selectedPersonChip b{
+  font-size:9.5px!important;
+}
+#app #workPage #taskForm .imageActionBtn{
+  font-size:9px!important;
+  font-weight:760!important;
+}
+#app #workPage #taskForm .workSave{
+  font-size:9.5px!important;
+}
+#app #workPage .premiumTableCard th{
+  height:40px!important;
+  padding:0 10px!important;
+  font-size:10.5px!important;
+  line-height:1.2!important;
+  letter-spacing:.2px!important;
+}
+#app #workPage .premiumTableCard td{
+  padding:9px 10px!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+}
+#app #workPage .taskContentCell>b{
+  font-size:13.5px!important;
+  line-height:1.35!important;
+  font-weight:720!important;
+}
+#app #workPage .dateCell{
+  font-size:12.5px!important;
+}
+#app #workPage .noteCell{
+  font-size:12px!important;
+}
+#app #workPage .badge,
+#app #workPage .typeBadge{
+  font-size:10.5px!important;
+  padding:5px 9px!important;
+}
+#app #workPage .performerChips.pro>span{
+  min-height:28px!important;
+  padding:0 9px!important;
+}
+#app #workPage .performerChips.pro>span b{
+  max-width:120px!important;
+  font-size:10px!important;
+}
+#app #workPage .performerChips.pro>em{
+  font-size:9px!important;
+}
+#app #workPage .rowActionMenu summary{
+  font-size:13px!important;
+}
+@media(min-width:1020px){
+  #app #workPage #taskForm .workField>span{
+    font-size:9px!important;
+  }
+  #app #workPage #taskForm input:not([type="hidden"]),
+  #app #workPage #taskForm select,
+  #app #workPage #taskForm .peopleSelectBtn{
+    height:38px!important;
+    min-height:38px!important;
+    max-height:38px!important;
+    line-height:38px!important;
+    font-size:11px!important;
+  }
+  #app #workPage #taskForm .workContent input{
+    font-size:11.5px!important;
+  }
+  #app #workPage #taskForm .imageActionBtn{
+    height:38px!important;
+    min-height:38px!important;
+    max-height:38px!important;
+    font-size:8.5px!important;
+  }
+  #app #workPage #taskForm .workSave,
+  #app #workPage #taskForm .workCancel{
+    height:38px!important;
+  }
+  #app #workPage #taskForm .workSave{
+    font-size:9px!important;
   }
 }
 </style></head><body>
@@ -1161,4 +1270,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-0835"></script></body></html>
+<script src="app.js?v=20260923-0850"></script></body></html>
