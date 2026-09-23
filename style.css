@@ -9003,3 +9003,217 @@ i{
   #contractorDetailModal .contractorJobHeader{padding:10px 12px!important}
   #contractorDetailModal .contractorJobTable{min-width:930px!important}
 }
+
+
+/* =========================================================
+   CONTRACTOR DETAIL V4 — LARGE TYPE + STRONG INFO CARDS
+   ========================================================= */
+#contractorDetailModal,
+#contractorDetailModal *{
+  font-family:"Inter",Arial,sans-serif!important;
+}
+
+/* Header */
+#contractorDetailModal .contractorDetailHead{
+  min-height:118px!important;
+  padding:24px 74px 22px 28px!important;
+}
+#contractorDetailModal .contractorDetailHead>div>span{
+  font-size:8.5px!important;
+  font-weight:800!important;
+  letter-spacing:1.8px!important;
+}
+#contractorDetailModal .contractorDetailHead h3{
+  margin:7px 0 4px!important;
+  font-size:27px!important;
+  line-height:1.12!important;
+  font-weight:800!important;
+}
+#contractorDetailModal .contractorDetailHead p{
+  font-size:11px!important;
+  line-height:1.4!important;
+  font-weight:500!important;
+}
+#contractorDetailModal .contractorDetailHead .contractorPrimary{
+  height:44px!important;
+  padding:0 18px!important;
+  border-radius:11px!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+#contractorDetailModal .modalClose{
+  width:38px!important;
+  height:38px!important;
+  font-size:19px!important;
+}
+
+/* Main contractor information: clearer visual hierarchy */
+#contractorDetailModal .contractorDetailContact{
+  gap:12px!important;
+  padding:16px 20px!important;
+  background:linear-gradient(180deg,#eaf2f6 0%,#e5eef3 100%)!important;
+}
+#contractorDetailModal .contractorDetailContact>.contractorInfoCard{
+  min-height:92px!important;
+  padding:14px 15px 12px 17px!important;
+  border:1px solid #c8d9e2!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:0 7px 18px rgba(22,55,76,.07)!important;
+}
+#contractorDetailModal .contractorDetailContact>.contractorInfoCard:before{
+  width:4px!important;
+}
+#contractorDetailModal .contractorDetailContact>.contractorInfoCard.contact{
+  background:linear-gradient(135deg,#ffffff 0%,#f0fbfd 100%)!important;
+  border-color:#bfe2e9!important;
+}
+#contractorDetailModal .contractorDetailContact>.contractorInfoCard.phone{
+  background:linear-gradient(135deg,#ffffff 0%,#f1f7fd 100%)!important;
+  border-color:#c8ddeb!important;
+}
+#contractorDetailModal .contractorDetailContact>.contractorInfoCard.specialty{
+  background:linear-gradient(135deg,#ffffff 0%,#fbf6f2 100%)!important;
+  border-color:#dfd0c6!important;
+}
+#contractorDetailModal .contractorDetailContact>.contractorInfoCard.note{
+  background:linear-gradient(135deg,#ffffff 0%,#f5f8fa 100%)!important;
+  border-color:#d4dfe5!important;
+}
+#contractorDetailModal .contractorDetailContact small{
+  display:block!important;
+  color:#5f7a8b!important;
+  font-size:8.5px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  letter-spacing:1px!important;
+}
+#contractorDetailModal .contractorDetailContact b,
+#contractorDetailModal .contractorDetailContact a{
+  display:block!important;
+  margin-top:8px!important;
+  color:#153e59!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+  font-weight:800!important;
+  text-decoration:none!important;
+}
+#contractorDetailModal .contractorDetailContact a{
+  color:#147e9a!important;
+}
+#contractorDetailModal .contractorDetailContact .contractorInfoCard>span{
+  display:block!important;
+  margin-top:5px!important;
+  color:#8a9ca7!important;
+  font-size:8px!important;
+  line-height:1.25!important;
+  font-weight:500!important;
+}
+
+/* Work-history heading */
+#contractorDetailModal .contractorJobHeader{
+  min-height:78px!important;
+  padding:14px 20px!important;
+}
+#contractorDetailModal .contractorJobHeader span{
+  font-size:8px!important;
+  font-weight:800!important;
+  letter-spacing:1.55px!important;
+}
+#contractorDetailModal .contractorJobHeader h4{
+  margin-top:5px!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+}
+#contractorDetailModal .contractorJobHeader>small{
+  padding:6px 10px!important;
+  font-size:8.5px!important;
+  font-weight:750!important;
+}
+
+/* Work-history table: materially larger and easier to scan */
+#contractorDetailModal .contractorJobTable th{
+  height:48px!important;
+  padding:0 10px!important;
+  color:#385b70!important;
+  font-size:8.8px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  letter-spacing:.25px!important;
+}
+#contractorDetailModal .contractorJobTable td{
+  padding:13px 10px!important;
+  color:#334f61!important;
+  font-size:10.5px!important;
+  line-height:1.55!important;
+  font-weight:500!important;
+}
+#contractorDetailModal .jobTextCell b{
+  color:#153e59!important;
+  font-size:10.8px!important;
+  font-weight:800!important;
+}
+#contractorDetailModal .contractorJobStatus{
+  padding:6px 9px!important;
+  font-size:8.2px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+}
+#contractorDetailModal .contractorRowActions button{
+  width:32px!important;
+  height:31px!important;
+  font-size:10px!important;
+}
+#contractorDetailModal .contractorJobThumbBtn{
+  width:66px!important;
+  height:46px!important;
+}
+#contractorDetailModal .contractorJobThumbBtn span{
+  font-size:7.5px!important;
+  font-weight:800!important;
+}
+
+/* Desktop gives text columns more space */
+@media(min-width:1101px){
+  #contractorDetailModal .contractorDetailCard{
+    width:min(1480px,calc(100vw - 36px))!important;
+    max-height:calc(100vh - 36px)!important;
+  }
+  #contractorDetailModal{
+    padding:18px!important;
+  }
+  #contractorDetailModal .contractorJobTable th:nth-child(1),
+  #contractorDetailModal .contractorJobTable td:nth-child(1){width:9%!important}
+  #contractorDetailModal .contractorJobTable th:nth-child(2),
+  #contractorDetailModal .contractorJobTable td:nth-child(2){width:9%!important}
+  #contractorDetailModal .contractorJobTable th:nth-child(3),
+  #contractorDetailModal .contractorJobTable td:nth-child(3){width:19%!important}
+  #contractorDetailModal .contractorJobTable th:nth-child(4),
+  #contractorDetailModal .contractorJobTable td:nth-child(4){width:16%!important}
+  #contractorDetailModal .contractorJobTable th:nth-child(5),
+  #contractorDetailModal .contractorJobTable td:nth-child(5){width:18%!important}
+  #contractorDetailModal .contractorJobTable th:nth-child(6),
+  #contractorDetailModal .contractorJobTable td:nth-child(6){width:8%!important}
+  #contractorDetailModal .contractorJobTable th:nth-child(7),
+  #contractorDetailModal .contractorJobTable td:nth-child(7){width:12%!important}
+  #contractorDetailModal .contractorJobTable th:nth-child(8),
+  #contractorDetailModal .contractorJobTable td:nth-child(8){width:9%!important}
+}
+
+/* Mobile remains readable without changing font family */
+@media(max-width:760px){
+  #contractorDetailModal .contractorDetailHead h3{font-size:22px!important}
+  #contractorDetailModal .contractorDetailHead p{font-size:10px!important}
+  #contractorDetailModal .contractorDetailContact>.contractorInfoCard{
+    min-height:84px!important;
+    padding:13px 14px 11px 16px!important;
+  }
+  #contractorDetailModal .contractorDetailContact small{font-size:8px!important}
+  #contractorDetailModal .contractorDetailContact b,
+  #contractorDetailModal .contractorDetailContact a{font-size:12px!important}
+  #contractorDetailModal .contractorJobHeader h4{font-size:16px!important}
+  #contractorDetailModal .contractorJobTable{min-width:1040px!important}
+  #contractorDetailModal .contractorJobTable th{font-size:8.5px!important}
+  #contractorDetailModal .contractorJobTable td{font-size:10px!important}
+}
