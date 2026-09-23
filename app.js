@@ -368,37 +368,76 @@ async function syncEnergyRecord(action,itemOrId){
  }catch(e){toast("Đã lưu trên máy nhưng chưa đồng bộ lên máy chủ");throw e}
 }
 async function loadProjectSnapshot(building){
- if(!centralSession?.access_token||!building?.id)return;
- currentBuilding=building;
+ if(!centralSession?.access_token||!building?.id)return false;
+ const buildingId=building.id;
+ currentBuilding={...building};
+ const taskKey=taskStorageKeyFor(buildingId);
+ const energyKey=buildingId==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+buildingId;
+
+ // Local storage is only a cache. Preserve any previous browser-only data
+ // before replacing the cache with the server snapshot.
+ let previousLocalTasks=[],previousLocalEnergy=[];
+ try{previousLocalTasks=JSON.parse(localStorage.getItem(taskKey)||"[]")}catch(e){}
+ try{previousLocalEnergy=JSON.parse(localStorage.getItem(energyKey)||"[]")}catch(e){}
+
  try{
-   const r=await projectSync("get"),row=r?.snapshot||{tasks:[],energy:[],updated_at:null};
-   let cloudTasks=Array.isArray(row.tasks)?row.tasks:[],cloudEnergy=Array.isArray(row.energy)?row.energy:[];
-   let localTasks=[],localEnergy=[];
-   try{localTasks=JSON.parse(localStorage.getItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id)||"[]")}catch(e){}
-   try{localEnergy=JSON.parse(localStorage.getItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id)||"[]")}catch(e){}
+   const r=await projectSync("get",{},buildingId);
+   const row=r?.snapshot||{building_id:buildingId,tasks:[],energy:[],updated_at:null};
+   const cloudTasks=Array.isArray(row.tasks)?row.tasks:[];
+   const cloudEnergy=Array.isArray(row.energy)?row.energy:[];
 
-   const cloudMigrated=await migrateMediaRows(cloudTasks,cloudEnergy);
-   cloudTasks=cloudMigrated.tasks;cloudEnergy=cloudMigrated.energy;
-   const localMigrated=await migrateMediaRows(localTasks,localEnergy);
-   localTasks=localMigrated.tasks;localEnergy=localMigrated.energy;
+   // Never block project opening because of image migration or stale local cache.
+   // The server snapshot is canonical and is applied immediately.
+   try{
+     if((previousLocalTasks.length||previousLocalEnergy.length)&&
+        (JSON.stringify(previousLocalTasks)!==JSON.stringify(cloudTasks)||
+         JSON.stringify(previousLocalEnergy)!==JSON.stringify(cloudEnergy))){
+       localStorage.setItem("esta_local_backup_"+buildingId,JSON.stringify({
+         saved_at:new Date().toISOString(),
+         tasks:previousLocalTasks,
+         energy:previousLocalEnergy
+       }));
+     }
+   }catch(e){console.warn("Local backup skipped",e)}
 
-   const migrationKey="esta_cloud_merge_v4_media_"+building.id;
-   let tasks=cloudTasks,energy=cloudEnergy;
-   if(!localStorage.getItem(migrationKey)){
-     tasks=mergeByRecordId(cloudTasks,localTasks);
-     energy=mergeByRecordId(cloudEnergy,localEnergy);
-     localStorage.setItem(migrationKey,"1");
+   localStorage.setItem(taskKey,JSON.stringify(cloudTasks));
+   localStorage.setItem(energyKey,JSON.stringify(cloudEnergy));
+   cloudVersionByBuilding[buildingId]=row.updated_at||"";
+
+   // Best-effort legacy base64 migration. It must never prevent the project
+   // from loading. Current server data normally already uses Storage refs.
+   const hasLegacyMedia=
+     cloudTasks.some(t=>Array.isArray(t?.imgs)&&t.imgs.some(x=>typeof x==="string"&&x.startsWith("data:image/")))||
+     cloudEnergy.some(x=>typeof x?.image==="string"&&x.image.startsWith("data:image/"));
+   if(hasLegacyMedia&&canProjectEdit()){
+     (async()=>{
+       try{
+         const migrated=await migrateMediaRows(
+           JSON.parse(JSON.stringify(cloudTasks)),
+           JSON.parse(JSON.stringify(cloudEnergy))
+         );
+         if(!migrated.changed)return;
+         localStorage.setItem(taskKey,JSON.stringify(migrated.tasks));
+         localStorage.setItem(energyKey,JSON.stringify(migrated.energy));
+         const merged=await projectSync("merge_snapshot",{tasks:migrated.tasks,energy:migrated.energy},buildingId);
+         if(merged?.updated_at)cloudVersionByBuilding[buildingId]=merged.updated_at;
+         if(currentBuilding?.id===buildingId){render();renderEnergy()}
+       }catch(err){console.warn("Legacy media migration skipped",err)}
+     })();
    }
-
-   localStorage.setItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id,JSON.stringify(tasks));
-   localStorage.setItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id,JSON.stringify(energy));
-   cloudVersionByBuilding[building.id]=row.updated_at||"";
-
-   if(cloudMigrated.changed||localMigrated.changed||tasks.length!==cloudTasks.length||energy.length!==cloudEnergy.length){
-     const merged=await projectSync("merge_snapshot",{tasks,energy});
-     if(merged?.updated_at)cloudVersionByBuilding[building.id]=merged.updated_at;
-   }
- }catch(e){console.warn(e);toast("Không thể tải đầy đủ dữ liệu dự án từ máy chủ")}
+   return true;
+ }catch(e){
+   console.warn("Project snapshot load failed",buildingId,e);
+   // Keep any valid cache available instead of leaving the page blank.
+   if(!Array.isArray(previousLocalTasks))previousLocalTasks=[];
+   if(!Array.isArray(previousLocalEnergy))previousLocalEnergy=[];
+   try{
+     localStorage.setItem(taskKey,JSON.stringify(previousLocalTasks));
+     localStorage.setItem(energyKey,JSON.stringify(previousLocalEnergy));
+   }catch(_e){}
+   toast("Không thể đồng bộ máy chủ · đang dùng dữ liệu đã lưu trên máy");
+   return false;
+ }
 }
 async function pollProjectSnapshot(){
  if(!centralSession?.access_token||!currentBuilding?.id||document.hidden)return;
@@ -593,8 +632,12 @@ async function enterProject(building){
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
  $("#navWork").classList.remove("hide");$("#navEnergy").classList.remove("hide");$("#navInventory").classList.remove("hide");$("#navMaintenance").classList.remove("hide");
+
+ // Load the two independent data sources separately so one failure cannot
+ // prevent the project from opening.
  if(centralSession?.access_token)await loadProjectSnapshot(currentBuilding);
- await loadProjectPeople(currentBuilding.id);
+ try{await loadProjectPeople(currentBuilding.id)}catch(e){console.warn("Project people load skipped",e)}
+
  applyBuildingUI();
  showHome();
 }
@@ -606,7 +649,18 @@ function openAdminPortal(){
  $("#navHome").classList.remove("active");$("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");
  $("#app").classList.remove("homeMode");$("#app").classList.add("adminMode");renderAdminPortal();
 }
-window.adminOpenBuilding=async id=>{const b=currentAccount?.buildings?.find(x=>x.id===id);if(b){await enterProject(b);showModule("work")}};
+window.adminOpenBuilding=async id=>{
+ const b=currentAccount?.buildings?.find(x=>x.id===id);if(!b)return;
+ try{
+   await enterProject(b);
+   showModule("work");
+ }catch(e){
+   console.warn("Open project failed",e);
+   applyBuildingUI();
+   showModule("work");
+   toast("Đã mở dự án bằng dữ liệu khả dụng");
+ }
+};
 window.enterAccount=function(account,session=null){
  currentAccount=account;centralSession=session;me=account.username||account.email||"user";
  $("#login").classList.add("hide");$("#app").classList.remove("hide");
