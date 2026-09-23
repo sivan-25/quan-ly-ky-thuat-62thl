@@ -1130,13 +1130,12 @@ function renderTools(){
  $("#toolGoodCount").textContent=inventoryTools.filter(x=>x.condition_status==="Tốt"||x.condition_status==="Đang sử dụng").length;
  $("#toolRepairCount").textContent=inventoryTools.filter(x=>["Cần kiểm tra","Cần sửa","Hỏng","Hư hỏng"].includes(x.condition_status)).length;
 
- const toolIcon='<svg viewBox="0 0 24 24"><path d="m14.5 6.5 3-3 3 3-3 3M13 8 4 17v3h3l9-9"/></svg>';
  const editIcon='<svg viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16v4zM13.5 6.5l4 4"/></svg>';
  const trashIcon='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>';
 
  $("#toolsBody").innerHTML=list.map((t,i)=>'<tr>'+
    '<td class="sttCell">'+(i+1)+'</td>'+
-   '<td class="toolNameCell"><span class="toolMiniIcon">'+toolIcon+'</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.code||"")+'</small></div></td>'+
+   '<td class="toolNameCell"><div><b>'+esc(t.name)+'</b><small>'+esc(t.code||"")+'</small></div></td>'+
    '<td>'+esc(t.brand||"—")+'</td>'+
    '<td><b>'+inventoryFmt(t.qty)+'</b> <small>'+esc(t.unit)+'</small></td>'+
    '<td>'+esc(t.location||"—")+'</td>'+
