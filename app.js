@@ -578,16 +578,12 @@ async function renderAdminHomeOverview(){
  }
 }
 function renderHomeDashboard(){
- const name=currentAccount?.display_name||currentAccount?.username||"Người dùng";
- $("#homeUserName").textContent=name;
- const initials=homeInitials(name);
- $("#headerAvatar").textContent=initials;$("#sideAvatar").textContent=initials;
+ $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
  $("#homeUpdatedAt").textContent="Cập nhật "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
  const admin=!!currentAccount?.is_admin;
  $("#homeAdminProjects").classList.toggle("hide",!admin);
  if(admin){
-   document.querySelectorAll("#homePage .buildingNameText").forEach(el=>el.textContent="Toàn bộ dự án ESTA");
-   const hp=$("#topHomeTitle p");if(hp)hp.textContent="Toàn bộ dự án ESTA";
+   const hp=$("#topHomeTitle p");if(hp)hp.textContent="";
    $("#homeElectric").textContent=$("#homeWater").textContent=$("#homeSolar").textContent="—";
    $("#homeRecentTasks").innerHTML='<div class="homeEmpty">Đang tổng hợp dữ liệu các dự án...</div>';
    $("#homeActivity").innerHTML='<div class="homeEmpty">Đang tải hoạt động...</div>';
@@ -624,7 +620,8 @@ window.homeOpenTask=id=>{
 function applyBuildingUI(){
  const name=currentBuilding?.name||"Dự án";
  document.querySelectorAll(".buildingNameText").forEach(el=>el.textContent=name);
- const wt=$("#topWorkTitle p"),et=$("#topEnergyTitle p"),it=$("#topInventoryTitle p"),mt=$("#topMaintenanceTitle p");
+ const ht=$("#topHomeTitle p"),wt=$("#topWorkTitle p"),et=$("#topEnergyTitle p"),it=$("#topInventoryTitle p"),mt=$("#topMaintenanceTitle p");
+ if(ht)ht.textContent=currentAccount?.is_admin?"":name;
  if(wt)wt.textContent=name;
  if(et)et.textContent=name+" · Điện / Nước / Điện mặt trời";
  if(it)it.textContent=name+" · Kho kỹ thuật";
@@ -669,11 +666,10 @@ window.adminOpenBuilding=async id=>{
 window.enterAccount=function(account,session=null){
  currentAccount=account;centralSession=session;me=account.username||account.email||"user";
  $("#login").classList.add("hide");$("#app").classList.remove("hide");
- $("#headerUser").textContent=account.display_name||account.username||"Người dùng";
  $("#headerRole").textContent=account.is_admin?"Quản trị viên":(account.buildings?.[0]?.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");
- $("#sideUser").innerHTML="<b>"+esc(account.display_name||account.username||"Người dùng")+"</b><br>"+(account.is_admin?"Quản trị viên":"Tài khoản dự án");
+ $("#sideUser").innerHTML=account.is_admin?"Quản trị viên":"Tài khoản dự án";
  $("#navAdmin").classList.toggle("hide",!account.is_admin);
- const initials=homeInitials(account.display_name||account.username||"ESTA");$("#headerAvatar").textContent=initials;$("#sideAvatar").textContent=initials;
+ $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
  if(account.is_admin){$("#navWork").classList.add("hide");$("#navEnergy").classList.add("hide");$("#navInventory").classList.add("hide");$("#navMaintenance").classList.add("hide");showHome()}
  else if(account.buildings?.length){enterProject(account.buildings[0])}
  else{toast("Tài khoản chưa được phân quyền dự án");}
