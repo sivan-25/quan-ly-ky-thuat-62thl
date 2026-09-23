@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2245"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260923-2225"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -553,155 +553,6 @@
     min-width:0!important;
   }
 }
-
-/* V11.6 — larger, easier-to-use work entry */
-#app #workPage .workEntryHeader{
-  min-height:72px!important;
-  padding:13px 16px!important;
-}
-#app #workPage .workEntryHeader>div:first-child>span{
-  font-size:7px!important;
-}
-#app #workPage .workEntryHeader h2{
-  font-size:20px!important;
-  line-height:1.15!important;
-}
-#app #workPage .workEntryHeader p{
-  margin-top:4px!important;
-  font-size:10.5px!important;
-}
-#app #workPage .workEntryHeaderIcon{
-  width:38px!important;
-  height:38px!important;
-  flex-basis:38px!important;
-}
-
-@media(min-width:1020px){
-  #app #workPage #taskForm.workEntryForm{
-    grid-template-columns:
-      .72fr
-      1.75fr
-      .88fr
-      1fr
-      1.42fr
-      1.05fr
-      1.02fr
-      .58fr!important;
-    grid-template-rows:auto!important;
-    grid-auto-flow:column!important;
-    gap:7px!important;
-    padding:14px 16px 16px!important;
-    align-items:end!important;
-  }
-
-  #app #workPage #taskForm .workDate,
-  #app #workPage #taskForm .workContent,
-  #app #workPage #taskForm .workType,
-  #app #workPage #taskForm .workStatus,
-  #app #workPage #taskForm .workPerformer,
-  #app #workPage #taskForm .workNote,
-  #app #workPage #taskForm .workImage,
-  #app #workPage #taskForm .workFormActions{
-    grid-column:auto!important;
-    grid-row:1!important;
-    min-width:0!important;
-  }
-
-  #app #workPage #taskForm .workField>span{
-    margin-bottom:6px!important;
-    font-size:10.8px!important;
-    line-height:1.1!important;
-    font-weight:780!important;
-    color:#49677b!important;
-  }
-
-  #app #workPage #taskForm input:not([type="hidden"]),
-  #app #workPage #taskForm select,
-  #app #workPage #taskForm .peopleSelectBtn{
-    height:42px!important;
-    min-height:42px!important;
-    max-height:42px!important;
-    padding-left:9px!important;
-    padding-right:9px!important;
-    border-radius:9px!important;
-    font-size:12.5px!important;
-    line-height:42px!important;
-  }
-
-  #app #workPage #taskForm .workContent input{
-    font-size:13px!important;
-    font-weight:700!important;
-  }
-
-  #app #workPage #taskForm .peopleSelectBtn{
-    line-height:normal!important;
-  }
-  #app #workPage #taskForm .peopleButtonSummary>em{
-    font-size:12px!important;
-  }
-  #app #workPage #taskForm .selectedPersonChip{
-    height:28px!important;
-    max-width:96px!important;
-    padding:0 7px!important;
-  }
-  #app #workPage #taskForm .selectedPersonChip b{
-    max-width:82px!important;
-    font-size:10px!important;
-  }
-
-  #app #workPage #taskForm .imageNativeActions{
-    display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-    gap:4px!important;
-  }
-  #app #workPage #taskForm .imageActionBtn{
-    height:42px!important;
-    min-height:42px!important;
-    max-height:42px!important;
-    padding:0 5px!important;
-    gap:4px!important;
-    border-radius:9px!important;
-    font-size:10px!important;
-  }
-  #app #workPage #taskForm .imageActionBtn svg{
-    width:14px!important;
-    height:14px!important;
-    flex:0 0 14px!important;
-  }
-
-  #app #workPage #taskForm .workFormActions{
-    display:flex!important;
-    align-items:flex-end!important;
-    gap:4px!important;
-    padding:0!important;
-  }
-  #app #workPage #taskForm .workSave{
-    width:100%!important;
-    min-width:0!important;
-    height:42px!important;
-    padding:0 6px!important;
-    border-radius:9px!important;
-    font-size:10.5px!important;
-    font-weight:800!important;
-  }
-  #app #workPage #taskForm .workCancel{
-    width:30px!important;
-    min-width:30px!important;
-    height:42px!important;
-  }
-
-  #app #workPage #taskForm .peopleOption{
-    min-height:44px!important;
-  }
-  #app #workPage #taskForm .peopleName{
-    font-size:10.5px!important;
-  }
-  #app #workPage #taskForm .peopleEditBtn{
-    height:40px!important;
-    font-size:9.5px!important;
-  }
-}
-
 </style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -792,12 +643,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5M9 5H5v4M19 15v4h-4"/></svg>
       <span>Bảo trì thiết bị</span>
     </button>
-    
-      <button id="navContractors">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 13h2v2H9zM13 13h2v2h-2z"/><path d="M17 6h3v4"/></svg>
-      <span>Nhà thầu</span>
-    </button>
-</nav>
+  </nav>
 
   <div class="sideBackup">
     <button id="backupBtn" type="button">
@@ -844,11 +690,8 @@
     <div class="topModuleIcon maintenanceTopIcon"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5"/></svg></div>
     <div><h1>Bảo trì thiết bị</h1><p>Kế hoạch, lịch sử và nhắc hạn bảo trì</p></div>
   </div>
-  <div id="topContractorsTitle" class="topModuleTitle hide">
-    <div class="topModuleIcon contractorTopIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 13h2v2H9zM13 13h2v2h-2z"/></svg></div>
-    <div><h1>Nhà thầu</h1><p>Danh bạ và lịch sử công việc nhà thầu</p></div>
-  </div>
-    <div class="headerTools">
+
+  <div class="headerTools">
     <div class="inventoryHeaderControls">
         <div class="inventoryTabs">
         <button class="active" type="button" data-inventory-tab="materials">
@@ -1336,92 +1179,7 @@
     <div id="maintenanceHistoryEmpty" class="inventoryEmpty hide">Chưa có lịch sử bảo trì.</div>
   </section>
 </div>
-<div id="contractorsPage" class="page contractorsPage hide">
-  <section class="contractorHero">
-    <div>
-      <span>ESTA · CONTRACTOR MANAGEMENT</span>
-      <h1>Nhà thầu</h1>
-      <p>Lưu thông tin liên hệ và toàn bộ lịch sử công việc đã thực hiện tại từng dự án.</p>
-    </div>
-    <button id="addContractorBtn" class="inventoryPrimary" type="button">＋ Thêm nhà thầu</button>
-  </section>
-
-  <section class="contractorStats">
-    <article><small>NHÀ THẦU</small><b id="contractorCount">0</b><span>Đang lưu</span></article>
-    <article><small>CÔNG VIỆC ĐÃ GHI</small><b id="contractorJobCount">0</b><span>Tổng lịch sử</span></article>
-    <article><small>ĐANG THỰC HIỆN</small><b id="contractorDoingCount">0</b><span>Chưa hoàn thành</span></article>
-    <article><small>HOÀN THÀNH</small><b id="contractorDoneCount">0</b><span>Đã xử lý xong</span></article>
-  </section>
-
-  <section class="contractorPanel">
-    <div class="contractorToolbar">
-      <div>
-        <span class="inventoryKicker">DANH BẠ NHÀ THẦU</span>
-        <h2>Nhà thầu theo dự án</h2>
-        <p>Bấm vào tên nhà thầu để xem các công việc đã thực hiện.</p>
-      </div>
-      <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="contractorSearch" placeholder="Tìm nhà thầu, liên hệ, SĐT..."></div>
-    </div>
-    <div class="inventoryTableScroll">
-      <table class="contractorTable">
-        <thead><tr><th>STT</th><th>Tên nhà thầu</th><th>Người liên hệ</th><th>Số điện thoại</th><th>Số công việc</th><th>Công việc gần nhất</th><th>Thao tác</th></tr></thead>
-        <tbody id="contractorBody"></tbody>
-      </table>
-    </div>
-    <div id="contractorEmpty" class="inventoryEmpty hide">Chưa có nhà thầu trong dự án này.</div>
-  </section>
-</div>
 </main></div>
-<div id="contractorModal" class="modal hide">
-  <div class="modalCard inventoryModalCard contractorModalCard">
-    <button id="closeContractorModal" class="modalClose" type="button">×</button>
-    <div class="inventoryModalHead"><span>ESTA · CONTRACTOR</span><h3 id="contractorModalTitle">Thêm nhà thầu</h3><p>Thông tin được lưu riêng theo từng dự án.</p></div>
-    <form id="contractorForm" class="inventoryForm">
-      <input id="contractorId" type="hidden">
-      <label class="wide"><span>Tên nhà thầu *</span><input id="contractorName" maxlength="160" required placeholder="VD: THT, BM Windows..."></label>
-      <label><span>Người liên hệ</span><input id="contractorContactName" maxlength="120" placeholder="VD: Anh Phương"></label>
-      <label><span>Số điện thoại</span><input id="contractorPhone" maxlength="40" placeholder="09xx xxx xxx"></label>
-      <label class="wide"><span>Ghi chú</span><input id="contractorNote" maxlength="400" placeholder="Phạm vi phụ trách, bảo hành, thông tin khác..."></label>
-      <div class="inventoryFormActions"><button id="cancelContractorModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu nhà thầu</button></div>
-    </form>
-  </div>
-</div>
-
-<div id="contractorDetailModal" class="modal hide">
-  <div class="modalCard contractorDetailCard">
-    <button id="closeContractorDetail" class="modalClose" type="button">×</button>
-    <div class="contractorDetailHead">
-      <div><span>NHÀ THẦU</span><h3 id="contractorDetailName">Tên nhà thầu</h3><p id="contractorDetailContact">Thông tin liên hệ</p></div>
-      <button id="addContractorJobBtn" class="inventoryPrimary" type="button">＋ Thêm công việc</button>
-    </div>
-    <div class="inventoryTableScroll">
-      <table class="contractorJobsTable">
-        <thead><tr><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung công việc</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Tình trạng</th><th>Thao tác</th></tr></thead>
-        <tbody id="contractorJobsBody"></tbody>
-      </table>
-    </div>
-    <div id="contractorJobsEmpty" class="inventoryEmpty hide">Chưa có công việc nào được ghi nhận cho nhà thầu này.</div>
-  </div>
-</div>
-
-<div id="contractorJobModal" class="modal hide">
-  <div class="modalCard inventoryModalCard contractorJobModalCard">
-    <button id="closeContractorJobModal" class="modalClose" type="button">×</button>
-    <div class="inventoryModalHead"><span>ESTA · CONTRACTOR WORK</span><h3 id="contractorJobModalTitle">Thêm công việc nhà thầu</h3><p id="contractorJobContractorName">Nhà thầu</p></div>
-    <form id="contractorJobForm" class="inventoryForm">
-      <input id="contractorJobId" type="hidden">
-      <input id="contractorJobContractorId" type="hidden">
-      <label><span>Ngày thực hiện *</span><input id="contractorJobDate" type="date" required></label>
-      <label><span>Ngày hoàn thành</span><input id="contractorJobCompletedDate" type="date"></label>
-      <label><span>Tình trạng</span><select id="contractorJobStatus"><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Hoàn thành</option><option>Theo dõi thêm</option></select></label>
-      <label class="wide"><span>Nội dung công việc *</span><input id="contractorJobContent" maxlength="600" required placeholder="Mô tả công việc nhà thầu thực hiện..."></label>
-      <label class="wide"><span>Nguyên nhân</span><input id="contractorJobCause" maxlength="600" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></label>
-      <label class="wide"><span>Hướng xử lý</span><input id="contractorJobSolution" maxlength="800" placeholder="Biện pháp xử lý, thay thế, sửa chữa..."></label>
-      <label class="wide"><span>Ghi chú</span><input id="contractorJobNote" maxlength="400"></label>
-      <div class="inventoryFormActions"><button id="cancelContractorJobModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu công việc</button></div>
-    </form>
-  </div>
-</div>
 <div id="maintenanceAssetModal" class="modal hide">
   <div class="modalCard inventoryModalCard maintenanceModalCard">
     <button id="closeMaintenanceAssetModal" class="modalClose" type="button">×</button>
@@ -1580,4 +1338,4 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260923-2245"></script></body></html>
+<script src="app.js?v=20260923-2225"></script></body></html>
