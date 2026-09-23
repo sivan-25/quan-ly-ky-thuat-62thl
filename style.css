@@ -6630,3 +6630,80 @@ img[data-storage-path]:not([src]){
   border-color:#8ec8d5!important;
   box-shadow:0 0 0 3px rgba(65,158,181,.07)!important;
 }
+
+/* Maintenance 12-month planner */
+#maintenancePage .maintenanceSchedule{
+  margin:0 0 10px!important;
+  overflow:hidden!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:0 6px 20px rgba(20,55,80,.03)!important;
+}
+#maintenancePage .maintenanceScheduleHead{
+  min-height:52px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding:9px 12px!important;
+  border-bottom:1px solid #e8eef1!important;
+}
+#maintenancePage .maintenanceScheduleHead h2{
+  margin:3px 0 0!important;
+  color:#21445d!important;
+  font-size:11px!important;
+}
+#maintenancePage #maintenanceMonthClear{
+  height:29px!important;
+  padding:0 9px!important;
+  border:1px solid #dce5ea!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#577385!important;
+  font-size:6.8px!important;
+  font-weight:700!important;
+}
+#maintenancePage .maintenanceMonthStrip{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:5px!important;
+  padding:9px!important;
+}
+#maintenancePage .maintenanceMonthStrip button{
+  min-height:45px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  border:1px solid #e0e7eb!important;
+  border-radius:8px!important;
+  background:#f9fbfc!important;
+  color:#637b8a!important;
+}
+#maintenancePage .maintenanceMonthStrip button span{
+  font-size:6.2px!important;
+  font-weight:760!important;
+}
+#maintenancePage .maintenanceMonthStrip button b{
+  color:#244f69!important;
+  font-size:11px!important;
+}
+#maintenancePage .maintenanceMonthStrip button:hover{
+  border-color:#b9d7e0!important;
+  background:#f2f8fa!important;
+}
+#maintenancePage .maintenanceMonthStrip button.active{
+  border-color:#173f5d!important;
+  background:#173f5d!important;
+  color:#dceaf1!important;
+}
+#maintenancePage .maintenanceMonthStrip button.active b{color:#5dd5e2!important}
+
+@media(max-width:1100px){
+  #maintenancePage .maintenanceMonthStrip{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  #maintenancePage .maintenanceMonthStrip{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
