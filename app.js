@@ -1786,7 +1786,6 @@ async function deleteContractorJob(id){
 }
 
 $("#contractorSearch").oninput=renderContractors;
-$("#contractorSpecialtyFilter")?.addEventListener("change",renderContractors);
 $("#addContractorBtn").onclick=openContractorModal;
 $("#closeContractorModal").onclick=$("#cancelContractorModal").onclick=()=>$("#contractorItemModal").classList.add("hide");
 $("#closeContractorDetail").onclick=()=>$("#contractorDetailModal").classList.add("hide");
