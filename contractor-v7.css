@@ -94,3 +94,20 @@
 #contractorItemModal textarea{min-height:74px!important;padding:10px 11px!important}
 #contractorJobModal textarea{height:94px!important;min-height:94px!important;max-height:160px!important;padding:10px 11px!important}
 #contractorItemModal input:focus,#contractorItemModal textarea:focus,#contractorJobModal input:focus,#contractorJobModal select:focus,#contractorJobModal textarea:focus{border-color:#87bfd0!important;background:#fff!important;box-shadow:0 0 0 3px rgba(39,133,165,.09)!important}
+
+#contractorDetailModal{padding:20px!important}
+#contractorDetailModal .contractorDetailCard{width:min(1380px,calc(100vw - 40px))!important;max-width:none!important;max-height:calc(100vh - 40px)!important;overflow:auto!important;border:1px solid #dfe7ec!important;border-radius:19px!important;background:#f7f9fa!important;box-shadow:0 28px 85px rgba(9,29,43,.30)!important}
+#contractorDetailModal .contractorDetailHead{position:sticky!important;top:0!important;z-index:6!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;padding:19px 22px 15px!important;border-bottom:1px solid #e1e8ec!important;background:rgba(255,255,255,.96)!important}
+#contractorDetailModal .contractorDetailHead>div>span{color:#8c6a57!important;font-size:10px!important;font-weight:800!important;letter-spacing:1.25px!important}
+#contractorDetailModal .contractorDetailHead h3{margin:5px 0 2px!important;color:#173d58!important;font-size:23px!important}
+#contractorDetailModal .contractorDetailHead p{margin:0!important;color:#758a96!important;font-size:12.5px!important}
+#contractorDetailModal .contractorDetailContact{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:14px 16px 0!important}
+#contractorDetailModal .contractorInfoCard{min-height:92px!important;padding:14px!important;border:1px solid #dfe7ec!important;border-radius:13px!important;background:#fff!important;box-shadow:0 4px 12px rgba(18,48,66,.04)!important}
+#contractorDetailModal .contractorInfoCard small{display:block!important;color:#6f8592!important;font-size:11px!important;font-weight:800!important}
+#contractorDetailModal .contractorInfoCard b,#contractorDetailModal .contractorInfoCard a{display:block!important;margin-top:5px!important;color:#254b63!important;font-size:13px!important;font-weight:760!important}
+#contractorDetailModal .contractorInfoCard span{display:block!important;margin-top:4px!important;color:#7f929e!important;font-size:11.5px!important}
+#contractorDetailModal .contractorJobTableWrap{margin:0 16px 16px!important;overflow:auto!important;border:1px solid #dfe7ec!important;border-radius:13px!important;background:#fff!important}
+#contractorDetailModal .contractorJobTable{min-width:1180px!important;width:100%!important;border-collapse:separate!important;border-spacing:0!important}
+#contractorDetailModal .contractorJobTable th{height:42px!important;padding:0 10px!important;border-bottom:1px solid #dfe5e9!important;background:#f3f6f8!important;color:#536b7a!important;font-size:11px!important;font-weight:800!important;text-align:left!important}
+#contractorDetailModal .contractorJobTable td{padding:11px 10px!important;border-bottom:1px solid #edf1f3!important;color:#3f5d70!important;font-size:12.5px!important;line-height:1.45!important;vertical-align:top!important}
+#contractorDetailModal .contractorJobTable tbody tr:hover td{background:#f7fafb!important}
