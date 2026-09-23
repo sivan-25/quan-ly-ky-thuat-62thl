@@ -668,3 +668,58 @@
   .contractorForm{grid-template-columns:1fr}
   .contractorForm label,.contractorForm label.wide,.contractorForm label.full{grid-column:1/-1}
 }
+
+
+/* Contractor maintenance refinement */
+.contractorContactGrid3{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.contractorDetailNav{
+  display:flex;
+  align-items:center;
+  min-width:0;
+}
+.contractorDetailCloseBtn{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  flex:0 0 38px;
+  padding:0;
+  border:1px solid #d9e3e8;
+  border-radius:10px;
+  background:#fff;
+  color:#5f7787;
+  font-size:19px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 3px 10px rgba(26,55,74,.035);
+}
+.contractorDetailCloseBtn:hover{
+  border-color:#e2c9c9;
+  background:#fff6f6;
+  color:#b95d62;
+  transform:translateY(-1px);
+}
+#contractorDetailContractTerm{
+  color:#284d64;
+  white-space:normal;
+  line-height:1.4;
+}
+#contractorContractStart,#contractorContractEnd{
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:760px){
+  .contractorContactGrid3{grid-template-columns:1fr!important}
+  .contractorDetailTop{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+  }
+  .contractorDetailActions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr auto!important;
+    gap:7px!important;
+  }
+  .contractorDetailActions .contractorBtn{width:100%!important}
+  .contractorDetailCloseBtn{width:38px!important}
+}
