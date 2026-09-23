@@ -7451,3 +7451,134 @@ img[data-storage-path]:not([src]){
   .stockAlertActions{grid-column:1/-1}
   .stockAlertActions button{flex:1;height:34px}
 }
+
+/* =========================================================
+   INVENTORY HEADER COMPACT — align with global search row
+   ========================================================= */
+#app .inventoryHeaderControls{display:none}
+#app.inventoryMode .inventoryHeaderControls{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  max-width:760px!important;
+}
+#app.inventoryMode .headerSearch{display:none!important}
+#app.inventoryMode .headerTools{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  justify-content:flex-end!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryTabs{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  width:auto!important;
+  margin:0!important;
+  padding:3px!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:9px!important;
+  background:#f7f9fb!important;
+  box-shadow:none!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryTabs button{
+  height:32px!important;
+  min-width:auto!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#5f7888!important;
+  font-size:7.4px!important;
+  font-weight:760!important;
+  white-space:nowrap!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryTabs button svg{
+  width:13px!important;
+  height:13px!important;
+  flex:0 0 13px!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryTabs button.active{
+  background:#123b58!important;
+  color:#fff!important;
+  box-shadow:0 3px 8px rgba(18,59,88,.12)!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryTabs button.active svg{
+  color:#57d2df!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryContext{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin-left:auto!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryContextProject,
+#app.inventoryMode .inventoryHeaderControls .inventoryYearControl{
+  min-height:32px!important;
+  height:32px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:0 9px!important;
+  border:1px solid #e0e7ec!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryContext small{
+  margin:0!important;
+  color:#9aa8b1!important;
+  font-size:5.2px!important;
+  line-height:1!important;
+  letter-spacing:.8px!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryContext b{
+  color:#3e5d70!important;
+  font-size:7.2px!important;
+  white-space:nowrap!important;
+}
+#app.inventoryMode .inventoryHeaderControls .inventoryYearControl select{
+  width:auto!important;
+  min-width:52px!important;
+  height:28px!important;
+  margin:0!important;
+  padding:0 14px 0 0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#36586f!important;
+  font-size:7.4px!important;
+  font-weight:760!important;
+  outline:0!important;
+}
+#inventoryPage{
+  padding-top:14px!important;
+}
+#inventoryPage>.inventoryControlBar{display:none!important}
+
+@media(max-width:1180px){
+  #app.inventoryMode .inventoryHeaderControls{max-width:none!important}
+  #app.inventoryMode .inventoryHeaderControls .inventoryTabs button{
+    padding:0 8px!important;
+  }
+  #app.inventoryMode .inventoryHeaderControls .inventoryContextProject{
+    display:none!important;
+  }
+}
+@media(max-width:900px){
+  #app.inventoryMode .inventoryHeaderControls{
+    gap:5px!important;
+  }
+  #app.inventoryMode .inventoryHeaderControls .inventoryTabs button span{
+    display:none!important;
+  }
+  #app.inventoryMode .inventoryHeaderControls .inventoryTabs button{
+    width:34px!important;
+    padding:0!important;
+    justify-content:center!important;
+  }
+}
+@media(max-width:760px){
+  #app.inventoryMode .inventoryHeaderControls{display:none!important}
+}
