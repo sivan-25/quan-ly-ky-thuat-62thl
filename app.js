@@ -633,7 +633,9 @@ function applyBuildingUI(){
 async function enterProject(building){
  currentBuilding={...building};
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
- taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";contractorLoadedBuilding="";selectedContractorId="";
+ taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
+ if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
+ if(typeof selectedContractorId!=="undefined")selectedContractorId="";
  $("#navWork").classList.remove("hide");$("#navEnergy").classList.remove("hide");$("#navInventory").classList.remove("hide");$("#navMaintenance").classList.remove("hide");$("#navContractor").classList.remove("hide");
 
  // Load the two independent data sources separately so one failure cannot
