@@ -8128,3 +8128,287 @@ i{
   #app.homeMode .homeWelcome h1{font-size:21px!important}
   #app.homeMode .homeSystemState{margin-top:18px!important}
 }
+
+/* =========================================================
+   ESTA INVENTORY V2 — PROFESSIONAL MATERIALS / TOOLS
+   ========================================================= */
+#app.inventoryMode main{background:#f3f6f8!important}
+#app.inventoryMode .estaTopbar{box-shadow:none!important}
+.inventoryPage{
+  max-width:1600px!important;
+  padding:18px 22px 34px!important;
+  margin:0 auto!important;
+}
+
+/* Page command header */
+.inventoryCommand{
+  min-height:112px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:12px;
+  padding:18px 20px;
+  border:1px solid #dce5ea;
+  border-radius:16px;
+  background:
+    radial-gradient(circle at 92% 15%,rgba(25,184,212,.08),transparent 28%),
+    linear-gradient(135deg,#ffffff 0%,#f8fbfc 100%);
+  box-shadow:0 7px 24px rgba(19,55,78,.04);
+}
+.inventoryCommandBrand{display:flex;align-items:center;gap:13px;min-width:0}
+.inventoryCommandIcon{
+  width:48px;height:48px;display:grid;place-items:center;flex:0 0 48px;
+  border-radius:13px;background:linear-gradient(145deg,#123a58,#175d78);
+  color:#fff;box-shadow:0 9px 20px rgba(18,58,88,.14)
+}
+.inventoryCommandIcon svg{
+  width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round
+}
+.inventoryCommandBrand>div:last-child>span{
+  display:block;color:#9a7660;font-size:6.7px;font-weight:850;letter-spacing:1.6px
+}
+.inventoryCommand h1{margin:5px 0 3px;color:#173b56;font-size:24px;line-height:1.05;letter-spacing:-.4px}
+.inventoryCommand p{margin:0;color:#7c909d;font-size:9px;line-height:1.5}
+.inventoryCommandControls{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.inventoryLocalTabs{
+  display:flex;align-items:center;gap:4px;padding:4px;
+  border:1px solid #dce5ea;border-radius:11px;background:#fff
+}
+.inventoryLocalTabs button{
+  height:38px;display:flex;align-items:center;gap:7px;padding:0 12px;
+  border:1px solid transparent;border-radius:8px;background:transparent;
+  color:#667e8e;font-size:8px;font-weight:740;white-space:nowrap
+}
+.inventoryLocalTabs button svg{
+  width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round
+}
+.inventoryLocalTabs button.active{
+  border-color:#cfe2e9;background:#eef6f9;color:#1f6680;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)
+}
+.inventoryCommandMeta{display:flex;align-items:center;gap:6px}
+.inventoryCommandMeta>div,.inventoryCommandMeta>label{
+  min-width:116px;height:46px;display:flex;flex-direction:column;justify-content:center;
+  padding:0 10px;border:1px solid #dce5ea;border-radius:10px;background:#fff
+}
+.inventoryCommandMeta small{
+  display:block;color:#8b9ca6;font-size:5.5px;letter-spacing:.8px;font-weight:750
+}
+.inventoryCommandMeta b{display:block;margin-top:3px;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#34566b;font-size:7.5px}
+.inventoryCommandMeta select{
+  width:100%;margin-top:1px;border:0;outline:0;background:transparent;color:#34566b;font-size:8px;font-weight:750
+}
+
+/* Section toolbar */
+.inventoryWorkspace{min-width:0}
+.inventorySectionBar{
+  min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:14px 16px;margin-bottom:10px;border:1px solid #e0e7eb;border-radius:14px;
+  background:#fff;box-shadow:0 5px 18px rgba(20,55,80,.025)
+}
+.inventorySectionBar h2{margin:4px 0 2px;color:#1d415a;font-size:14px;font-weight:780}
+.inventorySectionBar h2 span{color:#8495a0;font-size:9px;font-weight:650}
+.inventorySectionBar p{margin:0;color:#899aa5;font-size:7.5px}
+.inventoryToolbarActions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;flex-wrap:wrap!important}
+.inventorySearch{
+  height:36px!important;min-width:210px!important;padding:0 9px!important;
+  border:1px solid #dce5ea!important;border-radius:9px!important;background:#f8fafb!important
+}
+.inventorySearch svg{width:14px!important;height:14px!important;fill:none!important;stroke:#728b9a!important;stroke-width:1.8!important}
+.inventorySearch input{font-size:8px!important}
+.inventoryPrimary,.inventorySecondary{
+  height:36px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;
+  padding:0 10px!important;border-radius:9px!important;font-size:7.6px!important;font-weight:760!important
+}
+.inventorySecondary svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.inventoryPrimary{background:linear-gradient(135deg,#153f5c,#17627b)!important}
+.stockMoveBtn{border-color:#cfdfdf!important;background:#f4faf9!important;color:#2d716f!important}
+
+/* Dark month rail inspired by the user's preferred reference */
+.inventoryMonthRail{
+  margin-bottom:10px;padding:12px 13px 13px;border-radius:14px;
+  background:linear-gradient(135deg,#16334c 0%,#1d405b 62%,#20506a 100%);
+  box-shadow:0 8px 22px rgba(17,51,76,.10)
+}
+.inventoryMonthRailHead{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:9px;padding:0 2px
+}
+.inventoryMonthRailHead span{display:block;color:#75c9da;font-size:5.8px;letter-spacing:1.45px;font-weight:850}
+.inventoryMonthRailHead b{display:block;margin-top:3px;color:#fff;font-size:10px;font-weight:760}
+.inventoryMonthRailHead>small{color:#a9bfca;font-size:6.5px}
+.materialMonthTabs{
+  display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:4px!important;
+  margin:0!important;padding:0!important;border:0!important;background:transparent!important
+}
+.materialMonthTabs button{
+  height:34px!important;padding:0!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:7px!important;
+  background:rgba(255,255,255,.055)!important;color:#b8cbd4!important;font-size:7px!important;font-weight:720!important
+}
+.materialMonthTabs button:hover{background:rgba(255,255,255,.10)!important;color:#fff!important}
+.materialMonthTabs button.active{
+  border-color:#52bfd2!important;background:#22a8c0!important;color:#fff!important;
+  box-shadow:0 5px 12px rgba(20,155,181,.22)!important
+}
+
+/* KPI */
+.inventoryStats{gap:8px!important;margin:0 0 10px!important}
+.inventoryStats.monthlyStats{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.inventoryStats.toolsStats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.inventoryStats .inventoryMetric{
+  min-height:84px!important;padding:12px 13px!important;border:1px solid #e1e7eb!important;
+  border-radius:13px!important;background:#fff!important;box-shadow:0 4px 16px rgba(20,55,80,.025)!important
+}
+.inventoryMetric .invStatIcon{width:36px!important;height:36px!important;flex-basis:36px!important;border-radius:10px!important}
+.inventoryMetric .invStatIcon svg{width:17px!important;height:17px!important}
+.inventoryMetric small{font-size:5.8px!important;letter-spacing:.7px!important}
+.inventoryMetric b{font-size:18px!important;margin:2px 0 0!important}
+.inventoryMetric em{font-size:5.8px!important}
+
+/* Main tables */
+.inventoryTableCard{
+  border:1px solid #dde6eb!important;border-radius:14px!important;background:#fff!important;
+  box-shadow:0 5px 20px rgba(20,55,80,.03)!important;overflow:hidden!important
+}
+.inventoryCardTitle{
+  min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px 14px;border-bottom:1px solid #e8eef1;background:#fff
+}
+.inventoryCardTitle span{
+  display:block;color:#9a7660;font-size:5.8px;letter-spacing:1.25px;font-weight:850
+}
+.inventoryCardTitle h3{margin:3px 0 0;color:#21445d;font-size:11px}
+.inventoryCardTitle p{margin:3px 0 0;color:#8999a3;font-size:6.5px}
+.inventoryCardTitle>small{color:#8c9ca6;font-size:6.3px}
+.inventoryTableScroll{overflow:auto!important}
+.materialMonthlyTable{min-width:920px!important;width:100%!important}
+.toolsTable{min-width:1080px!important;width:100%!important}
+.transactionTable{min-width:900px!important;width:100%!important}
+.inventoryTableCard th{
+  height:38px!important;padding:0 9px!important;background:#183b56!important;color:#d8e5eb!important;
+  border-bottom:0!important;font-size:6px!important;letter-spacing:.45px!important;text-transform:uppercase!important
+}
+.inventoryTableCard td{
+  height:45px!important;padding:8px 9px!important;border-bottom:1px solid #edf1f3!important;
+  color:#425f72!important;font-size:7.5px!important
+}
+.inventoryTableCard tbody tr:nth-child(even){background:#fbfcfd}
+.inventoryTableCard tbody tr:hover{background:#f6fafb!important}
+.inventoryTableCard tbody tr.lowStock{background:#fff8f7!important}
+.materialNameCell b,.toolNameCell b{display:block;color:#1f435b;font-size:8.2px;font-weight:730}
+.materialNameCell small,.toolNameCell small{display:block;margin-top:2px;color:#95a3ac;font-size:5.8px}
+.stockFinal{font-size:9px;color:#244d64}
+.stockFinal.low{color:#bd5d5e}
+.inText{color:#2d8d64!important;font-weight:720}
+.outText{color:#bd6660!important;font-weight:720}
+.sttCell{text-align:center;color:#8999a3!important}
+.toolNoteCell{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invRowActions.compact{display:flex!important;justify-content:center!important;gap:4px!important}
+.invRowActions.compact button,.miniDanger{
+  width:27px!important;height:27px!important;padding:0!important;display:grid!important;place-items:center!important;
+  border:1px solid #dce5ea!important;border-radius:7px!important;background:#fff!important;color:#557183!important
+}
+.invRowActions.compact button.move{border-color:#d1e5e7!important;background:#f3faf9!important;color:#2e7c79!important}
+.invRowActions.compact button.danger,.miniDanger{border-color:#efd9d9!important;background:#fff8f8!important;color:#b65c61!important}
+.invRowActions.compact svg,.miniDanger svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.toolCondition{padding:4px 7px!important;border-radius:999px!important;font-size:6.3px!important}
+.toolCondition.good{background:#eaf8f1!important;color:#2d815c!important}
+.toolCondition.warn{background:#fff5e4!important;color:#a17026!important}
+.toolCondition.bad{background:#fff0f0!important;color:#ae555b!important}
+
+/* Support / alert blocks */
+.inventorySupportGrid{
+  display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:10px;margin:10px 0
+}
+.inventorySupportCard,.inventoryQuickAdd{
+  margin:0!important;border:1px solid #e0e7eb!important;border-radius:13px!important;background:#fff!important;
+  box-shadow:0 4px 17px rgba(20,55,80,.025)!important
+}
+.stockAlertHead{padding:11px 13px!important}
+.stockAlertTitle{gap:10px!important}
+.stockAlertIcon{width:32px!important;height:32px!important;flex-basis:32px!important}
+.stockAlertTitle h3{font-size:10px!important;margin:3px 0 1px!important}
+.stockAlertTitle p{font-size:6.5px!important}
+.stockAlertFilterBtn{height:30px!important;padding:0 8px!important;font-size:6.5px!important}
+.stockAlertList{padding:0 12px 10px!important}
+.inventoryQuickAdd{padding:11px 13px}
+.inventoryQuickAddHead h3{margin:3px 0 1px;color:#21445d;font-size:10px}
+.inventoryQuickAddHead p{margin:0;color:#8c9ca6;font-size:6.5px}
+.inventoryExamples{margin:8px 0 0!important;gap:5px!important}
+.inventoryExamples>span{display:none!important}
+.inventoryExamples button{
+  height:27px!important;padding:0 8px!important;border:1px solid #dfe7eb!important;border-radius:999px!important;
+  background:#f9fbfc!important;color:#567184!important;font-size:6.4px!important
+}
+.toolsQuickAdd{margin-top:10px!important}
+
+/* Tool column sizing */
+.toolsTable .tool-col-stt{width:48px}
+.toolsTable .tool-col-name{width:220px}
+.toolsTable .tool-col-brand{width:120px}
+.toolsTable .tool-col-qty{width:90px}
+.toolsTable .tool-col-location{width:150px}
+.toolsTable .tool-col-keeper{width:145px}
+.toolsTable .tool-col-status{width:110px}
+.toolsTable .tool-col-note{width:190px}
+.toolsTable .tool-col-actions{width:86px}
+
+/* Modals match page */
+#materialItemModal,#stockTxnModal,#toolItemModal{backdrop-filter:blur(7px)!important;background:rgba(9,28,42,.62)!important}
+#materialItemModal .inventoryModalCard,
+#stockTxnModal .inventoryModalCard,
+#toolItemModal .inventoryModalCard{
+  border-radius:16px!important;box-shadow:0 25px 70px rgba(8,29,44,.25)!important
+}
+#materialItemModal .inventoryModalHead,
+#stockTxnModal .inventoryModalHead,
+#toolItemModal .inventoryModalHead{
+  background:linear-gradient(180deg,#fff,#fafcfd)!important
+}
+
+/* Desktop density */
+@media(min-width:1181px){
+  #app.inventoryMode .headerSearch{display:none!important}
+  #app.inventoryMode .account{margin-left:auto!important}
+}
+
+/* Tablet */
+@media(max-width:1180px){
+  .inventoryCommand{align-items:flex-start;flex-direction:column}
+  .inventoryCommandControls{width:100%;justify-content:space-between}
+  .inventoryStats.monthlyStats{grid-template-columns:1fr 1fr!important}
+  .inventorySupportGrid{grid-template-columns:1fr}
+  .materialMonthTabs{grid-template-columns:repeat(6,1fr)!important}
+}
+
+/* Mobile */
+@media(max-width:760px){
+  .inventoryPage{padding:11px 9px 24px!important}
+  .inventoryCommand{padding:14px;border-radius:14px;gap:13px}
+  .inventoryCommandBrand{align-items:flex-start}
+  .inventoryCommandIcon{width:40px;height:40px;flex-basis:40px;border-radius:11px}
+  .inventoryCommand h1{font-size:20px}
+  .inventoryCommand p{font-size:7.5px}
+  .inventoryCommandControls{display:block}
+  .inventoryLocalTabs{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .inventoryLocalTabs button{justify-content:center;height:40px;padding:0 6px;font-size:7px}
+  .inventoryCommandMeta{display:grid;grid-template-columns:1fr 92px;margin-top:8px}
+  .inventoryCommandMeta>div,.inventoryCommandMeta>label{min-width:0}
+  .inventorySectionBar{align-items:flex-start;flex-direction:column;padding:12px}
+  .inventoryToolbarActions{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%}
+  .inventorySearch{grid-column:1/-1;min-width:0!important}
+  .inventoryPrimary,.inventorySecondary{width:100%!important}
+  .inventoryMonthRail{padding:10px;border-radius:12px}
+  .inventoryMonthRailHead{align-items:flex-start;flex-direction:column;gap:4px}
+  .materialMonthTabs{grid-template-columns:repeat(4,1fr)!important;gap:4px!important}
+  .materialMonthTabs button{height:32px!important}
+  .inventoryStats.monthlyStats,.inventoryStats.toolsStats{grid-template-columns:1fr 1fr!important;gap:6px!important}
+  .inventoryStats.toolsStats article:last-child{grid-column:1/-1}
+  .inventoryStats .inventoryMetric{min-height:74px!important;padding:10px!important}
+  .inventoryMetric b{font-size:16px!important}
+  .inventoryCardTitle{align-items:flex-start;flex-direction:column;gap:4px}
+  .inventorySupportGrid{grid-template-columns:1fr}
+  .materialMonthlyTable{min-width:760px!important}
+  .toolsTable{min-width:980px!important}
+  #toolItemModal .inventoryForm,#materialItemModal .inventoryForm,#stockTxnModal .inventoryForm{grid-template-columns:1fr 1fr!important}
+}
