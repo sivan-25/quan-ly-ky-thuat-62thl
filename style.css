@@ -8412,3 +8412,103 @@ i{
   .toolsTable{min-width:980px!important}
   #toolItemModal .inventoryForm,#materialItemModal .inventoryForm,#stockTxnModal .inventoryForm{grid-template-columns:1fr 1fr!important}
 }
+
+/* =========================================================
+   INVENTORY V2 — 12-MONTH IN/OUT OVERVIEW
+   ========================================================= */
+#inventoryPage .materialMonthTabs{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  overflow-x:auto!important;
+  padding:3px 2px 5px!important;
+  scrollbar-width:thin;
+}
+#inventoryPage .materialMonthTabs button{
+  flex:0 0 auto!important;
+  min-width:52px!important;
+  height:34px!important;
+  padding:0 10px!important;
+  border:1px solid #dfe7ec!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:#6b8190!important;
+  font-size:7.6px!important;
+  font-weight:750!important;
+  box-shadow:none!important;
+}
+#inventoryPage .materialMonthTabs .yearOverviewBtn{
+  min-width:78px!important;
+  color:#76594a!important;
+  border-color:#e3d4ca!important;
+  background:#fbf7f4!important;
+}
+#inventoryPage .materialMonthTabs button.active{
+  border-color:#78b9c8!important;
+  background:#eaf6f8!important;
+  color:#1d7185!important;
+  box-shadow:0 0 0 2px rgba(43,153,178,.06)!important;
+}
+#inventoryPage .materialMonthTabs .yearOverviewBtn.active{
+  border-color:#b99b88!important;
+  background:#f1e9e4!important;
+  color:#765541!important;
+}
+#inventoryPage .materialMonthlyTable.yearView{
+  min-width:1680px!important;
+}
+#inventoryPage .materialMonthlyTable.yearView th,
+#inventoryPage .materialMonthlyTable.yearView td{
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+#inventoryPage .materialMonthlyTable.yearView th:nth-child(2),
+#inventoryPage .materialMonthlyTable.yearView td:nth-child(2){
+  text-align:left!important;
+  position:sticky!important;
+  left:0!important;
+  z-index:3!important;
+  background:#fff!important;
+  min-width:185px!important;
+  box-shadow:5px 0 10px rgba(28,57,75,.035)!important;
+}
+#inventoryPage .materialMonthlyTable.yearView thead th:nth-child(2){
+  z-index:5!important;
+  background:#f4f7f9!important;
+}
+#inventoryPage .yearMonthHead{
+  min-width:70px!important;
+}
+#inventoryPage .yearMonthHead span{
+  display:block!important;
+  color:#49697c!important;
+  font-size:7px!important;
+  font-weight:800!important;
+}
+#inventoryPage .yearMonthHead small{
+  display:block!important;
+  margin-top:2px!important;
+  color:#9aa8b0!important;
+  font-size:5.8px!important;
+  font-weight:650!important;
+}
+#inventoryPage .yearMonthCell{
+  min-width:70px!important;
+  padding:7px 5px!important;
+}
+#inventoryPage .yearMonthCell span{
+  display:block!important;
+  line-height:1.55!important;
+  font-size:6.7px!important;
+  font-weight:700!important;
+}
+#inventoryPage .yearMonthCell .in{color:#2f8a63!important}
+#inventoryPage .yearMonthCell .out{color:#b9605a!important}
+#inventoryPage .yearMonthCell.inactive{color:#b7c1c7!important}
+#inventoryPage .materialMonthlyTable.yearView .materialNameCell b{
+  white-space:normal!important;
+}
+@media(max-width:760px){
+  #inventoryPage .materialMonthTabs .yearOverviewBtn{min-width:74px!important}
+  #inventoryPage .materialMonthlyTable.yearView{min-width:1540px!important}
+}
