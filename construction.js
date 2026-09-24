@@ -103,47 +103,80 @@ async function loadConstructionMaterialData(buildingId=currentBuilding?.id,force
   }
 }
 function renderConstructionMaterials(){
+  constructionSetYears();
+  const year=constructionYearValue();
   const search=($("#constructionSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
-  const list=constructionMaterials.filter(m=>{
-    return (!constructionCategoryFilter||m.category===constructionCategoryFilter)&&
-      (!search||[m.name,m.brand,m.specification,m.unit,m.supplier,m.category,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search)));
-  });
-  const year=String(new Date().getFullYear());
-  $("#constructionMaterialCount").textContent=constructionMaterials.length;
-  $("#constructionYearLogCount").textContent=constructionLogs.filter(x=>String(x.work_date||"").startsWith(year)).length;
-  $("#constructionOpenLogCount").textContent=constructionLogs.filter(x=>x.status!=="Hoàn thành").length;
-  $("#constructionDoneLogCount").textContent=constructionLogs.filter(x=>x.status==="Hoàn thành").length;
+  const category=$("#constructionCategorySelect")?.value||"";
+  const list=constructionMaterials.filter(m=>(!category||m.category===category)&&(!search||[m.name,m.brand,m.specification,m.unit,m.supplier,m.storage_location,m.category,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search))));
+  const annual=constructionActiveMonth==="all";
+  const month=annual?null:Math.max(1,Math.min(12,Number(constructionActiveMonth)||1));
+  document.querySelectorAll("[data-construction-month]").forEach(b=>b.classList.toggle("active",String(b.dataset.constructionMonth)===String(constructionActiveMonth)));
+  $("#constructionMonthTitle").textContent=annual?"Tổng quan 12 tháng / "+year:"Tháng "+String(month).padStart(2,"0")+" / "+year;
   $("#constructionResultCount").textContent="("+list.length+")";
 
-  $("#constructionGrid").innerHTML=list.map(m=>{
-    const logs=constructionLogsFor(m.id),last=constructionLastLog(m.id);
-    const spec=[m.specification,m.brand].filter(Boolean).join(" · ")||"Chưa ghi quy cách";
-    return '<article class="contractorRowCard constructionRowCard" tabindex="0" role="button" data-open-construction="'+m.id+'">'+
-      '<div class="contractorRowIdentity">'+
-        '<span class="contractorLetter contractorLetter-'+constructionCategoryClass(m.category)+'">'+esc(constructionInitial(m.name))+'</span>'+
-        '<div><h3>'+esc(m.name)+'</h3><p>'+esc(m.note||"Vật tư thi công")+'</p></div>'+
-      '</div>'+
-      '<div class="contractorRowValue constructionSpecCell"><b>'+esc(spec)+'</b></div>'+
-      '<div class="contractorRowValue constructionUnitCell">'+esc(m.unit||"—")+'</div>'+
-      '<div class="contractorRowValue"><span class="contractorFieldPill '+constructionCategoryClass(m.category)+'">'+esc(m.category||"Khác")+'</span></div>'+
-      '<div class="contractorRowCount"><span>'+logs.length+'</span></div>'+
-      '<div class="contractorLatest"><b>'+(last?.work_date?fmt(last.work_date):"—")+'</b><span>'+esc(last?.work_content||"Chưa có lịch sử sử dụng")+'</span></div>'+
-      '<div class="contractorRowActions">'+
-        '<button type="button" title="Xem hồ sơ" data-view-construction="'+m.id+'"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.5"/></svg></button>'+
-        '<button type="button" title="Sửa" data-edit-construction="'+m.id+'"><svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10zM14.5 6l3.5 3.5"/></svg></button>'+
-        '<button type="button" class="danger" title="Xóa" data-delete-construction="'+m.id+'"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M8 10v8M12 10v8M16 10v8M7 7l1 14h8l1-14"/></svg></button>'+
-      '</div>'+
-    '</article>';
-  }).join("");
+  const all=constructionMaterials.map(m=>({m,s:constructionSnapshot(m,year)}));
+  const totalIn=annual?all.reduce((n,x)=>n+x.s.totalIn,0):all.reduce((n,x)=>n+x.s.months[month-1].inQty,0);
+  const totalOut=annual?all.reduce((n,x)=>n+x.s.totalOut,0):all.reduce((n,x)=>n+x.s.months[month-1].outQty,0);
+  const stockIndex=annual?11:month-1;
+  $("#constructionInLabel").textContent=annual?"NHẬP TRONG NĂM":"NHẬP TRONG THÁNG";
+  $("#constructionOutLabel").textContent=annual?"XUẤT TRONG NĂM":"XUẤT TRONG THÁNG";
+  $("#constructionMonthIn").textContent=constructionFmt(totalIn);
+  $("#constructionMonthOut").textContent=constructionFmt(totalOut);
+  $("#constructionStockCount").textContent=all.filter(x=>x.s.months[stockIndex].stock>0).length;
+  $("#constructionLowStockCount").textContent=all.filter(x=>constructionNum(x.m.min_qty)>0&&x.s.months[stockIndex].stock<=constructionNum(x.m.min_qty)).length;
 
-  $("#constructionGrid").querySelectorAll("[data-open-construction]").forEach(el=>{
-    el.onclick=e=>{if(e.target.closest("button,a"))return;openConstructionDetail(el.dataset.openConstruction)};
-    el.onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&!e.target.closest("button,a")){e.preventDefault();openConstructionDetail(el.dataset.openConstruction)}};
-  });
-  $("#constructionGrid").querySelectorAll("[data-view-construction]").forEach(b=>b.onclick=e=>{e.stopPropagation();openConstructionDetail(b.dataset.viewConstruction)});
-  $("#constructionGrid").querySelectorAll("[data-edit-construction]").forEach(b=>b.onclick=e=>{e.stopPropagation();editConstructionMaterial(b.dataset.editConstruction)});
-  $("#constructionGrid").querySelectorAll("[data-delete-construction]").forEach(b=>b.onclick=e=>{e.stopPropagation();deleteConstructionMaterial(b.dataset.deleteConstruction)});
+  const table=$("#constructionStockTable");
+  table.classList.toggle("annual",annual);
+  if(annual){
+    $("#constructionStockHead").innerHTML='<tr><th class="constructionSticky">Vật tư</th><th>ĐVT</th><th>Đầu năm</th>'+["T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"].map(x=>'<th>'+x+'<small>N / X / T</small></th>').join("")+'<th>Tổng nhập</th><th>Tổng xuất</th><th>Tồn cuối</th><th>Thao tác</th></tr>';
+    $("#constructionStockBody").innerHTML=list.map(m=>{
+      const s=constructionSnapshot(m,year),low=constructionNum(m.min_qty)>0&&s.closing<=constructionNum(m.min_qty);
+      return '<tr class="'+(low?"constructionLowRow":"")+'" data-material-row="'+m.id+'">'+
+        '<td class="constructionSticky"><button class="constructionNameLink" data-view-material="'+m.id+'" type="button"><b>'+esc(m.name)+'</b><small>'+esc([m.specification,m.brand].filter(Boolean).join(" · ")||m.category||"")+'</small></button></td>'+
+        '<td>'+esc(m.unit||"—")+'</td><td><b>'+constructionFmt(s.opening)+'</b></td>'+
+        s.months.map(mm=>'<td class="constructionMonthCell"><span class="in">N '+constructionFmt(mm.inQty)+'</span><span class="out">X '+constructionFmt(mm.outQty)+'</span><b>T '+constructionFmt(mm.stock)+'</b></td>').join("")+
+        '<td class="inText">'+constructionFmt(s.totalIn)+'</td><td class="outText">'+constructionFmt(s.totalOut)+'</td><td><b>'+constructionFmt(s.closing)+'</b></td>'+
+        '<td><div class="constructionRowActions"><button data-stock-material="'+m.id+'" title="Nhập / Xuất" type="button">⇄</button><button data-view-material="'+m.id+'" title="Xem hồ sơ" type="button">⌕</button><button data-edit-material="'+m.id+'" title="Sửa" type="button">✎</button><button data-delete-material="'+m.id+'" class="danger" title="Xóa" type="button">⌫</button></div></td></tr>';
+    }).join("");
+  }else{
+    $("#constructionStockHead").innerHTML='<tr><th>STT</th><th>Vật tư</th><th>Nhóm</th><th>Quy cách / Nhãn hiệu</th><th>ĐVT</th><th>Tồn đầu</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối</th><th>Vị trí lưu</th><th>Thao tác</th></tr>';
+    $("#constructionStockBody").innerHTML=list.map((m,i)=>{
+      const mm=constructionSnapshot(m,year).months[month-1],low=constructionNum(m.min_qty)>0&&mm.stock<=constructionNum(m.min_qty);
+      return '<tr class="'+(low?"constructionLowRow":"")+'" data-material-row="'+m.id+'">'+
+        '<td class="sttCell">'+(i+1)+'</td>'+
+        '<td class="constructionNameCell"><button class="constructionNameLink" data-view-material="'+m.id+'" type="button"><b>'+esc(m.name)+'</b><small>'+esc(m.supplier||"")+'</small></button></td>'+
+        '<td><span class="constructionCategoryPill">'+esc(m.category||"Khác")+'</span></td>'+
+        '<td class="constructionSpec">'+esc([m.specification,m.brand].filter(Boolean).join(" · ")||"—")+'</td>'+
+        '<td>'+esc(m.unit||"—")+'</td><td><b>'+constructionFmt(mm.begin)+'</b></td><td class="inText">'+constructionFmt(mm.inQty)+'</td><td class="outText">'+constructionFmt(mm.outQty)+'</td>'+
+        '<td><b class="constructionStockFinal '+(low?"low":"")+'">'+constructionFmt(mm.stock)+'</b></td><td>'+esc(m.storage_location||"—")+'</td>'+
+        '<td><div class="constructionRowActions"><button data-stock-material="'+m.id+'" title="Nhập / Xuất" type="button">⇄</button><button data-view-material="'+m.id+'" title="Xem hồ sơ" type="button">⌕</button><button data-edit-material="'+m.id+'" title="Sửa" type="button">✎</button><button data-delete-material="'+m.id+'" class="danger" title="Xóa" type="button">⌫</button></div></td></tr>';
+    }).join("");
+  }
   $("#constructionEmpty").classList.toggle("hide",list.length>0);
+
+  $("#constructionStockBody").querySelectorAll("[data-stock-material]").forEach(b=>b.onclick=()=>openConstructionStockTxnModal(b.dataset.stockMaterial));
+  $("#constructionStockBody").querySelectorAll("[data-view-material]").forEach(b=>b.onclick=()=>openConstructionDetail(b.dataset.viewMaterial));
+  $("#constructionStockBody").querySelectorAll("[data-edit-material]").forEach(b=>b.onclick=()=>editConstructionMaterial(b.dataset.editMaterial));
+  $("#constructionStockBody").querySelectorAll("[data-delete-material]").forEach(b=>b.onclick=()=>deleteConstructionMaterial(b.dataset.deleteMaterial));
+
+  const byId=Object.fromEntries(constructionMaterials.map(m=>[m.id,m]));
+  let tx=constructionTransactions.filter(x=>String(x.tx_date||"").startsWith(String(year)));
+  if(!annual){
+    const prefix=year+"-"+String(month).padStart(2,"0");
+    tx=tx.filter(x=>String(x.tx_date||"").startsWith(prefix));
+  }
+  tx=tx.slice().sort((a,b)=>String(b.tx_date||"").localeCompare(String(a.tx_date||""))||String(b.created_at||"").localeCompare(String(a.created_at||""))).slice(0,80);
+  $("#constructionTxnTitle").textContent=annual?"Nhập / xuất trong năm "+year:"Nhập / xuất tháng "+String(month).padStart(2,"0")+" / "+year;
+  $("#constructionTxnBody").innerHTML=tx.map(x=>{
+    const party=x.tx_type==="in"?(x.supplier||"—"):(x.contractor||"—");
+    return '<tr><td>'+fmt(x.tx_date)+'</td><td><b>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</b></td><td><span class="constructionTxType '+x.tx_type+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></td><td><b>'+constructionFmt(x.qty)+'</b></td><td>'+constructionMoney(x.unit_price)+' đ</td><td>'+esc(x.performer||"—")+'</td><td>'+esc(party)+'</td><td>'+esc(x.note||"—")+'</td><td><button class="constructionDeleteTx" data-delete-tx="'+x.id+'" type="button">×</button></td></tr>';
+  }).join("");
+  $("#constructionTxnBody").querySelectorAll("[data-delete-tx]").forEach(b=>b.onclick=()=>deleteConstructionStockTxn(b.dataset.deleteTx));
+  $("#constructionTxnEmpty").classList.toggle("hide",tx.length>0);
+
+  const sel=$("#constructionStockMaterial"),old=sel.value;
+  sel.innerHTML='<option value="">— Chọn vật tư —</option>'+constructionMaterials.map(m=>'<option value="'+m.id+'">'+esc(m.name)+' · tồn '+constructionFmt(constructionSnapshot(m,year).current)+' '+esc(m.unit||"")+'</option>').join("");
+  if(constructionMaterials.some(m=>m.id===old))sel.value=old;
 }
 window.openConstructionDetail=id=>{
   if(!constructionMaterials.some(x=>String(x.id)===String(id)))return;
