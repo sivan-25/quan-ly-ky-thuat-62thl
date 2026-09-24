@@ -21,14 +21,15 @@ function contractorInitial(name=""){
   return (String(name||"").trim().charAt(0)||"N").toLocaleUpperCase("vi-VN");
 }
 function contractorFieldLabel(value=""){
-  const s=String(value||"").trim();
-  if(/hvac|điều hòa|điều hoà|đhkk/i.test(s))return "ĐHKK";
-  if(/pccc|chữa cháy|phòng cháy/i.test(s))return "PCCC";
-  if(/thang máy|elevator/i.test(s))return "Thang máy";
-  if(/cấp thoát nước|cấp nước|thoát nước|plumbing/i.test(s))return "Cấp thoát nước";
-  if(/vệ sinh|clean/i.test(s))return "Vệ sinh";
-  if(/điện|electrical/i.test(s))return "Điện";
-  return s||"Khác";
+  const raw=String(value||"").trim();
+  const s=raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D").toLocaleLowerCase("vi-VN");
+  if(/\b(hvac|dhkk)\b|dieu hoa/.test(s))return "ĐHKK";
+  if(/\bpccc\b|chua chay|phong chay/.test(s))return "PCCC";
+  if(/thang may|elevator/.test(s))return "Thang máy";
+  if(/cap thoat nuoc|cap nuoc|thoat nuoc|plumbing/.test(s))return "Cấp thoát nước";
+  if(/ve sinh|clean/.test(s))return "Vệ sinh";
+  if(/dien|electrical/.test(s))return "Điện";
+  return raw||"Khác";
 }
 function contractorFieldClass(value=""){
   const s=contractorFieldLabel(value);
