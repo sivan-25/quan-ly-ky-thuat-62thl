@@ -9198,3 +9198,6 @@ i{
     padding:10px!important;
   }
 }
+
+/* CONSTRUCTION PAGE DISABLED — removed from user-facing navigation */
+#constructionMaterialPage,#topConstructionTitle{display:none!important}
