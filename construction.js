@@ -238,6 +238,10 @@ function resetConstructionMaterialForm(){
   $("#constructionMaterialSpec").value="";
   $("#constructionMaterialUnit").value="Cái";
   $("#constructionMaterialSupplier").value="";
+  $("#constructionMaterialStorage").value="";
+  $("#constructionMaterialOpeningQty").value="0";
+  $("#constructionMaterialMinQty").value="0";
+  $("#constructionMaterialUnitPrice").value="0";
   $("#constructionMaterialStatus").value="Đang sử dụng";
   $("#constructionMaterialNote").value="";
   $("#constructionMaterialModalTitle").textContent="Thêm vật tư thi công";
@@ -256,6 +260,10 @@ window.editConstructionMaterial=id=>{
   $("#constructionMaterialSpec").value=m.specification||"";
   $("#constructionMaterialUnit").value=m.unit||"Cái";
   $("#constructionMaterialSupplier").value=m.supplier||"";
+  $("#constructionMaterialStorage").value=m.storage_location||"";
+  $("#constructionMaterialOpeningQty").value=constructionNum(m.opening_qty);
+  $("#constructionMaterialMinQty").value=constructionNum(m.min_qty);
+  $("#constructionMaterialUnitPrice").value=constructionNum(m.unit_price);
   $("#constructionMaterialStatus").value=m.status||"Đang sử dụng";
   $("#constructionMaterialNote").value=m.note||"";
   $("#constructionMaterialModalTitle").textContent="Chỉnh sửa vật tư thi công";
@@ -271,6 +279,39 @@ window.deleteConstructionMaterial=async id=>{
     await loadConstructionMaterialData(currentBuilding.id,true);
     closeConstructionDetail();
     toast("Đã xóa vật tư thi công");
+  }catch(e){toast(e.message)}
+};
+window.openConstructionStockTxnModal=id=>{
+  if(!constructionMaterials.length)return toast("Hãy thêm vật tư trước");
+  constructionFillPeople();
+  const year=constructionYearValue(),sel=$("#constructionStockMaterial");
+  sel.innerHTML='<option value="">— Chọn vật tư —</option>'+constructionMaterials.map(m=>'<option value="'+m.id+'">'+esc(m.name)+' · tồn '+constructionFmt(constructionSnapshot(m,year).current)+' '+esc(m.unit||"")+'</option>').join("");
+  $("#constructionStockTxnId").value="";
+  $("#constructionStockType").value="in";
+  $("#constructionStockDate").value=today();
+  $("#constructionStockQty").value="";
+  $("#constructionStockUnitPrice").value="0";
+  $("#constructionStockPerformer").value="";
+  $("#constructionStockSupplier").value="";
+  $("#constructionStockContractor").value="";
+  $("#constructionStockNote").value="";
+  if(id){
+    sel.value=id;
+    const m=constructionMaterials.find(x=>String(x.id)===String(id));
+    if(m){
+      $("#constructionStockUnitPrice").value=constructionNum(m.unit_price);
+      $("#constructionStockSupplier").value=m.supplier||"";
+    }
+  }
+  $("#constructionStockTxnModal").classList.remove("hide");
+};
+window.deleteConstructionStockTxn=async id=>{
+  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+  if(!confirm("Xóa giao dịch nhập / xuất này?"))return;
+  try{
+    await sbFetch("/rest/v1/construction_material_transactions?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"DELETE",token:centralSession.access_token});
+    await loadConstructionMaterialData(currentBuilding.id,true);
+    toast("Đã xóa giao dịch");
   }catch(e){toast(e.message)}
 };
 function resetConstructionLogForm(materialId){
@@ -360,6 +401,12 @@ function constructionDownloadWorkbook(detail=false){
 
 // Events
 $("#constructionSearch").oninput=renderConstructionMaterials;
+$("#constructionCategorySelect").onchange=renderConstructionMaterials;
+$("#constructionYear").onchange=renderConstructionMaterials;
+document.querySelectorAll("[data-construction-month]").forEach(b=>b.onclick=()=>{
+  constructionActiveMonth=b.dataset.constructionMonth==="all"?"all":Number(b.dataset.constructionMonth);
+  renderConstructionMaterials();
+});
 $("#constructionLogSearch").oninput=renderConstructionLogs;
 $("#constructionLogStatusFilter").onchange=renderConstructionLogs;
 document.querySelectorAll("[data-construction-category]").forEach(b=>b.onclick=()=>{
@@ -368,14 +415,17 @@ document.querySelectorAll("[data-construction-category]").forEach(b=>b.onclick=(
   renderConstructionMaterials();
 });
 $("#addConstructionMaterialBtn").onclick=openConstructionMaterialModal;
+$("#constructionStockMoveBtn").onclick=()=>openConstructionStockTxnModal();
 $("#constructionBackBtn").onclick=closeConstructionDetail;
 $("#constructionDetailCloseBtn").onclick=closeConstructionDetail;
 $("#editConstructionMaterialBtn").onclick=()=>{if(selectedConstructionMaterialId)editConstructionMaterial(selectedConstructionMaterialId)};
 $("#addConstructionLogBtn").onclick=openConstructionLogModal;
 $("#closeConstructionMaterialModal").onclick=$("#cancelConstructionMaterialModal").onclick=()=>$("#constructionMaterialModal").classList.add("hide");
 $("#closeConstructionLogModal").onclick=$("#cancelConstructionLogModal").onclick=()=>$("#constructionLogModal").classList.add("hide");
+$("#closeConstructionStockTxnModal").onclick=$("#cancelConstructionStockTxnModal").onclick=()=>$("#constructionStockTxnModal").classList.add("hide");
 $("#constructionMaterialModal").onclick=e=>{if(e.target===$("#constructionMaterialModal"))$("#constructionMaterialModal").classList.add("hide")};
 $("#constructionLogModal").onclick=e=>{if(e.target===$("#constructionLogModal"))$("#constructionLogModal").classList.add("hide")};
+$("#constructionStockTxnModal").onclick=e=>{if(e.target===$("#constructionStockTxnModal"))$("#constructionStockTxnModal").classList.add("hide")};
 
 $("#constructionMaterialForm").onsubmit=async e=>{
   e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -388,6 +438,10 @@ $("#constructionMaterialForm").onsubmit=async e=>{
     specification:$("#constructionMaterialSpec").value.trim(),
     unit:$("#constructionMaterialUnit").value.trim()||"Cái",
     supplier:$("#constructionMaterialSupplier").value.trim(),
+    storage_location:$("#constructionMaterialStorage").value.trim(),
+    opening_qty:Math.max(0,constructionNum($("#constructionMaterialOpeningQty").value)),
+    min_qty:Math.max(0,constructionNum($("#constructionMaterialMinQty").value)),
+    unit_price:Math.max(0,constructionNum($("#constructionMaterialUnitPrice").value)),
     status:$("#constructionMaterialStatus").value,
     note:$("#constructionMaterialNote").value.trim(),
     updated_at:new Date().toISOString()
@@ -400,6 +454,32 @@ $("#constructionMaterialForm").onsubmit=async e=>{
     toast(id?"Đã cập nhật vật tư":"Đã thêm vật tư thi công");
   }catch(err){toast(err.status===409?"Vật tư cùng tên và quy cách đã có":err.message)}
 };
+$("#constructionStockTxnForm").onsubmit=async e=>{
+  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+  const materialId=$("#constructionStockMaterial").value,qty=constructionNum($("#constructionStockQty").value),type=$("#constructionStockType").value,date=$("#constructionStockDate").value;
+  if(!materialId||qty<=0||!date)return toast("Vui lòng chọn vật tư, ngày và số lượng");
+  const material=constructionMaterials.find(x=>String(x.id)===String(materialId));
+  if(type==="out"&&material&&qty>constructionSnapshot(material,new Date().getFullYear()).current)return toast("Số lượng xuất vượt quá tồn kho hiện tại");
+  const body={
+    building_id:currentBuilding.id,
+    material_id:materialId,
+    tx_date:date,
+    tx_type:type,
+    qty,
+    unit_price:Math.max(0,constructionNum($("#constructionStockUnitPrice").value)),
+    performer:$("#constructionStockPerformer").value,
+    supplier:$("#constructionStockSupplier").value.trim(),
+    contractor:$("#constructionStockContractor").value.trim(),
+    note:$("#constructionStockNote").value.trim()
+  };
+  try{
+    await sbFetch("/rest/v1/construction_material_transactions",{method:"POST",token:centralSession.access_token,body});
+    $("#constructionStockTxnModal").classList.add("hide");
+    await loadConstructionMaterialData(currentBuilding.id,true);
+    toast(type==="in"?"Đã nhập vật tư thi công":"Đã xuất vật tư thi công");
+  }catch(err){toast(err.message)}
+};
+
 $("#constructionLogForm").onsubmit=async e=>{
   e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
   const id=$("#constructionLogId").value;
