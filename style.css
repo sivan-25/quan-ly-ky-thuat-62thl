@@ -8769,3 +8769,432 @@ i{
   #constructionMaterialPage #constructionStockTable:not(.annual){min-width:1050px}
   #constructionMaterialPage .constructionHistoryPanel table{min-width:980px}
 }
+
+/* =========================================================
+   ESTA INVENTORY V3 — MATCH USER REFERENCE
+   Material: warm cream + plum table + amber active month
+   Tools: navy frame + clean white table
+   ========================================================= */
+#inventoryMaterialsPane{
+  --inv-cream:#fbf3e5;
+  --inv-cream-2:#f6ead7;
+  --inv-line:#dfd2c0;
+  --inv-plum:#4a1039;
+  --inv-plum-2:#5a1647;
+  --inv-amber:#b66b1d;
+  --inv-text:#281d20;
+  --inv-muted:#9c8a7d;
+  --inv-red:#b83032;
+  background:var(--inv-cream)!important;
+  border:1px solid #eadcc8!important;
+  border-radius:18px!important;
+  padding:0 0 16px!important;
+  overflow:hidden!important;
+  box-shadow:0 10px 28px rgba(73,35,18,.05)!important;
+}
+
+/* top controls stay compact and warm */
+#inventoryMaterialsPane .inventorySectionBar{
+  min-height:70px!important;
+  padding:14px 18px!important;
+  background:#fffaf1!important;
+  border:0!important;
+  border-bottom:1px solid #eadcc8!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .inventorySectionBar .inventoryKicker{
+  color:#8f5d3b!important;
+}
+#inventoryMaterialsPane .inventorySectionBar h2{
+  margin-top:3px!important;
+  color:#3e1730!important;
+  font-size:15px!important;
+}
+#inventoryMaterialsPane .inventorySectionBar p{
+  color:#9b897b!important;
+}
+#inventoryMaterialsPane .inventorySearch{
+  background:#fff9f0!important;
+  border-color:#dccab5!important;
+}
+#inventoryMaterialsPane .inventorySecondary{
+  border-color:#d7c5b1!important;
+  background:#fffaf2!important;
+  color:#6f594b!important;
+}
+#inventoryMaterialsPane .inventoryPrimary{
+  background:linear-gradient(135deg,#5a1647,#421033)!important;
+  color:#fff!important;
+  box-shadow:0 6px 14px rgba(74,16,57,.14)!important;
+}
+
+/* month selector block — very close to reference */
+#inventoryMaterialsPane .inventoryMonthRail{
+  margin:14px 18px 12px!important;
+  padding:14px 18px 16px!important;
+  border:1px solid #e5cda8!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#fbf0db,#f8edd9)!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .inventoryMonthRailHead{
+  min-height:34px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  margin-bottom:10px!important;
+}
+#inventoryMaterialsPane .inventoryMonthRailHead>div{
+  display:flex!important;
+  align-items:center!important;
+}
+#inventoryMaterialsPane #materialSelectedMonth{
+  color:var(--inv-plum)!important;
+  font-size:17px!important;
+  line-height:1.1!important;
+  font-weight:820!important;
+  letter-spacing:-.25px!important;
+}
+#inventoryMaterialsPane .inventoryMonthRailHead small{
+  color:#9a897c!important;
+  font-size:8.5px!important;
+  line-height:1.4!important;
+  text-align:right!important;
+}
+#inventoryMaterialsPane .materialMonthTabs{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin:0!important;
+}
+#inventoryMaterialsPane .materialMonthTabs .yearOverviewBtn{
+  display:none!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button{
+  position:relative!important;
+  height:42px!important;
+  min-width:0!important;
+  padding:0 5px!important;
+  border:1px solid #d2baa0!important;
+  border-radius:11px!important;
+  background:#fbf3e7!important;
+  color:#68574c!important;
+  font-size:8px!important;
+  font-weight:760!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button:hover{
+  border-color:#c89a67!important;
+  background:#fff9ef!important;
+  color:#5f3e2c!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button.active{
+  border-color:var(--inv-amber)!important;
+  background:linear-gradient(180deg,#bd7628,#a85e15)!important;
+  color:#fff!important;
+  box-shadow:0 7px 14px rgba(169,94,21,.20)!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button.hasActivity:after{
+  content:""!important;
+  position:absolute!important;
+  right:7px!important;
+  top:6px!important;
+  width:5px!important;
+  height:5px!important;
+  border-radius:50%!important;
+  background:#8d6b55!important;
+}
+#inventoryMaterialsPane .materialMonthTabs button.active.hasActivity:after{
+  background:#fff!important;
+}
+
+/* remove card clutter in reference view */
+#inventoryMaterialsPane .monthlyStats{
+  display:none!important;
+}
+#inventoryMaterialsPane .inventorySupportGrid{
+  margin:12px 18px 0!important;
+}
+#inventoryMaterialsPane .inventorySupportCard{
+  border-color:#e5d7c7!important;
+  background:#fffaf3!important;
+  box-shadow:none!important;
+}
+
+/* table card becomes the visual focus */
+#inventoryMaterialsPane .materialMonthlyCard{
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .materialTableTitle{
+  display:none!important;
+}
+#inventoryMaterialsPane .inventoryTableScroll{
+  overflow:auto!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable{
+  width:100%!important;
+  min-width:900px!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  background:var(--inv-cream)!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable thead th{
+  height:46px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-bottom:1px solid var(--inv-plum)!important;
+  background:var(--inv-plum)!important;
+  color:#fff8e9!important;
+  font-size:8px!important;
+  font-weight:820!important;
+  letter-spacing:.55px!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable tbody td{
+  height:66px!important;
+  padding:10px 12px!important;
+  border:0!important;
+  border-bottom:1px solid var(--inv-line)!important;
+  background:var(--inv-cream)!important;
+  color:var(--inv-text)!important;
+  font-size:9px!important;
+  vertical-align:middle!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable tbody tr:last-child td{
+  border-bottom:0!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable tbody tr:hover td{
+  background:#fff8ec!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable .sttCell{
+  width:58px!important;
+  color:#aa988a!important;
+  font-weight:760!important;
+}
+#inventoryMaterialsPane .materialNameCell{
+  min-width:210px!important;
+}
+#inventoryMaterialsPane .materialNameCell b{
+  display:block!important;
+  color:#2d2023!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+}
+#inventoryMaterialsPane .materialNameCell small{
+  display:block!important;
+  margin-top:3px!important;
+  color:#9b897b!important;
+  font-size:7.3px!important;
+  font-weight:500!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable td:nth-child(3){
+  color:#49393a!important;
+  font-size:9px!important;
+}
+#inventoryMaterialsPane .materialMonthlyTable td:nth-child(4){
+  text-align:center!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+#inventoryMaterialsPane .inText,
+#inventoryMaterialsPane .outText{
+  text-align:center!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+#inventoryMaterialsPane .inText:not(.hasValue),
+#inventoryMaterialsPane .outText:not(.hasValue){
+  color:#b8a490!important;
+  font-weight:650!important;
+}
+#inventoryMaterialsPane .inText.hasValue{
+  color:#a96624!important;
+}
+#inventoryMaterialsPane .outText.hasValue{
+  color:var(--inv-red)!important;
+}
+#inventoryMaterialsPane .stockFinal{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:46px!important;
+  height:34px!important;
+  padding:0 12px!important;
+  border-radius:999px!important;
+  background:var(--inv-plum)!important;
+  color:#fff8e9!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .stockFinal.low{
+  border:1px solid #d5907f!important;
+  background:#f6ddd5!important;
+  color:#a93635!important;
+}
+#inventoryMaterialsPane .lowStock td{
+  background:#fbf3e5!important;
+}
+#inventoryMaterialsPane .invRowActions.compact{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+}
+#inventoryMaterialsPane .invRowActions.compact button{
+  width:36px!important;
+  min-width:36px!important;
+  height:36px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #d4c2af!important;
+  border-radius:10px!important;
+  background:#fffaf2!important;
+  color:#665246!important;
+}
+#inventoryMaterialsPane .invRowActions.compact button:hover{
+  border-color:#b88b61!important;
+  background:#fff4e4!important;
+  color:#7a451e!important;
+}
+#inventoryMaterialsPane .invRowActions.compact button.danger{
+  display:none!important;
+}
+#inventoryMaterialsPane .invRowActions.compact button svg{
+  width:15px!important;
+  height:15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.6!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+/* transaction/support area stays secondary, visually quiet */
+#inventoryMaterialsPane .transactionCard{
+  margin:12px 18px 0!important;
+  border:1px solid #e5d7c7!important;
+  border-radius:14px!important;
+  background:#fffaf3!important;
+  box-shadow:none!important;
+}
+#inventoryMaterialsPane .transactionCard th{
+  background:#f4e8d8!important;
+  color:#6b594e!important;
+}
+#inventoryMaterialsPane .transactionCard td{
+  background:#fffaf3!important;
+}
+
+/* tools — follow the first reference: navy frame + white clean table */
+#inventoryToolsPane{
+  padding:14px!important;
+  border-radius:16px!important;
+  background:#102a43!important;
+}
+#inventoryToolsPane .inventorySectionBar{
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#inventoryToolsPane .inventorySectionBar .inventoryKicker,
+#inventoryToolsPane .inventorySectionBar h2,
+#inventoryToolsPane .inventorySectionBar p{
+  color:#fff!important;
+}
+#inventoryToolsPane .inventorySectionBar p{opacity:.62}
+#inventoryToolsPane .inventoryStats{
+  margin:8px 0 12px!important;
+}
+#inventoryToolsPane .inventoryStats article{
+  border-color:rgba(255,255,255,.08)!important;
+  background:#173957!important;
+  box-shadow:none!important;
+}
+#inventoryToolsPane .inventoryStats small,
+#inventoryToolsPane .inventoryStats em{color:#95adbe!important}
+#inventoryToolsPane .inventoryStats b{color:#fff!important}
+#inventoryToolsPane .toolsMainCard{
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+#inventoryToolsPane .inventoryCardTitle{
+  background:#fff!important;
+}
+#inventoryToolsPane .toolsTable th{
+  background:#f2f4f6!important;
+  color:#23384b!important;
+  font-size:7.5px!important;
+}
+#inventoryToolsPane .toolsTable td{
+  height:54px!important;
+  background:#fff!important;
+  color:#243746!important;
+  font-size:8.5px!important;
+}
+#inventoryToolsPane .toolsTable tbody tr:hover td{background:#f8fafb!important}
+#inventoryToolsPane .toolNameCell b{color:#102a43!important;font-size:9.5px!important}
+#inventoryToolsPane .toolCondition.good{
+  background:#d9f7e6!important;color:#20744b!important;
+}
+#inventoryToolsPane .toolCondition.bad{
+  background:#fde1e1!important;color:#ad3639!important;
+}
+
+/* responsive */
+@media(max-width:1200px){
+  #inventoryMaterialsPane .materialMonthTabs{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:760px){
+  #inventoryMaterialsPane{
+    border-radius:14px!important;
+  }
+  #inventoryMaterialsPane .inventorySectionBar{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    padding:13px!important;
+  }
+  #inventoryMaterialsPane .inventoryMonthRail{
+    margin:10px!important;
+    padding:12px!important;
+    border-radius:14px!important;
+  }
+  #inventoryMaterialsPane .inventoryMonthRailHead{
+    display:block!important;
+  }
+  #inventoryMaterialsPane .inventoryMonthRailHead small{
+    display:block!important;
+    margin-top:5px!important;
+    text-align:left!important;
+  }
+  #inventoryMaterialsPane .materialMonthTabs{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+  #inventoryMaterialsPane .materialMonthTabs button{
+    height:39px!important;
+  }
+  #inventoryMaterialsPane .inventorySupportGrid,
+  #inventoryMaterialsPane .transactionCard{
+    margin-left:10px!important;
+    margin-right:10px!important;
+  }
+  #inventoryToolsPane{
+    padding:10px!important;
+  }
+}
