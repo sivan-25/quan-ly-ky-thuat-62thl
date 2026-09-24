@@ -1,0 +1,328 @@
+/* ESTA Unified UI — Contractor visual language applied across the app */
+:root{
+  --u-navy:#153f5c;
+  --u-navy-2:#173b56;
+  --u-cyan:#1a9bb4;
+  --u-bronze:#9a7660;
+  --u-bg:#f4f7fa;
+  --u-card:#fff;
+  --u-border:#dfe7ec;
+  --u-text:#183b56;
+  --u-muted:#788d9b;
+  --u-green:#2d8a62;
+  --u-amber:#b47a29;
+  --u-red:#b65a60;
+  --u-shadow:0 7px 24px rgba(20,55,80,.04);
+}
+
+/* App shell */
+#app:not(.hide){background:var(--u-bg)!important}
+#app main{background:var(--u-bg)!important}
+#app .estaSidebar{
+  background:linear-gradient(180deg,#153f5c 0%,#12364f 58%,#102f46 100%)!important;
+  box-shadow:10px 0 28px rgba(16,47,70,.06)!important;
+}
+#app .estaNav button.active{
+  background:rgba(255,255,255,.075)!important;
+  border-color:rgba(255,255,255,.06)!important;
+  color:#fff!important;
+}
+#app .estaNav button.active:before{background:#31b0c8!important}
+#app .estaNav button.active svg{color:#55c5d8!important}
+#app .estaTopbar{
+  height:66px!important;
+  border-bottom:1px solid #e3eaee!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+#app .topModuleIcon{
+  border:1px solid #e0e7eb!important;
+  background:#f3f7f9!important;
+  color:#4f7387!important;
+  box-shadow:none!important;
+}
+#app .topModuleTitle h1{color:#1a405a!important;font-size:15px!important;font-weight:780!important}
+#app .topModuleTitle p{color:#8798a4!important}
+#app .headerSearch,#app .iconAction,#app .pdfAction,#app .headerBell{
+  border-color:#dce5ea!important;border-radius:9px!important;background:#f8fafb!important;box-shadow:none!important
+}
+#app .account{border-left:1px solid #edf1f3!important}
+
+/* Consistent page widths */
+.homeDashboard,#workPage,#energyPage,.inventoryPage,.maintenancePage,#adminPage{
+  width:100%;
+  max-width:1580px;
+  margin:0 auto;
+  padding:20px 22px 34px!important;
+  color:var(--u-text);
+}
+
+/* Command headers copied from Contractor */
+.homeWelcome,#workPage .proPageHead,#energyPage .proPageHead,
+.inventoryHero,.maintenanceHero,.adminHero{
+  min-height:112px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:22px!important;
+  margin:0 0 12px!important;
+  padding:18px 20px!important;
+  border:1px solid #dce5ea!important;
+  border-radius:16px!important;
+  background:
+    radial-gradient(circle at 92% 15%,rgba(25,184,212,.08),transparent 28%),
+    linear-gradient(135deg,#fff 0%,#f8fbfc 100%)!important;
+  box-shadow:0 7px 24px rgba(19,55,78,.04)!important;
+  color:var(--u-text)!important;
+}
+.unifiedCommandBrand{display:flex;align-items:center;gap:13px;min-width:0}
+.unifiedCommandIcon{
+  width:48px;height:48px;display:grid;place-items:center;flex:0 0 48px;
+  border-radius:13px;background:linear-gradient(145deg,#123a58,#175d78);color:#fff;
+  box-shadow:0 9px 20px rgba(18,58,88,.14)
+}
+.unifiedCommandIcon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.unifiedCommandMeta{
+  min-width:142px;height:46px;display:flex;flex-direction:column;justify-content:center;
+  padding:0 10px;border:1px solid #dce5ea;border-radius:10px;background:#fff
+}
+.unifiedCommandMeta small{color:#8b9ca6;font-size:5.5px;letter-spacing:.8px;font-weight:750}
+.unifiedCommandMeta b{margin-top:3px;color:#34566b;font-size:7.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.homeWelcomeCopy{position:static!important;max-width:none!important}
+.homeEyebrow,.pageEyebrow,.inventoryHero>div:first-child>span,.maintenanceHero>div:first-child>span,.adminEyebrow{
+  color:var(--u-bronze)!important;font-size:6.7px!important;font-weight:850!important;letter-spacing:1.6px!important
+}
+.homeWelcome h1,#workPage .proPageHead h1,#energyPage .proPageHead h1,
+.inventoryHero h1,.maintenanceHero h1,.adminHero h1{
+  margin:5px 0 3px!important;color:var(--u-navy-2)!important;font-size:24px!important;line-height:1.05!important;letter-spacing:-.4px!important
+}
+.homeWelcomeCopy>p,#workPage .proPageHead p,#energyPage .proPageHead p,
+.inventoryHero p,.maintenanceHero p,.adminHero p{
+  margin:0!important;color:#7c909d!important;font-size:9px!important;line-height:1.5!important
+}
+.homeSystemState{
+  width:auto!important;margin:10px 0 0!important;padding:0!important;border:0!important;color:#728997!important;font-size:7.5px!important
+}
+.homeSystemState small{color:#9aa8b1!important}
+.homeBlueprint{display:none!important}
+#workPage .proPageHead,#energyPage .proPageHead{
+  grid-template-columns:48px minmax(0,1fr) auto!important
+}
+#workPage .proPageHead .headIcon,#energyPage .proPageHead .headIcon{
+  width:48px!important;height:48px!important;border-radius:13px!important;
+  background:linear-gradient(145deg,#123a58,#175d78)!important;color:#fff!important;
+  border:0!important;box-shadow:0 9px 20px rgba(18,58,88,.14)!important
+}
+#workPage .proPageHead .headMeta span,#energyPage .proPageHead .headMeta span{
+  height:34px!important;border-color:#dce5ea!important;border-radius:9px!important;background:#fff!important;font-size:7px!important
+}
+.inventoryHeroMeta>div{
+  border-color:#dce5ea!important;border-radius:10px!important;box-shadow:none!important
+}
+
+/* KPI cards: same dimensions as Contractor */
+.homeKpis,#workPage .stats,.inventoryStats,.maintenanceStats{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;margin:0 0 12px!important
+}
+.homeKpis article,#workPage .stats article,.inventoryStats article,.maintenanceStats article{
+  min-height:92px!important;display:flex!important;align-items:center!important;gap:12px!important;
+  padding:14px!important;border:1px solid #e1e8ed!important;border-radius:14px!important;
+  background:#fff!important;box-shadow:0 6px 22px rgba(20,55,80,.032)!important
+}
+.homeKpis .kpiIcon,#workPage .stats i,.invStatIcon,.maintStatIcon{
+  width:40px!important;height:40px!important;flex:0 0 40px!important;border-radius:11px!important
+}
+.homeKpis small,#workPage .stats small,.inventoryStats small,.maintenanceStats small{
+  color:#8295a1!important;font-size:6.3px!important;letter-spacing:.75px!important;font-weight:760!important
+}
+.homeKpis strong,#workPage .stats strong,.inventoryStats b,.maintenanceStats b{
+  color:#1b4059!important;font-size:21px!important;line-height:1!important;font-weight:780!important
+}
+.homeKpis article>div:last-child>span,.inventoryStats em,.maintenanceStats em{
+  color:#9aa8b1!important;font-size:6.5px!important
+}
+
+/* Panels and directory treatment */
+.homePanel,.premiumTableCard,.energyTableCard,.inventoryTableCard,.inventoryWorkspace,.maintenanceBoard,.maintenanceSchedule,.adminSection{
+  overflow:hidden!important;border:1px solid #e0e8ed!important;border-radius:15px!important;
+  background:#fff!important;box-shadow:var(--u-shadow)!important
+}
+.homePanelHead,.premiumTableCard .tableTop,.energyTableTop,.inventorySectionBar,.inventorySectionHead,
+.maintenanceToolbar,.maintenanceScheduleHead,.adminSectionHead{
+  min-height:70px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;
+  padding:14px 16px!important;border-bottom:1px solid #e9eef1!important;background:#fff!important
+}
+.homePanelHead h2,.energyTableTop h2,.inventorySectionBar h2,.inventorySectionHead h3,
+.maintenanceToolbar h2,.maintenanceScheduleHead h2,.adminSectionHead h2{
+  margin:0!important;color:#1d415a!important;font-size:14px!important;font-weight:780!important
+}
+.homePanelHead p,.energyTableTop p,.inventorySectionBar p,.inventorySectionHead p,.maintenanceToolbar p,.adminSectionHead p{
+  margin:4px 0 0!important;color:#899aa5!important;font-size:7.5px!important
+}
+.panelKicker,.inventoryKicker{color:var(--u-bronze)!important;font-size:6.2px!important;font-weight:850!important;letter-spacing:1.4px!important}
+
+/* Buttons/searches/tabs */
+.homePanelHead>button,.inventoryPrimary,.inventorySecondary,.maintenanceHeroActions button,
+#maintenanceMonthClear,.energyTableTop .pdfAction{
+  min-height:36px!important;border-radius:9px!important;font-size:7.6px!important;font-weight:760!important;box-shadow:none!important
+}
+.inventoryPrimary{
+  border:0!important;background:linear-gradient(135deg,#153f5c,#17627b)!important;color:#fff!important
+}
+.inventorySecondary,.homePanelHead>button,#maintenanceMonthClear{
+  border:1px solid #dbe5ea!important;background:#fff!important;color:#496a7e!important
+}
+.inventorySearch{
+  height:36px!important;border:1px solid #dce5ea!important;border-radius:9px!important;background:#f8fafb!important
+}
+.inventorySearch input{font-size:8px!important}
+.energyTabs,.inventoryTabs,.materialMonthTabs,.maintenanceMonthStrip{
+  border:1px solid #dfe7ec!important;border-radius:12px!important;background:#fff!important;box-shadow:none!important
+}
+.energyTabs button,.inventoryTabs button,.materialMonthTabs button,.maintenanceMonthStrip button{
+  border-radius:9px!important;border:1px solid transparent!important;background:transparent!important;color:#5c7687!important;font-size:7.5px!important;font-weight:700!important
+}
+.energyTabs button.active,.inventoryTabs button.active,.materialMonthTabs button.active,.maintenanceMonthStrip button.active{
+  border-color:#cce0e7!important;background:#edf6f9!important;color:#246980!important
+}
+
+/* Work entry card in Contractor language, preserving one desktop row */
+#workPage .workEntryCard,#energyPage .energyCard{
+  overflow:visible!important;border:1px solid #e0e8ed!important;border-radius:15px!important;background:#fff!important;box-shadow:var(--u-shadow)!important
+}
+#workPage .workEntryHeader,#energyPage .formSectionHead{
+  min-height:66px!important;padding:13px 15px!important;border-bottom:1px solid #e9eef1!important;background:#fff!important;border-radius:15px 15px 0 0!important
+}
+#workPage .workEntryHeader>div:first-child>span,#energyPage .formSectionHead>div:first-child>span{
+  color:var(--u-bronze)!important;font-size:6.2px!important;font-weight:850!important;letter-spacing:1.4px!important
+}
+#workPage .workEntryHeader h2,#energyPage .formSectionHead h2{
+  color:#1d415a!important;font-size:14px!important;font-weight:780!important
+}
+#workPage .workEntryHeader p,#energyPage .formSectionHead p{color:#899aa5!important;font-size:7.5px!important}
+#workPage .workEntryHeaderIcon,#energyPage .formSectionMark{
+  width:36px!important;height:36px!important;border-radius:10px!important;background:#eef5f8!important;color:#2c6b85!important;border:0!important
+}
+#workPage #taskForm input:not([type="hidden"]),#workPage #taskForm select,#workPage #taskForm .peopleSelectBtn,
+#energyPage #energyForm input:not([type="hidden"]),#energyPage #energyForm select,#energyPage #energyForm .peopleSelectBtn{
+  border:1px solid #dbe5ea!important;border-radius:8px!important;background:#fafcfd!important;color:#294b61!important;box-shadow:none!important
+}
+#workPage #taskForm .workSave,#energyPage .energyActions .primary{
+  border:0!important;border-radius:9px!important;background:linear-gradient(135deg,#153f5c,#17627b)!important;color:#fff!important;
+  box-shadow:0 6px 14px rgba(19,76,105,.12)!important
+}
+#workPage #taskForm .imageActionBtn,#energyPage .energyActions .secondary{
+  border:1px solid #dbe5ea!important;border-radius:8px!important;background:#fff!important;color:#496a7e!important
+}
+@media(min-width:1020px){
+  #workPage #taskForm.workEntryForm{
+    grid-template-columns:82px minmax(140px,1.5fr) 76px 88px minmax(125px,1fr) 92px 118px 58px!important;
+    gap:6px!important;padding:11px 14px 13px!important
+  }
+}
+
+/* Table style matches Contractor directory */
+#workPage .premiumTableCard th,#energyPage .premiumTableCard th,
+.inventoryTableCard th,.maintenanceHistoryTable th{
+  height:40px!important;padding:0 9px!important;border:0!important;border-bottom:1px solid #e4eaee!important;
+  background:#f4f7f9!important;color:#6b8190!important;font-size:6.5px!important;font-weight:800!important;
+  letter-spacing:.35px!important;text-transform:uppercase!important
+}
+#workPage .premiumTableCard td,#energyPage .premiumTableCard td,
+.inventoryTableCard td,.maintenanceHistoryTable td{
+  padding:10px 9px!important;border:0!important;border-bottom:1px solid #eef2f4!important;
+  color:#3f5f73!important;font-size:8.3px!important
+}
+#workPage .premiumTableCard tbody tr:hover,#energyPage .premiumTableCard tbody tr:hover,
+.inventoryTableCard tbody tr:hover,.maintenanceHistoryTable tbody tr:hover{background:#fafcfd!important}
+.rowActionMenu summary,.invRowActions button,.miniDanger{
+  width:30px!important;height:30px!important;padding:0!important;border:1px solid #dce5ea!important;border-radius:8px!important;background:#fff!important;color:#607b8c!important
+}
+
+/* Home content */
+.homeMainGrid,.homeBottomGrid{gap:10px!important;margin-top:10px!important}
+.homeRecentTasks{padding:8px!important}
+.homeTaskRow{
+  min-height:58px!important;border:1px solid transparent!important;border-bottom:1px solid #eef2f4!important;border-radius:0!important;padding:8px!important
+}
+.homeTaskRow:hover{background:#fafcfd!important;box-shadow:inset 3px 0 0 #25a9c1!important}
+.homeEnergyList{padding:8px 14px 12px!important}
+.homeEnergyList article{min-height:68px!important;border-bottom:1px solid #eef2f4!important}
+.quickActions{padding:9px!important;gap:7px!important}
+.quickActions>button{
+  min-height:61px!important;border:1px solid #e3e9ed!important;border-radius:10px!important;background:#fff!important
+}
+.quickActions>button:hover{background:#fafcfd!important;border-color:#d5e2e8!important}
+.homeActivity{padding:8px 14px!important}
+
+/* Inventory specifically */
+.inventoryWorkspace{margin-bottom:12px!important}
+.materialMonthTabs{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:4px!important;padding:5px!important;margin:10px 0!important}
+.materialMonthTabs button{height:31px!important;padding:0 4px!important}
+.monthlyStats{margin-top:0!important}
+.inventoryExamples{
+  padding:9px 14px!important;margin:0!important;border-top:1px solid #eef2f4!important;border-bottom:1px solid #eef2f4!important;background:#fbfcfd!important
+}
+.inventoryExamples button{border-color:#dde6eb!important;background:#fff!important;color:#5c7687!important}
+.materialMonthlyCard{margin-top:10px!important}
+.materialMonthlyTable{min-width:880px!important}
+.materialNameCell b,.toolNameCell b{color:#173d58!important;font-size:9px!important}
+.stockFinal.low{color:var(--u-red)!important}
+.toolMiniIcon{background:#eef5f8!important;color:#2c6b85!important}
+
+/* Maintenance cards adopt Contractor detail-card feel */
+.maintenanceSchedule{margin:0 0 10px!important}
+.maintenanceAssetGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;padding:9px!important}
+.maintenanceAssetCard{
+  min-height:200px!important;padding:13px!important;border:1px solid #e3e9ed!important;border-radius:11px!important;background:#fff!important;box-shadow:none!important
+}
+.maintenanceAssetCard:hover{background:#fafcfd!important;border-color:#d5e2e8!important}
+.maintCardActions{border-top:1px solid #eef2f4!important}
+.maintCardActions button{border-radius:7px!important}
+
+/* Admin */
+.adminHero{min-height:104px!important}
+.adminSection{margin-top:10px!important}
+.adminProjectGrid{padding:10px!important;gap:9px!important}
+.adminProjectCard{
+  border:1px solid #e3e9ed!important;border-radius:11px!important;background:#fff!important;box-shadow:none!important
+}
+.adminProjectCard:hover{background:#fafcfd!important;border-color:#d4e2e8!important}
+
+/* Modals: match contractor modals */
+.modal:not(.hide){background:rgba(10,29,44,.64)!important;backdrop-filter:blur(8px)}
+.modalCard,.inventoryModalCard,.peopleManagerCard{
+  border:1px solid #dbe5ea!important;border-radius:17px!important;background:#fff!important;
+  box-shadow:0 28px 80px rgba(9,31,47,.28)!important
+}
+
+/* Hide generic global search/actions where module has its own contractor-style toolbar */
+#app.inventoryMode .filterWrap,#app.inventoryMode #exportBtn,
+#app.maintenanceMode .filterWrap,#app.maintenanceMode #exportBtn,
+#app.contractorMode .filterWrap,#app.contractorMode #exportBtn{display:none!important}
+
+/* Responsive */
+@media(max-width:1180px){
+  .homeKpis,#workPage .stats,.inventoryStats,.maintenanceStats{grid-template-columns:1fr 1fr!important}
+  .maintenanceAssetGrid{grid-template-columns:1fr 1fr!important}
+  .materialMonthTabs{grid-template-columns:repeat(6,1fr)!important}
+}
+@media(max-width:760px){
+  .homeDashboard,#workPage,#energyPage,.inventoryPage,.maintenancePage,#adminPage{padding:12px 10px 25px!important}
+  .homeWelcome,#workPage .proPageHead,#energyPage .proPageHead,.inventoryHero,.maintenanceHero,.adminHero{
+    min-height:0!important;align-items:flex-start!important;padding:14px!important;border-radius:14px!important
+  }
+  .homeWelcome{display:block!important}
+  .unifiedCommandBrand{align-items:flex-start}
+  .unifiedCommandIcon{width:40px;height:40px;flex-basis:40px;border-radius:11px}
+  .unifiedCommandMeta{width:100%;margin-top:10px}
+  #workPage .proPageHead,#energyPage .proPageHead{display:grid!important;grid-template-columns:40px 1fr!important}
+  #workPage .proPageHead .headMeta,#energyPage .proPageHead .headMeta{display:none!important}
+  .homeWelcome h1,#workPage .proPageHead h1,#energyPage .proPageHead h1,.inventoryHero h1,.maintenanceHero h1,.adminHero h1{font-size:20px!important}
+  .homeKpis,#workPage .stats,.inventoryStats,.maintenanceStats{grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .homeKpis article,#workPage .stats article,.inventoryStats article,.maintenanceStats article{min-height:80px!important;padding:10px!important}
+  .homeMainGrid,.homeBottomGrid{grid-template-columns:1fr!important}
+  .materialMonthTabs{grid-template-columns:repeat(4,1fr)!important}
+  .maintenanceAssetGrid{grid-template-columns:1fr!important}
+  .inventoryToolbar,.maintenanceToolbar,.homePanelHead,.adminSectionHead{align-items:flex-start!important;flex-direction:column!important}
+}
