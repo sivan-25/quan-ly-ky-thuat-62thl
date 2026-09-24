@@ -2035,3 +2035,149 @@
     margin-bottom:7px!important;
   }
 }
+
+/* =========================================================
+   CONTRACTOR V6 — ACCESSIBLE LARGE TYPE
+   Tăng cỡ chữ danh sách xấp xỉ 1.8–2x, vẫn giữ bố cục gọn.
+   ========================================================= */
+@media(min-width:1041px){
+  .contractorToolbar{
+    min-height:92px!important;
+    padding:18px 24px 14px!important;
+  }
+  .contractorToolbar h2{
+    font-size:29px!important;
+    line-height:1.2!important;
+  }
+  .contractorToolbar h2 span{
+    font-size:17px!important;
+  }
+  .contractorToolbar p{
+    margin-top:6px!important;
+    font-size:14px!important;
+    line-height:1.45!important;
+  }
+
+  .contractorSearch{
+    width:460px!important;
+    height:48px!important;
+    padding:0 16px!important;
+    border-radius:24px!important;
+  }
+  .contractorSearch svg{
+    width:18px!important;
+    height:18px!important;
+  }
+  .contractorSearch input{
+    font-size:15px!important;
+  }
+
+  .contractorSpecialtyFilters{
+    gap:9px!important;
+    padding:0 24px 16px!important;
+  }
+  .contractorSpecialtyFilters button{
+    height:40px!important;
+    padding:0 16px!important;
+    font-size:13px!important;
+    font-weight:700!important;
+  }
+
+  .contractorListHeader{
+    min-height:50px!important;
+    padding:0 20px!important;
+    font-size:13px!important;
+    letter-spacing:.35px!important;
+  }
+  .contractorListHeader>span{
+    padding:0 9px!important;
+  }
+
+  .contractorRowCard{
+    min-height:98px!important;
+    padding:0 20px!important;
+  }
+  .contractorRowIdentity{
+    grid-template-columns:46px minmax(0,1fr)!important;
+    gap:12px!important;
+    padding:0 9px!important;
+  }
+  .contractorLetter{
+    width:44px!important;
+    height:44px!important;
+    border-radius:11px!important;
+    font-size:16px!important;
+  }
+  .contractorRowIdentity h3{
+    margin:0 0 4px!important;
+    font-size:19px!important;
+    line-height:1.2!important;
+  }
+  .contractorRowIdentity p{
+    font-size:13px!important;
+    line-height:1.35!important;
+  }
+
+  .contractorRowValue{
+    padding:0 9px!important;
+    font-size:16px!important;
+    line-height:1.35!important;
+    font-weight:560!important;
+  }
+  .contractorRowPhone a{
+    font-size:16px!important;
+  }
+
+  .contractorFieldPill{
+    min-height:34px!important;
+    padding:0 12px!important;
+    border-radius:18px!important;
+    font-size:13px!important;
+    font-weight:720!important;
+  }
+
+  .contractorRowCount span{
+    width:40px!important;
+    height:40px!important;
+    font-size:15px!important;
+    font-weight:800!important;
+  }
+
+  .contractorLatest{
+    padding:0 9px!important;
+  }
+  .contractorLatest b{
+    font-size:15px!important;
+    line-height:1.25!important;
+  }
+  .contractorLatest span{
+    margin-top:4px!important;
+    font-size:13px!important;
+    line-height:1.3!important;
+  }
+
+  .contractorRowActions{
+    gap:7px!important;
+    padding-left:9px!important;
+  }
+  .contractorRowActions button{
+    width:40px!important;
+    height:40px!important;
+    border-radius:10px!important;
+  }
+  .contractorRowActions svg{
+    width:17px!important;
+    height:17px!important;
+  }
+}
+
+@media(max-width:1040px) and (min-width:761px){
+  .contractorToolbar h2{font-size:25px!important}
+  .contractorToolbar p{font-size:13px!important}
+  .contractorSpecialtyFilters button{font-size:12px!important;height:38px!important}
+  .contractorRowIdentity h3{font-size:17px!important}
+  .contractorRowIdentity p{font-size:12px!important}
+  .contractorRowValue{font-size:14px!important}
+  .contractorFieldPill{font-size:12px!important}
+  .contractorLatest b,.contractorLatest span{font-size:12px!important}
+}
