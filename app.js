@@ -1862,7 +1862,7 @@ window.adminToggleUser=async(id,active)=>{
 function canProjectEdit(){return !!(currentAccount?.is_admin||currentBuilding.role!=="viewer")}
 function setProjectEditability(){
  const canEdit=canProjectEdit();
- ["taskForm","energyForm","materialItemForm","stockTxnForm","toolItemForm","maintenanceAssetForm","maintenanceRecordForm","contractorForm","contractorJobForm","constructionMaterialForm","constructionLogForm"].forEach(fid=>{
+ ["taskForm","energyForm","materialItemForm","stockTxnForm","toolItemForm","maintenanceAssetForm","maintenanceRecordForm","contractorForm","contractorJobForm","constructionMaterialForm","constructionStockTxnForm","constructionLogForm"].forEach(fid=>{
    const f=$("#"+fid);if(!f)return;
    f.querySelectorAll("input,select,textarea,button").forEach(el=>{if(el.id!=="cancelEdit"&&el.id!=="energyCancelEdit")el.disabled=!canEdit});
  });
