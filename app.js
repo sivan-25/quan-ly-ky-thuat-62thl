@@ -1314,6 +1314,11 @@ function renderMaterials(){
    const active=allYear?val==="all":Number(val)===month;
    b.classList.toggle("active",active);
    b.setAttribute("aria-current",active?"true":"false");
+   if(val!=="all"){
+     const prefix=y+"-"+String(Number(val)).padStart(2,"0");
+     const hasActivity=inventoryTransactions.some(x=>String(x.tx_date||"").startsWith(prefix));
+     b.classList.toggle("hasActivity",hasActivity);
+   }
  });
 
  const periodText=allYear?("12 tháng / "+y):("Tháng "+String(month).padStart(2,"0")+" / "+y);
@@ -1373,8 +1378,8 @@ function renderMaterials(){
        '<td class="materialNameCell"><b>'+esc(m.name)+'</b><small>'+esc(m.code||"")+(inventoryTrackingStart(m).slice(0,7)===y+"-"+String(month).padStart(2,"0")?' · Bắt đầu '+fmt(inventoryTrackingStart(m)):'')+'</small></td>'+
        '<td>'+esc(m.unit)+'</td>'+
        '<td><b>'+inventoryFmt(mm.begin)+'</b></td>'+
-       '<td class="inText">'+inventoryFmt(mm.inQty)+'</td>'+
-       '<td class="outText">'+inventoryFmt(mm.outQty)+'</td>'+
+       '<td class="inText '+(mm.inQty?"hasValue":"")+'">'+(mm.inQty?"+"+inventoryFmt(mm.inQty):"0")+'</td>'+
+       '<td class="outText '+(mm.outQty?"hasValue":"")+'">'+(mm.outQty?"−"+inventoryFmt(mm.outQty):"0")+'</td>'+
        '<td><b class="stockFinal '+(lowRow?"low":"")+'">'+inventoryFmt(mm.stock)+'</b></td>'+
        '<td><div class="invRowActions compact">'+
          '<button class="move" title="Nhập / Xuất" onclick="openStockTxnModal(\''+m.id+'\')">'+moveIcon+'</button>'+
