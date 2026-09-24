@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260924-1915"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260924-1940"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -785,7 +785,12 @@
 </div>
 <div id="adminPage" class="page modulePage hide">
   <section class="adminHero">
-    <div><span class="adminEyebrow">ESTA · CENTRAL ADMIN</span><h1>Quản trị dự án</h1><p>Quản lý tài khoản và truy cập từng dự án.</p></div>
+    <div class="adminCommandBrand">
+      <div class="adminCommandIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 13h2v2H9zM13 13h2v2h-2z"/></svg>
+      </div>
+      <div><span class="adminEyebrow">ESTA · CENTRAL ADMIN</span><h1>Quản trị dự án</h1><p>Quản lý tài khoản và truy cập từng dự án.</p></div>
+    </div>
     <div class="adminConnectionWrap"><div id="adminConnection" class="adminConnection warn">Chưa kết nối tài khoản Admin trung tâm</div><button id="adminActivateCentral" class="secondary small" type="button">Kích hoạt Admin trung tâm</button></div>
   </section>
 
@@ -1168,14 +1173,22 @@
 </div>
 <div id="maintenancePage" class="page maintenancePage hide">
   <section class="maintenanceHero">
-    <div>
-      <span>ESTA · PREVENTIVE MAINTENANCE</span>
-      <h1>Bảo trì thiết bị kỹ thuật</h1>
-      <p>Quản lý danh mục thiết bị, chu kỳ bảo trì, công việc đến hạn và lịch sử thực hiện theo từng dự án.</p>
+    <div class="maintenanceCommandBrand">
+      <div class="maintenanceCommandIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5M9 5H5v4M19 15v4h-4"/></svg>
+      </div>
+      <div>
+        <span>ESTA · PREVENTIVE MAINTENANCE</span>
+        <h1>Bảo trì thiết bị kỹ thuật</h1>
+        <p>Quản lý danh mục thiết bị, chu kỳ bảo trì, công việc đến hạn và lịch sử thực hiện.</p>
+      </div>
     </div>
-    <div class="maintenanceHeroActions">
-      <button id="maintenanceExportPdf" class="inventorySecondary" type="button">PDF ⇩ Báo cáo</button>
-      <button id="addMaintenanceAsset" class="inventoryPrimary" type="button">＋ Thêm thiết bị</button>
+    <div class="maintenanceCommandRight">
+      <div class="maintenanceProjectMeta"><small>DỰ ÁN</small><b class="buildingNameText">Dự án</b></div>
+      <div class="maintenanceHeroActions">
+        <button id="maintenanceExportPdf" class="inventorySecondary" type="button">PDF ⇩ Báo cáo</button>
+        <button id="addMaintenanceAsset" class="inventoryPrimary" type="button">＋ Thêm thiết bị</button>
+      </div>
     </div>
   </section>
 
@@ -1557,5 +1570,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260924-1915"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260924-1940"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260924-2130"></script></body></html>
