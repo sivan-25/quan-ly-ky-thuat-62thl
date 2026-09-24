@@ -8512,3 +8512,260 @@ i{
   #inventoryPage .materialMonthTabs .yearOverviewBtn{min-width:74px!important}
   #inventoryPage .materialMonthlyTable.yearView{min-width:1540px!important}
 }
+
+/* =========================================================
+   VẬT TƯ THI CÔNG V2 — 12 MONTH STOCK CONTROL
+   ========================================================= */
+#constructionMaterialPage{background:#f4f7fa!important;max-width:none!important}
+#constructionMaterialPage .constructionOverviewV2{
+  max-width:1580px;margin:0 auto;padding:20px 22px 34px;color:#183b56
+}
+#constructionMaterialPage .constructionCommand{
+  min-height:118px;display:flex;align-items:center;justify-content:space-between;gap:22px;
+  padding:20px 22px;border:1px solid #dfe7ec;border-radius:17px;background:#fff;
+  box-shadow:0 8px 26px rgba(23,55,82,.045)
+}
+#constructionMaterialPage .constructionCommandBrand{display:flex;align-items:center;gap:14px;min-width:0}
+#constructionMaterialPage .constructionCommandIcon{
+  width:46px;height:46px;display:grid;place-items:center;flex:0 0 46px;
+  border-radius:13px;background:#eef5f8;color:#2a6984;border:1px solid #dae7ec
+}
+#constructionMaterialPage .constructionCommandIcon svg{
+  width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round
+}
+#constructionMaterialPage .constructionCommandBrand span{
+  display:block;color:#9a7660;font-size:6.5px;letter-spacing:1.7px;font-weight:850
+}
+#constructionMaterialPage .constructionCommandBrand h1{
+  margin:5px 0 3px;color:#173d58;font-size:23px;line-height:1.08;letter-spacing:-.35px
+}
+#constructionMaterialPage .constructionCommandBrand p{
+  margin:0;max-width:660px;color:#7f929f;font-size:9px;line-height:1.5
+}
+#constructionMaterialPage .constructionCommandRight{
+  display:flex;align-items:end;justify-content:flex-end;gap:6px;flex-wrap:wrap
+}
+#constructionMaterialPage .constructionCommandRight label{
+  min-width:96px;padding:6px 9px;border:1px solid #dfe7ec;border-radius:9px;background:#f8fafb
+}
+#constructionMaterialPage .constructionCommandRight label small{
+  display:block;color:#8b9aa4;font-size:5.5px;letter-spacing:.7px
+}
+#constructionMaterialPage .constructionCommandRight select{
+  width:100%;height:23px;border:0;outline:0;background:transparent;color:#31536a;font-size:8px;font-weight:750
+}
+#constructionMaterialPage .constructionGhostBtn,
+#constructionMaterialPage .constructionPrimaryBtn{
+  height:37px;padding:0 10px;border-radius:9px;font-size:7.5px;font-weight:760;white-space:nowrap
+}
+#constructionMaterialPage .constructionGhostBtn{
+  border:1px solid #dce5ea;background:#fff;color:#4f6e81
+}
+#constructionMaterialPage .constructionPrimaryBtn{
+  border:0;background:linear-gradient(135deg,#173f5d,#17627b);color:#fff;
+  box-shadow:0 6px 14px rgba(22,75,103,.12)
+}
+#constructionMaterialPage .constructionGhostBtn:hover,
+#constructionMaterialPage .constructionPrimaryBtn:hover{transform:translateY(-1px);filter:brightness(.99)}
+
+#constructionMaterialPage .constructionMonthPanel{
+  margin-top:11px;padding:11px 12px 12px;border:1px solid #dfe7ec;border-radius:14px;background:#fff;
+  box-shadow:0 6px 20px rgba(23,55,82,.03)
+}
+#constructionMaterialPage .constructionMonthHead{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 3px 8px
+}
+#constructionMaterialPage .constructionMonthHead span{
+  display:block;color:#9a7660;font-size:5.8px;font-weight:850;letter-spacing:1.3px
+}
+#constructionMaterialPage .constructionMonthHead b{
+  display:block;margin-top:2px;color:#23485f;font-size:9px
+}
+#constructionMaterialPage .constructionMonthHead small{color:#8b9ca6;font-size:6.5px}
+#constructionMaterialPage .constructionMonthTabs{
+  display:grid;grid-template-columns:1.35fr repeat(12,minmax(48px,1fr));gap:4px
+}
+#constructionMaterialPage .constructionMonthTabs button{
+  height:34px;border:1px solid #e0e7eb;border-radius:8px;background:#f8fafb;color:#69808f;
+  font-size:7px;font-weight:720
+}
+#constructionMaterialPage .constructionMonthTabs button:hover{border-color:#bcd6df;background:#f2f8fa;color:#2e6b83}
+#constructionMaterialPage .constructionMonthTabs button.active{
+  border-color:#8dcbd8;background:#e9f6f8;color:#176f83;
+  box-shadow:inset 0 0 0 1px rgba(24,147,172,.04)
+}
+
+#constructionMaterialPage .constructionStatsV2{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:10px 0
+}
+#constructionMaterialPage .constructionStatsV2 article{
+  min-height:88px;display:flex;align-items:center;gap:11px;padding:13px 14px;
+  border:1px solid #e0e8ed;border-radius:13px;background:#fff;box-shadow:0 5px 18px rgba(23,55,82,.03)
+}
+#constructionMaterialPage .constructionMetricIcon{
+  width:39px;height:39px;display:grid;place-items:center;flex:0 0 39px;border-radius:11px
+}
+#constructionMaterialPage .constructionMetricIcon svg{
+  width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round
+}
+#constructionMaterialPage .constructionMetricIcon.in{background:#eaf8f1;color:#2f8c65}
+#constructionMaterialPage .constructionMetricIcon.out{background:#fff4e4;color:#b97b29}
+#constructionMaterialPage .constructionMetricIcon.stock{background:#eaf4fb;color:#347ba8}
+#constructionMaterialPage .constructionMetricIcon.low{background:#fff0f0;color:#bf5f64}
+#constructionMaterialPage .constructionStatsV2 small{
+  display:block;color:#81939f;font-size:6px;letter-spacing:.65px;font-weight:780
+}
+#constructionMaterialPage .constructionStatsV2 b{
+  display:block;margin:3px 0 1px;color:#1c425b;font-size:20px;line-height:1
+}
+#constructionMaterialPage .constructionStatsV2 em{
+  display:block;color:#9aa8b1;font-size:6.2px;font-style:normal
+}
+
+#constructionMaterialPage .constructionWorkspace,
+#constructionMaterialPage .constructionHistoryPanel{
+  overflow:visible;border:1px solid #dfe7ec;border-radius:15px;background:#fff;
+  box-shadow:0 7px 24px rgba(23,55,82,.035)
+}
+#constructionMaterialPage .constructionToolbar,
+#constructionMaterialPage .constructionHistoryHead{
+  min-height:65px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:13px 15px;border-bottom:1px solid #e9eef1
+}
+#constructionMaterialPage .constructionToolbar>div:first-child>span,
+#constructionMaterialPage .constructionHistoryHead>div>span{
+  display:block;color:#9a7660;font-size:5.8px;font-weight:850;letter-spacing:1.3px
+}
+#constructionMaterialPage .constructionToolbar h2,
+#constructionMaterialPage .constructionHistoryHead h2{
+  margin:3px 0 0;color:#20445d;font-size:12px;font-weight:760
+}
+#constructionMaterialPage .constructionToolbar h2 b{color:#8295a1;font-size:8px;font-weight:650}
+#constructionMaterialPage .constructionHistoryHead small{color:#8d9ca6;font-size:6.5px}
+#constructionMaterialPage .constructionToolbarRight{display:flex;align-items:center;gap:6px}
+#constructionMaterialPage .constructionSearch{
+  width:min(320px,30vw);height:34px;display:flex;align-items:center;gap:7px;padding:0 9px;
+  border:1px solid #dce5ea;border-radius:8px;background:#f8fafb
+}
+#constructionMaterialPage .constructionSearch svg{
+  width:14px;height:14px;fill:none;stroke:#78909e;stroke-width:1.8
+}
+#constructionMaterialPage .constructionSearch input{
+  width:100%;border:0;outline:0;background:transparent;color:#38586c;font-size:8px
+}
+#constructionMaterialPage #constructionCategorySelect{
+  height:34px;padding:0 8px;border:1px solid #dce5ea;border-radius:8px;background:#fff;
+  color:#506d7f;font-size:7.5px;outline:0
+}
+#constructionMaterialPage .constructionTableCard{overflow:visible}
+#constructionMaterialPage .constructionTableScroll{width:100%;overflow:auto}
+#constructionMaterialPage table{width:100%;border-collapse:separate;border-spacing:0;white-space:nowrap}
+#constructionMaterialPage th{
+  height:38px;padding:0 8px;border-bottom:1px solid #dfe7ec;background:#f5f8fa;
+  color:#6d8290;font-size:6.2px;font-weight:800;letter-spacing:.35px;text-transform:uppercase
+}
+#constructionMaterialPage th small{
+  display:block;margin-top:2px;color:#98a6af;font-size:5px;font-weight:600;letter-spacing:0;text-transform:none
+}
+#constructionMaterialPage td{
+  height:48px;padding:7px 8px;border-bottom:1px solid #eef2f4;color:#405f72;
+  font-size:7.5px;vertical-align:middle
+}
+#constructionMaterialPage tbody tr:last-child td{border-bottom:0}
+#constructionMaterialPage tbody tr:hover td{background:#fbfcfd}
+#constructionMaterialPage .constructionNameCell{min-width:175px}
+#constructionMaterialPage .constructionNameLink{
+  display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;color:inherit
+}
+#constructionMaterialPage .constructionNameLink b{
+  display:block;color:#1f445d;font-size:8px;font-weight:720
+}
+#constructionMaterialPage .constructionNameLink small{
+  display:block;margin-top:2px;color:#94a2ab;font-size:6px;max-width:180px;overflow:hidden;text-overflow:ellipsis
+}
+#constructionMaterialPage .constructionCategoryPill{
+  display:inline-block;padding:4px 7px;border-radius:999px;background:#edf4f7;color:#517184;
+  font-size:6px;font-weight:760
+}
+#constructionMaterialPage .constructionSpec{max-width:190px;overflow:hidden;text-overflow:ellipsis}
+#constructionMaterialPage .inText{color:#2f8c65!important;font-weight:700}
+#constructionMaterialPage .outText{color:#b7605e!important;font-weight:700}
+#constructionMaterialPage .constructionStockFinal{color:#214b63}
+#constructionMaterialPage .constructionStockFinal.low{color:#b7565c}
+#constructionMaterialPage .constructionLowRow td{background:#fffafa}
+#constructionMaterialPage .constructionRowActions{display:flex;align-items:center;gap:3px}
+#constructionMaterialPage .constructionRowActions button,
+#constructionMaterialPage .constructionDeleteTx{
+  width:28px;height:27px;display:grid;place-items:center;padding:0;
+  border:1px solid #dce5ea;border-radius:7px;background:#fff;color:#4f6e80;
+  font-size:8px;font-weight:750
+}
+#constructionMaterialPage .constructionRowActions button:hover{background:#f3f8fa;border-color:#bdd5df}
+#constructionMaterialPage .constructionRowActions button.danger,
+#constructionMaterialPage .constructionDeleteTx{border-color:#eed8d8;background:#fff8f8;color:#b55d62}
+#constructionMaterialPage .constructionTxType{
+  display:inline-block;padding:4px 7px;border-radius:999px;font-size:6px;font-weight:780
+}
+#constructionMaterialPage .constructionTxType.in{background:#eaf8f1;color:#2c815b}
+#constructionMaterialPage .constructionTxType.out{background:#fff0ef;color:#ad5858}
+#constructionMaterialPage .constructionHistoryPanel{margin-top:10px}
+#constructionMaterialPage .constructionEmptyV2{
+  padding:28px 14px;text-align:center;color:#8d9ca6;font-size:8px
+}
+#constructionMaterialPage .constructionEmptyV2 b{display:block;color:#5b7383;margin-bottom:4px}
+#constructionMaterialPage .constructionEmptyV2 span{display:block}
+#constructionMaterialPage #constructionStockTable.annual{min-width:1700px}
+#constructionMaterialPage .constructionSticky{
+  position:sticky;left:0;z-index:3;min-width:190px;background:#fff!important;
+  box-shadow:5px 0 10px rgba(28,60,78,.035)
+}
+#constructionMaterialPage thead .constructionSticky{z-index:5;background:#f5f8fa!important}
+#constructionMaterialPage .constructionMonthCell{min-width:74px;text-align:center}
+#constructionMaterialPage .constructionMonthCell span,
+#constructionMaterialPage .constructionMonthCell b{display:block}
+#constructionMaterialPage .constructionMonthCell .in{color:#2f8c65}
+#constructionMaterialPage .constructionMonthCell .out{color:#b7605e}
+#constructionMaterialPage .constructionMonthCell b{margin-top:2px;color:#244a62}
+
+/* Construction stock modal */
+#constructionStockTxnModal .constructionStockModalCard{width:min(700px,94vw)!important}
+
+/* Hide global work-only controls in this module */
+#app.constructionMode .filterWrap,
+#app.constructionMode #exportBtn{display:none!important}
+
+@media(max-width:1180px){
+  #constructionMaterialPage .constructionCommand{align-items:flex-start;flex-direction:column}
+  #constructionMaterialPage .constructionCommandRight{width:100%;justify-content:flex-start}
+  #constructionMaterialPage .constructionMonthTabs{
+    grid-template-columns:repeat(7,minmax(52px,1fr))
+  }
+  #constructionMaterialPage .constructionStatsV2{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  #constructionMaterialPage .constructionOverviewV2{padding:12px 10px 26px}
+  #constructionMaterialPage .constructionCommand{min-height:0;padding:15px;border-radius:14px}
+  #constructionMaterialPage .constructionCommandIcon{width:39px;height:39px;flex-basis:39px}
+  #constructionMaterialPage .constructionCommandBrand h1{font-size:19px}
+  #constructionMaterialPage .constructionCommandBrand p{font-size:7.5px}
+  #constructionMaterialPage .constructionCommandRight{display:grid;grid-template-columns:1fr 1fr}
+  #constructionMaterialPage .constructionCommandRight label{grid-column:1/-1}
+  #constructionMaterialPage .constructionGhostBtn,#constructionMaterialPage .constructionPrimaryBtn{width:100%}
+  #constructionMaterialPage .constructionMonthHead{display:block}
+  #constructionMaterialPage .constructionMonthHead small{display:block;margin-top:4px}
+  #constructionMaterialPage .constructionMonthTabs{
+    display:flex;overflow-x:auto;grid-template-columns:none;padding-bottom:2px
+  }
+  #constructionMaterialPage .constructionMonthTabs button{min-width:55px;flex:0 0 55px}
+  #constructionMaterialPage .constructionMonthTabs button:first-child{min-width:78px;flex-basis:78px}
+  #constructionMaterialPage .constructionStatsV2{grid-template-columns:1fr 1fr;gap:7px}
+  #constructionMaterialPage .constructionStatsV2 article{min-height:78px;padding:10px;gap:8px}
+  #constructionMaterialPage .constructionStatsV2 b{font-size:17px}
+  #constructionMaterialPage .constructionToolbar,
+  #constructionMaterialPage .constructionHistoryHead{align-items:flex-start;flex-direction:column}
+  #constructionMaterialPage .constructionToolbarRight{width:100%;display:grid;grid-template-columns:1fr}
+  #constructionMaterialPage .constructionSearch{width:100%}
+  #constructionMaterialPage #constructionCategorySelect{width:100%}
+  #constructionMaterialPage #constructionStockTable:not(.annual){min-width:1050px}
+  #constructionMaterialPage .constructionHistoryPanel table{min-width:980px}
+}
