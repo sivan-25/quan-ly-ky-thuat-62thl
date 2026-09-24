@@ -1042,7 +1042,7 @@ function resetEnergyForm(){
  $("#energyNote").value="";
  $("#energyImage").value="";
  $("#energyImagePreview").innerHTML="";
- $("#energySaveBtn").textContent="Lưu";
+ $("#energySaveBtn").textContent="Lưu chỉ số";
  $("#energyCancelEdit").classList.add("hide");
  $("#energyFormTitle").textContent=m.form;
  $("#energyUnitHint").textContent="Đơn vị: "+m.unit;
@@ -1141,7 +1141,7 @@ window.editEnergy=id=>{
  document.querySelectorAll("[data-energy-type]").forEach(b=>b.classList.toggle("active",b.dataset.energyType===energyType));
  $("#energyEditId").value=x.id;$("#energyDate").value=x.date;$("#energyValue").value=x.value;setPeopleSelected("energy",performerArray(x));$("#energyNote").value=x.note||"";
  $("#energyImagePreview").innerHTML=x.image?mediaImgHtml(x.image,"")+'<span>Ảnh hiện tại</span>':"";hydrateMediaImages($("#energyImagePreview"));
- $("#energySaveBtn").textContent="Cập nhật";$("#energyCancelEdit").classList.remove("hide");renderEnergy();
+ $("#energySaveBtn").textContent="Cập nhật chỉ số";$("#energyCancelEdit").classList.remove("hide");renderEnergy();
  window.scrollTo({top:0,behavior:"smooth"});
 };
 window.deleteEnergy=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(!confirm("Xóa bản ghi chỉ số này?"))return;energySaveAll(energyLoad().filter(x=>String(x.id)!==String(id)));await syncEnergyRecord("delete_energy",id);renderEnergy();renderHomeDashboard();toast("Đã xóa bản ghi")};

@@ -1,0 +1,387 @@
+/* Energy workspace — scoped to this module so other pages keep their styles. */
+#app #energyPage{
+  --energy-ink:#17394f;
+  --energy-teal:#0b8990;
+  --energy-line:#dce8ed;
+  --energy-muted:#647d8c;
+  max-width:1640px;
+  padding:22px 28px 42px!important;
+}
+
+/* The page heading gives the project context a clear focal point. */
+#app #energyPage .energyHead{
+  position:relative;
+  isolation:isolate;
+  display:grid!important;
+  grid-template-columns:58px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:20px!important;
+  min-height:154px!important;
+  margin:0 0 18px!important;
+  padding:27px 32px!important;
+  overflow:hidden;
+  border:1px solid #21556c!important;
+  border-radius:20px!important;
+  background:linear-gradient(110deg,#12354d 0%,#153f52 55%,#0b777f 100%)!important;
+  box-shadow:0 18px 38px rgba(11,48,66,.14)!important;
+}
+#app #energyPage .energyHead:before,
+#app #energyPage .energyHead:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:50%;
+  pointer-events:none;
+}
+#app #energyPage .energyHead:before{width:390px;height:390px;right:-85px;top:-240px}
+#app #energyPage .energyHead:after{width:255px;height:255px;right:130px;bottom:-213px}
+#app #energyPage .energyHead .headIcon.energyIcon{
+  width:58px!important;height:58px!important;
+  border:1px solid rgba(255,255,255,.3)!important;
+  border-radius:17px!important;
+  background:rgba(255,255,255,.13)!important;
+  box-shadow:none!important;
+}
+#app #energyPage .energyHead .headIcon svg{width:26px;height:26px}
+#app #energyPage .energyHead .pageEyebrow,
+#app #energyPage .energyHead h1,
+#app #energyPage .energyHead p{color:#fff!important}
+#app #energyPage .energyHead .pageEyebrow{font-size:10px!important;letter-spacing:2px!important;opacity:.74}
+#app #energyPage .energyHead h1{margin:5px 0 7px!important;font-size:30px!important;line-height:1.12!important;letter-spacing:-.7px}
+#app #energyPage .energyHead p{margin:0!important;font-size:13px!important;line-height:1.55!important;opacity:.78}
+#app #energyPage .energyHead .headMeta{display:flex!important;gap:9px;justify-content:flex-end;max-width:440px}
+#app #energyPage .energyHead .headMeta span{
+  min-height:39px!important;
+  padding:0 13px!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+  border-radius:11px!important;
+  background:rgba(255,255,255,.13)!important;
+  color:#d4e8ee!important;
+  font-size:10px!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(8px);
+}
+#app #energyPage .energyHead .headMeta b{color:#fff!important;font-size:11px!important}
+#app #energyPage .energyHead .headMeta i{background:#9be4d4!important;box-shadow:0 0 0 3px rgba(155,228,212,.15)!important}
+
+/* Navigation has large, readable hit areas. */
+#app #energyPage .energyTabs{
+  display:flex!important;
+  width:max-content;
+  max-width:100%;
+  gap:5px!important;
+  margin:0 0 18px!important;
+  padding:5px!important;
+  border:1px solid var(--energy-line)!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 6px 20px rgba(27,66,84,.04)!important;
+}
+#app #energyPage .energyTabs button{
+  display:flex!important;
+  gap:9px!important;
+  align-items:center!important;
+  height:46px!important;
+  padding:0 20px!important;
+  border-radius:10px!important;
+  color:#577486!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  white-space:nowrap;
+}
+#app #energyPage .energyTabs button.active{
+  border-color:#b6dfdf!important;
+  background:linear-gradient(135deg,#e9f8f6,#f4fcfb)!important;
+  color:#076d74!important;
+  box-shadow:0 3px 9px rgba(10,104,112,.07)!important;
+}
+#app #energyPage .energyTabs button:focus-visible,
+#app #energyPage button:focus-visible,
+#app #energyPage input:focus-visible{outline:3px solid rgba(21,170,176,.34)!important;outline-offset:2px}
+
+/* Key readings appear before the input form. */
+#app #energyPage .energySummaryCards{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:13px!important;
+  margin:0 0 18px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+#app #energyPage .energySummaryCards article{
+  position:relative;
+  min-width:0;
+  min-height:108px!important;
+  padding:20px 22px!important;
+  overflow:hidden;
+  border:1px solid var(--energy-line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 7px 25px rgba(20,62,82,.045)!important;
+}
+#app #energyPage .energySummaryCards article:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:#3190a6;
+}
+#app #energyPage .energySummaryCards article:nth-child(2):before{background:#1c9d8e}
+#app #energyPage .energySummaryCards article:nth-child(3):before{background:#c3955b}
+#app #energyPage .energySummaryCards article:after{
+  content:"";position:absolute;right:16px;top:15px;width:26px;height:26px;
+  border-radius:9px;background:#eef8f8;
+}
+#app #energyPage .energySummaryCards article:nth-child(3):after{background:#fbf4eb}
+#app #energyPage .energySummaryCards small{
+  display:block!important;
+  color:#688394!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  letter-spacing:1.15px!important;
+}
+#app #energyPage .energySummaryCards strong{
+  display:block!important;
+  margin-top:14px!important;
+  color:var(--energy-ink)!important;
+  font-size:27px!important;
+  font-weight:780!important;
+  line-height:1.1!important;
+  overflow-wrap:anywhere;
+}
+
+/* The title panel and form share one compact card. */
+#app #energyPage .energyCard{
+  display:grid!important;
+  grid-template-columns:minmax(225px,265px) minmax(0,1fr)!important;
+  gap:0!important;
+  margin-bottom:18px!important;
+  overflow:visible!important;
+  border:1px solid var(--energy-line)!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  box-shadow:0 8px 28px rgba(20,62,82,.055)!important;
+}
+#app #energyPage .energyCardTitle{
+  position:relative;
+  display:flex!important;
+  align-items:flex-start!important;
+  flex-direction:column-reverse!important;
+  justify-content:flex-end!important;
+  gap:23px!important;
+  min-height:232px!important;
+  margin:0!important;
+  padding:28px 24px!important;
+  border:0!important;
+  border-right:1px solid #dce8ed!important;
+  border-radius:18px 0 0 18px!important;
+  background:linear-gradient(160deg,#e5f5f4 0%,#f3faf9 80%)!important;
+}
+#app #energyPage .energyCardTitle>div:first-child{min-width:0}
+#app #energyPage .energyCardTitle>div:first-child>span{
+  color:#177e83!important;font-size:10px!important;letter-spacing:1.6px!important
+}
+#app #energyPage .energyCardTitle h2{
+  margin:9px 0 5px!important;
+  color:#173f50!important;
+  font-size:23px!important;
+  line-height:1.2!important;
+}
+#app #energyPage .energyCardTitle p{color:#4d7580!important;font-size:12px!important;line-height:1.5!important}
+#app #energyPage .energyCardTitle .energyFormHelp{max-width:205px;margin-top:13px!important;color:#61848d!important;font-size:11px!important}
+#app #energyPage .energyCardTitle .energyMark{
+  width:48px!important;height:48px!important;
+  border:1px solid #bee3e1!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  color:#16858b!important;
+}
+#app #energyPage .energyCardTitle .energyMark svg{width:23px;height:23px}
+#app #energyPage #energyForm{
+  display:grid!important;
+  grid-template-columns:minmax(145px,1fr) minmax(165px,1.1fr) minmax(235px,1.65fr)!important;
+  grid-template-areas:"edate value eperformer" "eimage enote actions"!important;
+  align-items:end!important;
+  gap:18px 15px!important;
+  min-width:0;
+  padding:26px 28px!important;
+}
+#app #energyPage #energyForm>label:nth-of-type(1){grid-area:edate!important}
+#app #energyPage #energyForm>label:nth-of-type(2){grid-area:value!important}
+#app #energyPage #energyForm .energyPerformerField{grid-area:eperformer!important}
+#app #energyPage #energyForm .energyImageField{grid-area:eimage!important}
+#app #energyPage #energyForm .energyNoteField{grid-area:enote!important}
+#app #energyPage #energyForm .energyActions{grid-area:actions!important}
+#app #energyPage #energyForm>label,
+#app #energyPage #energyForm .energyActions{min-width:0}
+#app #energyPage #energyForm label>span:first-child{
+  margin-bottom:8px!important;color:#405f70!important;font-size:12px!important;font-weight:720!important
+}
+#app #energyPage #energyForm input:not([type="hidden"]),
+#app #energyPage #energyForm .peopleSelectBtn{
+  width:100%;height:48px!important;
+  border:1px solid #cfdee5!important;
+  border-radius:10px!important;
+  background:#fbfdfe!important;
+  color:#193e53!important;
+  font-size:14px!important;
+  box-shadow:none!important;
+}
+#app #energyPage #energyForm .peopleSelectBtn{display:flex;align-items:center;justify-content:space-between;padding:0 13px!important}
+#app #energyPage #energyForm .peopleSelectBtn span{font-size:13px!important}
+#app #energyPage #energyForm .energyNoteField{width:auto!important;max-width:none!important}
+#app #energyPage #energyForm .energyImageField{position:relative;min-height:76px}
+#app #energyPage #energyForm .energyImageField input[type="file"]{
+  position:absolute!important;left:0;right:0;bottom:0;z-index:2;
+  width:100%!important;height:48px!important;min-height:48px!important;
+  padding:0!important;opacity:0!important;cursor:pointer
+}
+#app #energyPage .energyUploadPrompt{
+  display:flex;align-items:center;gap:9px;
+  width:100%;height:48px;padding:0 12px;
+  border:1px dashed #a8cbd0;border-radius:10px;
+  background:#f5fbfa;color:#245d68;
+}
+#app #energyPage .energyUploadPrompt>span{font-size:20px;font-weight:700;line-height:1}
+#app #energyPage .energyUploadPrompt b{font-size:12px;white-space:nowrap}
+#app #energyPage .energyUploadPrompt small{font-size:10px;color:#7d959e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app #energyPage .energyImageField:focus-within .energyUploadPrompt{outline:3px solid rgba(21,170,176,.25);outline-offset:2px}
+#app #energyPage .energyActions{display:flex;align-items:center;justify-content:flex-end;gap:8px!important;min-height:48px!important}
+#app #energyPage .energyActions .primary{
+  height:48px!important;min-width:144px!important;padding:0 20px!important;
+  border:0!important;border-radius:10px!important;
+  background:linear-gradient(115deg,#0c858a,#126c7b)!important;
+  color:#fff!important;font-size:13px!important;font-weight:750!important;
+  box-shadow:0 10px 22px rgba(12,112,122,.17)!important;
+}
+#app #energyPage .energyActions .primary:hover{filter:brightness(1.07)}
+#app #energyPage .energyActions .secondary{height:48px!important;font-size:12px!important}
+#app #energyPage .energyImagePreview{grid-column:2;margin:-9px 28px 17px!important;font-size:12px!important}
+
+/* History gets a distinct toolbar and space for actual readings. */
+#app #energyPage .energyTableCard{
+  overflow:visible!important;
+  border:1px solid var(--energy-line)!important;
+  border-radius:18px!important;
+  box-shadow:0 8px 28px rgba(20,62,82,.05)!important;
+}
+#app #energyPage .energyTableTop{
+  display:flex!important;align-items:flex-start!important;flex-direction:column!important;
+  gap:19px!important;margin:0!important;padding:23px 26px 19px!important;
+  border-bottom:1px solid #e4edf0!important;border-radius:18px 18px 0 0!important;
+  background:#fff!important;
+}
+#app #energyPage .energySectionKicker{color:#0b858b;font-size:10px;font-weight:800;letter-spacing:1.6px}
+#app #energyPage .energyTableTop h2{margin:6px 0 0!important;color:var(--energy-ink)!important;font-size:21px!important;line-height:1.3!important}
+#app #energyPage .energyTableTop p{margin:5px 0 0!important;color:var(--energy-muted)!important;font-size:12px!important;line-height:1.4!important}
+#app #energyPage .energyTopTools{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex-wrap:wrap!important;gap:12px!important;width:100%!important;margin:0!important;
+}
+#app #energyPage .energyFilters{
+  display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+  gap:8px!important;min-width:0;margin:0!important;padding:0!important;
+  border:0!important;background:transparent!important;
+}
+#app #energyPage .filterLabel{margin-right:5px!important;color:#536e7d!important;font-size:11px!important;font-weight:700!important;white-space:nowrap}
+#app #energyPage .rangeButtons{display:flex!important;gap:4px!important}
+#app #energyPage .rangeButtons button{
+  min-width:60px;height:38px!important;padding:0 10px!important;
+  border:1px solid #d8e5e9!important;border-radius:8px!important;
+  background:#fff!important;color:#446576!important;font-size:11px!important;font-weight:700!important;
+}
+#app #energyPage .rangeButtons button.active{border-color:#8fcfd0!important;background:#eaf8f6!important;color:#0b7377!important}
+#app #energyPage .energyFilters label{width:145px!important;color:#597483!important;font-size:11px!important;font-weight:700!important}
+#app #energyPage .energyFilters label input{width:100%;height:38px!important;margin-top:4px!important;padding:0 9px!important;font-size:11px!important}
+#app #energyPage .energyFilters .small,#app #energyPage #energyExportPdf{
+  height:38px!important;padding:0 12px!important;font-size:11px!important;font-weight:700!important;
+}
+#app #energyPage #energyExportPdf{border-color:#a6ced1!important;border-radius:9px!important;background:#f2faf9!important;color:#126f78!important;white-space:nowrap}
+#app #energyPage #energyExportPdf b{color:#b36248!important}
+#app #energyPage .energyDesktopTable{padding:0 22px 16px!important;overflow-x:auto!important}
+#app #energyPage .energyDesktopTable table{min-width:860px;border:1px solid #e2ebef!important;border-radius:10px!important;overflow:hidden}
+#app #energyPage .energyDesktopTable th{height:44px!important;color:#537083!important;font-size:11px!important;letter-spacing:.3px!important}
+#app #energyPage .energyDesktopTable td{padding:12px 10px!important;color:#284b60!important;font-size:12px!important}
+#app #energyPage .energyDesktopTable .meterValue b{font-size:14px!important;color:#0f5970!important}
+#app #energyPage .energyLegend{padding:0 22px 17px!important;color:#78909b!important;font-size:11px!important}
+
+@media(max-width:1200px){
+  #app #energyPage .energyHead{grid-template-columns:58px minmax(0,1fr)!important}
+  #app #energyPage .energyHead .headMeta{grid-column:2;justify-content:flex-start;max-width:none}
+  #app #energyPage .energyCard{grid-template-columns:210px minmax(0,1fr)!important}
+  #app #energyPage #energyForm{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-areas:"edate value" "eperformer eperformer" "eimage enote" "actions actions"!important;
+  }
+}
+@media(max-width:760px){
+  #app #energyPage{padding:12px 12px 30px!important}
+  #app #energyPage .energyHead{
+    display:grid!important;grid-template-columns:44px minmax(0,1fr)!important;
+    gap:12px!important;min-height:0!important;
+    padding:21px 18px!important;margin-bottom:14px!important;border-radius:16px!important;
+  }
+  #app #energyPage .energyHead .headIcon.energyIcon{width:44px!important;height:44px!important;border-radius:12px!important}
+  #app #energyPage .energyHead .headIcon svg{width:22px;height:22px}
+  #app #energyPage .energyHead .pageEyebrow{font-size:8px!important;letter-spacing:1.2px!important}
+  #app #energyPage .energyHead h1{font-size:23px!important;line-height:1.2!important}
+  #app #energyPage .energyHead p{font-size:11px!important}
+  #app #energyPage .energyHead .headMeta{grid-column:1/-1;display:flex!important;justify-content:flex-start;gap:6px;max-width:100%}
+  #app #energyPage .energyHead .headMeta span{min-height:31px!important;padding:0 9px!important;font-size:9px!important}
+  #app #energyPage .energyHead .headMeta b{font-size:9px!important}
+  #app #energyPage .energyTabs{width:100%!important;margin-bottom:14px!important}
+  #app #energyPage .energyTabs button{
+    flex:1;min-width:0;height:44px!important;padding:0 6px!important;
+    justify-content:center!important;gap:5px!important;font-size:11px!important;white-space:normal;line-height:1.2;
+  }
+  #app #energyPage .energyTabs button svg{width:16px!important;height:16px!important;flex:0 0 16px}
+  #app #energyPage .energySummaryCards{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-areas:"latest latest" "count use"!important;
+    gap:9px!important;margin-bottom:14px!important;
+  }
+  #app #energyPage .energySummaryCards article{min-height:83px!important;padding:14px 15px!important}
+  #app #energyPage .energySummaryCards article:first-child{grid-area:count}
+  #app #energyPage .energySummaryCards article:nth-child(2){grid-area:latest}
+  #app #energyPage .energySummaryCards article:nth-child(3){grid-area:use}
+  #app #energyPage .energySummaryCards small{font-size:9px!important;letter-spacing:.7px!important}
+  #app #energyPage .energySummaryCards strong{margin-top:10px!important;font-size:20px!important}
+  #app #energyPage .energyCard{display:block!important;margin-bottom:14px!important;border-radius:15px!important}
+  #app #energyPage .energyCardTitle{
+    display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;
+    min-height:0!important;padding:16px!important;gap:10px!important;
+    border:0!important;border-bottom:1px solid #dce8ed!important;border-radius:15px 15px 0 0!important;
+  }
+  #app #energyPage .energyCardTitle>div:first-child{order:1}
+  #app #energyPage .energyCardTitle .energyMark{order:2;width:40px!important;height:40px!important;flex-basis:40px!important}
+  #app #energyPage .energyCardTitle h2{margin:4px 0!important;font-size:19px!important}
+  #app #energyPage .energyCardTitle .energyFormHelp{display:none}
+  #app #energyPage #energyForm{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-areas:"edate value" "eperformer eperformer" "eimage eimage" "enote enote" "actions actions"!important;
+    gap:12px!important;padding:16px!important;
+  }
+  #app #energyPage #energyForm label>span:first-child{font-size:12px!important}
+  #app #energyPage #energyForm input:not([type="hidden"]),
+  #app #energyPage #energyForm .peopleSelectBtn{height:46px!important;font-size:15px!important}
+  #app #energyPage .energyActions{width:100%;min-height:46px!important}
+  #app #energyPage .energyActions .primary{flex:1;height:46px!important;font-size:14px!important}
+  #app #energyPage .energyUploadPrompt{height:46px}
+  #app #energyPage .energyUploadPrompt small{display:none}
+  #app #energyPage .energyImagePreview{margin:0 16px 16px!important}
+  #app #energyPage .energyTableTop{gap:14px!important;padding:18px 15px!important}
+  #app #energyPage .energyTableTop h2{font-size:18px!important}
+  #app #energyPage .energyTopTools{align-items:stretch!important;gap:12px!important}
+  #app #energyPage .energyFilters{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%}
+  #app #energyPage .filterLabel{grid-column:1/-1;display:block!important;margin:0!important}
+  #app #energyPage .rangeButtons{grid-column:1/-1;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #app #energyPage .rangeButtons button{min-width:0;padding:0 3px!important;font-size:11px!important}
+  #app #energyPage .energyFilters label{width:auto!important;font-size:11px!important}
+  #app #energyPage .energyFilters .small{height:42px!important;font-size:12px!important}
+  #app #energyPage #energyExportPdf{width:100%;height:42px!important;font-size:12px!important}
+  #app #energyPage .energyLegend{padding:12px 16px!important;font-size:10px!important}
+}
+@media(max-width:370px){
+  #app #energyPage .energyTabs button{font-size:10px!important}
+  #app #energyPage .energyHead .headMeta{flex-direction:column;align-items:flex-start}
+  #app #energyPage .energySummaryCards strong{font-size:18px!important}
+}

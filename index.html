@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260924-1940"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260924-1940"><link rel="stylesheet" href="energy-refresh.css?v=20260925-01"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -909,36 +909,42 @@
 <div id="energyPage" class="page modulePage proModulePage hide">
   <section class="pageHead proPageHead energyHead">
     <div class="headIcon energyIcon"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div>
-    <div><span class="pageEyebrow">ENERGY MANAGEMENT</span><h1>Năng lượng</h1><p>Ghi chỉ số, theo dõi tiêu thụ và kiểm soát dữ liệu năng lượng tòa nhà.</p></div>
+    <div><span class="pageEyebrow">ESTA · THEO DÕI NĂNG LƯỢNG</span><h1>Năng lượng tòa nhà</h1><p>Ghi chỉ số và theo dõi mức tiêu thụ điện, nước, điện mặt trời.</p></div>
     <div class="headMeta"><span><i></i> Ngày: <b id="energyToday"></b></span><span><i></i> Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div>
   </section>
 
   <section class="energyTabs" aria-label="Loại chỉ số">
-    <button class="active" data-energy-type="electric"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg><span>Chỉ số điện</span></button>
-    <button data-energy-type="water"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg><span>Chỉ số nước</span></button>
-    <button data-energy-type="solar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Năng lượng mặt trời</span></button>
+    <button type="button" class="active" data-energy-type="electric"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg><span>Chỉ số điện</span></button>
+    <button type="button" data-energy-type="water"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg><span>Chỉ số nước</span></button>
+    <button type="button" data-energy-type="solar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Năng lượng mặt trời</span></button>
+  </section>
+
+  <section class="energySummaryCards" aria-label="Tổng quan chỉ số">
+    <article><small>BẢN GHI</small><strong id="energyRecordCount">0</strong></article>
+    <article><small>CHỈ SỐ MỚI NHẤT</small><strong id="energyLatestValue">—</strong></article>
+    <article><small>TIÊU THỤ KỲ LỌC</small><strong id="energyPeriodUse">—</strong></article>
   </section>
 
   <section class="energyCard premiumFormCard">
-    <div class="formSectionHead energyCardTitle"><div><span>ESTA · METER READING</span><h2 id="energyFormTitle">Ghi chỉ số điện</h2><p id="energyUnitHint">Đơn vị: kWh</p></div><div class="formSectionMark energyMark"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div></div>
+    <div class="formSectionHead energyCardTitle"><div><span>01 / GHI NHẬN</span><h2 id="energyFormTitle">Ghi chỉ số điện</h2><p id="energyUnitHint">Đơn vị: kWh</p><p class="energyFormHelp">Điền thông tin và đính kèm ảnh đồng hồ để lưu bản ghi.</p></div><div class="formSectionMark energyMark"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div></div>
     <form id="energyForm" class="energyForm">
       <input id="energyEditId" type="hidden">
       <label><span>Ngày ghi</span><input id="energyDate" type="date" required></label>
       <label><span id="energyValueLabel">Chỉ số điện (kWh)</span><input id="energyValue" type="number" step="0.01" min="0" required placeholder="Nhập chỉ số"></label>
-      <label class="energyImageField"><span>Hình ảnh đồng hồ</span><input id="energyImage" type="file" accept="image/*"></label>
+      <label class="energyImageField"><span>Hình ảnh đồng hồ</span><input id="energyImage" type="file" accept="image/*"><div class="energyUploadPrompt" aria-hidden="true"><span>↑</span><b>Chọn ảnh đồng hồ</b><small>JPG, PNG hoặc ảnh chụp từ điện thoại</small></div></label>
       <label class="energyPerformerField"><span>Người thực hiện</span><div class="peopleSelect" data-people-kind="energy"><input id="energyPerformer" type="hidden"><button id="energyPeopleButton" class="peopleSelectBtn" type="button"><span>Chọn người thực hiện</span><b>⌄</b></button><div id="energyPeopleMenu" class="peopleSelectMenu hide"><div id="energyPeopleOptions" class="peopleOptions"></div><button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button></div></div></label>
       <label class="energyNoteField"><span>Ghi chú</span><input id="energyNote" maxlength="500" placeholder="Nhập ghi chú..."></label>
-      <div class="energyActions"><button id="energySaveBtn" class="primary" type="submit">Lưu</button><button id="energyCancelEdit" type="button" class="secondary hide">Hủy</button></div>
+      <div class="energyActions"><button id="energySaveBtn" class="primary" type="submit">Lưu chỉ số</button><button id="energyCancelEdit" type="button" class="secondary hide">Hủy</button></div>
     </form>
     <div id="energyImagePreview" class="energyImagePreview"></div>
   </section>
 
   <section class="energyTableCard premiumTableCard">
     <div class="energyTableTop">
-      <div class="energyTitleBlock"><div class="energyTitleLine"><h2 id="energyTableTitle">Bảng theo dõi chỉ số điện</h2><div id="energyTotalInline" class="energyTotalInline"><span>Tổng tiêu thụ</span><strong>—</strong></div></div><p id="energySummaryText">Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.</p></div>
+      <div class="energyTitleBlock"><span class="energySectionKicker">02 / LỊCH SỬ</span><div class="energyTitleLine"><h2 id="energyTableTitle">Bảng theo dõi chỉ số điện</h2></div><p id="energySummaryText">Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.</p></div>
       <div class="energyTopTools">
         <div class="energyFilters">
-          <span class="filterLabel">Lọc</span>
+          <span class="filterLabel">Lọc theo thời gian</span>
           <div class="rangeButtons"><button data-erange="today">Hôm nay</button><button data-erange="week">Tuần</button><button data-erange="month">Tháng</button><button data-erange="all" class="active">Tất cả</button></div>
           <label>Từ<input id="energyFromDate" type="date"></label>
           <label>Đến<input id="energyToDate" type="date"></label>
@@ -947,11 +953,6 @@
         </div>
         <button id="energyExportPdf" class="pdfAction" type="button"><b>PDF</b> ⇩ Xuất PDF</button>
       </div>
-    </div>
-    <div class="energySummaryCards">
-      <article><small>BẢN GHI</small><strong id="energyRecordCount">0</strong></article>
-      <article><small>CHỈ SỐ MỚI NHẤT</small><strong id="energyLatestValue">—</strong></article>
-      <article><small>TIÊU THỤ KỲ LỌC</small><strong id="energyPeriodUse">—</strong></article>
     </div>
     <div class="desktopTable energyDesktopTable">
       <table><thead><tr><th>Ngày</th><th>Thứ</th><th id="energyValueColumn">Chỉ số (kWh)</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="energyTbody"></tbody></table>
