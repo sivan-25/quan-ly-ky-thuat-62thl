@@ -62,6 +62,12 @@ async function loadContractorData(buildingId=currentBuilding?.id,force=false){
     if(selectedContractorId)renderContractorDetail();
   }catch(e){
     console.warn("Load contractor data failed",e);
+    contractors=[];contractorJobs=[];contractorLoadedBuilding="";
+    if($("#contractorGrid"))$("#contractorGrid").innerHTML="";
+    if($("#contractorEmpty")){
+      $("#contractorEmpty").classList.remove("hide");
+      $("#contractorEmpty").innerHTML='<b>Không tải được dữ liệu nhà thầu</b><span>Vui lòng thử mở lại mục Nhà thầu.</span>';
+    }
     toast("Không tải được dữ liệu nhà thầu");
   }
 }
@@ -132,9 +138,9 @@ function closeContractorDetail(){
 function renderContractorDetail(){
   const c=contractors.find(x=>String(x.id)===String(selectedContractorId));
   if(!c){closeContractorDetail();return}
-  $("#contractorDetailSpecialty").textContent=(c.specialty||"Nhà thầu bảo trì").toUpperCase();
+  $("#contractorDetailSpecialty").textContent=(c.specialty||"nhà thầu").toUpperCase();
   $("#contractorDetailName").textContent=c.name;
-  $("#contractorDetailNote").textContent=c.note||"Hồ sơ nhà thầu của dự án "+(currentBuilding?.name||"");
+  $("#contractorDetailNote").textContent=c.note||"Thông tin liên hệ và lịch sử công việc tại "+(currentBuilding?.name||"dự án");
   const badge=$("#contractorDetailStatus");
   badge.textContent=c.status;badge.className="contractorStatusBadge "+contractorStatusClass(c.status);
   const phone=$("#contractorDetailPhone");phone.textContent=c.phone||"—";phone.href=contractorPhoneHref(c.phone);
@@ -169,7 +175,7 @@ function renderContractorJobs(){
 function resetContractorForm(){
   $("#contractorId").value="";$("#contractorName").value="";$("#contractorPhone").value="";$("#contractorContactName").value="";
   $("#contractorSpecialty").value="";$("#contractorContractStart").value="";$("#contractorContractEnd").value="";$("#contractorStatus").value="Đang hợp tác";$("#contractorNote").value="";
-  $("#contractorModalTitle").textContent="Thêm nhà thầu bảo trì";
+  $("#contractorModalTitle").textContent="Thêm nhà thầu";
 }
 function openContractorModal(){
   resetContractorForm();$("#contractorModal").classList.remove("hide");setTimeout(()=>$("#contractorName").focus(),50);
@@ -178,7 +184,7 @@ window.editContractor=id=>{
   const c=contractors.find(x=>String(x.id)===String(id));if(!c)return;
   $("#contractorId").value=c.id;$("#contractorName").value=c.name;$("#contractorPhone").value=c.phone||"";$("#contractorContactName").value=c.contact_name||"";
   $("#contractorSpecialty").value=c.specialty||"";$("#contractorContractStart").value=c.contract_start_date||"";$("#contractorContractEnd").value=c.contract_end_date||"";$("#contractorStatus").value=c.status||"Đang hợp tác";$("#contractorNote").value=c.note||"";
-  $("#contractorModalTitle").textContent="Chỉnh sửa nhà thầu bảo trì";$("#contractorModal").classList.remove("hide");
+  $("#contractorModalTitle").textContent="Chỉnh sửa nhà thầu";$("#contractorModal").classList.remove("hide");
 };
 window.deleteContractor=async id=>{
   if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -219,13 +225,13 @@ function contractorDirectoryReportHtml(){
     const term=[c.contract_start_date?fmt(c.contract_start_date):"",c.contract_end_date?fmt(c.contract_end_date):""].filter(Boolean).join(" → ")||"—";
     return '<tr><td>'+(i+1)+'</td><td><b>'+esc(c.name)+'</b><br>'+esc(c.specialty||"")+'</td><td>'+esc(c.phone||"—")+'</td><td>'+esc(c.contact_name||"—")+'</td><td>'+esc(term)+'</td><td>'+jobs.length+'</td><td>'+(last?.work_date?fmt(last.work_date):"—")+'</td><td>'+esc(c.status)+'</td></tr>';
   }).join("");
-  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Danh bạ nhà thầu</title><style>'+inventoryPdfCss(false)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>DANH BẠ NHÀ THẦU BẢO TRÌ</h1><p>Thông tin liên hệ và số lượt công việc</p></div><table><thead><tr><th>STT</th><th>Nhà thầu bảo trì</th><th>SĐT</th><th>Người liên hệ</th><th>Thời hạn hợp đồng</th><th>Công việc</th><th>Gần nhất</th><th>Trạng thái</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Nhà thầu bảo trì · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),600)<\/script></body></html>';
+  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Danh bạ nhà thầu</title><style>'+inventoryPdfCss(false)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>DANH BẠ nhà thầu</h1><p>Thông tin liên hệ và số lượt công việc</p></div><table><thead><tr><th>STT</th><th>nhà thầu</th><th>SĐT</th><th>Người liên hệ</th><th>Thời hạn hợp đồng</th><th>Công việc</th><th>Gần nhất</th><th>Trạng thái</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · nhà thầu · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),600)<\/script></body></html>';
 }
 function contractorDetailReportHtml(){
   const c=contractors.find(x=>String(x.id)===String(selectedContractorId));if(!c)return "";
   const jobs=contractorJobsFor(c.id).sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")));
   const rows=jobs.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+fmt(x.work_date)+'</td><td>'+(x.completed_date?fmt(x.completed_date):"—")+'</td><td><b>'+esc(x.work_content||"—")+'</b></td><td>'+esc(x.cause||"—")+'</td><td>'+esc(x.solution||"—")+'</td><td>'+esc(x.status)+'</td></tr>').join("");
-  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Hồ sơ '+esc(c.name)+'</title><style>'+inventoryPdfCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>HỒ SƠ NHÀ THẦU BẢO TRÌ: '+esc(c.name)+'</h1><p>'+esc(c.specialty||"Nhà thầu bảo trì")+' · '+esc(c.status)+'</p></div><div class="summary"><div><span>Số điện thoại</span><b>'+esc(c.phone||"—")+'</b></div><div><span>Người liên hệ</span><b>'+esc(c.contact_name||"—")+'</b></div><div><span>Thời hạn hợp đồng</span><b>'+esc([c.contract_start_date?fmt(c.contract_start_date):"",c.contract_end_date?fmt(c.contract_end_date):""].filter(Boolean).join(" → ")||"—")+'</b></div><div><span>Tổng công việc</span><b>'+jobs.length+'</b></div></div><table><thead><tr><th>STT</th><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Tình trạng</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Hồ sơ nhà thầu bảo trì · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
+  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Hồ sơ '+esc(c.name)+'</title><style>'+inventoryPdfCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>HỒ SƠ nhà thầu: '+esc(c.name)+'</h1><p>'+esc(c.specialty||"nhà thầu")+' · '+esc(c.status)+'</p></div><div class="summary"><div><span>Số điện thoại</span><b>'+esc(c.phone||"—")+'</b></div><div><span>Người liên hệ</span><b>'+esc(c.contact_name||"—")+'</b></div><div><span>Thời hạn hợp đồng</span><b>'+esc([c.contract_start_date?fmt(c.contract_start_date):"",c.contract_end_date?fmt(c.contract_end_date):""].filter(Boolean).join(" → ")||"—")+'</b></div><div><span>Tổng công việc</span><b>'+jobs.length+'</b></div></div><table><thead><tr><th>STT</th><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Tình trạng</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Hồ sơ nhà thầu · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
 }
 
 
@@ -345,18 +351,22 @@ function contractorInitEvents(){
     try{
       if(id)await sbFetch("/rest/v1/contractors?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
       else await sbFetch("/rest/v1/contractors",{method:"POST",token:centralSession.access_token,body});
-      $("#contractorModal").classList.add("hide");await loadContractorData(currentBuilding.id,true);toast(id?"Đã cập nhật nhà thầu bảo trì":"Đã thêm nhà thầu bảo trì");
-    }catch(err){toast(err.status===409?"Tên nhà thầu bảo trì này đã tồn tại trong dự án":err.message)}
+      $("#contractorModal").classList.add("hide");await loadContractorData(currentBuilding.id,true);toast(id?"Đã cập nhật nhà thầu":"Đã thêm nhà thầu");
+    }catch(err){toast(err.status===409?"Tên nhà thầu này đã tồn tại trong dự án":err.message)}
   };
   $("#contractorJobForm").onsubmit=async e=>{
     e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
     const id=$("#contractorJobId").value,status=$("#contractorJobStatus").value;
     let completed=$("#contractorJobCompletedDate").value||null;if(status==="Hoàn thành"&&!completed)completed=today();
-    const body={building_id:currentBuilding.id,contractor_id:$("#contractorJobContractorId").value,work_date:$("#contractorJobDate").value,completed_date:completed,work_content:$("#contractorJobContent").value.trim(),cause:$("#contractorJobCause").value.trim(),solution:$("#contractorJobSolution").value.trim(),status,note:$("#contractorJobNote").value.trim(),updated_at:new Date().toISOString()};
+    const workDate=$("#contractorJobDate").value;
+    if(completed&&workDate&&completed<workDate)return toast("Ngày hoàn thành không được trước ngày thực hiện");
+    const content=$("#contractorJobContent").value.trim();
+    if(!content)return toast("Vui lòng nhập nội dung công việc");
+    const body={building_id:currentBuilding.id,contractor_id:$("#contractorJobContractorId").value,work_date:workDate,completed_date:completed,work_content:content,cause:$("#contractorJobCause").value.trim(),solution:$("#contractorJobSolution").value.trim(),status,note:$("#contractorJobNote").value.trim(),updated_at:new Date().toISOString()};
     try{
       if(id)await sbFetch("/rest/v1/contractor_jobs?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
       else await sbFetch("/rest/v1/contractor_jobs",{method:"POST",token:centralSession.access_token,body});
-      $("#contractorJobModal").classList.add("hide");await loadContractorData(currentBuilding.id,true);toast(id?"Đã cập nhật công việc":"Đã thêm công việc nhà thầu");
+      $("#contractorJobModal").classList.add("hide");await loadContractorData(currentBuilding.id,true);if(selectedContractorId)renderContractorDetail();toast(id?"Đã cập nhật công việc":"Đã thêm công việc nhà thầu");
     }catch(err){toast(err.message)}
   };
 }
