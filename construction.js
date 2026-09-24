@@ -1,5 +1,5 @@
 /* ESTA Construction Materials Module */
-let constructionMaterials=[],constructionLogs=[],constructionLoadedBuilding="",selectedConstructionMaterialId="",constructionCategoryFilter="";
+let constructionMaterials=[],constructionLogs=[],constructionTransactions=[],constructionLoadedBuilding="",selectedConstructionMaterialId="",constructionCategoryFilter="",constructionActiveMonth=new Date().getMonth()+1;
 
 function constructionStatusClass(status=""){
   return status==="Đang sử dụng"?"active":status==="Tạm ngưng"?"paused":"inactive";
@@ -12,6 +12,55 @@ function constructionLogsFor(id){
 }
 function constructionLastLog(id){
   return constructionLogsFor(id).slice().sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")))[0]||null;
+}
+function constructionNum(v){
+  const n=Number(v||0);
+  return Number.isFinite(n)?n:0;
+}
+function constructionFmt(v){
+  return constructionNum(v).toLocaleString("vi-VN",{maximumFractionDigits:2});
+}
+function constructionMoney(v){
+  return constructionNum(v).toLocaleString("vi-VN",{maximumFractionDigits:0});
+}
+function constructionYearValue(){
+  return Number($("#constructionYear")?.value)||new Date().getFullYear();
+}
+function constructionSetYears(){
+  const el=$("#constructionYear");if(!el)return;
+  const now=new Date().getFullYear(),old=Number(el.value)||now;
+  el.innerHTML=Array.from({length:9},(_,i)=>now+2-i).map(y=>'<option value="'+y+'">'+y+'</option>').join("");
+  el.value=String([...el.options].some(o=>Number(o.value)===old)?old:now);
+}
+function constructionTransactionsFor(id){
+  return constructionTransactions.filter(x=>String(x.material_id)===String(id));
+}
+function constructionSnapshot(material,year=constructionYearValue()){
+  const tx=constructionTransactionsFor(material.id).slice().sort((a,b)=>String(a.tx_date||"").localeCompare(String(b.tx_date||""))||String(a.created_at||"").localeCompare(String(b.created_at||"")));
+  const start=year+"-01-01";
+  let opening=constructionNum(material.opening_qty);
+  tx.filter(x=>String(x.tx_date||"")<start).forEach(x=>opening+=x.tx_type==="in"?constructionNum(x.qty):-constructionNum(x.qty));
+  let running=opening,totalIn=0,totalOut=0;
+  const months=[];
+  for(let m=1;m<=12;m++){
+    const prefix=year+"-"+String(m).padStart(2,"0"),begin=running;
+    let inQty=0,outQty=0;
+    tx.filter(x=>String(x.tx_date||"").startsWith(prefix)).forEach(x=>{
+      if(x.tx_type==="in"){inQty+=constructionNum(x.qty);running+=constructionNum(x.qty)}
+      else{outQty+=constructionNum(x.qty);running-=constructionNum(x.qty)}
+    });
+    totalIn+=inQty;totalOut+=outQty;
+    months.push({begin,inQty,outQty,stock:running});
+  }
+  const current=constructionNum(material.opening_qty)+tx.reduce((s,x)=>s+(x.tx_type==="in"?constructionNum(x.qty):-constructionNum(x.qty)),0);
+  return {opening,totalIn,totalOut,closing:running,current,months};
+}
+function constructionFillPeople(){
+  const el=$("#constructionStockPerformer");if(!el)return;
+  const names=typeof projectPeople!=="undefined"?(projectPeople||[]).map(x=>x.name).filter(Boolean):[];
+  const old=el.value;
+  el.innerHTML='<option value="">— Chọn —</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");
+  if(names.includes(old))el.value=old;
 }
 function constructionCategoryClass(value=""){
   const s=String(value||"Khác").toLocaleLowerCase("vi-VN");
@@ -34,13 +83,17 @@ async function loadConstructionMaterialData(buildingId=currentBuilding?.id,force
   }
   try{
     const b=encodeURIComponent(buildingId),token=centralSession.access_token;
+    constructionSetYears();
     const result=await Promise.all([
       sbFetch("/rest/v1/construction_materials?select=*&building_id=eq."+b+"&order=name.asc",{token}),
-      sbFetch("/rest/v1/construction_material_logs?select=*&building_id=eq."+b+"&order=work_date.desc,created_at.desc",{token})
+      sbFetch("/rest/v1/construction_material_logs?select=*&building_id=eq."+b+"&order=work_date.desc,created_at.desc",{token}),
+      sbFetch("/rest/v1/construction_material_transactions?select=*&building_id=eq."+b+"&order=tx_date.desc,created_at.desc",{token})
     ]);
     constructionMaterials=Array.isArray(result[0])?result[0]:[];
     constructionLogs=Array.isArray(result[1])?result[1]:[];
+    constructionTransactions=Array.isArray(result[2])?result[2]:[];
     constructionLoadedBuilding=buildingId;
+    constructionFillPeople();
     if(selectedConstructionMaterialId&&!constructionMaterials.some(x=>String(x.id)===String(selectedConstructionMaterialId)))selectedConstructionMaterialId="";
     renderConstructionMaterials();
     if(selectedConstructionMaterialId)renderConstructionDetail();
