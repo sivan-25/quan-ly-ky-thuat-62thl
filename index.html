@@ -1,5 +1,5 @@
 <!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-1915">
-<link rel="stylesheet" href="contractor.css?v=20260924-1915"><style id="esta-work-v11">
+<link rel="stylesheet" href="contractor.css?v=20260924-1945"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -1249,27 +1249,20 @@
 </div>
 <div id="contractorPage" class="page contractorPage hide">
   <section class="contractorOverview" id="contractorOverview">
-    <div class="contractorCommand">
-      <div class="contractorCommandBrand">
-        <div class="contractorCommandIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg>
-        </div>
-        <div>
-          <span>ESTA · CONTRACTOR MANAGEMENT</span>
-          <h1>Nhà thầu</h1>
-          <p>Lưu thông tin liên hệ và lịch sử công việc nhà thầu theo từng dự án.</p>
-        </div>
+    <div class="contractorIntro">
+      <div class="contractorIntroCopy">
+        <span>Life In Your Business.</span>
+        <h1>Nhà thầu</h1>
+        <i></i>
+        <p>Lưu thông tin liên hệ và toàn bộ lịch sử công việc nhà thầu đã thực hiện tại từng dự án.</p>
       </div>
-      <div class="contractorCommandRight">
-        <div class="contractorProjectMeta">
-          <small>DỰ ÁN</small>
-          <b class="buildingNameText">Dự án</b>
-        </div>
-        <div class="contractorCommandActions">
-          <button id="contractorExportExcel" class="contractorBtn ghost excel" type="button">Excel ⇩</button>
-          <button id="contractorExportPdf" class="contractorBtn ghost" type="button">PDF ⇩</button>
-          <button id="addContractorBtn" class="contractorBtn primary" type="button">＋ <span>Thêm nhà thầu</span></button>
-        </div>
+      <div class="contractorSkyline" aria-hidden="true">
+        <b class="sky s1"></b><b class="sky s2"></b><b class="sky s3"></b><b class="sky s4"></b><b class="sky s5"></b>
+      </div>
+      <div class="contractorIntroActions">
+        <button id="contractorExportExcel" class="contractorBtn ghost excel" type="button">Excel ⇩</button>
+        <button id="contractorExportPdf" class="contractorBtn ghost" type="button">PDF ⇩</button>
+        <button id="addContractorBtn" class="contractorBtn primary" type="button">＋ <span>Thêm nhà thầu</span></button>
       </div>
     </div>
 
@@ -1399,6 +1392,21 @@
       <label class="jobDateField"><span>Ngày thực hiện *</span><input id="contractorJobDate" type="date" required></label>
       <label class="jobCompletedField"><span>Ngày hoàn thành</span><input id="contractorJobCompletedDate" type="date"></label>
       <label class="jobStatusField"><span>Tình trạng *</span><select id="contractorJobStatus" required><option>Đang thực hiện</option><option>Hoàn thành</option><option>Chờ xử lý</option><option>Tạm dừng</option></select></label>
+
+      <div class="contractorJobImageField">
+        <span>Hình ảnh</span>
+        <div class="contractorJobImageActions">
+          <input id="contractorJobImages" type="file" accept="image/*" multiple hidden>
+          <input id="contractorJobCamera" type="file" accept="image/*" capture="environment" hidden>
+          <button id="contractorJobOpenCamera" type="button" class="contractorImageBtn">
+            <svg viewBox="0 0 24 24"><path d="M4 8h4l2-3h4l2 3h4v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Chụp</span>
+          </button>
+          <button id="contractorJobOpenLibrary" type="button" class="contractorImageBtn">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m5 18 5-5 3 3 2-2 4 4"/></svg><span>Thư viện</span>
+          </button>
+          <div id="contractorJobImagePreview" class="contractorJobImagePreview"></div>
+        </div>
+      </div>
 
       <label class="jobContentField"><span>Nội dung công việc *</span><textarea id="contractorJobContent" rows="3" maxlength="1200" required placeholder="Mô tả công việc nhà thầu thực hiện..."></textarea></label>
       <label class="jobCauseField"><span>Nguyên nhân</span><textarea id="contractorJobCause" rows="3" maxlength="1000" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></textarea></label>
@@ -1571,4 +1579,4 @@
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="app.js?v=20260924-1940"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20260924-2130"></script></body></html>
+<script src="contractor.js?v=20260924-1945"></script></body></html>
