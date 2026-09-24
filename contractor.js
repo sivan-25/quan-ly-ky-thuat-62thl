@@ -228,6 +228,92 @@ function contractorDetailReportHtml(){
   return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Hồ sơ '+esc(c.name)+'</title><style>'+inventoryPdfCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>HỒ SƠ NHÀ THẦU BẢO TRÌ: '+esc(c.name)+'</h1><p>'+esc(c.specialty||"Nhà thầu bảo trì")+' · '+esc(c.status)+'</p></div><div class="summary"><div><span>Số điện thoại</span><b>'+esc(c.phone||"—")+'</b></div><div><span>Người liên hệ</span><b>'+esc(c.contact_name||"—")+'</b></div><div><span>Thời hạn hợp đồng</span><b>'+esc([c.contract_start_date?fmt(c.contract_start_date):"",c.contract_end_date?fmt(c.contract_end_date):""].filter(Boolean).join(" → ")||"—")+'</b></div><div><span>Tổng công việc</span><b>'+jobs.length+'</b></div></div><table><thead><tr><th>STT</th><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Tình trạng</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Hồ sơ nhà thầu bảo trì · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
 }
 
+
+function contractorSafeFileName(value=""){
+  return String(value||"ESTA").replace(/[\\/:*?"<>|]+/g,"-").replace(/\s+/g," ").trim();
+}
+function contractorDownloadCsv(filename,rows){
+  const csv=rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=filename.replace(/\.xlsx$/i,".csv");
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast("Đã xuất CSV tương thích Excel");
+}
+function contractorWriteWorkbook(filename,sheets){
+  if(!window.XLSX){
+    const first=sheets[0];
+    contractorDownloadCsv(filename,first.rows);
+    return;
+  }
+  const wb=XLSX.utils.book_new();
+  sheets.forEach(s=>{
+    const ws=XLSX.utils.aoa_to_sheet(s.rows);
+    if(Array.isArray(s.widths))ws["!cols"]=s.widths.map(w=>({wch:w}));
+    XLSX.utils.book_append_sheet(wb,ws,s.name.slice(0,31));
+  });
+  XLSX.writeFile(wb,filename,{compression:true});
+}
+function contractorExportDirectoryExcel(){
+  if(!contractors.length)return toast("Chưa có nhà thầu để xuất Excel");
+  const contractorRows=[
+    ["STT","Tên nhà thầu","Số điện thoại","Người liên hệ","Lĩnh vực","Trạng thái","Hợp đồng từ","Hợp đồng đến","Số công việc","Công việc gần nhất","Ngày gần nhất","Ghi chú"]
+  ];
+  contractors.forEach((c,i)=>{
+    const jobs=contractorJobsFor(c.id),last=contractorLastJob(c.id);
+    contractorRows.push([
+      i+1,c.name||"",c.phone||"",c.contact_name||"",contractorFieldLabel(c.specialty),c.status||"",
+      c.contract_start_date?fmt(c.contract_start_date):"",c.contract_end_date?fmt(c.contract_end_date):"",
+      jobs.length,last?.work_content||"",last?.work_date?fmt(last.work_date):"",c.note||""
+    ]);
+  });
+
+  const jobRows=[["STT","Nhà thầu","Ngày thực hiện","Ngày hoàn thành","Nội dung công việc","Nguyên nhân","Hướng xử lý","Tình trạng","Ghi chú"]];
+  contractorJobs.slice().sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||""))).forEach((x,i)=>{
+    const c=contractors.find(v=>String(v.id)===String(x.contractor_id));
+    jobRows.push([
+      i+1,c?.name||"",x.work_date?fmt(x.work_date):"",x.completed_date?fmt(x.completed_date):"",
+      x.work_content||"",x.cause||"",x.solution||"",x.status||"",x.note||""
+    ]);
+  });
+
+  contractorWriteWorkbook(
+    "ESTA-"+contractorSafeFileName(currentBuilding.id)+"-nha-thau-"+today()+".xlsx",
+    [
+      {name:"Danh sách nhà thầu",rows:contractorRows,widths:[6,28,16,22,18,16,14,14,12,38,14,32]},
+      {name:"Lịch sử công việc",rows:jobRows,widths:[6,28,14,14,42,32,36,16,28]}
+    ]
+  );
+}
+function contractorExportDetailExcel(){
+  const c=contractors.find(x=>String(x.id)===String(selectedContractorId));
+  if(!c)return toast("Chưa chọn nhà thầu");
+  const jobs=contractorJobsFor(c.id).slice().sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")));
+  const infoRows=[
+    ["THÔNG TIN NHÀ THẦU",""],
+    ["Tên nhà thầu",c.name||""],
+    ["Số điện thoại",c.phone||""],
+    ["Người liên hệ",c.contact_name||""],
+    ["Lĩnh vực",contractorFieldLabel(c.specialty)],
+    ["Trạng thái",c.status||""],
+    ["Hợp đồng từ",c.contract_start_date?fmt(c.contract_start_date):""],
+    ["Hợp đồng đến",c.contract_end_date?fmt(c.contract_end_date):""],
+    ["Ghi chú",c.note||""],
+    ["Dự án",currentBuilding?.name||""]
+  ];
+  const jobRows=[["STT","Ngày thực hiện","Ngày hoàn thành","Nội dung công việc","Nguyên nhân","Hướng xử lý","Tình trạng","Ghi chú"]];
+  jobs.forEach((x,i)=>jobRows.push([
+    i+1,x.work_date?fmt(x.work_date):"",x.completed_date?fmt(x.completed_date):"",
+    x.work_content||"",x.cause||"",x.solution||"",x.status||"",x.note||""
+  ]));
+  contractorWriteWorkbook(
+    "ESTA-"+contractorSafeFileName(currentBuilding.id)+"-"+contractorSafeFileName(c.name)+"-"+today()+".xlsx",
+    [
+      {name:"Thông tin",rows:infoRows,widths:[22,60]},
+      {name:"Công việc",rows:jobRows,widths:[6,14,14,44,34,38,16,28]}
+    ]
+  );
+}
+
 function contractorInitEvents(){
   $("#contractorSearch").oninput=renderContractors;
   $("#contractorStatusFilter").onchange=renderContractors;
@@ -243,6 +329,8 @@ function contractorInitEvents(){
   $("#contractorDetailCloseBtn").onclick=closeContractorDetail;
   $("#editContractorBtn").onclick=()=>selectedContractorId&&editContractor(selectedContractorId);
   $("#addContractorJobBtn").onclick=openContractorJobModal;
+  $("#contractorExportExcel").onclick=contractorExportDirectoryExcel;
+  $("#contractorDetailExcel").onclick=contractorExportDetailExcel;
   $("#contractorExportPdf").onclick=()=>{if(!contractors.length)return toast("Chưa có nhà thầu để xuất PDF");inventoryPrintWindow(contractorDirectoryReportHtml())};
   $("#contractorDetailPdf").onclick=()=>{if(!selectedContractorId)return;inventoryPrintWindow(contractorDetailReportHtml())};
   $("#closeContractorModal").onclick=$("#cancelContractorModal").onclick=()=>$("#contractorModal").classList.add("hide");
