@@ -1774,3 +1774,264 @@
   .contractorFieldPill{min-height:29px;font-size:9px}
   .contractorDetailActions{grid-template-columns:1fr 1fr auto!important}
 }
+
+/* =========================================================
+   CONTRACTOR V5 — COMPACT BURGUNDY / CREAM
+   Giữ phong cách hiện tại nhưng rút chiều cao toàn trang
+   ========================================================= */
+@media(min-width:1041px){
+  #app.contractorMode .estaTopbar{
+    height:64px!important;
+    padding:0 20px!important;
+  }
+  #app.contractorMode .contractorTopTitle{
+    min-width:250px!important;
+  }
+  #app.contractorMode .headerSearch{
+    height:38px!important;
+    width:min(430px,34vw)!important;
+  }
+
+  .contractorPage{
+    min-height:calc(100vh - 64px)!important;
+    padding:18px 24px 28px!important;
+  }
+  .contractorOverview{
+    max-width:1500px!important;
+  }
+
+  /* Hero gọn còn khoảng 165px */
+  .contractorIntro{
+    min-height:165px!important;
+    padding:24px 34px!important;
+    border-radius:20px!important;
+  }
+  .contractorIntroCopy{
+    width:min(640px,58%)!important;
+  }
+  .contractorIntroCopy>span{
+    font-size:12px!important;
+  }
+  .contractorIntro h1{
+    margin:7px 0 9px!important;
+    font-size:38px!important;
+    line-height:1!important;
+  }
+  .contractorIntroCopy>i{
+    width:54px!important;
+    margin:0 0 9px!important;
+    border-top-width:2px!important;
+  }
+  .contractorIntro p{
+    max-width:620px!important;
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+  .contractorIntro .contractorBtn.primary{
+    height:46px!important;
+    min-width:170px!important;
+    padding:0 18px!important;
+    border-radius:24px!important;
+    font-size:11px!important;
+  }
+  .contractorIntro .contractorBtn.ghost{
+    height:38px!important;
+    padding:0 11px!important;
+  }
+  .contractorSkyline{
+    width:43%!important;
+    opacity:.28!important;
+  }
+
+  /* KPI chỉ còn 82px */
+  .contractorStats{
+    gap:10px!important;
+    margin:12px 0 13px!important;
+  }
+  .contractorStats article{
+    min-height:82px!important;
+    gap:10px!important;
+    padding:12px 14px!important;
+    border-top-width:2px!important;
+    border-radius:13px!important;
+  }
+  .contractorStats .contractorStatIcon{
+    width:40px!important;
+    height:40px!important;
+    flex-basis:40px!important;
+    border-radius:10px!important;
+  }
+  .contractorStats .contractorStatIcon svg{
+    width:19px!important;
+    height:19px!important;
+  }
+  .contractorStats b{
+    margin:0 0 3px!important;
+    font-size:28px!important;
+    line-height:1!important;
+  }
+  .contractorStats small{
+    font-size:9px!important;
+  }
+  .contractorStats em{
+    margin-top:3px!important;
+    font-size:7px!important;
+  }
+
+  /* Khối danh sách */
+  .contractorDirectory{
+    border-radius:18px!important;
+  }
+  .contractorToolbar{
+    min-height:72px!important;
+    padding:15px 20px 9px!important;
+  }
+  .contractorToolbar h2{
+    font-size:21px!important;
+  }
+  .contractorToolbar h2 span{
+    font-size:10px!important;
+  }
+  .contractorToolbar p{
+    margin-top:4px!important;
+    font-size:8.5px!important;
+  }
+  .contractorSearch{
+    width:390px!important;
+    height:39px!important;
+    padding:0 13px!important;
+  }
+  .contractorSearch svg{
+    width:15px!important;
+    height:15px!important;
+  }
+  .contractorSearch input{
+    font-size:9.5px!important;
+  }
+
+  .contractorSpecialtyFilters{
+    gap:6px!important;
+    padding:0 20px 11px!important;
+  }
+  .contractorSpecialtyFilters button{
+    height:31px!important;
+    padding:0 11px!important;
+    font-size:8px!important;
+  }
+
+  .contractorListHeader{
+    min-height:38px!important;
+    padding:0 18px!important;
+    font-size:7.5px!important;
+    letter-spacing:.45px!important;
+  }
+  .contractorListHeader>span{
+    padding:0 7px!important;
+  }
+
+  /* Mỗi nhà thầu còn 74px */
+  .contractorRowCard{
+    min-height:74px!important;
+    padding:0 18px!important;
+  }
+  .contractorRowIdentity{
+    grid-template-columns:36px minmax(0,1fr)!important;
+    gap:9px!important;
+    padding:0 7px!important;
+  }
+  .contractorLetter{
+    width:34px!important;
+    height:34px!important;
+    border-radius:9px!important;
+    font-size:11px!important;
+  }
+  .contractorRowIdentity h3{
+    margin:0 0 2px!important;
+    font-size:11px!important;
+    line-height:1.25!important;
+  }
+  .contractorRowIdentity p{
+    font-size:7.5px!important;
+    line-height:1.3!important;
+    -webkit-line-clamp:1!important;
+  }
+  .contractorRowValue{
+    padding:0 7px!important;
+    font-size:9px!important;
+    line-height:1.25!important;
+  }
+  .contractorFieldPill{
+    min-height:25px!important;
+    padding:0 8px!important;
+    border-radius:13px!important;
+    font-size:7.5px!important;
+  }
+  .contractorRowCount span{
+    width:31px!important;
+    height:31px!important;
+    font-size:10px!important;
+  }
+  .contractorLatest{
+    padding:0 7px!important;
+  }
+  .contractorLatest b{
+    font-size:8.5px!important;
+  }
+  .contractorLatest span{
+    margin-top:2px!important;
+    font-size:7.5px!important;
+    line-height:1.3!important;
+    -webkit-line-clamp:1!important;
+  }
+  .contractorRowActions{
+    gap:5px!important;
+    padding-left:7px!important;
+  }
+  .contractorRowActions button{
+    width:31px!important;
+    height:31px!important;
+    border-radius:8px!important;
+  }
+  .contractorRowActions svg{
+    width:14px!important;
+    height:14px!important;
+  }
+
+  /* Detail cũng gọn tương ứng */
+  .contractorPage.contractorDetailMode{
+    padding-top:12px!important;
+  }
+  .contractorDetailMode .contractorDetailTop{
+    min-height:42px!important;
+    margin-bottom:8px!important;
+  }
+  .contractorDetailMode .contractorProfile{
+    min-height:100px!important;
+    padding:16px 19px!important;
+  }
+  .contractorDetailMode .contractorProfileIcon{
+    width:46px!important;
+    height:46px!important;
+  }
+  .contractorDetailMode .contractorProfileMain h1{
+    font-size:21px!important;
+  }
+  .contractorDetailMode .contractorContactGrid{
+    gap:7px!important;
+    margin:8px 0!important;
+  }
+  .contractorDetailMode .contractorContactGrid article{
+    min-height:60px!important;
+    padding:9px 10px!important;
+  }
+  .contractorDetailMode .contractorJobsHead{
+    min-height:58px!important;
+    padding:11px 14px!important;
+  }
+  .contractorDetailMode .contractorJobList{
+    padding:8px!important;
+  }
+  .contractorDetailMode .contractorJobCard{
+    margin-bottom:7px!important;
+  }
+}
