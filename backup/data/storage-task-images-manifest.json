@@ -1,0 +1,306 @@
+[
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/energy/1790142903494/1790142903561-0-9bb86911-4db7-4e80-8344-d84b9ecca8d0.jpg",
+    "created_at": "2026-09-23 05:55:17.237167+00",
+    "updated_at": "2026-09-23 05:55:17.237167+00",
+    "last_accessed_at": "2026-09-23 05:55:17.237167+00",
+    "metadata": {
+      "eTag": "\"b1b4ca4762d724b6a543a443fb65b94f\"",
+      "size": 566301,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-23T05:55:18.000Z",
+      "contentLength": 566301,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790052887392/1790057850981-0-ee0e581c-682e-49a5-8161-7c9711d2c49f.jpg",
+    "created_at": "2026-09-22 06:17:34.97467+00",
+    "updated_at": "2026-09-22 06:17:34.97467+00",
+    "last_accessed_at": "2026-09-22 06:17:34.97467+00",
+    "metadata": {
+      "eTag": "\"b833662f1bdb6858494771dffecee0c8\"",
+      "size": 424552,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:35.000Z",
+      "contentLength": 424552,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790052887392/1790057855631-1-15c77887-febd-4f8a-a82f-83d232cdef07.jpg",
+    "created_at": "2026-09-22 06:17:37.843063+00",
+    "updated_at": "2026-09-22 06:17:37.843063+00",
+    "last_accessed_at": "2026-09-22 06:17:37.843063+00",
+    "metadata": {
+      "eTag": "\"677729e58a38a485e6d3b7ef068dd83a\"",
+      "size": 379946,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:38.000Z",
+      "contentLength": 379946,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790052887392/1790057857948-2-42d07d08-5bdd-4945-86b8-6642514c707c.jpg",
+    "created_at": "2026-09-22 06:17:39.345818+00",
+    "updated_at": "2026-09-22 06:17:39.345818+00",
+    "last_accessed_at": "2026-09-22 06:17:39.345818+00",
+    "metadata": {
+      "eTag": "\"1e3cdacb15e3aad1ecb387036b27a748\"",
+      "size": 257388,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:40.000Z",
+      "contentLength": 257388,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790052887392/1790057860938-0-eb98d202-a4e7-478c-85aa-378b8f2f6179.jpg",
+    "created_at": "2026-09-22 06:17:43.214682+00",
+    "updated_at": "2026-09-22 06:17:43.214682+00",
+    "last_accessed_at": "2026-09-22 06:17:43.214682+00",
+    "metadata": {
+      "eTag": "\"b833662f1bdb6858494771dffecee0c8\"",
+      "size": 424552,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:44.000Z",
+      "contentLength": 424552,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790052887392/1790057863337-1-3a44a1f2-b045-43b2-9a5c-e8039ec78af6.jpg",
+    "created_at": "2026-09-22 06:17:45.162013+00",
+    "updated_at": "2026-09-22 06:17:45.162013+00",
+    "last_accessed_at": "2026-09-22 06:17:45.162013+00",
+    "metadata": {
+      "eTag": "\"677729e58a38a485e6d3b7ef068dd83a\"",
+      "size": 379946,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:46.000Z",
+      "contentLength": 379946,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790052887392/1790057865325-2-d99cb265-0c2f-4477-abab-f1abba1fdd61.jpg",
+    "created_at": "2026-09-22 06:17:46.531233+00",
+    "updated_at": "2026-09-22 06:17:46.531233+00",
+    "last_accessed_at": "2026-09-22 06:17:46.531233+00",
+    "metadata": {
+      "eTag": "\"1e3cdacb15e3aad1ecb387036b27a748\"",
+      "size": 257388,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:47.000Z",
+      "contentLength": 257388,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790053577164/1790057849315-0-3bc0ca1e-9e34-4d77-9f33-cd5360743065.jpg",
+    "created_at": "2026-09-22 06:17:30.741713+00",
+    "updated_at": "2026-09-22 06:17:30.741713+00",
+    "last_accessed_at": "2026-09-22 06:17:30.741713+00",
+    "metadata": {
+      "eTag": "\"0e574960f2d5cbef5bf6c1a85d3a63a9\"",
+      "size": 151082,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:31.000Z",
+      "contentLength": 151082,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790053577164/1790057859490-0-5155493e-dd5d-46d8-a181-d41f89c32992.jpg",
+    "created_at": "2026-09-22 06:17:40.7755+00",
+    "updated_at": "2026-09-22 06:17:40.7755+00",
+    "last_accessed_at": "2026-09-22 06:17:40.7755+00",
+    "metadata": {
+      "eTag": "\"0e574960f2d5cbef5bf6c1a85d3a63a9\"",
+      "size": 151082,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:17:41.000Z",
+      "contentLength": 151082,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790057909562/1790057909661-0-7e4298c0-e2b8-4f04-a69a-6e39acb3a36a.jpg",
+    "created_at": "2026-09-22 06:18:31.003008+00",
+    "updated_at": "2026-09-22 06:18:31.003008+00",
+    "last_accessed_at": "2026-09-22 06:18:31.003008+00",
+    "metadata": {
+      "eTag": "\"8f37a8739f78256c262408ffbe5b951a\"",
+      "size": 239879,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:18:31.000Z",
+      "contentLength": 239879,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790057909562/1790057911216-1-1e9a2ef4-3429-4fa7-8d0a-c383217de49e.jpg",
+    "created_at": "2026-09-22 06:18:35.068486+00",
+    "updated_at": "2026-09-22 06:18:35.068486+00",
+    "last_accessed_at": "2026-09-22 06:18:35.068486+00",
+    "metadata": {
+      "eTag": "\"c6cf926b9dea58413850db8e9bb97cc3\"",
+      "size": 468999,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:18:36.000Z",
+      "contentLength": 468999,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790057909562/1790057915283-2-8b019b8c-0209-4e3d-b2b9-f14fed9e1cec.jpg",
+    "created_at": "2026-09-22 06:18:41.555324+00",
+    "updated_at": "2026-09-22 06:18:41.555324+00",
+    "last_accessed_at": "2026-09-22 06:18:41.555324+00",
+    "metadata": {
+      "eTag": "\"a2243ed8850ebd485a256069311bf44a\"",
+      "size": 1013289,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:18:42.000Z",
+      "contentLength": 1013289,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790060261295/1790060261378-0-fcb9dea6-1fa4-4f9b-bf2c-ac99c5a3ae95.jpg",
+    "created_at": "2026-09-22 06:57:47.936175+00",
+    "updated_at": "2026-09-22 06:57:47.936175+00",
+    "last_accessed_at": "2026-09-22 06:57:47.936175+00",
+    "metadata": {
+      "eTag": "\"113207a33607a26443f7963516aa3a3d\"",
+      "size": 289662,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T06:57:48.000Z",
+      "contentLength": 289662,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790060982634/1790060982637-0-fb4abe55-2115-464b-8423-e1a6e2980b6d.jpg",
+    "created_at": "2026-09-22 07:09:42.116868+00",
+    "updated_at": "2026-09-22 07:09:42.116868+00",
+    "last_accessed_at": "2026-09-22 07:09:42.116868+00",
+    "metadata": {
+      "eTag": "\"b59dc401f7386b5144b50069de3bbdfd\"",
+      "size": 120690,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T07:09:43.000Z",
+      "contentLength": 120690,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790060982634/1790060982637-1-1bb5feaa-cb87-4647-a4a6-414d1d597997.jpg",
+    "created_at": "2026-09-22 07:09:41.99117+00",
+    "updated_at": "2026-09-22 07:09:41.99117+00",
+    "last_accessed_at": "2026-09-22 07:09:41.99117+00",
+    "metadata": {
+      "eTag": "\"fdc1c9da2323ba64f6c1c8e07fe214b9\"",
+      "size": 89288,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T07:09:42.000Z",
+      "contentLength": 89288,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790075547462/1790075547646-0-0a632b33-0748-4a76-9b56-146e4e130f5c.jpg",
+    "created_at": "2026-09-22 11:12:47.247052+00",
+    "updated_at": "2026-09-22 11:12:47.247052+00",
+    "last_accessed_at": "2026-09-22 11:12:47.247052+00",
+    "metadata": {
+      "eTag": "\"dd576511a0e3ac7624456bf2ce43e8bb\"",
+      "size": 406412,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T11:12:48.000Z",
+      "contentLength": 406412,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790075547462/1790075547647-1-fc24e088-a569-4a62-b508-8b5958f78886.jpg",
+    "created_at": "2026-09-22 11:12:47.336082+00",
+    "updated_at": "2026-09-22 11:12:47.336082+00",
+    "last_accessed_at": "2026-09-22 11:12:47.336082+00",
+    "metadata": {
+      "eTag": "\"ac028bce7260216cdf10b346b2af2f5b\"",
+      "size": 393828,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-22T11:12:48.000Z",
+      "contentLength": 393828,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790142856244/1790142856333-0-e6164339-387f-4f16-b0fc-26804480d125.jpg",
+    "created_at": "2026-09-23 05:54:27.835802+00",
+    "updated_at": "2026-09-23 05:54:27.835802+00",
+    "last_accessed_at": "2026-09-23 05:54:27.835802+00",
+    "metadata": {
+      "eTag": "\"492afba2ec32d09329d2133b54d77ca8\"",
+      "size": 462825,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-23T05:54:28.000Z",
+      "contentLength": 462825,
+      "httpStatusCode": 200
+    }
+  },
+  {
+    "bucket_id": "task-images",
+    "name": "62THL/tasks/1790160533472/1790160533600-0-ff4daf01-b17c-4c04-b2cf-f91d37dbf893.jpg",
+    "created_at": "2026-09-23 10:48:58.629739+00",
+    "updated_at": "2026-09-23 10:48:58.629739+00",
+    "last_accessed_at": "2026-09-23 10:48:58.629739+00",
+    "metadata": {
+      "eTag": "\"6874470f67d89fa58cafd06c4ab7f945\"",
+      "size": 352001,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-09-23T10:48:59.000Z",
+      "contentLength": 352001,
+      "httpStatusCode": 200
+    }
+  }
+]
