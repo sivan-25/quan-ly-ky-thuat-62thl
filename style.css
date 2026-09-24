@@ -9201,3 +9201,61 @@ i{
 
 /* CONSTRUCTION PAGE DISABLED — removed from user-facing navigation */
 #constructionMaterialPage,#topConstructionTitle{display:none!important}
+
+/* Mobile navigation: visible close control and dismissible page backdrop. */
+#app .menuBackdrop,
+#app .mobileSidebarHeader{display:none}
+@media(max-width:760px){
+  body.mobileNavOpen{overflow:hidden}
+  #app .menuBackdrop:not([hidden]){
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:79;
+    width:100%;
+    height:100%;
+    padding:0;
+    border:0;
+    background:rgba(6,24,40,.55);
+    -webkit-tap-highlight-color:transparent;
+  }
+  #app .estaSidebar{
+    height:100vh;
+    height:100dvh;
+    padding-top:calc(14px + env(safe-area-inset-top, 0px))!important;
+    padding-bottom:calc(15px + env(safe-area-inset-bottom, 0px))!important;
+  }
+  #app .mobileSidebarHeader{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:0 4px 12px;
+    color:#a9cadb;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.4px;
+  }
+  #app #sidebarClose{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    min-width:82px;
+    min-height:44px;
+    padding:0 12px;
+    border:1px solid rgba(255,255,255,.4);
+    border-radius:10px;
+    background:rgba(255,255,255,.16);
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:0;
+  }
+  #app #sidebarClose span{font-size:24px;line-height:1}
+  #app #menu{
+    min-width:44px;
+    min-height:44px;
+    font-size:21px;
+  }
+}

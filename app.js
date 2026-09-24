@@ -609,7 +609,7 @@ function showHome(){
  $("#topHomeTitle").classList.remove("hide");$("#topAdminTitle").classList.add("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");$("#topInventoryTitle").classList.add("hide");$("#topMaintenanceTitle").classList.add("hide");$("#topContractorTitle").classList.add("hide");$("#topConstructionTitle").classList.add("hide");
  $("#navHome").classList.add("active");$("#navAdmin").classList.remove("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");$("#navContractor").classList.remove("active");$("#navConstruction")?.classList.remove("active");
  $("#app").classList.remove("adminMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");$("#app").classList.add("homeMode");
- document.querySelector("aside").classList.remove("open");
+ setMobileMenuOpen(false,true);
  renderHomeDashboard();
 }
 window.homeOpenTask=id=>{
@@ -655,7 +655,7 @@ function openAdminPortal(){
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
  $("#topHomeTitle").classList.add("hide");$("#topAdminTitle").classList.remove("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");$("#topInventoryTitle").classList.add("hide");$("#topMaintenanceTitle").classList.add("hide");$("#topContractorTitle").classList.add("hide");$("#topConstructionTitle").classList.add("hide");
  $("#navHome").classList.remove("active");$("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");$("#navContractor").classList.remove("active");$("#navConstruction")?.classList.remove("active");
- $("#app").classList.remove("homeMode");$("#app").classList.add("adminMode");renderAdminPortal();
+ $("#app").classList.remove("homeMode");$("#app").classList.add("adminMode");setMobileMenuOpen(false,true);renderAdminPortal();
 }
 window.adminOpenBuilding=async id=>{
  const b=currentAccount?.buildings?.find(x=>x.id===id);if(!b)return;
@@ -736,7 +736,30 @@ $("#backupBtn").onclick=()=>{
 };
 $("#restoreBtn").onclick=()=>$("#restoreFile").click();
 $("#restoreFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text()),tasks=Array.isArray(d)?d:d.tasks;if(!Array.isArray(tasks))throw new Error("File sao lưu không hợp lệ");if(!confirm("Khôi phục sẽ thay thế dữ liệu hiện tại của "+currentBuilding.name+". Tiếp tục?"))return;save(tasks);if(Array.isArray(d.energy))energySaveAll(d.energy);await syncProjectSnapshot();render();renderEnergy();toast("Đã khôi phục và đồng bộ dữ liệu")}catch(err){toast("Không thể đọc file sao lưu")}finally{e.target.value=""}};
-$("#menu").onclick=()=>document.querySelector("aside").classList.toggle("open");const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";setPeopleSelected("task",[]);$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";clearPendingTaskFiles();$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));let pendingTaskFiles=[],pendingPreviewUrls=[];
+const mobileSidebar=$("#mobileSidebar"),menuButton=$("#menu"),menuBackdrop=$("#menuBackdrop");
+const mobileNavQuery=window.matchMedia("(max-width: 760px)");
+function setMobileMenuOpen(open,returnFocus=false){
+ const wasOpen=mobileSidebar.classList.contains("open");
+ open=Boolean(open&&mobileNavQuery.matches);
+ mobileSidebar.classList.toggle("open",open);
+ $("#app").classList.toggle("menuOpen",open);
+ document.body.classList.toggle("mobileNavOpen",open);
+ menuBackdrop.hidden=!open;
+ menuButton.setAttribute("aria-expanded",String(open));
+ mobileSidebar.setAttribute("aria-hidden",String(mobileNavQuery.matches&&!open));
+ mobileSidebar.inert=mobileNavQuery.matches&&!open;
+ if(!open&&wasOpen&&returnFocus)menuButton.focus({preventScroll:true});
+}
+menuButton.onclick=()=>setMobileMenuOpen(!mobileSidebar.classList.contains("open"));
+$("#sidebarClose").onclick=()=>setMobileMenuOpen(false,true);
+menuBackdrop.onclick=()=>setMobileMenuOpen(false,true);
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"&&mobileSidebar.classList.contains("open"))setMobileMenuOpen(false,true);
+});
+if(mobileNavQuery.addEventListener)mobileNavQuery.addEventListener("change",()=>setMobileMenuOpen(false));
+else mobileNavQuery.addListener(()=>setMobileMenuOpen(false));
+setMobileMenuOpen(false);
+const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";setPeopleSelected("task",[]);$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";clearPendingTaskFiles();$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));let pendingTaskFiles=[],pendingPreviewUrls=[];
 function clearPendingTaskFiles(){
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
  pendingPreviewUrls=[];pendingTaskFiles=[];
@@ -973,7 +996,7 @@ function showModule(name){
  $(pages[name])?.classList.remove("hide");$(tops[name])?.classList.remove("hide");$(navs[name])?.classList.add("active");
  $("#app").classList.remove("adminMode","homeMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");
  $("#app").classList.add(name+"Mode");
- document.querySelector("aside").classList.remove("open");
+ setMobileMenuOpen(false,true);
  if(name==="energy")renderEnergy();
  if(name==="inventory"){
    const now=new Date();

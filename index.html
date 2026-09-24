@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-2115">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-mobile-menu">
 <link rel="stylesheet" href="contractor.css?v=20260924-2115"><link rel="stylesheet" href="construction.css?v=20260924-2035"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
@@ -611,7 +611,9 @@
   </div>
 </section>
 <div id="app" class="hide">
-<aside class="estaSidebar">
+<button id="menuBackdrop" class="menuBackdrop" type="button" aria-label="Đóng menu điều hướng" hidden></button>
+<aside id="mobileSidebar" class="estaSidebar" aria-label="Điều hướng">
+  <div class="mobileSidebarHeader"><span>MENU</span><button id="sidebarClose" type="button" aria-label="Đóng menu"><span aria-hidden="true">×</span> Đóng</button></div>
   <div class="brand estaSidebarBrand">
     <div class="estaPetalLogo" aria-hidden="true">
       <span></span><span></span><span></span><span></span><span></span><span></span>
@@ -670,7 +672,7 @@
 
 <main>
 <header class="estaTopbar">
-  <button id="menu" class="mobileMenuBtn">☰</button>
+  <button id="menu" class="mobileMenuBtn" type="button" aria-label="Mở menu điều hướng" aria-controls="mobileSidebar" aria-expanded="false">☰</button>
   <div id="topHomeTitle" class="topModuleTitle">
     <div class="topModuleIcon homeIcon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
     <div><h1>Tổng quan vận hành</h1><p class="buildingNameText">Dự án</p></div>
@@ -1770,5 +1772,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260924-2115"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260924-mobile-menu"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260924-2115"></script><script src="construction.js?v=20260924-2255"></script></body></html>
