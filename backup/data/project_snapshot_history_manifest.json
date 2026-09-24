@@ -1,0 +1,154 @@
+[
+  {
+    "id": 1,
+    "building_id": "127HH",
+    "changed_by": "48c78e34-22a5-4a7b-9f77-eb23f13e7081",
+    "saved_at": "2026-09-22 04:36:09.559+00",
+    "task_count": 0,
+    "energy_count": 0
+  },
+  {
+    "id": 2,
+    "building_id": "130HH",
+    "changed_by": "48c78e34-22a5-4a7b-9f77-eb23f13e7081",
+    "saved_at": "2026-09-22 04:35:47.408+00",
+    "task_count": 0,
+    "energy_count": 0
+  },
+  {
+    "id": 3,
+    "building_id": "68PĐL",
+    "changed_by": "48c78e34-22a5-4a7b-9f77-eb23f13e7081",
+    "saved_at": "2026-09-22 04:18:49.235+00",
+    "task_count": 0,
+    "energy_count": 0
+  },
+  {
+    "id": 4,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-22 05:06:17.165+00",
+    "task_count": 2,
+    "energy_count": 0
+  },
+  {
+    "id": 5,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-22 06:17:49.149374+00",
+    "task_count": 2,
+    "energy_count": 0
+  },
+  {
+    "id": 6,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-22 06:18:42.590923+00",
+    "task_count": 2,
+    "energy_count": 0
+  },
+  {
+    "id": 7,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-22 06:57:48.493506+00",
+    "task_count": 3,
+    "energy_count": 0
+  },
+  {
+    "id": 8,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-22 06:57:49.543268+00",
+    "task_count": 4,
+    "energy_count": 0
+  },
+  {
+    "id": 9,
+    "building_id": "62THL",
+    "changed_by": "48c78e34-22a5-4a7b-9f77-eb23f13e7081",
+    "saved_at": "2026-09-22 07:09:41.37893+00",
+    "task_count": 4,
+    "energy_count": 0
+  },
+  {
+    "id": 10,
+    "building_id": "62THL",
+    "changed_by": "48c78e34-22a5-4a7b-9f77-eb23f13e7081",
+    "saved_at": "2026-09-22 07:09:42.871126+00",
+    "task_count": 5,
+    "energy_count": 0
+  },
+  {
+    "id": 11,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-22 11:12:48.233121+00",
+    "task_count": 5,
+    "energy_count": 0
+  },
+  {
+    "id": 12,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-22 11:12:49.017317+00",
+    "task_count": 6,
+    "energy_count": 0
+  },
+  {
+    "id": 13,
+    "building_id": "62THL",
+    "changed_by": "48c78e34-22a5-4a7b-9f77-eb23f13e7081",
+    "saved_at": "2026-09-22 11:27:15.928862+00",
+    "task_count": 6,
+    "energy_count": 0
+  },
+  {
+    "id": 14,
+    "building_id": "130HH",
+    "changed_by": "48c78e34-22a5-4a7b-9f77-eb23f13e7081",
+    "saved_at": "2026-09-22 15:06:06.641798+00",
+    "task_count": 0,
+    "energy_count": 0
+  },
+  {
+    "id": 15,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-23 05:54:17.159003+00",
+    "task_count": 5,
+    "energy_count": 0
+  },
+  {
+    "id": 16,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-23 05:54:29.421482+00",
+    "task_count": 6,
+    "energy_count": 0
+  },
+  {
+    "id": 17,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-23 05:55:18.287488+00",
+    "task_count": 6,
+    "energy_count": 0
+  },
+  {
+    "id": 18,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-23 10:48:54.235175+00",
+    "task_count": 6,
+    "energy_count": 1
+  },
+  {
+    "id": 19,
+    "building_id": "62THL",
+    "changed_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+    "saved_at": "2026-09-23 10:48:59.852107+00",
+    "task_count": 7,
+    "energy_count": 1
+  }
+]
