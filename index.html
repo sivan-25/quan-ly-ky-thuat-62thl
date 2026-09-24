@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-2130">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-2215">
 <link rel="stylesheet" href="contractor.css?v=20260924-1945"><link rel="stylesheet" href="construction.css?v=20260924-2035"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
@@ -1367,70 +1367,101 @@
   </section>
 </div>
 <div id="constructionMaterialPage" class="page contractorPage constructionMaterialPage hide">
-  <section class="contractorOverview" id="constructionOverview">
-    <div class="contractorIntro constructionIntro">
-      <div class="contractorIntroCopy">
-        <span>Life In Your Business.</span>
-        <h1>Vật tư thi công</h1>
-        <i></i>
-        <p>Lưu danh mục vật tư thi công và toàn bộ lịch sử sử dụng tại từng dự án.</p>
-      </div>
-      <div class="contractorSkyline" aria-hidden="true">
-        <b class="sky s1"></b><b class="sky s2"></b><b class="sky s3"></b><b class="sky s4"></b><b class="sky s5"></b>
-      </div>
-      <div class="contractorIntroActions">
-        <button id="constructionExportExcel" class="contractorBtn ghost excel" type="button">Excel ⇩</button>
-        <button id="constructionExportPdf" class="contractorBtn ghost" type="button">PDF ⇩</button>
-        <button id="addConstructionMaterialBtn" class="contractorBtn primary" type="button">＋ <span>Thêm vật tư</span></button>
-      </div>
-    </div>
-
-    <div class="contractorStats constructionStats">
-      <article class="contractorStatFeatured"><span class="contractorStatIcon"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg></span><div><b id="constructionMaterialCount">0</b><small>VẬT TƯ</small><em>Đang lưu trong dự án</em></div></article>
-      <article><span class="contractorStatIcon bronze"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><div><b id="constructionYearLogCount">0</b><small>LƯỢT SỬ DỤNG NĂM NAY</small><em>Lịch sử thi công</em></div></article>
-      <article><span class="contractorStatIcon amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><b id="constructionOpenLogCount">0</b><small>ĐANG THI CÔNG</small><em>Hạng mục chưa hoàn thành</em></div></article>
-      <article><span class="contractorStatIcon green"><svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg></span><div><b id="constructionDoneLogCount">0</b><small>HOÀN THÀNH</small><em>Lượt sử dụng đã hoàn tất</em></div></article>
-    </div>
-
-    <div class="contractorDirectory">
-      <div class="contractorToolbar">
-        <div>
-          <h2>Danh sách vật tư thi công <span id="constructionResultCount">(0)</span></h2>
-          <p>Bấm vào tên vật tư để xem toàn bộ lịch sử sử dụng và vị trí thi công.</p>
-        </div>
-        <div class="contractorToolbarRight">
-          <div class="contractorSearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="constructionSearch" placeholder="Tìm vật tư, quy cách, nhãn hiệu..."></div>
-        </div>
-      </div>
-      <div id="constructionCategoryFilters" class="contractorSpecialtyFilters">
-        <button class="active" type="button" data-construction-category="">Tất cả</button>
-        <button type="button" data-construction-category="Điện">Điện</button>
-        <button type="button" data-construction-category="ĐHKK">ĐHKK</button>
-        <button type="button" data-construction-category="PCCC">PCCC</button>
-        <button type="button" data-construction-category="Cấp thoát nước">Cấp thoát nước</button>
-        <button type="button" data-construction-category="Hoàn thiện">Hoàn thiện</button>
-        <button type="button" data-construction-category="Khác">Khác</button>
-      </div>
-
-      <div class="contractorListHeader constructionListHeader" aria-hidden="true">
-        <span>VẬT TƯ</span>
-        <span>QUY CÁCH / NHÃN HIỆU</span>
-        <span>ĐVT</span>
-        <span>NHÓM</span>
-        <span>LƯỢT SỬ DỤNG</span>
-        <span>GẦN NHẤT</span>
-        <span>THAO TÁC</span>
-      </div>
-      <div id="constructionGrid" class="contractorGrid constructionGrid"></div>
-      <div id="constructionEmpty" class="contractorEmpty hide">
+  <section id="constructionOverview" class="constructionOverviewV2">
+  <div class="constructionCommand">
+    <div class="constructionCommandBrand">
+      <div class="constructionCommandIcon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg>
-        <b>Chưa có vật tư thi công</b>
-        <span>Bấm “Thêm vật tư” để tạo hồ sơ đầu tiên cho dự án.</span>
+      </div>
+      <div>
+        <span>ESTA · CONSTRUCTION MATERIALS</span>
+        <h1>Vật tư thi công</h1>
+        <p>Quản lý nhập - xuất - tồn vật tư thi công theo từng tháng và theo dõi đầy đủ 12 tháng trong năm.</p>
       </div>
     </div>
-  </section>
+    <div class="constructionCommandRight">
+      <label><small>NĂM THEO DÕI</small><select id="constructionYear"></select></label>
+      <button id="constructionExportExcel" class="constructionGhostBtn" type="button">Excel ⇩</button>
+      <button id="constructionExportPdf" class="constructionGhostBtn" type="button">PDF ⇩</button>
+      <button id="constructionStockMoveBtn" class="constructionGhostBtn" type="button">⇄ Nhập / Xuất</button>
+      <button id="addConstructionMaterialBtn" class="constructionPrimaryBtn" type="button">＋ Thêm vật tư</button>
+    </div>
+  </div>
 
-  <section id="constructionDetail" class="contractorDetail hide">
+  <div class="constructionMonthPanel">
+    <div class="constructionMonthHead">
+      <div><span>THEO DÕI 12 THÁNG</span><b id="constructionMonthTitle">Tháng hiện tại</b></div>
+      <small>Tồn cuối = Tồn đầu + Nhập − Xuất</small>
+    </div>
+    <div id="constructionMonthTabs" class="constructionMonthTabs">
+      <button type="button" data-construction-month="all">12 tháng</button>
+      <button type="button" data-construction-month="1">Th01</button>
+      <button type="button" data-construction-month="2">Th02</button>
+      <button type="button" data-construction-month="3">Th03</button>
+      <button type="button" data-construction-month="4">Th04</button>
+      <button type="button" data-construction-month="5">Th05</button>
+      <button type="button" data-construction-month="6">Th06</button>
+      <button type="button" data-construction-month="7">Th07</button>
+      <button type="button" data-construction-month="8">Th08</button>
+      <button type="button" data-construction-month="9">Th09</button>
+      <button type="button" data-construction-month="10">Th10</button>
+      <button type="button" data-construction-month="11">Th11</button>
+      <button type="button" data-construction-month="12">Th12</button>
+    </div>
+  </div>
+
+  <div class="constructionStatsV2">
+    <article><span class="constructionMetricIcon in"><svg viewBox="0 0 24 24"><path d="M12 19V5M7 10l5-5 5 5"/></svg></span><div><small id="constructionInLabel">NHẬP TRONG THÁNG</small><b id="constructionMonthIn">0</b><em>Vật tư nhập kho</em></div></article>
+    <article><span class="constructionMetricIcon out"><svg viewBox="0 0 24 24"><path d="M12 5v14M7 14l5 5 5-5"/></svg></span><div><small id="constructionOutLabel">XUẤT TRONG THÁNG</small><b id="constructionMonthOut">0</b><em>Vật tư xuất thi công</em></div></article>
+    <article><span class="constructionMetricIcon stock"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg></span><div><small>MẶT HÀNG CÒN TỒN</small><b id="constructionStockCount">0</b><em>Còn số lượng trong kho</em></div></article>
+    <article><span class="constructionMetricIcon low"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>SẮP HẾT</small><b id="constructionLowStockCount">0</b><em>Theo mức tồn tối thiểu</em></div></article>
+  </div>
+
+  <div class="constructionWorkspace">
+    <div class="constructionToolbar">
+      <div>
+        <span>QUẢN LÝ VẬT TƯ</span>
+        <h2>Danh sách vật tư thi công <b id="constructionResultCount">(0)</b></h2>
+      </div>
+      <div class="constructionToolbarRight">
+        <div class="constructionSearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="constructionSearch" placeholder="Tìm vật tư, quy cách, nhãn hiệu..."></div>
+        <select id="constructionCategorySelect">
+          <option value="">Tất cả nhóm</option>
+          <option>Điện</option><option>ĐHKK</option><option>PCCC</option><option>Cấp thoát nước</option><option>Hoàn thiện</option><option>Khác</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="constructionTableCard">
+      <div class="constructionTableScroll">
+        <table id="constructionStockTable">
+          <thead id="constructionStockHead"></thead>
+          <tbody id="constructionStockBody"></tbody>
+        </table>
+      </div>
+      <div id="constructionEmpty" class="constructionEmptyV2 hide">
+        <b>Chưa có vật tư thi công</b>
+        <span>Bấm “Thêm vật tư” để tạo vật tư đầu tiên cho dự án.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="constructionHistoryPanel">
+    <div class="constructionHistoryHead">
+      <div><span>LỊCH SỬ KHO</span><h2 id="constructionTxnTitle">Nhập / xuất gần đây</h2></div>
+      <small>Ghi nhận người thực hiện, nhà cung cấp / nhà thầu và ghi chú.</small>
+    </div>
+    <div class="constructionTableScroll">
+      <table class="constructionTxnTable">
+        <thead><tr><th>Ngày</th><th>Vật tư</th><th>Loại</th><th>Số lượng</th><th>Đơn giá</th><th>Người thực hiện</th><th>Nhà cung cấp / Nhà thầu</th><th>Ghi chú</th><th></th></tr></thead>
+        <tbody id="constructionTxnBody"></tbody>
+      </table>
+    </div>
+    <div id="constructionTxnEmpty" class="constructionEmptyV2 hide">Chưa có giao dịch trong kỳ đang xem.</div>
+  </div>
+</section>
+
+<section id="constructionDetail" class="contractorDetail hide">
     <div class="contractorDetailTop">
       <div class="contractorDetailNav">
         <button id="constructionBackBtn" class="contractorBackBtn" type="button">← Danh sách vật tư</button>
@@ -1479,6 +1510,26 @@
   </section>
 </div>
 </main></div>
+<div id="constructionStockTxnModal" class="modal hide">
+  <div class="modalCard contractorModalCard constructionStockModalCard">
+    <button id="closeConstructionStockTxnModal" class="modalClose" type="button">×</button>
+    <div class="contractorModalHead"><span>ESTA · CONSTRUCTION STOCK</span><h3>Nhập / Xuất vật tư thi công</h3><p>Tự động cập nhật số liệu tồn kho theo tháng.</p></div>
+    <form id="constructionStockTxnForm" class="contractorForm">
+      <input id="constructionStockTxnId" type="hidden">
+      <label class="wide"><span>Vật tư *</span><select id="constructionStockMaterial" required></select></label>
+      <label><span>Loại *</span><select id="constructionStockType"><option value="in">Nhập kho</option><option value="out">Xuất kho / thi công</option></select></label>
+      <label><span>Ngày *</span><input id="constructionStockDate" type="date" required></label>
+      <label><span>Số lượng *</span><input id="constructionStockQty" type="number" min="0.01" step="0.01" required></label>
+      <label><span>Đơn giá</span><input id="constructionStockUnitPrice" type="number" min="0" step="1000" value="0"></label>
+      <label><span>Người thực hiện</span><select id="constructionStockPerformer"><option value="">— Chọn —</option></select></label>
+      <label><span>Nhà cung cấp</span><input id="constructionStockSupplier" maxlength="160"></label>
+      <label><span>Nhà thầu</span><input id="constructionStockContractor" maxlength="160"></label>
+      <label class="full"><span>Ghi chú</span><textarea id="constructionStockNote" maxlength="500" rows="3" placeholder="Nhập mua mới, xuất cho hạng mục, vị trí sử dụng..."></textarea></label>
+      <div class="contractorFormActions"><button id="cancelConstructionStockTxnModal" type="button" class="contractorBtn ghost">Hủy</button><button type="submit" class="contractorBtn primary">Lưu giao dịch</button></div>
+    </form>
+  </div>
+</div>
+
 <div id="constructionMaterialModal" class="modal hide">
   <div class="modalCard contractorModalCard">
     <button id="closeConstructionMaterialModal" class="modalClose" type="button">×</button>
@@ -1491,6 +1542,10 @@
       <label class="wide"><span>Quy cách</span><input id="constructionMaterialSpec" maxlength="200" placeholder="Kích thước, model, tiết diện, màu..."></label>
       <label><span>Đơn vị tính</span><input id="constructionMaterialUnit" maxlength="30" value="Cái" placeholder="Cái, mét, bộ, kg..."></label>
       <label><span>Nhà cung cấp</span><input id="constructionMaterialSupplier" maxlength="160" placeholder="Tên đơn vị cung cấp"></label>
+      <label><span>Vị trí lưu kho</span><input id="constructionMaterialStorage" maxlength="160" placeholder="Kho kỹ thuật, tầng hầm..."></label>
+      <label><span>Tồn ban đầu</span><input id="constructionMaterialOpeningQty" type="number" min="0" step="0.01" value="0"></label>
+      <label><span>Tồn tối thiểu</span><input id="constructionMaterialMinQty" type="number" min="0" step="0.01" value="0"></label>
+      <label><span>Đơn giá tham khảo</span><input id="constructionMaterialUnitPrice" type="number" min="0" step="1000" value="0"></label>
       <label><span>Trạng thái</span><select id="constructionMaterialStatus"><option>Đang sử dụng</option><option>Tạm ngưng</option><option>Ngừng sử dụng</option></select></label>
       <label class="full"><span>Ghi chú</span><textarea id="constructionMaterialNote" maxlength="600" rows="3" placeholder="Thông tin cần lưu ý về vật tư..."></textarea></label>
       <div class="contractorFormActions"><button id="cancelConstructionMaterialModal" type="button" class="contractorBtn ghost">Hủy</button><button type="submit" class="contractorBtn primary">Lưu vật tư</button></div>
@@ -1734,5 +1789,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260924-2130"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20260924-1945"></script><script src="construction.js?v=20260924-2035"></script></body></html>
+<script src="app.js?v=20260924-2215"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="contractor.js?v=20260924-1945"></script><script src="construction.js?v=20260924-2215"></script></body></html>
