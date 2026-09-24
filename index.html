@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-1245">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-1905">
 <link rel="stylesheet" href="contractor.css?v=20260924-1245"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
@@ -701,22 +701,7 @@
   </div>
 
   <div class="headerTools">
-    <div class="inventoryHeaderControls">
-        <div class="inventoryTabs">
-        <button class="active" type="button" data-inventory-tab="materials">
-          <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg>
-          <span>Vật tư tiêu hao</span>
-        </button>
-        <button type="button" data-inventory-tab="tools">
-          <svg viewBox="0 0 24 24"><path d="m14 6 4-4 4 4-4 4M13 7 4 16v4h4l9-9M5 15l4 4"/></svg>
-          <span>Dụng cụ kỹ thuật</span>
-        </button>
-        </div>
-        <div class="inventoryContext">
-          <span class="inventoryContextProject"><small>DỰ ÁN</small><b class="buildingNameText">Dự án</b></span>
-          <label class="inventoryYearControl"><small>NĂM</small><select id="inventoryYear"></select></label>
-        </div>
-      </div>
+    
     <div class="headerSearch">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
       <input id="globalSearch" placeholder="Tìm công việc...">
@@ -960,89 +945,103 @@
   </section>
 </div>
 <div id="inventoryPage" class="page inventoryPage hide">
-  
+  <section class="inventoryCommand">
+    <div class="inventoryCommandBrand">
+      <div class="inventoryCommandIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg>
+      </div>
+      <div>
+        <span>ESTA · TECHNICAL INVENTORY</span>
+        <h1>Dụng cụ - Vật tư</h1>
+        <p>Quản lý kho vật tư tiêu hao và danh mục dụng cụ kỹ thuật theo từng dự án.</p>
+      </div>
+    </div>
+
+    <div class="inventoryCommandControls">
+      <div class="inventoryLocalTabs">
+        <button class="active" type="button" data-inventory-tab="materials">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg>
+          <span>Vật tư tiêu hao</span>
+        </button>
+        <button type="button" data-inventory-tab="tools">
+          <svg viewBox="0 0 24 24"><path d="m14 6 4-4 4 4-4 4M13 7 4 16v4h4l9-9M5 15l4 4"/></svg>
+          <span>Dụng cụ kỹ thuật</span>
+        </button>
+      </div>
+      <div class="inventoryCommandMeta">
+        <div><small>DỰ ÁN</small><b class="buildingNameText">Dự án</b></div>
+        <label><small>NĂM</small><select id="inventoryYear"></select></label>
+      </div>
+    </div>
+  </section>
 
   <section id="inventoryMaterialsPane" class="inventoryPane inventoryWorkspace">
-    <div class="inventoryToolbar">
+    <div class="inventorySectionBar">
       <div>
         <span class="inventoryKicker">VẬT TƯ TIÊU HAO</span>
-        <h2>Nhập - xuất - tồn vật tư tiêu hao <span id="materialTitleCount">(0 mục)</span></h2>
-        <p>Theo dõi tồn đầu, nhập, xuất và tồn cuối theo từng tháng trong năm.</p>
+        <h2>Nhập - xuất - tồn <span id="materialTitleCount">(0 mục)</span></h2>
+        <p>Chọn tháng để xem số liệu tồn đầu, nhập, xuất và tồn cuối.</p>
       </div>
       <div class="inventoryToolbarActions">
-        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="materialSearch" placeholder="Tìm tên vật tư..."></div>
-        <button id="materialExportPdf" class="inventorySecondary" type="button">PDF ⇩</button>
-        <button id="openStockTxn" class="inventorySecondary" type="button">⇄ Nhập / Xuất</button>
+        <div class="inventorySearch">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input id="materialSearch" placeholder="Tìm vật tư...">
+        </div>
+        <button id="materialExportPdf" class="inventorySecondary" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg> PDF
+        </button>
+        <button id="openStockTxn" class="inventorySecondary stockMoveBtn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M7 7h10M13 3l4 4-4 4M17 17H7M11 13l-4 4 4 4"/></svg> Nhập / Xuất
+        </button>
         <button id="addMaterialBtn" class="inventoryPrimary" type="button">＋ Thêm vật tư</button>
       </div>
     </div>
 
-    <div id="materialMonthTabs" class="materialMonthTabs">
-      <button type="button" data-material-month="1">Th01</button>
-      <button type="button" data-material-month="2">Th02</button>
-      <button type="button" data-material-month="3">Th03</button>
-      <button type="button" data-material-month="4">Th04</button>
-      <button type="button" data-material-month="5">Th05</button>
-      <button type="button" data-material-month="6">Th06</button>
-      <button type="button" data-material-month="7">Th07</button>
-      <button type="button" data-material-month="8">Th08</button>
-      <button type="button" data-material-month="9">Th09</button>
-      <button type="button" data-material-month="10">Th10</button>
-      <button type="button" data-material-month="11">Th11</button>
-      <button type="button" data-material-month="12">Th12</button>
-    </div>
-
-    <div class="materialPeriodSummary">
-      <div class="materialPeriodCurrent">
-        <span>THÁNG ĐANG XEM</span>
-        <strong id="materialSelectedMonth">Tháng 01 / 2026</strong>
+    <div class="inventoryMonthRail">
+      <div class="inventoryMonthRailHead">
+        <div><span>THEO DÕI 12 THÁNG</span><b id="materialSelectedMonth">Tháng 01 / 2026</b></div>
+        <small>Tồn cuối = Tồn đầu + Nhập − Xuất</small>
       </div>
-      <div class="materialPeriodFormula">
-        <span>Tồn cuối kỳ</span>
-        <b>=</b>
-        <span>Tồn đầu kỳ</span>
-        <b>+</b>
-        <span>Nhập</span>
-        <b>−</b>
-        <span>Xuất</span>
+      <div id="materialMonthTabs" class="materialMonthTabs">
+        <button type="button" data-material-month="1">Th01</button>
+        <button type="button" data-material-month="2">Th02</button>
+        <button type="button" data-material-month="3">Th03</button>
+        <button type="button" data-material-month="4">Th04</button>
+        <button type="button" data-material-month="5">Th05</button>
+        <button type="button" data-material-month="6">Th06</button>
+        <button type="button" data-material-month="7">Th07</button>
+        <button type="button" data-material-month="8">Th08</button>
+        <button type="button" data-material-month="9">Th09</button>
+        <button type="button" data-material-month="10">Th10</button>
+        <button type="button" data-material-month="11">Th11</button>
+        <button type="button" data-material-month="12">Th12</button>
       </div>
     </div>
 
     <div class="inventoryStats monthlyStats">
-      <article><span class="invStatIcon green"><svg viewBox="0 0 24 24"><path d="M12 19V5M7 10l5-5 5 5"/></svg></span><div><small>TỔNG NHẬP THÁNG</small><b id="materialMonthIn">0</b><em>Phát sinh trong tháng</em></div></article>
-      <article><span class="invStatIcon amber"><svg viewBox="0 0 24 24"><path d="M12 5v14M7 14l5 5 5-5"/></svg></span><div><small>TỔNG XUẤT THÁNG</small><b id="materialMonthOut">0</b><em>Đã sử dụng trong tháng</em></div></article>
-      <article><span class="invStatIcon blue"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg></span><div><small>MẶT HÀNG CÒN TỒN</small><b id="materialInStockCount">0</b><em>Tồn cuối tháng &gt; 0</em></div></article>
-      <article><span class="invStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>SẮP HẾT</small><b id="materialLowStock">0</b><em>Theo mức tồn tối thiểu</em></div></article>
-    </div>
-
-    <section id="stockAlertPanel" class="stockAlertPanel">
-      <div class="stockAlertHead">
-        <div class="stockAlertTitle">
-          <span class="stockAlertIcon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3 2.8 19h18.4L12 3z"/><path d="M12 9v4M12 17h.01"/></svg>
-          </span>
-          <div>
-            <span class="inventoryKicker">CẢNH BÁO TỒN KHO</span>
-            <h3>Vật tư cần bổ sung <b id="stockAlertCount">0</b></h3>
-            <p>Hệ thống tự cảnh báo khi tồn hiện tại bằng hoặc thấp hơn mức tồn tối thiểu đã thiết lập.</p>
-          </div>
-        </div>
-        <button id="stockAlertOnly" class="stockAlertFilterBtn" type="button">Chỉ xem cảnh báo</button>
-      </div>
-      <div id="stockAlertList" class="stockAlertList"></div>
-    </section>
-
-    <div class="inventoryExamples">
-      <span>Gợi ý vật tư:</span>
-      <button type="button" data-material-sample="Băng keo điện 3M|Cuộn">Băng keo điện 3M</button>
-      <button type="button" data-material-sample="Đèn LED âm trần 12W|Cái">Đèn LED âm trần 12W</button>
-      <button type="button" data-material-sample="Dây rút nhựa 200mm|Bịch">Dây rút nhựa</button>
-      <button type="button" data-material-sample="Cầu chì 10A|Cái">Cầu chì 10A</button>
-      <button type="button" data-material-sample="Đầu cos điện|Bịch">Đầu cos điện</button>
+      <article class="inventoryMetric inMetric">
+        <span class="invStatIcon green"><svg viewBox="0 0 24 24"><path d="M12 19V5M7 10l5-5 5 5"/></svg></span>
+        <div><small>TỔNG NHẬP THÁNG</small><b id="materialMonthIn">0</b><em>Phát sinh nhập kho</em></div>
+      </article>
+      <article class="inventoryMetric outMetric">
+        <span class="invStatIcon amber"><svg viewBox="0 0 24 24"><path d="M12 5v14M7 14l5 5 5-5"/></svg></span>
+        <div><small>TỔNG XUẤT THÁNG</small><b id="materialMonthOut">0</b><em>Đã sử dụng</em></div>
+      </article>
+      <article class="inventoryMetric stockMetric">
+        <span class="invStatIcon blue"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg></span>
+        <div><small>MẶT HÀNG CÒN TỒN</small><b id="materialInStockCount">0</b><em>Tồn cuối tháng &gt; 0</em></div>
+      </article>
+      <article class="inventoryMetric lowMetric">
+        <span class="invStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
+        <div><small>SẮP HẾT</small><b id="materialLowStock">0</b><em>Theo mức tồn tối thiểu</em></div>
+      </article>
     </div>
 
     <div class="inventoryTableCard materialMonthlyCard">
-      <div class="inventoryTableHint"><span>BẢNG CHI TIẾT</span><b id="materialMonthLabel">Tháng 01 / 2026</b></div>
+      <div class="inventoryCardTitle">
+        <div><span>BẢNG VẬT TƯ</span><h3 id="materialMonthLabel">Tháng 01 / 2026</h3></div>
+        <small>Đơn vị tính được theo dõi riêng cho từng vật tư.</small>
+      </div>
       <div class="inventoryTableScroll">
         <table class="materialMonthlyTable">
           <colgroup>
@@ -1050,17 +1049,41 @@
             <col class="col-in"><col class="col-out"><col class="col-close"><col class="col-actions">
           </colgroup>
           <thead>
-            <tr><th>STT</th><th>Tên vật tư</th><th>ĐVT</th><th>Tồn đầu kỳ</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối kỳ</th><th>Thao tác</th></tr>
+            <tr><th>STT</th><th>Tên vật tư</th><th>ĐVT</th><th>Tồn đầu</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối</th><th>Thao tác</th></tr>
           </thead>
           <tbody id="materialMatrixBody"></tbody>
         </table>
       </div>
-      <div id="materialEmpty" class="inventoryEmpty hide">Chưa có vật tư. Anh có thể chọn một gợi ý phía trên hoặc bấm “Thêm vật tư”.</div>
+      <div id="materialEmpty" class="inventoryEmpty hide">Chưa có vật tư trong dự án này.</div>
+    </div>
+
+    <div class="inventorySupportGrid">
+      <section id="stockAlertPanel" class="stockAlertPanel inventorySupportCard">
+        <div class="stockAlertHead">
+          <div class="stockAlertTitle">
+            <span class="stockAlertIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 19h18.4L12 3z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+            <div><span class="inventoryKicker">CẢNH BÁO</span><h3>Cần bổ sung <b id="stockAlertCount">0</b></h3><p>Tồn hiện tại ≤ mức tối thiểu.</p></div>
+          </div>
+          <button id="stockAlertOnly" class="stockAlertFilterBtn" type="button">Chỉ xem</button>
+        </div>
+        <div id="stockAlertList" class="stockAlertList"></div>
+      </section>
+
+      <section class="inventoryQuickAdd inventorySupportCard">
+        <div class="inventoryQuickAddHead"><span class="inventoryKicker">THÊM NHANH</span><h3>Vật tư thường dùng</h3><p>Bấm để mở form với tên và đơn vị đã gợi ý.</p></div>
+        <div class="inventoryExamples">
+          <button type="button" data-material-sample="Băng keo điện 3M|Cuộn">Băng keo điện 3M</button>
+          <button type="button" data-material-sample="Đèn LED âm trần 12W|Cái">Đèn LED 12W</button>
+          <button type="button" data-material-sample="Dây rút nhựa 200mm|Bịch">Dây rút nhựa</button>
+          <button type="button" data-material-sample="Cầu chì 10A|Cái">Cầu chì 10A</button>
+          <button type="button" data-material-sample="Đầu cos điện|Bịch">Đầu cos điện</button>
+        </div>
+      </section>
     </div>
 
     <div class="inventoryTableCard transactionCard">
-      <div class="inventorySectionHead">
-        <div><span class="inventoryKicker">LỊCH SỬ KHO</span><h3>Nhập / xuất trong tháng</h3><p id="materialTxnSubtitle">Theo dõi các lần phát sinh vật tư của tháng đang chọn.</p></div>
+      <div class="inventoryCardTitle">
+        <div><span>LỊCH SỬ KHO</span><h3>Nhập / xuất trong tháng</h3><p id="materialTxnSubtitle">Các phát sinh của tháng đang chọn.</p></div>
       </div>
       <div class="inventoryTableScroll">
         <table class="transactionTable">
@@ -1077,47 +1100,64 @@
   </section>
 
   <section id="inventoryToolsPane" class="inventoryPane inventoryWorkspace hide">
-    <div class="inventoryToolbar">
+    <div class="inventorySectionBar">
       <div>
         <span class="inventoryKicker">DỤNG CỤ KỸ THUẬT</span>
-        <h2>Danh mục dụng cụ và thiết bị cầm tay</h2>
-        <p>Lưu số lượng, tình trạng, vị trí và người phụ trách của từng dụng cụ.</p>
+        <h2>Danh mục dụng cụ</h2>
+        <p>Theo dõi số lượng, nhãn hiệu, vị trí lưu, người phụ trách và tình trạng sử dụng.</p>
       </div>
       <div class="inventoryToolbarActions">
         <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="toolSearch" placeholder="Tìm dụng cụ..."></div>
-        <button id="toolExportPdf" class="inventorySecondary" type="button">PDF ⇩</button>
+        <button id="toolExportPdf" class="inventorySecondary" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg> PDF
+        </button>
         <button id="addToolBtn" class="inventoryPrimary" type="button">＋ Thêm dụng cụ</button>
       </div>
     </div>
 
     <div class="inventoryStats toolsStats">
-      <article><span class="invStatIcon blue"><svg viewBox="0 0 24 24"><path d="m14 6 4-4 4 4-4 4M13 7 4 16v4h4l9-9"/></svg></span><div><small>DỤNG CỤ</small><b id="toolCount">0</b><em>Danh mục</em></div></article>
-      <article><span class="invStatIcon green"><svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>TÌNH TRẠNG TỐT</small><b id="toolGoodCount">0</b><em>Sẵn sàng sử dụng</em></div></article>
-      <article><span class="invStatIcon amber"><svg viewBox="0 0 24 24"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><small>CẦN KIỂM TRA</small><b id="toolRepairCount">0</b><em>Cần sửa / hỏng</em></div></article>
+      <article class="inventoryMetric">
+        <span class="invStatIcon blue"><svg viewBox="0 0 24 24"><path d="m14 6 4-4 4 4-4 4M13 7 4 16v4h4l9-9"/></svg></span>
+        <div><small>DỤNG CỤ</small><b id="toolCount">0</b><em>Tổng danh mục</em></div>
+      </article>
+      <article class="inventoryMetric">
+        <span class="invStatIcon green"><svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg></span>
+        <div><small>ĐANG SỬ DỤNG</small><b id="toolGoodCount">0</b><em>Sẵn sàng làm việc</em></div>
+      </article>
+      <article class="inventoryMetric">
+        <span class="invStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
+        <div><small>CẦN XỬ LÝ</small><b id="toolRepairCount">0</b><em>Kiểm tra / hư hỏng</em></div>
+      </article>
     </div>
 
-    <div class="inventoryExamples">
-      <span>Gợi ý dụng cụ:</span>
-      <button type="button" data-tool-sample="Đồng hồ vạn năng|Cái">Đồng hồ vạn năng</button>
-      <button type="button" data-tool-sample="Ampe kìm|Cái">Ampe kìm</button>
-      <button type="button" data-tool-sample="Máy khoan pin|Bộ">Máy khoan pin</button>
-      <button type="button" data-tool-sample="Thang nhôm chữ A|Cái">Thang nhôm</button>
-      <button type="button" data-tool-sample="Máy đo nhiệt độ laser|Cái">Máy đo nhiệt độ laser</button>
-    </div>
-
-    <div class="inventoryTableCard">
+    <div class="inventoryTableCard toolsMainCard">
+      <div class="inventoryCardTitle">
+        <div><span>DANH MỤC DỤNG CỤ</span><h3>Thiết bị cầm tay & dụng cụ kỹ thuật</h3></div>
+        <small>Thông tin được lưu riêng theo từng dự án.</small>
+      </div>
       <div class="inventoryTableScroll">
         <table class="toolsTable">
           <colgroup>
             <col class="tool-col-stt"><col class="tool-col-name"><col class="tool-col-brand"><col class="tool-col-qty">
-            <col class="tool-col-location"><col class="tool-col-status"><col class="tool-col-note"><col class="tool-col-actions">
+            <col class="tool-col-location"><col class="tool-col-keeper"><col class="tool-col-status"><col class="tool-col-note"><col class="tool-col-actions">
           </colgroup>
-          <thead><tr><th>STT</th><th>Tên dụng cụ</th><th>Nhãn hiệu</th><th>Số lượng</th><th>Vị trí lưu</th><th>Tình trạng</th><th>Ghi chú</th><th>Thao tác</th></tr></thead>
+          <thead><tr><th>STT</th><th>Tên dụng cụ</th><th>Nhãn hiệu</th><th>Số lượng</th><th>Vị trí lưu</th><th>Người phụ trách</th><th>Tình trạng</th><th>Ghi chú</th><th>Thao tác</th></tr></thead>
           <tbody id="toolsBody"></tbody>
         </table>
       </div>
       <div id="toolsEmpty" class="inventoryEmpty hide">Chưa có dụng cụ kỹ thuật.</div>
     </div>
+
+    <section class="inventoryQuickAdd toolsQuickAdd">
+      <div class="inventoryQuickAddHead"><span class="inventoryKicker">THÊM NHANH</span><h3>Dụng cụ thường dùng</h3></div>
+      <div class="inventoryExamples">
+        <button type="button" data-tool-sample="Đồng hồ vạn năng|Cái">Đồng hồ vạn năng</button>
+        <button type="button" data-tool-sample="Ampe kìm|Cái">Ampe kìm</button>
+        <button type="button" data-tool-sample="Máy khoan pin|Bộ">Máy khoan pin</button>
+        <button type="button" data-tool-sample="Thang nhôm chữ A|Cái">Thang nhôm</button>
+        <button type="button" data-tool-sample="Máy đo nhiệt độ laser|Cái">Máy đo nhiệt độ laser</button>
+      </div>
+    </section>
   </section>
 </div>
 <div id="maintenancePage" class="page maintenancePage hide">
@@ -1450,8 +1490,8 @@
       <label><span>Nhãn hiệu</span><input id="toolBrand" maxlength="100" placeholder="VD: Kyoritsu, Bosch..."></label>
       <label><span>Số lượng *</span><input id="toolQty" type="number" step="0.01" min="0" required value="1"></label>
       <label><span>Đơn vị</span><input id="toolUnit" maxlength="30" value="Cái"></label>
-      <label><span>Tình trạng</span><select id="toolCondition"><option>Đang sử dụng</option><option>Hư hỏng</option></select></label>
-      <label><span>Vị trí lưu</span><input id="toolLocation" maxlength="120" placeholder="Kho kỹ thuật, tủ dụng cụ..."></label>
+      <label><span>Tình trạng</span><select id="toolCondition"><option>Tốt</option><option>Đang sử dụng</option><option>Cần kiểm tra</option><option>Hư hỏng</option></select></label>
+      <label><span>Vị trí lưu</span><input id="toolLocation" maxlength="120" placeholder="Kho kỹ thuật, tủ dụng cụ..."></label><label><span>Người phụ trách</span><select id="toolKeeper"><option value="">— Chọn —</option></select></label>
       <label><span>Ngày mua</span><input id="toolAcquiredDate" type="date"></label>
       <label class="wide toolNoteField"><span>Ghi chú</span><input id="toolNote" maxlength="300" placeholder="Model, serial, vị trí sử dụng, tình trạng chi tiết..."></label>
       <div class="inventoryFormActions"><button id="cancelToolModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu dụng cụ</button></div>
@@ -1519,5 +1559,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260924-1245"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260924-1905"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260924-1245"></script></body></html>
