@@ -1,0 +1,125 @@
+{
+  "tasks": [
+    {
+      "a": "Ennebe",
+      "c": "Bsbsh",
+      "d": "2026-09-22",
+      "i": 3,
+      "n": "",
+      "s": "Đã hoàn thành",
+      "t": "Hằng ngày",
+      "id": 1790052887392,
+      "imgs": [
+        "storage:62THL/tasks/1790052887392/1790057860938-0-eb98d202-a4e7-478c-85aa-378b8f2f6179.jpg",
+        "storage:62THL/tasks/1790052887392/1790057863337-1-3a44a1f2-b045-43b2-9a5c-e8039ec78af6.jpg",
+        "storage:62THL/tasks/1790052887392/1790057865325-2-d99cb265-0c2f-4477-abab-f1abba1fdd61.jpg"
+      ]
+    },
+    {
+      "a": "Tyeu",
+      "c": "Abcxyz",
+      "d": "2026-09-22",
+      "i": 3,
+      "n": "",
+      "s": "Đã hoàn thành",
+      "t": "Hằng ngày",
+      "id": 1790057909562,
+      "imgs": [
+        "storage:62THL/tasks/1790057909562/1790057909661-0-7e4298c0-e2b8-4f04-a69a-6e39acb3a36a.jpg",
+        "storage:62THL/tasks/1790057909562/1790057911216-1-1e9a2ef4-3429-4fa7-8d0a-c383217de49e.jpg",
+        "storage:62THL/tasks/1790057909562/1790057915283-2-8b019b8c-0209-4e3d-b2b9-f14fed9e1cec.jpg"
+      ]
+    },
+    {
+      "a": "Vni",
+      "c": "Tôi báo cáo",
+      "d": "2026-09-22",
+      "i": 1,
+      "n": "",
+      "s": "Đã hoàn thành",
+      "t": "Sự cố",
+      "id": 1790060261295,
+      "imgs": [
+        "storage:62THL/tasks/1790060261295/1790060261378-0-fcb9dea6-1fa4-4f9b-bf2c-ac99c5a3ae95.jpg"
+      ]
+    },
+    {
+      "a": "Dat",
+      "c": "Ưewee",
+      "d": "2026-09-22",
+      "i": 2,
+      "n": "",
+      "s": "Đang thực hiện",
+      "t": "Hằng ngày",
+      "id": 1790060982634,
+      "imgs": [
+        "storage:62THL/tasks/1790060982634/1790060982637-0-fb4abe55-2115-464b-8423-e1a6e2980b6d.jpg",
+        "storage:62THL/tasks/1790060982634/1790060982637-1-1bb5feaa-cb87-4647-a4a6-414d1d597997.jpg"
+      ]
+    },
+    {
+      "a": "Van",
+      "c": "Chup",
+      "d": "2026-09-22",
+      "i": 2,
+      "n": "",
+      "s": "Đang thực hiện",
+      "t": "Hằng ngày",
+      "id": 1790075547462,
+      "imgs": [
+        "storage:62THL/tasks/1790075547462/1790075547646-0-0a632b33-0748-4a76-9b56-146e4e130f5c.jpg",
+        "storage:62THL/tasks/1790075547462/1790075547647-1-fc24e088-a569-4a62-b508-8b5958f78886.jpg"
+      ]
+    },
+    {
+      "a": "Van",
+      "c": "Lười quá, đình công",
+      "d": "2026-09-23",
+      "i": 1,
+      "n": "",
+      "s": "Đang thực hiện",
+      "t": "Hằng ngày",
+      "id": 1790142856244,
+      "imgs": [
+        "storage:62THL/tasks/1790142856244/1790142856333-0-e6164339-387f-4f16-b0fc-26804480d125.jpg"
+      ],
+      "performers": [
+        "Van"
+      ]
+    },
+    {
+      "a": "Đạt",
+      "c": "Bbbbb",
+      "d": "2026-09-23",
+      "i": 1,
+      "n": "",
+      "s": "Đang thực hiện",
+      "t": "Hằng ngày",
+      "id": 1790160533472,
+      "imgs": [
+        "storage:62THL/tasks/1790160533472/1790160533600-0-ff4daf01-b17c-4c04-b2cf-f91d37dbf893.jpg"
+      ],
+      "performers": [
+        "Đạt"
+      ]
+    }
+  ],
+  "energy": [
+    {
+      "a": "Van",
+      "id": 1790142903494,
+      "date": "2026-09-23",
+      "note": "",
+      "type": "electric",
+      "image": "storage:62THL/energy/1790142903494/1790142903561-0-9bb86911-4db7-4e80-8344-d84b9ecca8d0.jpg",
+      "value": 12384621,
+      "createdAt": "2026-09-23T05:55:17.292Z",
+      "performers": [
+        "Van"
+      ]
+    }
+  ],
+  "updated_at": "2026-09-23T10:48:59.791+00:00",
+  "updated_by": "d2d284a5-e2a2-4bd6-a28e-3871010402ee",
+  "building_id": "62THL"
+}
