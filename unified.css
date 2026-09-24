@@ -326,3 +326,110 @@
   .maintenanceAssetGrid{grid-template-columns:1fr!important}
   .inventoryToolbar,.maintenanceToolbar,.homePanelHead,.adminSectionHead{align-items:flex-start!important;flex-direction:column!important}
 }
+
+
+/* Final alignment: Inventory / Maintenance / Admin command headers use Contractor geometry */
+.inventoryCommand{
+  min-height:112px!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:22px!important;
+  margin:0 0 12px!important;padding:18px 20px!important;
+  border:1px solid #dce5ea!important;border-radius:16px!important;
+  background:radial-gradient(circle at 92% 15%,rgba(25,184,212,.08),transparent 28%),linear-gradient(135deg,#fff 0%,#f8fbfc 100%)!important;
+  box-shadow:0 7px 24px rgba(19,55,78,.04)!important
+}
+.inventoryCommandBrand,.maintenanceCommandBrand,.adminCommandBrand{
+  display:flex!important;align-items:center!important;gap:13px!important;min-width:0!important
+}
+.inventoryCommandIcon,.maintenanceCommandIcon,.adminCommandIcon{
+  width:48px!important;height:48px!important;display:grid!important;place-items:center!important;flex:0 0 48px!important;
+  border-radius:13px!important;background:linear-gradient(145deg,#123a58,#175d78)!important;color:#fff!important;
+  box-shadow:0 9px 20px rgba(18,58,88,.14)!important
+}
+.inventoryCommandIcon svg,.maintenanceCommandIcon svg,.adminCommandIcon svg{
+  width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.7!important;stroke-linecap:round!important;stroke-linejoin:round!important
+}
+.inventoryCommandBrand>div:last-child>span,.maintenanceCommandBrand>div:last-child>span{
+  display:block!important;color:var(--u-bronze)!important;font-size:6.7px!important;font-weight:850!important;letter-spacing:1.6px!important
+}
+.inventoryCommand h1,.maintenanceHero h1,.adminHero h1{
+  margin:5px 0 3px!important;color:var(--u-navy-2)!important;font-size:24px!important;line-height:1.05!important;letter-spacing:-.4px!important
+}
+.inventoryCommand p,.maintenanceHero p,.adminHero p{margin:0!important;color:#7c909d!important;font-size:9px!important;line-height:1.5!important}
+.inventoryCommandControls,.maintenanceCommandRight{
+  display:flex!important;align-items:center!important;gap:9px!important;flex:0 0 auto!important
+}
+.inventoryCommandMeta,.maintenanceProjectMeta{
+  display:flex!important;align-items:center!important;gap:7px!important
+}
+.inventoryCommandMeta>div,.inventoryCommandMeta>label,.maintenanceProjectMeta{
+  min-width:142px!important;height:46px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+  padding:0 10px!important;border:1px solid #dce5ea!important;border-radius:10px!important;background:#fff!important
+}
+.inventoryCommandMeta small,.maintenanceProjectMeta small{
+  display:block!important;color:#8b9ca6!important;font-size:5.5px!important;letter-spacing:.8px!important;font-weight:750!important
+}
+.inventoryCommandMeta b,.maintenanceProjectMeta b{
+  display:block!important;margin-top:3px!important;color:#34566b!important;font-size:7.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important
+}
+.inventoryLocalTabs{
+  display:flex!important;align-items:center!important;gap:5px!important;padding:5px!important;
+  border:1px solid #dfe7ec!important;border-radius:12px!important;background:#fff!important
+}
+.inventoryLocalTabs button{
+  height:36px!important;display:flex!important;align-items:center!important;gap:6px!important;padding:0 10px!important;
+  border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:#5c7687!important;font-size:7.3px!important;font-weight:700!important
+}
+.inventoryLocalTabs button svg{width:15px!important;height:15px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.7!important}
+.inventoryLocalTabs button.active{border-color:#cce0e7!important;background:#edf6f9!important;color:#246980!important}
+.adminConnectionWrap{display:flex!important;align-items:center!important;gap:7px!important;flex:0 0 auto!important}
+.adminConnection{
+  min-height:36px!important;display:flex!important;align-items:center!important;padding:0 10px!important;
+  border:1px solid #dce5ea!important;border-radius:9px!important;background:#fff!important;color:#607989!important;font-size:7px!important
+}
+.adminConnection.warn{background:#fffaf2!important;color:#9d712c!important;border-color:#efdfbe!important}
+#adminActivateCentral{
+  min-height:36px!important;padding:0 10px!important;border:1px solid #dbe5ea!important;border-radius:9px!important;background:#fff!important;color:#496a7e!important;font-size:7.5px!important;font-weight:720!important
+}
+
+/* Energy summary cards use same KPI geometry */
+.energySummaryCards{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;
+  padding:10px!important;background:#fbfcfd!important;border-bottom:1px solid #e9eef1!important
+}
+.energySummaryCards article{
+  min-height:76px!important;padding:12px!important;border:1px solid #e1e8ed!important;border-radius:11px!important;background:#fff!important;box-shadow:none!important
+}
+.energySummaryCards small{color:#8295a1!important;font-size:6.2px!important;letter-spacing:.7px!important}
+.energySummaryCards strong{color:#1b4059!important;font-size:18px!important}
+
+/* Make the remaining controls look like Contractor controls */
+#maintenanceSystemFilter,#maintenanceDueFilter,.energyFilters input,.energyFilters select{
+  height:36px!important;padding:0 9px!important;border:1px solid #dce5ea!important;border-radius:9px!important;background:#fff!important;color:#4d697b!important;font-size:8px!important;outline:0!important
+}
+.rangeButtons button{
+  height:30px!important;border:1px solid #dde6eb!important;border-radius:999px!important;background:#fff!important;color:#5c7687!important;font-size:6.8px!important;font-weight:700!important
+}
+.rangeButtons button.active{border-color:#cce0e7!important;background:#edf6f9!important;color:#246980!important}
+
+/* Keep contractor module untouched; it is the reference design */
+.contractorPage{font-family:inherit}
+
+@media(max-width:1040px){
+  .inventoryCommand,.maintenanceHero,.adminHero{align-items:flex-start!important;flex-direction:column!important}
+  .inventoryCommandControls,.maintenanceCommandRight,.adminConnectionWrap{width:100%!important;justify-content:space-between!important}
+}
+@media(max-width:760px){
+  .inventoryCommand{min-height:0!important;padding:14px!important;border-radius:14px!important}
+  .inventoryCommandBrand,.maintenanceCommandBrand,.adminCommandBrand{align-items:flex-start!important}
+  .inventoryCommandIcon,.maintenanceCommandIcon,.adminCommandIcon{width:40px!important;height:40px!important;flex-basis:40px!important;border-radius:11px!important}
+  .inventoryCommand h1,.maintenanceHero h1,.adminHero h1{font-size:20px!important}
+  .inventoryCommandControls,.maintenanceCommandRight,.adminConnectionWrap{display:block!important}
+  .inventoryLocalTabs{width:100%!important;margin-top:10px!important}
+  .inventoryLocalTabs button{flex:1!important;justify-content:center!important}
+  .inventoryCommandMeta{margin-top:8px!important;display:grid!important;grid-template-columns:1fr 90px!important}
+  .inventoryCommandMeta>div,.inventoryCommandMeta>label,.maintenanceProjectMeta{min-width:0!important;width:100%!important}
+  .maintenanceProjectMeta{margin:10px 0 8px!important}
+  .maintenanceHeroActions{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important}
+  .adminConnectionWrap{margin-top:10px!important}
+  .energySummaryCards{grid-template-columns:1fr!important}
+}
