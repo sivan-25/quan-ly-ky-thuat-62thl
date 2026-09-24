@@ -1,0 +1,176 @@
+/* ESTA Construction Materials — visual system intentionally follows Contractor page */
+.constructionMaterialPage{width:100%!important;max-width:none!important}
+.constructionIntro{
+  background:
+    radial-gradient(circle at 86% 16%,rgba(25,184,212,.09),transparent 28%),
+    linear-gradient(135deg,#fff 0%,#f8fbfc 100%)!important;
+}
+.constructionTopTitle .topModuleIcon{background:#f3eee9!important;color:#8c6854!important}
+#app.constructionMode .filterWrap,#app.constructionMode #exportBtn{display:none!important}
+
+.constructionListHeader{
+  display:grid;
+  grid-template-columns:minmax(260px,1.55fr) minmax(210px,1.05fr) 72px 105px 112px 128px 104px;
+  align-items:center;
+  gap:12px;
+  padding:0 15px 7px;
+  color:#8a9ba6;
+  font-size:5.8px;
+  font-weight:800;
+  letter-spacing:.65px;
+}
+.constructionRowCard{
+  grid-template-columns:minmax(260px,1.55fr) minmax(210px,1.05fr) 72px 105px 112px 128px 104px!important;
+}
+.constructionSpecCell{
+  min-width:0;
+  color:#476578!important;
+}
+.constructionSpecCell b{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:8px;
+  font-weight:700;
+}
+.constructionUnitCell{
+  text-align:center;
+  font-size:8px!important;
+  font-weight:720;
+  color:#31576e!important;
+}
+.constructionGrid .contractorRowCount{
+  display:flex;
+  justify-content:center;
+}
+.constructionGrid .contractorRowCount span{
+  min-width:31px;height:31px;
+  display:grid;place-items:center;
+  border-radius:9px;
+  background:#f1f6f8;
+  color:#285e78;
+  font-size:9px;
+  font-weight:800;
+}
+.constructionGrid .contractorLatest{
+  min-width:0;
+}
+.constructionGrid .contractorLatest b{
+  display:block;
+  color:#3d5e72;
+  font-size:7.5px;
+}
+.constructionGrid .contractorLatest span{
+  display:block;
+  margin-top:3px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#8a9ba6;
+  font-size:6.4px;
+}
+.constructionGrid .contractorRowActions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:4px;
+}
+.constructionGrid .contractorRowActions button{
+  width:30px;height:30px;
+  display:grid;place-items:center;
+  padding:0;
+  border:1px solid #dce5ea;
+  border-radius:8px;
+  background:#fff;
+  color:#557386;
+}
+.constructionGrid .contractorRowActions button svg{
+  width:14px;height:14px;
+  fill:none;stroke:currentColor;stroke-width:1.65;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.constructionGrid .contractorRowActions button.danger{
+  border-color:#efd9d9;
+  color:#b65e62;
+  background:#fffafa;
+}
+.constructionGrid .contractorLetter{
+  background:#eef5f8;
+  color:#2d6c86;
+}
+.constructionGrid .contractorLetter-electric{background:#eef4fb;color:#3b72a0}
+.constructionGrid .contractorLetter-hvac{background:#edf8f7;color:#2a807d}
+.constructionGrid .contractorLetter-pccc{background:#fff0ef;color:#b85b56}
+.constructionGrid .contractorLetter-water{background:#eaf7fa;color:#2f8193}
+.constructionGrid .contractorLetter-clean{background:#f4eee9;color:#8c6854}
+.constructionGrid .contractorLetter-other{background:#f0f3f5;color:#687e8c}
+
+.constructionProfile .contractorProfileIcon{
+  background:#f3eee9;
+  color:#8c6854;
+}
+.constructionLogCard .contractorJobContent{
+  background:#f8fafb;
+}
+.constructionLogCard .contractorJobDiagnosis>div:first-child{
+  background:#fbfaf8;
+}
+.constructionLogCard .contractorJobDiagnosis>div:last-child{
+  background:#f7fbfa;
+}
+
+/* Keep Construction page aligned with the contractor layout on smaller screens */
+@media(max-width:1280px){
+  .constructionListHeader,
+  .constructionRowCard{
+    grid-template-columns:minmax(230px,1.4fr) minmax(170px,1fr) 64px 90px 92px 108px 84px!important;
+    gap:8px;
+  }
+}
+@media(max-width:980px){
+  .constructionListHeader{display:none}
+  .constructionRowCard{
+    grid-template-columns:minmax(220px,1.5fr) minmax(150px,1fr) 72px 92px 92px!important;
+  }
+  .constructionRowCard .constructionUnitCell{display:none}
+  .constructionRowCard .contractorLatest{display:none}
+}
+@media(max-width:760px){
+  .constructionRowCard{
+    min-height:0!important;
+    grid-template-columns:1fr auto!important;
+    gap:9px 12px!important;
+    padding:13px!important;
+  }
+  .constructionRowCard .contractorRowIdentity{grid-column:1/2}
+  .constructionRowCard .constructionSpecCell{
+    grid-column:1/2;
+    padding:0;
+    border:0;
+  }
+  .constructionRowCard .constructionSpecCell b{
+    white-space:normal;
+    font-size:7.5px;
+  }
+  .constructionRowCard .constructionUnitCell{display:block;grid-column:1/2;text-align:left}
+  .constructionRowCard>.contractorRowValue:nth-of-type(3){
+    grid-column:2/3;
+    grid-row:1;
+    justify-self:end;
+    align-self:start;
+  }
+  .constructionRowCard .contractorRowCount{
+    display:none;
+  }
+  .constructionRowCard .contractorLatest{display:block;grid-column:1/2}
+  .constructionRowCard .contractorRowActions{
+    grid-column:2/3;
+    grid-row:2/5;
+    flex-direction:column;
+    align-self:center;
+  }
+  .constructionMaterialPage .contractorDetailActions{
+    grid-template-columns:1fr 1fr auto!important;
+  }
+}
