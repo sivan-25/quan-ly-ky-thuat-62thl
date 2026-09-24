@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-1030">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260924-1215">
 <link rel="stylesheet" href="contractor.css?v=20260924-1135"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
@@ -1201,6 +1201,7 @@
         <b class="sky s1"></b><b class="sky s2"></b><b class="sky s3"></b><b class="sky s4"></b><b class="sky s5"></b>
       </div>
       <div class="contractorIntroActions">
+        <button id="contractorExportExcel" class="contractorBtn ghost excel" type="button">Excel ⇩</button>
         <button id="contractorExportPdf" class="contractorBtn ghost" type="button">PDF ⇩</button>
         <button id="addContractorBtn" class="contractorBtn primary" type="button">＋ <span>Thêm nhà thầu</span></button>
       </div>
@@ -1258,6 +1259,7 @@
         <button id="contractorBackBtn" class="contractorBackBtn" type="button">← Danh sách nhà thầu</button>
       </div>
       <div class="contractorDetailActions">
+        <button id="contractorDetailExcel" class="contractorBtn ghost excel" type="button">Excel ⇩ Hồ sơ</button>
         <button id="contractorDetailPdf" class="contractorBtn ghost" type="button">PDF ⇩ Hồ sơ</button>
         <button id="editContractorBtn" class="contractorBtn ghost" type="button">✎ Sửa thông tin</button>
         <button id="addContractorJobBtn" class="contractorBtn primary" type="button">＋ Thêm công việc</button>
@@ -1517,4 +1519,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260924-1030"></script><script src="contractor.js?v=20260924-1135"></script></body></html>
+<script src="app.js?v=20260924-1215"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="contractor.js?v=20260924-1215"></script></body></html>
