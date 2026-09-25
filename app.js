@@ -990,7 +990,7 @@ document.addEventListener("pointerdown",e=>{
 },true);
 document.addEventListener("keydown",e=>{
  if(e.key==="Escape")closeWorkFilter();
-});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";render()};function reportStatusClass(s){
+});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let first=new Date(d.getFullYear(),d.getMonth(),1),last=new Date(d.getFullYear(),d.getMonth()+1,0),day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);if(a<first)a=first;if(b>last)b=last;from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";render()};function reportStatusClass(s){
  if(s==="Đã hoàn thành")return "done";
  if(s==="Đang thực hiện")return "doing";
  return "waiting";
@@ -1000,54 +1000,84 @@ function reportTypeClass(t){
  if(t==="Bảo trì")return "maintenance";
  return "daily";
 }
-function reportHtml(a){
- const from=$("#fromDate").value,to=$("#toDate").value;
- const period=from||to?((from?fmt(from):"Đầu kỳ")+" - "+(to?fmt(to):"Hiện tại")):"Toàn bộ dữ liệu";
+function workReportPeriod(kind="current",rows=[]){
+ const now=new Date(),y=now.getFullYear(),m=now.getMonth(),day=now.getDate(),mm=String(m+1).padStart(2,"0"),dd=String(day).padStart(2,"0");
+ const first=new Date(y,m,1),last=new Date(y,m+1,0);
+ const firstOffset=(first.getDay()+6)%7;
+ const weekNo=Math.floor((day+firstOffset-1)/7)+1;
+ const rr=kind==="current"?null:rangeDates(kind);
+ let from=rr?.from||$("#fromDate").value||"",to=rr?.to||$("#toDate").value||"";
+ if(kind==="current"&&(!from||!to)&&rows.length){
+   const dates=rows.map(x=>x.d).filter(Boolean).sort();
+   if(!from)from=dates[0]||"";
+   if(!to)to=dates[dates.length-1]||"";
+ }
+ let label,suffix,code;
+ if(kind==="today"){
+   label="NGÀY "+dd+"/"+mm+"/"+y;suffix="Ngay"+dd+"_"+mm+"_"+y;code="BC-CV-"+y+mm+dd;
+ }else if(kind==="week"){
+   label="TUẦN "+weekNo+" THÁNG "+mm+"/"+y;suffix="Tuan"+weekNo+"_Thang"+mm+"_"+y;code="BC-CV-"+y+mm+"-T"+weekNo;
+ }else if(kind==="month"){
+   label="THÁNG "+mm+"/"+y;suffix="Thang"+mm+"_"+y;code="BC-CV-"+y+mm;
+ }else{
+   const prettyFrom=from?fmt(from):"Đầu kỳ",prettyTo=to?fmt(to):"Hiện tại";
+   label=from===to&&from?"NGÀY "+prettyFrom:"TỪ "+prettyFrom+" ĐẾN "+prettyTo;
+   suffix=(from&&to?"Tu"+from.replaceAll("-","")+"_Den"+to.replaceAll("-",""):"TheoBoLoc");
+   code="BC-CV-"+y+mm+"-LOC";
+ }
+ return {kind,from,to,label,suffix,code};
+}
+function workReportFilename(period){
+ return "BaoCao_CongViec_"+period.suffix+".pdf";
+}
+function reportHtml(a,kind="current"){
+ const reportPeriod=workReportPeriod(kind,a);
+ const period=reportPeriod.from||reportPeriod.to?((reportPeriod.from?fmt(reportPeriod.from):"Đầu kỳ")+" - "+(reportPeriod.to?fmt(reportPeriod.to):"Hiện tại")):"Toàn bộ dữ liệu";
  const done=a.filter(x=>x.s==="Đã hoàn thành").length;
  const doing=a.filter(x=>x.s==="Đang thực hiện").length;
- const wait=a.filter(x=>x.s==="Chờ xử lý").length;
+ const wait=a.length-done-doing;
  const photoCount=a.reduce((n,x)=>n+((x._reportImages||x.imgs||[]).filter(Boolean).length),0);
  const generated=new Date().toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"});
+ const assessment=wait>0?"CẦN KHẮC PHỤC / THEO DÕI":(doing>0?"CẦN THEO DÕI":(a.length&&done===a.length?"ĐẠT":"CHƯA CÓ DỮ LIỆU ĐÁNH GIÁ"));
+ const recommendation=wait>0?"Ưu tiên xử lý các công việc còn chờ và cập nhật kết quả sau khi hoàn tất.":(doing>0?"Tiếp tục theo dõi các công việc đang thực hiện đến khi hoàn thành.":(a.length?"Tiếp tục duy trì công tác kiểm tra và cập nhật công việc định kỳ.":"[CẦN BỔ SUNG]"));
  const jobs=a.map((x,i)=>{
    const type=x.t||"Hằng ngày";
    const performers=performerArray(x).join(", ")||"—";
    const imgs=(x._reportImages||x.imgs||[]).filter(Boolean);
    const photos=imgs.length
-     ?'<div class="photoSection"><div class="sectionLabel"><span>HÌNH ẢNH THỰC TẾ</span><b>'+imgs.length+' ảnh</b></div><div class="photos">'+imgs.map((v,j)=>'<figure><img src="'+esc(v)+'" alt="Ảnh công việc '+(j+1)+'"><figcaption>Ảnh '+(j+1)+'</figcaption></figure>').join("")+'</div></div>'
+     ?'<div class="photoSection"><div class="sectionLabel"><span>HÌNH ẢNH THỰC TẾ</span><b>'+imgs.length+' ảnh</b></div><div class="photos">'+imgs.map((v,j)=>'<figure><img src="'+esc(v)+'" alt="Ảnh công việc '+(j+1)+'"><figcaption>Hình '+(j+1)+': '+esc(x.c)+'</figcaption></figure>').join("")+'</div></div>'
      :'';
-   const note=x.n?'<div class="note"><span>GHI CHÚ</span><p>'+esc(x.n)+'</p></div>':'';
+   const note=x.n?'<div class="note"><span>GHI CHÚ / ĐÁNH GIÁ</span><p>'+esc(x.n)+'</p></div>':'';
    return '<section class="job '+reportTypeClass(type)+'">'+
      '<div class="jobHead"><div class="jobNo">'+String(i+1).padStart(2,"0")+'</div><div class="jobTitle"><h2>'+esc(x.c)+'</h2><div class="badges"><span class="type '+reportTypeClass(type)+'">'+esc(type)+'</span><span class="status '+reportStatusClass(x.s)+'">'+esc(x.s)+'</span></div></div></div>'+
-     '<div class="meta"><div><span>NGÀY THỰC HIỆN</span><b>'+fmt(x.d)+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div><div><span>TRẠNG THÁI</span><b>'+esc(x.s)+'</b></div></div>'+
+     '<div class="meta"><div><span>NGÀY THỰC HIỆN</span><b>'+fmt(x.d)+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div><div><span>KẾT QUẢ / TRẠNG THÁI</span><b>'+esc(x.s)+'</b></div></div>'+
      note+photos+
    '</section>';
  }).join("");
- return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Báo cáo công việc kỹ thuật</title><style>'+
+ return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BÁO CÁO CÔNG VIỆC KỸ THUẬT - '+reportPeriod.label+'</title><style>'+
  '*{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'+
- '@page{size:A4 portrait;margin:10mm 10mm 12mm}'+
+ '@page{size:A4 portrait;margin:20mm}'+
  'html,body{margin:0;padding:0;background:#fff;color:#172033;font-family:Arial,Helvetica,sans-serif}'+
- 'body{font-size:10.5px;line-height:1.45}'+
- '.report{width:100%;max-width:190mm;margin:0 auto}'+
- '.topline{height:5px;border-radius:0 0 5px 5px;background:linear-gradient(90deg,#0b3151,#0b8195,#20bfd4)}'+
- '.header{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 2px 10px;border-bottom:1px solid #dce5ec}'+
- '.brand{display:flex;align-items:center;gap:10px}.brandMark{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:#102a46;color:#25d9ee;font-size:18px;font-weight:900}.brandText strong{display:block;color:#102a46;font-size:18px;letter-spacing:3px}.brandText small{display:block;margin-top:2px;color:#718096;font-size:7px;letter-spacing:1.4px}'+
- '.doc{text-align:right;color:#627086;font-size:8.5px;line-height:1.5}.doc b{display:block;color:#18263b;font-size:9.5px}'+
- '.title{padding:15px 2px 12px}.title .eyebrow{color:#108aa0;font-size:7.5px;font-weight:800;letter-spacing:1.4px}.title h1{margin:4px 0 5px;color:#102a46;font-size:21px;line-height:1.15;letter-spacing:-.25px}.title p{margin:0;color:#6d7c90;font-size:9px}'+
+ 'body{font-size:10.5px;line-height:1.45}.report{width:100%;margin:0 auto}'+
+ '.topline{height:4px;background:linear-gradient(90deg,#173d58,#1a8ca3,#21bfd4)}'+
+ '.header{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 2px 9px;border-bottom:1px solid #dce5ec}.brand{display:flex;align-items:center;gap:10px}.brandMark{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:#102a46;color:#25d9ee;font-size:18px;font-weight:900}.brandText strong{display:block;color:#102a46;font-size:18px;letter-spacing:3px}.brandText small{display:block;margin-top:2px;color:#718096;font-size:7px;letter-spacing:1.4px}.doc{text-align:right;color:#627086;font-size:8.5px;line-height:1.55}.doc b{color:#18263b}'+
+ '.title{text-align:center;padding:14px 2px 12px}.title .eyebrow{color:#108aa0;font-size:7.5px;font-weight:800;letter-spacing:1.4px}.title h1{margin:4px 0 5px;color:#102a46;font-size:19px;line-height:1.2}.title h2{margin:0;color:#8b5e37;font-size:11px}.title p{margin:5px 0 0;color:#6d7c90;font-size:9px}'+
+ '.info{width:100%;border-collapse:collapse;margin:0 0 12px}.info td{border:1px solid #d5dee5;padding:6px 7px}.info .label{width:20%;background:#f2f5f7;color:#536878;font-weight:700}.info .value{width:30%}'+
  '.summary{display:grid;grid-template-columns:1.45fr repeat(4,1fr);gap:7px;margin:0 0 13px}.summary article{min-height:52px;padding:9px 10px;border:1px solid #dbe4eb;border-radius:9px;background:#f8fafc}.summary span{display:block;color:#738197;font-size:7px;font-weight:700;letter-spacing:.6px}.summary b{display:block;margin-top:5px;color:#152a43;font-size:15px;line-height:1}.summary article.done b{color:#1e7b58}.summary article.doing b{color:#a66516}.summary article.waiting b{color:#ae4656}'+
- '.job{position:relative;margin:0 0 11px;border:1px solid #d8e2ea;border-left:4px solid #71849b;border-radius:10px;overflow:hidden;background:#fff;break-inside:auto;page-break-inside:auto}.job.daily{border-left-color:#6886a5}.job.maintenance{border-left-color:#1496ac}.job.incident{border-left-color:#d55e70}'+
- '.jobHead{display:flex;gap:10px;align-items:flex-start;padding:10px 11px 9px;background:#f7f9fc;border-bottom:1px solid #e3e9ee;break-after:avoid;page-break-after:avoid}.jobNo{width:28px;height:28px;display:grid;place-items:center;flex:0 0 28px;border-radius:8px;background:#102a46;color:#fff;font-size:10px;font-weight:800}.jobTitle{min-width:0;flex:1}.jobTitle h2{margin:0;color:#14243a;font-size:12.5px;line-height:1.35}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.badges span{display:inline-flex;align-items:center;min-height:20px;padding:0 7px;border:1px solid transparent;border-radius:999px;font-size:7.5px;font-weight:700}.type.daily{background:#eef3f7;color:#4d6680;border-color:#d7e1e9}.type.maintenance{background:#e9f7fa;color:#13778a;border-color:#c7e8ee}.type.incident{background:#fff0f2;color:#b64758;border-color:#f0cbd1}.status.done{background:#eaf7f0;color:#247a58;border-color:#cde9da}.status.doing{background:#fff4e4;color:#9c631d;border-color:#efdcb8}.status.waiting{background:#fff0f1;color:#ad4d59;border-color:#eccbd0}'+
+ '.sectionTitle{margin:14px 0 7px;padding-bottom:5px;border-bottom:1px solid #dbe3e8;color:#173d58;font-size:11.5px}'+
+ '.job{position:relative;margin:0 0 11px;border:1px solid #d8e2ea;border-left:4px solid #71849b;border-radius:10px;overflow:hidden;background:#fff;break-inside:auto;page-break-inside:auto}.job.daily{border-left-color:#6886a5}.job.maintenance{border-left-color:#1496ac}.job.incident{border-left-color:#d55e70}.jobHead{display:flex;gap:10px;align-items:flex-start;padding:10px 11px 9px;background:#f7f9fc;border-bottom:1px solid #e3e9ee;break-after:avoid;page-break-after:avoid}.jobNo{width:28px;height:28px;display:grid;place-items:center;flex:0 0 28px;border-radius:8px;background:#102a46;color:#fff;font-size:10px;font-weight:800}.jobTitle{min-width:0;flex:1}.jobTitle h2{margin:0;color:#14243a;font-size:12.5px;line-height:1.35}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.badges span{display:inline-flex;align-items:center;min-height:20px;padding:0 7px;border:1px solid transparent;border-radius:999px;font-size:7.5px;font-weight:700}.type.daily{background:#eef3f7;color:#4d6680;border-color:#d7e1e9}.type.maintenance{background:#e9f7fa;color:#13778a;border-color:#c7e8ee}.type.incident{background:#fff0f2;color:#b64758;border-color:#f0cbd1}.status.done{background:#eaf7f0;color:#247a58;border-color:#cde9da}.status.doing{background:#fff4e4;color:#9c631d;border-color:#efdcb8}.status.waiting{background:#fff0f1;color:#ad4d59;border-color:#eccbd0}'+
  '.meta{display:grid;grid-template-columns:.85fr 1.5fr 1fr;gap:0;padding:9px 11px}.meta>div{padding:2px 10px 2px 0;border-right:1px solid #e6ebf0}.meta>div+div{padding-left:10px}.meta>div:last-child{border-right:0}.meta span{display:block;color:#7c899b;font-size:6.8px;font-weight:700;letter-spacing:.55px}.meta b{display:block;margin-top:4px;color:#26384f;font-size:9.5px;font-weight:700}'+
- '.note{margin:0 11px 10px;padding:8px 9px;border-radius:7px;background:#f7f9fb;border-left:3px solid #95a6b8;break-inside:avoid;page-break-inside:avoid}.note span{display:block;color:#738197;font-size:6.8px;font-weight:800;letter-spacing:.65px}.note p{margin:4px 0 0;color:#33465d;font-size:9.5px;white-space:pre-wrap}'+
- '.photoSection{padding:0 11px 11px}.sectionLabel{display:flex;justify-content:space-between;align-items:center;margin:0 0 7px;padding-top:2px;color:#63758b;font-size:7px;font-weight:800;letter-spacing:.65px}.sectionLabel b{color:#118398;font-size:7.5px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.photos figure{margin:0;padding:5px;border:1px solid #dce5eb;border-radius:8px;background:#fafbfc;break-inside:avoid;page-break-inside:avoid}.photos img{display:block;width:100%;height:170px;object-fit:contain;border-radius:5px;background:#fff}.photos figcaption{margin-top:4px;text-align:center;color:#8290a2;font-size:6.8px}'+
- '.sign{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:20px;padding-top:12px;border-top:1px solid #dfe6ec;break-inside:avoid;page-break-inside:avoid;text-align:center}.sign b{color:#26384f;font-size:9px}.sign small{display:block;margin-top:3px;color:#8592a3;font-size:7px}.signSpace{height:58px}'+
- '.footer{margin-top:8px;padding-top:7px;border-top:1px solid #edf1f4;color:#8b97a7;font-size:7px;text-align:center}'+
- '</style></head><body><div class="report"><div class="topline"></div>'+
- '<header class="header"><div class="brand"><div class="brandMark">E</div><div class="brandText"><strong>ESTA</strong><small>PROPERTY MANAGEMENT</small></div></div><div class="doc"><b>'+esc(currentBuilding.name).toLocaleUpperCase("vi-VN")+'</b>Mã dự án: '+esc(currentBuilding.id||"—")+'<br>Xuất báo cáo: '+esc(generated)+'</div></header>'+
- '<section class="title"><div class="eyebrow">TECHNICAL WORK REPORT</div><h1>BÁO CÁO CÔNG VIỆC KỸ THUẬT</h1><p>Thời gian báo cáo: <b>'+esc(period)+'</b></p></section>'+
- '<section class="summary"><article><span>TÒA NHÀ</span><b style="font-size:11px;line-height:1.25">'+esc(currentBuilding.name)+'</b></article><article><span>TỔNG CÔNG VIỆC</span><b>'+a.length+'</b></article><article class="done"><span>HOÀN THÀNH</span><b>'+done+'</b></article><article class="doing"><span>ĐANG XỬ LÝ</span><b>'+doing+'</b></article><article class="waiting"><span>CHỜ XỬ LÝ</span><b>'+wait+'</b></article></section>'+
- jobs+
- '<section class="sign"><div><b>NGƯỜI LẬP BÁO CÁO</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div></div><div><b>ĐẠI DIỆN BAN QUẢN LÝ</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div></div></section>'+
- '<div class="footer">ESTA Property Management · '+esc(currentBuilding.name)+' · '+photoCount+' hình ảnh đính kèm</div></div></body></html>';
+ '.note{margin:0 11px 10px;padding:8px 9px;border-radius:7px;background:#f7f9fb;border-left:3px solid #95a6b8;break-inside:avoid;page-break-inside:avoid}.note span{display:block;color:#738197;font-size:6.8px;font-weight:800;letter-spacing:.65px}.note p{margin:4px 0 0;color:#33465d;font-size:9.5px;white-space:pre-wrap}.photoSection{padding:0 11px 11px}.sectionLabel{display:flex;justify-content:space-between;align-items:center;margin:0 0 7px;padding-top:2px;color:#63758b;font-size:7px;font-weight:800;letter-spacing:.65px}.sectionLabel b{color:#118398;font-size:7.5px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.photos figure{margin:0;padding:5px;border:1px solid #dce5eb;border-radius:8px;background:#fafbfc;break-inside:avoid;page-break-inside:avoid}.photos img{display:block;width:100%;height:170px;object-fit:contain;border-radius:5px;background:#fff}.photos figcaption{margin-top:4px;text-align:center;color:#8290a2;font-size:6.8px}'+
+ '.conclusion{border:1px solid #d5dee5;border-left:4px solid #173d58;background:#fafcfd;padding:9px 11px}.conclusion p{margin:3px 0}.conclusion strong{color:#173d58}.sign{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:22px;padding-top:12px;border-top:1px solid #dfe6ec;break-inside:avoid;page-break-inside:avoid;text-align:center}.sign b{color:#26384f;font-size:9px}.sign small{display:block;margin-top:3px;color:#8592a3;font-size:7px}.signSpace{height:54px}.signLine{text-align:left;height:19px;margin-top:4px;border-bottom:1px dotted #8e9aa2;color:#71808e;font-size:7.5px}'+
+ '</style></head><body data-pdf-report="inspection"><div class="report"><div class="topline"></div>'+
+ '<header class="header"><div class="brand"><div class="brandMark">E</div><div class="brandText"><strong>ESTA</strong><small>PROPERTY MANAGEMENT</small></div></div><div class="doc">Mã báo cáo: <b>'+esc(reportPeriod.code)+'</b><br>Ngày lập: <b>'+new Date().toLocaleDateString("vi-VN")+'</b></div></header>'+
+ '<section class="title"><div class="eyebrow">TECHNICAL WORK REPORT</div><h1>BÁO CÁO CÔNG VIỆC KỸ THUẬT</h1><h2>'+esc(reportPeriod.label)+'</h2><p>Thời gian báo cáo: <b>'+esc(period)+'</b></p></section>'+
+ '<table class="info"><tr><td class="label">Dự án / công trình</td><td class="value">'+esc(currentBuilding.name||"[CẦN BỔ SUNG]")+'</td><td class="label">Hạng mục</td><td class="value">Công việc kỹ thuật</td></tr><tr><td class="label">Địa điểm</td><td class="value">'+esc(currentBuilding.name||"[CẦN BỔ SUNG]")+'</td><td class="label">Đơn vị thực hiện</td><td class="value">[CẦN BỔ SUNG]</td></tr></table>'+
+ '<section class="summary"><article><span>TÒA NHÀ</span><b style="font-size:11px;line-height:1.25">'+esc(currentBuilding.name)+'</b></article><article><span>TỔNG CÔNG VIỆC</span><b>'+a.length+'</b></article><article class="done"><span>HOÀN THÀNH</span><b>'+done+'</b></article><article class="doing"><span>ĐANG XỬ LÝ</span><b>'+doing+'</b></article><article class="waiting"><span>CHƯA HOÀN THÀNH</span><b>'+wait+'</b></article></section>'+
+ '<h2 class="sectionTitle">1. Nội dung công việc / kiểm tra</h2>'+jobs+
+ '<h2 class="sectionTitle">2. Kết luận / Đánh giá chung</h2><div class="conclusion"><p><strong>Tóm tắt:</strong> '+a.length+' công việc; '+done+' hoàn thành; '+doing+' đang thực hiện; '+wait+' chưa hoàn thành.</p><p><strong>Đánh giá:</strong> '+assessment+'</p><p><strong>Kiến nghị:</strong> '+recommendation+'</p></div>'+
+ '<section class="sign"><div><b>NGƯỜI KIỂM TRA (KT)</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div><div class="signLine">Họ tên:</div><div class="signLine">Chữ ký:</div><div class="signLine">Ngày ký:</div></div><div><b>NGƯỜI KIỂM SOÁT / GIÁM SÁT (KST)</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div><div class="signLine">Họ tên:</div><div class="signLine">Chữ ký:</div><div class="signLine">Ngày ký:</div></div></section>'+
+ '</div></body></html>';
 }
 let reportPdfLibPromise=null;
 function loadExternalScript(url){
@@ -1247,15 +1277,16 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
 window.downloadReportPdf=downloadReportPdf;
 
 let workReportBusy=false;
-async function openReport(a,previewWindow=null){
+async function openReport(a,kind="current",previewWindow=null){
  if(!a.length){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Không có dữ liệu để xuất PDF");return}
  if(workReportBusy){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Báo cáo đang được tạo");return}
  workReportBusy=true;
  try{
    const prepared=await prepareWorkReportRows(a);
    if(prepared.failed)toast("Có "+prepared.failed+" hình không tải được; các hình còn lại vẫn được đính kèm");
-   const html=reportHtml(prepared.rows);
-   await downloadReportPdf(html,"ESTA-"+currentBuilding.id+"-bao-cao-cong-viec-"+today()+".pdf",previewWindow);
+   const period=workReportPeriod(kind,prepared.rows);
+   const html=reportHtml(prepared.rows,kind);
+   await downloadReportPdf(html,workReportFilename(period),previewWindow);
  }finally{
    workReportBusy=false;
  }
@@ -1271,7 +1302,7 @@ document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{
  let preview=null;
  try{preview=window.open("","_blank");if(preview)writeReportLoadingTab(preview)}catch(e){}
  $("#exportModal").classList.add("hide");
- openReport(a,preview);
+ openReport(a,kind,preview);
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeImageViewer();$("#exportModal").classList.add("hide")}});
 setTimeout(()=>ensureHtml2Pdf().catch(()=>{}),900);
