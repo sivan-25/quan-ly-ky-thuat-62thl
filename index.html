@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260925-viewer-close19"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260925-inventory-switch20"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -1088,20 +1088,9 @@
   </section>
 </div>
 <div id="inventoryPage" class="page inventoryPage hide">
-  <section class="inventoryCommand">
-    <div class="inventoryCommandBrand">
-      <div class="inventoryCommandIcon" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg>
-      </div>
-      <div>
-        <span>ESTA · TECHNICAL INVENTORY</span>
-        <h1>Dụng cụ - Vật tư</h1>
-        <p>Quản lý kho vật tư tiêu hao và danh mục dụng cụ kỹ thuật theo từng dự án.</p>
-      </div>
-    </div>
-
+  <section class="inventoryCommand inventorySwitchBar">
     <div class="inventoryCommandControls">
-      <div class="inventoryLocalTabs">
+      <div class="inventoryLocalTabs" aria-label="Chuyển loại quản lý">
         <button class="active" type="button" data-inventory-tab="materials">
           <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5"/></svg>
           <span>Vật tư tiêu hao</span>
@@ -1111,8 +1100,7 @@
           <span>Dụng cụ kỹ thuật</span>
         </button>
       </div>
-      <div class="inventoryCommandMeta">
-        <div><small>DỰ ÁN</small><b class="buildingNameText">Dự án</b></div>
+      <div class="inventoryCommandMeta inventoryYearOnly">
         <label><small>NĂM</small><select id="inventoryYear"></select></label>
       </div>
     </div>
