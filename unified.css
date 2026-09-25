@@ -1253,3 +1253,184 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     font-size:15px!important;
   }
 }
+/* =========================================================
+   WORK TABLE PRIORITY COLORS + COLUMN LAYOUT
+   Make task type/status easier to scan and give Notes more room.
+   ========================================================= */
+#app.workMode #workPage .desktopTable{
+  overflow-x:auto!important;
+}
+#app.workMode #workPage .desktopTable table.workTaskTable{
+  width:100%!important;
+  min-width:1080px!important;
+  table-layout:fixed!important;
+  border-collapse:collapse!important;
+}
+#app.workMode #workPage .workTaskTable th,
+#app.workMode #workPage .workTaskTable td{
+  box-sizing:border-box!important;
+  vertical-align:middle!important;
+}
+
+/* Move image column closer to performer, expand notes, push actions right */
+#app.workMode #workPage .workTaskTable th:nth-child(6),
+#app.workMode #workPage .workTaskTable td:nth-child(6){
+  padding-right:6px!important;
+}
+#app.workMode #workPage .workTaskTable th:nth-child(7),
+#app.workMode #workPage .workTaskTable td:nth-child(7){
+  padding-left:4px!important;
+  padding-right:8px!important;
+}
+#app.workMode #workPage .workTaskTable th:nth-child(8),
+#app.workMode #workPage .workTaskTable td:nth-child(8){
+  padding-left:10px!important;
+  padding-right:12px!important;
+}
+#app.workMode #workPage .workTaskTable th:nth-child(9),
+#app.workMode #workPage .workTaskTable td:nth-child(9){
+  padding-left:4px!important;
+  padding-right:18px!important;
+  text-align:right!important;
+}
+
+/* Notes: show more of the actual content instead of a narrow clipped cell */
+#app.workMode #workPage .noteCell{
+  max-width:none!important;
+  color:#c4cee0!important;
+  font-size:12px!important;
+  line-height:1.5!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+#app.workMode #workPage .noteCell .mutedDash,
+#app.workMode #workPage .noteCell:has(.mutedDash){
+  color:#6f7e99!important;
+}
+
+/* Images stay compact and aligned to the left edge of their column */
+#app.workMode #workPage .thumbs{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  flex-wrap:wrap!important;
+  margin:0!important;
+}
+#app.workMode #workPage .thumbs img{
+  width:48px!important;
+  height:40px!important;
+  border:1px solid #40506a!important;
+  border-radius:6px!important;
+  background:#101827!important;
+}
+#app.workMode #workPage .thumbMore{
+  min-width:32px!important;
+  height:40px!important;
+  border-color:#33445f!important;
+  background:#17233a!important;
+  color:#9eacc5!important;
+}
+
+/* Action menu sits closer to the right edge */
+#app.workMode #workPage .actionCell{
+  width:auto!important;
+}
+#app.workMode #workPage .actionCell .rowActionMenu{
+  display:inline-block!important;
+  margin-left:auto!important;
+}
+#app.workMode #workPage .actionCell .rowActionMenu summary{
+  width:36px!important;
+  height:34px!important;
+  border-color:#33425d!important;
+  background:#151f34!important;
+  color:#9fb1cf!important;
+}
+
+/* Task type colors reflect urgency / maintenance significance */
+#app.workMode #workPage .typeBadge{
+  min-height:30px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 11px!important;
+  border:1px solid transparent!important;
+  border-radius:999px!important;
+  font-size:10.5px!important;
+  font-weight:760!important;
+}
+#app.workMode #workPage .typeBadge.daily{
+  border-color:#30445f!important;
+  background:#17243a!important;
+  color:#a9c0da!important;
+}
+#app.workMode #workPage .typeBadge.maintenance{
+  border-color:#1e6172!important;
+  background:#10313c!important;
+  color:#42ddf1!important;
+}
+#app.workMode #workPage .typeBadge.incident{
+  border-color:#6c343f!important;
+  background:#321b24!important;
+  color:#ff9aa8!important;
+  box-shadow:inset 3px 0 0 #ef6577!important;
+}
+
+/* Status colors: complete = green, active = amber, waiting = red */
+#app.workMode #workPage .badge{
+  min-height:30px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 11px!important;
+  border:1px solid transparent!important;
+  border-radius:999px!important;
+  font-size:10.5px!important;
+  font-weight:760!important;
+}
+#app.workMode #workPage .badge.done{
+  border-color:#28604e!important;
+  background:#123329!important;
+  color:#7aebbd!important;
+}
+#app.workMode #workPage .badge.doing{
+  border-color:#725022!important;
+  background:#362813!important;
+  color:#f1bd66!important;
+}
+#app.workMode #workPage .badge.waiting,
+#app.workMode #workPage .badge.wait{
+  border-color:#69343c!important;
+  background:#321b23!important;
+  color:#f394a2!important;
+}
+
+/* Performer remains close to images, but names stay readable */
+#app.workMode #workPage .performerChips.pro{
+  min-width:0!important;
+  gap:5px!important;
+}
+#app.workMode #workPage .performerChips.pro>span{
+  max-width:100%!important;
+}
+#app.workMode #workPage .performerChips.pro>span b{
+  max-width:110px!important;
+  font-size:10.5px!important;
+}
+
+/* Header emphasis mirrors body colors */
+#app.workMode #workPage .workTaskTable th:nth-child(3){color:#8fb5d2!important}
+#app.workMode #workPage .workTaskTable th:nth-child(4){color:#d0ac72!important}
+#app.workMode #workPage .workTaskTable th:nth-child(6){color:#9dc5ca!important}
+#app.workMode #workPage .workTaskTable th:nth-child(7){color:#9bb9d0!important}
+#app.workMode #workPage .workTaskTable th:nth-child(8){color:#b7a9d6!important}
+#app.workMode #workPage .workTaskTable th:nth-child(9){color:#94a6c4!important}
+
+/* Responsive desktop/tablet: keep fixed proportions, allow horizontal scroll when narrow */
+@media(max-width:1180px) and (min-width:761px){
+  #app.workMode #workPage .desktopTable table.workTaskTable{
+    min-width:1180px!important;
+  }
+}
