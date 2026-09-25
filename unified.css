@@ -1551,3 +1551,440 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     justify-self:start!important;
   }
 }
+/* =========================================================
+   HOME ENERGY PALETTE
+   Tổng quan uses the same dark palette as the other ESTA modules.
+   Typography is intentionally larger for desktop readability.
+   ========================================================= */
+#app.homeMode{
+  --home-bg:#080e1a;
+  --home-side:#0a1120;
+  --home-panel:#11182b;
+  --home-panel-2:#121b31;
+  --home-input:#17213a;
+  --home-border:#25314a;
+  --home-border-soft:#1c2740;
+  --home-text:#f7f8ff;
+  --home-muted:#7f8dab;
+  --home-cyan:#18d9f3;
+  --home-green:#25d9aa;
+  --home-amber:#e4ae27;
+  --home-red:#ef7382;
+  background:#080e1a!important;
+}
+#app.homeMode main{
+  background:
+    radial-gradient(circle at 90% 4%,rgba(19,157,188,.08),transparent 30%),
+    #080e1a!important;
+}
+#app.homeMode .estaSidebar{
+  background:linear-gradient(180deg,#0a1120 0%,#09101e 100%)!important;
+  border-right:1px solid #1c263a!important;
+  box-shadow:none!important;
+}
+#app.homeMode .estaSidebarBrand{border-bottom-color:#172238!important}
+#app.homeMode .estaNav button{color:#a0abc4!important}
+#app.homeMode .estaNav button:hover{background:#101a2d!important;color:#e9efff!important}
+#app.homeMode .estaNav button.active{
+  position:relative;
+  background:#111d32!important;
+  border-color:#162943!important;
+  color:#fff!important;
+}
+#app.homeMode .estaNav button.active:before{
+  width:3px!important;
+  background:#18d9f3!important;
+  box-shadow:0 0 12px rgba(24,217,243,.45);
+}
+#app.homeMode .estaNav button.active svg{color:#18d9f3!important}
+#app.homeMode .sideBackup{border-top-color:#1a2539!important}
+#app.homeMode .sideUserCard{background:#10192c!important;border-color:#1e2940!important}
+
+#app.homeMode .estaTopbar{
+  background:#0a1120!important;
+  border-bottom:1px solid #1b263b!important;
+  box-shadow:none!important;
+}
+#app.homeMode #topHomeTitle .topModuleIcon{
+  border-color:#2d3953!important;
+  background:#141f34!important;
+  color:#18d9f3!important;
+}
+#app.homeMode #topHomeTitle h1{
+  color:#f6f8ff!important;
+  font-size:20px!important;
+  font-weight:780!important;
+}
+#app.homeMode #topHomeTitle p{
+  color:#71809d!important;
+  font-size:12px!important;
+}
+#app.homeMode .headerSearch,
+#app.homeMode .iconAction,
+#app.homeMode .pdfAction,
+#app.homeMode .headerBell{
+  border-color:#2b3852!important;
+  background:#121c30!important;
+  color:#9ba8c1!important;
+}
+#app.homeMode .headerSearch input{color:#dce4f3!important;font-size:12px!important}
+#app.homeMode .headerSearch input::placeholder{color:#697795!important}
+#app.homeMode .account{border-left-color:#1b263b!important;color:#eef3ff!important}
+#app.homeMode .account span{color:#eef3ff!important}
+#app.homeMode .headerAvatar{
+  background:linear-gradient(135deg,#655eff,#1bc9ea)!important;
+  color:#fff!important;
+}
+
+/* Home page shell */
+#app.homeMode #homePage{
+  color:#f7f8ff!important;
+  padding:20px 22px 34px!important;
+}
+
+/* Welcome / command banner */
+#app.homeMode #homePage .homeWelcome{
+  min-height:122px!important;
+  padding:20px 22px!important;
+  border:1px solid #25314a!important;
+  border-radius:17px!important;
+  background:
+    radial-gradient(circle at 86% 18%,rgba(24,217,243,.12),transparent 29%),
+    linear-gradient(125deg,#111b30 0%,#102236 58%,#0d2d38 100%)!important;
+  box-shadow:none!important;
+}
+#app.homeMode #homePage .unifiedCommandIcon{
+  width:48px!important;
+  height:48px!important;
+  flex:0 0 48px!important;
+  border:1px solid #34425b!important;
+  border-radius:12px!important;
+  background:#19243a!important;
+  color:#18d9f3!important;
+  box-shadow:none!important;
+}
+#app.homeMode #homePage .unifiedCommandIcon svg{width:23px!important;height:23px!important}
+#app.homeMode #homePage .homeEyebrow{
+  color:#18d9f3!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:1.2px!important;
+}
+#app.homeMode #homePage .homeWelcome h1{
+  margin:5px 0 5px!important;
+  color:#f6f8ff!important;
+  font-size:27px!important;
+  line-height:1.12!important;
+  font-weight:790!important;
+  letter-spacing:-.35px!important;
+}
+#app.homeMode #homePage .homeWelcome p{
+  color:#8b99b2!important;
+  font-size:13px!important;
+  line-height:1.5!important;
+}
+#app.homeMode #homePage .homeSystemState{
+  margin-top:11px!important;
+  color:#8fa0ba!important;
+  font-size:11px!important;
+}
+#app.homeMode #homePage .homeSystemState i{
+  background:#25d9aa!important;
+  box-shadow:0 0 8px rgba(37,217,170,.62)!important;
+}
+#app.homeMode #homePage .homeSystemState span{color:#b8c6da!important;font-size:11px!important}
+#app.homeMode #homePage .homeSystemState small{color:#697a98!important;font-size:10px!important}
+#app.homeMode #homePage .unifiedCommandMeta{
+  min-width:190px!important;
+  padding:11px 14px!important;
+  border:1px solid #34425a!important;
+  border-radius:11px!important;
+  background:#172238!important;
+}
+#app.homeMode #homePage .unifiedCommandMeta small{
+  color:#74839f!important;
+  font-size:9px!important;
+}
+#app.homeMode #homePage .unifiedCommandMeta b{
+  margin-top:4px!important;
+  color:#f3f7ff!important;
+  font-size:13px!important;
+}
+
+/* KPI cards */
+#app.homeMode #homePage .homeKpis{
+  gap:12px!important;
+  margin-top:12px!important;
+}
+#app.homeMode #homePage .homeKpis article{
+  min-height:112px!important;
+  padding:18px!important;
+  border:1px solid #25314a!important;
+  border-radius:16px!important;
+  background:#11182b!important;
+  box-shadow:none!important;
+}
+#app.homeMode #homePage .homeKpis .kpiIcon{
+  width:44px!important;
+  height:44px!important;
+  border:1px solid #30405f!important;
+  border-radius:12px!important;
+  background:#1a2540!important;
+  color:#18d9f3!important;
+}
+#app.homeMode #homePage .homeKpis .kpiAmber .kpiIcon{
+  border-color:#4c411d!important;background:#332b16!important;color:#e5b329!important
+}
+#app.homeMode #homePage .homeKpis .kpiGreen .kpiIcon{
+  border-color:#1d4b43!important;background:#113431!important;color:#28ddb0!important
+}
+#app.homeMode #homePage .homeKpis .kpiRed .kpiIcon{
+  border-color:#56323a!important;background:#2b1921!important;color:#ef8d9a!important
+}
+#app.homeMode #homePage .homeKpis small{
+  color:#8290aa!important;
+  font-size:10px!important;
+  font-weight:760!important;
+  letter-spacing:.45px!important;
+}
+#app.homeMode #homePage .homeKpis strong{
+  margin-top:4px!important;
+  color:#f7f9ff!important;
+  font-size:30px!important;
+  line-height:1!important;
+}
+#app.homeMode #homePage .homeKpis span{
+  margin-top:6px!important;
+  color:#687893!important;
+  font-size:10.5px!important;
+}
+
+/* Shared panels */
+#app.homeMode #homePage .homePanel{
+  overflow:hidden;
+  border:1px solid #25314a!important;
+  border-radius:16px!important;
+  background:#11182b!important;
+  box-shadow:none!important;
+}
+#app.homeMode #homePage .homeMainGrid,
+#app.homeMode #homePage .homeBottomGrid{
+  gap:12px!important;
+  margin-top:12px!important;
+}
+#app.homeMode #homePage .homePanelHead{
+  min-height:74px!important;
+  padding:16px 18px!important;
+  border-bottom:1px solid #202c44!important;
+  background:#11182b!important;
+}
+#app.homeMode #homePage .panelKicker{
+  color:#18d9f3!important;
+  font-size:8.5px!important;
+  font-weight:800!important;
+  letter-spacing:1px!important;
+}
+#app.homeMode #homePage .homePanelHead h2{
+  margin-top:4px!important;
+  color:#f3f6ff!important;
+  font-size:18px!important;
+  line-height:1.25!important;
+}
+#app.homeMode #homePage .homePanelHead p{
+  margin-top:4px!important;
+  color:#7584a0!important;
+  font-size:11px!important;
+  line-height:1.4!important;
+}
+#app.homeMode #homePage .homePanelHead button{
+  min-height:36px!important;
+  padding:0 12px!important;
+  border:1px solid #2f3d59!important;
+  border-radius:9px!important;
+  background:#151f34!important;
+  color:#a9b7cd!important;
+  font-size:10.5px!important;
+  font-weight:700!important;
+}
+#app.homeMode #homePage .homePanelHead button:hover{
+  border-color:#1d5368!important;
+  background:#0f2837!important;
+  color:#20ddef!important;
+}
+
+/* Recent work */
+#app.homeMode #homePage .homeRecentTasks{padding:8px 12px!important}
+#app.homeMode #homePage .homeTaskRow{
+  min-height:70px!important;
+  padding:11px 10px!important;
+  border:0!important;
+  border-bottom:1px solid #1b2740!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#dce4f3!important;
+}
+#app.homeMode #homePage .homeTaskRow:last-child{border-bottom:0!important}
+#app.homeMode #homePage .homeTaskRow:hover{
+  background:#131e32!important;
+  box-shadow:inset 3px 0 0 #18d9f3!important;
+}
+#app.homeMode #homePage .homeTaskLead b{
+  color:#edf3ff!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+}
+#app.homeMode #homePage .homeTaskLead small{
+  margin-top:4px!important;
+  color:#71819d!important;
+  font-size:10.5px!important;
+}
+#app.homeMode #homePage .homeTaskRow>i{color:#657693!important;font-size:14px!important}
+#app.homeMode #homePage .homeTaskDot.done{background:#25d9aa!important}
+#app.homeMode #homePage .homeTaskDot.doing{background:#e4ae27!important}
+#app.homeMode #homePage .homeTaskDot.waiting{background:#ef7382!important}
+#app.homeMode #homePage .homeStatus{
+  min-height:28px!important;
+  padding:0 9px!important;
+  border:1px solid transparent!important;
+  font-size:9.5px!important;
+  font-weight:760!important;
+}
+#app.homeMode #homePage .homeStatus.done{background:#11342f!important;border-color:#1d4b43!important;color:#2bdeae!important}
+#app.homeMode #homePage .homeStatus.doing{background:#342a16!important;border-color:#4c411d!important;color:#e3b34c!important}
+#app.homeMode #homePage .homeStatus.waiting{background:#2b1921!important;border-color:#56323a!important;color:#e78b98!important}
+
+/* Energy list */
+#app.homeMode #homePage .homeEnergyList{padding:8px 14px 12px!important}
+#app.homeMode #homePage .homeEnergyList article{
+  min-height:82px!important;
+  padding:10px 2px!important;
+  border-bottom:1px solid #1b2740!important;
+  background:transparent!important;
+}
+#app.homeMode #homePage .homeEnergyList article:last-child{border-bottom:0!important}
+#app.homeMode #homePage .energyMiniIcon{
+  width:42px!important;height:42px!important;
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+#app.homeMode #homePage .energyMiniIcon.water{border-color:#2b456d!important;background:#162742!important;color:#7baaff!important}
+#app.homeMode #homePage .energyMiniIcon.solar{border-color:#4c411d!important;background:#332b16!important;color:#e5b329!important}
+#app.homeMode #homePage .homeEnergyList span{
+  color:#8190aa!important;
+  font-size:10.5px!important;
+}
+#app.homeMode #homePage .homeEnergyList strong{
+  color:#f2f6ff!important;
+  font-size:20px!important;
+}
+#app.homeMode #homePage .homeEnergyList small{
+  color:#687792!important;
+  font-size:9.5px!important;
+}
+
+/* Quick actions */
+#app.homeMode #homePage .quickActions{
+  padding:11px!important;
+  gap:8px!important;
+}
+#app.homeMode #homePage .quickActions>button{
+  min-height:72px!important;
+  padding:10px 12px!important;
+  border:1px solid #26334d!important;
+  border-radius:11px!important;
+  background:#111b2e!important;
+  color:#dce5f4!important;
+}
+#app.homeMode #homePage .quickActions>button:hover{
+  border-color:#34506a!important;
+  background:#142238!important;
+}
+#app.homeMode #homePage .quickActions b{
+  color:#edf3ff!important;
+  font-size:12.5px!important;
+}
+#app.homeMode #homePage .quickActions small{
+  margin-top:4px!important;
+  color:#71809b!important;
+  font-size:10px!important;
+}
+#app.homeMode #homePage .quickActions>button>i{
+  color:#6f819e!important;
+  font-size:14px!important;
+}
+#app.homeMode #homePage .quickIcon{
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+#app.homeMode #homePage .quickIcon.bronze{border-color:#4b3d36!important;background:#2b2424!important;color:#d7a68a!important}
+
+/* Activity */
+#app.homeMode #homePage .homeActivity{padding:8px 14px!important}
+#app.homeMode #homePage .activityRow{
+  min-height:66px!important;
+  border-bottom:1px solid #1b2740!important;
+}
+#app.homeMode #homePage .activityRow:last-child{border-bottom:0!important}
+#app.homeMode #homePage .activityRow b{
+  color:#e8eef9!important;
+  font-size:12px!important;
+}
+#app.homeMode #homePage .activityRow span{
+  margin-top:3px!important;
+  color:#71809c!important;
+  font-size:10px!important;
+}
+#app.homeMode #homePage .activityRow time{
+  color:#657590!important;
+  font-size:9.5px!important;
+}
+#app.homeMode #homePage .activityIcon{
+  border:1px solid #30405f!important;
+  background:#1a2540!important;
+}
+
+/* Project cards on admin dashboard */
+#app.homeMode #homePage .homeProjectGrid{
+  padding:12px!important;
+  gap:10px!important;
+}
+#app.homeMode #homePage .homeProjectCard{
+  min-height:88px!important;
+  border:1px solid #26334d!important;
+  border-radius:11px!important;
+  background:#111b2e!important;
+  color:#dce5f4!important;
+}
+#app.homeMode #homePage .homeProjectCard:hover{
+  border-color:#34506a!important;
+  background:#142238!important;
+}
+#app.homeMode #homePage .projectMonogram{
+  border:1px solid #30405f!important;
+  background:#1a2540!important;
+  color:#18d9f3!important;
+}
+#app.homeMode #homePage .homeProjectCard small{color:#71809e!important;font-size:9px!important}
+#app.homeMode #homePage .homeProjectCard b{color:#edf3ff!important;font-size:13px!important}
+#app.homeMode #homePage .homeProjectCard span{color:#71809e!important;font-size:9.5px!important}
+#app.homeMode #homePage .homeProjectCard i{color:#6e809d!important}
+#app.homeMode #homePage .homeEmpty{
+  color:#71809e!important;
+  font-size:11px!important;
+}
+
+/* Responsive */
+@media(max-width:760px){
+  #app.homeMode #homePage{padding:12px 10px 26px!important}
+  #app.homeMode #homePage .homeWelcome{
+    padding:16px!important;
+    border-radius:15px!important;
+  }
+  #app.homeMode #homePage .homeWelcome h1{font-size:22px!important}
+  #app.homeMode #homePage .homeWelcome p{font-size:11px!important}
+  #app.homeMode #homePage .unifiedCommandMeta{width:100%!important;margin-top:11px!important}
+  #app.homeMode #homePage .homeKpis{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  #app.homeMode #homePage .homeKpis article{min-height:96px!important;padding:13px!important}
+  #app.homeMode #homePage .homeKpis strong{font-size:25px!important}
+  #app.homeMode #homePage .homeMainGrid,
+  #app.homeMode #homePage .homeBottomGrid{grid-template-columns:1fr!important}
+  #app.homeMode #homePage .homePanelHead h2{font-size:16px!important}
+}
