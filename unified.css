@@ -2755,3 +2755,76 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 #app.inventoryMode #inventoryToolsPane .toolsTable tbody tr:hover td{
   background:#152039!important;
 }
+/* =========================================================
+   INVENTORY TOOL HEADER EMPHASIS
+   Distinct warm header color + full "Thao tác" visibility.
+   ========================================================= */
+#app.inventoryMode #inventoryToolsPane .inventoryTableScroll{
+  overflow-x:auto!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable{
+  width:100%!important;
+  min-width:1120px!important;
+  table-layout:fixed!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-stt{width:5%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-name{width:22%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-brand{width:12%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-qty{width:8%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-location{width:12%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-keeper{width:13%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-status{width:11%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-note{width:8%!important}
+#app.inventoryMode #inventoryToolsPane .toolsTable .tool-col-actions{width:9%!important}
+
+#app.inventoryMode #inventoryToolsPane .toolsTable thead th{
+  height:52px!important;
+  padding:0 14px!important;
+  background:#0c1627!important;
+  color:#f1be6d!important;
+  border-top:1px solid #263957!important;
+  border-bottom:1px solid #38506d!important;
+  font-size:12.5px!important;
+  line-height:1!important;
+  letter-spacing:.12px!important;
+  font-weight:500!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable thead th:first-child{
+  color:#f1be6d!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable thead th:nth-child(9){
+  min-width:92px!important;
+  padding-left:10px!important;
+  padding-right:10px!important;
+  text-align:center!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable tbody td:nth-child(9){
+  min-width:92px!important;
+  padding-left:8px!important;
+  padding-right:8px!important;
+  overflow:visible!important;
+  text-align:center!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable tbody td{
+  color:#dfe7f3!important;
+}
+#app.inventoryMode #inventoryToolsPane .invRowActions.compact{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+#app.inventoryMode #inventoryToolsPane .invRowActions.compact button{
+  flex:0 0 36px!important;
+}
+
+/* Header labels remain readable on narrower desktop/tablet screens */
+@media(max-width:1180px) and (min-width:761px){
+  #app.inventoryMode #inventoryToolsPane .toolsTable{
+    min-width:1180px!important;
+  }
+}
