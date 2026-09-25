@@ -4476,3 +4476,59 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   padding:13px!important;
   gap:9px!important;
 }
+/* =========================================================
+   WORK FILTER CLOSE + KPI LABEL SIZE 29
+   Ensure .hide wins over the filter grid and enlarge KPI labels.
+   ========================================================= */
+
+/* Critical: display:grid!important previously overrode the generic hide class */
+#app.workMode .filterWrap .filterPopover.hide{
+  display:none!important;
+}
+#app.workMode .filterWrap .filterPopover:not(.hide){
+  display:grid!important;
+}
+
+/* Make Work summary labels readable */
+#app.workMode #workPage .stats article{
+  min-height:102px!important;
+  padding:16px 18px!important;
+}
+#app.workMode #workPage .stats article>div:last-child{
+  min-width:0!important;
+}
+#app.workMode #workPage .stats small{
+  display:block!important;
+  margin-bottom:7px!important;
+  color:#a9b9cf!important;
+  font-size:10.5px!important;
+  line-height:1.15!important;
+  letter-spacing:.65px!important;
+  font-weight:600!important;
+  white-space:nowrap!important;
+}
+#app.workMode #workPage .stats strong{
+  display:block!important;
+  color:#f7f9ff!important;
+  font-size:27px!important;
+  line-height:1!important;
+  font-weight:650!important;
+}
+#app.workMode #workPage .stats i{
+  width:44px!important;
+  height:44px!important;
+  flex:0 0 44px!important;
+}
+#app.workMode #workPage .stats i svg{
+  width:22px!important;
+  height:22px!important;
+}
+@media(max-width:760px){
+  #app.workMode #workPage .stats small{
+    font-size:9px!important;
+    white-space:normal!important;
+  }
+  #app.workMode #workPage .stats strong{
+    font-size:24px!important;
+  }
+}
