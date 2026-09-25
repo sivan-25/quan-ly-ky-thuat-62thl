@@ -2954,3 +2954,71 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   #app.adminMode #adminPage .adminProjectCard small{font-size:10px!important}
   #app.adminMode #adminPage .adminProjectCard h3{font-size:14px!important}
 }
+/* =========================================================
+   IMAGE VIEWER CLOSE FIX
+   Keep the close button always visible above images.
+   ========================================================= */
+#viewer.viewer{
+  z-index:500!important;
+  padding:22px!important;
+  background:rgba(2,12,24,.88)!important;
+}
+#viewer .viewerCard{
+  position:relative!important;
+  width:min(980px,96vw)!important;
+  max-height:90vh!important;
+  overflow:auto!important;
+  padding:18px!important;
+  padding-top:62px!important;
+  border:1px solid #dce7ef!important;
+  border-radius:16px!important;
+  background:#fff!important;
+}
+#viewer #closeViewer{
+  position:sticky!important;
+  top:8px!important;
+  z-index:999!important;
+  float:none!important;
+  display:grid!important;
+  place-items:center!important;
+  width:42px!important;
+  height:42px!important;
+  margin:-48px 0 8px auto!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:50%!important;
+  background:#0b2d4a!important;
+  color:#fff!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.28)!important;
+  font-size:28px!important;
+  font-weight:400!important;
+  line-height:1!important;
+  cursor:pointer!important;
+}
+#viewer #closeViewer:hover{
+  background:#123f63!important;
+  transform:scale(1.04);
+}
+#viewer #viewerImages{
+  position:relative!important;
+  z-index:1!important;
+}
+#viewer .viewerMedia,
+#viewer .viewerLargeImage{
+  position:relative!important;
+  z-index:1!important;
+}
+@media(max-width:760px){
+  #viewer.viewer{padding:8px!important}
+  #viewer .viewerCard{
+    width:98vw!important;
+    max-height:94vh!important;
+    padding:10px!important;
+    padding-top:56px!important;
+  }
+  #viewer #closeViewer{
+    width:40px!important;
+    height:40px!important;
+    margin:-46px 0 6px auto!important;
+    font-size:26px!important;
+  }
+}
