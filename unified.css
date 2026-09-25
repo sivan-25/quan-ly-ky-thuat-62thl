@@ -3158,3 +3158,257 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     width:120px!important;
   }
 }
+/* =========================================================
+   INVENTORY UX POLISH 21
+   Bigger stock-alert copy + compact professional quick-add menu.
+   ========================================================= */
+
+/* Cleaner section header after removing the helper sentence */
+#app.inventoryMode #inventoryMaterialsPane .inventorySectionBar{
+  min-height:72px!important;
+  padding:14px 18px!important;
+  align-items:center!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventorySectionBar h2{
+  margin-top:4px!important;
+  margin-bottom:0!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryToolbarActions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+
+/* Quick add lives beside Nhập / Xuất */
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickMenu{
+  position:relative!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickMenu>summary{
+  min-height:42px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 13px!important;
+  border:1px solid #31506a!important;
+  border-radius:10px!important;
+  background:#14243a!important;
+  color:#a9dfea!important;
+  font-size:11px!important;
+  font-weight:500!important;
+  list-style:none!important;
+  cursor:pointer!important;
+  user-select:none!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickMenu>summary::-webkit-details-marker{
+  display:none!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickMenu>summary:hover,
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickMenu[open]>summary{
+  border-color:#16a7bd!important;
+  background:#0f3542!important;
+  color:#4ce6f5!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickPopover{
+  position:absolute!important;
+  z-index:180!important;
+  right:0!important;
+  top:48px!important;
+  width:320px!important;
+  padding:12px!important;
+  border:1px solid #33435f!important;
+  border-radius:12px!important;
+  background:#0f1728!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.42)!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickPopoverHead{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:0 2px 9px!important;
+  border-bottom:1px solid #22304a!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickPopoverHead span{
+  color:#31dff1!important;
+  font-size:9px!important;
+  letter-spacing:.8px!important;
+  font-weight:500!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickPopoverHead small{
+  color:#7f8ea8!important;
+  font-size:9px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickChoices{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+  padding-top:10px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickChoices button{
+  min-height:38px!important;
+  padding:7px 9px!important;
+  border:1px solid #2e3d59!important;
+  border-radius:9px!important;
+  background:#151f34!important;
+  color:#c9d6e8!important;
+  font-size:10.5px!important;
+  font-weight:400!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .inventoryQuickChoices button:hover{
+  border-color:#1d697b!important;
+  background:#12303d!important;
+  color:#4ce6f5!important;
+}
+
+/* Alert block is now the only support card: make it full-width and readable */
+#app.inventoryMode #inventoryMaterialsPane .inventorySupportGrid{
+  grid-template-columns:1fr!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertPanel{
+  width:100%!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertHead{
+  min-height:82px!important;
+  padding:15px 18px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertIcon{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertIcon svg{
+  width:21px!important;
+  height:21px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertTitle{
+  gap:12px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertTitle .inventoryKicker{
+  font-size:9.5px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertTitle h3{
+  margin-top:4px!important;
+  color:#f1f5ff!important;
+  font-size:18px!important;
+  line-height:1.2!important;
+  font-weight:500!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertTitle h3 b{
+  min-width:25px!important;
+  height:25px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin-left:6px!important;
+  border-radius:999px!important;
+  background:#44222a!important;
+  color:#ff9eaa!important;
+  font-size:11px!important;
+  font-weight:500!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertTitle p{
+  margin-top:5px!important;
+  color:#97a7bf!important;
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertFilterBtn{
+  min-height:38px!important;
+  padding:0 12px!important;
+  font-size:11px!important;
+}
+
+/* Stable state */
+#app.inventoryMode #inventoryMaterialsPane .stockAlertEmpty{
+  min-height:88px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:14px!important;
+  padding:16px 20px!important;
+  background:#10192b!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertEmpty>span{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 38px!important;
+  border:1px solid #1f5d4f!important;
+  border-radius:50%!important;
+  background:#11342f!important;
+  color:#46e0b8!important;
+  font-size:17px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertEmpty b{
+  display:block!important;
+  color:#dff7ee!important;
+  font-size:14px!important;
+  line-height:1.3!important;
+  font-weight:500!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertEmpty small{
+  display:block!important;
+  margin-top:5px!important;
+  color:#8fa1bb!important;
+  font-size:11.5px!important;
+  line-height:1.45!important;
+}
+
+/* Actual alert rows */
+#app.inventoryMode #inventoryMaterialsPane .stockAlertItem{
+  min-height:74px!important;
+  padding:12px 16px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertStatus{
+  font-size:10px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertName b{
+  font-size:13px!important;
+  font-weight:500!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertName small,
+#app.inventoryMode #inventoryMaterialsPane .stockAlertMetric span{
+  font-size:10.5px!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertMetric b{
+  font-size:12.5px!important;
+  font-weight:500!important;
+}
+#app.inventoryMode #inventoryMaterialsPane .stockAlertActions button{
+  min-height:34px!important;
+  font-size:10.5px!important;
+}
+
+/* Tablet/mobile */
+@media(max-width:980px){
+  #app.inventoryMode #inventoryMaterialsPane .inventoryToolbarActions{
+    justify-content:flex-start!important;
+  }
+}
+@media(max-width:760px){
+  #app.inventoryMode #inventoryMaterialsPane .inventorySectionBar{
+    align-items:stretch!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .inventoryToolbarActions{
+    width:100%!important;
+    margin-top:10px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .inventorySearch{
+    width:100%!important;
+    min-width:0!important;
+    flex:1 1 100%!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .inventoryQuickPopover{
+    left:0!important;
+    right:auto!important;
+    width:min(320px,calc(100vw - 36px))!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .inventoryQuickChoices{
+    grid-template-columns:1fr!important;
+  }
+}
