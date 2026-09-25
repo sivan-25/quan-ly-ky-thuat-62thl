@@ -2084,9 +2084,10 @@ async function adminApi(action,payload={}){
  if(!centralSession?.access_token)throw new Error("Chưa kích hoạt hoặc đăng nhập Admin trung tâm");
  return sbFetch("/functions/v1/admin-users",{method:"POST",token:centralSession.access_token,body:{action,...payload}});
 }
-function adminProjectCard(b){
- const safeId=esc(b.id),safeName=esc(b.name||b.id);
- return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\',event)"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3></div><span>→</span></button></div>';
+function adminProjectCard(b,index=0){
+ const safeId=esc(b.id),safeName=esc(b.name||b.id),tone="tone"+(index%4);
+ const projectIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V8l6-3 6 3v12M9 11h2v2H9zM13 11h2v2h-2zM9 15h2v2H9zM13 15h2v2h-2z"/></svg>';
+ return '<div class="adminProjectCard '+tone+'"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\',event)"><div class="adminProjectIcon">'+projectIcon+'</div><div class="adminProjectCopy"><small>'+safeId+'</small><h3>'+safeName+'</h3></div><span class="adminProjectArrow" aria-hidden="true">→</span></button></div>';
 }
 function renderAdminProjects(){
  const list=currentAccount?.buildings||[];
