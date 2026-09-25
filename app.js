@@ -648,13 +648,14 @@ function prepareProjectContext(building){
  if(typeof selectedConstructionMaterialId!=="undefined")selectedConstructionMaterialId="";
  $("#navWork").classList.remove("hide");$("#navEnergy").classList.remove("hide");$("#navInventory").classList.remove("hide");$("#navMaintenance").classList.remove("hide");$("#navContractor").classList.remove("hide");$("#navConstruction")?.classList.remove("hide");
 }
-async function enterProject(building,{openHome=true}={}){
+async function enterProject(building,{target="home"}={}){
  const openSeq=++projectOpenSeq;
  prepareProjectContext(building);
 
  // Switch away from the project directory immediately on the very first click.
- // Do this before any render/sync work so a slow request can never leave Dự án visible.
- if(openHome)showHome();
+ // Admin project cards open Công việc; direct account login still starts at Tổng quan.
+ if(target==="work")showModule("work");
+ else showHome();
  try{applyBuildingUI()}catch(e){console.warn("Initial project UI refresh skipped",e)}
 
  const buildingId=building.id;
@@ -682,11 +683,11 @@ window.adminOpenBuilding=async(id,event)=>{
  if(btn?.dataset.opening==="1")return;
  if(btn){btn.dataset.opening="1";btn.disabled=true}
  try{
-   await enterProject(b,{openHome:true});
+   await enterProject(b,{target:"work"});
  }catch(e){
    console.warn("Open project failed",e);
    // The selected project context is already valid; keep the user inside it.
-   try{prepareProjectContext(b);showHome();applyBuildingUI()}catch(_e){}
+   try{prepareProjectContext(b);showModule("work");applyBuildingUI()}catch(_e){}
    toast("Đã mở dự án bằng dữ liệu khả dụng");
  }finally{
    if(btn&&btn.isConnected){delete btn.dataset.opening;btn.disabled=false}
