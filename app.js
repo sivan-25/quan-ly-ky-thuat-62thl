@@ -219,7 +219,7 @@ function renderPeopleSelector(kind){
  }else{
    box.innerHTML=names.map(name=>{
      const on=selected.includes(name);
-     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'">'+(kind==="task"?'<span class="peopleAvatar">'+esc(personInitials(name))+'</span>':'')+'<span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
+     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'">'+((kind==="task"||kind==="energy")?'<span class="peopleAvatar">'+esc(personInitials(name))+'</span>':'')+'<span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
    }).join("");
    box.querySelectorAll("[data-person]").forEach(el=>el.onclick=e=>{
      e.stopPropagation();
@@ -637,7 +637,9 @@ function applyBuildingUI(){
  }
  resetForm(false);render();renderEnergy();renderHomeDashboard();
 }
+let projectOpenSeq=0;
 async function enterProject(building){
+ const openSeq=++projectOpenSeq;
  currentBuilding={...building};
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
@@ -655,7 +657,9 @@ async function enterProject(building){
  // Load the two independent data sources separately so one failure cannot
  // prevent the project from opening.
  if(centralSession?.access_token)await loadProjectSnapshot(currentBuilding);
+ if(openSeq!==projectOpenSeq)return;
  try{await loadProjectPeople(currentBuilding.id)}catch(e){console.warn("Project people load skipped",e)}
+ if(openSeq!==projectOpenSeq)return;
 
  // Refresh project data/UI only. Do NOT change the active page here:
  // the user may already have clicked Công việc / Năng lượng / ... while sync was running.
