@@ -4227,3 +4227,180 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     height:22px!important;
   }
 }
+/* =========================================================
+   ADMIN SETTINGS BUTTON + PROJECT BRANDING 27
+   Strong settings CTA and professional project marks.
+   ========================================================= */
+
+/* Highlight the whole settings button */
+#app.adminMode #adminPage .settingsGearBtn{
+  min-width:122px!important;
+  height:44px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  padding:0 15px!important;
+  border:1px solid #29bfd2!important;
+  border-radius:11px!important;
+  background:linear-gradient(135deg,#0f5261,#117d8f)!important;
+  color:#ecfdff!important;
+  box-shadow:0 8px 22px rgba(13,124,143,.22),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  cursor:pointer!important;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease!important;
+}
+#app.adminMode #adminPage .settingsGearBtn svg{
+  width:21px!important;
+  height:21px!important;
+  flex:0 0 21px!important;
+  fill:none!important;
+  stroke:#66efff!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#app.adminMode #adminPage .settingsGearBtn span{
+  color:#f4feff!important;
+  font-size:12px!important;
+  font-weight:600!important;
+}
+#app.adminMode #adminPage .settingsGearBtn:hover{
+  transform:translateY(-1px)!important;
+  border-color:#57e5f4!important;
+  background:linear-gradient(135deg,#116575,#1492a4)!important;
+  box-shadow:0 10px 26px rgba(13,124,143,.3),inset 0 1px 0 rgba(255,255,255,.1)!important;
+}
+
+/* Professional project marks */
+#app.adminMode #adminPage .adminProjectGrid{
+  gap:12px!important;
+}
+#app.adminMode #adminPage .adminProjectCard{
+  position:relative!important;
+  min-height:112px!important;
+  overflow:hidden!important;
+  border:1px solid #2a3853!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,#111b2f 0%,#10192a 100%)!important;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease!important;
+}
+#app.adminMode #adminPage .adminProjectCard:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:3px!important;
+  background:#22cfe4!important;
+  opacity:.82!important;
+}
+#app.adminMode #adminPage .adminProjectCard:hover{
+  transform:translateY(-2px)!important;
+  border-color:#3a5573!important;
+  background:linear-gradient(145deg,#142239 0%,#111c30 100%)!important;
+}
+#app.adminMode #adminPage .adminProjectOpen{
+  min-height:112px!important;
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr) 28px!important;
+  align-items:center!important;
+  gap:13px!important;
+  padding:15px 16px 15px 18px!important;
+}
+#app.adminMode #adminPage .adminProjectIcon{
+  width:52px!important;
+  height:52px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #2d5367!important;
+  border-radius:13px!important;
+  background:linear-gradient(145deg,#123246,#152a42)!important;
+  color:#31e0f3!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+#app.adminMode #adminPage .adminProjectIcon svg{
+  width:27px!important;
+  height:27px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.65!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#app.adminMode #adminPage .adminProjectCopy{
+  min-width:0!important;
+}
+#app.adminMode #adminPage .adminProjectCard small{
+  display:block!important;
+  margin:0 0 5px!important;
+  color:#83a4c2!important;
+  font-size:10.5px!important;
+  line-height:1!important;
+  letter-spacing:.7px!important;
+  font-weight:600!important;
+}
+#app.adminMode #adminPage .adminProjectCard h3{
+  margin:0!important;
+  color:#f2f6ff!important;
+  font-size:15.5px!important;
+  line-height:1.32!important;
+  font-weight:600!important;
+}
+#app.adminMode #adminPage .adminProjectArrow{
+  width:28px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #2d425e!important;
+  border-radius:9px!important;
+  background:#142137!important;
+  color:#60dff0!important;
+  font-size:17px!important;
+}
+#app.adminMode #adminPage .adminProjectCard:hover .adminProjectArrow{
+  border-color:#2e7180!important;
+  background:#11313e!important;
+  color:#74effc!important;
+}
+
+/* Slightly varied but still cohesive project accents */
+#app.adminMode #adminPage .adminProjectCard.tone1:before{background:#5b8cff!important}
+#app.adminMode #adminPage .adminProjectCard.tone1 .adminProjectIcon{color:#8cafff!important;border-color:#354d78!important;background:linear-gradient(145deg,#182844,#172239)!important}
+#app.adminMode #adminPage .adminProjectCard.tone2:before{background:#33d5a9!important}
+#app.adminMode #adminPage .adminProjectCard.tone2 .adminProjectIcon{color:#5ee9bd!important;border-color:#285c51!important;background:linear-gradient(145deg,#16352f,#17283a)!important}
+#app.adminMode #adminPage .adminProjectCard.tone3:before{background:#e0ad47!important}
+#app.adminMode #adminPage .adminProjectCard.tone3 .adminProjectIcon{color:#f0c66f!important;border-color:#60502d!important;background:linear-gradient(145deg,#342c1b,#1d2637)!important}
+
+/* Settings modal project icons also match the new building language */
+#adminSettingsModal .settingsRowIcon{
+  border-radius:11px!important;
+  background:linear-gradient(145deg,#133247,#17283d)!important;
+}
+#adminSettingsModal .settingsRowIcon svg{
+  width:20px!important;
+  height:20px!important;
+  fill:none!important;
+  stroke:#36dff1!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+@media(max-width:760px){
+  #app.adminMode #adminPage .settingsGearBtn{
+    min-width:44px!important;
+    width:44px!important;
+    padding:0!important;
+  }
+  #app.adminMode #adminPage .settingsGearBtn span{
+    display:none!important;
+  }
+  #app.adminMode #adminPage .adminProjectOpen{
+    grid-template-columns:48px minmax(0,1fr) 28px!important;
+  }
+  #app.adminMode #adminPage .adminProjectIcon{
+    width:48px!important;
+    height:48px!important;
+  }
+}
