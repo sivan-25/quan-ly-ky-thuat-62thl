@@ -15,23 +15,48 @@ function toast(s){$("#toast").textContent=s;$("#toast").classList.add("show");se
 function sentenceCapitalizeText(value){
  let out="",capitalize=true;
  for(const ch of String(value??"")){
-   if(capitalize&&/\p{L}/u.test(ch)){out+=ch.toLocaleUpperCase("vi-VN");capitalize=false;continue}
+   if(capitalize&&/\p{L}/u.test(ch)){
+     out+=ch.toLocaleUpperCase("vi-VN");
+     capitalize=false;
+     continue;
+   }
    out+=ch;
    if(ch==="."||ch==="!"||ch==="?")capitalize=true;
  }
  return out;
 }
 function shouldAutoCapitalize(el){
- if(!el||!el.closest||!el.closest("#app"))return false;
+ if(!el||!el.matches)return false;
+ if(el.dataset?.noAutoCapitalize==="1")return false;
+ if(el.closest("#login,#adminSetupModal"))return false;
  if(el.tagName==="TEXTAREA")return true;
  if(el.tagName!=="INPUT")return false;
  const type=(el.getAttribute("type")||"text").toLowerCase();
  if(type!=="text")return false;
- return !["search","globalSearch","user","pass","adminUsername","adminPassword","setupAdminEmail","setupAdminPassword"].includes(el.id);
+ const excludedIds=new Set([
+   "search","globalSearch","energyQuickSearch",
+   "inventoryMaterialSearch","inventoryToolSearch",
+   "maintenanceSearch","contractorSearch","contractorJobSearch",
+   "user","pass","adminUsername","adminPassword",
+   "setupAdminEmail","setupAdminPassword"
+ ]);
+ if(excludedIds.has(el.id))return false;
+ if(/search|email|password|username|code|token|url/i.test(el.name||""))return false;
+ return true;
 }
 function applyAutoCapitalize(el){
- const start=el.selectionStart,end=el.selectionEnd,next=sentenceCapitalizeText(el.value);
- if(next!==el.value){el.value=next;try{el.setSelectionRange(start,end)}catch(e){}}
+ if(!shouldAutoCapitalize(el)||el.dataset?.composing==="1")return;
+ const start=el.selectionStart,end=el.selectionEnd;
+ const next=sentenceCapitalizeText(el.value);
+ if(next!==el.value){
+   el.value=next;
+   try{el.setSelectionRange(start,end)}catch(e){}
+ }
+}
+function capitalizeAllDataFields(root=document){
+ root.querySelectorAll?.("input[type=text],textarea").forEach(el=>{
+   if(shouldAutoCapitalize(el))applyAutoCapitalize(el);
+ });
 }
 
 async function sbFetch(path,{method="GET",body=null,token=null}={}){
@@ -1460,7 +1485,24 @@ document.querySelectorAll("[data-combined-range]").forEach(b=>b.onclick=()=>{
 
 resetEnergyForm();
 renderEnergy();
-$("#app").addEventListener("input",e=>{if(shouldAutoCapitalize(e.target))applyAutoCapitalize(e.target)});
+document.addEventListener("compositionstart",e=>{
+ if(shouldAutoCapitalize(e.target))e.target.dataset.composing="1";
+});
+document.addEventListener("compositionend",e=>{
+ if(shouldAutoCapitalize(e.target)){
+   delete e.target.dataset.composing;
+   applyAutoCapitalize(e.target);
+ }
+});
+document.addEventListener("input",e=>{
+ if(shouldAutoCapitalize(e.target))applyAutoCapitalize(e.target);
+});
+document.addEventListener("focusout",e=>{
+ if(shouldAutoCapitalize(e.target))applyAutoCapitalize(e.target);
+});
+document.addEventListener("submit",e=>{
+ capitalizeAllDataFields(e.target);
+},true);
 
 
 
