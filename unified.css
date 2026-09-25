@@ -4581,3 +4581,11 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     grid-template-columns:1fr 1fr!important;
   }
 }
+
+
+/* MAINTENANCE CREAM CANVAS — match contractor empty-space background */
+#app.maintenanceMode,
+#app.maintenanceMode main,
+#app.maintenanceMode #maintenancePage{
+  background:#f7dfb6!important;
+}
