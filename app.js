@@ -534,7 +534,7 @@ function homeActivityRows(tasks,energy,buildingLabel=""){
 function renderHomeProjectCards(){
  const box=$("#homeProjectGrid"),list=currentAccount?.buildings||[];
  if(!box)return;
- box.innerHTML=list.length?list.map((b,i)=>'<button class="homeProjectCard" type="button" onclick="adminOpenBuilding(\''+esc(b.id)+'\')"><div class="projectMonogram">'+esc((b.id||"ES").slice(0,2))+'</div><div><small>'+esc(b.id)+'</small><b>'+esc(b.name||b.id)+'</b><span>ESTA Property Management</span></div><i>→</i></button>').join(""):'<div class="homeEmpty">Chưa có dự án đang hoạt động.</div>';
+ box.innerHTML=list.length?list.map((b,i)=>'<button class="homeProjectCard" type="button" onclick="adminOpenBuilding(\''+esc(b.id)+'\',event)"><div class="projectMonogram">'+esc((b.id||"ES").slice(0,2))+'</div><div><small>'+esc(b.id)+'</small><b>'+esc(b.name||b.id)+'</b><span>ESTA Property Management</span></div><i>→</i></button>').join(""):'<div class="homeEmpty">Chưa có dự án đang hoạt động.</div>';
 }
 async function renderAdminHomeOverview(){
  $("#homeAdminProjects").classList.toggle("hide",!currentAccount?.is_admin);
@@ -638,8 +638,7 @@ function applyBuildingUI(){
  resetForm(false);render();renderEnergy();renderHomeDashboard();
 }
 let projectOpenSeq=0;
-async function enterProject(building){
- const openSeq=++projectOpenSeq;
+function prepareProjectContext(building){
  currentBuilding={...building};
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
@@ -648,22 +647,24 @@ async function enterProject(building){
  if(typeof constructionLoadedBuilding!=="undefined")constructionLoadedBuilding="";
  if(typeof selectedConstructionMaterialId!=="undefined")selectedConstructionMaterialId="";
  $("#navWork").classList.remove("hide");$("#navEnergy").classList.remove("hide");$("#navInventory").classList.remove("hide");$("#navMaintenance").classList.remove("hide");$("#navContractor").classList.remove("hide");$("#navConstruction")?.classList.remove("hide");
+}
+async function enterProject(building,{openHome=true}={}){
+ const openSeq=++projectOpenSeq;
+ prepareProjectContext(building);
 
- // Always stay on Tổng quan until the user explicitly chooses another module.
- // This also prevents Công việc from flashing while project data is syncing.
- applyBuildingUI();
- showHome();
+ // Switch away from the project directory immediately on the very first click.
+ // Do this before any render/sync work so a slow request can never leave Dự án visible.
+ if(openHome)showHome();
+ try{applyBuildingUI()}catch(e){console.warn("Initial project UI refresh skipped",e)}
 
- // Load the two independent data sources separately so one failure cannot
- // prevent the project from opening.
- if(centralSession?.access_token)await loadProjectSnapshot(currentBuilding);
- if(openSeq!==projectOpenSeq)return;
- try{await loadProjectPeople(currentBuilding.id)}catch(e){console.warn("Project people load skipped",e)}
- if(openSeq!==projectOpenSeq)return;
+ const buildingId=building.id;
+ if(centralSession?.access_token)await loadProjectSnapshot({...building});
+ if(openSeq!==projectOpenSeq||currentBuilding?.id!==buildingId)return;
+ try{await loadProjectPeople(buildingId)}catch(e){console.warn("Project people load skipped",e)}
+ if(openSeq!==projectOpenSeq||currentBuilding?.id!==buildingId)return;
 
- // Refresh project data/UI only. Do NOT change the active page here:
- // the user may already have clicked Công việc / Năng lượng / ... while sync was running.
- applyBuildingUI();
+ // Only refresh content. Never change the page after the user has entered the project.
+ try{applyBuildingUI()}catch(e){console.warn("Final project UI refresh skipped",e)}
 }
 function openAdminPortal(){
  if(!currentAccount?.is_admin)return;
@@ -673,15 +674,22 @@ function openAdminPortal(){
  $("#navHome").classList.remove("active");$("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");$("#navContractor").classList.remove("active");$("#navConstruction")?.classList.remove("active");
  $("#app").classList.remove("homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");$("#app").classList.add("adminMode");setMobileMenuOpen(false,true);renderAdminPortal();
 }
-window.adminOpenBuilding=async id=>{
+window.adminOpenBuilding=async(id,event)=>{
+ event?.preventDefault?.();
+ event?.stopPropagation?.();
  const b=currentAccount?.buildings?.find(x=>x.id===id);if(!b)return;
+ const btn=event?.currentTarget;
+ if(btn?.dataset.opening==="1")return;
+ if(btn){btn.dataset.opening="1";btn.disabled=true}
  try{
-   await enterProject(b);
+   await enterProject(b,{openHome:true});
  }catch(e){
    console.warn("Open project failed",e);
-   applyBuildingUI();
-   showHome();
+   // The selected project context is already valid; keep the user inside it.
+   try{prepareProjectContext(b);showHome();applyBuildingUI()}catch(_e){}
    toast("Đã mở dự án bằng dữ liệu khả dụng");
+ }finally{
+   if(btn&&btn.isConnected){delete btn.dataset.opening;btn.disabled=false}
  }
 };
 window.enterAccount=function(account,session=null){
@@ -1999,7 +2007,7 @@ async function adminApi(action,payload={}){
 }
 function adminProjectCard(b){
  const safeId=esc(b.id),safeName=esc(b.name||b.id);
- return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\')"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button></div>';
+ return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\',event)"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button></div>';
 }
 function renderAdminProjects(){
  const list=currentAccount?.buildings||[];
