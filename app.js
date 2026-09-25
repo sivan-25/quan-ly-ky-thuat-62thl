@@ -916,7 +916,15 @@ function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div 
  $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard"><div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+esc(x.n||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
  hydrateMediaImages($("#tbody"));
 }
-window.editTask=id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}let x=load().find(y=>y.id===id);$("#editId").value=x.id;$("#date").value=x.d;$("#content").value=x.c;$("#type").value=x.t||"Hằng ngày";$("#status").value=x.s;setPeopleSelected("task",performerArray(x));$("#note").value=x.n;$("#imageInfo").textContent=x.imgs?.length?"Đang có "+x.imgs.length+" hình · Có thể chụp/chọn thêm":"";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.remove("hide");scrollTo({top:0,behavior:"smooth"})};window.delTask=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(confirm("Xóa công việc này?")){save(load().filter(x=>x.id!==id));await syncTaskRecord("delete_task",id);render();renderHomeDashboard();toast("Đã xóa")}};window.viewImages=async id=>{let x=load().find(y=>y.id===id);if(!x?.imgs?.length)return;viewerMediaRefs=[...x.imgs];$("#viewerImages").innerHTML=viewerMediaRefs.map((v,i)=>'<div class="viewerMedia">'+mediaImgHtml(v,"viewerLargeImage")+'<button class="viewerDownloadBtn" type="button" onclick="downloadViewerMedia('+i+')">⇩ Tải hình</button></div>').join("");$("#viewer").classList.remove("hide");await hydrateMediaImages($("#viewerImages"))};$("#closeViewer").onclick=()=>$("#viewer").classList.add("hide");
+window.editTask=id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}let x=load().find(y=>y.id===id);$("#editId").value=x.id;$("#date").value=x.d;$("#content").value=x.c;$("#type").value=x.t||"Hằng ngày";$("#status").value=x.s;setPeopleSelected("task",performerArray(x));$("#note").value=x.n;$("#imageInfo").textContent=x.imgs?.length?"Đang có "+x.imgs.length+" hình · Có thể chụp/chọn thêm":"";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.remove("hide");scrollTo({top:0,behavior:"smooth"})};window.delTask=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(confirm("Xóa công việc này?")){save(load().filter(x=>x.id!==id));await syncTaskRecord("delete_task",id);render();renderHomeDashboard();toast("Đã xóa")}};window.viewImages=async id=>{let x=load().find(y=>y.id===id);if(!x?.imgs?.length)return;viewerMediaRefs=[...x.imgs];$("#viewerImages").innerHTML=viewerMediaRefs.map((v,i)=>'<div class="viewerMedia">'+mediaImgHtml(v,"viewerLargeImage")+'<button class="viewerDownloadBtn" type="button" onclick="downloadViewerMedia('+i+')">⇩ Tải hình</button></div>').join("");$("#viewer").classList.remove("hide");await hydrateMediaImages($("#viewerImages"))};function closeImageViewer(){
+ $("#viewer").classList.add("hide");
+ $("#viewerImages").innerHTML="";
+ viewerMediaRefs=[];
+}
+$("#closeViewer").onclick=e=>{e.stopPropagation();closeImageViewer()};
+$("#viewer").addEventListener("click",e=>{
+ if(e.target===$("#viewer"))closeImageViewer();
+});
 /* WORK_ROW_ACTION_MENU_SINGLE_OPEN */
 document.addEventListener("click",e=>{
   const summary=e.target.closest?.("#workPage .rowActionMenu summary");
@@ -1212,7 +1220,7 @@ document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{
  $("#exportModal").classList.add("hide");
  openReport(a,preview);
 });
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#viewer").classList.add("hide");$("#exportModal").classList.add("hide")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeImageViewer();$("#exportModal").classList.add("hide")}});
 setTimeout(()=>ensureHtml2Pdf().catch(()=>{}),900);
 $("#today").textContent=new Date().toLocaleDateString("vi-VN")
 
