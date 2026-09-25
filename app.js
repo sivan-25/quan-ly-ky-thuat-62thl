@@ -1205,8 +1205,17 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
      for(let pageNo=1;pageNo<=totalPages;pageNo++){
        pdf.setPage(pageNo);
        const pageW=pdf.internal.pageSize.getWidth(),pageH=pdf.internal.pageSize.getHeight();
-       pdf.setFontSize(7);pdf.setTextColor(125,137,146);
-       pdf.text("Trang "+pageNo+"/"+totalPages+" · Báo cáo được tạo tự động từ hệ thống ESTA",pageW/2,pageH-6,{align:"center"});
+       const footerCanvas=document.createElement("canvas");
+       footerCanvas.width=1400;footerCanvas.height=70;
+       const ctx=footerCanvas.getContext("2d");
+       ctx.clearRect(0,0,footerCanvas.width,footerCanvas.height);
+       ctx.font="24px Arial, sans-serif";
+       ctx.fillStyle="#7d8992";
+       ctx.textAlign="center";
+       ctx.textBaseline="middle";
+       ctx.fillText("Trang "+pageNo+"/"+totalPages+" · Báo cáo được tạo tự động từ hệ thống ESTA",footerCanvas.width/2,footerCanvas.height/2);
+       const footerImg=footerCanvas.toDataURL("image/png");
+       pdf.addImage(footerImg,"PNG",18,pageH-10,pageW-36,5);
      }
    }
    const blob=pdf.output("blob");
