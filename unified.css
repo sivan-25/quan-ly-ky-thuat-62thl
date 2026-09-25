@@ -3022,3 +3022,139 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     font-size:26px!important;
   }
 }
+/* =========================================================
+   INVENTORY SWITCH BAR FINAL
+   Remove duplicate title/project meta and make the two modes obvious.
+   ========================================================= */
+#app.inventoryMode #inventoryPage .inventorySwitchBar{
+  min-height:74px!important;
+  display:block!important;
+  padding:12px 16px!important;
+  border:1px solid #25314a!important;
+  border-radius:14px!important;
+  background:#11182b!important;
+  box-shadow:none!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryCommandControls{
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  padding:5px!important;
+  border:1px solid #2d3b57!important;
+  border-radius:12px!important;
+  background:#0d1728!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs button{
+  min-width:178px!important;
+  height:46px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  padding:0 16px!important;
+  border:1px solid transparent!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#9aa9c2!important;
+  font-size:13px!important;
+  font-weight:500!important;
+  cursor:pointer!important;
+  transition:.18s ease!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs button svg{
+  width:18px!important;
+  height:18px!important;
+  stroke:currentColor!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs button:hover{
+  border-color:#34516a!important;
+  background:#142238!important;
+  color:#d9e6f5!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs button.active{
+  border-color:#16a7bd!important;
+  background:linear-gradient(135deg,#0f4654,#0c6070)!important;
+  color:#5ceafa!important;
+  box-shadow:0 0 0 1px rgba(24,217,243,.08),0 8px 20px rgba(7,104,122,.18)!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs button.active span{
+  color:#ecfdff!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryYearOnly{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryYearOnly label{
+  min-width:132px!important;
+  height:50px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:6px 12px!important;
+  border:1px solid #34425a!important;
+  border-radius:10px!important;
+  background:#172238!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryYearOnly small{
+  color:#8291ac!important;
+  font-size:8.5px!important;
+  letter-spacing:.6px!important;
+}
+#app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryYearOnly select{
+  width:100%!important;
+  margin-top:2px!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#f2f6ff!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  color-scheme:dark!important;
+}
+
+/* Remove any legacy brand/project blocks if an old cached fragment remains */
+#app.inventoryMode #inventoryPage .inventoryCommandBrand,
+#app.inventoryMode #inventoryPage .inventoryCommandMeta>div{
+  display:none!important;
+}
+
+/* Keep content visually close to the switcher */
+#app.inventoryMode #inventoryPage .inventoryPane{
+  margin-top:10px!important;
+}
+
+@media(max-width:760px){
+  #app.inventoryMode #inventoryPage .inventorySwitchBar{
+    padding:10px!important;
+  }
+  #app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryCommandControls{
+    align-items:stretch!important;
+    flex-direction:column!important;
+  }
+  #app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs{
+    width:100%!important;
+  }
+  #app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryLocalTabs button{
+    min-width:0!important;
+    flex:1 1 0!important;
+    height:44px!important;
+    padding:0 9px!important;
+    font-size:11.5px!important;
+  }
+  #app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryYearOnly{
+    justify-content:flex-start!important;
+  }
+  #app.inventoryMode #inventoryPage .inventorySwitchBar .inventoryYearOnly label{
+    width:120px!important;
+  }
+}
