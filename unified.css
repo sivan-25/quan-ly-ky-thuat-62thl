@@ -3708,3 +3708,173 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     display:none!important;
   }
 }
+/* =========================================================
+   GLOBAL TABLE LABELS + CONTRACTOR ALIGNMENT 25
+   Align contractor columns exactly and use one strong color
+   for fixed table labels across the whole system.
+   ========================================================= */
+#app{
+  --fixed-label:#f1be6d;
+  --fixed-label-border:#3a4e69;
+}
+
+/* Contractor directory: header and rows share the exact same grid */
+#app.contractorMode #contractorPage .contractorDirectory{
+  overflow:hidden!important;
+}
+#app.contractorMode #contractorPage .contractorListHeader,
+#app.contractorMode #contractorPage .contractorRowCard{
+  display:grid!important;
+  grid-template-columns:
+    minmax(270px,2.05fr)
+    minmax(150px,1.05fr)
+    minmax(135px,.95fr)
+    minmax(110px,.78fr)
+    88px
+    minmax(185px,1.25fr)
+    118px!important;
+  column-gap:0!important;
+  align-items:center!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding-left:16px!important;
+  padding-right:16px!important;
+}
+#app.contractorMode #contractorPage .contractorListHeader{
+  min-height:48px!important;
+  background:#0d1729!important;
+  border-top:1px solid #263957!important;
+  border-bottom:1px solid var(--fixed-label-border)!important;
+}
+#app.contractorMode #contractorPage .contractorListHeader>span{
+  min-width:0!important;
+  padding:0 10px!important;
+  color:var(--fixed-label)!important;
+  font-size:11.5px!important;
+  line-height:1.15!important;
+  font-weight:600!important;
+  letter-spacing:.18px!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+#app.contractorMode #contractorPage .contractorListHeader>span:nth-child(5),
+#app.contractorMode #contractorPage .contractorListHeader>span:nth-child(7){
+  text-align:center!important;
+}
+
+#app.contractorMode #contractorPage .contractorRowCard{
+  min-height:86px!important;
+}
+#app.contractorMode #contractorPage .contractorRowIdentity,
+#app.contractorMode #contractorPage .contractorRowValue,
+#app.contractorMode #contractorPage .contractorRowCount,
+#app.contractorMode #contractorPage .contractorLatest,
+#app.contractorMode #contractorPage .contractorRowActions{
+  min-width:0!important;
+  box-sizing:border-box!important;
+  padding-left:10px!important;
+  padding-right:10px!important;
+}
+#app.contractorMode #contractorPage .contractorRowIdentity{
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:center!important;
+}
+#app.contractorMode #contractorPage .contractorContactCell,
+#app.contractorMode #contractorPage .contractorRowPhone{
+  text-align:left!important;
+}
+#app.contractorMode #contractorPage .contractorRowCount{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#app.contractorMode #contractorPage .contractorRowActions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+}
+#app.contractorMode #contractorPage .contractorLatest{
+  overflow:hidden!important;
+}
+#app.contractorMode #contractorPage .contractorLatest b,
+#app.contractorMode #contractorPage .contractorLatest span{
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+/* One clear color for fixed column labels across modules */
+#app.workMode #workPage .workTaskTable thead th,
+#app.energyMode #energyPage .energyHistoryTable thead th,
+#app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable thead th,
+#app.inventoryMode #inventoryToolsPane .toolsTable thead th,
+#app.maintenanceMode #maintenancePage table thead th,
+#app.constructionMode #constructionMaterialPage table thead th{
+  color:var(--fixed-label)!important;
+  font-weight:600!important;
+  border-bottom-color:var(--fixed-label-border)!important;
+}
+
+/* Work previously used mixed colors per column; make fixed labels consistent */
+#app.workMode #workPage .workTaskTable th:nth-child(3),
+#app.workMode #workPage .workTaskTable th:nth-child(4),
+#app.workMode #workPage .workTaskTable th:nth-child(6),
+#app.workMode #workPage .workTaskTable th:nth-child(7),
+#app.workMode #workPage .workTaskTable th:nth-child(8),
+#app.workMode #workPage .workTaskTable th:nth-child(9){
+  color:var(--fixed-label)!important;
+}
+
+/* Energy fixed headers */
+#app.energyMode #energyPage .energyHistoryTable thead th{
+  background:#0d1729!important;
+  font-size:11px!important;
+}
+
+/* Inventory fixed headers */
+#app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable thead th,
+#app.inventoryMode #inventoryToolsPane .toolsTable thead th{
+  background:#0d1729!important;
+}
+
+/* Maintenance / construction headers */
+#app.maintenanceMode #maintenancePage table thead th,
+#app.constructionMode #constructionMaterialPage table thead th{
+  background:#0d1729!important;
+  font-size:11px!important;
+}
+
+/* Fixed labels inside contractor detail also use the same accent */
+#app.contractorMode #contractorPage .contractorContactGrid small,
+#app.contractorMode #contractorPage .contractorJobTop small,
+#app.contractorMode #contractorPage .contractorJobContent>span,
+#app.contractorMode #contractorPage .contractorJobDiagnosis span{
+  color:var(--fixed-label)!important;
+}
+
+/* Tablet: preserve alignment via horizontal scroll instead of squeezing columns */
+@media(max-width:1180px) and (min-width:761px){
+  #app.contractorMode #contractorPage .contractorDirectory{
+    overflow-x:auto!important;
+  }
+  #app.contractorMode #contractorPage .contractorListHeader,
+  #app.contractorMode #contractorPage .contractorRowCard{
+    min-width:1120px!important;
+  }
+}
+@media(max-width:760px){
+  #app.contractorMode #contractorPage .contractorListHeader{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage .contractorRowCard{
+    display:grid!important;
+    min-width:0!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    padding:12px!important;
+  }
+}
