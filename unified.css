@@ -2828,3 +2828,31 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     min-width:1180px!important;
   }
 }
+/* =========================================================
+   REMOVE MODULE SUBTITLES
+   Hide the small descriptive line under page/module titles everywhere.
+   ========================================================= */
+#app .topModuleTitle p,
+#app #homePage .homeWelcome p,
+#app #adminPage .adminHero p,
+#app #workPage .proPageHead>div:nth-child(2)>p,
+#app #energyPage .energyHeadCopy>p,
+#app #inventoryPage .inventoryCommandBrand>div:last-child>p,
+#app #maintenancePage .maintenanceHero p,
+#app #contractorPage .contractorIntroCopy>p,
+#app #constructionMaterialPage .constructionCommandBrand>div:last-child>p{
+  display:none!important;
+}
+
+/* Remove the leftover gap so title rows stay vertically balanced */
+#app .topModuleTitle h1,
+#app #homePage .homeWelcome h1,
+#app #adminPage .adminHero h1,
+#app #workPage .proPageHead h1,
+#app #energyPage .energyHead h1,
+#app #inventoryPage .inventoryCommand h1,
+#app #maintenancePage .maintenanceHero h1,
+#app #contractorPage .contractorIntro h1,
+#app #constructionMaterialPage .constructionCommand h1{
+  margin-bottom:0!important;
+}
