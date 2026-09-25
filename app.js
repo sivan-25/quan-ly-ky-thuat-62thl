@@ -1166,6 +1166,7 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
    toast("Đang tạo file PDF...");
    const html2pdf=await ensureHtml2Pdf();
    const landscape=/@page\s*\{[^}]*landscape/i.test(html);
+   const inspectionReport=/data-pdf-report=["\']inspection["\']/.test(String(html));
    const cleaned=String(html).replace(/<script[\s\S]*?<\/script>/gi,"");
    frame=document.createElement("iframe");
    frame.setAttribute("aria-hidden","true");
@@ -1191,7 +1192,7 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
 
    const finalName=filename?pdfSafeFilename(filename.replace(/\.pdf$/i,""))+".pdf":reportFilenameFromHtml(html);
    const worker=html2pdf().set({
-     margin:[8,8,9,8],
+     margin:inspectionReport?[18,18,18,18]:[8,8,9,8],
      filename:finalName,
      image:{type:"jpeg",quality:0.98},
      html2canvas:{scale:1.8,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false,scrollX:0,scrollY:0},
@@ -1199,6 +1200,15 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
      pagebreak:{mode:["css","legacy"],avoid:["figure",".note",".sign",".jobHead"]}
    }).from(body).toPdf();
    const pdf=await worker.get("pdf");
+   if(inspectionReport){
+     const totalPages=pdf.internal.getNumberOfPages();
+     for(let pageNo=1;pageNo<=totalPages;pageNo++){
+       pdf.setPage(pageNo);
+       const pageW=pdf.internal.pageSize.getWidth(),pageH=pdf.internal.pageSize.getHeight();
+       pdf.setFontSize(7);pdf.setTextColor(125,137,146);
+       pdf.text("Trang "+pageNo+"/"+totalPages+" · Báo cáo được tạo tự động từ hệ thống ESTA",pageW/2,pageH-6,{align:"center"});
+     }
+   }
    const blob=pdf.output("blob");
    pdfUrl=URL.createObjectURL(blob);
 
@@ -1989,11 +1999,73 @@ window.deleteMaintenanceRecord=async id=>{
  if(!confirm("Xóa nhật ký bảo trì này?"))return;
  try{await sbFetch("/rest/v1/maintenance_records?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"DELETE",token:centralSession.access_token});await loadMaintenanceData(currentBuilding.id,true);toast("Đã xóa nhật ký")}catch(e){toast(e.message)}
 };
-function maintenanceReportHtml(){
- const assets=maintenanceAssets.slice().sort((a,b)=>String(a.next_due_date||"9999").localeCompare(String(b.next_due_date||"9999")));
- const rows=assets.map((a,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(a.name)+'</b><br>'+esc(a.code||"")+'</td><td>'+esc(a.system_type)+'</td><td>'+esc(a.location||"—")+'</td><td>'+a.frequency_days+' ngày</td><td>'+(a.last_service_date?fmt(a.last_service_date):"—")+'</td><td>'+(a.next_due_date?fmt(a.next_due_date):"—")+'</td><td>'+maintenanceDueText(a)+'</td><td>'+esc(a.assigned_to||"—")+'</td></tr>').join("");
- const history=maintenanceRecords.slice(0,100).map(r=>'<tr><td>'+fmt(r.service_date)+'</td><td>'+esc(maintenanceAssets.find(a=>a.id===r.asset_id)?.name||"—")+'</td><td>'+esc(r.maintenance_type)+'</td><td>'+esc(r.performer||"—")+'</td><td>'+esc(r.work_done||"—")+'</td><td>'+esc(r.result_status)+'</td><td>'+(r.next_due_date?fmt(r.next_due_date):"—")+'</td></tr>').join("");
- return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Báo cáo bảo trì</title><style>'+inventoryPdfCss(true)+'.page{page-break-before:always}.status{font-weight:700}</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>KẾ HOẠCH BẢO TRÌ THIẾT BỊ KỸ THUẬT</h1><p>Danh mục · chu kỳ · hạn bảo trì</p></div><div class="summary"><div><span>Thiết bị</span><b>'+maintenanceAssets.length+'</b></div><div><span>Quá hạn</span><b>'+maintenanceAssets.filter(a=>maintenanceDueClass(a)==="overdue").length+'</b></div><div><span>Đến hạn 30 ngày</span><b>'+maintenanceAssets.filter(a=>maintenanceDueClass(a)==="soon").length+'</b></div></div><table><thead><tr><th>STT</th><th>Thiết bị</th><th>Hệ thống</th><th>Vị trí</th><th>Chu kỳ</th><th>Gần nhất</th><th>Kế tiếp</th><th>Tình trạng lịch</th><th>Phụ trách</th></tr></thead><tbody>'+rows+'</tbody></table><div class="page"><div class="title"><h1>NHẬT KÝ BẢO TRÌ</h1></div><table><thead><tr><th>Ngày</th><th>Thiết bị</th><th>Loại</th><th>Người thực hiện</th><th>Nội dung</th><th>Kết quả</th><th>Hạn kế tiếp</th></tr></thead><tbody>'+history+'</tbody></table></div><div class="foot">ESTA · Bảo trì thiết bị · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
+function maintenanceReportPeriod(kind="week",refDate=today()){
+ const d=new Date(String(refDate||today()).slice(0,10)+"T00:00:00");
+ const y=d.getFullYear(),m=d.getMonth(),day=d.getDate(),mm=String(m+1).padStart(2,"0");
+ const first=new Date(y,m,1),last=new Date(y,m+1,0);
+ const iso=x=>x.toLocaleDateString("en-CA");
+ const firstOffset=(first.getDay()+6)%7;
+ const weekNo=Math.floor((day+firstOffset-1)/7)+1;
+ let from,to,label,suffix,code;
+ if(kind==="month"){
+   from=first;to=last;
+   label="THÁNG "+mm+"/"+y;
+   suffix="Thang"+mm+"_"+y;
+   code="BC-BTTB-"+y+mm;
+ }else{
+   const mondayOffset=(d.getDay()+6)%7;
+   from=new Date(d);from.setDate(d.getDate()-mondayOffset);
+   to=new Date(d);to.setDate(d.getDate()+(6-mondayOffset));
+   if(from<first)from=new Date(first);
+   if(to>last)to=new Date(last);
+   label="TUẦN "+weekNo+" THÁNG "+mm+"/"+y;
+   suffix="Tuan"+weekNo+"_Thang"+mm+"_"+y;
+   code="BC-BTTB-"+y+mm+"-T"+weekNo;
+ }
+ return {kind,year:y,month:m+1,weekNo,from:iso(from),to:iso(to),label,suffix,code};
+}
+function maintenanceReportFilename(period){
+ return "BaoCao_BaoTriThietBi_"+period.suffix+".pdf";
+}
+function maintenanceReportHtml(kind="week",refDate=today()){
+ const period=maintenanceReportPeriod(kind,refDate);
+ const inRange=(date)=>date&&String(date)>=period.from&&String(date)<=period.to;
+ const byId=Object.fromEntries(maintenanceAssets.map(a=>[String(a.id),a]));
+ const records=maintenanceRecords.filter(r=>inRange(r.service_date)).sort((a,b)=>String(a.service_date||"").localeCompare(String(b.service_date||"")));
+ const dueAssets=maintenanceAssets.filter(a=>inRange(a.next_due_date)).sort((a,b)=>String(a.next_due_date||"").localeCompare(String(b.next_due_date||"")));
+ const done=records.filter(r=>r.result_status==="Hoàn thành").length;
+ const attention=records.filter(r=>r.result_status!=="Hoàn thành").length;
+ const overall=attention>0?"CẦN KHẮC PHỤC":(records.length?"ĐẠT":"CHƯA CÓ DỮ LIỆU ĐÁNH GIÁ");
+ const recommendation=attention>0
+   ?"Theo dõi và xử lý dứt điểm các hạng mục chưa hoàn thành/cần sửa chữa trong kỳ."
+   :(records.length?"Tiếp tục duy trì lịch bảo trì theo kế hoạch.":"[CẦN BỔ SUNG]");
+ const rows=records.length?records.map((r,i)=>{
+   const a=byId[String(r.asset_id)]||{};
+   const item='<b>'+esc(a.name||"Thiết bị đã xóa")+'</b>'
+     +'<small>'+esc(a.system_type||"—")+' · '+esc(a.location||"—")+' · '+fmt(r.service_date)+'</small>'
+     +'<p>'+esc(r.work_done||"—")+'</p>';
+   const note=(r.note?esc(r.note):"—")+(r.performer?'<small>Người thực hiện: '+esc(r.performer)+'</small>':"");
+   return '<tr><td class="stt">'+(i+1)+'</td><td class="item">'+item+'</td><td class="result '+(r.result_status==="Hoàn thành"?"ok":"warn")+'">'+esc(r.result_status||"—")+'</td><td>'+note+'</td></tr>';
+ }).join(""):'<tr><td colspan="4" class="emptyCell">Không có nhật ký bảo trì trong kỳ báo cáo.</td></tr>';
+ const dueRows=dueAssets.length?dueAssets.map((a,i)=>'<tr><td class="stt">'+(i+1)+'</td><td><b>'+esc(a.name)+'</b><br><small>'+esc(a.system_type||"—")+' · '+esc(a.location||"—")+'</small></td><td>'+fmt(a.next_due_date)+'</td><td>'+a.frequency_days+' ngày</td><td>'+esc(a.assigned_to||"—")+'</td></tr>').join(""):'<tr><td colspan="5" class="emptyCell">Không có thiết bị đến hạn trong kỳ.</td></tr>';
+ return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>BÁO CÁO BẢO TRÌ THIẾT BỊ - '+period.label+'</title><style>'
+   +'@page{size:A4 portrait;margin:20mm}*{box-sizing:border-box}body{font-family:Arial,"Inter",sans-serif;color:#202b33;font-size:10.5pt;line-height:1.45;margin:0;background:#fff}'
+   +'.head{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:2px solid #173d58;padding-bottom:9px;margin-bottom:14px}.brand{font-size:20pt;font-weight:800;letter-spacing:.5px;color:#173d58}.brand small{display:block;font-size:7.5pt;letter-spacing:1.6px;color:#728390}.doc{text-align:right;font-size:9pt;color:#526572;line-height:1.55}'
+   +'.title{text-align:center;margin:12px 0 16px}.title h1{margin:0;color:#173d58;font-size:16pt;line-height:1.25}.title p{margin:6px 0 0;color:#8a633c;font-weight:700;font-size:11pt}'
+   +'.section{margin:0 0 15px;page-break-inside:auto}.section h2{margin:0 0 7px;padding-bottom:5px;border-bottom:1px solid #d6dee3;color:#173d58;font-size:12pt}.info{width:100%;border-collapse:collapse}.info td{border:1px solid #cfd8de;padding:7px 8px}.info td.label{width:22%;background:#f2f5f7;color:#496170;font-weight:700}.info td.value{width:28%}'
+   +'table.report{width:100%;border-collapse:collapse;table-layout:fixed}table.report th,table.report td{border:1px solid #c8d3da;padding:7px 8px;vertical-align:top;word-wrap:break-word}table.report th{background:#173d58;color:#fff;font-size:9pt;text-align:left}table.report th:first-child,table.report .stt{text-align:center;width:7%}table.report td{font-size:9.5pt}table.report td.item b{color:#173d58}table.report small{display:block;margin-top:2px;color:#697b86;font-size:8.5pt}table.report p{margin:4px 0 0}.result{font-weight:700;text-align:center}.result.ok{color:#257454}.result.warn{color:#b15a32}.emptyCell{text-align:center;color:#7b8991;font-style:italic}'
+   +'.summaryBox{border:1px solid #cfd8de;border-left:4px solid #173d58;padding:10px 12px;background:#fafcfd}.summaryBox p{margin:3px 0}.summaryStatus{font-weight:800;color:#173d58}'
+   +'.signature{width:100%;margin-top:22px;border-collapse:separate;border-spacing:18px 0;page-break-inside:avoid}.signature td{width:50%;text-align:center;vertical-align:top;border:0;padding:0}.signature b{display:block;font-size:10.5pt;color:#173d58}.signSpace{height:54px}.signLine{text-align:left;margin:5px 0;border-bottom:1px dotted #8a969d;height:20px;font-size:9pt;color:#677984}'
+   +'.muted{color:#697b86}.period{font-weight:700}'
+   +'</style></head><body data-pdf-report="inspection">'
+   +'<div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">Mã báo cáo: <b>'+period.code+'</b><br>Ngày lập: <b>'+new Date().toLocaleDateString("vi-VN")+'</b></div></div>'
+   +'<div class="title"><h1>BÁO CÁO BẢO TRÌ THIẾT BỊ - '+period.label+'</h1><p>'+fmt(period.from)+' - '+fmt(period.to)+'</p></div>'
+   +'<section class="section"><h2>1. Thông tin chung</h2><table class="info"><tr><td class="label">Dự án / công trình</td><td class="value">'+esc(currentBuilding.name||"[CẦN BỔ SUNG]")+'</td><td class="label">Hạng mục</td><td class="value">Bảo trì thiết bị kỹ thuật</td></tr><tr><td class="label">Địa điểm</td><td class="value">'+esc(currentBuilding.name||"[CẦN BỔ SUNG]")+'</td><td class="label">Kỳ báo cáo</td><td class="value period">'+esc(period.label)+'</td></tr><tr><td class="label">Thời gian kiểm tra</td><td class="value">'+fmt(period.from)+' - '+fmt(period.to)+'<br><span class="muted">Giờ: [CẦN BỔ SUNG]</span></td><td class="label">Đơn vị thực hiện</td><td class="value">[CẦN BỔ SUNG]</td></tr></table></section>'
+   +'<section class="section"><h2>2. Nội dung kiểm tra</h2><table class="report"><colgroup><col style="width:7%"><col style="width:48%"><col style="width:17%"><col style="width:28%"></colgroup><thead><tr><th>STT</th><th>Hạng mục kiểm tra</th><th>Kết quả</th><th>Ghi chú / Đánh giá</th></tr></thead><tbody>'+rows+'</tbody></table></section>'
+   +'<section class="section"><h2>3. Kế hoạch thiết bị đến hạn trong kỳ</h2><table class="report"><colgroup><col style="width:7%"><col style="width:41%"><col style="width:17%"><col style="width:15%"><col style="width:20%"></colgroup><thead><tr><th>STT</th><th>Thiết bị</th><th>Ngày đến hạn</th><th>Chu kỳ</th><th>Phụ trách</th></tr></thead><tbody>'+dueRows+'</tbody></table></section>'
+   +'<section class="section"><h2>4. Kết luận / Đánh giá chung</h2><div class="summaryBox"><p><b>Tóm tắt:</b> '+records.length+' lượt kiểm tra/bảo trì; '+done+' hoàn thành; '+attention+' cần theo dõi/khắc phục; '+dueAssets.length+' thiết bị có hạn trong kỳ.</p><p><b>Đánh giá:</b> <span class="summaryStatus">'+overall+'</span></p><p><b>Kiến nghị:</b> '+recommendation+'</p></div></section>'
+   +'<table class="signature"><tr><td><b>NGƯỜI KIỂM TRA (KT)</b><div class="signSpace"></div><div class="signLine">Họ tên:</div><div class="signLine">Chữ ký:</div><div class="signLine">Ngày ký:</div></td><td><b>NGƯỜI KIỂM SOÁT / GIÁM SÁT (KST)</b><div class="signSpace"></div><div class="signLine">Họ tên:</div><div class="signLine">Chữ ký:</div><div class="signLine">Ngày ký:</div></td></tr></table>'
+   +'</body></html>';
 }
 
 /* Event wiring: Inventory */
@@ -2065,7 +2137,18 @@ $("#maintenanceSystemFilter").onchange=renderMaintenance;
 $("#maintenanceDueFilter").onchange=renderMaintenance;
 $("#maintenanceMonthClear").onclick=()=>{maintenanceActiveMonth="";renderMaintenance()};
 $("#addMaintenanceAsset").onclick=()=>openMaintenanceAssetModal();
-$("#maintenanceExportPdf").onclick=()=>{if(!maintenanceAssets.length)return toast("Chưa có thiết bị để xuất PDF");inventoryPrintWindow(maintenanceReportHtml())};
+$("#maintenanceExportPdf").onclick=()=>{
+ if(!maintenanceAssets.length&&!maintenanceRecords.length)return toast("Chưa có dữ liệu bảo trì để xuất PDF");
+ $("#maintenanceExportModal").classList.remove("hide");
+};
+$("#closeMaintenanceExport").onclick=()=>$("#maintenanceExportModal").classList.add("hide");
+$("#maintenanceExportModal").onclick=e=>{if(e.target===$("#maintenanceExportModal"))$("#maintenanceExportModal").classList.add("hide")};
+document.querySelectorAll("[data-maint-report-range]").forEach(b=>b.onclick=()=>{
+ const kind=b.dataset.maintReportRange==="month"?"month":"week";
+ const period=maintenanceReportPeriod(kind);
+ $("#maintenanceExportModal").classList.add("hide");
+ downloadReportPdf(maintenanceReportHtml(kind),maintenanceReportFilename(period));
+});
 document.querySelectorAll("[data-maint-sample]").forEach(b=>b.onclick=()=>{const [n,s,f]=b.dataset.maintSample.split("|");openMaintenanceAssetModal(n,s,Number(f))});
 $("#closeMaintenanceAssetModal").onclick=$("#cancelMaintenanceAssetModal").onclick=()=>$("#maintenanceAssetModal").classList.add("hide");
 $("#closeMaintenanceRecordModal").onclick=$("#cancelMaintenanceRecordModal").onclick=()=>$("#maintenanceRecordModal").classList.add("hide");
