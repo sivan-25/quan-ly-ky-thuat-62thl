@@ -219,7 +219,7 @@ function renderPeopleSelector(kind){
  }else{
    box.innerHTML=names.map(name=>{
      const on=selected.includes(name);
-     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'"><span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
+     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'">'+(kind==="task"?'<span class="peopleAvatar">'+esc(personInitials(name))+'</span>':'')+'<span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
    }).join("");
    box.querySelectorAll("[data-person]").forEach(el=>el.onclick=e=>{
      e.stopPropagation();
