@@ -2058,7 +2058,7 @@ async function adminApi(action,payload={}){
 }
 function adminProjectCard(b){
  const safeId=esc(b.id),safeName=esc(b.name||b.id);
- return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\',event)"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3><p>Mở giao diện Công việc & Năng lượng</p></div><span>→</span></button></div>';
+ return '<div class="adminProjectCard"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\',event)"><div class="adminProjectIcon">▥</div><div><small>'+safeId+'</small><h3>'+safeName+'</h3></div><span>→</span></button></div>';
 }
 function renderAdminProjects(){
  const list=currentAccount?.buildings||[];
