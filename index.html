@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260925-inventory-switch20"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260925-inventory-ux21"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -1111,7 +1111,7 @@
       <div>
         <span class="inventoryKicker">VẬT TƯ TIÊU HAO</span>
         <h2>Nhập - xuất - tồn <span id="materialTitleCount">(0 mục)</span></h2>
-        <p>Chọn tháng để xem số liệu tồn đầu, nhập, xuất và tồn cuối.</p>
+        
       </div>
       <div class="inventoryToolbarActions">
         <div class="inventorySearch">
@@ -1124,6 +1124,22 @@
         <button id="openStockTxn" class="inventorySecondary stockMoveBtn" type="button">
           <svg viewBox="0 0 24 24"><path d="M7 7h10M13 3l4 4-4 4M17 17H7M11 13l-4 4 4 4"/></svg> Nhập / Xuất
         </button>
+        <details class="inventoryQuickMenu">
+          <summary>⚡ Thêm nhanh</summary>
+          <div class="inventoryQuickPopover">
+            <div class="inventoryQuickPopoverHead">
+              <span>GỢI Ý VẬT TƯ</span>
+              <small>Chọn để mở form điền sẵn</small>
+            </div>
+            <div class="inventoryQuickChoices">
+              <button type="button" data-material-sample="Băng keo điện 3M|Cuộn">Băng keo điện 3M</button>
+              <button type="button" data-material-sample="Đèn LED âm trần 12W|Cái">Đèn LED 12W</button>
+              <button type="button" data-material-sample="Dây rút nhựa 200mm|Bịch">Dây rút nhựa</button>
+              <button type="button" data-material-sample="Cầu chì 10A|Cái">Cầu chì 10A</button>
+              <button type="button" data-material-sample="Đầu cos điện|Bịch">Đầu cos điện</button>
+            </div>
+          </div>
+        </details>
         <button id="addMaterialBtn" class="inventoryPrimary" type="button">＋ Thêm vật tư</button>
       </div>
     </div>
@@ -1197,16 +1213,7 @@
         <div id="stockAlertList" class="stockAlertList"></div>
       </section>
 
-      <section class="inventoryQuickAdd inventorySupportCard">
-        <div class="inventoryQuickAddHead"><span class="inventoryKicker">THÊM NHANH</span><h3>Vật tư thường dùng</h3><p>Bấm để mở form với tên và đơn vị đã gợi ý.</p></div>
-        <div class="inventoryExamples">
-          <button type="button" data-material-sample="Băng keo điện 3M|Cuộn">Băng keo điện 3M</button>
-          <button type="button" data-material-sample="Đèn LED âm trần 12W|Cái">Đèn LED 12W</button>
-          <button type="button" data-material-sample="Dây rút nhựa 200mm|Bịch">Dây rút nhựa</button>
-          <button type="button" data-material-sample="Cầu chì 10A|Cái">Cầu chì 10A</button>
-          <button type="button" data-material-sample="Đầu cos điện|Bịch">Đầu cos điện</button>
-        </div>
-      </section>
+      
     </div>
 
     <div class="inventoryTableCard transactionCard">
@@ -1886,5 +1893,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260925-viewer-close19"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260925-inventory-ux21"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260924-2115"></script><script src="construction.js?v=20260924-2255"></script></body></html>
