@@ -1752,17 +1752,25 @@ function renderTools(){
  const editIcon='<svg viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16v4zM13.5 6.5l4 4"/></svg>';
  const trashIcon='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>';
 
- $("#toolsBody").innerHTML=list.map((t,i)=>'<tr>'+
-   '<td class="sttCell">'+(i+1)+'</td>'+
-   '<td class="toolNameCell"><div><b>'+esc(t.name)+'</b><small>'+esc(t.code||"")+'</small></div></td>'+
-   '<td>'+esc(t.brand||"—")+'</td>'+
-   '<td><b>'+inventoryFmt(t.qty)+'</b> <small>'+esc(t.unit)+'</small></td>'+
-   '<td>'+esc(t.location||"—")+'</td>'+
-   '<td>'+esc(t.keeper||"—")+'</td>'+
-   '<td><span class="toolCondition '+(["Tốt","Đang sử dụng"].includes(t.condition_status)?"good":["Hỏng","Hư hỏng","Cần sửa"].includes(t.condition_status)?"bad":"warn")+'">'+esc(t.condition_status)+'</span></td>'+
-   '<td class="toolNoteCell" title="'+esc(t.note||"")+'">'+esc(t.note||"—")+'</td>'+
-   '<td><div class="invRowActions compact"><button title="Sửa" onclick="editTool(\''+t.id+'\')">'+editIcon+'</button><button title="Xóa" class="danger" onclick="deleteTool(\''+t.id+'\')">'+trashIcon+'</button></div></td>'+
- '</tr>').join("");
+ $("#toolsBody").innerHTML=list.map((t,i)=>{
+   const name=sentenceCapitalizeText(t.name||"");
+   const brand=t.brand?sentenceCapitalizeText(t.brand):"—";
+   const location=t.location?sentenceCapitalizeText(t.location):"—";
+   const keeper=t.keeper?sentenceCapitalizeText(t.keeper):"—";
+   const note=t.note?sentenceCapitalizeText(t.note):"—";
+   const unit=t.unit?sentenceCapitalizeText(t.unit):"";
+   return '<tr>'+
+     '<td class="sttCell">'+(i+1)+'</td>'+
+     '<td class="toolNameCell"><div><b>'+esc(name)+'</b><small>'+esc(t.code||"")+'</small></div></td>'+
+     '<td>'+esc(brand)+'</td>'+
+     '<td><span class="toolQtyValue">'+inventoryFmt(t.qty)+'</span> <small class="toolUnit">'+esc(unit)+'</small></td>'+
+     '<td>'+esc(location)+'</td>'+
+     '<td>'+esc(keeper)+'</td>'+
+     '<td><span class="toolCondition '+(["Tốt","Đang sử dụng"].includes(t.condition_status)?"good":["Hỏng","Hư hỏng","Cần sửa"].includes(t.condition_status)?"bad":"warn")+'">'+esc(t.condition_status)+'</span></td>'+
+     '<td class="toolNoteCell" title="'+esc(note==="—"?"":note)+'">'+esc(note)+'</td>'+
+     '<td><div class="invRowActions compact"><button title="Sửa" onclick="editTool(\''+t.id+'\')">'+editIcon+'</button><button title="Xóa" class="danger" onclick="deleteTool(\''+t.id+'\')">'+trashIcon+'</button></div></td>'+
+   '</tr>';
+ }).join("");
  $("#toolsEmpty").classList.toggle("hide",list.length>0);
 }
 function setInventoryTab(tab){
