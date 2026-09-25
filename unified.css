@@ -2675,3 +2675,83 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     font-size:10.5px!important;
   }
 }
+/* =========================================================
+   INVENTORY TOOL TYPOGRAPHY SYNC
+   Consistent body text + clearer fixed column headings.
+   ========================================================= */
+#app.inventoryMode #inventoryToolsPane .toolsTable{
+  font-variant-numeric:tabular-nums!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable thead th{
+  height:50px!important;
+  padding:0 14px!important;
+  background:#0d1729!important;
+  color:#d5e0f1!important;
+  border-bottom:1px solid #2e4966!important;
+  font-size:12px!important;
+  line-height:1!important;
+  letter-spacing:.15px!important;
+  text-transform:none!important;
+  font-weight:500!important;
+  white-space:nowrap!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable thead th:first-child{
+  color:#8fdff0!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable tbody td{
+  height:70px!important;
+  padding:12px 14px!important;
+  color:#e1e8f4!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+  font-weight:400!important;
+  vertical-align:middle!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable tbody td b,
+#app.inventoryMode #inventoryToolsPane .toolsTable tbody td strong{
+  color:inherit!important;
+  font-size:inherit!important;
+  font-weight:400!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolNameCell b{
+  color:#f0f4fb!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+  font-weight:400!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolNameCell small{
+  display:block!important;
+  margin-top:4px!important;
+  color:#8291aa!important;
+  font-size:10px!important;
+  line-height:1.25!important;
+  font-weight:400!important;
+}
+#app.inventoryMode #inventoryToolsPane .sttCell{
+  color:#c9d7eb!important;
+  font-size:13px!important;
+  font-weight:400!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolQtyValue,
+#app.inventoryMode #inventoryToolsPane .toolUnit{
+  color:#e1e8f4!important;
+  font-size:13px!important;
+  font-weight:400!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolUnit{
+  margin-left:2px!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolNoteCell{
+  color:#d2dceb!important;
+  font-size:13px!important;
+  font-weight:400!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolCondition{
+  min-height:32px!important;
+  padding:0 10px!important;
+  font-size:11px!important;
+  font-weight:400!important;
+}
+#app.inventoryMode #inventoryToolsPane .toolsTable tbody tr:hover td{
+  background:#152039!important;
+}
