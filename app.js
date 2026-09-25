@@ -647,6 +647,11 @@ async function enterProject(building){
  if(typeof selectedConstructionMaterialId!=="undefined")selectedConstructionMaterialId="";
  $("#navWork").classList.remove("hide");$("#navEnergy").classList.remove("hide");$("#navInventory").classList.remove("hide");$("#navMaintenance").classList.remove("hide");$("#navContractor").classList.remove("hide");$("#navConstruction")?.classList.remove("hide");
 
+ // Always stay on Tổng quan until the user explicitly chooses another module.
+ // This also prevents Công việc from flashing while project data is syncing.
+ applyBuildingUI();
+ showHome();
+
  // Load the two independent data sources separately so one failure cannot
  // prevent the project from opening.
  if(centralSession?.access_token)await loadProjectSnapshot(currentBuilding);
@@ -667,11 +672,10 @@ window.adminOpenBuilding=async id=>{
  const b=currentAccount?.buildings?.find(x=>x.id===id);if(!b)return;
  try{
    await enterProject(b);
-   showModule("work");
  }catch(e){
    console.warn("Open project failed",e);
    applyBuildingUI();
-   showModule("work");
+   showHome();
    toast("Đã mở dự án bằng dữ liệu khả dụng");
  }
 };
@@ -1179,7 +1183,7 @@ function showModule(name){
  $("#navHome").classList.remove("active");$("#navAdmin").classList.remove("active");
  Object.values(navs).forEach(s=>$(s)?.classList.remove("active"));
  $(pages[name])?.classList.remove("hide");$(tops[name])?.classList.remove("hide");$(navs[name])?.classList.add("active");
- $("#app").classList.remove("adminMode","homeMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");
+ $("#app").classList.remove("adminMode","homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");
  $("#app").classList.add(name+"Mode");
  setMobileMenuOpen(false,true);
  if(name==="energy")renderEnergy();
