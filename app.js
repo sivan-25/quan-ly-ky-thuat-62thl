@@ -604,7 +604,7 @@ async function renderAdminHomeOverview(){
 }
 function renderHomeDashboard(){
  $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
- $("#homeUpdatedAt").textContent="Cập nhật "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
+ if($("#homeUpdatedAt"))$("#homeUpdatedAt").textContent="Cập nhật "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
  const admin=!!currentAccount?.is_admin;
  $("#homeAdminProjects").classList.toggle("hide",!admin);
  if(admin){
