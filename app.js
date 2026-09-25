@@ -898,7 +898,23 @@ document.addEventListener("click",e=>{
     document.querySelectorAll("#workPage .rowActionMenu[open]").forEach(openMenu=>openMenu.removeAttribute("open"));
   }
 });
-/* END_WORK_ROW_ACTION_MENU_SINGLE_OPEN */$("#toggleFilter").onclick=e=>{e.stopPropagation();$("#filterBar").classList.toggle("hide")};$("#filterBar").onclick=e=>e.stopPropagation();document.addEventListener("click",e=>{if(!$("#filterBar").classList.contains("hide")&&!e.target.closest(".filterWrap"))$("#filterBar").classList.add("hide")});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";render()};function reportStatusClass(s){
+/* END_WORK_ROW_ACTION_MENU_SINGLE_OPEN */
+/* ENERGY_ROW_ACTION_MENU_SINGLE_OPEN */
+document.addEventListener("click",e=>{
+  const summary=e.target.closest?.("#energyPage .rowActionMenu summary");
+  if(summary){
+    const current=summary.closest(".rowActionMenu");
+    document.querySelectorAll("#energyPage .rowActionMenu[open]").forEach(menu=>{
+      if(menu!==current)menu.removeAttribute("open");
+    });
+    return;
+  }
+  const menu=e.target.closest?.("#energyPage .rowActionMenu");
+  if(!menu){
+    document.querySelectorAll("#energyPage .rowActionMenu[open]").forEach(openMenu=>openMenu.removeAttribute("open"));
+  }
+});
+/* END_ENERGY_ROW_ACTION_MENU_SINGLE_OPEN */$("#toggleFilter").onclick=e=>{e.stopPropagation();$("#filterBar").classList.toggle("hide")};$("#filterBar").onclick=e=>e.stopPropagation();document.addEventListener("click",e=>{if(!$("#filterBar").classList.contains("hide")&&!e.target.closest(".filterWrap"))$("#filterBar").classList.add("hide")});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";render()};function reportStatusClass(s){
  if(s==="Đã hoàn thành")return "done";
  if(s==="Đang thực hiện")return "doing";
  return "waiting";
