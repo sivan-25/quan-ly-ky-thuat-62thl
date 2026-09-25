@@ -1975,7 +1975,7 @@ $("#openStockTxn").onclick=()=>openStockTxnModal();
 $("#addToolBtn").onclick=()=>openToolModal();
 $("#materialExportPdf").onclick=()=>{if(!inventoryMaterials.length)return toast("Chưa có vật tư để xuất PDF");inventoryPrintWindow(materialReportHtml())};
 $("#toolExportPdf").onclick=()=>{if(!inventoryTools.length)return toast("Chưa có dụng cụ để xuất PDF");inventoryPrintWindow(toolReportHtml())};
-document.querySelectorAll("[data-material-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.materialSample.split("|");openMaterialModal(n,u)});
+document.querySelectorAll("[data-material-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.materialSample.split("|");b.closest("details")?.removeAttribute("open");openMaterialModal(n,u)});
 document.querySelectorAll("[data-tool-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.toolSample.split("|");openToolModal(n,u)});
 $("#closeMaterialModal").onclick=$("#cancelMaterialModal").onclick=()=>$("#materialItemModal").classList.add("hide");
 $("#closeStockTxnModal").onclick=$("#cancelStockTxnModal").onclick=()=>$("#stockTxnModal").classList.add("hide");
