@@ -3878,3 +3878,352 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     padding:12px!important;
   }
 }
+/* =========================================================
+   SETTINGS READABILITY + GLOBAL ICON AUDIT 26
+   Larger readable Admin text and normalized semantic icons.
+   ========================================================= */
+
+/* ---------- Admin settings readability ---------- */
+#adminSettingsModal .adminSettingsCard{
+  width:min(1000px,94vw)!important;
+  max-height:92vh!important;
+}
+#adminSettingsModal .settingsHead{
+  padding:22px 24px 16px!important;
+}
+#adminSettingsModal .settingsHead>div>span{
+  font-size:10.5px!important;
+  letter-spacing:1.8px!important;
+  color:#39dff2!important;
+}
+#adminSettingsModal .settingsHead h3{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin:7px 0 5px!important;
+  color:#f4f7ff!important;
+  font-size:24px!important;
+  line-height:1.15!important;
+  font-weight:650!important;
+}
+#adminSettingsModal .settingsHead h3 .settingsTitleIcon{
+  width:23px!important;
+  height:23px!important;
+  flex:0 0 23px!important;
+  fill:none!important;
+  stroke:#d8e5f8!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#adminSettingsModal .settingsHead p{
+  color:#8fa0b9!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+#adminSettingsModal .modalClose{
+  width:40px!important;
+  height:40px!important;
+  font-size:24px!important;
+  line-height:1!important;
+}
+
+/* Tabs with proper icons */
+#adminSettingsModal .settingsTabs{
+  min-height:58px!important;
+  padding:8px 20px!important;
+  gap:8px!important;
+}
+#adminSettingsModal .settingsTabs button{
+  min-height:42px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  padding:0 14px!important;
+  font-size:12px!important;
+  font-weight:550!important;
+}
+#adminSettingsModal .settingsTabs button svg{
+  width:18px!important;
+  height:18px!important;
+  flex:0 0 18px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+/* Pane text */
+#adminSettingsModal .settingsPane{
+  padding:18px 20px 22px!important;
+}
+#adminSettingsModal .settingsPaneTitle h4{
+  color:#eff4ff!important;
+  font-size:17px!important;
+  font-weight:600!important;
+}
+#adminSettingsModal .settingsPaneTitle p{
+  margin-top:5px!important;
+  color:#8f9fb7!important;
+  font-size:11.5px!important;
+  line-height:1.45!important;
+}
+#adminSettingsModal .settingsAccountForm label>span,
+#adminSettingsModal .settingsInlineForm label>span{
+  margin-bottom:6px!important;
+  color:#9fb0c9!important;
+  font-size:11px!important;
+  font-weight:550!important;
+}
+#adminSettingsModal .settingsAccountForm input,
+#adminSettingsModal .settingsAccountForm select,
+#adminSettingsModal .settingsInlineForm input,
+#adminSettingsModal .settingsInlineForm select{
+  height:44px!important;
+  min-height:44px!important;
+  padding:0 13px!important;
+  border-radius:9px!important;
+  font-size:13px!important;
+  line-height:44px!important;
+}
+#adminSettingsModal .settingsAccountForm input::placeholder,
+#adminSettingsModal .settingsInlineForm input::placeholder{
+  font-size:12px!important;
+}
+#adminSettingsModal #adminCreateBtn,
+#adminSettingsModal .settingsInlineForm .primary{
+  min-height:44px!important;
+  font-size:12.5px!important;
+  font-weight:600!important;
+}
+#adminSettingsModal .adminHint{
+  margin-top:9px!important;
+  color:#8798b2!important;
+  font-size:11.5px!important;
+  line-height:1.45!important;
+}
+
+/* Lists and accounts */
+#adminSettingsModal .settingsListHead{
+  margin:18px 0 10px!important;
+}
+#adminSettingsModal .settingsListHead b{
+  color:#dce7f6!important;
+  font-size:13px!important;
+  font-weight:600!important;
+}
+#adminSettingsModal .settingsRefreshBtn{
+  min-height:36px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 11px!important;
+  font-size:11px!important;
+}
+#adminSettingsModal .settingsRefreshBtn svg{
+  width:16px!important;
+  height:16px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#adminSettingsModal .settingsRow,
+#adminSettingsModal .adminUserRow{
+  min-height:72px!important;
+  padding:10px 12px!important;
+}
+#adminSettingsModal .settingsRowIcon,
+#adminSettingsModal .adminAvatar{
+  width:40px!important;
+  height:40px!important;
+  flex:0 0 40px!important;
+  font-size:14px!important;
+}
+#adminSettingsModal .settingsRowIcon svg{
+  width:19px!important;
+  height:19px!important;
+}
+#adminSettingsModal .settingsRowMain b,
+#adminSettingsModal .adminUserMain b{
+  color:#f1f5ff!important;
+  font-size:13px!important;
+  font-weight:600!important;
+}
+#adminSettingsModal .settingsRowMain small,
+#adminSettingsModal .adminUserMain small{
+  margin-top:3px!important;
+  color:#91a2ba!important;
+  font-size:10.5px!important;
+}
+#adminSettingsModal .adminUserProjects{
+  margin-top:6px!important;
+  gap:5px!important;
+}
+#adminSettingsModal .adminUserProjects span{
+  min-height:24px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 8px!important;
+  font-size:9.5px!important;
+}
+#adminSettingsModal .adminUserActions{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-end!important;
+}
+#adminSettingsModal .adminUserActions button,
+#adminSettingsModal .settingsDeleteBtn,
+#adminSettingsModal .settingsRestoreBtn{
+  min-height:36px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  padding:0 10px!important;
+  font-size:10.5px!important;
+  font-weight:550!important;
+}
+#adminSettingsModal .adminUserActions button svg,
+#adminSettingsModal .settingsDeleteBtn svg,
+#adminSettingsModal .settingsRestoreBtn svg{
+  width:15px!important;
+  height:15px!important;
+  flex:0 0 15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#adminSettingsModal .adminBadge{
+  min-height:26px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 9px!important;
+  font-size:9px!important;
+}
+#adminSettingsModal .empty,
+#adminSettingsModal .adminNeedsCentral p{
+  font-size:11.5px!important;
+  line-height:1.45!important;
+}
+
+/* ---------- Global icon audit ---------- */
+
+/* Sidebar icons: current 14–16px visual weight was too small */
+#app .estaNav button svg{
+  width:21px!important;
+  height:21px!important;
+  flex:0 0 21px!important;
+  stroke-width:1.75!important;
+}
+#app .sideBackup button svg,
+#app .sideLogout svg{
+  width:18px!important;
+  height:18px!important;
+  stroke-width:1.8!important;
+}
+
+/* Main topbar icons */
+#app .topModuleIcon{
+  width:44px!important;
+  height:44px!important;
+  flex:0 0 44px!important;
+}
+#app .topModuleIcon svg{
+  width:21px!important;
+  height:21px!important;
+}
+#app .headerSearch svg{
+  width:18px!important;
+  height:18px!important;
+}
+#app .headerBell svg,
+#app .energyHeaderBell svg{
+  width:20px!important;
+  height:20px!important;
+}
+#app .mobileMenuBtn{
+  font-size:22px!important;
+}
+
+/* KPI / summary icons */
+#app .kpiIcon svg,
+#app .stats article>i svg,
+#app .contractorStatIcon svg,
+#app .inventoryMetricIcon svg,
+#app .maintenanceMetricIcon svg{
+  width:21px!important;
+  height:21px!important;
+}
+
+/* Common action icons: edit/delete/view/more/download should remain legible */
+#app button svg,
+#app a svg{
+  min-width:15px;
+  min-height:15px;
+}
+#app .rowActionMenu summary{
+  min-width:36px!important;
+  min-height:34px!important;
+  font-size:15px!important;
+}
+#app .invRowActions button svg,
+#app .contractorRowActions button svg,
+#app .maintenanceRowActions button svg{
+  width:17px!important;
+  height:17px!important;
+}
+#app .imageActionBtn svg{
+  width:16px!important;
+  height:16px!important;
+}
+#app .filterActionBtn svg{
+  width:19px!important;
+  height:19px!important;
+}
+#app .viewerDownloadBtn{
+  font-size:11px!important;
+}
+
+/* Keep touch targets comfortable on mobile */
+@media(max-width:760px){
+  #adminSettingsModal .adminSettingsCard{
+    width:96vw!important;
+  }
+  #adminSettingsModal .settingsHead{
+    padding:18px 16px 13px!important;
+  }
+  #adminSettingsModal .settingsHead h3{
+    font-size:20px!important;
+  }
+  #adminSettingsModal .settingsTabs{
+    padding:7px 12px!important;
+  }
+  #adminSettingsModal .settingsTabs button{
+    min-height:40px!important;
+    font-size:11px!important;
+  }
+  #adminSettingsModal .settingsPane{
+    padding:14px!important;
+  }
+  #adminSettingsModal .settingsAccountForm input,
+  #adminSettingsModal .settingsAccountForm select,
+  #adminSettingsModal .settingsInlineForm input,
+  #adminSettingsModal .settingsInlineForm select{
+    height:46px!important;
+    min-height:46px!important;
+    font-size:13px!important;
+  }
+  #app .estaNav button svg{
+    width:22px!important;
+    height:22px!important;
+  }
+}
