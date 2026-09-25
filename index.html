@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260925-home-contrast07"><link rel="stylesheet" href="energy-refresh.css?v=20260925-compact03"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260925-home-fix07"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-fix07"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -998,6 +998,7 @@
           <input id="energyPerformer" type="hidden">
           <button id="energyPeopleButton" class="peopleSelectBtn" type="button"><span>Chọn người thực hiện</span><b>⌄</b></button>
           <div id="energyPeopleMenu" class="peopleSelectMenu hide">
+            <div class="peopleMenuHead"><b>Chọn người thực hiện</b><span>Có thể chọn nhiều người</span></div>
             <div id="energyPeopleOptions" class="peopleOptions"></div>
             <button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button>
           </div>
@@ -1051,7 +1052,16 @@
     </div>
 
     <div class="desktopTable energyDesktopTable">
-      <table>
+      <table class="energyHistoryTable">
+        <colgroup>
+          <col style="width:11%">
+          <col style="width:18%">
+          <col style="width:12%">
+          <col style="width:14%">
+          <col style="width:27%">
+          <col style="width:9%">
+          <col style="width:9%">
+        </colgroup>
         <thead>
           <tr>
             <th>Ngày</th>
@@ -1891,5 +1901,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260925-nav-race07"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260925-nav-energy07"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260924-2115"></script><script src="construction.js?v=20260924-2255"></script></body></html>
