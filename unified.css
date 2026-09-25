@@ -1988,3 +1988,138 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   #app.homeMode #homePage .homeBottomGrid{grid-template-columns:1fr!important}
   #app.homeMode #homePage .homePanelHead h2{font-size:16px!important}
 }
+/* =========================================================
+   HOME CONTRAST FIX
+   Remove old light panel bodies and keep all Overview content readable.
+   ========================================================= */
+#app.homeMode #homePage :is(
+  .homeRecentTasks,
+  .homeEnergyList,
+  .quickActions,
+  .homeActivity,
+  .homeProjectGrid
+){
+  background:#11182b!important;
+  color:#dce5f4!important;
+}
+
+#app.homeMode #homePage .homeTaskRow,
+#app.homeMode #homePage .homeTaskRow.static{
+  background:#11182b!important;
+  color:#dce5f4!important;
+  border-bottom-color:#24314a!important;
+}
+#app.homeMode #homePage .homeTaskRow:nth-child(even),
+#app.homeMode #homePage .homeTaskRow.static:nth-child(even){
+  background:#101729!important;
+}
+#app.homeMode #homePage .homeTaskRow:hover{
+  background:#162239!important;
+}
+#app.homeMode #homePage .homeTaskLead b{
+  color:#f5f8ff!important;
+  font-size:13.5px!important;
+  font-weight:720!important;
+}
+#app.homeMode #homePage .homeTaskLead small{
+  color:#91a1bb!important;
+  font-size:11px!important;
+}
+#app.homeMode #homePage .homeTaskRow>i{
+  color:#8da0be!important;
+}
+
+/* Energy rows */
+#app.homeMode #homePage .homeEnergyList article{
+  background:#11182b!important;
+  border-bottom-color:#24314a!important;
+}
+#app.homeMode #homePage .homeEnergyList article:nth-child(even){
+  background:#101729!important;
+}
+#app.homeMode #homePage .homeEnergyList article>div:last-child>span{
+  color:#a5b2c8!important;
+  font-size:11px!important;
+  font-weight:650!important;
+}
+#app.homeMode #homePage .homeEnergyList article>div:last-child>strong{
+  color:#f6f8ff!important;
+  font-size:21px!important;
+  font-weight:780!important;
+}
+#app.homeMode #homePage .homeEnergyList article>div:last-child>small{
+  color:#8190aa!important;
+  font-size:10px!important;
+}
+
+/* Quick actions */
+#app.homeMode #homePage .quickActions>button{
+  background:#111b2e!important;
+  border-color:#2a3853!important;
+}
+#app.homeMode #homePage .quickActions>button:nth-child(even){
+  background:#101a2d!important;
+}
+#app.homeMode #homePage .quickActions>button:hover{
+  background:#16243b!important;
+}
+#app.homeMode #homePage .quickActions b{
+  color:#f4f7ff!important;
+  font-size:13px!important;
+}
+#app.homeMode #homePage .quickActions small{
+  color:#8796b1!important;
+  font-size:10.5px!important;
+}
+
+/* Activity feed */
+#app.homeMode #homePage .activityRow{
+  background:#11182b!important;
+  border-bottom-color:#24314a!important;
+}
+#app.homeMode #homePage .activityRow:nth-child(even){
+  background:#101729!important;
+}
+#app.homeMode #homePage .activityRow b{
+  color:#f0f5ff!important;
+  font-size:12.5px!important;
+  font-weight:700!important;
+}
+#app.homeMode #homePage .activityRow span{
+  color:#8e9db7!important;
+  font-size:10.5px!important;
+}
+#app.homeMode #homePage .activityRow time{
+  color:#9aabc5!important;
+  font-size:10px!important;
+}
+
+/* Keep panels themselves dark even when older generic rules are loaded later. */
+#app.homeMode #homePage :is(.recentPanel,.energyPanel,.quickPanel,.activityPanel,.homeAdminProjects){
+  background:#11182b!important;
+  border-color:#25314a!important;
+}
+#app.homeMode #homePage :is(.recentPanel,.energyPanel,.quickPanel,.activityPanel,.homeAdminProjects) .homePanelHead{
+  background:#11182b!important;
+  border-bottom-color:#24314a!important;
+}
+#app.homeMode #homePage .homePanelHead h2{
+  color:#f6f8ff!important;
+}
+#app.homeMode #homePage .homePanelHead p{
+  color:#8b9ab5!important;
+}
+
+/* Empty states must not turn into light blocks. */
+#app.homeMode #homePage .homeEmpty{
+  background:#11182b!important;
+  color:#91a1bb!important;
+  min-height:90px;
+}
+
+/* Mobile contrast */
+@media(max-width:760px){
+  #app.homeMode #homePage .homeTaskLead b{font-size:13px!important}
+  #app.homeMode #homePage .homeTaskLead small{font-size:10.5px!important}
+  #app.homeMode #homePage .homeEnergyList article>div:last-child>strong{font-size:19px!important}
+}
