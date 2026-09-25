@@ -629,6 +629,12 @@ function applyBuildingUI(){
  if(ct)ct.textContent=name;
  if(cmt)cmt.textContent=name;
  document.title="ESTA | "+name;
+ const energyRole=$("#energyHeaderRole");
+ if(energyRole){
+   const member=currentAccount?.buildings?.find(b=>b.id===currentBuilding?.id);
+   const role=currentAccount?.is_admin?"Quản trị viên":(member?.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");
+   energyRole.textContent=role+(currentBuilding?.id?" · "+currentBuilding.id:"");
+ }
  resetForm(false);render();renderEnergy();renderHomeDashboard();
 }
 async function enterProject(building){
@@ -673,6 +679,8 @@ window.enterAccount=function(account,session=null){
  currentAccount=account;centralSession=session;me=account.username||account.email||"user";
  $("#login").classList.add("hide");$("#app").classList.remove("hide");
  $("#headerRole").textContent=account.is_admin?"Quản trị viên":(account.buildings?.[0]?.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");
+ const displayName=account.display_name||account.username||account.email||"Tài khoản";
+ if($("#energyHeaderName"))$("#energyHeaderName").textContent=displayName;
  $("#sideUser").innerHTML=account.is_admin?"Quản trị viên":"Tài khoản dự án";
  $("#navAdmin").classList.toggle("hide",!account.is_admin);
  $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
@@ -1026,7 +1034,7 @@ $("#quickElectric").onclick=()=>{if($("#navEnergy").classList.contains("hide"))r
 $("#quickWater").onclick=()=>{if($("#navEnergy").classList.contains("hide"))return toast("Hãy mở một dự án trước");energyType="water";showModule("energy");document.querySelectorAll("[data-energy-type]").forEach(b=>b.classList.toggle("active",b.dataset.energyType==="water"));resetEnergyForm();setTimeout(()=>$("#energyValue").focus(),60)};
 $("#quickReport").onclick=()=>{if($("#navWork").classList.contains("hide"))return toast("Hãy mở một dự án trước");showModule("work");setTimeout(()=>$("#exportModal").classList.remove("hide"),60)};
 
-$("#energyToday").textContent=new Date().toLocaleDateString("vi-VN");
+$("#energyToday").textContent=new Date().toLocaleDateString("vi-VN",{day:"2-digit",month:"2-digit",year:"numeric"});
 document.querySelectorAll("[data-energy-type]").forEach(b=>b.onclick=()=>{
  energyType=b.dataset.energyType;
  document.querySelectorAll("[data-energy-type]").forEach(x=>x.classList.toggle("active",x===b));
@@ -1114,24 +1122,76 @@ function renderEnergy(){
  $("#energyValueLabel").textContent=m.valueLabel;
  $("#energyValueColumn").textContent="Chỉ số ("+m.unit+")";
  $("#energyTableTitle").textContent="Bảng theo dõi "+m.name.toLowerCase();
- const rows=energyRows(),latest=rows.length?rows[rows.length-1]:null;
- const usableDiffs=rows.filter(x=>typeof x.diff==="number"&&Number.isFinite(x.diff)&&x.diff>=0);
+
+ const allType=energyLoad()
+   .filter(x=>x.type===energyType)
+   .sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
+
+ const periodRows=energyRows();
+ const q=($("#energyQuickSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
+ const rows=q?periodRows.filter(x=>{
+   const hay=[
+     x.date,
+     fmt(x.date),
+     weekday(x.date),
+     performerArray(x).join(" "),
+     x.note||"",
+     String(x.value??"")
+   ].join(" ").toLocaleLowerCase("vi-VN");
+   return hay.includes(q);
+ }):periodRows;
+
+ const currentMonth=today().slice(0,7);
+ const monthCount=allType.filter(x=>String(x.date||"").slice(0,7)===currentMonth).length;
+ const latest=allType.length?allType[allType.length-1]:null;
+ const usableDiffs=periodRows.filter(x=>typeof x.diff==="number"&&Number.isFinite(x.diff)&&x.diff>=0);
  const totalUse=usableDiffs.length?usableDiffs.reduce((s,x)=>s+x.diff,0):null;
  const totalLabel=energyType==="electric"?"Tổng điện":energyType==="water"?"Tổng nước":"Tổng điện mặt trời";
- $("#energyRecordCount").textContent=rows.length;
+
+ $("#energyRecordCount").textContent=monthCount;
  $("#energyLatestValue").textContent=latest?energyFmt(latest.value)+" "+m.unit:"—";
  $("#energyPeriodUse").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—";
+
  const totalBox=$("#energyTotalInline");
- if(totalBox){totalBox.querySelector("span").textContent=totalLabel;totalBox.querySelector("strong").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—"}
+ if(totalBox){
+   totalBox.querySelector("span").textContent=totalLabel;
+   totalBox.querySelector("strong").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—";
+ }
+
  $("#energyEmpty").classList.toggle("hide",rows.length>0);
+
  $("#energyTbody").innerHTML=rows.map(x=>{
    const sun=new Date(x.date+"T00:00:00").getDay()===0;
    const diff=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
    const img=x.image?'<span class="energyThumbWrap" onclick="viewEnergyImage(\''+x.id+'\')">'+mediaImgHtml(x.image,"energyThumb")+'</span>':"—";
-   return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td>'+weekday(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td>'+img+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Sửa bản ghi</button>'+(x.image?'<button type="button" onclick="viewEnergyImage(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="deleteEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>'
+   return '<tr class="'+(sun?"sunday":"")+'">'+
+     '<td class="dateCell">'+fmt(x.date)+'</td>'+
+     '<td class="meterValue"><b>'+energyFmt(x.value)+'</b></td>'+
+     '<td class="meterDiff">'+diff+'</td>'+
+     '<td>'+performerChipsHtml(x)+'</td>'+
+     '<td class="noteCell">'+esc(x.note||"—")+'</td>'+
+     '<td>'+img+'</td>'+
+     '<td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div>'+
+       '<button type="button" onclick="editEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Sửa bản ghi</button>'+
+       (x.image?'<button type="button" onclick="viewEnergyImage(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+
+       '<button class="danger" type="button" onclick="deleteEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button>'+
+     '</div></details></td>'+
+   '</tr>';
  }).join("");
- $("#energyMobileCards").innerHTML=rows.map(x=>'<article class="mcard proEnergyCard '+(new Date(x.date+"T00:00:00").getDay()===0?"sunday":"")+'"><div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>'+energyFmt(x.value)+' '+m.unit+'</h4></div><span class="mobileDiff">'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</span></div><div class="mobileMeta">'+performerChipsHtml(x,2)+'</div><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+(x.image?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div></article>').join("");
- $("#energySummaryText").textContent=rows.length?"Đang hiển thị "+rows.length+" bản ghi · Tổng được tính theo bộ lọc hiện tại.":"Theo dõi lịch sử chỉ số và mức tiêu thụ theo ngày.";
+
+ $("#energyMobileCards").innerHTML=rows.map(x=>
+   '<article class="mcard proEnergyCard '+(new Date(x.date+"T00:00:00").getDay()===0?"sunday":"")+'">'+
+     '<div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>'+energyFmt(x.value)+' '+m.unit+'</h4></div>'+
+     '<span class="mobileDiff">'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</span></div>'+
+     '<div class="mobileMeta">'+performerChipsHtml(x,2)+'</div>'+
+     '<p>'+esc(x.note||"Không có ghi chú")+'</p>'+
+     '<div class="mobileCardFoot"><span>'+(x.image?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div>'+
+   '</article>'
+ ).join("");
+
+ if(q)$("#energySummaryText").textContent=rows.length?"Tìm thấy "+rows.length+" bản ghi phù hợp.":"Không tìm thấy bản ghi phù hợp.";
+ else $("#energySummaryText").textContent=periodRows.length?"Lịch sử "+periodRows.length+" bản ghi theo ngày.":"Lịch sử chỉ số theo ngày.";
+
  hydrateMediaImages($("#energyTbody"));
 }
 window.editEnergy=id=>{
@@ -1153,6 +1213,7 @@ function setEnergyRange(kind){
  renderEnergy();
 }
 document.querySelectorAll("[data-erange]").forEach(b=>b.onclick=()=>setEnergyRange(b.dataset.erange));
+if($("#energyQuickSearch"))$("#energyQuickSearch").oninput=renderEnergy;
 $("#energyApplyFilter").onclick=renderEnergy;
 $("#energyClearFilter").onclick=()=>setEnergyRange("all");
 function energyReportHtml(rows){
