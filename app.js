@@ -657,8 +657,9 @@ async function enterProject(building){
  if(centralSession?.access_token)await loadProjectSnapshot(currentBuilding);
  try{await loadProjectPeople(currentBuilding.id)}catch(e){console.warn("Project people load skipped",e)}
 
+ // Refresh project data/UI only. Do NOT change the active page here:
+ // the user may already have clicked Công việc / Năng lượng / ... while sync was running.
  applyBuildingUI();
- showHome();
 }
 function openAdminPortal(){
  if(!currentAccount?.is_admin)return;
