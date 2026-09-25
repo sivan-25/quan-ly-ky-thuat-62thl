@@ -2123,3 +2123,41 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   #app.homeMode #homePage .homeTaskLead small{font-size:10.5px!important}
   #app.homeMode #homePage .homeEnergyList article>div:last-child>strong{font-size:19px!important}
 }
+/* =========================================================
+   HOME DARK BODY PATCH
+   Prevent legacy light rules from leaking into Tổng quan.
+   ========================================================= */
+#app.homeMode #homePage .homeRecentTasks,
+#app.homeMode #homePage .homeEnergyList,
+#app.homeMode #homePage .quickActions,
+#app.homeMode #homePage .homeActivity,
+#app.homeMode #homePage .homeProjectGrid{
+  background:#11182b!important;
+  color:#dce5f4!important;
+}
+#app.homeMode #homePage .homeTaskRow,
+#app.homeMode #homePage .homeEnergyList article,
+#app.homeMode #homePage .activityRow{
+  background:#11182b!important;
+}
+#app.homeMode #homePage .homeTaskRow:hover{background:#152039!important}
+#app.homeMode #homePage .homeTaskLead b,
+#app.homeMode #homePage .activityRow b,
+#app.homeMode #homePage .quickActions b,
+#app.homeMode #homePage .homeEnergyList strong{
+  color:#f3f7ff!important;
+}
+#app.homeMode #homePage .homeTaskLead small,
+#app.homeMode #homePage .activityRow span,
+#app.homeMode #homePage .quickActions small,
+#app.homeMode #homePage .homeEnergyList span,
+#app.homeMode #homePage .homeEnergyList small{
+  color:#8898b3!important;
+}
+#app.homeMode #homePage .homePanelHead h2{font-size:19px!important}
+#app.homeMode #homePage .homeTaskLead b{font-size:13.5px!important}
+#app.homeMode #homePage .homeTaskLead small{font-size:11px!important}
+#app.homeMode #homePage .activityRow b{font-size:12.5px!important}
+#app.homeMode #homePage .activityRow span{font-size:10.5px!important}
+#app.homeMode #homePage .homeEnergyList span{font-size:11px!important}
+#app.homeMode #homePage .homeEnergyList small{font-size:10px!important}
