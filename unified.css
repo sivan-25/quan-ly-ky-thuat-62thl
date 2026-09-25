@@ -2856,3 +2856,101 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 #app #constructionMaterialPage .constructionCommand h1{
   margin-bottom:0!important;
 }
+/* =========================================================
+   ADMIN PROJECT CLEANUP
+   Remove duplicated headings and enlarge project-card micro text.
+   ========================================================= */
+#app.adminMode #adminPage .adminHero{
+  display:none!important;
+}
+#app.adminMode #adminPage{
+  padding-top:20px!important;
+}
+#app.adminMode #adminPage .adminSection{
+  margin-top:0!important;
+  padding:16px!important;
+}
+#app.adminMode #adminPage .adminSectionHead{
+  min-height:58px!important;
+  margin-bottom:12px!important;
+  padding:0 2px 12px!important;
+}
+#app.adminMode #adminPage .adminSectionHead p{
+  display:none!important;
+}
+#app.adminMode #adminPage .adminSectionHead h2{
+  font-size:18px!important;
+  font-weight:600!important;
+}
+#app.adminMode #adminPage .adminProjectHeadActions>span{
+  font-size:12px!important;
+  color:#9fb0c9!important;
+}
+#app.adminMode #adminPage .settingsGearBtn{
+  height:38px!important;
+  padding:0 13px!important;
+  font-size:11px!important;
+}
+#app.adminMode #adminPage .adminProjectGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+  padding:10px 0 0!important;
+}
+#app.adminMode #adminPage .adminProjectCard{
+  min-height:104px!important;
+  border-radius:12px!important;
+}
+#app.adminMode #adminPage .adminProjectOpen{
+  min-height:104px!important;
+  gap:12px!important;
+  padding:14px 15px!important;
+}
+#app.adminMode #adminPage .adminProjectIcon{
+  width:42px!important;
+  height:42px!important;
+  border-radius:10px!important;
+  font-size:17px!important;
+}
+#app.adminMode #adminPage .adminProjectOpen>div:nth-child(2){
+  min-width:0!important;
+}
+#app.adminMode #adminPage .adminProjectCard small{
+  display:block!important;
+  margin-bottom:4px!important;
+  color:#8fa5c1!important;
+  font-size:10.5px!important;
+  line-height:1.2!important;
+  letter-spacing:.35px!important;
+}
+#app.adminMode #adminPage .adminProjectCard h3{
+  margin:0!important;
+  color:#f2f6ff!important;
+  font-size:15px!important;
+  line-height:1.28!important;
+  font-weight:600!important;
+}
+#app.adminMode #adminPage .adminProjectCard p{
+  display:none!important;
+}
+#app.adminMode #adminPage .adminProjectOpen>span{
+  margin-left:auto!important;
+  color:#29d9ee!important;
+  font-size:18px!important;
+}
+@media(max-width:1180px){
+  #app.adminMode #adminPage .adminProjectGrid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:760px){
+  #app.adminMode #adminPage{padding-top:12px!important}
+  #app.adminMode #adminPage .adminProjectGrid{
+    grid-template-columns:1fr!important;
+  }
+  #app.adminMode #adminPage .adminSectionHead{
+    flex-direction:row!important;
+    align-items:center!important;
+  }
+  #app.adminMode #adminPage .adminProjectCard small{font-size:10px!important}
+  #app.adminMode #adminPage .adminProjectCard h3{font-size:14px!important}
+}
