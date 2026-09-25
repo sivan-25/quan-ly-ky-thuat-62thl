@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260925-material-header22"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260925-work-clean23"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -713,7 +713,10 @@
       <input id="globalSearch" placeholder="Tìm công việc...">
     </div>
     <div class="filterWrap">
-      <button id="toggleFilter" class="iconAction" type="button" title="Bộ lọc"><svg viewBox="0 0 24 24"><path d="M4 5h16M7 12h10M10 19h4"/></svg></button>
+      <button id="toggleFilter" class="iconAction filterActionBtn" type="button" title="Bộ lọc" aria-label="Mở bộ lọc">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6.2 7.1v5.2l-3.6 1.8v-7L4 5z"/></svg>
+        <span>Bộ lọc</span>
+      </button>
       <div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label>Từ ngày<input id="fromDate" type="date"></label><label>Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div>
     </div>
     <button id="exportBtn" class="pdfAction" type="button" title="Xuất PDF"><b>PDF</b><span>⇩</span></button>
@@ -803,7 +806,7 @@
   </section>
 
 </div>
-<div id="workHero" class="heroStrip hide"></div><div id="workPage" class="page modulePage proModulePage hide"><section class="pageHead proPageHead"><div class="headIcon"><svg viewBox="0 0 24 24"><path d="M9 5h6M9 3h6v4H9z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M8.5 11l1.5 1.5 3-3M14.5 11H17M8.5 16l1.5 1.5 3-3M14.5 16H17"/></svg></div><div><span class="pageEyebrow">WORK ORDER MANAGEMENT</span><h1>Công việc kỹ thuật</h1><p>Quản lý, phân công và theo dõi công việc vận hành hằng ngày.</p></div><div class="headMeta"><span><i></i> Ngày: <b id="today"></b></span><span><i></i> Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div></section>
+<div id="workHero" class="heroStrip hide"></div><div id="workPage" class="page modulePage proModulePage hide">
 
 <section class="workEntryCard">
   <div class="workEntryHeader">
@@ -1893,5 +1896,5 @@
 <div class="exportSection"><b>Công việc kỹ thuật</b><div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 <div class="exportSection combinedSection"><b>Báo cáo tổng hợp 1 file</b><small>Công việc + Chỉ số điện + Chỉ số nước</small><div class="combinedChoices"><button data-combined-range="today">Hôm nay</button><button data-combined-range="week">Tuần này</button><button data-combined-range="month">Tháng này</button><button data-combined-range="all">Toàn bộ</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260925-inventory-ux21"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260925-work-clean23"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260924-2115"></script><script src="construction.js?v=20260924-2255"></script></body></html>
