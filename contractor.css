@@ -2595,3 +2595,559 @@
   #contractorJobModal .jobSolutionField,
   #contractorJobModal .jobNoteField{grid-column:1/-1!important}
 }
+/* =========================================================
+   CONTRACTOR ENERGY PALETTE — match Năng lượng page colors
+   Scoped to contractor mode / contractor UI only.
+   ========================================================= */
+#app.contractorMode{
+  --ct-bg:#080e1a;
+  --ct-side:#0a1120;
+  --ct-panel:#11182b;
+  --ct-panel-2:#121b31;
+  --ct-input:#17213a;
+  --ct-border:#25314a;
+  --ct-border-soft:#1c2740;
+  --ct-text:#f7f8ff;
+  --ct-muted:#7f8dab;
+  --ct-muted-2:#62708f;
+  --ct-cyan:#18d9f3;
+  --ct-blue:#6382ff;
+  --ct-green:#25d9aa;
+  --ct-amber:#e4ae27;
+}
+#app.contractorMode,
+#app.contractorMode main{
+  background:
+    radial-gradient(circle at 90% 4%,rgba(19,157,188,.08),transparent 30%),
+    #080e1a!important;
+}
+#app.contractorMode .estaSidebar{
+  background:linear-gradient(180deg,#0a1120 0%,#09101e 100%)!important;
+  border-right:1px solid #1c263a!important;
+  box-shadow:none!important;
+}
+#app.contractorMode .estaSidebarBrand{border-bottom-color:#172238!important}
+#app.contractorMode .estaNav button{color:#a0abc4!important}
+#app.contractorMode .estaNav button:hover{
+  background:#101a2d!important;
+  color:#e9efff!important;
+}
+#app.contractorMode .estaNav button.active{
+  position:relative;
+  background:#111d32!important;
+  border-color:#162943!important;
+  color:#fff!important;
+}
+#app.contractorMode .estaNav button.active:before{
+  width:3px!important;
+  background:#18d9f3!important;
+  box-shadow:0 0 12px rgba(24,217,243,.45);
+}
+#app.contractorMode .estaNav button.active svg{color:#18d9f3!important}
+#app.contractorMode .sideBackup{border-top-color:#1a2539!important}
+#app.contractorMode .sideUserCard{
+  background:#10192c!important;
+  border-color:#1e2940!important;
+}
+
+/* topbar */
+#app.contractorMode .estaTopbar{
+  background:#0a1120!important;
+  border-bottom:1px solid #1b263b!important;
+  box-shadow:none!important;
+}
+#app.contractorMode #topContractorTitle .topModuleIcon{
+  border-color:#2d3953!important;
+  background:#141f34!important;
+  color:#18d9f3!important;
+}
+#app.contractorMode #topContractorTitle h1{color:#f6f8ff!important}
+#app.contractorMode #topContractorTitle p{color:#71809d!important}
+#app.contractorMode .headerSearch,
+#app.contractorMode .iconAction,
+#app.contractorMode .pdfAction,
+#app.contractorMode .headerBell{
+  border-color:#2b3852!important;
+  background:#121c30!important;
+  color:#9ba8c1!important;
+}
+#app.contractorMode .headerSearch input{
+  color:#dce4f3!important;
+}
+#app.contractorMode .headerSearch input::placeholder{color:#697795!important}
+#app.contractorMode .account{
+  border-left-color:#1b263b!important;
+  color:#eef3ff!important;
+}
+#app.contractorMode .account span{color:#eef3ff!important}
+#app.contractorMode .headerAvatar{
+  background:linear-gradient(135deg,#655eff,#1bc9ea)!important;
+  color:#fff!important;
+}
+
+/* page */
+#app.contractorMode #contractorPage{
+  max-width:1540px!important;
+  padding:20px 22px 34px!important;
+  color:#f7f8ff!important;
+}
+#app.contractorMode #contractorPage .contractorIntro{
+  min-height:136px!important;
+  padding:22px 26px!important;
+  border:1px solid #25314a!important;
+  border-radius:17px!important;
+  background:
+    radial-gradient(circle at 86% 18%,rgba(24,217,243,.12),transparent 29%),
+    linear-gradient(125deg,#111b30 0%,#102236 58%,#0d2d38 100%)!important;
+  box-shadow:none!important;
+}
+#app.contractorMode #contractorPage .contractorIntroCopy>span{
+  color:#18d9f3!important;
+}
+#app.contractorMode #contractorPage .contractorIntro h1{
+  color:#f6f8ff!important;
+}
+#app.contractorMode #contractorPage .contractorIntroCopy>i{
+  border-top-color:#18d9f3!important;
+}
+#app.contractorMode #contractorPage .contractorIntro p{
+  color:#8390aa!important;
+}
+#app.contractorMode #contractorPage .contractorSkyline{opacity:.08!important}
+
+/* buttons */
+#app.contractorMode #contractorPage .contractorBtn.primary,
+body:has(#app.contractorMode) #contractorModal .contractorBtn.primary,
+body:has(#app.contractorMode) #contractorJobModal .contractorBtn.primary{
+  border:0!important;
+  background:linear-gradient(96deg,#6c63ff 0%,#4c83f6 45%,#27c6df 100%)!important;
+  color:#06121e!important;
+  box-shadow:0 10px 22px rgba(83,102,236,.15)!important;
+}
+#app.contractorMode #contractorPage .contractorBtn.ghost,
+body:has(#app.contractorMode) #contractorModal .contractorBtn.ghost,
+body:has(#app.contractorMode) #contractorJobModal .contractorBtn.ghost{
+  border:1px solid #34415b!important;
+  background:#151f34!important;
+  color:#aab5ca!important;
+}
+
+/* stats */
+#app.contractorMode #contractorPage .contractorStats article{
+  border:1px solid #25314a!important;
+  border-top-color:#25314a!important;
+  background:#11182b!important;
+  box-shadow:none!important;
+}
+#app.contractorMode #contractorPage .contractorStats b{
+  color:#f6f8ff!important;
+}
+#app.contractorMode #contractorPage .contractorStats small{
+  color:#7b89a4!important;
+}
+#app.contractorMode #contractorPage .contractorStats em{
+  color:#5f6e8a!important;
+}
+#app.contractorMode #contractorPage .contractorStatIcon{
+  border:1px solid #30405f!important;
+  background:#1a2540!important;
+  color:#18d9f3!important;
+}
+#app.contractorMode #contractorPage .contractorStatIcon.bronze{
+  border-color:#4b3d36!important;
+  background:#2b2424!important;
+  color:#d7a68a!important;
+}
+#app.contractorMode #contractorPage .contractorStatIcon.amber{
+  border-color:#4c411d!important;
+  background:#332b16!important;
+  color:#e5b329!important;
+}
+#app.contractorMode #contractorPage .contractorStatIcon.green{
+  border-color:#1d4b43!important;
+  background:#113431!important;
+  color:#28ddb0!important;
+}
+
+/* directory */
+#app.contractorMode #contractorPage .contractorDirectory{
+  border:1px solid #25314a!important;
+  background:#11182b!important;
+  box-shadow:none!important;
+}
+#app.contractorMode #contractorPage .contractorToolbar{
+  border-bottom:0!important;
+  background:#11182b!important;
+}
+#app.contractorMode #contractorPage .contractorToolbar h2,
+#app.contractorMode #contractorPage .contractorJobsHead h2{
+  color:#f5f7ff!important;
+}
+#app.contractorMode #contractorPage .contractorToolbar h2 span,
+#app.contractorMode #contractorPage .contractorJobsHead h2 span{
+  color:#71809e!important;
+}
+#app.contractorMode #contractorPage .contractorToolbar p{
+  color:#71809e!important;
+}
+#app.contractorMode #contractorPage .contractorSearch{
+  border:1px solid #2b3854!important;
+  background:#141e33!important;
+}
+#app.contractorMode #contractorPage .contractorSearch svg{stroke:#7584a2!important}
+#app.contractorMode #contractorPage .contractorSearch input{
+  color:#dce4f3!important;
+}
+#app.contractorMode #contractorPage .contractorSearch input::placeholder{
+  color:#687692!important;
+}
+#app.contractorMode #contractorPage #contractorStatusFilter,
+#app.contractorMode #contractorPage #contractorJobStatusFilter{
+  border:1px solid #2b3854!important;
+  background:#141e33!important;
+  color:#a8b4ca!important;
+  color-scheme:dark;
+}
+#app.contractorMode #contractorPage .contractorSpecialtyFilters button{
+  border:1px solid #2b3854!important;
+  background:#141e33!important;
+  color:#7f8daa!important;
+}
+#app.contractorMode #contractorPage .contractorSpecialtyFilters button:hover{
+  color:#dfe6f4!important;
+  border-color:#37506c!important;
+}
+#app.contractorMode #contractorPage .contractorSpecialtyFilters button.active{
+  border-color:#1d5368!important;
+  background:#0f2837!important;
+  color:#20ddef!important;
+  box-shadow:inset 0 0 0 1px rgba(24,217,243,.04);
+}
+#app.contractorMode #contractorPage .contractorListHeader{
+  border-top:1px solid #202c44!important;
+  border-bottom:1px solid #202c44!important;
+  background:#101729!important;
+  color:#74829f!important;
+}
+#app.contractorMode #contractorPage .contractorGrid{
+  background:#11182b!important;
+}
+#app.contractorMode #contractorPage .contractorRowCard{
+  border-bottom:1px solid #1b2740!important;
+  background:#11182b!important;
+  color:#dce4f3!important;
+}
+#app.contractorMode #contractorPage .contractorRowCard:hover,
+#app.contractorMode #contractorPage .contractorRowCard:focus{
+  background:#131e32!important;
+}
+#app.contractorMode #contractorPage .contractorLetter{
+  border:1px solid #30405f!important;
+  background:#1a2540!important;
+  color:#22dff3!important;
+}
+#app.contractorMode #contractorPage .contractorRowIdentity h3{
+  color:#f3f6ff!important;
+}
+#app.contractorMode #contractorPage .contractorRowIdentity p{
+  color:#74819c!important;
+}
+#app.contractorMode #contractorPage .contractorRowValue{
+  color:#aab5ca!important;
+}
+#app.contractorMode #contractorPage .contractorRowPhone a{
+  color:#23d6ee!important;
+}
+#app.contractorMode #contractorPage .contractorRowCount span{
+  border:1px solid #2f3d59!important;
+  background:#18233b!important;
+  color:#d9e4f4!important;
+}
+#app.contractorMode #contractorPage .contractorLatest b{
+  color:#d4ddec!important;
+}
+#app.contractorMode #contractorPage .contractorLatest span{
+  color:#70809c!important;
+}
+#app.contractorMode #contractorPage .contractorRowActions button{
+  border:1px solid #2f3c57!important;
+  background:#151f34!important;
+  color:#93a1bc!important;
+}
+#app.contractorMode #contractorPage .contractorRowActions button:hover{
+  border-color:#3a516e!important;
+  background:#19263e!important;
+  color:#dce6f5!important;
+}
+#app.contractorMode #contractorPage .contractorRowActions button.danger{
+  border-color:#55333a!important;
+  background:#2a1a23!important;
+  color:#e58a97!important;
+}
+
+/* field/category pills */
+#app.contractorMode #contractorPage .contractorFieldPill{
+  border:1px solid #2d3a55!important;
+  background:#18233a!important;
+  color:#9fb0c9!important;
+}
+#app.contractorMode #contractorPage .contractorFieldPill.hvac,
+#app.contractorMode #contractorPage .contractorFieldPill.electric{
+  border-color:#1c5065!important;
+  background:#0f2937!important;
+  color:#21d8ed!important;
+}
+#app.contractorMode #contractorPage .contractorFieldPill.pccc{
+  border-color:#56323a!important;
+  background:#2b1921!important;
+  color:#e78b98!important;
+}
+#app.contractorMode #contractorPage .contractorFieldPill.water{
+  border-color:#263e68!important;
+  background:#152440!important;
+  color:#79a7ff!important;
+}
+#app.contractorMode #contractorPage .contractorFieldPill.clean,
+#app.contractorMode #contractorPage .contractorFieldPill.elevator{
+  border-color:#4a3f22!important;
+  background:#2c2718!important;
+  color:#deb866!important;
+}
+
+/* empty */
+#app.contractorMode #contractorPage .contractorEmpty{
+  border-color:#2a3853!important;
+  background:#10192b!important;
+  color:#6f7f9c!important;
+}
+#app.contractorMode #contractorPage .contractorEmpty svg{stroke:#596985!important}
+#app.contractorMode #contractorPage .contractorEmpty b{color:#d9e2f2!important}
+#app.contractorMode #contractorPage .contractorEmpty span{color:#687793!important}
+
+/* ---------- detail ---------- */
+#app.contractorMode #contractorPage .contractorDetailTop{
+  color:#dfe6f3!important;
+}
+#app.contractorMode #contractorPage .contractorBackBtn{
+  color:#91a1bb!important;
+}
+#app.contractorMode #contractorPage .contractorBackBtn:hover{color:#20ddef!important}
+#app.contractorMode #contractorPage.contractorDetailMode .contractorProfile,
+#app.contractorMode #contractorPage .contractorDetailMode .contractorProfile{
+  border:1px solid #263753!important;
+  background:
+    radial-gradient(circle at 86% 12%,rgba(24,217,243,.13),transparent 30%),
+    linear-gradient(120deg,#111d33,#10293a)!important;
+  box-shadow:none!important;
+}
+#app.contractorMode #contractorPage .contractorProfileIcon{
+  border:1px solid #31415e!important;
+  background:#19243c!important;
+  color:#19d9f3!important;
+}
+#app.contractorMode #contractorPage .contractorProfileMain>span{
+  color:#18d9f3!important;
+}
+#app.contractorMode #contractorPage .contractorProfileMain h1{
+  color:#fff!important;
+}
+#app.contractorMode #contractorPage .contractorProfileMain p{
+  color:#8493ad!important;
+}
+#app.contractorMode #contractorPage .contractorStatusBadge.active{
+  background:#11342f!important;color:#2bdeae!important;
+}
+#app.contractorMode #contractorPage .contractorStatusBadge.paused{
+  background:#342a16!important;color:#e3b34c!important;
+}
+#app.contractorMode #contractorPage .contractorStatusBadge.inactive{
+  background:#202a3c!important;color:#8694ae!important;
+}
+#app.contractorMode #contractorPage .contractorContactGrid article{
+  border:1px solid #25314a!important;
+  background:#11182b!important;
+}
+#app.contractorMode #contractorPage .contractorContactIcon{
+  border:1px solid #2f3c58!important;
+  background:#172238!important;
+  color:#18d9f3!important;
+}
+#app.contractorMode #contractorPage .contractorContactGrid small{
+  color:#74829f!important;
+}
+#app.contractorMode #contractorPage .contractorContactGrid b,
+#app.contractorMode #contractorPage .contractorContactGrid a{
+  color:#dce5f4!important;
+}
+#app.contractorMode #contractorPage .contractorJobsPanel{
+  border:1px solid #25314a!important;
+  background:#11182b!important;
+  box-shadow:none!important;
+}
+#app.contractorMode #contractorPage .contractorJobsHead{
+  border-bottom:1px solid #202c44!important;
+  background:#11182b!important;
+}
+#app.contractorMode #contractorPage .contractorKicker{
+  color:#18d9f3!important;
+}
+#app.contractorMode #contractorPage .contractorJobList{
+  background:#11182b!important;
+}
+#app.contractorMode #contractorPage .contractorJobCard{
+  border:1px solid #26334d!important;
+  background:#111b2e!important;
+}
+#app.contractorMode #contractorPage .contractorJobRail{
+  border-right:1px solid #22304a!important;
+  background:#0f1829!important;
+}
+#app.contractorMode #contractorPage .contractorJobRail span{
+  background:#173447!important;
+  color:#20def1!important;
+}
+#app.contractorMode #contractorPage .contractorJobTop small,
+#app.contractorMode #contractorPage .contractorJobContent>span,
+#app.contractorMode #contractorPage .contractorJobDiagnosis span,
+#app.contractorMode #contractorPage .contractorJobNote>span{
+  color:#74819c!important;
+}
+#app.contractorMode #contractorPage .contractorJobTop b{
+  color:#d4ddec!important;
+}
+#app.contractorMode #contractorPage .contractorJobContent{
+  background:#131d30!important;
+}
+#app.contractorMode #contractorPage .contractorJobContent p,
+#app.contractorMode #contractorPage .contractorJobDiagnosis p,
+#app.contractorMode #contractorPage .contractorJobNote p{
+  color:#aeb9cc!important;
+}
+#app.contractorMode #contractorPage .contractorJobDiagnosis>div{
+  border-color:#293650!important;
+  background:#121c30!important;
+}
+#app.contractorMode #contractorPage .contractorJobDiagnosis>div:first-child{
+  background:#241d20!important;
+}
+#app.contractorMode #contractorPage .contractorJobDiagnosis>div:last-child{
+  background:#10251f!important;
+}
+#app.contractorMode #contractorPage .contractorJobNote{
+  border-left-color:#30445e!important;
+  background:#121c30!important;
+}
+#app.contractorMode #contractorPage .contractorJobActions{
+  border-top-color:#202c44!important;
+}
+#app.contractorMode #contractorPage .contractorJobActions button{
+  border:1px solid #2f3c57!important;
+  background:#151f34!important;
+  color:#9aa8c1!important;
+}
+#app.contractorMode #contractorPage .contractorJobActions button:hover{
+  border-color:#3b536f!important;
+  color:#e2e9f6!important;
+}
+#app.contractorMode #contractorPage .contractorJobActions button.danger{
+  border-color:#55333a!important;
+  background:#2a1a23!important;
+  color:#e58a97!important;
+}
+#app.contractorMode #contractorPage .contractorJobStatus.done{
+  background:#11342f!important;color:#2bdeae!important;
+}
+#app.contractorMode #contractorPage .contractorJobStatus.doing{
+  background:#102c3c!important;color:#29c9eb!important;
+}
+#app.contractorMode #contractorPage .contractorJobStatus.waiting{
+  background:#342a16!important;color:#e3b34c!important;
+}
+#app.contractorMode #contractorPage .contractorJobStatus.paused{
+  background:#202a3c!important;color:#8694ae!important;
+}
+
+/* ---------- contractor modals ---------- */
+body:has(#app.contractorMode) #contractorModal,
+body:has(#app.contractorMode) #contractorJobModal{
+  background:rgba(3,8,17,.76)!important;
+  backdrop-filter:blur(8px)!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorModalCard,
+body:has(#app.contractorMode) #contractorJobModal .contractorModalCard{
+  border:1px solid #283650!important;
+  background:#10182a!important;
+  box-shadow:0 30px 80px rgba(0,0,0,.42)!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorModalHead,
+body:has(#app.contractorMode) #contractorJobModal .contractorModalHead{
+  border-bottom:1px solid #202c44!important;
+  background:#111a2c!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorModalHead>span,
+body:has(#app.contractorMode) #contractorJobModal .contractorModalHead>span{
+  color:#18d9f3!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorModalHead h3,
+body:has(#app.contractorMode) #contractorJobModal .contractorModalHead h3{
+  color:#f5f7ff!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorModalHead p,
+body:has(#app.contractorMode) #contractorJobModal .contractorModalHead p{
+  color:#74839f!important;
+}
+body:has(#app.contractorMode) #contractorModal .modalClose,
+body:has(#app.contractorMode) #contractorJobModal .modalClose{
+  border-color:#31405c!important;
+  background:#172238!important;
+  color:#9cabc4!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorForm label>span,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm label>span{
+  color:#9aa8c1!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorForm input,
+body:has(#app.contractorMode) #contractorModal .contractorForm select,
+body:has(#app.contractorMode) #contractorModal .contractorForm textarea,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm input,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm select,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm textarea{
+  border-color:#303d59!important;
+  background:#151f34!important;
+  color:#eef3ff!important;
+  color-scheme:dark;
+}
+body:has(#app.contractorMode) #contractorModal .contractorForm input::placeholder,
+body:has(#app.contractorMode) #contractorModal .contractorForm textarea::placeholder,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm input::placeholder,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm textarea::placeholder{
+  color:#64728e!important;
+}
+body:has(#app.contractorMode) #contractorModal .contractorForm input:focus,
+body:has(#app.contractorMode) #contractorModal .contractorForm select:focus,
+body:has(#app.contractorMode) #contractorModal .contractorForm textarea:focus,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm input:focus,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm select:focus,
+body:has(#app.contractorMode) #contractorJobModal .contractorForm textarea:focus{
+  border-color:#1e93ad!important;
+  background:#172238!important;
+  box-shadow:0 0 0 3px rgba(24,217,243,.09)!important;
+}
+
+/* Tablet/mobile contractor cards stay dark */
+@media(max-width:1040px){
+  #app.contractorMode #contractorPage .contractorRowCard{
+    border:1px solid #25314a!important;
+    background:#11182b!important;
+  }
+}
+@media(max-width:760px){
+  #app.contractorMode #contractorPage{padding:12px 10px 26px!important}
+  #app.contractorMode #contractorPage .contractorIntro{
+    padding:18px!important;
+    border-radius:15px!important;
+  }
+  #app.contractorMode #contractorPage .contractorStats{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
