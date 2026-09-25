@@ -963,3 +963,293 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     border-radius:15px!important
   }
 }
+/* =========================================================
+   WORK READABILITY + PEOPLE PICKER
+   Fix dark task content and make performer selection obvious.
+   ========================================================= */
+#app.workMode #workPage .premiumTableCard{
+  overflow:visible!important;
+}
+#app.workMode #workPage .premiumTableCard th{
+  height:44px!important;
+  padding:0 12px!important;
+  color:#8ea0bf!important;
+  font-size:11px!important;
+  font-weight:720!important;
+  letter-spacing:.15px!important;
+  text-transform:uppercase!important;
+}
+#app.workMode #workPage .premiumTableCard td{
+  min-height:58px!important;
+  padding:13px 12px!important;
+  color:#c2ccdd!important;
+  font-size:12.5px!important;
+  line-height:1.45!important;
+}
+#app.workMode #workPage .premiumTableCard tbody tr{
+  background:#11182b!important;
+}
+#app.workMode #workPage .premiumTableCard tbody tr:nth-child(even){
+  background:#101729!important;
+}
+#app.workMode #workPage .premiumTableCard tbody tr:hover{
+  background:#152039!important;
+}
+#app.workMode #workPage .taskContentCell{
+  min-width:270px!important;
+  max-width:460px!important;
+}
+#app.workMode #workPage .taskContentCell>b,
+#app.workMode #workPage .taskContentCell .taskTitle{
+  display:block!important;
+  color:#f4f7ff!important;
+  font-size:14.5px!important;
+  font-weight:650!important;
+  line-height:1.45!important;
+  letter-spacing:0!important;
+  overflow-wrap:anywhere!important;
+}
+#app.workMode #workPage .dateCell{
+  color:#b9c8e5!important;
+  font-size:12.5px!important;
+  font-weight:650!important;
+}
+#app.workMode #workPage .noteCell{
+  color:#9aa9c3!important;
+  font-size:12px!important;
+}
+#app.workMode #workPage .mutedDash{color:#74839f!important}
+
+/* performer chips inside the table */
+#app.workMode #workPage .performerChips.pro{
+  gap:6px!important;
+  min-width:150px!important;
+}
+#app.workMode #workPage .performerChips.pro>span{
+  min-height:30px!important;
+  padding:0 10px!important;
+  border:1px solid #2f5260!important;
+  background:#102b31!important;
+  color:#dffdf3!important;
+}
+#app.workMode #workPage .performerChips.pro>span i{
+  background:#1a544b!important;
+  color:#7cf0d2!important;
+}
+#app.workMode #workPage .performerChips.pro>span b{
+  max-width:130px!important;
+  color:#e7fff8!important;
+  font-size:11px!important;
+  font-weight:720!important;
+}
+#app.workMode #workPage .performerChips.pro>em{
+  background:#1a2438!important;
+  color:#9eacc5!important;
+  font-size:10px!important;
+}
+
+/* trigger button */
+#app.workMode #workPage #taskPeopleButton{
+  position:relative!important;
+  border-color:#3a4b69!important;
+  background:#17233b!important;
+  color:#eef4ff!important;
+}
+#app.workMode #workPage #taskPeopleButton:hover{
+  border-color:#268aa1!important;
+  background:#182b42!important;
+}
+#app.workMode #workPage #taskPeopleButton .peopleButtonSummary{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  overflow:hidden!important;
+}
+#app.workMode #workPage #taskPeopleButton .peopleButtonSummary>em{
+  color:#9aa9c4!important;
+  font-size:12px!important;
+  font-style:normal!important;
+}
+#app.workMode #workPage #taskPeopleButton .selectedPersonChip{
+  max-width:105px!important;
+  height:26px!important;
+  padding:0 8px!important;
+  border:1px solid #285b65!important;
+  background:#10313a!important;
+  color:#dffaff!important;
+}
+#app.workMode #workPage #taskPeopleButton .selectedPersonChip b{
+  max-width:90px!important;
+  color:#e9fbff!important;
+  font-size:10.5px!important;
+  font-weight:720!important;
+}
+#app.workMode #workPage #taskPeopleButton .selectedMore{
+  background:#1b2940!important;
+  color:#a9b8d0!important;
+}
+
+/* dropdown */
+#app.workMode #workPage #taskPeopleMenu{
+  top:48px!important;
+  left:0!important;
+  right:auto!important;
+  width:min(390px,calc(100vw - 24px))!important;
+  min-width:340px!important;
+  max-height:430px!important;
+  z-index:250!important;
+  overflow:hidden!important;
+  border:1px solid #33435f!important;
+  border-radius:14px!important;
+  background:#0f1728!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.48)!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleMenuHead{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  min-height:58px!important;
+  padding:11px 14px!important;
+  border-bottom:1px solid #25314a!important;
+  background:linear-gradient(180deg,#151f34,#111a2d)!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleMenuHead b{
+  color:#f4f7ff!important;
+  font-size:13px!important;
+  font-weight:760!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleMenuHead span{
+  color:#71809e!important;
+  font-size:10px!important;
+  white-space:nowrap!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleOptions{
+  max-height:290px!important;
+  overflow:auto!important;
+  padding:8px!important;
+  background:#0f1728!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleOption{
+  width:100%!important;
+  min-height:54px!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) 28px!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin:0 0 6px!important;
+  padding:7px 10px!important;
+  border:1px solid #26334d!important;
+  border-radius:10px!important;
+  background:#131d31!important;
+  color:#eaf0fb!important;
+  text-align:left!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleOption:last-child{margin-bottom:0!important}
+#app.workMode #workPage #taskPeopleMenu .peopleOption:hover{
+  border-color:#31516a!important;
+  background:#18263d!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleOption.selected{
+  border-color:#1a7b86!important;
+  background:#103139!important;
+  box-shadow:inset 3px 0 0 #18d9f3!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleAvatar{
+  width:36px!important;
+  height:36px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #33506b!important;
+  border-radius:10px!important;
+  background:#192740!important;
+  color:#46e4f7!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleName{
+  display:block!important;
+  min-width:0!important;
+  color:#f4f7ff!important;
+  font-size:13.5px!important;
+  line-height:1.25!important;
+  font-weight:700!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleCheck{
+  width:24px!important;
+  height:24px!important;
+  display:grid!important;
+  place-items:center!important;
+  justify-self:end!important;
+  border:1px solid #42516c!important;
+  border-radius:7px!important;
+  background:#101929!important;
+  color:transparent!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleOption.selected .peopleCheck{
+  border-color:#1aa6b9!important;
+  background:#123f48!important;
+  color:#56e9f7!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleEditBtn{
+  width:100%!important;
+  height:48px!important;
+  border:0!important;
+  border-top:1px solid #25314a!important;
+  border-radius:0!important;
+  background:#131d31!important;
+  color:#a9b8cf!important;
+  font-size:11.5px!important;
+  font-weight:700!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleEditBtn:hover{
+  background:#18263d!important;
+  color:#25def3!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleEmpty{
+  padding:22px 16px!important;
+  text-align:center!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleEmpty b{
+  color:#edf3ff!important;
+  font-size:13px!important;
+}
+#app.workMode #workPage #taskPeopleMenu .peopleEmpty span{
+  margin-top:6px!important;
+  color:#7d8ca8!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+}
+
+@media(max-width:760px){
+  #app.workMode #workPage .taskContentCell .taskTitle,
+  #app.workMode #workPage .taskContentCell>b{
+    font-size:15px!important;
+  }
+  #app.workMode #workPage #taskPeopleMenu{
+    position:fixed!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:10px!important;
+    top:auto!important;
+    width:auto!important;
+    min-width:0!important;
+    max-height:72vh!important;
+    border-radius:16px!important;
+  }
+  #app.workMode #workPage #taskPeopleMenu .peopleOptions{
+    max-height:52vh!important;
+  }
+  #app.workMode #workPage #taskPeopleMenu .peopleOption{
+    min-height:58px!important;
+  }
+  #app.workMode #workPage #taskPeopleMenu .peopleName{
+    font-size:15px!important;
+  }
+}
