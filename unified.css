@@ -433,3 +433,533 @@
   .adminConnectionWrap{margin-top:10px!important}
   .energySummaryCards{grid-template-columns:1fr!important}
 }
+/* =========================================================
+   ENERGY PALETTE FOR CORE MODULES
+   Công việc · Dụng cụ - Vật tư · Bảo trì · Dự án
+   Scoped by mode class to avoid changing Tổng quan.
+   ========================================================= */
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode){
+  --core-bg:#080e1a;
+  --core-side:#0a1120;
+  --core-panel:#11182b;
+  --core-panel-2:#121b31;
+  --core-input:#17213a;
+  --core-border:#25314a;
+  --core-border-soft:#1c2740;
+  --core-text:#f7f8ff;
+  --core-muted:#7f8dab;
+  --core-muted-2:#62708f;
+  --core-cyan:#18d9f3;
+  --core-blue:#6382ff;
+  --core-green:#25d9aa;
+  --core-amber:#e4ae27;
+  background:#080e1a!important;
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) main{
+  background:
+    radial-gradient(circle at 90% 4%,rgba(19,157,188,.08),transparent 30%),
+    #080e1a!important;
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaSidebar{
+  background:linear-gradient(180deg,#0a1120 0%,#09101e 100%)!important;
+  border-right:1px solid #1c263a!important;
+  box-shadow:none!important;
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaSidebarBrand{border-bottom-color:#172238!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaNav button{color:#a0abc4!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaNav button:hover{
+  background:#101a2d!important;color:#e9efff!important
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaNav button.active{
+  position:relative;
+  background:#111d32!important;
+  border-color:#162943!important;
+  color:#fff!important;
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaNav button.active:before{
+  width:3px!important;background:#18d9f3!important;box-shadow:0 0 12px rgba(24,217,243,.45)
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaNav button.active svg{color:#18d9f3!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .sideBackup{border-top-color:#1a2539!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .sideUserCard{
+  background:#10192c!important;border-color:#1e2940!important
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaTopbar{
+  background:#0a1120!important;
+  border-bottom:1px solid #1b263b!important;
+  box-shadow:none!important;
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .topModuleIcon{
+  border-color:#2d3953!important;background:#141f34!important;color:#18d9f3!important
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .topModuleTitle h1{color:#f6f8ff!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .topModuleTitle p{color:#71809d!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .headerSearch,
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .iconAction,
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .pdfAction,
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .headerBell{
+  border-color:#2b3852!important;background:#121c30!important;color:#9ba8c1!important;box-shadow:none!important
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .headerSearch input{color:#dce4f3!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .headerSearch input::placeholder{color:#697795!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .account{
+  border-left-color:#1b263b!important;color:#eef3ff!important
+}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .account span{color:#eef3ff!important}
+#app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .headerAvatar{
+  background:linear-gradient(135deg,#655eff,#1bc9ea)!important;color:#fff!important
+}
+
+/* ---------- WORK ---------- */
+#app.workMode #workPage{color:#f7f8ff!important}
+#app.workMode #workPage .proPageHead{
+  border:1px solid #25314a!important;
+  background:
+    radial-gradient(circle at 88% 15%,rgba(24,217,243,.11),transparent 28%),
+    linear-gradient(125deg,#111b30,#102236 60%,#0d2d38)!important;
+  box-shadow:none!important;
+}
+#app.workMode #workPage .proPageHead .headIcon{
+  border:1px solid #34425b!important;background:#19243a!important;color:#18d9f3!important;box-shadow:none!important
+}
+#app.workMode #workPage .proPageHead .pageEyebrow{color:#18d9f3!important}
+#app.workMode #workPage .proPageHead h1{color:#f6f8ff!important}
+#app.workMode #workPage .proPageHead p{color:#8390aa!important}
+#app.workMode #workPage .proPageHead .headMeta span{
+  border-color:#34425a!important;background:#172238!important;color:#9aa8c2!important
+}
+#app.workMode #workPage .proPageHead .headMeta b{color:#f3f7ff!important}
+#app.workMode #workPage .proPageHead .headMeta i{background:#27dfac!important}
+
+#app.workMode #workPage .workEntryCard{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.workMode #workPage .workEntryHeader{
+  border-bottom-color:#202c44!important;background:#11182b!important
+}
+#app.workMode #workPage .workEntryHeader>div:first-child>span{color:#18d9f3!important}
+#app.workMode #workPage .workEntryHeader h2{color:#f5f7ff!important}
+#app.workMode #workPage .workEntryHeader p{color:#71809e!important}
+#app.workMode #workPage .workEntryHeaderIcon{
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+#app.workMode #workPage #taskForm .workField>span{color:#9eacc5!important}
+#app.workMode #workPage #taskForm input:not([type="hidden"]),
+#app.workMode #workPage #taskForm select,
+#app.workMode #workPage #taskForm .peopleSelectBtn{
+  border-color:#34415e!important;background:#18223b!important;color:#f3f6ff!important;color-scheme:dark
+}
+#app.workMode #workPage #taskForm input::placeholder{color:#657390!important}
+#app.workMode #workPage #taskForm .workContent input{color:#fff!important}
+#app.workMode #workPage #taskForm .workPerformer .peopleSelectBtn{
+  border-color:#34415e!important;background:#18223b!important
+}
+#app.workMode #workPage #taskForm .peopleSelectMenu{
+  border-color:#33415e!important;background:#121c30!important;color:#dce4f4!important;box-shadow:0 18px 34px rgba(0,0,0,.32)!important
+}
+#app.workMode #workPage #taskForm .imageActionBtn,
+#app.workMode #workPage #taskForm .workCancel{
+  border-color:#35415b!important;background:#151f34!important;color:#aab5ca!important
+}
+#app.workMode #workPage #taskForm .cameraBtn{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+}
+#app.workMode #workPage #taskForm .workSave{
+  background:linear-gradient(96deg,#6c63ff 0%,#4c83f6 45%,#27c6df 100%)!important;
+  color:#06121e!important;box-shadow:0 10px 22px rgba(83,102,236,.15)!important
+}
+#app.workMode #workPage .workImageInfo{color:#71809e!important}
+#app.workMode #workPage .stats article{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.workMode #workPage .stats small{color:#7b89a4!important}
+#app.workMode #workPage .stats strong{color:#f6f8ff!important}
+#app.workMode #workPage .stats i{
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+#app.workMode #workPage .stats i.orange{border-color:#4c411d!important;background:#332b16!important;color:#e5b329!important}
+#app.workMode #workPage .stats i.green{border-color:#1d4b43!important;background:#113431!important;color:#28ddb0!important}
+#app.workMode #workPage .stats i.red{border-color:#56323a!important;background:#2b1921!important;color:#e78b98!important}
+#app.workMode #workPage .premiumTableCard{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.workMode #workPage .premiumTableCard .tableTop{
+  border-bottom-color:#202c44!important;background:#11182b!important;color:#f5f7ff!important
+}
+#app.workMode #workPage .premiumTableCard th{
+  border-bottom-color:#202c44!important;background:#101729!important;color:#7583a1!important
+}
+#app.workMode #workPage .premiumTableCard td{
+  border-bottom-color:#19253b!important;color:#aab6cc!important
+}
+#app.workMode #workPage .premiumTableCard tbody tr:hover{background:#131d31!important}
+#app.workMode #workPage .taskContentCell>b{color:#eef4ff!important}
+#app.workMode #workPage .rowActionMenu summary{
+  border-color:#2f3c57!important;background:#151f34!important;color:#93a1bc!important
+}
+
+/* ---------- INVENTORY ---------- */
+#app.inventoryMode #inventoryPage{color:#f7f8ff!important}
+#app.inventoryMode #inventoryPage .inventoryCommand{
+  border-color:#25314a!important;
+  background:
+    radial-gradient(circle at 88% 15%,rgba(24,217,243,.11),transparent 28%),
+    linear-gradient(125deg,#111b30,#102236 60%,#0d2d38)!important;
+  box-shadow:none!important;
+}
+#app.inventoryMode #inventoryPage .inventoryCommandIcon{
+  background:#19243a!important;border:1px solid #34425b!important;color:#18d9f3!important;box-shadow:none!important
+}
+#app.inventoryMode #inventoryPage .inventoryCommandBrand>div:last-child>span{color:#18d9f3!important}
+#app.inventoryMode #inventoryPage .inventoryCommand h1{color:#f6f8ff!important}
+#app.inventoryMode #inventoryPage .inventoryCommand p{color:#8390aa!important}
+#app.inventoryMode #inventoryPage .inventoryLocalTabs{
+  border-color:#2b3854!important;background:#141e33!important
+}
+#app.inventoryMode #inventoryPage .inventoryLocalTabs button{color:#7f8daa!important}
+#app.inventoryMode #inventoryPage .inventoryLocalTabs button.active{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+}
+#app.inventoryMode #inventoryPage .inventoryCommandMeta>div,
+#app.inventoryMode #inventoryPage .inventoryCommandMeta>label{
+  border-color:#34425a!important;background:#172238!important
+}
+#app.inventoryMode #inventoryPage .inventoryCommandMeta small{color:#71809e!important}
+#app.inventoryMode #inventoryPage .inventoryCommandMeta b,
+#app.inventoryMode #inventoryPage .inventoryCommandMeta select{color:#f3f7ff!important}
+#app.inventoryMode #inventoryPage .inventoryCommandMeta select{background:#172238!important;color-scheme:dark}
+
+#app.inventoryMode #inventoryPage .inventoryWorkspace,
+#app.inventoryMode #inventoryPage .inventoryTableCard,
+#app.inventoryMode #inventoryPage .inventorySupportCard,
+#app.inventoryMode #inventoryPage .inventoryQuickAdd{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.inventoryMode #inventoryPage .inventorySectionBar,
+#app.inventoryMode #inventoryPage .inventorySectionHead,
+#app.inventoryMode #inventoryPage .inventoryCardTitle{
+  border-bottom-color:#202c44!important;background:#11182b!important
+}
+#app.inventoryMode #inventoryPage .inventoryKicker,
+#app.inventoryMode #inventoryPage .inventoryCardTitle span{color:#18d9f3!important}
+#app.inventoryMode #inventoryPage .inventorySectionBar h2,
+#app.inventoryMode #inventoryPage .inventorySectionHead h3,
+#app.inventoryMode #inventoryPage .inventoryCardTitle h3,
+#app.inventoryMode #inventoryPage .inventoryQuickAddHead h3{color:#f5f7ff!important}
+#app.inventoryMode #inventoryPage .inventorySectionBar p,
+#app.inventoryMode #inventoryPage .inventorySectionHead p,
+#app.inventoryMode #inventoryPage .inventoryCardTitle p,
+#app.inventoryMode #inventoryPage .inventoryCardTitle>small,
+#app.inventoryMode #inventoryPage .inventoryQuickAddHead p{color:#71809e!important}
+#app.inventoryMode #inventoryPage .inventorySearch{
+  border-color:#2b3854!important;background:#141e33!important
+}
+#app.inventoryMode #inventoryPage .inventorySearch input{color:#dce4f3!important}
+#app.inventoryMode #inventoryPage .inventorySearch input::placeholder{color:#687692!important}
+#app.inventoryMode #inventoryPage .inventoryPrimary{
+  background:linear-gradient(96deg,#6c63ff 0%,#4c83f6 45%,#27c6df 100%)!important;color:#06121e!important
+}
+#app.inventoryMode #inventoryPage .inventorySecondary{
+  border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
+}
+#app.inventoryMode #inventoryPage .stockMoveBtn{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+}
+#app.inventoryMode #inventoryPage .inventoryStats .inventoryMetric{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.inventoryMode #inventoryPage .inventoryStats small{color:#7b89a4!important}
+#app.inventoryMode #inventoryPage .inventoryStats b{color:#f6f8ff!important}
+#app.inventoryMode #inventoryPage .inventoryStats em{color:#5f6e8a!important}
+#app.inventoryMode #inventoryPage .invStatIcon{
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+#app.inventoryMode #inventoryPage .invStatIcon.green{border-color:#1d4b43!important;background:#113431!important;color:#28ddb0!important}
+#app.inventoryMode #inventoryPage .invStatIcon.amber{border-color:#4c411d!important;background:#332b16!important;color:#e5b329!important}
+#app.inventoryMode #inventoryPage .invStatIcon.red{border-color:#56323a!important;background:#2b1921!important;color:#e78b98!important}
+#app.inventoryMode #inventoryPage .inventoryTableCard th{
+  background:#101729!important;color:#7583a1!important;border-bottom:1px solid #202c44!important
+}
+#app.inventoryMode #inventoryPage .inventoryTableCard td{
+  border-bottom-color:#19253b!important;color:#aab6cc!important;background:transparent!important
+}
+#app.inventoryMode #inventoryPage .inventoryTableCard tbody tr:nth-child(even){background:#0f1728!important}
+#app.inventoryMode #inventoryPage .inventoryTableCard tbody tr:hover{background:#131d31!important}
+#app.inventoryMode #inventoryPage .materialNameCell b,
+#app.inventoryMode #inventoryPage .toolNameCell b{color:#eef4ff!important}
+#app.inventoryMode #inventoryPage .materialNameCell small,
+#app.inventoryMode #inventoryPage .toolNameCell small{color:#71809e!important}
+#app.inventoryMode #inventoryPage .invRowActions button,
+#app.inventoryMode #inventoryPage .miniDanger{
+  border-color:#2f3c57!important;background:#151f34!important;color:#93a1bc!important
+}
+#app.inventoryMode #inventoryPage .inventoryExamples{
+  border-color:#202c44!important;background:#0f1728!important
+}
+#app.inventoryMode #inventoryPage .inventoryExamples button{
+  border-color:#2b3854!important;background:#141e33!important;color:#8d9bb6!important
+}
+#app.inventoryMode #inventoryPage .inventoryExamples button:hover{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+}
+#app.inventoryMode #inventoryPage .stockAlertHead{
+  border-bottom-color:#202c44!important;background:#11182b!important
+}
+#app.inventoryMode #inventoryPage .stockAlertTitle h3{color:#f5f7ff!important}
+#app.inventoryMode #inventoryPage .stockAlertTitle p{color:#71809e!important}
+#app.inventoryMode #inventoryPage .stockAlertList{background:#11182b!important}
+#app.inventoryMode #inventoryPage .stockAlertItem{border-bottom-color:#1b2740!important}
+#app.inventoryMode #inventoryPage .stockAlertItem:hover{background:#131d31!important}
+#app.inventoryMode #inventoryPage .stockAlertName b,
+#app.inventoryMode #inventoryPage .stockAlertMetric b{color:#dce5f4!important}
+#app.inventoryMode #inventoryPage .stockAlertName small,
+#app.inventoryMode #inventoryPage .stockAlertMetric span{color:#71809e!important}
+#app.inventoryMode #inventoryPage .stockAlertFilterBtn{
+  border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
+}
+
+/* inventory + maintenance modal palette */
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal),
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal){
+  background:rgba(3,8,17,.76)!important;backdrop-filter:blur(8px)!important
+}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryModalCard,
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .inventoryModalCard{
+  border:1px solid #283650!important;background:#10182a!important;box-shadow:0 30px 80px rgba(0,0,0,.42)!important
+}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryModalHead,
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .inventoryModalHead{
+  border-bottom:1px solid #202c44!important;background:#111a2c!important
+}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryModalHead span,
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .inventoryModalHead span{color:#18d9f3!important}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryModalHead h3,
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .inventoryModalHead h3{color:#f5f7ff!important}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryModalHead p,
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .inventoryModalHead p{color:#74839f!important}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryForm label>span,
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .inventoryForm label>span{color:#9aa8c1!important}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryForm :is(input,select,textarea),
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .inventoryForm :is(input,select,textarea){
+  border-color:#303d59!important;background:#151f34!important;color:#eef3ff!important;color-scheme:dark
+}
+body:has(#app.inventoryMode) :is(#materialItemModal,#stockTxnModal,#toolItemModal) .modalClose,
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .modalClose{
+  border-color:#31405c!important;background:#172238!important;color:#9cabc4!important
+}
+
+/* ---------- MAINTENANCE ---------- */
+#app.maintenanceMode #maintenancePage{color:#f7f8ff!important}
+#app.maintenanceMode #maintenancePage .maintenanceHero{
+  border-color:#25314a!important;
+  background:
+    radial-gradient(circle at 88% 15%,rgba(24,217,243,.11),transparent 28%),
+    linear-gradient(125deg,#111b30,#102236 60%,#0d2d38)!important;
+  box-shadow:none!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceCommandIcon{
+  border:1px solid #34425b!important;background:#19243a!important;color:#18d9f3!important;box-shadow:none!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceCommandBrand>div:last-child>span{color:#18d9f3!important}
+#app.maintenanceMode #maintenancePage .maintenanceHero h1{color:#f6f8ff!important}
+#app.maintenanceMode #maintenancePage .maintenanceHero p{color:#8390aa!important}
+#app.maintenanceMode #maintenancePage .maintenanceProjectMeta{
+  border-color:#34425a!important;background:#172238!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceProjectMeta small{color:#71809e!important}
+#app.maintenanceMode #maintenancePage .maintenanceProjectMeta b{color:#f3f7ff!important}
+#app.maintenanceMode #maintenancePage .maintenanceHeroActions .inventoryPrimary{
+  background:linear-gradient(96deg,#6c63ff 0%,#4c83f6 45%,#27c6df 100%)!important;color:#06121e!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceHeroActions .inventorySecondary{
+  border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceStats article{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceStats small{color:#7b89a4!important}
+#app.maintenanceMode #maintenancePage .maintenanceStats b{color:#f6f8ff!important}
+#app.maintenanceMode #maintenancePage .maintenanceStats em{color:#5f6e8a!important}
+#app.maintenanceMode #maintenancePage .maintStatIcon{
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+#app.maintenanceMode #maintenancePage .maintStatIcon.green{border-color:#1d4b43!important;background:#113431!important;color:#28ddb0!important}
+#app.maintenanceMode #maintenancePage .maintStatIcon.amber{border-color:#4c411d!important;background:#332b16!important;color:#e5b329!important}
+#app.maintenanceMode #maintenancePage .maintStatIcon.red{border-color:#56323a!important;background:#2b1921!important;color:#e78b98!important}
+#app.maintenanceMode #maintenancePage .maintenanceSchedule,
+#app.maintenanceMode #maintenancePage .maintenanceBoard,
+#app.maintenanceMode #maintenancePage .maintenanceHistoryCard{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceScheduleHead,
+#app.maintenanceMode #maintenancePage .maintenanceToolbar,
+#app.maintenanceMode #maintenancePage .inventorySectionHead{
+  border-bottom-color:#202c44!important;background:#11182b!important
+}
+#app.maintenanceMode #maintenancePage .inventoryKicker{color:#18d9f3!important}
+#app.maintenanceMode #maintenancePage :is(.maintenanceScheduleHead h2,.maintenanceToolbar h2,.inventorySectionHead h3){color:#f5f7ff!important}
+#app.maintenanceMode #maintenancePage :is(.maintenanceToolbar p,.inventorySectionHead p){color:#71809e!important}
+#app.maintenanceMode #maintenancePage #maintenanceMonthClear{
+  border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip{
+  border-color:#2b3854!important;background:#141e33!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button{color:#7f8daa!important}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button.active{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+}
+#app.maintenanceMode #maintenancePage .inventorySearch{
+  border-color:#2b3854!important;background:#141e33!important
+}
+#app.maintenanceMode #maintenancePage .inventorySearch input{color:#dce4f3!important}
+#app.maintenanceMode #maintenancePage :is(#maintenanceSystemFilter,#maintenanceDueFilter){
+  border-color:#2b3854!important;background:#141e33!important;color:#a8b4ca!important;color-scheme:dark
+}
+#app.maintenanceMode #maintenancePage .maintenanceExamples{
+  border-color:#202c44!important;background:#0f1728!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceExamples button{
+  border-color:#2b3854!important;background:#141e33!important;color:#8d9bb6!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceAssetCard{
+  border-color:#26334d!important;background:#111b2e!important;box-shadow:none!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceAssetCard:hover{
+  border-color:#33435f!important;background:#131e32!important
+}
+#app.maintenanceMode #maintenancePage .maintSystem{color:#18d9f3!important}
+#app.maintenanceMode #maintenancePage .maintenanceAssetCard h3{color:#eef4ff!important}
+#app.maintenanceMode #maintenancePage .maintenanceAssetCard>p{color:#71809e!important}
+#app.maintenanceMode #maintenancePage .maintDates{background:#0f1728!important}
+#app.maintenanceMode #maintenancePage .maintDates small{color:#71809e!important}
+#app.maintenanceMode #maintenancePage .maintDates b{color:#dce5f4!important}
+#app.maintenanceMode #maintenancePage .maintCardMeta{color:#71809e!important}
+#app.maintenanceMode #maintenancePage .maintCardMeta b{color:#c9d5e8!important}
+#app.maintenanceMode #maintenancePage .maintCardActions{border-top-color:#202c44!important}
+#app.maintenanceMode #maintenancePage .maintCardActions button{
+  border-color:#2f3c57!important;background:#151f34!important;color:#9aa8c1!important
+}
+#app.maintenanceMode #maintenancePage .maintCardActions button.primary{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+}
+#app.maintenanceMode #maintenancePage .maintCardActions button.danger{
+  border-color:#55333a!important;background:#2a1a23!important;color:#e58a97!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryCard th{
+  background:#101729!important;color:#7583a1!important;border-bottom-color:#202c44!important
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryCard td{
+  color:#aab6cc!important;border-bottom-color:#19253b!important
+}
+
+/* ---------- ADMIN / PROJECTS ---------- */
+#app.adminMode #adminPage{color:#f7f8ff!important}
+#app.adminMode #adminPage .adminHero{
+  border-color:#25314a!important;
+  background:
+    radial-gradient(circle at 88% 15%,rgba(24,217,243,.11),transparent 28%),
+    linear-gradient(125deg,#111b30,#102236 60%,#0d2d38)!important;
+  box-shadow:none!important
+}
+#app.adminMode #adminPage .adminCommandIcon{
+  border:1px solid #34425b!important;background:#19243a!important;color:#18d9f3!important;box-shadow:none!important
+}
+#app.adminMode #adminPage .adminEyebrow{color:#18d9f3!important}
+#app.adminMode #adminPage .adminHero h1{color:#f6f8ff!important}
+#app.adminMode #adminPage .adminHero p{color:#8390aa!important}
+#app.adminMode #adminPage .adminConnection{
+  border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
+}
+#app.adminMode #adminPage .adminConnection.warn{
+  border-color:#4c411d!important;background:#332b16!important;color:#e5b329!important
+}
+#app.adminMode #adminPage #adminActivateCentral{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+}
+#app.adminMode #adminPage .adminSection{
+  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+}
+#app.adminMode #adminPage .adminSectionHead{
+  border-bottom-color:#202c44!important;background:#11182b!important
+}
+#app.adminMode #adminPage .adminSectionHead h2{color:#f5f7ff!important}
+#app.adminMode #adminPage .adminSectionHead p{color:#71809e!important}
+#app.adminMode #adminPage .adminProjectHeadActions>span{color:#7f8daa!important}
+#app.adminMode #adminPage .settingsGearBtn{
+  border-color:#2f3c57!important;background:#151f34!important;color:#aab5ca!important
+}
+#app.adminMode #adminPage .adminProjectCard{
+  border-color:#26334d!important;background:#111b2e!important;color:#dce5f4!important;box-shadow:none!important
+}
+#app.adminMode #adminPage .adminProjectCard:hover{
+  border-color:#33435f!important;background:#131e32!important;box-shadow:none!important
+}
+#app.adminMode #adminPage .adminProjectIcon{
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+#app.adminMode #adminPage .adminProjectCard small{color:#71809e!important}
+#app.adminMode #adminPage .adminProjectCard h3{color:#f1f5ff!important}
+#app.adminMode #adminPage .adminProjectCard p{color:#7886a1!important}
+#app.adminMode #adminPage .adminProjectCard>span{color:#18d9f3!important}
+
+/* Admin settings modal */
+body:has(#app.adminMode) #adminSettingsModal{
+  background:rgba(3,8,17,.76)!important;backdrop-filter:blur(8px)!important
+}
+body:has(#app.adminMode) #adminSettingsModal .adminSettingsCard{
+  border:1px solid #283650!important;background:#10182a!important;box-shadow:0 30px 80px rgba(0,0,0,.42)!important
+}
+body:has(#app.adminMode) #adminSettingsModal .settingsHead{
+  border-bottom-color:#202c44!important;background:#111a2c!important
+}
+body:has(#app.adminMode) #adminSettingsModal .settingsHead span{color:#18d9f3!important}
+body:has(#app.adminMode) #adminSettingsModal .settingsHead h3,
+body:has(#app.adminMode) #adminSettingsModal .settingsPaneTitle h4{color:#f5f7ff!important}
+body:has(#app.adminMode) #adminSettingsModal .settingsHead p,
+body:has(#app.adminMode) #adminSettingsModal .settingsPaneTitle p{color:#74839f!important}
+body:has(#app.adminMode) #adminSettingsModal .settingsTabs{
+  border-bottom-color:#202c44!important;background:#0f1728!important
+}
+body:has(#app.adminMode) #adminSettingsModal .settingsTabs button{color:#7f8daa!important}
+body:has(#app.adminMode) #adminSettingsModal .settingsTabs button.active{
+  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important;box-shadow:none!important
+}
+body:has(#app.adminMode) #adminSettingsModal .settingsPane{background:#10182a!important}
+body:has(#app.adminMode) #adminSettingsModal .settingsInlineForm{
+  border-color:#26334d!important;background:#111b2e!important
+}
+body:has(#app.adminMode) #adminSettingsModal :is(input,select){
+  border-color:#303d59!important;background:#151f34!important;color:#eef3ff!important;color-scheme:dark
+}
+body:has(#app.adminMode) #adminSettingsModal .settingsRow,
+body:has(#app.adminMode) #adminSettingsModal .adminUserRow{
+  border-color:#26334d!important;background:#111b2e!important
+}
+body:has(#app.adminMode) #adminSettingsModal .settingsRowIcon,
+body:has(#app.adminMode) #adminSettingsModal .adminAvatar{
+  border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
+}
+body:has(#app.adminMode) #adminSettingsModal :is(.settingsRowMain b,.adminUserMain b){color:#eef4ff!important}
+body:has(#app.adminMode) #adminSettingsModal :is(.settingsRowMain small,.adminUserMain small,.adminHint){color:#71809e!important}
+body:has(#app.adminMode) #adminSettingsModal .settingsDeleteBtn{
+  border-color:#55333a!important;background:#2a1a23!important;color:#e58a97!important
+}
+body:has(#app.adminMode) #adminSettingsModal .settingsRestoreBtn{
+  border-color:#1d4b43!important;background:#113431!important;color:#28ddb0!important
+}
+body:has(#app.adminMode) #adminSettingsModal .modalClose{
+  border-color:#31405c!important;background:#172238!important;color:#9cabc4!important
+}
+
+/* Mobile */
+@media(max-width:760px){
+  #app:is(.workMode,.inventoryMode,.maintenanceMode,.adminMode) .estaTopbar{
+    background:#0a1120!important
+  }
+  #app.inventoryMode #inventoryPage .inventoryCommand,
+  #app.maintenanceMode #maintenancePage .maintenanceHero,
+  #app.adminMode #adminPage .adminHero{
+    border-radius:15px!important
+  }
+}
