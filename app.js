@@ -889,11 +889,65 @@ document.addEventListener("click",e=>{
     document.querySelectorAll("#workPage .rowActionMenu[open]").forEach(openMenu=>openMenu.removeAttribute("open"));
   }
 });
-/* END_WORK_ROW_ACTION_MENU_SINGLE_OPEN */$("#toggleFilter").onclick=e=>{e.stopPropagation();$("#filterBar").classList.toggle("hide")};$("#filterBar").onclick=e=>e.stopPropagation();document.addEventListener("click",e=>{if(!$("#filterBar").classList.contains("hide")&&!e.target.closest(".filterWrap"))$("#filterBar").classList.add("hide")});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";render()};function reportHtml(a){let from=$("#fromDate").value,to=$("#toDate").value,period=from||to?((from?fmt(from):"Đầu kỳ")+" - "+(to?fmt(to):"Hiện tại")):"Toàn bộ dữ liệu";let done=a.filter(x=>x.s==="Đã hoàn thành").length,doing=a.filter(x=>x.s==="Đang thực hiện").length,wait=a.filter(x=>x.s==="Chờ xử lý").length;return `<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Báo cáo công việc kỹ thuật</title><style>
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
-@page{size:A4;margin:14mm 13mm 16mm}*{box-sizing:border-box}body{font-family:"Inter";color:#1f2937;font-size:11px;margin:0}.header{border-bottom:3px solid #123d6b;padding-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start}.brand{font-weight:800;color:#123d6b;font-size:16px}.brand small{display:block;font-size:8px;letter-spacing:.7px;color:#64748b;margin-top:3px}.doc{text-align:right;font-size:9px;color:#64748b}.title{text-align:center;padding:15px 0 12px}.title h1{font-size:19px;color:#123d6b;margin:0 0 5px}.title p{margin:0;font-size:10px;color:#64748b}.summary{display:grid;grid-template-columns:2fr repeat(4,1fr);border:1px solid #cbd5e1;margin-bottom:14px}.summary>div{padding:8px;border-right:1px solid #cbd5e1}.summary>div:last-child{border:0}.summary span{display:block;color:#64748b;font-size:8px;text-transform:uppercase}.summary b{display:block;margin-top:3px;font-size:12px;color:#123d6b}.job{page-break-inside:avoid;border:1px solid #cbd5e1;margin:0 0 11px}.jobHead{background:#edf4fb;padding:7px 9px;border-bottom:1px solid #cbd5e1;display:flex;gap:7px;align-items:flex-start}.no{background:#123d6b;color:#fff;min-width:21px;height:21px;border-radius:50%;display:grid;place-items:center;font-size:9px}.jobHead h3{margin:2px 0 0;font-size:11px;color:#173d67}.details{display:grid;grid-template-columns:1fr 1fr 1fr;padding:7px 9px;gap:5px 12px}.details div{font-size:9px}.details span{color:#64748b}.note{margin:0 9px 8px;padding:7px;background:#f8fafc;border-left:3px solid #94a3b8;font-size:9px}.photos{padding:0 9px 9px;display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.photos img{width:100%;height:185px;object-fit:contain;border:1px solid #d8e0e8;background:#fff}.photoTitle{grid-column:1/-1;font-weight:700;font-size:9px;color:#475569}.sign{page-break-inside:avoid;display:flex;justify-content:space-around;text-align:center;margin-top:25px;font-size:10px}.sign div{width:38%}.sign small{display:block;margin-top:4px;color:#64748b}.signSpace{height:60px}.foot{position:fixed;bottom:-8mm;left:0;right:0;text-align:center;color:#94a3b8;font-size:8px}
-</style></head><body><div class="header"><div class="brand">ESTA<small>BUILDING MANAGEMENT</small></div><div class="doc"><b>TÒA NHÀ ${esc(currentBuilding.name).toLocaleUpperCase("vi-VN")}</b><br>TP. Hồ Chí Minh</div></div><div class="title"><h1>BÁO CÁO CÔNG VIỆC KỸ THUẬT</h1><p>Thời gian báo cáo: <b>${period}</b></p></div><div class="summary"><div><span>Tòa nhà</span><b>${esc(currentBuilding.name)}</b></div><div><span>Tổng công việc</span><b>${a.length}</b></div><div><span>Hoàn thành</span><b>${done}</b></div><div><span>Đang xử lý</span><b>${doing}</b></div><div><span>Chờ xử lý</span><b>${wait}</b></div></div>
-${a.map((x,i)=>`<section class="job"><div class="jobHead"><div class="no">${i+1}</div><h3>${esc(x.c)}</h3></div><div class="details"><div><span>Ngày thực hiện:</span> <b>${fmt(x.d)}</b></div><div><span>Loại công việc:</span> <b>${esc(x.t||"Hằng ngày")}</b></div><div><span>Trạng thái:</span> <b>${esc(x.s)}</b></div><div><span>Người thực hiện:</span> <b>${esc(x.a||"—")}</b></div></div>${x.n?`<div class="note"><b>Ghi chú:</b> ${esc(x.n)}</div>`:""}${x.imgs?.length?`<div class="photos"><div class="photoTitle">HÌNH ẢNH THỰC TẾ</div>${x.imgs.map(v=>'<img src="'+v+'">').join("")}</div>`:""}</section>`).join("")}<div class="sign"><div><b>NGƯỜI LẬP BÁO CÁO</b><small>(Ký và ghi rõ họ tên)</small><div class="signSpace"></div></div><div><b>ĐẠI DIỆN BAN QUẢN LÝ</b><small>(Ký và ghi rõ họ tên)</small><div class="signSpace"></div></div></div><div class="foot">ESTA Building Management · ${esc(currentBuilding.name)}</div><script>window.onload=()=>setTimeout(()=>window.print(),700)<\/script></body></html>`}
+/* END_WORK_ROW_ACTION_MENU_SINGLE_OPEN */$("#toggleFilter").onclick=e=>{e.stopPropagation();$("#filterBar").classList.toggle("hide")};$("#filterBar").onclick=e=>e.stopPropagation();document.addEventListener("click",e=>{if(!$("#filterBar").classList.contains("hide")&&!e.target.closest(".filterWrap"))$("#filterBar").classList.add("hide")});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";render()};function reportStatusClass(s){
+ if(s==="Đã hoàn thành")return "done";
+ if(s==="Đang thực hiện")return "doing";
+ return "waiting";
+}
+function reportTypeClass(t){
+ if(t==="Sự cố")return "incident";
+ if(t==="Bảo trì")return "maintenance";
+ return "daily";
+}
+function reportHtml(a){
+ const from=$("#fromDate").value,to=$("#toDate").value;
+ const period=from||to?((from?fmt(from):"Đầu kỳ")+" - "+(to?fmt(to):"Hiện tại")):"Toàn bộ dữ liệu";
+ const done=a.filter(x=>x.s==="Đã hoàn thành").length;
+ const doing=a.filter(x=>x.s==="Đang thực hiện").length;
+ const wait=a.filter(x=>x.s==="Chờ xử lý").length;
+ const photoCount=a.reduce((n,x)=>n+((x._reportImages||x.imgs||[]).filter(Boolean).length),0);
+ const generated=new Date().toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"});
+ const jobs=a.map((x,i)=>{
+   const type=x.t||"Hằng ngày";
+   const performers=performerArray(x).join(", ")||"—";
+   const imgs=(x._reportImages||x.imgs||[]).filter(Boolean);
+   const photos=imgs.length
+     ?'<div class="photoSection"><div class="sectionLabel"><span>HÌNH ẢNH THỰC TẾ</span><b>'+imgs.length+' ảnh</b></div><div class="photos">'+imgs.map((v,j)=>'<figure><img src="'+esc(v)+'" alt="Ảnh công việc '+(j+1)+'"><figcaption>Ảnh '+(j+1)+'</figcaption></figure>').join("")+'</div></div>'
+     :'';
+   const note=x.n?'<div class="note"><span>GHI CHÚ</span><p>'+esc(x.n)+'</p></div>':'';
+   return '<section class="job '+reportTypeClass(type)+'">'+
+     '<div class="jobHead"><div class="jobNo">'+String(i+1).padStart(2,"0")+'</div><div class="jobTitle"><h2>'+esc(x.c)+'</h2><div class="badges"><span class="type '+reportTypeClass(type)+'">'+esc(type)+'</span><span class="status '+reportStatusClass(x.s)+'">'+esc(x.s)+'</span></div></div></div>'+
+     '<div class="meta"><div><span>NGÀY THỰC HIỆN</span><b>'+fmt(x.d)+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div><div><span>TRẠNG THÁI</span><b>'+esc(x.s)+'</b></div></div>'+
+     note+photos+
+   '</section>';
+ }).join("");
+ return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Báo cáo công việc kỹ thuật</title><style>'+
+ '*{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'+
+ '@page{size:A4 portrait;margin:10mm 10mm 12mm}'+
+ 'html,body{margin:0;padding:0;background:#fff;color:#172033;font-family:Arial,Helvetica,sans-serif}'+
+ 'body{font-size:10.5px;line-height:1.45}'+
+ '.report{width:100%;max-width:190mm;margin:0 auto}'+
+ '.topline{height:5px;border-radius:0 0 5px 5px;background:linear-gradient(90deg,#0b3151,#0b8195,#20bfd4)}'+
+ '.header{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 2px 10px;border-bottom:1px solid #dce5ec}'+
+ '.brand{display:flex;align-items:center;gap:10px}.brandMark{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:#102a46;color:#25d9ee;font-size:18px;font-weight:900}.brandText strong{display:block;color:#102a46;font-size:18px;letter-spacing:3px}.brandText small{display:block;margin-top:2px;color:#718096;font-size:7px;letter-spacing:1.4px}'+
+ '.doc{text-align:right;color:#627086;font-size:8.5px;line-height:1.5}.doc b{display:block;color:#18263b;font-size:9.5px}'+
+ '.title{padding:15px 2px 12px}.title .eyebrow{color:#108aa0;font-size:7.5px;font-weight:800;letter-spacing:1.4px}.title h1{margin:4px 0 5px;color:#102a46;font-size:21px;line-height:1.15;letter-spacing:-.25px}.title p{margin:0;color:#6d7c90;font-size:9px}'+
+ '.summary{display:grid;grid-template-columns:1.45fr repeat(4,1fr);gap:7px;margin:0 0 13px}.summary article{min-height:52px;padding:9px 10px;border:1px solid #dbe4eb;border-radius:9px;background:#f8fafc}.summary span{display:block;color:#738197;font-size:7px;font-weight:700;letter-spacing:.6px}.summary b{display:block;margin-top:5px;color:#152a43;font-size:15px;line-height:1}.summary article.done b{color:#1e7b58}.summary article.doing b{color:#a66516}.summary article.waiting b{color:#ae4656}'+
+ '.job{position:relative;margin:0 0 11px;border:1px solid #d8e2ea;border-left:4px solid #71849b;border-radius:10px;overflow:hidden;background:#fff;break-inside:auto;page-break-inside:auto}.job.daily{border-left-color:#6886a5}.job.maintenance{border-left-color:#1496ac}.job.incident{border-left-color:#d55e70}'+
+ '.jobHead{display:flex;gap:10px;align-items:flex-start;padding:10px 11px 9px;background:#f7f9fc;border-bottom:1px solid #e3e9ee;break-after:avoid;page-break-after:avoid}.jobNo{width:28px;height:28px;display:grid;place-items:center;flex:0 0 28px;border-radius:8px;background:#102a46;color:#fff;font-size:10px;font-weight:800}.jobTitle{min-width:0;flex:1}.jobTitle h2{margin:0;color:#14243a;font-size:12.5px;line-height:1.35}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.badges span{display:inline-flex;align-items:center;min-height:20px;padding:0 7px;border:1px solid transparent;border-radius:999px;font-size:7.5px;font-weight:700}.type.daily{background:#eef3f7;color:#4d6680;border-color:#d7e1e9}.type.maintenance{background:#e9f7fa;color:#13778a;border-color:#c7e8ee}.type.incident{background:#fff0f2;color:#b64758;border-color:#f0cbd1}.status.done{background:#eaf7f0;color:#247a58;border-color:#cde9da}.status.doing{background:#fff4e4;color:#9c631d;border-color:#efdcb8}.status.waiting{background:#fff0f1;color:#ad4d59;border-color:#eccbd0}'+
+ '.meta{display:grid;grid-template-columns:.85fr 1.5fr 1fr;gap:0;padding:9px 11px}.meta>div{padding:2px 10px 2px 0;border-right:1px solid #e6ebf0}.meta>div+div{padding-left:10px}.meta>div:last-child{border-right:0}.meta span{display:block;color:#7c899b;font-size:6.8px;font-weight:700;letter-spacing:.55px}.meta b{display:block;margin-top:4px;color:#26384f;font-size:9.5px;font-weight:700}'+
+ '.note{margin:0 11px 10px;padding:8px 9px;border-radius:7px;background:#f7f9fb;border-left:3px solid #95a6b8;break-inside:avoid;page-break-inside:avoid}.note span{display:block;color:#738197;font-size:6.8px;font-weight:800;letter-spacing:.65px}.note p{margin:4px 0 0;color:#33465d;font-size:9.5px;white-space:pre-wrap}'+
+ '.photoSection{padding:0 11px 11px}.sectionLabel{display:flex;justify-content:space-between;align-items:center;margin:0 0 7px;padding-top:2px;color:#63758b;font-size:7px;font-weight:800;letter-spacing:.65px}.sectionLabel b{color:#118398;font-size:7.5px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.photos figure{margin:0;padding:5px;border:1px solid #dce5eb;border-radius:8px;background:#fafbfc;break-inside:avoid;page-break-inside:avoid}.photos img{display:block;width:100%;height:170px;object-fit:contain;border-radius:5px;background:#fff}.photos figcaption{margin-top:4px;text-align:center;color:#8290a2;font-size:6.8px}'+
+ '.sign{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:20px;padding-top:12px;border-top:1px solid #dfe6ec;break-inside:avoid;page-break-inside:avoid;text-align:center}.sign b{color:#26384f;font-size:9px}.sign small{display:block;margin-top:3px;color:#8592a3;font-size:7px}.signSpace{height:58px}'+
+ '.footer{margin-top:8px;padding-top:7px;border-top:1px solid #edf1f4;color:#8b97a7;font-size:7px;text-align:center}'+
+ '</style></head><body><div class="report"><div class="topline"></div>'+
+ '<header class="header"><div class="brand"><div class="brandMark">E</div><div class="brandText"><strong>ESTA</strong><small>PROPERTY MANAGEMENT</small></div></div><div class="doc"><b>'+esc(currentBuilding.name).toLocaleUpperCase("vi-VN")+'</b>Mã dự án: '+esc(currentBuilding.id||"—")+'<br>Xuất báo cáo: '+esc(generated)+'</div></header>'+
+ '<section class="title"><div class="eyebrow">TECHNICAL WORK REPORT</div><h1>BÁO CÁO CÔNG VIỆC KỸ THUẬT</h1><p>Thời gian báo cáo: <b>'+esc(period)+'</b></p></section>'+
+ '<section class="summary"><article><span>TÒA NHÀ</span><b style="font-size:11px;line-height:1.25">'+esc(currentBuilding.name)+'</b></article><article><span>TỔNG CÔNG VIỆC</span><b>'+a.length+'</b></article><article class="done"><span>HOÀN THÀNH</span><b>'+done+'</b></article><article class="doing"><span>ĐANG XỬ LÝ</span><b>'+doing+'</b></article><article class="waiting"><span>CHỜ XỬ LÝ</span><b>'+wait+'</b></article></section>'+
+ jobs+
+ '<section class="sign"><div><b>NGƯỜI LẬP BÁO CÁO</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div></div><div><b>ĐẠI DIỆN BAN QUẢN LÝ</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div></div></section>'+
+ '<div class="footer">ESTA Property Management · '+esc(currentBuilding.name)+' · '+photoCount+' hình ảnh đính kèm</div></div></body></html>';
+}
 let reportPdfLibPromise=null;
 function loadExternalScript(url){
  return new Promise((resolve,reject)=>{
@@ -940,15 +994,78 @@ function reportFilenameFromHtml(html){
    return pdfSafeFilename(d.title||"ESTA-bao-cao")+"-"+today()+".pdf";
  }catch(e){return "ESTA-bao-cao-"+today()+".pdf"}
 }
-async function downloadReportPdf(html,filename=""){
+function blobAsDataUrl(blob){
+ return new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onload=()=>resolve(String(reader.result||""));
+   reader.onerror=()=>reject(new Error("Không đọc được hình ảnh"));
+   reader.readAsDataURL(blob);
+ });
+}
+async function reportImageDataUrl(ref){
+ if(!ref)return "";
+ if(/^data:image\//i.test(ref))return ref;
+ try{
+   let response;
+   if(isStorageRef(ref)){
+     if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
+     const path=storagePathFromRef(ref);
+     response=await fetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
+       headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token},
+       cache:"force-cache"
+     });
+   }else{
+     response=await fetch(ref,{cache:"force-cache"});
+   }
+   if(!response.ok)throw new Error("Không tải được hình");
+   return await blobAsDataUrl(await response.blob());
+ }catch(e){
+   console.warn("Report image failed",ref,e);
+   return "";
+ }
+}
+async function prepareWorkReportRows(rows){
+ const prepared=[];
+ let total=0,failed=0;
+ for(const x of rows){
+   const refs=Array.isArray(x.imgs)?x.imgs.filter(Boolean):[];
+   total+=refs.length;
+   const converted=await Promise.all(refs.map(reportImageDataUrl));
+   failed+=converted.filter(v=>!v).length;
+   prepared.push({...x,_reportImages:converted.filter(Boolean)});
+ }
+ return {rows:prepared,total,failed};
+}
+async function waitForReportImages(doc,timeout=12000){
+ const images=[...(doc?.images||[])];
+ if(!images.length)return;
+ await Promise.all(images.map(img=>{
+   if(img.complete&&img.naturalWidth>0)return Promise.resolve();
+   return new Promise(resolve=>{
+     let done=false;
+     const finish=()=>{if(done)return;done=true;resolve()};
+     img.addEventListener("load",finish,{once:true});
+     img.addEventListener("error",finish,{once:true});
+     setTimeout(finish,timeout);
+   });
+ }));
+}
+function writeReportLoadingTab(w){
+ if(!w||w.closed)return;
+ try{
+   w.document.open();
+   w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Đang tạo PDF</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1322;color:#e8eef9;font-family:Arial,sans-serif}.box{text-align:center}.spin{width:38px;height:38px;margin:0 auto 15px;border:4px solid #24334d;border-top-color:#20d9ef;border-radius:50%;animation:s 1s linear infinite}@keyframes s{to{transform:rotate(360deg)}}b{font-size:16px}p{color:#8ea0bc;font-size:12px}</style></head><body><div class="box"><div class="spin"></div><b>Đang tạo báo cáo PDF...</b><p>Đang chuẩn bị nội dung và hình ảnh. Vui lòng chờ.</p></div></body></html>');
+   w.document.close();
+ }catch(e){}
+}
+async function downloadReportPdf(html,filename="",previewWindow=null){
  if(!html)return;
- let frame=null;
+ let frame=null,pdfUrl="";
  try{
    toast("Đang tạo file PDF...");
    const html2pdf=await ensureHtml2Pdf();
    const landscape=/@page\s*\{[^}]*landscape/i.test(html);
    const cleaned=String(html).replace(/<script[\s\S]*?<\/script>/gi,"");
-
    frame=document.createElement("iframe");
    frame.setAttribute("aria-hidden","true");
    Object.assign(frame.style,{
@@ -957,44 +1074,88 @@ async function downloadReportPdf(html,filename=""){
      height:(landscape?794:1120)+"px",
      border:"0",background:"#fff",opacity:"0.01",pointerEvents:"none"
    });
-
    const loaded=new Promise((resolve,reject)=>{
-     const timer=setTimeout(()=>reject(new Error("Tạo trang PDF quá thời gian")),8000);
+     const timer=setTimeout(()=>reject(new Error("Tạo trang PDF quá thời gian")),10000);
      frame.onload=()=>{clearTimeout(timer);resolve()};
    });
    frame.srcdoc=cleaned;
    document.body.appendChild(frame);
    await loaded;
-   await new Promise(r=>setTimeout(r,180));
-
-   const body=frame.contentDocument?.body;
+   const doc=frame.contentDocument;
+   const body=doc?.body;
    if(!body)throw new Error("Không tạo được nội dung PDF");
+   if(doc.fonts?.ready)try{await doc.fonts.ready}catch(e){}
+   await waitForReportImages(doc);
+   await new Promise(r=>setTimeout(r,100));
 
    const finalName=filename?pdfSafeFilename(filename.replace(/\.pdf$/i,""))+".pdf":reportFilenameFromHtml(html);
-   await html2pdf().set({
-     margin:[7,7,8,7],
+   const worker=html2pdf().set({
+     margin:[8,8,9,8],
      filename:finalName,
-     image:{type:"jpeg",quality:0.97},
-     html2canvas:{scale:1.45,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false},
-     jsPDF:{unit:"mm",format:"a4",orientation:landscape?"landscape":"portrait"},
-     pagebreak:{mode:["css","legacy"]}
-   }).from(body).save();
-   toast("Đã tải file PDF");
+     image:{type:"jpeg",quality:0.98},
+     html2canvas:{scale:1.8,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false,scrollX:0,scrollY:0},
+     jsPDF:{unit:"mm",format:"a4",orientation:landscape?"landscape":"portrait",compress:true},
+     pagebreak:{mode:["css","legacy"],avoid:["figure",".note",".sign",".jobHead"]}
+   }).from(body).toPdf();
+   const pdf=await worker.get("pdf");
+   const blob=pdf.output("blob");
+   pdfUrl=URL.createObjectURL(blob);
+
+   if(previewWindow&&!previewWindow.closed){
+     previewWindow.location.replace(pdfUrl);
+     toast("Đã tạo PDF · hình ảnh đã được đính kèm");
+   }else{
+     const a=document.createElement("a");
+     a.href=pdfUrl;a.download=finalName;
+     document.body.appendChild(a);a.click();a.remove();
+     toast("Đã tải file PDF");
+   }
+   setTimeout(()=>{if(pdfUrl)URL.revokeObjectURL(pdfUrl)},300000);
  }catch(err){
-   console.warn("PDF download failed",err);
-   toast("Không tải PDF tự động được. Đang mở bản in dự phòng...");
+   console.warn("PDF generation failed",err);
+   toast("Không tạo được PDF tự động. Đang mở bản xem dự phòng...");
    try{
-     const w=open("","_blank");
-     if(!w)throw new Error("Trình duyệt đang chặn cửa sổ tải PDF");
-     w.document.write(html);w.document.close();
+     let w=previewWindow;
+     if(!w||w.closed)w=open("","_blank");
+     if(!w)throw new Error("Trình duyệt đang chặn cửa sổ xem báo cáo");
+     w.document.open();w.document.write(html);w.document.close();
    }catch(e){toast(e.message||"Không thể xuất PDF")}
  }finally{
-   if(frame)setTimeout(()=>frame.remove(),500);
+   if(frame)setTimeout(()=>frame.remove(),400);
  }
 }
 window.downloadReportPdf=downloadReportPdf;
 
-function openReport(a){if(!a.length){toast("Không có dữ liệu để xuất PDF");return}downloadReportPdf(reportHtml(a),"ESTA-"+currentBuilding.id+"-bao-cao-cong-viec-"+today()+".pdf")}$("#exportBtn").onclick=()=>$("#exportModal").classList.remove("hide");$("#closeExport").onclick=()=>$("#exportModal").classList.add("hide");$("#exportModal").onclick=e=>{if(e.target===$("#exportModal"))$("#exportModal").classList.add("hide")};document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{let kind=b.dataset.range,a;if(kind==="current")a=filtered();else{let r=rangeDates(kind);a=filtered(r.from,r.to)}$("#exportModal").classList.add("hide");openReport(a)});document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#viewer").classList.add("hide");$("#exportModal").classList.add("hide")}});$("#today").textContent=new Date().toLocaleDateString("vi-VN")
+let workReportBusy=false;
+async function openReport(a,previewWindow=null){
+ if(!a.length){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Không có dữ liệu để xuất PDF");return}
+ if(workReportBusy){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Báo cáo đang được tạo");return}
+ workReportBusy=true;
+ try{
+   const prepared=await prepareWorkReportRows(a);
+   if(prepared.failed)toast("Có "+prepared.failed+" hình không tải được; các hình còn lại vẫn được đính kèm");
+   const html=reportHtml(prepared.rows);
+   await downloadReportPdf(html,"ESTA-"+currentBuilding.id+"-bao-cao-cong-viec-"+today()+".pdf",previewWindow);
+ }finally{
+   workReportBusy=false;
+ }
+}
+$("#exportBtn").onclick=()=>$("#exportModal").classList.remove("hide");
+$("#closeExport").onclick=()=>$("#exportModal").classList.add("hide");
+$("#exportModal").onclick=e=>{if(e.target===$("#exportModal"))$("#exportModal").classList.add("hide")};
+document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{
+ let kind=b.dataset.range,a;
+ if(kind==="current")a=filtered();
+ else{let r=rangeDates(kind);a=filtered(r.from,r.to)}
+ if(!a.length){$("#exportModal").classList.add("hide");toast("Không có dữ liệu để xuất PDF");return}
+ let preview=null;
+ try{preview=window.open("","_blank");if(preview)writeReportLoadingTab(preview)}catch(e){}
+ $("#exportModal").classList.add("hide");
+ openReport(a,preview);
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#viewer").classList.add("hide");$("#exportModal").classList.add("hide")}});
+setTimeout(()=>ensureHtml2Pdf().catch(()=>{}),900);
+$("#today").textContent=new Date().toLocaleDateString("vi-VN")
 
 /* ===== MODULE NĂNG LƯỢNG ===== */
 const energyStorageKey=()=>currentBuilding.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+currentBuilding.id;
