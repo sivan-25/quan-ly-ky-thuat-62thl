@@ -1501,3 +1501,53 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   background:#12313e!important;
   color:#30dff3!important;
 }
+/* =========================================================
+   WORK HERO LEFT ALIGN
+   Keep title/content immediately beside the module icon.
+   ========================================================= */
+#app.workMode #workPage .proPageHead{
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr) auto!important;
+  grid-template-rows:auto!important;
+  align-items:center!important;
+  column-gap:16px!important;
+  min-height:108px!important;
+  padding:18px 22px!important;
+}
+#app.workMode #workPage .proPageHead>.headIcon{
+  grid-column:1!important;
+  justify-self:start!important;
+  margin:0!important;
+}
+#app.workMode #workPage .proPageHead>div:nth-child(2){
+  grid-column:2!important;
+  justify-self:start!important;
+  align-self:center!important;
+  width:auto!important;
+  max-width:680px!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  transform:none!important;
+}
+#app.workMode #workPage .proPageHead .pageEyebrow,
+#app.workMode #workPage .proPageHead h1,
+#app.workMode #workPage .proPageHead p{
+  text-align:left!important;
+}
+#app.workMode #workPage .proPageHead .headMeta{
+  grid-column:3!important;
+  justify-self:end!important;
+  margin:0!important;
+}
+@media(max-width:900px){
+  #app.workMode #workPage .proPageHead{
+    grid-template-columns:44px minmax(0,1fr)!important;
+    row-gap:12px!important;
+    padding:16px!important;
+  }
+  #app.workMode #workPage .proPageHead .headMeta{
+    grid-column:1/-1!important;
+    justify-self:start!important;
+  }
+}
