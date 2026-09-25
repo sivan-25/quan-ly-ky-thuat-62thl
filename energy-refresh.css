@@ -18,10 +18,11 @@
   margin:0 auto;
   padding:20px 28px 42px!important;
   color:var(--en-text)!important;
-  display:grid!important;
   grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr);
   gap:18px;
 }
+#app #energyPage.hide{display:none!important}
+#app #energyPage:not(.hide){display:grid!important}
 
 /* Dark shell only while the Energy module is open */
 #app:has(#energyPage:not(.hide)),
