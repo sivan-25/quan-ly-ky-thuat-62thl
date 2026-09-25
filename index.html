@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260924-1940"><link rel="stylesheet" href="energy-refresh.css?v=20260925-01"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260924-1940"><link rel="stylesheet" href="energy-refresh.css?v=20260925-dark02"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -687,7 +687,7 @@
   </div>
   <div id="topEnergyTitle" class="topModuleTitle hide">
     <div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div>
-    <div><h1>Năng lượng</h1><p>Theo dõi điện, nước và điện mặt trời</p></div>
+    <div><h1>Năng lượng</h1><p><span class="buildingNameText">62 Trần Huy Liệu</span> · Điện, nước, điện mặt trời</p></div>
   </div>
   <div id="topInventoryTitle" class="topModuleTitle hide">
     <div class="topModuleIcon inventoryTopIcon"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h3M13 11h3M8 15h8"/></svg></div>
@@ -909,8 +909,9 @@
 <div id="energyPage" class="page modulePage proModulePage hide">
   <section class="pageHead proPageHead energyHead">
     <div class="headIcon energyIcon"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div>
-    <div><span class="pageEyebrow">ESTA · THEO DÕI NĂNG LƯỢNG</span><h1>Năng lượng tòa nhà</h1><p>Ghi chỉ số và theo dõi mức tiêu thụ điện, nước, điện mặt trời.</p></div>
-    <div class="headMeta"><span><i></i> Ngày: <b id="energyToday"></b></span><span><i></i> Tòa nhà: <b class="buildingNameText">62 Trần Huy Liệu</b></span></div>
+    <div class="energyHeadCopy"><span class="pageEyebrow">ESTA · THEO DÕI NĂNG LƯỢNG</span><h1>Năng lượng tòa nhà</h1><p>Ghi chỉ số và theo dõi mức tiêu thụ điện, nước, điện mặt trời theo thời gian thực.</p></div>
+    <div class="headMeta"><span><i></i> Ngày <b id="energyToday"></b></span><span><i></i> Tòa nhà <b class="buildingNameText">62 Trần Huy Liệu</b></span></div>
+    <div class="energyHeroVisual" aria-hidden="true"><div class="energyPulse">ϟ</div><div class="energyBuilding"></div></div>
   </section>
 
   <section class="energyTabs" aria-label="Loại chỉ số">
@@ -920,9 +921,21 @@
   </section>
 
   <section class="energySummaryCards" aria-label="Tổng quan chỉ số">
-    <article><small>BẢN GHI</small><strong id="energyRecordCount">0</strong></article>
-    <article><small>CHỈ SỐ MỚI NHẤT</small><strong id="energyLatestValue">—</strong></article>
-    <article><small>TIÊU THỤ KỲ LỌC</small><strong id="energyPeriodUse">—</strong></article>
+    <article>
+      <span class="summaryIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v5h5M10 12h6M10 16h6"/></svg></span>
+      <small>Bản ghi tháng này</small><strong id="energyRecordCount">0</strong>
+      <p>Chưa có dữ liệu — bắt đầu ghi nhận ở form bên dưới.</p>
+    </article>
+    <article>
+      <span class="summaryIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 16 5-5 4 4 7-8"/><path d="M15 7h5v5"/></svg></span>
+      <small>Chỉ số mới nhất</small><strong id="energyLatestValue">—</strong>
+      <p>Giá trị gần nhất đã được ghi nhận.</p>
+    </article>
+    <article>
+      <span class="summaryIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6"/></svg></span>
+      <small>Tiêu thụ kỳ lọc</small><strong id="energyPeriodUse">—</strong>
+      <p>Tổng mức tiêu thụ theo khoảng thời gian đang chọn.</p>
+    </article>
   </section>
 
   <section class="energyCard premiumFormCard">
@@ -958,7 +971,7 @@
       <table><thead><tr><th>Ngày</th><th>Thứ</th><th id="energyValueColumn">Chỉ số (kWh)</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="energyTbody"></tbody></table>
     </div>
     <div id="energyMobileCards"></div>
-    <div id="energyEmpty" class="empty hide">Chưa có dữ liệu chỉ số.</div>
+    <div id="energyEmpty" class="empty hide"><span class="emptyTableIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg></span><b>Chưa có bản ghi nào</b><p>Nhập chỉ số đầu tiên ở form bên trái để bắt đầu theo dõi mức tiêu thụ.</p></div>
     <div class="energyLegend"><span>■ Chủ nhật</span><span>Chênh lệch = chỉ số hiện tại − chỉ số lần trước</span></div>
   </section>
 </div>
