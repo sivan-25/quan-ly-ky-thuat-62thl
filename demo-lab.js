@@ -50,7 +50,7 @@ function demoHideSpecialPages(){
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.remove("active"));
 }
 function demoSetProjectMode(){
- const on=demoIs()&&!$("#adminPage")?.classList.contains("hide");
+ const on=demoIs()&&($("#adminPage")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoProjectMode",on);
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
@@ -469,7 +469,7 @@ window.demoExportReport=async type=>{
  if(type==="work"){const a=load().filter(x=>x.d>=r.from&&x.d<=r.to);if(!a.length)return toast("Không có công việc trong kỳ");return openReport(a,"week")}
  if(type==="maintenance")return downloadReportPdf(maintenanceReportHtml("week"),maintenanceReportFilename(maintenanceReportPeriod("week")));
  if(type==="incident")return downloadReportPdf(demoIncidentsReportHtml(),"BaoCao_SuCo_"+workReportPeriod("week").suffix+".pdf");
- if(type==="inspection"){const ins=demoCache.inspections[0];if(ins)return demoExportInspection(ins.id)}
+ if(type==="inspection"){const ins=demoCache.inspections[0];if(ins)return window.demoExportInspection(ins.id)}
  if(type==="energy"){setEnergyRange("week");const rows=energyRows();if(rows.length)return downloadReportPdf(energyReportHtml(rows),"BaoCao_NangLuong_"+workReportPeriod("week").suffix+".pdf")}
  if(type==="inventory"){await loadInventoryData(DEMO_ID);return inventoryPrintWindow(materialReportHtml(),"BaoCao_VatTu_"+workReportPeriod("week").suffix+".pdf")}
 };
@@ -480,9 +480,9 @@ document.addEventListener("click",e=>{
  if(e.target.closest("#navDocuments"))showModule("documents");
  if(e.target.closest("#navReports"))showModule("reports");
 });
-$("#demoIncidentAdd")&&($("#demoIncidentAdd").onclick=demoAddIncident);
-$("#demoInspectionAdd")&&($("#demoInspectionAdd").onclick=demoAddChecklist);
-$("#demoDocumentAdd")&&($("#demoDocumentAdd").onclick=demoAddDocument);
+$("#demoIncidentAdd")&&($("#demoIncidentAdd").onclick=window.demoAddIncident);
+$("#demoInspectionAdd")&&($("#demoInspectionAdd").onclick=window.demoAddChecklist);
+$("#demoDocumentAdd")&&($("#demoDocumentAdd").onclick=window.demoAddDocument);
 
 window.demoRefresh=async()=>{
  demoCache.loaded=false;await demoLoad(true);demoPopulateWorkOptions();demoRenderHomeOps();
