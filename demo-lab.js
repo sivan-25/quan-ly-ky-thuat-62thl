@@ -5,6 +5,11 @@ const DEMO_MODULES=["incident","inspection","documents","reports"];
 let demoCache={loaded:false,incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};
 let demoSelectedIncident="",demoSelectedInspection="",demoSelectedDocument="";
 const demoIs=()=>currentBuilding?.id===DEMO_ID;
+const originalAdminProjectCard=adminProjectCard;
+adminProjectCard=function(b,index=0){
+ const html=originalAdminProjectCard(b,index);
+ return b?.id===DEMO_ID?html.replace("</h3>"," <span class=\"demoProjectBadge\">MẪU THỬ</span></h3>"):html;
+};
 const demoTok=()=>centralSession?.access_token||"";
 const demoQs=v=>encodeURIComponent(v??"");
 async function demoRest(table,query=""){
