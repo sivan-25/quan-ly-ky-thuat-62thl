@@ -554,7 +554,29 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260925-maintenance-cream31"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09"></head><body>
+</style><link rel="stylesheet" href="unified.css?v=20260925-maintenance-cream31"><link rel="stylesheet" href="energy-refresh.css?v=20260925-energy-menu09">
+<style id="esta-mobile-ios-no-zoom">
+/* Mobile only — prevent iOS Safari from auto-zooming form controls on focus.
+   Keep desktop sizing untouched and preserve normal pinch-zoom accessibility. */
+@media (max-width:1024px) and (pointer:coarse){
+  html,body{
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+  }
+
+  input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  select,
+  textarea,
+  [contenteditable="true"]{
+    font-size:16px!important;
+  }
+
+  input::placeholder,
+  textarea::placeholder{
+    font-size:16px!important;
+  }
+}
+</style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
