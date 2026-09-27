@@ -1308,3 +1308,44 @@
     font-size:13px!important;
   }
 }
+
+/* Energy entry on phones: give the locale-formatted date a full row.
+   The same form is reused by electricity, water and solar. */
+@media (max-width:700px){
+  #app #energyPage #energyForm{
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:
+      "edate"
+      "value"
+      "eperformer"
+      "enote"
+      "eimage"
+      "actions"!important;
+    align-items:stretch!important;
+    row-gap:12px!important;
+  }
+  #app #energyPage #energyForm>label,
+  #app #energyPage #energyForm .energyPerformerField,
+  #app #energyPage #energyForm .energyNoteField,
+  #app #energyPage #energyForm .energyImageField,
+  #app #energyPage #energyForm .energyActions{
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #app #energyPage #energyForm>label:first-of-type{
+    min-width:0!important;
+  }
+  #app #energyPage #energyDate,
+  #app #energyPage #energyValue{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #app #energyPage #energyDate{
+    padding-left:12px!important;
+    padding-right:40px!important;
+  }
+}
