@@ -8,7 +8,7 @@ import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler
 
-from _esta_report import build_doc, story_merged
+from esta_report_template import build_doc, story_merged
 
 SB_URL = "https://upcjcrycahdfroxggsdz.supabase.co"
 SB_KEY = "sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa"
