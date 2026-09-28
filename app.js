@@ -1050,54 +1050,162 @@ function workReportPeriod(kind="current",rows=[]){
 function workReportFilename(period){
  return "BaoCao_CongViec_"+period.suffix+".pdf";
 }
-function reportHtml(a,kind="current"){
+function reportHtml(a,kind="current",photoLayout=2){
  const reportPeriod=workReportPeriod(kind,a);
- const period=reportPeriod.from||reportPeriod.to?((reportPeriod.from?fmt(reportPeriod.from):"Đầu kỳ")+" - "+(reportPeriod.to?fmt(reportPeriod.to):"Hiện tại")):"Toàn bộ dữ liệu";
+ const projectName=currentBuilding?.name||"[CẦN BỔ SUNG]";
  const done=a.filter(x=>x.s==="Đã hoàn thành").length;
  const doing=a.filter(x=>x.s==="Đang thực hiện").length;
  const wait=a.length-done-doing;
- const photoCount=a.reduce((n,x)=>n+((x._reportImages||x.imgs||[]).filter(Boolean).length),0);
- const generated=new Date().toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"});
- const assessment=wait>0?"CẦN KHẮC PHỤC / THEO DÕI":(doing>0?"CẦN THEO DÕI":(a.length&&done===a.length?"ĐẠT":"CHƯA CÓ DỮ LIỆU ĐÁNH GIÁ"));
- const recommendation=wait>0?"Ưu tiên xử lý các công việc còn chờ và cập nhật kết quả sau khi hoàn tất.":(doing>0?"Tiếp tục theo dõi các công việc đang thực hiện đến khi hoàn thành.":(a.length?"Tiếp tục duy trì công tác kiểm tra và cập nhật công việc định kỳ.":"[CẦN BỔ SUNG]"));
- const jobs=a.map((x,i)=>{
-   const type=x.t||"Hằng ngày";
-   const performers=performerArray(x).join(", ")||"—";
-   const imgs=(x._reportImages||x.imgs||[]).filter(Boolean);
-   const photos=imgs.length
-     ?'<div class="photoSection"><div class="sectionLabel"><span>HÌNH ẢNH THỰC TẾ</span><b>'+imgs.length+' ảnh</b></div><div class="photos">'+imgs.map((v,j)=>'<figure><img src="'+esc(v)+'" alt="Ảnh công việc '+(j+1)+'"><figcaption>Hình '+(j+1)+': '+esc(x.c)+'</figcaption></figure>').join("")+'</div></div>'
-     :'';
-   const note=x.n?'<div class="note"><span>GHI CHÚ / ĐÁNH GIÁ</span><p>'+esc(x.n)+'</p></div>':'';
-   return '<section class="job '+reportTypeClass(type)+'">'+
-     '<div class="jobHead"><div class="jobNo">'+String(i+1).padStart(2,"0")+'</div><div class="jobTitle"><h2>'+esc(x.c)+'</h2><div class="badges"><span class="type '+reportTypeClass(type)+'">'+esc(type)+'</span><span class="status '+reportStatusClass(x.s)+'">'+esc(x.s)+'</span></div></div></div>'+
-     '<div class="meta"><div><span>NGÀY THỰC HIỆN</span><b>'+fmt(x.d)+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div><div><span>KẾT QUẢ / TRẠNG THÁI</span><b>'+esc(x.s)+'</b></div></div>'+
-     note+photos+
-   '</section>';
+ const incidents=a.filter(x=>(x.t||"")==="Sự cố").length;
+ const periodText=reportPeriod.from||reportPeriod.to
+   ?((reportPeriod.from?fmt(reportPeriod.from):"Đầu kỳ")+" - "+(reportPeriod.to?fmt(reportPeriod.to):"Hiện tại"))
+   :"Toàn bộ dữ liệu";
+ const units=[...new Set(a.flatMap(x=>{
+   const names=[...performerArray(x)];
+   const contractor=x._reportContractor?.name||x.contractorName||"";
+   if(contractor)names.push(contractor);
+   return names.filter(Boolean);
+ }))];
+ const executionUnits=units.length?units.join(", "):"[CẦN BỔ SUNG]";
+ const photoCols=Number(photoLayout)===1?1:2;
+
+ const header=(step,compact=false)=>'<div class="reportHeader '+(compact?"compact":"")+'">'+
+   '<div class="brandBlock"><div class="brandRow"><span class="brandStar">✦</span><div><strong>ESTA</strong><small>PROPERTY MANAGEMENT</small></div></div></div>'+
+   '<div class="headerReport"><b>BÁO CÁO CÔNG VIỆC KỸ THUẬT</b><span>'+esc(step)+'</span></div>'+
+   '</div><div class="projectName">'+esc(projectName)+'</div>';
+
+ const infoBlock=()=>'<div class="reportInfo">'+
+   '<div><span>TÒA NHÀ</span><b>'+esc(projectName)+'</b></div>'+
+   '<div><span>KỲ BÁO CÁO</span><b>'+esc(reportPeriod.label)+'</b></div>'+
+   '<div><span>ĐƠN VỊ THỰC HIỆN</span><b>'+esc(executionUnits)+'</b></div>'+
+   '<div><span>NGƯỜI LẬP</span><b>&nbsp;</b></div>'+
+   '</div>';
+
+ const signatures=()=>'<div class="signature3">'+
+   '<div><b>NGƯỜI LẬP BÁO CÁO</b><small>(Ký, ghi rõ họ tên)</small><i></i></div>'+
+   '<div><b>TRƯỞNG BỘ PHẬN KỸ THUẬT</b><small>(Ký, ghi rõ họ tên)</small><i></i></div>'+
+   '<div><b>BAN QUẢN LÝ TÒA NHÀ</b><small>(Ký, ghi rõ họ tên)</small><i></i></div>'+
+   '</div>';
+
+ const summaryRows=a.map((x,i)=>{
+   const type=x.t||"Hằng ngày",performers=performerArray(x).join(", ")||"—";
+   return '<tr>'+
+     '<td class="num">'+String(i+1).padStart(2,"0")+'</td>'+
+     '<td class="taskName">'+esc(x.c||"—")+'</td>'+
+     '<td><span class="typePill '+reportTypeClass(type)+'">'+esc(type)+'</span></td>'+
+     '<td><span class="statusPill '+reportStatusClass(x.s)+'">'+esc(x.s||"—")+'</span></td>'+
+     '<td>'+esc(fmt(x.d))+'</td>'+
+     '<td class="performer">'+esc(performers)+'</td>'+
+     '<td class="noteText">'+esc(x.n||"—")+'</td>'+
+   '</tr>';
  }).join("");
- return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BÁO CÁO CÔNG VIỆC KỸ THUẬT - '+reportPeriod.label+'</title><style>'+
+
+ const summaryPage='<section class="reportSheet summarySheet">'+header("BƯỚC 1 · TỔNG HỢP")+
+   '<div class="sheetInner">'+
+   '<div class="stepLabel">BƯỚC 1 · BÁO CÁO TỔNG HỢP</div>'+
+   '<h1>Danh sách công việc kỹ thuật</h1><div class="goldRule"></div>'+
+   infoBlock()+
+   '<div class="kpis">'+
+     '<article class="main"><b>'+a.length+'</b><span>TỔNG CÔNG VIỆC</span></article>'+
+     '<article><b>'+doing+'</b><span>ĐANG THỰC HIỆN</span></article>'+
+     '<article><b>'+wait+'</b><span>CHỜ XỬ LÝ</span></article>'+
+     '<article><b>'+done+'</b><span>HOÀN THÀNH</span></article>'+
+     '<article><b>'+incidents+'</b><span>SỰ CỐ</span></article>'+
+   '</div>'+
+   '<div class="tableLabel">DANH SÁCH CÔNG VIỆC ('+a.length+')</div>'+
+   '<table class="summaryTable"><colgroup><col style="width:5%"><col style="width:25%"><col style="width:10%"><col style="width:12%"><col style="width:11%"><col style="width:16%"><col style="width:21%"></colgroup>'+
+   '<thead><tr><th>STT</th><th>NỘI DUNG CÔNG VIỆC</th><th>LOẠI</th><th>TRẠNG THÁI</th><th>NGÀY</th><th>NGƯỜI THỰC HIỆN</th><th>GHI CHÚ</th></tr></thead>'+
+   '<tbody>'+summaryRows+'</tbody></table>'+
+   signatures()+
+   '</div></section>';
+
+ const detailInfo=(x)=>{
+   const blocks=[];
+   const cause=x.cause||x._reportIncident?.cause||"";
+   const result=x.result||x._reportIncident?.solution||"";
+   const asset=x._reportAsset?((x._reportAsset.code?x._reportAsset.code+" · ":"")+x._reportAsset.name):"";
+   const contractor=x._reportContractor?.name||x.contractorName||"";
+   const mats=(x._reportMaterials||x.materials||[]).filter(Boolean).map(m=>{
+     const qty=m.qty!==undefined&&m.qty!==null?(" × "+m.qty+(m.unit?" "+m.unit:"")):"";
+     return (m.name||m.code||"Vật tư")+qty;
+   }).join(", ");
+   if(cause)blocks.push('<div><span>NGUYÊN NHÂN</span><p>'+esc(cause)+'</p></div>');
+   if(result)blocks.push('<div><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(result)+'</p></div>');
+   if(asset)blocks.push('<div><span>THIẾT BỊ LIÊN QUAN</span><p>'+esc(asset)+'</p></div>');
+   if(x.incidentCode)blocks.push('<div><span>SỰ CỐ LIÊN QUAN</span><p>'+esc(x.incidentCode)+'</p></div>');
+   if(x.inspectionCode)blocks.push('<div><span>CHECKLIST LIÊN QUAN</span><p>'+esc(x.inspectionCode)+'</p></div>');
+   if(contractor)blocks.push('<div><span>NHÀ THẦU</span><p>'+esc(contractor)+'</p></div>');
+   if(mats)blocks.push('<div><span>VẬT TƯ SỬ DỤNG</span><p>'+esc(mats)+'</p></div>');
+   return blocks.length?'<div class="extraGrid">'+blocks.join("")+'</div>':"";
+ };
+
+ const detailCard=(x,i)=>{
+   const type=x.t||"Hằng ngày",performers=performerArray(x).join(", ")||"—";
+   const imgs=(x._reportImages||[]).filter(Boolean);
+   const photoItems=(imgs.length?imgs:[null,null]).map((v,j)=>
+     v
+       ?'<figure><img src="'+esc(v)+'" alt="Hình '+(j+1)+'"><figcaption>Hình '+(j+1)+'</figcaption></figure>'
+       :'<figure class="placeholder"><div><b>✦</b><span>HÌNH ẢNH CHƯA CẬP NHẬT</span></div><figcaption>Hình '+(j+1)+'</figcaption></figure>'
+   ).join("");
+   return '<article class="detailCard" data-photo-count="'+Math.max(imgs.length,2)+'">'+
+     '<div class="detailHead"><div class="detailNo">'+String(i+1).padStart(2,"0")+'</div><h2>'+esc(x.c||"—")+'</h2><span class="statusPill '+reportStatusClass(x.s)+'">'+esc(x.s||"—")+'</span></div>'+
+     '<div class="detailMeta"><div><span>LOẠI CÔNG VIỆC</span><b>'+esc(type)+'</b></div><div><span>NGÀY THỰC HIỆN</span><b>'+esc(fmt(x.d))+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div></div>'+
+     '<div class="detailNote"><span>GHI CHÚ</span><p>'+esc(x.n||"—")+'</p></div>'+
+     detailInfo(x)+
+     '<div class="photoTitle">HÌNH ẢNH HIỆN TRƯỜNG'+(imgs.length?' · '+imgs.length+' ẢNH':"")+'</div>'+
+     '<div class="detailPhotos cols'+photoCols+'">'+photoItems+'</div>'+
+   '</article>';
+ };
+
+ const groups=[];
+ let bucket=[];
+ a.forEach((x,i)=>{
+   const imageCount=Math.max((x._reportImages||[]).filter(Boolean).length,2);
+   const extraCount=[
+     x.cause||x._reportIncident?.cause,
+     x.result||x._reportIncident?.solution,
+     x._reportAsset,
+     x.incidentCode,
+     x.inspectionCode,
+     x._reportContractor,
+     (x._reportMaterials||x.materials||[]).length
+   ].filter(Boolean).length;
+   const forceSingle=photoCols===1||imageCount>2||extraCount>2;
+   if(forceSingle){
+     if(bucket.length){groups.push(bucket);bucket=[]}
+     groups.push([{x,i}]);
+   }else{
+     bucket.push({x,i});
+     if(bucket.length===2){groups.push(bucket);bucket=[]}
+   }
+ });
+ if(bucket.length)groups.push(bucket);
+
+ const detailPages=groups.map((group,pageIndex)=>{
+   const first=pageIndex===0,last=pageIndex===groups.length-1;
+   return '<section class="reportSheet detailSheet">'+
+     header(first?"BƯỚC 2 · CHI TIẾT & HÌNH ẢNH":"BÁO CÁO CHI TIẾT & HÌNH ẢNH",!first)+
+     '<div class="sheetInner">'+
+       (first?'<div class="stepLabel">BƯỚC 2 · BÁO CÁO CHI TIẾT KÈM HÌNH ẢNH</div><h1>Danh sách công việc kỹ thuật</h1><div class="goldRule"></div>'+infoBlock()+
+       '<div class="detailSummary">TỔNG '+a.length+' CÔNG VIỆC · '+doing+' ĐANG THỰC HIỆN · '+wait+' CHỜ XỬ LÝ · '+done+' HOÀN THÀNH · '+incidents+' SỰ CỐ</div>':"")+
+       group.map(o=>detailCard(o.x,o.i)).join("")+
+       (last?signatures():"")+
+     '</div></section>';
+ }).join("");
+
+ return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BÁO CÁO CÔNG VIỆC KỸ THUẬT - '+esc(reportPeriod.label)+'</title><style>'+
  '*{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'+
- '@page{size:A4 portrait;margin:20mm}'+
- 'html,body{margin:0;padding:0;background:#fff;color:#172033;font-family:Arial,Helvetica,sans-serif}'+
- 'body{font-size:10.5px;line-height:1.45}.report{width:100%;margin:0 auto}'+
- '.topline{height:4px;background:linear-gradient(90deg,#173d58,#1a8ca3,#21bfd4)}'+
- '.header{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 2px 9px;border-bottom:1px solid #dce5ec}.brand{display:flex;align-items:center;gap:10px}.brandMark{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:#102a46;color:#25d9ee;font-size:18px;font-weight:900}.brandText strong{display:block;color:#102a46;font-size:18px;letter-spacing:3px}.brandText small{display:block;margin-top:2px;color:#718096;font-size:7px;letter-spacing:1.4px}.doc{text-align:right;color:#627086;font-size:8.5px;line-height:1.55}.doc b{color:#18263b}'+
- '.title{text-align:center;padding:14px 2px 12px}.title .eyebrow{color:#108aa0;font-size:7.5px;font-weight:800;letter-spacing:1.4px}.title h1{margin:4px 0 5px;color:#102a46;font-size:19px;line-height:1.2}.title h2{margin:0;color:#8b5e37;font-size:11px}.title p{margin:5px 0 0;color:#6d7c90;font-size:9px}'+
- '.info{width:100%;border-collapse:collapse;margin:0 0 12px}.info td{border:1px solid #d5dee5;padding:6px 7px}.info .label{width:20%;background:#f2f5f7;color:#536878;font-weight:700}.info .value{width:30%}'+
- '.summary{display:grid;grid-template-columns:1.45fr repeat(4,1fr);gap:7px;margin:0 0 13px}.summary article{min-height:52px;padding:9px 10px;border:1px solid #dbe4eb;border-radius:9px;background:#f8fafc}.summary span{display:block;color:#738197;font-size:7px;font-weight:700;letter-spacing:.6px}.summary b{display:block;margin-top:5px;color:#152a43;font-size:15px;line-height:1}.summary article.done b{color:#1e7b58}.summary article.doing b{color:#a66516}.summary article.waiting b{color:#ae4656}'+
- '.sectionTitle{margin:14px 0 7px;padding-bottom:5px;border-bottom:1px solid #dbe3e8;color:#173d58;font-size:11.5px}'+
- '.job{position:relative;margin:0 0 11px;border:1px solid #d8e2ea;border-left:4px solid #71849b;border-radius:10px;overflow:hidden;background:#fff;break-inside:auto;page-break-inside:auto}.job.daily{border-left-color:#6886a5}.job.maintenance{border-left-color:#1496ac}.job.incident{border-left-color:#d55e70}.jobHead{display:flex;gap:10px;align-items:flex-start;padding:10px 11px 9px;background:#f7f9fc;border-bottom:1px solid #e3e9ee;break-after:avoid;page-break-after:avoid}.jobNo{width:28px;height:28px;display:grid;place-items:center;flex:0 0 28px;border-radius:8px;background:#102a46;color:#fff;font-size:10px;font-weight:800}.jobTitle{min-width:0;flex:1}.jobTitle h2{margin:0;color:#14243a;font-size:12.5px;line-height:1.35}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.badges span{display:inline-flex;align-items:center;min-height:20px;padding:0 7px;border:1px solid transparent;border-radius:999px;font-size:7.5px;font-weight:700}.type.daily{background:#eef3f7;color:#4d6680;border-color:#d7e1e9}.type.maintenance{background:#e9f7fa;color:#13778a;border-color:#c7e8ee}.type.incident{background:#fff0f2;color:#b64758;border-color:#f0cbd1}.status.done{background:#eaf7f0;color:#247a58;border-color:#cde9da}.status.doing{background:#fff4e4;color:#9c631d;border-color:#efdcb8}.status.waiting{background:#fff0f1;color:#ad4d59;border-color:#eccbd0}'+
- '.meta{display:grid;grid-template-columns:.85fr 1.5fr 1fr;gap:0;padding:9px 11px}.meta>div{padding:2px 10px 2px 0;border-right:1px solid #e6ebf0}.meta>div+div{padding-left:10px}.meta>div:last-child{border-right:0}.meta span{display:block;color:#7c899b;font-size:6.8px;font-weight:700;letter-spacing:.55px}.meta b{display:block;margin-top:4px;color:#26384f;font-size:9.5px;font-weight:700}'+
- '.note{margin:0 11px 10px;padding:8px 9px;border-radius:7px;background:#f7f9fb;border-left:3px solid #95a6b8;break-inside:avoid;page-break-inside:avoid}.note span{display:block;color:#738197;font-size:6.8px;font-weight:800;letter-spacing:.65px}.note p{margin:4px 0 0;color:#33465d;font-size:9.5px;white-space:pre-wrap}.photoSection{padding:0 11px 11px}.sectionLabel{display:flex;justify-content:space-between;align-items:center;margin:0 0 7px;padding-top:2px;color:#63758b;font-size:7px;font-weight:800;letter-spacing:.65px}.sectionLabel b{color:#118398;font-size:7.5px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.photos figure{margin:0;padding:5px;border:1px solid #dce5eb;border-radius:8px;background:#fafbfc;break-inside:avoid;page-break-inside:avoid}.photos img{display:block;width:100%;height:170px;object-fit:contain;border-radius:5px;background:#fff}.photos figcaption{margin-top:4px;text-align:center;color:#8290a2;font-size:6.8px}'+
- '.conclusion{border:1px solid #d5dee5;border-left:4px solid #173d58;background:#fafcfd;padding:9px 11px}.conclusion p{margin:3px 0}.conclusion strong{color:#173d58}.sign{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:22px;padding-top:12px;border-top:1px solid #dfe6ec;break-inside:avoid;page-break-inside:avoid;text-align:center}.sign b{color:#26384f;font-size:9px}.sign small{display:block;margin-top:3px;color:#8592a3;font-size:7px}.signSpace{height:54px}.signLine{text-align:left;height:19px;margin-top:4px;border-bottom:1px dotted #8e9aa2;color:#71808e;font-size:7.5px}'+
- '</style></head><body data-pdf-report="inspection"><div class="report"><div class="topline"></div>'+
- '<header class="header"><div class="brand"><div class="brandMark">E</div><div class="brandText"><strong>ESTA</strong><small>PROPERTY MANAGEMENT</small></div></div><div class="doc">Mã báo cáo: <b>'+esc(reportPeriod.code)+'</b><br>Ngày lập: <b>'+new Date().toLocaleDateString("vi-VN")+'</b></div></header>'+
- '<section class="title"><div class="eyebrow">TECHNICAL WORK REPORT</div><h1>BÁO CÁO CÔNG VIỆC KỸ THUẬT</h1><h2>'+esc(reportPeriod.label)+'</h2><p>Thời gian báo cáo: <b>'+esc(period)+'</b></p></section>'+
- '<table class="info"><tr><td class="label">Dự án / công trình</td><td class="value">'+esc(currentBuilding.name||"[CẦN BỔ SUNG]")+'</td><td class="label">Hạng mục</td><td class="value">Công việc kỹ thuật</td></tr><tr><td class="label">Địa điểm</td><td class="value">'+esc(currentBuilding.name||"[CẦN BỔ SUNG]")+'</td><td class="label">Đơn vị thực hiện</td><td class="value">[CẦN BỔ SUNG]</td></tr></table>'+
- '<section class="summary"><article><span>TÒA NHÀ</span><b style="font-size:11px;line-height:1.25">'+esc(currentBuilding.name)+'</b></article><article><span>TỔNG CÔNG VIỆC</span><b>'+a.length+'</b></article><article class="done"><span>HOÀN THÀNH</span><b>'+done+'</b></article><article class="doing"><span>ĐANG XỬ LÝ</span><b>'+doing+'</b></article><article class="waiting"><span>CHƯA HOÀN THÀNH</span><b>'+wait+'</b></article></section>'+
- '<h2 class="sectionTitle">1. Nội dung công việc / kiểm tra</h2>'+jobs+
- '<h2 class="sectionTitle">2. Kết luận / Đánh giá chung</h2><div class="conclusion"><p><strong>Tóm tắt:</strong> '+a.length+' công việc; '+done+' hoàn thành; '+doing+' đang thực hiện; '+wait+' chưa hoàn thành.</p><p><strong>Đánh giá:</strong> '+assessment+'</p><p><strong>Kiến nghị:</strong> '+recommendation+'</p></div>'+
- '<section class="sign"><div><b>NGƯỜI KIỂM TRA (KT)</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div><div class="signLine">Họ tên:</div><div class="signLine">Chữ ký:</div><div class="signLine">Ngày ký:</div></div><div><b>NGƯỜI KIỂM SOÁT / GIÁM SÁT (KST)</b><small>Ký và ghi rõ họ tên</small><div class="signSpace"></div><div class="signLine">Họ tên:</div><div class="signLine">Chữ ký:</div><div class="signLine">Ngày ký:</div></div></section>'+
- '</div></body></html>';
+ '@page{size:A4 portrait;margin:0}html,body{margin:0;padding:0;background:#f7dfb6;color:#4b1138;font-family:Arial,Helvetica,sans-serif}body{font-size:9.2px;line-height:1.3}'+
+ '.reportSheet{width:210mm;min-height:297mm;background:#f7dfb6;position:relative;page-break-after:always;break-after:page;overflow:hidden}.reportSheet:last-child{page-break-after:auto;break-after:auto}'+
+ '.reportHeader{height:37mm;background:#4b1138;color:#f7dfb6;display:flex;align-items:center;justify-content:space-between;padding:8mm 17mm 5mm}.reportHeader.compact{height:18mm;padding:4mm 17mm}.brandRow{display:flex;align-items:center;gap:4mm}.brandStar{font-size:29px;line-height:1;color:#f7dfb6}.brandBlock strong{display:block;font-size:20px;letter-spacing:2.6px}.brandBlock small{display:block;margin-top:2px;font-size:6px;letter-spacing:2px;color:#d6c1ae}.headerReport{text-align:right}.headerReport b{display:block;font-size:8.5px;letter-spacing:2px}.headerReport span{display:block;margin-top:4px;font-size:6.5px;letter-spacing:2.2px;color:#b99baa}'+
+ '.projectName{height:9mm;display:grid;place-items:center;background:#f7dfb6;border-bottom:1px solid #bd873b;color:#4b1138;font-size:10px;font-weight:900;letter-spacing:.6px;text-align:center;padding:0 15mm}.reportHeader.compact+.projectName{height:7mm;font-size:8.5px}'+
+ '.sheetInner{padding:7mm 17mm 16mm}.stepLabel{font-size:7px;font-weight:900;letter-spacing:.45px;color:#a56c22}.sheetInner h1{margin:2mm 0 1.5mm;font-size:18px;line-height:1.1;color:#4b1138}.goldRule{height:1px;background:#a86d22;margin-bottom:3mm}'+
+ '.reportInfo{display:grid;grid-template-columns:1fr 1fr;margin-bottom:3mm;border-top:1px solid #c7a473;border-bottom:1px solid #c7a473}.reportInfo>div{display:grid;grid-template-columns:29mm 1fr;min-height:7.5mm;align-items:center;padding:1mm 0;border-bottom:1px solid #dec59e}.reportInfo>div:nth-last-child(-n+2){border-bottom:0}.reportInfo>div:nth-child(odd){padding-right:4mm}.reportInfo>div:nth-child(even){padding-left:4mm}.reportInfo span{font-size:6.7px;font-weight:900;color:#6e4b42}.reportInfo b{font-size:8.2px;color:#4b1138;overflow-wrap:anywhere}'+
+ '.kpis{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:2.4mm;margin:3mm 0}.kpis article{min-height:19mm;padding:3mm;border-top:1px solid #a96c22;background:rgba(255,255,255,.18)}.kpis article.main{background:#4b1138;color:#f7dfb6;border-top:0}.kpis b{display:block;font-size:20px;line-height:1}.kpis span{display:block;margin-top:2mm;font-size:6.6px;font-weight:900;letter-spacing:.25px}.kpis article:not(.main) b{color:#4b1138}'+
+ '.tableLabel{margin:3mm 0 1.7mm;font-size:6.8px;font-weight:900;color:#a56c22}.summaryTable{width:100%;border-collapse:collapse;table-layout:fixed}.summaryTable th{padding:2.2mm 1.5mm;background:#4b1138;color:#fff;font-size:6.2px;text-align:left;vertical-align:middle}.summaryTable td{padding:2mm 1.5mm;border-bottom:1px solid #c9aa7d;color:#4e273e;font-size:6.8px;vertical-align:middle;overflow-wrap:anywhere}.summaryTable .num{font-weight:900}.summaryTable .taskName{font-weight:800;font-size:7.3px}.summaryTable .performer{font-weight:800}.summaryTable .noteText{color:#7d665d}.typePill,.statusPill{display:inline-flex;align-items:center;justify-content:center;min-height:5.2mm;padding:0 2.2mm;border:1px solid #b89d77;border-radius:99px;font-size:5.9px;font-weight:800;white-space:nowrap}.typePill.incident{background:#4b1138;color:#fff;border-color:#4b1138}.statusPill.doing{background:#aa6f20;color:#fff;border-color:#aa6f20}.statusPill.done{background:#315f4e;color:#fff;border-color:#315f4e}.statusPill.waiting{background:transparent;color:#4b1138;border-color:#9d7b50}'+
+ '.signature3{display:grid;grid-template-columns:repeat(3,1fr);gap:8mm;margin-top:4mm;padding-top:3mm;border-top:1.5px solid #a86d22;page-break-inside:avoid}.signature3>div{text-align:left}.signature3 b{display:block;font-size:7px}.signature3 small{display:block;margin-top:1mm;font-size:6px;color:#8a7467;font-style:italic}.signature3 i{display:block;height:18mm;border-bottom:1px solid #c9aa7d}'+
+ '.detailSummary{margin:-1mm 0 3mm;font-size:6.7px;font-weight:900;color:#7a4f3c}.detailCard{border:1px solid #b99261;margin-bottom:3.2mm;page-break-inside:avoid;break-inside:avoid;background:rgba(255,255,255,.10)}.detailHead{display:grid;grid-template-columns:13mm 1fr auto;align-items:center;border-bottom:1.5px solid #a86d22}.detailNo{height:11mm;display:grid;place-items:center;background:#4b1138;color:#fff;font-size:14px;font-weight:900}.detailHead h2{margin:0;padding:0 4mm;font-size:10.5px;line-height:1.2;color:#4b1138}.detailHead>.statusPill{margin-right:3mm}.detailMeta{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #c9aa7d}.detailMeta>div{padding:2.2mm 3mm}.detailMeta span,.detailNote span,.extraGrid span{display:block;margin-bottom:1mm;font-size:6px;font-weight:900;color:#715044}.detailMeta b{font-size:8px}.detailNote{padding:2.2mm 3mm;border-bottom:1px solid #c9aa7d}.detailNote p,.extraGrid p{margin:0;color:#543b43;font-size:7.3px;white-space:pre-wrap;overflow-wrap:anywhere}.extraGrid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #c9aa7d}.extraGrid>div{padding:2.1mm 3mm;border-bottom:1px solid #dec59e}.extraGrid>div:nth-child(odd){border-right:1px solid #dec59e}.photoTitle{padding:2mm 3mm 1.4mm;font-size:6.2px;font-weight:900;color:#a56c22}.detailPhotos{display:grid;gap:3mm;padding:0 3mm 3mm}.detailPhotos.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.detailPhotos.cols1{grid-template-columns:1fr}.detailPhotos figure{margin:0;page-break-inside:avoid}.detailPhotos img,.detailPhotos .placeholder>div{width:100%;height:49mm;border:1px dashed #bca184;background:#f4e9c8;object-fit:contain}.detailPhotos.cols1 img,.detailPhotos.cols1 .placeholder>div{height:86mm}.detailPhotos .placeholder>div{display:grid;place-items:center;align-content:center;color:#8f806f;gap:2mm}.detailPhotos .placeholder b{font-size:18px}.detailPhotos .placeholder span{font-size:6.5px;font-weight:900;letter-spacing:1.8px}.detailPhotos figcaption{margin-top:1mm;font-size:6px;color:#9a8774}.detailSheet .signature3{margin-top:3mm}'+
+ '</style></head><body data-pdf-report="work-combined" data-photo-layout="'+photoCols+'">'+summaryPage+detailPages+'</body></html>';
 }
 let reportPdfLibPromise=null;
 function loadExternalScript(url){
@@ -1178,12 +1286,43 @@ async function reportImageDataUrl(ref){
 async function prepareWorkReportRows(rows){
  const prepared=[];
  let total=0,failed=0;
+ let assets=[],linkedContractors=[],incidents=[],materials=[];
+ try{
+   if(centralSession?.access_token&&currentBuilding?.id){
+     const b=encodeURIComponent(currentBuilding.id);
+     [assets,linkedContractors,incidents,materials]=await Promise.all([
+       sbFetch("/rest/v1/maintenance_assets?building_id=eq."+b+"&select=id,code,name,system_type,location",{token:centralSession.access_token}).catch(()=>[]),
+       sbFetch("/rest/v1/contractors?building_id=eq."+b+"&select=id,name,specialty",{token:centralSession.access_token}).catch(()=>[]),
+       sbFetch("/rest/v1/incidents?building_id=eq."+b+"&select=incident_code,cause,solution,area,severity,status",{token:centralSession.access_token}).catch(()=>[]),
+       sbFetch("/rest/v1/inventory_materials?building_id=eq."+b+"&select=id,code,name,unit",{token:centralSession.access_token}).catch(()=>[])
+     ]);
+   }
+ }catch(e){console.warn("Không tải đủ dữ liệu liên kết cho báo cáo",e)}
+ const assetMap=new Map((assets||[]).map(x=>[String(x.id),x]));
+ const contractorMap=new Map((linkedContractors||[]).map(x=>[String(x.id),x]));
+ const incidentMap=new Map((incidents||[]).map(x=>[String(x.incident_code),x]));
+ const materialMap=new Map((materials||[]).map(x=>[String(x.id),x]));
  for(const x of rows){
    const refs=Array.isArray(x.imgs)?x.imgs.filter(Boolean):[];
    total+=refs.length;
    const converted=await Promise.all(refs.map(reportImageDataUrl));
    failed+=converted.filter(v=>!v).length;
-   prepared.push({...x,_reportImages:converted.filter(Boolean)});
+   const taskMaterials=(Array.isArray(x.materials)?x.materials:[]).map(m=>{
+     const found=materialMap.get(String(m.materialId||m.id||""));
+     return {
+       ...m,
+       name:m.name||found?.name||found?.code||"",
+       unit:m.unit||found?.unit||""
+     };
+   });
+   prepared.push({
+     ...x,
+     _reportImages:converted.filter(Boolean),
+     _reportAsset:assetMap.get(String(x.assetId||x.asset_id||""))||null,
+     _reportContractor:contractorMap.get(String(x.contractorId||x.contractor_id||""))||null,
+     _reportIncident:incidentMap.get(String(x.incidentCode||""))||null,
+     _reportMaterials:taskMaterials
+   });
  }
  return {rows:prepared,total,failed};
 }
@@ -1217,6 +1356,7 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
    const html2pdf=await ensureHtml2Pdf();
    const landscape=/@page\s*\{[^}]*landscape/i.test(html);
    const inspectionReport=/data-pdf-report=["\']inspection["\']/.test(String(html));
+   const workCombinedReport=/data-pdf-report=["\']work-combined["\']/.test(String(html));
    const cleaned=String(html).replace(/<script[\s\S]*?<\/script>/gi,"");
    frame=document.createElement("iframe");
    frame.setAttribute("aria-hidden","true");
@@ -1242,15 +1382,34 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
 
    const finalName=filename?pdfSafeFilename(filename.replace(/\.pdf$/i,""))+".pdf":reportFilenameFromHtml(html);
    const worker=html2pdf().set({
-     margin:inspectionReport?[18,18,18,18]:[8,8,9,8],
+     margin:workCombinedReport?[0,0,0,0]:(inspectionReport?[18,18,18,18]:[8,8,9,8]),
      filename:finalName,
      image:{type:"jpeg",quality:0.98},
-     html2canvas:{scale:1.8,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false,scrollX:0,scrollY:0},
+     html2canvas:{scale:1.8,useCORS:true,allowTaint:false,backgroundColor:workCombinedReport?"#f7dfb6":"#ffffff",logging:false,scrollX:0,scrollY:0},
      jsPDF:{unit:"mm",format:"a4",orientation:landscape?"landscape":"portrait",compress:true},
-     pagebreak:{mode:["css","legacy"],avoid:["figure",".note",".sign",".jobHead"]}
+     pagebreak:{mode:["css","legacy"],avoid:["figure",".note",".sign",".jobHead",".detailCard",".signature3"]}
    }).from(body).toPdf();
    const pdf=await worker.get("pdf");
-   if(inspectionReport){
+   if(workCombinedReport){
+     const totalPages=pdf.internal.getNumberOfPages();
+     for(let pageNo=1;pageNo<=totalPages;pageNo++){
+       pdf.setPage(pageNo);
+       const pageW=pdf.internal.pageSize.getWidth(),pageH=pdf.internal.pageSize.getHeight();
+       const footerCanvas=document.createElement("canvas");
+       footerCanvas.width=1800;footerCanvas.height=70;
+       const ctx=footerCanvas.getContext("2d");
+       ctx.clearRect(0,0,footerCanvas.width,footerCanvas.height);
+       ctx.font="21px Arial, sans-serif";
+       ctx.fillStyle="#8e7a69";
+       ctx.textBaseline="middle";
+       ctx.textAlign="left";
+       ctx.fillText("ESTA PROPERTY MANAGEMENT · A L'MAK COMPANY · HO CHI MINH CITY",0,35);
+       ctx.textAlign="right";
+       ctx.fillText("Trang "+pageNo+" / "+totalPages,footerCanvas.width,35);
+       const footerImg=footerCanvas.toDataURL("image/png");
+       pdf.addImage(footerImg,"PNG",17,pageH-8,pageW-34,4.4);
+     }
+   }else if(inspectionReport){
      const totalPages=pdf.internal.getNumberOfPages();
      for(let pageNo=1;pageNo<=totalPages;pageNo++){
        pdf.setPage(pageNo);
@@ -1297,7 +1456,7 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
 window.downloadReportPdf=downloadReportPdf;
 
 let workReportBusy=false;
-async function openReport(a,kind="current",previewWindow=null){
+async function openReport(a,kind="current",previewWindow=null,photoLayout=2){
  if(!a.length){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Không có dữ liệu để xuất PDF");return}
  if(workReportBusy){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Báo cáo đang được tạo");return}
  workReportBusy=true;
@@ -1305,7 +1464,7 @@ async function openReport(a,kind="current",previewWindow=null){
    const prepared=await prepareWorkReportRows(a);
    if(prepared.failed)toast("Có "+prepared.failed+" hình không tải được; các hình còn lại vẫn được đính kèm");
    const period=workReportPeriod(kind,prepared.rows);
-   const html=reportHtml(prepared.rows,kind);
+   const html=reportHtml(prepared.rows,kind,photoLayout);
    await downloadReportPdf(html,workReportFilename(period),previewWindow);
  }finally{
    workReportBusy=false;
@@ -1319,10 +1478,11 @@ document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{
  if(kind==="current")a=filtered();
  else{let r=rangeDates(kind);a=filtered(r.from,r.to)}
  if(!a.length){$("#exportModal").classList.add("hide");toast("Không có dữ liệu để xuất PDF");return}
+ const photoLayout=Number(document.querySelector('input[name="workPdfImageLayout"]:checked')?.value||2)===1?1:2;
  let preview=null;
  try{preview=window.open("","_blank");if(preview)writeReportLoadingTab(preview)}catch(e){}
  $("#exportModal").classList.add("hide");
- openReport(a,kind,preview);
+ openReport(a,kind,preview,photoLayout);
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeImageViewer();$("#exportModal").classList.add("hide")}});
 setTimeout(()=>ensureHtml2Pdf().catch(()=>{}),900);
