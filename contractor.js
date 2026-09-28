@@ -7,8 +7,42 @@ function contractorStatusClass(status=""){
 function contractorJobStatusClass(status=""){
   return status==="Hoàn thành"?"done":status==="Đang thực hiện"?"doing":status==="Chờ xử lý"?"waiting":"paused";
 }
-function contractorJobsFor(id){
+function contractorStoredJobsFor(id){
   return contractorJobs.filter(x=>String(x.contractor_id)===String(id));
+}
+function contractorLinkedTaskJobs(id){
+  let tasks=[];
+  try{tasks=typeof load==="function"?load():[]}catch(e){tasks=[]}
+  if(!Array.isArray(tasks))tasks=[];
+  const stored=contractorStoredJobsFor(id);
+  return tasks
+    .filter(t=>String(t?.contractorId||t?.contractor_id||"")===String(id))
+    .filter(t=>!stored.some(j=>{
+      const note=String(j?.note||"");
+      return String(j?.source_task_id||"")===String(t.id)||
+        note.includes("Tạo tự động từ công việc "+String(t.id))||
+        note.includes("Liên kết công việc "+String(t.id));
+    }))
+    .map(t=>{
+      const completed=t.s==="Đã hoàn thành"?(String(t.completedAt||"").slice(0,10)||t.d||null):null;
+      return {
+        id:"task:"+t.id,
+        contractor_id:id,
+        work_date:t.d||today(),
+        completed_date:completed,
+        work_content:t.c||"Công việc liên kết",
+        cause:t.incidentCode?("Liên kết sự cố "+t.incidentCode):"",
+        solution:t.result||"",
+        status:t.s||"Đang thực hiện",
+        note:t.n||"",
+        source_task_id:String(t.id),
+        _source:"task"
+      };
+    });
+}
+function contractorJobsFor(id){
+  return [...contractorStoredJobsFor(id),...contractorLinkedTaskJobs(id)]
+    .sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")));
 }
 function contractorLastJob(id){
   return contractorJobsFor(id).slice().sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")))[0]||null;
@@ -80,10 +114,11 @@ function renderContractors(){
     return (!status||c.status===status)&&(!specialty||field===specialty)&&(!search||[c.name,c.phone,c.contact_name,c.specialty,c.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search)));
   });
   const year=String(new Date().getFullYear());
+  const allJobs=contractors.flatMap(c=>contractorJobsFor(c.id));
   $("#contractorCount").textContent=contractors.length;
-  $("#contractorYearJobCount").textContent=contractorJobs.filter(x=>String(x.work_date||"").startsWith(year)).length;
-  $("#contractorOpenJobCount").textContent=contractorJobs.filter(x=>x.status!=="Hoàn thành").length;
-  $("#contractorDoneJobCount").textContent=contractorJobs.filter(x=>x.status==="Hoàn thành").length;
+  $("#contractorYearJobCount").textContent=allJobs.filter(x=>String(x.work_date||"").startsWith(year)).length;
+  $("#contractorOpenJobCount").textContent=allJobs.filter(x=>x.status!=="Hoàn thành").length;
+  $("#contractorDoneJobCount").textContent=allJobs.filter(x=>x.status==="Hoàn thành").length;
   $("#contractorResultCount").textContent="("+list.length+")";
 
   $("#contractorGrid").innerHTML=list.map(c=>{
@@ -158,18 +193,29 @@ function renderContractorJobs(){
   const list=all.filter(x=>(!status||x.status===status)&&(!search||[x.work_content,x.cause,x.solution,x.note,x.status].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search))));
   $("#contractorJobCount").textContent="("+all.length+")";
   $("#contractorJobList").innerHTML=list.map((x,i)=>{
-    return '<article class="contractorJobCard">'+
+    const linked=x._source==="task";
+    const sourceLine=linked?'<div class="contractorJobLinkedSource"><span>LIÊN KẾT TỪ CÔNG VIỆC</span><b>CV-'+esc(String(x.source_task_id).slice(-6))+'</b></div>':"";
+    const actions=linked
+      ?'<div class="contractorJobActions"><button type="button" data-open-linked-task="'+esc(x.source_task_id)+'">↗ Mở công việc liên kết</button></div>'
+      :'<div class="contractorJobActions"><button type="button" data-edit-job="'+x.id+'">✎ Sửa</button><button class="danger" type="button" data-delete-job="'+x.id+'">Xóa</button></div>';
+    return '<article class="contractorJobCard'+(linked?' contractorJobLinked':'')+'">'+
       '<div class="contractorJobRail"><span>'+(i+1)+'</span></div>'+
       '<div class="contractorJobMain">'+
       '<div class="contractorJobTop"><div><small>NGÀY THỰC HIỆN</small><b>'+fmt(x.work_date)+'</b></div><div><small>HOÀN THÀNH</small><b>'+(x.completed_date?fmt(x.completed_date):"—")+'</b></div><span class="contractorJobStatus '+contractorJobStatusClass(x.status)+'">'+esc(x.status)+'</span></div>'+
+      sourceLine+
       '<div class="contractorJobContent"><span>NỘI DUNG CÔNG VIỆC</span><p>'+esc(x.work_content||"—")+'</p></div>'+
-      '<div class="contractorJobDiagnosis"><div><span>NGUYÊN NHÂN</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div><div><span>HƯỚNG XỬ LÝ</span><p>'+esc(x.solution||"Chưa ghi nhận")+'</p></div></div>'+
+      '<div class="contractorJobDiagnosis"><div><span>NGUYÊN NHÂN / LIÊN KẾT</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div><div><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.solution||"Chưa ghi nhận")+'</p></div></div>'+
       (x.note?'<div class="contractorJobNote"><span>GHI CHÚ</span><p>'+esc(x.note)+'</p></div>':'')+
-      '<div class="contractorJobActions"><button type="button" data-edit-job="'+x.id+'">✎ Sửa</button><button class="danger" type="button" data-delete-job="'+x.id+'">Xóa</button></div>'+
+      actions+
       '</div></article>';
   }).join("");
   $("#contractorJobList").querySelectorAll("[data-edit-job]").forEach(b=>b.onclick=()=>editContractorJob(b.dataset.editJob));
   $("#contractorJobList").querySelectorAll("[data-delete-job]").forEach(b=>b.onclick=()=>deleteContractorJob(b.dataset.deleteJob));
+  $("#contractorJobList").querySelectorAll("[data-open-linked-task]").forEach(b=>b.onclick=()=>{
+    const raw=b.dataset.openLinkedTask,n=Number(raw);
+    showModule("work");
+    setTimeout(()=>window.editTask?.(Number.isFinite(n)?n:raw),100);
+  });
   $("#contractorJobEmpty").classList.toggle("hide",list.length>0);
 }
 function resetContractorForm(){
