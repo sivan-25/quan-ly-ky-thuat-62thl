@@ -282,3 +282,21 @@
 #app.demoProjectMode #demoIncidentDetail::-webkit-scrollbar-thumb,
 #app.demoProjectMode #demoInspectionDetail::-webkit-scrollbar-thumb,
 #app.demoProjectMode #demoDocDetail::-webkit-scrollbar-thumb{background:#344863;border-radius:10px}
+
+/* DEMO_SPECIAL_TOPBAR_QA */
+#app.demoProjectMode.incidentMode .filterWrap,
+#app.demoProjectMode.inspectionMode .filterWrap,
+#app.demoProjectMode.documentsMode .filterWrap,
+#app.demoProjectMode.reportsMode .filterWrap,
+#app.demoProjectMode.incidentMode #exportBtn,
+#app.demoProjectMode.inspectionMode #exportBtn,
+#app.demoProjectMode.documentsMode #exportBtn,
+#app.demoProjectMode.reportsMode #exportBtn{
+  display:none!important;
+}
+#app.demoProjectMode.incidentMode .headerSearch,
+#app.demoProjectMode.inspectionMode .headerSearch,
+#app.demoProjectMode.documentsMode .headerSearch,
+#app.demoProjectMode.reportsMode .headerSearch{
+  width:min(560px,48vw)!important;
+}
