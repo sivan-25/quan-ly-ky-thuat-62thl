@@ -61,13 +61,19 @@ TAUPE = colors.HexColor("#A99586")
 STONE = colors.HexColor("#625045")
 PALE = colors.HexColor("#FFF8EC")
 
-FONT_DIR = _prepare_montserrat()
-for name, fn in [("Mont","Regular"),("Mont-Light","Light"),("Mont-Medium","Medium"),
-                 ("Mont-SemiBold","SemiBold"),("Mont-Bold","Bold"),
-                 ("Mont-XBold","ExtraBold"),("Mont-Italic","Italic")]:
-    pdfmetrics.registerFont(TTFont(name, os.path.join(FONT_DIR, f"Montserrat-{fn}.ttf")))
-pdfmetrics.registerFontFamily("Mont", normal="Mont", bold="Mont-Bold",
-                              italic="Mont-Italic", boldItalic="Mont-Bold")
+_FONTS_READY = False
+def ensure_fonts():
+    global _FONTS_READY
+    if _FONTS_READY:
+        return
+    font_dir = _prepare_montserrat()
+    for name, fn in [("Mont","Regular"),("Mont-Light","Light"),("Mont-Medium","Medium"),
+                     ("Mont-SemiBold","SemiBold"),("Mont-Bold","Bold"),
+                     ("Mont-XBold","ExtraBold"),("Mont-Italic","Italic")]:
+        pdfmetrics.registerFont(TTFont(name, os.path.join(font_dir, f"Montserrat-{fn}.ttf")))
+    pdfmetrics.registerFontFamily("Mont", normal="Mont", bold="Mont-Bold",
+                                  italic="Mont-Italic", boldItalic="Mont-Bold")
+    _FONTS_READY = True
 
 PW, PH = A4
 MX = 18 * mm
@@ -201,6 +207,7 @@ def make_page_fns(step_label):
     return first,later
 
 def build_doc(path,story_fn,step_label,title):
+    ensure_fonts()
     first,later=make_page_fns(step_label)
     doc=BaseDocTemplate(path,pagesize=A4,title=title,author="ESTA Property Management",
         subject="Báo cáo công việc kỹ thuật",creator="ESTA Property Management",leftMargin=MX,rightMargin=MX)
