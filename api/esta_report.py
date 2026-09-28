@@ -16,40 +16,31 @@ from reportlab.lib.utils import ImageReader
 # Font bootstrap for Vercel: Montserrat only. The report layout below is the
 # ESTA_Report_Generator template supplied by the user; only font packaging is adapted.
 def _prepare_montserrat():
-    import fontpkg
-    from fontTools.ttLib import TTFont as FTFont
-    from fontTools.varLib.instancer import instantiateVariableFont
+    import urllib.request
 
     out = "/tmp/esta_montserrat"
     os.makedirs(out, exist_ok=True)
-
-    def make_static(label, weight, style="normal"):
-        dst = os.path.join(out, f"Montserrat-{label}.ttf")
-        if os.path.exists(dst):
-            return dst
-        src = str(fontpkg.path("Montserrat", weight=weight, style=style, nearest=True))
-        ft = FTFont(src)
-        if "fvar" in ft:
-            axes = {a.axisTag for a in ft["fvar"].axes}
-            coords = {}
-            if "wght" in axes:
-                coords["wght"] = weight
-            if "ital" in axes and style == "italic":
-                coords["ital"] = 1
-            if "slnt" in axes and style == "italic":
-                coords["slnt"] = -10
-            if coords:
-                instantiateVariableFont(ft, coords, inplace=True)
-        ft.save(dst)
-        return dst
-
-    make_static("Light", 300)
-    make_static("Regular", 400)
-    make_static("Medium", 500)
-    make_static("SemiBold", 600)
-    make_static("Bold", 700)
-    make_static("ExtraBold", 800)
-    make_static("Italic", 400, "italic")
+    files = [
+        "Montserrat-Light.ttf",
+        "Montserrat-Regular.ttf",
+        "Montserrat-Medium.ttf",
+        "Montserrat-SemiBold.ttf",
+        "Montserrat-Bold.ttf",
+        "Montserrat-ExtraBold.ttf",
+        "Montserrat-Italic.ttf",
+    ]
+    base = "https://raw.githubusercontent.com/JulietaUla/Montserrat/master/fonts/ttf/"
+    for filename in files:
+        dst = os.path.join(out, filename)
+        if os.path.exists(dst) and os.path.getsize(dst) > 10000:
+            continue
+        req = urllib.request.Request(base + filename, headers={"User-Agent":"ESTA-Report-Generator/1.0"})
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            raw = resp.read()
+        if len(raw) < 10000:
+            raise RuntimeError("Không tải được font Montserrat: " + filename)
+        with open(dst, "wb") as fh:
+            fh.write(raw)
     return out
 
 AUB = colors.HexColor("#411437")
