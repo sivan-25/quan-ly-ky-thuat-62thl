@@ -1139,48 +1139,57 @@ function reportHtml(a,kind="current",photoLayout=2){
    return blocks.length?'<div class="extraGrid">'+blocks.join("")+'</div>':"";
  };
 
- const detailCard=(x,i)=>{
+ const detailCard=(x,i,photoRefs=null,continuation=false)=>{
    const type=x.t||"Hằng ngày",performers=performerArray(x).join(", ")||"—";
-   const imgs=(x._reportImages||[]).filter(Boolean);
-   const photoItems=(imgs.length?imgs:[null,null]).map((v,j)=>
-     v
-       ?'<figure><img src="'+esc(v)+'" alt="Hình '+(j+1)+'"><figcaption>Hình '+(j+1)+'</figcaption></figure>'
-       :'<figure class="placeholder"><div><b>✦</b><span>HÌNH ẢNH CHƯA CẬP NHẬT</span></div><figcaption>Hình '+(j+1)+'</figcaption></figure>'
-   ).join("");
-   return '<article class="detailCard" data-photo-count="'+Math.max(imgs.length,2)+'">'+
-     '<div class="detailHead"><div class="detailNo">'+String(i+1).padStart(2,"0")+'</div><h2>'+esc(x.c||"—")+'</h2><span class="statusPill '+reportStatusClass(x.s)+'">'+esc(x.s||"—")+'</span></div>'+
-     '<div class="detailMeta"><div><span>LOẠI CÔNG VIỆC</span><b>'+esc(type)+'</b></div><div><span>NGÀY THỰC HIỆN</span><b>'+esc(fmt(x.d))+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div></div>'+
-     '<div class="detailNote"><span>GHI CHÚ</span><p>'+esc(x.n||"—")+'</p></div>'+
-     detailInfo(x)+
-     '<div class="photoTitle">HÌNH ẢNH HIỆN TRƯỜNG'+(imgs.length?' · '+imgs.length+' ẢNH':"")+'</div>'+
+   const sourceImgs=(x._reportImages||[]).filter(Boolean);
+   const refs=photoRefs===null?(sourceImgs.length?sourceImgs:[null,null]):photoRefs;
+   const photoItems=refs.map((v,j)=>{
+     const absoluteIndex=v?sourceImgs.indexOf(v)+1:(j+1);
+     return v
+       ?'<figure><img src="'+esc(v)+'" alt="Hình '+absoluteIndex+'"><figcaption>Hình '+absoluteIndex+'</figcaption></figure>'
+       :'<figure class="placeholder"><div><b>✦</b><span>HÌNH ẢNH CHƯA CẬP NHẬT</span></div><figcaption>Hình '+absoluteIndex+'</figcaption></figure>';
+   }).join("");
+   return '<article class="detailCard '+(continuation?"continuation":"")+'" data-photo-count="'+refs.length+'">'+
+     '<div class="detailHead"><div class="detailNo">'+String(i+1).padStart(2,"0")+'</div><h2>'+esc(x.c||"—")+(continuation?' <em>· Hình ảnh tiếp theo</em>':'')+'</h2><span class="statusPill '+reportStatusClass(x.s)+'">'+esc(x.s||"—")+'</span></div>'+
+     (continuation?"":(
+       '<div class="detailMeta"><div><span>LOẠI CÔNG VIỆC</span><b>'+esc(type)+'</b></div><div><span>NGÀY THỰC HIỆN</span><b>'+esc(fmt(x.d))+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div></div>'+
+       '<div class="detailNote"><span>GHI CHÚ</span><p>'+esc(x.n||"—")+'</p></div>'+
+       detailInfo(x)
+     ))+
+     '<div class="photoTitle">HÌNH ẢNH HIỆN TRƯỜNG'+(sourceImgs.length?' · '+sourceImgs.length+' ẢNH':"")+'</div>'+
      '<div class="detailPhotos cols'+photoCols+'">'+photoItems+'</div>'+
    '</article>';
  };
 
+ const photoUnits=[];
+ a.forEach((x,i)=>{
+   const imgs=(x._reportImages||[]).filter(Boolean);
+   if(!imgs.length){
+     photoUnits.push({x,i,photos:[null,null],continuation:false,pairable:photoCols===2});
+     return;
+   }
+   const chunkSize=photoCols===1?2:4;
+   for(let p=0;p<imgs.length;p+=chunkSize){
+     photoUnits.push({
+       x,i,
+       photos:imgs.slice(p,p+chunkSize),
+       continuation:p>0,
+       pairable:photoCols===2&&p===0&&imgs.length<=2
+     });
+   }
+ });
  const groups=[];
  let bucket=[];
- a.forEach((x,i)=>{
-   const imageCount=Math.max((x._reportImages||[]).filter(Boolean).length,2);
-   const extraCount=[
-     x.cause||x._reportIncident?.cause,
-     x.result||x._reportIncident?.solution,
-     x._reportAsset,
-     x.incidentCode,
-     x.inspectionCode,
-     x._reportContractor,
-     (x._reportMaterials||x.materials||[]).length
-   ].filter(Boolean).length;
-   const forceSingle=photoCols===1||i===0||imageCount>2||extraCount>2;
-   if(forceSingle){
-     if(bucket.length){groups.push(bucket);bucket=[]}
-     groups.push([{x,i}]);
-   }else{
-     bucket.push({x,i});
+ photoUnits.forEach(u=>{
+   if(u.pairable){
+     bucket.push(u);
      if(bucket.length===2){groups.push(bucket);bucket=[]}
+   }else{
+     if(bucket.length){groups.push(bucket);bucket=[]}
+     groups.push([u]);
    }
  });
  if(bucket.length)groups.push(bucket);
-
  const detailPages=groups.map((group,pageIndex)=>{
    const first=pageIndex===0,last=pageIndex===groups.length-1;
    return '<section class="reportSheet detailSheet">'+
@@ -1188,7 +1197,7 @@ function reportHtml(a,kind="current",photoLayout=2){
      '<div class="sheetInner">'+
        (first?'<div class="stepLabel">BƯỚC 2 · BÁO CÁO CHI TIẾT KÈM HÌNH ẢNH</div><h1>Danh sách công việc kỹ thuật</h1><div class="goldRule"></div>'+infoBlock()+
        '<div class="detailSummary">TỔNG '+a.length+' CÔNG VIỆC · '+doing+' ĐANG THỰC HIỆN · '+wait+' CHỜ XỬ LÝ · '+done+' HOÀN THÀNH · '+incidents+' SỰ CỐ</div>':"")+
-       group.map(o=>detailCard(o.x,o.i)).join("")+
+       group.map(o=>detailCard(o.x,o.i,o.photos,o.continuation)).join("")+
        (last?signatures():"")+
      '</div></section>';
  }).join("");
@@ -1204,7 +1213,7 @@ function reportHtml(a,kind="current",photoLayout=2){
  '.kpis{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:2.4mm;margin:3mm 0}.kpis article{min-height:19mm;padding:3mm;border-top:1px solid #a96c22;background:rgba(255,255,255,.18)}.kpis article.main{background:#4b1138;color:#f7dfb6;border-top:0}.kpis b{display:block;font-size:20px;line-height:1}.kpis span{display:block;margin-top:2mm;font-size:6.6px;font-weight:900;letter-spacing:.25px}.kpis article:not(.main) b{color:#4b1138}'+
  '.tableLabel{margin:3mm 0 1.7mm;font-size:6.8px;font-weight:900;color:#a56c22}.summaryTable{width:100%;border-collapse:collapse;table-layout:fixed}.summaryTable th{padding:2.2mm 1.5mm;background:#4b1138;color:#fff;font-size:6.2px;text-align:left;vertical-align:middle}.summaryTable td{padding:2mm 1.5mm;border-bottom:1px solid #c9aa7d;color:#4e273e;font-size:6.8px;vertical-align:middle;overflow-wrap:anywhere}.summaryTable .num{font-weight:900}.summaryTable .taskName{font-weight:800;font-size:7.3px}.summaryTable .performer{font-weight:800}.summaryTable .noteText{color:#7d665d}.typePill,.statusPill{display:inline-flex;align-items:center;justify-content:center;min-height:5.2mm;padding:0 2.2mm;border:1px solid #b89d77;border-radius:99px;font-size:5.9px;font-weight:800;white-space:nowrap}.typePill.incident{background:#4b1138;color:#fff;border-color:#4b1138}.statusPill.doing{background:#aa6f20;color:#fff;border-color:#aa6f20}.statusPill.done{background:#315f4e;color:#fff;border-color:#315f4e}.statusPill.waiting{background:transparent;color:#4b1138;border-color:#9d7b50}'+
  '.signature3{display:grid;grid-template-columns:repeat(3,1fr);gap:8mm;margin-top:4mm;padding-top:3mm;border-top:1.5px solid #a86d22;page-break-inside:avoid}.signature3>div{text-align:left}.signature3 b{display:block;font-size:7px}.signature3 small{display:block;margin-top:1mm;font-size:6px;color:#8a7467;font-style:italic}.signature3 i{display:block;height:18mm;border-bottom:1px solid #c9aa7d}'+
- '.detailSummary{margin:-1mm 0 3mm;font-size:6.7px;font-weight:900;color:#7a4f3c}.detailCard{border:1px solid #b99261;margin-bottom:3.2mm;page-break-inside:avoid;break-inside:avoid;background:rgba(255,255,255,.10)}.detailHead{display:grid;grid-template-columns:13mm 1fr auto;align-items:center;border-bottom:1.5px solid #a86d22}.detailNo{height:11mm;display:grid;place-items:center;background:#4b1138;color:#fff;font-size:14px;font-weight:900}.detailHead h2{margin:0;padding:0 4mm;font-size:10.5px;line-height:1.2;color:#4b1138}.detailHead>.statusPill{margin-right:3mm}.detailMeta{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #c9aa7d}.detailMeta>div{padding:2.2mm 3mm}.detailMeta span,.detailNote span,.extraGrid span{display:block;margin-bottom:1mm;font-size:6px;font-weight:900;color:#715044}.detailMeta b{font-size:8px}.detailNote{padding:2.2mm 3mm;border-bottom:1px solid #c9aa7d}.detailNote p,.extraGrid p{margin:0;color:#543b43;font-size:7.3px;white-space:pre-wrap;overflow-wrap:anywhere}.extraGrid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #c9aa7d}.extraGrid>div{padding:2.1mm 3mm;border-bottom:1px solid #dec59e}.extraGrid>div:nth-child(odd){border-right:1px solid #dec59e}.photoTitle{padding:2mm 3mm 1.4mm;font-size:6.2px;font-weight:900;color:#a56c22}.detailPhotos{display:grid;gap:3mm;padding:0 3mm 3mm}.detailPhotos.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.detailPhotos.cols1{grid-template-columns:1fr}.detailPhotos figure{margin:0;page-break-inside:avoid}.detailPhotos img,.detailPhotos .placeholder>div{width:100%;height:49mm;border:1px dashed #bca184;background:#f4e9c8;object-fit:contain}.detailPhotos.cols1 img,.detailPhotos.cols1 .placeholder>div{height:86mm}.detailPhotos .placeholder>div{display:grid;place-items:center;align-content:center;color:#8f806f;gap:2mm}.detailPhotos .placeholder b{font-size:18px}.detailPhotos .placeholder span{font-size:6.5px;font-weight:900;letter-spacing:1.8px}.detailPhotos figcaption{margin-top:1mm;font-size:6px;color:#9a8774}.detailSheet .signature3{margin-top:3mm}'+
+ '.detailSummary{margin:-1mm 0 3mm;font-size:6.7px;font-weight:900;color:#7a4f3c}.detailCard.continuation .detailHead h2 em{font-size:6.5px;font-style:normal;color:#8c6f63}.detailCard{border:1px solid #b99261;margin-bottom:3.2mm;page-break-inside:avoid;break-inside:avoid;background:rgba(255,255,255,.10)}.detailHead{display:grid;grid-template-columns:13mm 1fr auto;align-items:center;border-bottom:1.5px solid #a86d22}.detailNo{height:11mm;display:grid;place-items:center;background:#4b1138;color:#fff;font-size:14px;font-weight:900}.detailHead h2{margin:0;padding:0 4mm;font-size:10.5px;line-height:1.2;color:#4b1138}.detailHead>.statusPill{margin-right:3mm}.detailMeta{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #c9aa7d}.detailMeta>div{padding:2.2mm 3mm}.detailMeta span,.detailNote span,.extraGrid span{display:block;margin-bottom:1mm;font-size:6px;font-weight:900;color:#715044}.detailMeta b{font-size:8px}.detailNote{padding:2.2mm 3mm;border-bottom:1px solid #c9aa7d}.detailNote p,.extraGrid p{margin:0;color:#543b43;font-size:7.3px;white-space:pre-wrap;overflow-wrap:anywhere}.extraGrid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #c9aa7d}.extraGrid>div{padding:2.1mm 3mm;border-bottom:1px solid #dec59e}.extraGrid>div:nth-child(odd){border-right:1px solid #dec59e}.photoTitle{padding:2mm 3mm 1.4mm;font-size:6.2px;font-weight:900;color:#a56c22}.detailPhotos{display:grid;gap:3mm;padding:0 3mm 3mm}.detailPhotos.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.detailPhotos.cols1{grid-template-columns:1fr}.detailPhotos figure{margin:0;page-break-inside:avoid}.detailPhotos img,.detailPhotos .placeholder>div{width:100%;height:49mm;border:1px dashed #bca184;background:#f4e9c8;object-fit:contain}.detailPhotos.cols1 img,.detailPhotos.cols1 .placeholder>div{height:86mm}.detailPhotos .placeholder>div{display:grid;place-items:center;align-content:center;color:#8f806f;gap:2mm}.detailPhotos .placeholder b{font-size:18px}.detailPhotos .placeholder span{font-size:6.5px;font-weight:900;letter-spacing:1.8px}.detailPhotos figcaption{margin-top:1mm;font-size:6px;color:#9a8774}.detailSheet .signature3{margin-top:3mm}'+
  '</style></head><body data-pdf-report="work-combined" data-photo-layout="'+photoCols+'">'+summaryPage+detailPages+'</body></html>';
 }
 let reportPdfLibPromise=null;
