@@ -4589,3 +4589,78 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 #app.maintenanceMode #maintenancePage{
   background:#f7dfb6!important;
 }
+
+/* IMAGE_ONLY_VIEWER_FINAL */
+#viewer.viewer.imageOnlyViewer{
+  z-index:5000!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:16px!important;
+  background:rgba(0,0,0,.90)!important;
+}
+#viewer.viewer.imageOnlyViewer .viewerCard{
+  position:relative!important;
+  width:auto!important;
+  max-width:96vw!important;
+  height:auto!important;
+  max-height:94vh!important;
+  overflow:visible!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#viewer.viewer.imageOnlyViewer #viewerImages{
+  display:grid!important;
+  place-items:center!important;
+  gap:14px!important;
+  max-width:96vw!important;
+  max-height:92vh!important;
+  overflow:auto!important;
+}
+#viewer.viewer.imageOnlyViewer .viewerMedia{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#viewer.viewer.imageOnlyViewer .viewerLargeImage{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:94vw!important;
+  max-height:88vh!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:8px!important;
+  object-fit:contain!important;
+  background:transparent!important;
+  box-shadow:0 18px 60px rgba(0,0,0,.48)!important;
+}
+#viewer.viewer.imageOnlyViewer .viewerDownloadBtn{display:none!important}
+#viewer.viewer.imageOnlyViewer #closeViewer{
+  position:fixed!important;
+  top:16px!important;
+  right:16px!important;
+  z-index:5002!important;
+  width:42px!important;
+  height:42px!important;
+  margin:0!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+  border-radius:50%!important;
+  background:rgba(7,17,30,.76)!important;
+  color:#fff!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.30)!important;
+  font-size:27px!important;
+  line-height:1!important;
+  backdrop-filter:blur(8px);
+}
+@media(max-width:760px){
+  #viewer.viewer.imageOnlyViewer{padding:8px!important}
+  #viewer.viewer.imageOnlyViewer #viewerImages{max-width:98vw!important;max-height:94vh!important}
+  #viewer.viewer.imageOnlyViewer .viewerLargeImage{max-width:96vw!important;max-height:88vh!important}
+  #viewer.viewer.imageOnlyViewer #closeViewer{top:10px!important;right:10px!important;width:40px!important;height:40px!important}
+}
