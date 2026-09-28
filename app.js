@@ -1170,7 +1170,7 @@ function reportHtml(a,kind="current",photoLayout=2){
      x._reportContractor,
      (x._reportMaterials||x.materials||[]).length
    ].filter(Boolean).length;
-   const forceSingle=photoCols===1||imageCount>2||extraCount>2;
+   const forceSingle=photoCols===1||i===0||imageCount>2||extraCount>2;
    if(forceSingle){
      if(bucket.length){groups.push(bucket);bucket=[]}
      groups.push([{x,i}]);
@@ -1196,7 +1196,7 @@ function reportHtml(a,kind="current",photoLayout=2){
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BÁO CÁO CÔNG VIỆC KỸ THUẬT - '+esc(reportPeriod.label)+'</title><style>'+
  '*{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'+
  '@page{size:A4 portrait;margin:0}html,body{margin:0;padding:0;background:#f7dfb6;color:#4b1138;font-family:Arial,Helvetica,sans-serif}body{font-size:9.2px;line-height:1.3}'+
- '.reportSheet{width:210mm;min-height:297mm;background:#f7dfb6;position:relative;page-break-after:always;break-after:page;overflow:hidden}.reportSheet:last-child{page-break-after:auto;break-after:auto}'+
+ '.reportSheet{width:210mm;min-height:297mm;background:#f7dfb6;position:relative;page-break-after:always;break-after:page;overflow:visible}.reportSheet:last-child{page-break-after:auto;break-after:auto}'+
  '.reportHeader{height:37mm;background:#4b1138;color:#f7dfb6;display:flex;align-items:center;justify-content:space-between;padding:8mm 17mm 5mm}.reportHeader.compact{height:18mm;padding:4mm 17mm}.brandRow{display:flex;align-items:center;gap:4mm}.brandStar{font-size:29px;line-height:1;color:#f7dfb6}.brandBlock strong{display:block;font-size:20px;letter-spacing:2.6px}.brandBlock small{display:block;margin-top:2px;font-size:6px;letter-spacing:2px;color:#d6c1ae}.headerReport{text-align:right}.headerReport b{display:block;font-size:8.5px;letter-spacing:2px}.headerReport span{display:block;margin-top:4px;font-size:6.5px;letter-spacing:2.2px;color:#b99baa}'+
  '.projectName{height:9mm;display:grid;place-items:center;background:#f7dfb6;border-bottom:1px solid #bd873b;color:#4b1138;font-size:10px;font-weight:900;letter-spacing:.6px;text-align:center;padding:0 15mm}.reportHeader.compact+.projectName{height:7mm;font-size:8.5px}'+
  '.sheetInner{padding:7mm 17mm 16mm}.stepLabel{font-size:7px;font-weight:900;letter-spacing:.45px;color:#a56c22}.sheetInner h1{margin:2mm 0 1.5mm;font-size:18px;line-height:1.1;color:#4b1138}.goldRule{height:1px;background:#a86d22;margin-bottom:3mm}'+
