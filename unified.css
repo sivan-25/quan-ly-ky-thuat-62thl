@@ -4664,3 +4664,15 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   #viewer.viewer.imageOnlyViewer .viewerLargeImage{max-width:96vw!important;max-height:88vh!important}
   #viewer.viewer.imageOnlyViewer #closeViewer{top:10px!important;right:10px!important;width:40px!important;height:40px!important}
 }
+
+/* MOBILE_NO_ZOOM_FINAL_20260929 */
+@media(max-width:760px){
+  #app input:not([type="hidden"]),
+  #app select,
+  #app textarea,
+  .workEditDrawer input:not([type="hidden"]),
+  .workEditDrawer select,
+  .workEditDrawer textarea{
+    font-size:16px!important;
+  }
+}
