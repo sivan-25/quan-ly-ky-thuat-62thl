@@ -200,7 +200,9 @@ function renderContractorJobs(){
     const sourceLine=linked?'<div class="contractorJobLinkedSource"><span>LIÊN KẾT TỪ CÔNG VIỆC</span><b>CV-'+esc(String(linkedTaskId).slice(-6))+'</b></div>':"";
     const photos=refs.length?'<div class="contractorJobPhotos"><div class="contractorJobPhotosHead"><span>HÌNH ẢNH CÔNG VIỆC</span><b>'+refs.length+' ảnh</b></div><div class="contractorJobPhotoGrid">'+refs.slice(0,6).map((ref,idx)=>'<button type="button" class="contractorJobPhoto" '+(linkedTaskId?'data-view-linked-images="'+esc(linkedTaskId)+'"':'')+' aria-label="Xem hình '+(idx+1)+'">'+mediaImgHtml(ref,"contractorJobPhotoImg")+'</button>').join("")+'</div></div>':"";
     const actions=linked
-      ?'<div class="contractorJobActions"><button type="button" class="contractorLinkedEditBtn" data-edit-linked-task="'+esc(linkedTaskId)+'">✎ Sửa công việc liên kết</button><button type="button" data-open-linked-task="'+esc(linkedTaskId)+'">↗ Mở trong Công việc</button></div>'
+      ?(x._source==="task"
+        ?'<div class="contractorJobActions"><button type="button" class="contractorLinkedEditBtn" data-edit-linked-task="'+esc(linkedTaskId)+'">✎ Sửa trong Công việc</button></div>'
+        :'<div class="contractorJobActions"><button type="button" class="contractorLinkedEditBtn" data-edit-job="'+esc(x.id)+'">✎ Sửa ngay</button><button type="button" data-open-linked-task="'+esc(linkedTaskId)+'">↗ Mở trong Công việc</button></div>')
       :'<div class="contractorJobActions"><button type="button" data-edit-job="'+x.id+'">✎ Sửa</button><button class="danger" type="button" data-delete-job="'+x.id+'">Xóa</button></div>';
     return '<article class="contractorJobCard'+(linked?' contractorJobLinked':'')+'">'+
       '<div class="contractorJobRail"><span>'+(i+1)+'</span></div>'+
@@ -257,7 +259,7 @@ window.deleteContractor=async id=>{
 };
 function resetContractorJobForm(contractorId){
   const c=contractors.find(x=>String(x.id)===String(contractorId));
-  $("#contractorJobId").value="";$("#contractorJobContractorId").value=contractorId;$("#contractorJobDate").value=today();$("#contractorJobCompletedDate").value="";
+  $("#contractorJobId").value="";$("#contractorJobSourceTaskId")&&($("#contractorJobSourceTaskId").value="");$("#contractorJobContractorId").value=contractorId;$("#contractorJobDate").value=today();$("#contractorJobCompletedDate").value="";
   $("#contractorJobStatus").value="Đang thực hiện";$("#contractorJobContent").value="";$("#contractorJobCause").value="";$("#contractorJobSolution").value="";$("#contractorJobNote").value="";
   $("#contractorJobModalTitle").textContent="Thêm công việc nhà thầu";$("#contractorJobModalContractor").textContent=c?.name||"Nhà thầu";
 }
@@ -268,9 +270,11 @@ function openContractorJobModal(){
 window.editContractorJob=id=>{
   const x=contractorJobs.find(r=>String(r.id)===String(id));if(!x)return;
   const c=contractors.find(v=>String(v.id)===String(x.contractor_id));
-  $("#contractorJobId").value=x.id;$("#contractorJobContractorId").value=x.contractor_id;$("#contractorJobDate").value=x.work_date;$("#contractorJobCompletedDate").value=x.completed_date||"";
+  $("#contractorJobId").value=x.id;$("#contractorJobSourceTaskId")&&($("#contractorJobSourceTaskId").value=x.source_task_id||"");$("#contractorJobContractorId").value=x.contractor_id;$("#contractorJobDate").value=x.work_date;$("#contractorJobCompletedDate").value=x.completed_date||"";
   $("#contractorJobStatus").value=x.status;$("#contractorJobContent").value=x.work_content||"";$("#contractorJobCause").value=x.cause||"";$("#contractorJobSolution").value=x.solution||"";$("#contractorJobNote").value=x.note||"";
-  $("#contractorJobModalTitle").textContent="Chỉnh sửa công việc";$("#contractorJobModalContractor").textContent=c?.name||"Nhà thầu";$("#contractorJobModal").classList.remove("hide");
+  $("#contractorJobModalTitle").textContent=x.source_task_id?"Chỉnh sửa công việc liên kết":"Chỉnh sửa công việc";
+  $("#contractorJobModalContractor").textContent=(c?.name||"Nhà thầu")+(x.source_task_id?" · CV-"+String(x.source_task_id).slice(-6):"");
+  $("#contractorJobModal").classList.remove("hide");
 };
 window.deleteContractorJob=async id=>{
   if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -425,9 +429,25 @@ function contractorInitEvents(){
     if(!content)return toast("Vui lòng nhập nội dung công việc");
     const body={building_id:currentBuilding.id,contractor_id:$("#contractorJobContractorId").value,work_date:workDate,completed_date:completed,work_content:content,cause:$("#contractorJobCause").value.trim(),solution:$("#contractorJobSolution").value.trim(),status,note:$("#contractorJobNote").value.trim(),updated_at:new Date().toISOString()};
     try{
+      const sourceTaskId=$("#contractorJobSourceTaskId")?.value||"";
       if(id)await sbFetch("/rest/v1/contractor_jobs?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
       else await sbFetch("/rest/v1/contractor_jobs",{method:"POST",token:centralSession.access_token,body});
-      $("#contractorJobModal").classList.add("hide");await loadContractorData(currentBuilding.id,true);if(selectedContractorId)renderContractorDetail();toast(id?"Đã cập nhật công việc":"Đã thêm công việc nhà thầu");
+      if(sourceTaskId){
+        const tasks=load(),idx=tasks.findIndex(t=>String(t.id)===String(sourceTaskId));
+        if(idx>=0){
+          const oldTask=tasks[idx];
+          const taskStatus=status==="Hoàn thành"?"Đã hoàn thành":status;
+          const updatedTask={...oldTask,d:workDate,c:content,s:taskStatus,n:$("#contractorJobNote").value.trim(),cause:$("#contractorJobCause").value.trim(),result:$("#contractorJobSolution").value.trim()};
+          if(taskStatus==="Đã hoàn thành")updatedTask.completedAt=oldTask.completedAt||new Date((completed||workDate)+"T12:00:00").toISOString();
+          else delete updatedTask.completedAt;
+          tasks[idx]=updatedTask;
+          save(tasks);
+          try{await syncTaskRecord("upsert_task",updatedTask,currentBuilding.id)}catch(e){console.warn("Sync linked source task failed",e)}
+          if(typeof render==="function")render();
+          if(typeof renderHomeDashboard==="function")renderHomeDashboard();
+        }
+      }
+      $("#contractorJobModal").classList.add("hide");await loadContractorData(currentBuilding.id,true);if(selectedContractorId)renderContractorDetail();toast(sourceTaskId?"Đã cập nhật công việc liên kết":(id?"Đã cập nhật công việc":"Đã thêm công việc nhà thầu"));
     }catch(err){toast(err.message)}
   };
 }
