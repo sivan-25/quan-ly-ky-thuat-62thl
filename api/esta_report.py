@@ -227,10 +227,9 @@ def counts(tasks):
     return n
 
 def intro(data,eyebrow,title="Danh sách công việc kỹ thuật"):
-    P=Paragraph; execs=", ".join(dict.fromkeys(t["assignee"] for t in data["tasks"] if t.get("assignee")))
+    P=Paragraph
     meta=Table([
         [P("TÒA NHÀ",ST["lbl"]),P(data["building"],ST["val"]),P("NGÀY BÁO CÁO",ST["lbl"]),P(data["report_date"],ST["val"])],
-        [P("ĐƠN VỊ THỰC HIỆN",ST["lbl"]),P(execs or "—",ST["val"]),P("NGƯỜI LẬP",ST["lbl"]),P(data["prepared_by"],ST["val"])],
     ],colWidths=[32*mm,55*mm,28*mm,CW-115*mm])
     meta.setStyle(TableStyle([("VALIGN",(0,0),(-1,-1),"MIDDLE"),("LINEBELOW",(0,0),(-1,-1),.4,TAUPE),
         ("TOPPADDING",(0,0),(-1,-1),3.5),("BOTTOMPADDING",(0,0),(-1,-1),3.5),
@@ -251,7 +250,7 @@ def signatures():
     return KeepTogether([Spacer(1,6),t])
 
 def story_summary(data,sign=True,pointer=False):
-    P=Paragraph; tasks=data["tasks"]; n=counts(tasks); story=intro(data,"Bước 1  ·  Báo cáo tổng hợp")
+    P=Paragraph; tasks=data["tasks"]; n=counts(tasks); story=intro(data,"Phần 1  ·  Báo cáo tổng hợp")
     def kpi(num,label,dark=False):
         return [P(str(num),ST["kpi_n_d" if dark else "kpi_n"]),P(label,ST["kpi_l_d" if dark else "kpi_l"])]
     gap=2.5*mm; kw=(CW-4*gap)/5
@@ -284,7 +283,7 @@ def story_summary(data,sign=True,pointer=False):
     for r in range(2,len(rows),2): style.append(("BACKGROUND",(0,r),(-1,r),CREAM_L))
     tb.setStyle(TableStyle(style)); story.append(tb)
     if pointer:
-        story += [Spacer(1,10),P("BƯỚC 2  ·  CHI TIẾT VÀ HÌNH ẢNH TỪNG CÔNG VIỆC  —  XEM TỪ TRANG 2",ST["sec"])]
+        story += [Spacer(1,10),P("PHẦN 2  ·  CHI TIẾT VÀ HÌNH ẢNH TỪNG CÔNG VIỆC  —  XEM TỪ TRANG 2",ST["sec"])]
     if sign: story.append(signatures())
     return story
 
@@ -428,9 +427,9 @@ def summary_line(tasks):
 
 def story_detail(data,standalone=True):
     tasks=data["tasks"]; P=Paragraph
-    if standalone: story=intro(data,"Bước 2  ·  Báo cáo chi tiết kèm hình ảnh")
+    if standalone: story=intro(data,"Phần 2  ·  Báo cáo chi tiết kèm hình ảnh")
     else:
-        story=[P("BƯỚC 2  ·  CHI TIẾT KÈM HÌNH ẢNH",ST["eyebrow"]),Spacer(1,3),
+        story=[P("PHẦN 2  ·  CHI TIẾT KÈM HÌNH ẢNH",ST["eyebrow"]),Spacer(1,3),
                P("Chi tiết từng công việc",ST["h1"]),
                HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=6)]
     story += [P(summary_line(tasks),ST["sec"]),Spacer(1,8)]
