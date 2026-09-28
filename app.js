@@ -1453,16 +1453,73 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
 window.downloadReportPdf=downloadReportPdf;
 
 let workReportBusy=false;
+function estaGeneratorStatus(status){
+ return status==="Đã hoàn thành"?"Hoàn thành":String(status||"Chờ xử lý");
+}
+function estaGeneratorPayload(rows){
+ return {
+   building:String(currentBuilding?.name||"[CẦN BỔ SUNG]"),
+   report_date:new Date().toLocaleDateString("vi-VN"),
+   prepared_by:"",
+   images_per_row:1,
+   tasks:rows.map(x=>({
+     title:String(x.c||"[CẦN BỔ SUNG]"),
+     type:String(x.t||"Hằng ngày"),
+     status:estaGeneratorStatus(x.s),
+     date:x.d?fmt(x.d):"[CẦN BỔ SUNG]",
+     assignee:performerArray(x).join(", ")||"[CẦN BỔ SUNG]",
+     note:String(x.n||""),
+     images:(Array.isArray(x.imgs)?x.imgs:[]).filter(Boolean).map((ref,i)=>({
+       path:String(ref),
+       caption:"Hình "+(i+1)
+     }))
+   }))
+ };
+}
+async function exportEstaGeneratorPdf(rows){
+ if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),115000);
+ try{
+   const res=await fetch("/api/esta_report",{
+     method:"POST",
+     headers:{
+       "Content-Type":"application/json",
+       "Authorization":"Bearer "+centralSession.access_token
+     },
+     body:JSON.stringify(estaGeneratorPayload(rows)),
+     signal:controller.signal
+   });
+   if(!res.ok){
+     let detail={};try{detail=await res.json()}catch(_){}
+     throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo ESTA");
+   }
+   const blob=await res.blob();
+   if(!blob.size)throw new Error("File PDF trả về bị trống");
+   const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
+   const url=URL.createObjectURL(blob);
+   const a=document.createElement("a");
+   a.href=url;
+   a.download="ESTA_BaoCao_KyThuat_TongHop_ChiTiet.pdf";
+   document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),60000);
+   if(missing)toast("Đã xuất PDF · "+missing+" hình không tải được nên giữ ô trống");
+   else toast("Đã xuất PDF ESTA chuẩn");
+ }catch(err){
+   if(err?.name==="AbortError")throw new Error("Tạo PDF quá thời gian. Vui lòng thử lại.");
+   throw err;
+ }finally{clearTimeout(timer)}
+}
 async function openReport(a,kind="current",previewWindow=null,photoLayout=1){
  if(!a.length){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Không có dữ liệu để xuất PDF");return}
  if(workReportBusy){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Báo cáo đang được tạo");return}
  workReportBusy=true;
  try{
-   const prepared=await prepareWorkReportRows(a);
-   if(prepared.failed)toast("Có "+prepared.failed+" hình không tải được; các hình còn lại vẫn được đính kèm");
-   const period=workReportPeriod(kind,prepared.rows);
-   const html=reportHtml(prepared.rows,kind,1);
-   await downloadReportPdf(html,workReportFilename(period),previewWindow);
+   toast("Đang tạo PDF theo mẫu ESTA chuẩn...");
+   await exportEstaGeneratorPdf(a);
+ }catch(err){
+   console.warn("ESTA generator export failed",err);
+   toast(err.message||"Không thể xuất PDF");
  }finally{
    workReportBusy=false;
  }
@@ -1476,7 +1533,6 @@ document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{
  else{let r=rangeDates(kind);a=filtered(r.from,r.to)}
  if(!a.length){$("#exportModal").classList.add("hide");toast("Không có dữ liệu để xuất PDF");return}
  $("#exportModal").classList.add("hide");
- toast("Đang chuẩn bị báo cáo · mỗi trang 1 hình ảnh...");
  openReport(a,kind,null,1);
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeImageViewer();$("#exportModal").classList.add("hide")}});
