@@ -193,10 +193,11 @@ function renderContractorJobs(){
   const list=all.filter(x=>(!status||x.status===status)&&(!search||[x.work_content,x.cause,x.solution,x.note,x.status].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search))));
   $("#contractorJobCount").textContent="("+all.length+")";
   $("#contractorJobList").innerHTML=list.map((x,i)=>{
-    const linked=x._source==="task";
-    const sourceLine=linked?'<div class="contractorJobLinkedSource"><span>LIÊN KẾT TỪ CÔNG VIỆC</span><b>CV-'+esc(String(x.source_task_id).slice(-6))+'</b></div>':"";
+    const linked=x._source==="task"||!!x.source_task_id;
+    const linkedTaskId=x.source_task_id||"";
+    const sourceLine=linked?'<div class="contractorJobLinkedSource"><span>LIÊN KẾT TỪ CÔNG VIỆC</span><b>CV-'+esc(String(linkedTaskId).slice(-6))+'</b></div>':"";
     const actions=linked
-      ?'<div class="contractorJobActions"><button type="button" data-open-linked-task="'+esc(x.source_task_id)+'">↗ Mở công việc liên kết</button></div>'
+      ?'<div class="contractorJobActions"><button type="button" data-open-linked-task="'+esc(linkedTaskId)+'">↗ Mở công việc liên kết</button></div>'
       :'<div class="contractorJobActions"><button type="button" data-edit-job="'+x.id+'">✎ Sửa</button><button class="danger" type="button" data-delete-job="'+x.id+'">Xóa</button></div>';
     return '<article class="contractorJobCard'+(linked?' contractorJobLinked':'')+'">'+
       '<div class="contractorJobRail"><span>'+(i+1)+'</span></div>'+
