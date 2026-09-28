@@ -130,7 +130,7 @@ applyBuildingUI=function(){
 document.addEventListener("DOMContentLoaded",demoSetProjectMode);
 
 function demoEnsureWorkPanel(){
- const card=document.querySelector("#workPage .workEntryCard");if(!card)return;
+ const card=(typeof workEntryCard==="function"?workEntryCard():document.querySelector("#workPage .workEntryCard"));if(!card)return;
  let box=$("#demoWorkLinks");
  if(!box){
   box=document.createElement("details");
