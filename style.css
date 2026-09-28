@@ -9272,3 +9272,9 @@ i{
  .workPdfLayout{grid-template-columns:1fr}
  .workPdfLayout>span{grid-column:auto}
 }
+
+/* WORK_PDF_FIXED_ONE_PHOTO */
+.workPdfFixedLayout{display:block!important}
+.workPdfFixedOption{display:grid;gap:4px;margin-top:8px;padding:11px 12px;border:1px solid rgba(54,181,209,.35);border-radius:10px;background:rgba(45,212,191,.08)}
+.workPdfFixedOption b{font-size:13px;color:#55dbea}
+.workPdfFixedOption small{font-size:11px;line-height:1.45;color:#9eb0c6}
