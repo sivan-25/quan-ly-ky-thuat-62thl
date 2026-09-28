@@ -3329,3 +3329,13 @@ body:has(#app.contractorMode) #contractorJobModal .contractorForm textarea:focus
   #app.contractorMode #contractorPage .contractorRowValue,
   #app.contractorMode #contractorPage .contractorRowPhone a{font-size:11px!important}
 }
+
+/* LINKED_WORK_ORDERS */
+.contractorJobLinked{border-color:#285b73!important;box-shadow:inset 3px 0 0 #2dd4bf}
+.contractorJobLinkedSource{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:7px 9px;border:1px solid #2a5265;border-radius:8px;background:#112d38}
+.contractorJobLinkedSource span{font-size:9px;font-weight:800;letter-spacing:.7px;color:#75dce7}
+.contractorJobLinkedSource b{font-size:10px;color:#fff}
+.contractorJobLinked .contractorJobActions button{border-color:#2d7183;color:#7ee6ef}
+@media(max-width:720px){
+  .contractorJobLinkedSource{align-items:flex-start;flex-direction:column;gap:3px}
+}
