@@ -1,4 +1,2 @@
 reportlab>=4.4,<5
 Pillow>=11,<13
-fonttools>=4.58,<5
-fontpkg==0.2.2\nfontpkg-montserrat==9.0
