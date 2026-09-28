@@ -31,10 +31,11 @@ function contractorLinkedTaskJobs(id){
         work_date:t.d||today(),
         completed_date:completed,
         work_content:t.c||"Công việc liên kết",
-        cause:t.incidentCode?("Liên kết sự cố "+t.incidentCode):"",
+        cause:t.cause||(t.incidentCode?("Liên kết sự cố "+t.incidentCode):""),
         solution:t.result||"",
         status:t.s||"Đang thực hiện",
         note:t.n||"",
+        images:Array.isArray(t.imgs)?t.imgs.filter(Boolean):[],
         source_task_id:String(t.id),
         _source:"task"
       };
@@ -195,9 +196,11 @@ function renderContractorJobs(){
   $("#contractorJobList").innerHTML=list.map((x,i)=>{
     const linked=x._source==="task"||!!x.source_task_id;
     const linkedTaskId=x.source_task_id||"";
+    const refs=Array.isArray(x.images)?x.images.filter(Boolean):[];
     const sourceLine=linked?'<div class="contractorJobLinkedSource"><span>LIÊN KẾT TỪ CÔNG VIỆC</span><b>CV-'+esc(String(linkedTaskId).slice(-6))+'</b></div>':"";
+    const photos=refs.length?'<div class="contractorJobPhotos"><div class="contractorJobPhotosHead"><span>HÌNH ẢNH CÔNG VIỆC</span><b>'+refs.length+' ảnh</b></div><div class="contractorJobPhotoGrid">'+refs.slice(0,6).map((ref,idx)=>'<button type="button" class="contractorJobPhoto" '+(linkedTaskId?'data-view-linked-images="'+esc(linkedTaskId)+'"':'')+' aria-label="Xem hình '+(idx+1)+'">'+mediaImgHtml(ref,"contractorJobPhotoImg")+'</button>').join("")+'</div></div>':"";
     const actions=linked
-      ?'<div class="contractorJobActions"><button type="button" data-open-linked-task="'+esc(linkedTaskId)+'">↗ Mở công việc liên kết</button></div>'
+      ?'<div class="contractorJobActions"><button type="button" class="contractorLinkedEditBtn" data-edit-linked-task="'+esc(linkedTaskId)+'">✎ Sửa công việc liên kết</button><button type="button" data-open-linked-task="'+esc(linkedTaskId)+'">↗ Mở trong Công việc</button></div>'
       :'<div class="contractorJobActions"><button type="button" data-edit-job="'+x.id+'">✎ Sửa</button><button class="danger" type="button" data-delete-job="'+x.id+'">Xóa</button></div>';
     return '<article class="contractorJobCard'+(linked?' contractorJobLinked':'')+'">'+
       '<div class="contractorJobRail"><span>'+(i+1)+'</span></div>'+
@@ -205,19 +208,27 @@ function renderContractorJobs(){
       '<div class="contractorJobTop"><div><small>NGÀY THỰC HIỆN</small><b>'+fmt(x.work_date)+'</b></div><div><small>HOÀN THÀNH</small><b>'+(x.completed_date?fmt(x.completed_date):"—")+'</b></div><span class="contractorJobStatus '+contractorJobStatusClass(x.status)+'">'+esc(x.status)+'</span></div>'+
       sourceLine+
       '<div class="contractorJobContent"><span>NỘI DUNG CÔNG VIỆC</span><p>'+esc(x.work_content||"—")+'</p></div>'+
-      '<div class="contractorJobDiagnosis"><div><span>NGUYÊN NHÂN / LIÊN KẾT</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div><div><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.solution||"Chưa ghi nhận")+'</p></div></div>'+
+      '<div class="contractorJobDiagnosis"><div><span>NGUYÊN NHÂN</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div><div><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.solution||"Chưa ghi nhận")+'</p></div></div>'+
       (x.note?'<div class="contractorJobNote"><span>GHI CHÚ</span><p>'+esc(x.note)+'</p></div>':'')+
-      actions+
+      photos+actions+
       '</div></article>';
   }).join("");
   $("#contractorJobList").querySelectorAll("[data-edit-job]").forEach(b=>b.onclick=()=>editContractorJob(b.dataset.editJob));
   $("#contractorJobList").querySelectorAll("[data-delete-job]").forEach(b=>b.onclick=()=>deleteContractorJob(b.dataset.deleteJob));
-  $("#contractorJobList").querySelectorAll("[data-open-linked-task]").forEach(b=>b.onclick=()=>{
-    const raw=b.dataset.openLinkedTask,n=Number(raw);
+  const openLinked=id=>{
+    const raw=id,n=Number(raw);
     showModule("work");
-    setTimeout(()=>window.editTask?.(Number.isFinite(n)?n:raw),100);
+    setTimeout(()=>window.editTask?.(Number.isFinite(n)?n:raw),120);
+  };
+  $("#contractorJobList").querySelectorAll("[data-edit-linked-task]").forEach(b=>b.onclick=()=>openLinked(b.dataset.editLinkedTask));
+  $("#contractorJobList").querySelectorAll("[data-open-linked-task]").forEach(b=>b.onclick=()=>openLinked(b.dataset.openLinkedTask));
+  $("#contractorJobList").querySelectorAll("[data-view-linked-images]").forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const raw=b.dataset.viewLinkedImages,n=Number(raw);
+    if(typeof window.viewImages==="function")window.viewImages(Number.isFinite(n)?n:raw);
   });
   $("#contractorJobEmpty").classList.toggle("hide",list.length>0);
+  if(typeof hydrateMediaImages==="function")hydrateMediaImages($("#contractorJobList"));
 }
 function resetContractorForm(){
   $("#contractorId").value="";$("#contractorName").value="";$("#contractorPhone").value="";$("#contractorContactName").value="";
