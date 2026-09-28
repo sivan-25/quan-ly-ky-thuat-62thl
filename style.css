@@ -9676,3 +9676,96 @@ body.workEditOpen{overflow:hidden!important}
     font-size:13px!important;
   }
 }
+
+/* MOBILE_GLOBAL_QA_20260929 */
+@media(max-width:760px){
+  /* Shared phone typography and touch size. Desktop is intentionally untouched. */
+  #app .estaTopbar button,
+  #app .mobileMenuBtn,
+  #app .mobileMenuClose{
+    min-width:44px!important;
+    min-height:44px!important;
+  }
+  #app .page,
+  #app .modulePage{
+    min-width:0!important;
+    overflow-x:hidden;
+  }
+
+  /* Tổng quan */
+  #homePage .homeWelcome p{font-size:11.5px!important;line-height:1.5!important}
+  #homePage .homePanelHead h2{font-size:17px!important}
+  #homePage .homePanelHead p{font-size:10.5px!important}
+  #homePage .homeTaskRow b{font-size:14px!important}
+  #homePage .homeTaskRow small{font-size:10.5px!important}
+  #homePage .quickActions>button{min-height:68px!important}
+  #homePage .quickActions b{font-size:13px!important}
+  #homePage .quickActions small{font-size:10px!important;line-height:1.35!important}
+
+  /* Danh mục dự án / quản trị */
+  #adminPage .adminHero h1{font-size:21px!important}
+  #adminPage .adminHero p{font-size:11px!important;line-height:1.45!important}
+  #adminPage .adminSectionHead h2{font-size:18px!important}
+  #adminPage .adminSectionHead p{font-size:10.5px!important}
+  #adminPage .adminProjectCard h3,
+  #adminPage .adminProjectOpen h3{font-size:15px!important}
+  #adminPage .adminProjectCard p,
+  #adminPage .adminProjectOpen p{font-size:10.5px!important;line-height:1.4!important}
+
+  /* Công việc list on phone. */
+  #workPage .stats{gap:8px!important}
+  #workPage .stats article{min-height:88px!important}
+  #workPage .stats small{font-size:10px!important;line-height:1.3!important}
+  #workPage .stats strong{font-size:24px!important}
+  #workPage .proTaskCard{padding:14px!important}
+  #workPage .proTaskCard .taskTitle{font-size:16px!important;line-height:1.35!important}
+  #workPage .proTaskCard p{font-size:12px!important;line-height:1.5!important}
+  #workPage .mobileCardFoot button{
+    min-height:44px!important;
+    padding:0 13px!important;
+    font-size:12px!important;
+  }
+
+  /* Năng lượng */
+  #energyPage .energyHead h1{font-size:20px!important}
+  #energyPage .energyHead p{font-size:11px!important;line-height:1.4!important}
+  #energyPage .energySummaryCards small{font-size:10.5px!important}
+  #energyPage .energySummaryCards strong{font-size:22px!important}
+  #energyPage .energyCardTitle h2{font-size:17px!important}
+  #energyPage .energyCardTitle p{font-size:10.5px!important}
+  #energyPage .energyActions button{min-height:48px!important;font-size:13px!important}
+
+  /* Dụng cụ / vật tư */
+  #inventoryPage .inventoryCommand h1{font-size:20px!important}
+  #inventoryPage .inventoryCommand p{font-size:11px!important;line-height:1.45!important}
+  #inventoryPage .inventoryToolbar h2{font-size:17px!important}
+  #inventoryPage .inventoryToolbar p{font-size:10.5px!important;line-height:1.4!important}
+  #inventoryPage .inventoryStats small{font-size:10px!important}
+  #inventoryPage .inventoryStats em{font-size:9.5px!important}
+  #inventoryPage .inventoryPrimary,
+  #inventoryPage .inventorySecondary{min-height:46px!important;font-size:12px!important}
+
+  /* Bảo trì */
+  #maintenancePage .maintenanceHero h1{font-size:21px!important}
+  #maintenancePage .maintenanceHero p{font-size:11px!important;line-height:1.45!important}
+  #maintenancePage .maintenanceToolbar h2{font-size:17px!important}
+  #maintenancePage .maintenanceToolbar p{font-size:10.5px!important}
+  #maintenancePage .maintenanceAssetCard h3{font-size:16px!important}
+  #maintenancePage .maintenanceAssetCard>p{font-size:11px!important;line-height:1.45!important}
+  #maintenancePage .maintCardActions button{min-height:44px!important;font-size:11.5px!important}
+
+  /* Nhà thầu */
+  #contractorPage .contractorIntro h1{font-size:21px!important}
+  #contractorPage .contractorIntro p{font-size:11px!important;line-height:1.45!important}
+  #contractorPage .contractorToolbar h2{font-size:17px!important}
+  #contractorPage .contractorToolbar p{font-size:10.5px!important}
+  #contractorPage .contractorRowIdentity h3{font-size:15px!important}
+  #contractorPage .contractorRowIdentity p{font-size:10.5px!important}
+  #contractorPage .contractorRowActions button{min-width:44px!important;min-height:44px!important}
+
+  /* Modals/forms: enough room for fingers and no iOS zoom. */
+  #app .modal button,
+  #app [role="dialog"] button{
+    min-height:44px;
+  }
+}
