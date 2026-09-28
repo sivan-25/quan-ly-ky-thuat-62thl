@@ -9278,3 +9278,401 @@ i{
 .workPdfFixedOption{display:grid;gap:4px;margin-top:8px;padding:11px 12px;border:1px solid rgba(54,181,209,.35);border-radius:10px;background:rgba(45,212,191,.08)}
 .workPdfFixedOption b{font-size:13px;color:#55dbea}
 .workPdfFixedOption small{font-size:11px;line-height:1.45;color:#9eb0c6}
+
+/* WORK_EDIT_DRAWER_AND_MOBILE_QA_20260929 */
+body.workEditOpen{overflow:hidden!important}
+
+/* Work edit drawer: desktop list remains unchanged; this appears only after Edit. */
+.workEditDrawer{
+  position:fixed;
+  z-index:4600;
+  inset:0;
+  display:flex;
+  justify-content:flex-end;
+  background:rgba(2,8,18,.66);
+  backdrop-filter:blur(2px);
+}
+.workEditDrawer.hide{display:none!important}
+.workEditDrawerBackdrop{position:absolute;inset:0}
+.workEditDrawerCard{
+  position:relative;
+  z-index:1;
+  width:min(720px,52vw);
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border-left:1px solid #31415e;
+  background:#0d1627;
+  box-shadow:-24px 0 70px rgba(0,0,0,.42);
+}
+.workEditDrawerHead{
+  flex:0 0 auto;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  padding:18px 20px 16px;
+  border-bottom:1px solid #25324a;
+  background:#101a2d;
+  color:#f5f8ff;
+}
+.workEditDrawerHead>div{min-width:0}
+.workEditDrawerHead span{
+  display:block;
+  margin-bottom:5px;
+  color:#43dfee;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.35px;
+}
+.workEditDrawerHead h2{
+  margin:0;
+  font-size:22px;
+  line-height:1.2;
+}
+.workEditDrawerHead p{
+  margin:5px 0 0;
+  color:#93a4bb;
+  font-size:11px;
+  line-height:1.45;
+}
+#closeWorkEditDrawer{
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  padding:0;
+  border:1px solid #35435f;
+  border-radius:11px;
+  background:#172238;
+  color:#fff;
+  font-size:24px;
+  line-height:1;
+  cursor:pointer;
+}
+.workEditDrawerMount{
+  min-height:0;
+  flex:1 1 auto;
+  overflow:auto;
+  padding:16px;
+}
+.workEditDrawer .workEntryCard{
+  margin:0!important;
+  width:100%!important;
+  max-width:none!important;
+  border:1px solid #25314a!important;
+  border-radius:15px!important;
+  background:#11182b!important;
+  box-shadow:none!important;
+  color:#eef4ff!important;
+}
+.workEditDrawer .workEntryHeader{
+  padding:16px 17px!important;
+  border-bottom:1px solid #202c44!important;
+  background:#11182b!important;
+}
+.workEditDrawer .workEntryHeader>div:first-child>span{color:#18d9f3!important}
+.workEditDrawer .workEntryHeader h2{color:#f5f7ff!important;font-size:19px!important}
+.workEditDrawer .workEntryHeader p{color:#8190a9!important;font-size:11px!important}
+.workEditDrawer .workEntryHeaderIcon{
+  border:1px solid #30405f!important;
+  background:#1a2540!important;
+  color:#18d9f3!important;
+}
+.workEditDrawer #taskForm.workEntryForm{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  padding:16px!important;
+}
+.workEditDrawer #taskForm .workField{
+  min-width:0!important;
+  grid-column:auto!important;
+}
+.workEditDrawer #taskForm .workContent,
+.workEditDrawer #taskForm .workPerformer,
+.workEditDrawer #taskForm .workNote,
+.workEditDrawer #taskForm .workImage{
+  grid-column:1/-1!important;
+}
+.workEditDrawer #taskForm .workField>span{
+  display:block;
+  margin-bottom:6px;
+  color:#aab7cc!important;
+  font-size:11px!important;
+}
+.workEditDrawer #taskForm input:not([type="hidden"]),
+.workEditDrawer #taskForm select,
+.workEditDrawer #taskForm textarea,
+.workEditDrawer #taskForm .peopleSelectBtn{
+  width:100%!important;
+  min-height:46px!important;
+  border:1px solid #34415e!important;
+  border-radius:10px!important;
+  background:#18223b!important;
+  color:#f3f6ff!important;
+  font-size:13px!important;
+}
+.workEditDrawer #taskForm input::placeholder,
+.workEditDrawer #taskForm textarea::placeholder{color:#697996!important}
+.workEditDrawer #taskForm .peopleSelectMenu{
+  z-index:25!important;
+  border-color:#33415e!important;
+  background:#121c30!important;
+  color:#dce4f4!important;
+}
+.workEditDrawer #taskForm .imageNativeActions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:9px!important;
+}
+.workEditDrawer #taskForm .imageActionBtn,
+.workEditDrawer #taskForm .workCancel{
+  min-height:44px!important;
+  border:1px solid #35415b!important;
+  border-radius:10px!important;
+  background:#151f34!important;
+  color:#b8c5d9!important;
+}
+.workEditDrawer #taskForm .cameraBtn{
+  border-color:#1d5368!important;
+  background:#0f2837!important;
+  color:#20ddef!important;
+}
+.workEditDrawer #taskForm .workSave{
+  min-height:46px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:linear-gradient(96deg,#6c63ff 0%,#4c83f6 45%,#27c6df 100%)!important;
+  color:#06121e!important;
+  font-weight:900!important;
+}
+.workEditDrawer .workFormActions{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:minmax(110px,.35fr) minmax(180px,1fr)!important;
+  gap:9px!important;
+}
+.workEditDrawer .workImageInfo{
+  padding:0 16px 10px!important;
+  color:#91a2bb!important;
+  font-size:11px!important;
+}
+
+/* Existing saved images: deletions are staged until Save. */
+.existingImageSection{
+  margin:0 16px 12px;
+  padding:12px;
+  border:1px solid #2d3c57;
+  border-radius:12px;
+  background:#0f182a;
+}
+.existingImageSection.hide{display:none!important}
+.existingImageHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.existingImageHead b{
+  display:block;
+  color:#eef4ff;
+  font-size:12px;
+}
+.existingImageHead small{
+  display:block;
+  margin-top:3px;
+  color:#8293ab;
+  font-size:9.5px;
+  line-height:1.4;
+}
+.existingImageHead>span{
+  flex:0 0 auto;
+  color:#5ddfea;
+  font-size:10px;
+  font-weight:850;
+}
+.existingImagePreview{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+}
+.existingImg{
+  position:relative;
+  min-width:0;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  border:1px solid #34445f;
+  border-radius:10px;
+  background:#0b1322;
+}
+.existingImg img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.existingImg>button{
+  position:absolute;
+  top:5px;
+  right:5px;
+  width:30px;
+  height:30px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:50%;
+  background:rgba(156,35,51,.92);
+  color:#fff;
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+}
+.existingImg>span{
+  position:absolute;
+  left:5px;
+  bottom:5px;
+  min-height:20px;
+  display:flex;
+  align-items:center;
+  padding:0 7px;
+  border-radius:10px;
+  background:rgba(6,16,29,.78);
+  color:#fff;
+  font-size:8px;
+  font-weight:800;
+}
+
+/* Mobile QA only — no desktop layout changes. */
+@media(max-width:760px){
+  /* Prevent iOS focus zoom across operational forms. */
+  #app input:not([type="hidden"]),
+  #app select,
+  #app textarea,
+  .workEditDrawer input:not([type="hidden"]),
+  .workEditDrawer select,
+  .workEditDrawer textarea{
+    font-size:16px!important;
+  }
+
+  .workEditDrawer{
+    align-items:stretch!important;
+    background:#0d1627!important;
+    backdrop-filter:none!important;
+  }
+  .workEditDrawerBackdrop{display:none!important}
+  .workEditDrawerCard{
+    width:100vw!important;
+    max-width:none!important;
+    height:100dvh!important;
+    border-left:0!important;
+    box-shadow:none!important;
+  }
+  .workEditDrawerHead{
+    position:sticky!important;
+    top:0!important;
+    z-index:30!important;
+    padding:calc(12px + env(safe-area-inset-top)) 14px 12px!important;
+  }
+  .workEditDrawerHead h2{font-size:19px!important}
+  .workEditDrawerHead p{font-size:11px!important}
+  #closeWorkEditDrawer{
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
+  }
+  .workEditDrawerMount{
+    padding:10px 10px calc(22px + env(safe-area-inset-bottom))!important;
+    overscroll-behavior:contain;
+  }
+  .workEditDrawer .workEntryCard{border-radius:13px!important}
+  .workEditDrawer .workEntryHeader{
+    padding:14px!important;
+  }
+  .workEditDrawer .workEntryHeaderIcon{display:none!important}
+  .workEditDrawer #taskForm.workEntryForm{
+    grid-template-columns:1fr!important;
+    gap:13px!important;
+    padding:14px!important;
+  }
+  .workEditDrawer #taskForm .workField,
+  .workEditDrawer #taskForm .workContent,
+  .workEditDrawer #taskForm .workPerformer,
+  .workEditDrawer #taskForm .workNote,
+  .workEditDrawer #taskForm .workImage{
+    grid-column:1/-1!important;
+  }
+  .workEditDrawer #taskForm .workField>span{font-size:12px!important}
+  .workEditDrawer #taskForm input:not([type="hidden"]),
+  .workEditDrawer #taskForm select,
+  .workEditDrawer #taskForm textarea,
+  .workEditDrawer #taskForm .peopleSelectBtn{
+    min-height:50px!important;
+    font-size:16px!important;
+  }
+  .workEditDrawer #taskForm .peopleSelectMenu{
+    position:fixed!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:10px!important;
+    top:auto!important;
+    width:auto!important;
+    max-height:70vh!important;
+  }
+  .workEditDrawer #taskForm .imageNativeActions{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  .workEditDrawer #taskForm .imageActionBtn{min-height:50px!important;font-size:14px!important}
+  .workEditDrawer .workFormActions{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:20!important;
+    grid-template-columns:110px minmax(0,1fr)!important;
+    padding:10px 0 max(2px,env(safe-area-inset-bottom))!important;
+    background:linear-gradient(180deg,rgba(17,24,43,.2),#11182b 30%)!important;
+  }
+  .workEditDrawer #taskForm .workCancel,
+  .workEditDrawer #taskForm .workSave{
+    min-height:50px!important;
+    font-size:14px!important;
+  }
+  .existingImageSection{margin:0 14px 12px!important;padding:11px!important}
+  .existingImageHead{display:block!important}
+  .existingImageHead>span{display:block;margin-top:5px}
+  .existingImagePreview{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .existingImg>button{
+    width:38px!important;
+    height:38px!important;
+    top:6px!important;
+    right:6px!important;
+    font-size:22px!important;
+  }
+  .workEditDrawer .pendingImagePreview{
+    margin:0 14px 14px!important;
+    gap:9px!important;
+  }
+  .workEditDrawer .pendingImg{
+    flex-basis:88px!important;
+    width:88px!important;
+    height:78px!important;
+  }
+  .workEditDrawer .pendingImg button{
+    width:34px!important;
+    height:34px!important;
+    font-size:20px!important;
+    line-height:34px!important;
+  }
+
+  /* Touch-friendly row actions and module controls. */
+  #workPage .rowActionMenu summary,
+  #energyPage .rowActionMenu summary{
+    width:44px!important;
+    height:44px!important;
+  }
+  #workPage .rowActionMenu div button,
+  #energyPage .rowActionMenu div button{
+    min-height:44px!important;
+    font-size:13px!important;
+  }
+}
