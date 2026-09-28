@@ -1179,7 +1179,6 @@ function reportHtml(a,kind="current",photoLayout=2){
        (first?'<div class="stepLabel">BƯỚC 2 · BÁO CÁO CHI TIẾT KÈM HÌNH ẢNH</div><h1>Chi tiết công việc & hình ảnh hiện trường</h1><div class="goldRule"></div>'+infoBlock()+
        '<div class="detailSummary">MỖI TRANG 01 HÌNH ẢNH · ẢNH ĐƯỢC GIỮ NGUYÊN TỶ LỆ · ĐÚNG THEO TỪNG CÔNG VIỆC</div>':"")+
        detailCard(u.x,u.i,u.photo,u.photoIndex,u.totalPhotos)+
-       (last?signatures():"")+
      '</div></section>';
  }).join("");
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BÁO CÁO CÔNG VIỆC KỸ THUẬT - '+esc(reportPeriod.label)+'</title><style>'+
