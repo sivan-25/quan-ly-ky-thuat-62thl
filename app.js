@@ -809,7 +809,71 @@ document.addEventListener("keydown",e=>{
 if(mobileNavQuery.addEventListener)mobileNavQuery.addEventListener("change",()=>setMobileMenuOpen(false));
 else mobileNavQuery.addListener(()=>setMobileMenuOpen(false));
 setMobileMenuOpen(false);
-const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||""}catch(e){}}function resetForm(clearDraft=true){$("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";setPeopleSelected("task",[]);$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";clearPendingTaskFiles();$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");if(clearDraft)localStorage.removeItem(DRAFT)}$("#cancelEdit").onclick=resetForm;["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));let pendingTaskFiles=[],pendingPreviewUrls=[];
+const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||""}catch(e){}}let existingTaskImages=[],removedTaskImageRefs=[],pendingTaskFiles=[],pendingPreviewUrls=[];
+function workEntryCard(){return document.querySelector("#workPage .workEntryCard")||document.querySelector("#workEditDrawer .workEntryCard")}
+function openWorkEditDrawer(){
+ const drawer=$("#workEditDrawer"),mount=$("#workEditDrawerMount"),card=workEntryCard();
+ if(!drawer||!mount||!card)return;
+ mount.appendChild(card);
+ drawer.classList.remove("hide");drawer.setAttribute("aria-hidden","false");
+ document.body.classList.add("workEditOpen");
+ $("#workEntryTitle")&&($("#workEntryTitle").textContent="Chỉnh sửa công việc");
+ setTimeout(()=>$("#content")?.focus({preventScroll:true}),60);
+}
+function restoreWorkEntryCard(){
+ const drawer=$("#workEditDrawer"),anchor=$("#workEntryHomeAnchor"),card=workEntryCard();
+ if(anchor&&card&&card.parentElement!==anchor.parentElement)anchor.insertAdjacentElement("afterend",card);
+ drawer?.classList.add("hide");drawer?.setAttribute("aria-hidden","true");
+ document.body.classList.remove("workEditOpen");
+ $("#workEntryTitle")&&($("#workEntryTitle").textContent="Thêm công việc");
+}
+function clearExistingTaskImages(){
+ existingTaskImages=[];removedTaskImageRefs=[];
+ const box=$("#existingImagePreview");if(box)box.innerHTML="";
+ $("#existingImageSection")?.classList.add("hide");
+}
+function renderExistingTaskImages(){
+ const section=$("#existingImageSection"),box=$("#existingImagePreview"),count=$("#existingImageCount");
+ if(!section||!box)return;
+ const editing=!!$("#editId")?.value;
+ const hadImages=existingTaskImages.length+removedTaskImageRefs.length>0;
+ section.classList.toggle("hide",!(editing&&hadImages));
+ if(count)count.textContent=existingTaskImages.length+" ảnh";
+ box.innerHTML=existingTaskImages.map((ref,i)=>'<div class="existingImg">'+mediaImgHtml(ref,"existingImgPhoto")+'<button type="button" onclick="removeExistingTaskImage('+i+')" aria-label="Xóa ảnh này" title="Xóa ảnh">×</button><span>Hình '+(i+1)+'</span></div>').join("");
+ hydrateMediaImages(box);
+}
+window.removeExistingTaskImage=i=>{
+ if(i<0||i>=existingTaskImages.length)return;
+ const ref=existingTaskImages.splice(i,1)[0];
+ if(ref)removedTaskImageRefs.push(ref);
+ renderExistingTaskImages();updateTaskImageInfo();
+};
+async function deleteStoredMediaRefs(refs){
+ const paths=[...new Set((refs||[]).filter(isStorageRef).map(storagePathFromRef).filter(Boolean))];
+ if(!paths.length||!centralSession?.access_token)return;
+ await Promise.allSettled(paths.map(async path=>{
+   const cached=mediaUrlCache.get(path);
+   if(cached?.url?.startsWith("blob:"))URL.revokeObjectURL(cached.url);
+   mediaUrlCache.delete(path);
+   const res=await fetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET,{
+     method:"DELETE",
+     headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"application/json"},
+     body:JSON.stringify({prefixes:[path]})
+   });
+   if(!res.ok)throw new Error("Không thể dọn file ảnh "+path);
+ }));
+}
+function resetForm(clearDraft=true){
+ $("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";setPeopleSelected("task",[]);$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";
+ clearPendingTaskFiles();clearExistingTaskImages();$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");
+ restoreWorkEntryCard();
+ if(clearDraft)localStorage.removeItem(DRAFT)
+}
+$("#cancelEdit").onclick=()=>resetForm();
+$("#closeWorkEditDrawer")?.addEventListener("click",()=>resetForm());
+$("#workEditDrawer")?.addEventListener("click",e=>{if(e.target.closest("[data-close-work-editor]"))resetForm()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#workEditDrawer")?.classList.contains("hide"))resetForm()});
+["date","content","type","status","performer","note"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));
 function clearPendingTaskFiles(){
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
  pendingPreviewUrls=[];pendingTaskFiles=[];
@@ -829,8 +893,12 @@ window.removePendingTaskFile=i=>{
  renderPendingTaskFiles();updateTaskImageInfo();
 };
 function updateTaskImageInfo(){
- const n=pendingTaskFiles.length;
- $("#imageInfo").textContent=n?"Đã chọn "+n+" hình · Có thể chọn thêm nhiều ảnh từ Thư viện hoặc chụp thêm 1 ảnh":"";
+ const added=pendingTaskFiles.length,existing=existingTaskImages.length,editing=!!$("#editId")?.value;
+ if(editing){
+   $("#imageInfo").textContent=(existing?existing+" hình hiện tại":"Không còn hình hiện tại")+(added?" · "+added+" hình mới sẽ thêm":"");
+ }else{
+   $("#imageInfo").textContent=added?"Đã chọn "+added+" hình · Có thể chọn thêm nhiều ảnh từ Thư viện hoặc chụp thêm 1 ảnh":"";
+ }
 }
 function addPendingTaskFiles(fileList){
  const incoming=Array.from(fileList||[]).filter(f=>f&&f.type?.startsWith("image/"));
@@ -865,7 +933,8 @@ $("#taskForm").onsubmit=async e=>{
    const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
    let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
    const files=[...pendingTaskFiles];
-   const imgs=Array.isArray(old?.imgs)?[...old.imgs]:[];
+   const removedRefs=[...removedTaskImageRefs];
+   const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
    const obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
@@ -877,6 +946,7 @@ $("#taskForm").onsubmit=async e=>{
        const taskSync=syncTaskRecord("upsert_task",obj,buildingId);
        const imageUpload=files.length?uploadMediaFiles(files,"tasks",id,null,buildingId):Promise.resolve([]);
        const [,uploaded]=await Promise.all([taskSync,imageUpload]);
+       if(removedRefs.length)await deleteStoredMediaRefs(removedRefs);
        if(uploaded.length){
          let latest=[];try{latest=JSON.parse(localStorage.getItem(storageKey)||"[]")}catch(e){}
          latest=latest.map(x=>{
@@ -924,7 +994,15 @@ function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div 
  $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard"><div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+esc(x.n||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
  hydrateMediaImages($("#tbody"));
 }
-window.editTask=id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}let x=load().find(y=>y.id===id);$("#editId").value=x.id;$("#date").value=x.d;$("#content").value=x.c;$("#type").value=x.t||"Hằng ngày";$("#status").value=x.s;setPeopleSelected("task",performerArray(x));$("#note").value=x.n;$("#imageInfo").textContent=x.imgs?.length?"Đang có "+x.imgs.length+" hình · Có thể chụp/chọn thêm":"";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.remove("hide");scrollTo({top:0,behavior:"smooth"})};window.delTask=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(confirm("Xóa công việc này?")){save(load().filter(x=>x.id!==id));await syncTaskRecord("delete_task",id);render();renderHomeDashboard();toast("Đã xóa")}};window.viewImages=async id=>{
+window.editTask=id=>{
+ if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
+ const x=load().find(y=>String(y.id)===String(id));if(!x){toast("Không tìm thấy công việc");return}
+ clearPendingTaskFiles();
+ existingTaskImages=Array.isArray(x.imgs)?[...x.imgs]:[];removedTaskImageRefs=[];
+ $("#editId").value=x.id;$("#date").value=x.d;$("#content").value=x.c;$("#type").value=x.t||"Hằng ngày";$("#status").value=x.s;setPeopleSelected("task",performerArray(x));$("#note").value=x.n||"";
+ $("#saveBtn").textContent="Lưu thay đổi";$("#cancelEdit").classList.remove("hide");
+ openWorkEditDrawer();renderExistingTaskImages();updateTaskImageInfo();
+};window.delTask=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(confirm("Xóa công việc này?")){save(load().filter(x=>x.id!==id));await syncTaskRecord("delete_task",id);render();renderHomeDashboard();toast("Đã xóa")}};window.viewImages=async id=>{
  let x=load().find(y=>String(y.id)===String(id));if(!x?.imgs?.length)return;
  // Image preview must be a clean, image-only layer. Close any task/detail drawer first.
  document.querySelectorAll(".demoDrawer").forEach(el=>el.classList.add("hide"));
