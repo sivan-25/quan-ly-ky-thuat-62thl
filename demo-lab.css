@@ -300,3 +300,189 @@
 #app.demoProjectMode.reportsMode .headerSearch{
   width:min(560px,48vw)!important;
 }
+
+/* DEMO_MOBILE_QA_20260929 */
+@media(max-width:700px){
+  #app.demoProjectMode .demoFeaturePage{
+    width:100%!important;
+    max-width:none!important;
+    padding:9px 9px calc(24px + env(safe-area-inset-bottom))!important;
+  }
+  #app.demoProjectMode .demoHero{
+    gap:14px!important;
+    padding:16px!important;
+    border-radius:14px!important;
+  }
+  #app.demoProjectMode .demoHeroCopy span{font-size:9px!important}
+  #app.demoProjectMode .demoHeroCopy h1{
+    margin-top:5px!important;
+    font-size:22px!important;
+    line-height:1.2!important;
+  }
+  #app.demoProjectMode .demoHeroCopy p{
+    margin-top:7px!important;
+    font-size:12px!important;
+    line-height:1.5!important;
+  }
+  #app.demoProjectMode .demoHeroActions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+  #app.demoProjectMode .demoHeroActions .demoBtn{
+    width:100%!important;
+    min-height:46px!important;
+    height:auto!important;
+    padding:8px 10px!important;
+    font-size:12px!important;
+  }
+  #app.demoProjectMode .demoHeroActions .demoBtn:first-child:nth-last-child(3){
+    grid-column:1/-1!important;
+  }
+  #app.demoProjectMode .demoKpis{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  #app.demoProjectMode .demoKpi{
+    min-height:92px!important;
+    padding:13px!important;
+    gap:10px!important;
+    border-radius:13px!important;
+  }
+  #app.demoProjectMode .demoKpi i{
+    width:38px!important;
+    height:38px!important;
+    flex-basis:38px!important;
+  }
+  #app.demoProjectMode .demoKpi b{font-size:23px!important}
+  #app.demoProjectMode .demoKpi span{font-size:10px!important}
+  #app.demoProjectMode .demoKpi small{font-size:9px!important}
+  #app.demoProjectMode .demoGrid2{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  #app.demoProjectMode .demoPanel{
+    min-width:0!important;
+    width:100%!important;
+    border-radius:13px!important;
+  }
+  #app.demoProjectMode .demoPanelHead{padding:14px!important}
+  #app.demoProjectMode .demoPanelHead h2,
+  #app.demoProjectMode .demoPanelHead h3{font-size:17px!important}
+  #app.demoProjectMode .demoPanelHead p{font-size:10.5px!important}
+  #app.demoProjectMode .demoPanelBody{padding:10px!important}
+  #app.demoProjectMode .demoTableWrap{
+    width:100%!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+  #app.demoProjectMode #incidentPage .demoTable,
+  #app.demoProjectMode #documentsPage .demoTable{
+    min-width:760px!important;
+  }
+  #app.demoProjectMode .demoTable th{
+    height:42px!important;
+    padding:0 10px!important;
+    font-size:10px!important;
+  }
+  #app.demoProjectMode .demoTable td{
+    padding:11px 10px!important;
+    font-size:12px!important;
+    line-height:1.45!important;
+  }
+  #app.demoProjectMode #demoIncidentDetail,
+  #app.demoProjectMode #demoInspectionDetail,
+  #app.demoProjectMode #demoDocDetail{
+    position:static!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  #app.demoProjectMode .demoChecklistRow{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    padding:12px!important;
+  }
+  #app.demoProjectMode .demoChecklistRow b{font-size:13px!important}
+  #app.demoProjectMode .demoChecklistRow span{font-size:12px!important}
+  #app.demoProjectMode .demoOpsAlert{
+    min-height:58px!important;
+    padding:11px 12px!important;
+  }
+  #app.demoProjectMode .demoOpsAlert b{font-size:12px!important}
+  #app.demoProjectMode .demoOpsAlert span{font-size:10.5px!important}
+  #app.demoProjectMode .demoDocCats{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  #app.demoProjectMode .demoDocCat{min-height:76px!important}
+  #app.demoProjectMode .demoReportCards{grid-template-columns:1fr!important}
+  #app.demoProjectMode .demoReportCard{padding:14px!important}
+  #app.demoProjectMode .demoReportCard h3{font-size:16px!important}
+  #app.demoProjectMode .demoReportCard p{font-size:11.5px!important}
+
+  /* DEMO linked fields inside the new Work edit drawer. */
+  #app.demoProjectMode .demoWorkLinks{
+    margin:0 14px 14px!important;
+  }
+  #app.demoProjectMode .demoWorkLinks>summary{
+    min-height:46px!important;
+    display:flex!important;
+    align-items:center!important;
+    padding:0 12px!important;
+    font-size:11px!important;
+  }
+  #app.demoProjectMode .demoWorkLinkGrid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    padding:12px!important;
+  }
+  #app.demoProjectMode .demoWorkLinkGrid .span2{grid-column:1/-1!important}
+  #app.demoProjectMode .demoWorkLinkGrid label{
+    font-size:11px!important;
+  }
+  #app.demoProjectMode .demoWorkLinkGrid input,
+  #app.demoProjectMode .demoWorkLinkGrid select,
+  #app.demoProjectMode .demoWorkLinkGrid textarea{
+    min-height:50px!important;
+    font-size:16px!important;
+  }
+  #app.demoProjectMode .demoWorkLinkGrid textarea{min-height:92px!important}
+
+  /* Existing DEMO record drawer: mobile full screen and touch friendly. */
+  .demoDrawerCard{
+    width:100vw!important;
+    max-width:none!important;
+    min-height:100dvh!important;
+    padding:calc(14px + env(safe-area-inset-top)) 14px calc(22px + env(safe-area-inset-bottom))!important;
+  }
+  .demoDrawerHead{
+    position:sticky!important;
+    top:0!important;
+    z-index:5!important;
+    padding:4px 0 10px!important;
+    background:#10192a!important;
+  }
+  .demoDrawerHead h2{font-size:19px!important;line-height:1.3!important}
+  .demoDrawerClose{
+    width:44px!important;
+    height:44px!important;
+    flex:0 0 44px!important;
+  }
+  .demoTabs button{
+    min-height:42px!important;
+    height:42px!important;
+    font-size:11px!important;
+    flex:0 0 auto!important;
+  }
+  .demoTaskDetailGrid{grid-template-columns:1fr!important}
+  .demoTaskDetailGrid div{padding:12px!important}
+  .demoTaskDetailGrid small{font-size:10px!important}
+  .demoTaskDetailGrid b{font-size:13px!important}
+}
+@media(max-width:390px){
+  #app.demoProjectMode .demoKpis{grid-template-columns:1fr!important}
+  #app.demoProjectMode .demoHeroActions{grid-template-columns:1fr!important}
+  #app.demoProjectMode .demoHeroActions .demoBtn{grid-column:auto!important}
+}
