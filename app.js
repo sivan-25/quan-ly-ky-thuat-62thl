@@ -1067,7 +1067,7 @@ function reportHtml(a,kind="current",photoLayout=2){
    return names.filter(Boolean);
  }))];
  const executionUnits=units.length?units.join(", "):"[CẦN BỔ SUNG]";
- const photoCols=Number(photoLayout)===1?1:2;
+ const photoCols=1;
  const reportDate=new Date().toLocaleDateString("vi-VN");
 
  const header=(step,compact=false)=>'<div class="reportHeader '+(compact?"compact":"")+'">'+
@@ -1142,69 +1142,46 @@ function reportHtml(a,kind="current",photoLayout=2){
    return blocks.length?'<div class="extraGrid">'+blocks.join("")+'</div>':"";
  };
 
- const detailCard=(x,i,photoRefs=null,continuation=false)=>{
+ const detailCard=(x,i,photoRef=null,photoIndex=1,totalPhotos=1)=>{
    const type=x.t||"Hằng ngày",performers=performerArray(x).join(", ")||"—";
-   const sourceImgs=(x._reportImages||[]).filter(Boolean);
-   const refs=photoRefs===null?(sourceImgs.length?sourceImgs:[null,null]):photoRefs;
-   const photoItems=refs.map((v,j)=>{
-     const absoluteIndex=v?sourceImgs.indexOf(v)+1:(j+1);
-     return v
-       ?'<figure><img src="'+esc(v)+'" alt="Hình '+absoluteIndex+'"><figcaption>Hình '+absoluteIndex+'</figcaption></figure>'
-       :'<figure class="placeholder"><div><b>✦</b><span>HÌNH ẢNH CHƯA CẬP NHẬT</span></div><figcaption>Hình '+absoluteIndex+'</figcaption></figure>';
-   }).join("");
-   return '<article class="detailCard '+(continuation?"continuation":"")+'" data-photo-count="'+refs.length+'">'+
-     '<div class="detailHead"><div class="detailNo">'+String(i+1).padStart(2,"0")+'</div><h2>'+esc(x.c||"—")+(continuation?' <em>· Hình ảnh tiếp theo</em>':'')+'</h2><span class="statusPill '+reportStatusClass(x.s)+'">'+esc(x.s||"—")+'</span></div>'+
-     (continuation?"":(
-       '<div class="detailMeta"><div><span>LOẠI CÔNG VIỆC</span><b>'+esc(type)+'</b></div><div><span>NGÀY THỰC HIỆN</span><b>'+esc(fmt(x.d))+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div></div>'+
-       '<div class="detailNote"><span>GHI CHÚ</span><p>'+esc(x.n||"—")+'</p></div>'+
-       detailInfo(x)
-     ))+
-     '<div class="photoTitle">HÌNH ẢNH HIỆN TRƯỜNG'+(sourceImgs.length?' · '+sourceImgs.length+' ẢNH':"")+'</div>'+
-     '<div class="detailPhotos cols'+photoCols+'">'+photoItems+'</div>'+
+   const hasRealPhoto=!!photoRef;
+   const photoLabel=hasRealPhoto?("HÌNH "+photoIndex+" / "+totalPhotos):"CHƯA CÓ HÌNH ẢNH";
+   const photoItem=hasRealPhoto
+     ?'<figure><div class="photoFrame"><img src="'+esc(photoRef)+'" alt="Công việc '+(i+1)+' · Hình '+photoIndex+'"></div><figcaption>Hình '+photoIndex+' / '+totalPhotos+' · '+esc(x.c||"Công việc kỹ thuật")+'</figcaption></figure>'
+     :'<figure class="placeholder"><div class="photoFrame placeholderFrame"><div><b>✦</b><span>HÌNH ẢNH CHƯA CẬP NHẬT</span></div></div><figcaption>'+esc(x.c||"Công việc kỹ thuật")+'</figcaption></figure>';
+   return '<article class="detailCard singlePhotoCard">'+
+     '<div class="detailHead"><div class="detailNo">'+String(i+1).padStart(2,"0")+'</div><div class="detailTitleWrap"><h2>'+esc(x.c||"—")+'</h2><small>'+photoLabel+'</small></div><span class="statusPill '+reportStatusClass(x.s)+'">'+esc(x.s||"—")+'</span></div>'+
+     '<div class="detailMeta"><div><span>LOẠI CÔNG VIỆC</span><b>'+esc(type)+'</b></div><div><span>NGÀY THỰC HIỆN</span><b>'+esc(fmt(x.d))+'</b></div><div><span>NGƯỜI THỰC HIỆN</span><b>'+esc(performers)+'</b></div></div>'+
+     '<div class="detailNote"><span>GHI CHÚ</span><p>'+esc(x.n||"—")+'</p></div>'+
+     detailInfo(x)+
+     '<div class="photoTitle">HÌNH ẢNH HIỆN TRƯỜNG · '+photoLabel+'</div>'+
+     '<div class="detailPhotos cols1">'+photoItem+'</div>'+
    '</article>';
  };
 
- const photoUnits=[];
+ const detailUnits=[];
  a.forEach((x,i)=>{
    const imgs=(x._reportImages||[]).filter(Boolean);
    if(!imgs.length){
-     photoUnits.push({x,i,photos:[null,null],continuation:false,pairable:photoCols===2});
+     detailUnits.push({x,i,photo:null,photoIndex:0,totalPhotos:0});
      return;
    }
-   const chunkSize=photoCols===1?2:4;
-   for(let p=0;p<imgs.length;p+=chunkSize){
-     photoUnits.push({
-       x,i,
-       photos:imgs.slice(p,p+chunkSize),
-       continuation:p>0,
-       pairable:photoCols===2&&p===0&&imgs.length<=2
-     });
-   }
+   imgs.forEach((photo,p)=>detailUnits.push({
+     x,i,photo,photoIndex:p+1,totalPhotos:imgs.length
+   }));
  });
- const groups=[];
- let bucket=[];
- photoUnits.forEach(u=>{
-   if(u.pairable){
-     bucket.push(u);
-     if(bucket.length===2){groups.push(bucket);bucket=[]}
-   }else{
-     if(bucket.length){groups.push(bucket);bucket=[]}
-     groups.push([u]);
-   }
- });
- if(bucket.length)groups.push(bucket);
- const detailPages=groups.map((group,pageIndex)=>{
-   const first=pageIndex===0,last=pageIndex===groups.length-1;
-   return '<section class="reportSheet detailSheet">'+
-     header(first?"BƯỚC 2 · CHI TIẾT & HÌNH ẢNH":"BÁO CÁO CHI TIẾT & HÌNH ẢNH",!first)+
-     '<div class="sheetInner">'+
+
+ const detailPages=detailUnits.map((u,pageIndex)=>{
+   const first=pageIndex===0,last=pageIndex===detailUnits.length-1;
+   return '<section class="reportSheet detailSheet singlePhotoSheet">'+
+     header(first?"BƯỚC 2 · CHI TIẾT & HÌNH ẢNH":"BÁO CÁO CHI TIẾT & HÌNH ẢNH",true)+
+     '<div class="sheetInner detailSheetInner">'+
        (first?'<div class="stepLabel">BƯỚC 2 · BÁO CÁO CHI TIẾT KÈM HÌNH ẢNH</div><h1>Chi tiết công việc & hình ảnh hiện trường</h1><div class="goldRule"></div>'+infoBlock()+
-       '<div class="detailSummary">TỔNG '+a.length+' CÔNG VIỆC · '+doing+' ĐANG THỰC HIỆN · '+wait+' CHỜ XỬ LÝ · '+done+' HOÀN THÀNH · '+incidents+' SỰ CỐ</div>':"")+
-       group.map(o=>detailCard(o.x,o.i,o.photos,o.continuation)).join("")+
+       '<div class="detailSummary">MỖI TRANG 01 HÌNH ẢNH · ẢNH ĐƯỢC GIỮ NGUYÊN TỶ LỆ · ĐÚNG THEO TỪNG CÔNG VIỆC</div>':"")+
+       detailCard(u.x,u.i,u.photo,u.photoIndex,u.totalPhotos)+
        (last?signatures():"")+
      '</div></section>';
  }).join("");
-
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BÁO CÁO CÔNG VIỆC KỸ THUẬT - '+esc(reportPeriod.label)+'</title><style>'+
  '*{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'+
  '@page{size:A4 portrait;margin:0}html,body{margin:0;padding:0;background:#f7dfb6;color:#4b1138;font-family:Arial,Helvetica,sans-serif}body{font-size:9.2px;line-height:1.3}'+
@@ -1216,8 +1193,8 @@ function reportHtml(a,kind="current",photoLayout=2){
  '.kpis{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:2mm;margin:2.5mm 0 1.8mm}.kpis article{min-height:18mm;padding:3mm;border-top:.8mm solid #b87531;background:rgba(255,250,232,.58)}.kpis article.main{background:#4b1239;color:#f7e7c7;border-top:0}.kpis b{display:block;font-size:20px;line-height:1}.kpis span{display:block;margin-top:2mm;font-size:6.1px;font-weight:900;letter-spacing:.15px}.kpis article:not(.main) b{color:#4b1239}.summaryCaption{margin-bottom:2.5mm;font-size:6.4px;color:#806b61}'+
  '.tableLabel{margin:2.5mm 0 1.7mm;font-size:6.4px;font-weight:900;color:#a6611e}.summaryTable{width:100%;border-collapse:collapse;table-layout:fixed}.summaryTable thead{display:table-header-group}.summaryTable th{padding:2.2mm 1.4mm;background:#4b1239;color:#fff;font-size:5.9px;text-align:left;vertical-align:middle}.summaryTable td{padding:1.8mm 1.4mm;border-bottom:1px solid #c6a779;color:#4d263e;font-size:6.5px;vertical-align:middle;overflow-wrap:anywhere}.summaryTable tbody tr:nth-child(even) td{background:rgba(255,255,255,.12)}.summaryTable .num{font-weight:900}.summaryTable .taskName{font-weight:800;font-size:7.1px}.summaryTable .performer{font-weight:800}.summaryTable .noteText{color:#7d665d;line-height:1.25}.typePill,.statusPill{display:inline-flex;align-items:center;justify-content:center;min-height:5mm;padding:0 2mm;border:1px solid #b89d77;border-radius:99px;font-size:5.6px;font-weight:800;white-space:nowrap}.typePill.incident{background:#4b1239;color:#fff;border-color:#4b1239}.statusPill.doing{background:#b26d1f;color:#fff;border-color:#b26d1f}.statusPill.done{background:#315f4e;color:#fff;border-color:#315f4e}.statusPill.waiting{background:#fff6df;color:#7c4e24;border-color:#b97631}'+
  '.signature3{display:grid;grid-template-columns:repeat(3,1fr);gap:8mm;margin-top:4mm;padding-top:3mm;border-top:1.5px solid #a86d22;page-break-inside:avoid}.signature3>div{text-align:left}.signature3 b{display:block;font-size:7px}.signature3 small{display:block;margin-top:1mm;font-size:6px;color:#8a7467;font-style:italic}.signature3 i{display:block;height:18mm;border-bottom:1px solid #c9aa7d}'+
- '.detailSummary{margin:0 0 3mm;font-size:6.4px;font-weight:900;color:#7a4f3c}.detailCard.continuation .detailHead h2 em{font-size:6.5px;font-style:normal;color:#8c6f63}.detailCard{border:1px solid #b58c58;margin-bottom:3.2mm;page-break-inside:avoid;break-inside:avoid;background:rgba(255,255,255,.12)}.detailHead{display:grid;grid-template-columns:13mm 1fr auto;align-items:center;border-bottom:1.5px solid #a86d22}.detailNo{height:11mm;display:grid;place-items:center;background:#4b1138;color:#fff;font-size:14px;font-weight:900}.detailHead h2{margin:0;padding:0 4mm;font-size:10.5px;line-height:1.2;color:#4b1138}.detailHead>.statusPill{margin-right:3mm}.detailMeta{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #c9aa7d}.detailMeta>div{padding:2.2mm 3mm}.detailMeta span,.detailNote span,.extraGrid span{display:block;margin-bottom:1mm;font-size:6px;font-weight:900;color:#715044}.detailMeta b{font-size:8px}.detailNote{padding:2.2mm 3mm;border-bottom:1px solid #c9aa7d}.detailNote p,.extraGrid p{margin:0;color:#543b43;font-size:7.3px;white-space:pre-wrap;overflow-wrap:anywhere}.extraGrid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #c9aa7d}.extraGrid>div{padding:2.1mm 3mm;border-bottom:1px solid #dec59e}.extraGrid>div:nth-child(odd){border-right:1px solid #dec59e}.photoTitle{padding:2mm 3mm 1.4mm;font-size:6.2px;font-weight:900;color:#a56c22}.detailPhotos{display:grid;gap:3mm;padding:0 3mm 3mm}.detailPhotos.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.detailPhotos.cols1{grid-template-columns:1fr}.detailPhotos figure{margin:0;page-break-inside:avoid}.detailPhotos img,.detailPhotos .placeholder>div{width:100%;height:49mm;border:1px dashed #bca184;background:#f4e9c8;object-fit:contain}.detailPhotos.cols1 img,.detailPhotos.cols1 .placeholder>div{height:86mm}.detailPhotos .placeholder>div{display:grid;place-items:center;align-content:center;color:#8f806f;gap:2mm}.detailPhotos .placeholder b{font-size:18px}.detailPhotos .placeholder span{font-size:6.5px;font-weight:900;letter-spacing:1.8px}.detailPhotos figcaption{margin-top:1mm;font-size:6px;color:#9a8774}.detailSheet .signature3{margin-top:3mm}'+
- '</style></head><body data-pdf-report="work-combined" data-photo-layout="'+photoCols+'">'+summaryPage+detailPages+'</body></html>';
+ '.detailSummary{margin:0 0 2.5mm;font-size:6.2px;font-weight:900;color:#7a4f3c}.singlePhotoSheet{height:297mm;min-height:297mm;max-height:297mm;overflow:hidden!important}.detailSheetInner{padding-bottom:10mm}.detailCard{border:1px solid #b58c58;margin-bottom:2.5mm;page-break-inside:avoid!important;break-inside:avoid!important;background:rgba(255,255,255,.12)}.singlePhotoCard{overflow:hidden}.detailHead{display:grid;grid-template-columns:13mm 1fr auto;align-items:center;border-bottom:1.5px solid #a86d22}.detailNo{height:11mm;display:grid;place-items:center;background:#4b1239;color:#fff;font-size:14px;font-weight:900}.detailTitleWrap{padding:0 4mm}.detailTitleWrap h2{margin:0;font-size:10.5px;line-height:1.2;color:#4b1239}.detailTitleWrap small{display:block;margin-top:1mm;font-size:5.8px;font-weight:900;color:#a6611e}.detailHead>.statusPill{margin-right:3mm}.detailMeta{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #c9aa7d}.detailMeta>div{padding:1.8mm 3mm}.detailMeta span,.detailNote span,.extraGrid span{display:block;margin-bottom:.8mm;font-size:5.8px;font-weight:900;color:#715044}.detailMeta b{font-size:7.6px}.detailNote{padding:1.8mm 3mm;border-bottom:1px solid #c9aa7d}.detailNote p,.extraGrid p{margin:0;color:#543b43;font-size:6.9px;line-height:1.25;white-space:pre-wrap;overflow-wrap:anywhere}.extraGrid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #c9aa7d}.extraGrid>div{padding:1.6mm 3mm;border-bottom:1px solid #dec59e}.extraGrid>div:nth-child(odd){border-right:1px solid #dec59e}.photoTitle{padding:1.8mm 3mm 1.2mm;font-size:6px;font-weight:900;color:#a6611e}.detailPhotos{display:block;padding:0 3mm 2.5mm}.detailPhotos figure{margin:0;page-break-inside:avoid!important;break-inside:avoid!important}.photoFrame{width:100%;height:112mm;border:1px solid #bca184;background:#f4e9c8;display:flex;align-items:center;justify-content:center;overflow:hidden;page-break-inside:avoid!important}.photoFrame img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#fff}.placeholderFrame>div{display:grid;place-items:center;align-content:center;color:#8f806f;gap:2mm}.placeholderFrame b{font-size:22px}.placeholderFrame span{font-size:7px;font-weight:900;letter-spacing:1.5px}.detailPhotos figcaption{margin-top:1mm;text-align:center;font-size:6.2px;font-weight:700;color:#7f6a5d}.detailSheet .signature3{margin-top:2mm}'+
+ '</style></head><body data-pdf-report="work-combined" data-photo-layout="1">'+summaryPage+detailPages+'</body></html>';
 }
 let reportPdfLibPromise=null;
 function loadExternalScript(url){
@@ -1477,7 +1454,7 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
 window.downloadReportPdf=downloadReportPdf;
 
 let workReportBusy=false;
-async function openReport(a,kind="current",previewWindow=null,photoLayout=2){
+async function openReport(a,kind="current",previewWindow=null,photoLayout=1){
  if(!a.length){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Không có dữ liệu để xuất PDF");return}
  if(workReportBusy){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Báo cáo đang được tạo");return}
  workReportBusy=true;
@@ -1485,7 +1462,7 @@ async function openReport(a,kind="current",previewWindow=null,photoLayout=2){
    const prepared=await prepareWorkReportRows(a);
    if(prepared.failed)toast("Có "+prepared.failed+" hình không tải được; các hình còn lại vẫn được đính kèm");
    const period=workReportPeriod(kind,prepared.rows);
-   const html=reportHtml(prepared.rows,kind,photoLayout);
+   const html=reportHtml(prepared.rows,kind,1);
    await downloadReportPdf(html,workReportFilename(period),previewWindow);
  }finally{
    workReportBusy=false;
@@ -1499,10 +1476,9 @@ document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{
  if(kind==="current")a=filtered();
  else{let r=rangeDates(kind);a=filtered(r.from,r.to)}
  if(!a.length){$("#exportModal").classList.add("hide");toast("Không có dữ liệu để xuất PDF");return}
- const photoLayout=Number(document.querySelector('input[name="workPdfImageLayout"]:checked')?.value||2)===1?1:2;
  $("#exportModal").classList.add("hide");
- toast("Đang chuẩn bị báo cáo · vui lòng chờ...");
- openReport(a,kind,null,photoLayout);
+ toast("Đang chuẩn bị báo cáo · mỗi trang 1 hình ảnh...");
+ openReport(a,kind,null,1);
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeImageViewer();$("#exportModal").classList.add("hide")}});
 setTimeout(()=>ensureHtml2Pdf().catch(()=>{}),900);
