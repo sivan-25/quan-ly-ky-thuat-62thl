@@ -722,8 +722,7 @@ window.enterAccount=function(account,session=null){
  currentAccount=account;centralSession=session;me=account.username||account.email||"user";
  $("#login").classList.add("hide");$("#app").classList.remove("hide");
  $("#headerRole").textContent=account.is_admin?"Quản trị viên":(account.buildings?.[0]?.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");
- const displayName=account.display_name||account.username||account.email||"Tài khoản";
- if($("#energyHeaderName"))$("#energyHeaderName").textContent=displayName;
+ if($("#energyHeaderName"))$("#energyHeaderName").textContent="ESTA";
  $("#sideUser").innerHTML=account.is_admin?"Quản trị viên":"Tài khoản dự án";
  $("#navAdmin").classList.toggle("hide",!account.is_admin);
  $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
