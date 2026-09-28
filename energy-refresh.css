@@ -1349,3 +1349,13 @@
     padding-right:40px!important;
   }
 }
+
+/* ENERGY_MOBILE_NO_ZOOM_20260929 */
+@media(max-width:700px){
+  #app #energyPage input:not([type="hidden"]),
+  #app #energyPage select,
+  #app #energyPage textarea,
+  #app #energyPage .peopleSelectBtn{
+    font-size:16px!important;
+  }
+}
