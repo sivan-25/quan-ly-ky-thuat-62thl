@@ -212,14 +212,43 @@ window.editTask=id=>{
 const originalResetForm=resetForm;
 resetForm=function(...args){const r=originalResetForm(...args);if(demoIs())demoResetWorkLinks(true);return r};
 
+async function demoSyncContractorTask(obj){
+ const taskId=String(obj.id);
+ const q="building_id=eq."+demoQs(DEMO_ID)+"&source_task_id=eq."+demoQs(taskId);
+ try{
+  const existing=await demoRest("contractor_jobs",q+"&select=id,contractor_id,source_task_id");
+  if(!obj.contractorId){
+   if(existing?.length)await sbFetch("/rest/v1/contractor_jobs?"+q,{method:"DELETE",token:demoTok()});
+   if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
+   return;
+  }
+  const completed=obj.s==="Đã hoàn thành"?(String(obj.completedAt||"").slice(0,10)||obj.d||null):null;
+  const body={
+   building_id:DEMO_ID,
+   contractor_id:obj.contractorId,
+   work_date:obj.d||today(),
+   completed_date:completed,
+   work_content:obj.c||"Công việc liên kết",
+   cause:obj.incidentCode?("Liên kết sự cố "+obj.incidentCode):"",
+   solution:obj.result||"",
+   status:obj.s||"Đang thực hiện",
+   note:obj.n||"",
+   source_task_id:taskId,
+   updated_at:new Date().toISOString()
+  };
+  if(existing?.length)await demoPatch("contractor_jobs",q,body);
+  else await demoPost("contractor_jobs",body);
+  if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
+ }catch(e){
+  console.warn("Sync contractor linked task failed",e);
+  throw e;
+ }
+}
 async function demoFinalizeLinks(obj,old){
  if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành")return;
  const jobs=[];
  for(const m of obj.materials||[]){
   jobs.push(demoPost("inventory_material_transactions",{building_id:DEMO_ID,material_id:m.materialId,tx_date:obj.d,tx_type:"out",qty:m.qty,performer:obj.a||"",note:"Tự động xuất theo công việc "+obj.id}));
- }
- if(obj.contractorId){
-  jobs.push(demoPost("contractor_jobs",{building_id:DEMO_ID,contractor_id:obj.contractorId,work_date:obj.d,completed_date:obj.d,work_content:obj.c,cause:obj.incidentCode?"Liên kết "+obj.incidentCode:"",solution:obj.result||obj.n||"",status:"Hoàn thành",note:"Tạo tự động từ công việc "+obj.id}));
  }
  if(obj.assetId&&obj.t==="Bảo trì"){
   const asset=demoAsset(obj.assetId),next=new Date(obj.d+"T00:00:00");next.setDate(next.getDate()+Number(asset?.frequency_days||30));
@@ -261,12 +290,24 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
      localStorage.setItem(storageKey,JSON.stringify(latest));
      await appendTaskImages(id,uploaded,buildingId);
     }
+    await demoSyncContractorTask(obj);
     await demoFinalizeLinks(obj,old);
     if(currentBuilding.id===buildingId){render();renderHomeDashboard();demoRenderHomeOps()}
    }catch(err){console.warn(err);toast("Đã lưu công việc, một số liên kết chưa đồng bộ")}
   })();
  }catch(err){toast(err.message||"Không thể lưu công việc")}
  finally{btn.disabled=false}
+};
+
+const originalDemoDelTask=window.delTask;
+window.delTask=async id=>{
+ if(!demoIs())return originalDemoDelTask(id);
+ await originalDemoDelTask(id);
+ if(load().some(x=>String(x.id)===String(id)))return;
+ try{
+  await sbFetch("/rest/v1/contractor_jobs?building_id=eq."+demoQs(DEMO_ID)+"&source_task_id=eq."+demoQs(String(id)),{method:"DELETE",token:demoTok()});
+  if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
+ }catch(e){console.warn("Delete linked contractor job failed",e)}
 };
 
 const originalRender=render;
