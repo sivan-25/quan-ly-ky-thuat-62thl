@@ -262,3 +262,23 @@
     padding-right:20px!important;
   }
 }
+
+/* DEMO_STICKY_DETAIL_QA */
+@media (min-width:1101px){
+  #app.demoProjectMode #demoIncidentDetail,
+  #app.demoProjectMode #demoInspectionDetail,
+  #app.demoProjectMode #demoDocDetail{
+    position:sticky!important;
+    top:82px!important;
+    max-height:calc(100vh - 100px)!important;
+    overflow:auto!important;
+    scrollbar-width:thin;
+    scrollbar-color:#344863 transparent;
+  }
+}
+#app.demoProjectMode #demoIncidentDetail::-webkit-scrollbar,
+#app.demoProjectMode #demoInspectionDetail::-webkit-scrollbar,
+#app.demoProjectMode #demoDocDetail::-webkit-scrollbar{width:7px}
+#app.demoProjectMode #demoIncidentDetail::-webkit-scrollbar-thumb,
+#app.demoProjectMode #demoInspectionDetail::-webkit-scrollbar-thumb,
+#app.demoProjectMode #demoDocDetail::-webkit-scrollbar-thumb{background:#344863;border-radius:10px}
