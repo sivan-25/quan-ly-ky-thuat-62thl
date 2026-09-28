@@ -141,6 +141,17 @@ def load_image(path):
     im=Image.open(path); im=ImageOps.exif_transpose(im).convert("RGB"); im.thumbnail((1600,1600))
     buf=io.BytesIO(); im.save(buf,"JPEG",quality=85); buf.seek(0); return ImageReader(buf)
 
+def image_orientation(path):
+    """Portrait only when height is > width by 10%; otherwise treat as landscape."""
+    if not path or not os.path.exists(path):
+        return "landscape"
+    try:
+        im=Image.open(path); im=ImageOps.exif_transpose(im)
+        w,h=im.size
+        return "portrait" if h > (w * 1.10) else "landscape"
+    except Exception:
+        return "landscape"
+
 class ImageSlot(Flowable):
     CAP_H=13
     def __init__(self,w,h,path=None,caption="",fit="cover"):
@@ -281,11 +292,17 @@ IMG_H=76*mm
 
 def _norm_images(t):
     imgs=list(t.get("images") or [])
-    while len(imgs)<2: imgs.append({"path":None,"caption":""})
     out=[]
     for j,im in enumerate(imgs):
         if isinstance(im,str): im={"path":im}
-        out.append({"path":im.get("path"),"caption":im.get("caption") or "Hình %d"%(j+1)})
+        path=im.get("path")
+        if not path or not os.path.exists(path):
+            continue
+        out.append({
+            "path":path,
+            "caption":im.get("caption") or "Hình %d"%(j+1),
+            "orientation":image_orientation(path)
+        })
     return out
 
 def _card_head_meta(idx,t,inner_w):
@@ -326,36 +343,82 @@ def _img_row(slot,inner_w,first=False,label=None):
         st.append(("LINEABOVE",(0,0),(-1,0),.4,TAUPE)); st.append(("TOPPADDING",(0,0),(-1,0),6))
     t.setStyle(TableStyle(st)); return t
 
-def task_card(idx,t,per_row=1):
-    inner_w=CW-2; head,meta=_card_head_meta(idx,t,inner_w); imgs=_norm_images(t)
-    if per_row==2:
-        gap=4*mm; sw=(inner_w-20-gap)/2
-        slots=[ImageSlot(sw,52*mm,im["path"],im["caption"]) for im in imgs]
-        grid_rows=[]
-        for j in range(0,len(slots),2):
-            r=slots[j:j+2]
-            if len(r)==1: r.append("")
-            grid_rows.append([r[0],"",r[1]])
-        grid=Table(grid_rows,colWidths=[sw,gap,sw])
-        grid.setStyle(TableStyle([("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),0),
-                                  ("TOPPADDING",(0,0),(-1,-1),0),("BOTTOMPADDING",(0,0),(-1,-1),2)]))
-        blk=Table([[Paragraph("HÌNH ẢNH HIỆN TRƯỜNG",ST["sec"])],[grid]],colWidths=[inner_w])
-        blk.setStyle(TableStyle([("LEFTPADDING",(0,0),(-1,-1),10),("RIGHTPADDING",(0,0),(-1,-1),10),
-            ("TOPPADDING",(0,0),(-1,0),4),("BOTTOMPADDING",(0,0),(-1,0),5),
-            ("TOPPADDING",(0,1),(-1,1),0),("BOTTOMPADDING",(0,1),(-1,1),6),
-            ("LINEABOVE",(0,0),(-1,0),.4,TAUPE)]))
-        return [KeepTogether([_box([head,meta,blk]),Spacer(1,9)])]
+def _portrait_pair_row(a,b,inner_w,first=False,label=None):
+    gap=4*mm
+    available=inner_w-20
+    sw=(available-gap)/2
+    # Tall enough for phone portrait images while still fitting comfortably on A4.
+    slots=[
+        ImageSlot(sw,92*mm,a["path"],a["caption"],fit="contain"),
+        ImageSlot(sw,92*mm,b["path"],b["caption"],fit="contain")
+    ]
+    rows=[]
+    if label: rows.append([Paragraph(label,ST["sec"]),"",""])
+    rows.append([slots[0],"",slots[1]])
+    t=Table(rows,colWidths=[sw,gap,sw])
+    st=[("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),0),
+        ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4)]
+    if label:
+        st += [("SPAN",(0,0),(2,0)),("LEFTPADDING",(0,0),(2,0),10),
+               ("TOPPADDING",(0,0),(2,0),4),("BOTTOMPADDING",(0,0),(2,0),5)]
+    if first:
+        st.append(("LINEABOVE",(0,0),(-1,0),.4,TAUPE))
+    t.setStyle(TableStyle(st))
+    return t
+
+def _single_auto_row(im,inner_w,first=False,label=None):
     sw=inner_w-20
-    slots=[ImageSlot(sw,IMG_H,im["path"],im["caption"],fit="contain") for im in imgs]
-    first_rows=[head,meta,_img_row(slots[0],inner_w,first=True,label="HÌNH ẢNH HIỆN TRƯỜNG")]
-    if len(slots)>1: first_rows.append(_img_row(slots[1],inner_w))
-    out=[KeepTogether([_box(first_rows),Spacer(1,9)])]
-    for j in range(2,len(slots)):
+    # Landscape stays compact/full-width. A lone portrait receives a taller full-width
+    # presentation area; the image itself remains proportional and is never cropped.
+    h=112*mm if im.get("orientation")=="portrait" else 76*mm
+    slot=ImageSlot(sw,h,im["path"],im["caption"],fit="contain")
+    return _img_row(slot,inner_w,first=first,label=label)
+
+def _image_groups_in_order(imgs):
+    """Preserve upload order; only pair two adjacent portrait images."""
+    groups=[]
+    i=0
+    while i<len(imgs):
+        cur=imgs[i]
+        if cur.get("orientation")=="portrait" and i+1<len(imgs) and imgs[i+1].get("orientation")=="portrait":
+            groups.append(("pair",cur,imgs[i+1]))
+            i+=2
+        else:
+            groups.append(("single",cur))
+            i+=1
+    return groups
+
+def task_card(idx,t,per_row=1):
+    inner_w=CW-2
+    head,meta=_card_head_meta(idx,t,inner_w)
+    imgs=_norm_images(t)
+
+    # No images: show only the work information. Do not render an empty image section.
+    if not imgs:
+        return [KeepTogether([_box([head,meta]),Spacer(1,9)])]
+
+    groups=_image_groups_in_order(imgs)
+    first=groups[0]
+    if first[0]=="pair":
+        first_img=_portrait_pair_row(first[1],first[2],inner_w,first=True,label="HÌNH ẢNH HIỆN TRƯỜNG")
+    else:
+        first_img=_single_auto_row(first[1],inner_w,first=True,label="HÌNH ẢNH HIỆN TRƯỜNG")
+
+    out=[KeepTogether([_box([head,meta,first_img]),Spacer(1,9)])]
+
+    for group in groups[1:]:
         cont=Paragraph("%02d  ·  %s  —  <font name='Mont-Light'>hình ảnh (tiếp)</font>"%(idx,t["title"]),ST["sec"])
         row_c=Table([[cont]],colWidths=[inner_w])
-        row_c.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,-1),CREAM_L),("LINEBELOW",(0,0),(-1,-1),1.5,COPPER),
-            ("LEFTPADDING",(0,0),(-1,-1),10),("TOPPADDING",(0,0),(-1,-1),6),("BOTTOMPADDING",(0,0),(-1,-1),6)]))
-        out.append(KeepTogether([_box([row_c,_img_row(slots[j],inner_w)]),Spacer(1,9)]))
+        row_c.setStyle(TableStyle([
+            ("BACKGROUND",(0,0),(-1,-1),CREAM_L),("LINEBELOW",(0,0),(-1,-1),1.5,COPPER),
+            ("LEFTPADDING",(0,0),(-1,-1),10),("TOPPADDING",(0,0),(-1,-1),6),
+            ("BOTTOMPADDING",(0,0),(-1,-1),6)
+        ]))
+        if group[0]=="pair":
+            img_row=_portrait_pair_row(group[1],group[2],inner_w)
+        else:
+            img_row=_single_auto_row(group[1],inner_w)
+        out.append(KeepTogether([_box([row_c,img_row]),Spacer(1,9)]))
     return out
 
 def summary_line(tasks):
@@ -364,14 +427,14 @@ def summary_line(tasks):
         len(tasks),n["Đang thực hiện"],n["Chờ xử lý"],n["Hoàn thành"],n["Sự cố"])
 
 def story_detail(data,standalone=True):
-    tasks=data["tasks"]; per_row=int(data.get("images_per_row",1)); P=Paragraph
+    tasks=data["tasks"]; P=Paragraph
     if standalone: story=intro(data,"Bước 2  ·  Báo cáo chi tiết kèm hình ảnh")
     else:
         story=[P("BƯỚC 2  ·  CHI TIẾT KÈM HÌNH ẢNH",ST["eyebrow"]),Spacer(1,3),
                P("Chi tiết từng công việc",ST["h1"]),
                HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=6)]
     story += [P(summary_line(tasks),ST["sec"]),Spacer(1,8)]
-    for i,t in enumerate(tasks,1): story += task_card(i,t,per_row)
+    for i,t in enumerate(tasks,1): story += task_card(i,t,1)
     story.append(signatures()); return story
 
 def story_merged(data):
