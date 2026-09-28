@@ -222,10 +222,13 @@ function renderContractorJobs(){
   };
   $("#contractorJobList").querySelectorAll("[data-edit-linked-task]").forEach(b=>b.onclick=()=>openLinked(b.dataset.editLinkedTask));
   $("#contractorJobList").querySelectorAll("[data-open-linked-task]").forEach(b=>b.onclick=()=>openLinked(b.dataset.openLinkedTask));
-  $("#contractorJobList").querySelectorAll("[data-view-linked-images]").forEach(b=>b.onclick=e=>{
+  $("#contractorJobList").querySelectorAll("[data-view-linked-images]").forEach(b=>b.onclick=async e=>{
     e.stopPropagation();
     const raw=b.dataset.viewLinkedImages,n=Number(raw);
-    if(typeof window.viewImages==="function")window.viewImages(Number.isFinite(n)?n:raw);
+    if(typeof window.viewImages==="function"){
+      await window.viewImages(Number.isFinite(n)?n:raw);
+      $("#viewer")?.classList.add("imageOnlyViewer");
+    }
   });
   $("#contractorJobEmpty").classList.toggle("hide",list.length>0);
   if(typeof hydrateMediaImages==="function")hydrateMediaImages($("#contractorJobList"));
