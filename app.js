@@ -868,7 +868,7 @@ $("#taskForm").onsubmit=async e=>{
    const files=[...pendingTaskFiles];
    const imgs=Array.isArray(old?.imgs)?[...old.imgs]:[];
    const obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
-   a=editId?a.map(x=>x.id===editId?obj:x):[obj,...a];
+   a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
    resetForm();render();renderHomeDashboard();
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc");
