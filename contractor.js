@@ -228,8 +228,8 @@ function renderContractorJobs(){
     e.stopPropagation();
     const raw=b.dataset.viewLinkedImages,n=Number(raw);
     if(typeof window.viewImages==="function"){
-      await window.viewImages(Number.isFinite(n)?n:raw);
       $("#viewer")?.classList.add("imageOnlyViewer");
+      await window.viewImages(Number.isFinite(n)?n:raw);
     }
   });
   $("#contractorJobEmpty").classList.toggle("hide",list.length>0);
