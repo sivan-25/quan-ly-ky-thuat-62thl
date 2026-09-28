@@ -54,6 +54,16 @@ function demoHideSpecialPages(){
  document.querySelectorAll(".demoTopTitle").forEach(el=>el.classList.add("hide"));
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.remove("active"));
 }
+function demoSearchTerm(){
+ return ($("#globalSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
+}
+function demoMatches(values){
+ const q=demoSearchTerm();if(!q)return true;
+ return values.some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q));
+}
+function demoSpecialSearchPlaceholder(name){
+ return ({incident:"Tìm sự cố, khu vực, thiết bị...",inspection:"Tìm checklist, mã kiểm tra...",documents:"Tìm tài liệu, hệ thống, nhà thầu...",reports:"Tìm báo cáo, kỳ, mã báo cáo..."})[name]||"Tìm...";
+}
 function demoSetProjectMode(){
  const on=demoIs()&&($("#adminPage")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoProjectMode",on);
@@ -74,6 +84,9 @@ function demoShowSpecial(name){
  $("#nav"+name[0].toUpperCase()+name.slice(1))?.classList.add("active");
  $("#app").classList.remove("homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode","adminMode");
  $("#app").classList.add(name+"Mode","demoProjectMode");
+ const demoSearch=$("#globalSearch");
+ if(demoSearch){demoSearch.value="";demoSearch.placeholder=demoSpecialSearchPlaceholder(name)}
+ $("#filterBar")?.classList.add("hide");
  setMobileMenuOpen(false,true);
  demoLoad(true).then(()=>{
   if(name==="incident")demoRenderIncidents();
@@ -87,6 +100,8 @@ showModule=function(name){
  if(DEMO_MODULES.includes(name))return demoShowSpecial(name);
  demoHideSpecialPages();
  originalShowModule(name);
+ const generalSearch=$("#globalSearch");
+ if(generalSearch)generalSearch.placeholder="Tìm công việc...";
  if(demoIs()){
   demoSetProjectMode();
   if(name==="work")demoEnsureWorkPanel();
@@ -406,7 +421,16 @@ function demoBindBell(){
   p.innerHTML='<h3>Thông báo & cảnh báo</h3>'+inc.map(x=>'<div class="demoOpsAlert"><b>'+esc(x.incident_code)+' · '+esc(x.area||x.symptom)+'</b><span>'+esc(x.severity)+'</span></div>').join("")+low.map(m=>'<div class="demoOpsAlert"><b>'+esc(m.name)+' · còn '+demoStock(m)+' '+esc(m.unit)+'</b><span>Tồn thấp</span></div>').join("");
   p.classList.toggle("hide");
  });
- document.addEventListener("click",e=>{const p=$("#demoNoticePanel");if(p&&!p.contains(e.target)&&!bell.contains(e.target))p.classList.add("hide")});
+ $("#globalSearch")?.addEventListener("input",()=>{
+ if(!demoIs())return;
+ const visible=DEMO_MODULES.find(n=>!$("#"+n+"Page")?.classList.contains("hide"));
+ if(visible==="incident")demoRenderIncidents();
+ if(visible==="inspection")demoRenderInspections();
+ if(visible==="documents")demoRenderDocuments();
+ if(visible==="reports")demoRenderReports();
+});
+
+document.addEventListener("click",e=>{const p=$("#demoNoticePanel");if(p&&!p.contains(e.target)&&!bell.contains(e.target))p.classList.add("hide")});
 }
 function demoEnsureAssetPassport(){
  if(!demoIs()||$("#maintenancePage")?.classList.contains("hide"))return;
@@ -420,13 +444,14 @@ function demoStatusClass(v){return v==="Đã đóng"||v==="Đạt"?"green":v==="
 window.demoSelectIncident=id=>{demoSelectedIncident=id;demoRenderIncidents()};
 async function demoRenderIncidents(){
  await demoLoad();
- const list=demoCache.incidents;
- if(!demoSelectedIncident&&list[0])demoSelectedIncident=list[0].id;
- const selected=list.find(x=>String(x.id)===String(demoSelectedIncident))||list[0];
- $("#demoIncidentOpen").textContent=list.filter(x=>x.status!=="Đã đóng").length;
- $("#demoIncidentUrgent").textContent=list.filter(x=>x.severity==="Khẩn cấp").length;
- $("#demoIncidentWatch").textContent=list.filter(x=>x.status==="Theo dõi").length;
- $("#demoIncidentClosed").textContent=list.filter(x=>x.status==="Đã đóng").length;
+ const all=demoCache.incidents;
+ const list=all.filter(x=>demoMatches([x.incident_code,x.area,x.symptom,x.cause,x.solution,x.severity,x.status,demoAsset(x.asset_id)?.name,demoContractor(x.contractor_id)?.name]));
+ if((!demoSelectedIncident||!list.some(x=>String(x.id)===String(demoSelectedIncident)))&&list[0])demoSelectedIncident=list[0].id;
+ const selected=list.find(x=>String(x.id)===String(demoSelectedIncident))||list[0]||null;
+ $("#demoIncidentOpen").textContent=all.filter(x=>x.status!=="Đã đóng").length;
+ $("#demoIncidentUrgent").textContent=all.filter(x=>x.severity==="Khẩn cấp").length;
+ $("#demoIncidentWatch").textContent=all.filter(x=>x.status==="Theo dõi").length;
+ $("#demoIncidentClosed").textContent=all.filter(x=>x.status==="Đã đóng").length;
  $("#demoIncidentBody").innerHTML=list.map(x=>'<tr onclick="demoSelectIncident(\''+x.id+'\')"><td><b>'+esc(x.incident_code)+'</b><small>'+esc(new Date(x.detected_at).toLocaleDateString("vi-VN"))+'</small></td><td>'+esc(x.area||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.name||"—")+'</td><td>'+esc(x.symptom||"—")+'</td><td><span class="demoPill '+demoSeverityClass(x.severity)+'">'+esc(x.severity)+'</span></td><td><span class="demoPill '+demoStatusClass(x.status)+'">'+esc(x.status)+'</span></td></tr>').join("");
  const box=$("#demoIncidentDetail");
  if(!selected){box.innerHTML='<div class="demoPanelBody">Chưa có sự cố.</div>';return}
@@ -459,12 +484,14 @@ window.demoAddIncident=async()=>{
 window.demoSelectInspection=id=>{demoSelectedInspection=id;demoRenderInspections()};
 async function demoRenderInspections(){
  await demoLoad();
- const list=demoCache.inspections;if(!demoSelectedInspection&&list[0])demoSelectedInspection=list[0].id;
- const s=list.find(x=>String(x.id)===String(demoSelectedInspection))||list[0];
- $("#demoInspectionCount").textContent=list.length;
- $("#demoInspectionPass").textContent=list.filter(x=>x.result_status==="Đạt").length;
- $("#demoInspectionAttention").textContent=list.filter(x=>x.result_status==="Cần chú ý").length;
- $("#demoInspectionFail").textContent=list.filter(x=>x.result_status==="Không đạt"||x.result_status==="Cần khắc phục").length;
+ const all=demoCache.inspections;
+ const list=all.filter(x=>demoMatches([x.inspection_code,x.template_name,x.period_label,x.result_status,x.recommendation,demoAsset(x.asset_id)?.name,...(Array.isArray(x.items)?x.items.flatMap(it=>[it.item,it.standard,it.result,it.note]):[])]));
+ if((!demoSelectedInspection||!list.some(x=>String(x.id)===String(demoSelectedInspection)))&&list[0])demoSelectedInspection=list[0].id;
+ const s=list.find(x=>String(x.id)===String(demoSelectedInspection))||list[0]||null;
+ $("#demoInspectionCount").textContent=all.length;
+ $("#demoInspectionPass").textContent=all.filter(x=>x.result_status==="Đạt").length;
+ $("#demoInspectionAttention").textContent=all.filter(x=>x.result_status==="Cần chú ý").length;
+ $("#demoInspectionFail").textContent=all.filter(x=>x.result_status==="Không đạt"||x.result_status==="Cần khắc phục").length;
  $("#demoInspectionList").innerHTML=list.map(x=>'<button class="demoOpsAlert" onclick="demoSelectInspection(\''+x.id+'\')"><b>'+esc(x.template_name)+'<small>'+esc(x.inspection_code)+' · '+esc(x.period_label)+'</small></b><span class="demoPill '+demoStatusClass(x.result_status)+'">'+esc(x.result_status)+'</span></button>').join("");
  const d=$("#demoInspectionDetail");if(!s){d.innerHTML="Chưa có checklist";return}
  const items=Array.isArray(s.items)?s.items:[];
@@ -491,9 +518,12 @@ window.demoAddChecklist=async()=>{
 
 window.demoSelectDocument=id=>{demoSelectedDocument=id;demoRenderDocuments()};
 async function demoRenderDocuments(){
- await demoLoad();const list=demoCache.documents;if(!demoSelectedDocument&&list[0])demoSelectedDocument=list[0].id;
+ await demoLoad();
+ const all=demoCache.documents;
+ const list=all.filter(x=>demoMatches([x.title,x.category,x.system_type,x.note,demoAsset(x.asset_id)?.name,demoContractor(x.contractor_id)?.name]));
+ if((!demoSelectedDocument||!list.some(x=>String(x.id)===String(demoSelectedDocument)))&&list[0])demoSelectedDocument=list[0].id;
  const cats=["Bản vẽ","Catalogue","Manual","Biên bản","Báo giá","Bảo hành"];
- $("#demoDocCats").innerHTML=cats.map(c=>'<div class="demoDocCat"><b>'+list.filter(x=>x.category===c).length+'</b><span>'+c+'</span></div>').join("");
+ $("#demoDocCats").innerHTML=cats.map(c=>'<div class="demoDocCat"><b>'+all.filter(x=>x.category===c).length+'</b><span>'+c+'</span></div>').join("");
  $("#demoDocBody").innerHTML=list.map(x=>'<tr onclick="demoSelectDocument(\''+x.id+'\')"><td><b>'+esc(x.title)+'</b><small>'+esc(x.note||"")+'</small></td><td>'+esc(x.category)+'</td><td>'+esc(x.system_type||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.code||"—")+'</td><td>'+esc(demoContractor(x.contractor_id)?.name||"—")+'</td><td>'+esc(new Date(x.created_at).toLocaleDateString("vi-VN"))+'</td></tr>').join("");
  const s=list.find(x=>String(x.id)===String(demoSelectedDocument))||list[0];
  $("#demoDocDetail").innerHTML=s?'<div class="demoPanelHead"><div><h2>'+esc(s.title)+'</h2><p>'+esc(s.category)+' · '+esc(s.system_type||"")+'</p></div></div><div class="demoPanelBody"><div class="demoThumb" style="height:260px">XEM TRƯỚC TÀI LIỆU MẪU</div><div class="demoDetailSection"><span>LIÊN KẾT</span><p>Thiết bị: <strong>'+esc(demoAsset(s.asset_id)?.name||"—")+'</strong><br>Nhà thầu: <strong>'+esc(demoContractor(s.contractor_id)?.name||"—")+'</strong></p></div><div class="demoDetailSection"><span>GHI CHÚ</span><p>'+esc(s.note||"—")+'</p></div><button class="demoBtn primary" onclick="toast(\'Đây là tài liệu mẫu. Bản chính thức sẽ mở file Storage.\')">Mở tài liệu</button></div>':'<div class="demoPanelBody">Chưa có tài liệu.</div>';
@@ -521,7 +551,8 @@ async function demoRenderReports(){
   ["Dụng cụ - Vật tư","Nhập / xuất / tồn","inventory"]
  ];
  $("#demoReportCards").innerHTML=cards.map(x=>'<article class="demoReportCard"><h3>'+x[0]+'</h3><p>'+x[1]+'</p><button class="demoBtn primary" onclick="demoExportReport(\''+x[2]+'\')">Xuất '+esc(p.label)+'</button></article>').join("");
- $("#demoReportBody").innerHTML=demoCache.reports.map(x=>'<tr><td><b>'+esc(x.report_code)+'</b></td><td>'+esc(x.report_type)+'</td><td>'+esc(x.period_label)+'</td><td>'+esc(new Date(x.created_at).toLocaleDateString("vi-VN"))+'</td><td>'+esc(x.file_name||"—")+'</td></tr>').join("");
+ const rows=demoCache.reports.filter(x=>demoMatches([x.report_code,x.report_type,x.period_label,x.file_name]));
+ $("#demoReportBody").innerHTML=rows.map(x=>'<tr><td><b>'+esc(x.report_code)+'</b></td><td>'+esc(x.report_type)+'</td><td>'+esc(x.period_label)+'</td><td>'+esc(new Date(x.created_at).toLocaleDateString("vi-VN"))+'</td><td>'+esc(x.file_name||"—")+'</td></tr>').join("");
 }
 window.demoExportReport=async type=>{
  const r=rangeDates("week");
