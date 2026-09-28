@@ -129,11 +129,17 @@ function demoEnsureWorkPanel(){
    '<label>Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
    '<label>Vật tư sử dụng<select id="demoTaskMaterial"><option value="">Không sử dụng</option></select></label>'+
    '<label>Số lượng<input id="demoTaskMaterialQty" type="number" min="0" step="0.01" value="1"></label>'+
-   '<label class="span2">Kết quả xử lý<textarea id="demoTaskResult" placeholder="Bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
+   '<label class="span2">Nguyên nhân<textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
+   '<label class="span2">Hướng xử lý / Kết quả<textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
    '<label class="span2">Mã liên kết tự động<input id="demoTaskLinkSummary" readonly placeholder="Hệ thống tự tạo từ các lựa chọn trên"></label>'+
    '</div>';
   card.appendChild(box);
   ["demoTaskAsset","demoTaskIncident","demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.addEventListener("change",demoUpdateLinkSummary));
+  $("#demoTaskIncident")?.addEventListener("change",()=>{
+    const inc=demoCache.incidents.find(x=>String(x.incident_code)===String($("#demoTaskIncident").value||""));
+    if(inc&&$("#demoTaskCause")&&!$("#demoTaskCause").value.trim())$("#demoTaskCause").value=inc.cause||"";
+    if(inc&&$("#demoTaskResult")&&!$("#demoTaskResult").value.trim())$("#demoTaskResult").value=inc.solution||"";
+  });
  }
  box.classList.toggle("hide",!demoIs());
  if(demoIs()){demoLoad().then(()=>{demoPopulateWorkOptions();demoResetWorkLinks(false)})}
@@ -171,6 +177,7 @@ function demoResetWorkLinks(clear=true){
   $("#demoTaskContractor")&&($("#demoTaskContractor").value="");
   $("#demoTaskMaterial")&&($("#demoTaskMaterial").value="");
   $("#demoTaskMaterialQty")&&($("#demoTaskMaterialQty").value="1");
+  $("#demoTaskCause")&&($("#demoTaskCause").value="");
   $("#demoTaskResult")&&($("#demoTaskResult").value="");
  }
  if($("#demoTaskDue")&&!$("#demoTaskDue").value)$("#demoTaskDue").value=d;
@@ -186,6 +193,7 @@ function demoReadWorkLinks(){
   inspectionCode:$("#demoTaskInspection")?.value||"",
   contractorId:$("#demoTaskContractor")?.value||"",
   materials:m&&qty>0?[{materialId:m.id,name:m.name,qty,unit:m.unit}]:[],
+  cause:$("#demoTaskCause")?.value.trim()||"",
   result:$("#demoTaskResult")?.value.trim()||""
  };
 }
@@ -200,6 +208,7 @@ function demoFillWorkLinks(x){
  const mu=Array.isArray(x.materials)?x.materials[0]:null;
  $("#demoTaskMaterial")&&($("#demoTaskMaterial").value=mu?.materialId||"");
  $("#demoTaskMaterialQty")&&($("#demoTaskMaterialQty").value=mu?.qty||1);
+ $("#demoTaskCause")&&($("#demoTaskCause").value=x.cause||"");
  $("#demoTaskResult")&&($("#demoTaskResult").value=x.result||"");
  demoUpdateLinkSummary();
  $("#demoWorkLinks")?.setAttribute("open","");
@@ -229,10 +238,11 @@ async function demoSyncContractorTask(obj){
    work_date:obj.d||today(),
    completed_date:completed,
    work_content:obj.c||"Công việc liên kết",
-   cause:obj.incidentCode?("Liên kết sự cố "+obj.incidentCode):"",
+   cause:obj.cause||(obj.incidentCode?("Liên kết sự cố "+obj.incidentCode):""),
    solution:obj.result||"",
    status:obj.s||"Đang thực hiện",
    note:obj.n||"",
+   images:Array.isArray(obj.imgs)?obj.imgs.filter(Boolean):[],
    source_task_id:taskId,
    updated_at:new Date().toISOString()
   };
@@ -286,7 +296,9 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
     const [,uploaded]=await Promise.all([taskSync,imageUpload]);
     if(uploaded.length){
      let latest=[];try{latest=JSON.parse(localStorage.getItem(storageKey)||"[]")}catch(_){}
-     latest=latest.map(x=>String(x.id)!==String(id)?x:{...x,imgs:[...new Set([...(Array.isArray(x.imgs)?x.imgs:[]),...uploaded])],i:[...new Set([...(Array.isArray(x.imgs)?x.imgs:[]),...uploaded])].length});
+     const mergedImgs=[...new Set([...(Array.isArray(obj.imgs)?obj.imgs:[]),...uploaded])];
+     obj.imgs=mergedImgs;obj.i=mergedImgs.length;
+     latest=latest.map(x=>String(x.id)!==String(id)?x:{...x,imgs:mergedImgs,i:mergedImgs.length});
      localStorage.setItem(storageKey,JSON.stringify(latest));
      await appendTaskImages(id,uploaded,buildingId);
     }
@@ -351,8 +363,9 @@ window.demoOpenTaskDrawer=id=>{
  '<div class="demoTabs"><button class="active">Thông tin</button><button>Liên kết</button><button>Vật tư & chi phí</button><button>Hình ảnh</button><button>Nhật ký</button></div>'+
  '<div class="demoTaskDetailGrid"><div><small>Trạng thái</small><b>'+esc(x.s)+'</b></div><div><small>Ưu tiên</small><b>'+esc(x.priority||"Trung bình")+'</b></div><div><small>Bắt đầu</small><b>'+esc(x.d)+'</b></div><div><small>Hạn hoàn thành</small><b>'+esc(x.dueDate||x.d)+'</b></div><div><small>Người thực hiện</small><b>'+esc(x.a||"—")+'</b></div><div><small>Loại</small><b>'+esc(x.t||"Hằng ngày")+'</b></div></div>'+
  '<div class="demoDetailSection"><span>LIÊN KẾT CHUẨN</span><p>Thiết bị: <strong>'+esc(asset?asset.code+" · "+asset.name:"—")+'</strong><br>Sự cố: <strong>'+esc(x.incidentCode||"—")+'</strong><br>Checklist: <strong>'+esc(x.inspectionCode||"—")+'</strong><br>Nhà thầu: <strong>'+esc(con?.name||"—")+'</strong></p></div>'+
+ '<div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div>'+
  '<div class="demoDetailSection"><span>VẬT TƯ</span><p>'+((x.materials||[]).map(m=>esc(m.name)+" × "+esc(m.qty)+" "+esc(m.unit||"")).join("<br>")||"—")+'</p></div>'+
- '<div class="demoDetailSection"><span>KẾT QUẢ XỬ LÝ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div>'+
+ '<div class="demoDetailSection"><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div>'+
  '<div class="demoDetailSection"><span>NHẬT KÝ</span><div class="demoTimeline"><div><i></i><span><b>Tạo / cập nhật công việc</b><br>'+esc(x.d)+'</span></div>'+(x.completedAt?'<div><i></i><span><b>Hoàn thành</b><br>'+esc(new Date(x.completedAt).toLocaleString("vi-VN"))+'</span></div>':"")+'</div></div></div>';
  dr.classList.remove("hide");
 };
