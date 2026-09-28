@@ -862,8 +862,20 @@
   </section>
 
 </div>
-<div id="workHero" class="heroStrip hide"></div><div id="workPage" class="page modulePage proModulePage hide">
+<div id="workHero" class="heroStrip hide"></div>
+<div id="workEditDrawer" class="workEditDrawer hide" aria-hidden="true">
+  <div class="workEditDrawerBackdrop" data-close-work-editor></div>
+  <aside class="workEditDrawerCard" role="dialog" aria-modal="true" aria-labelledby="workEditDrawerTitle">
+    <header class="workEditDrawerHead">
+      <div><span>ESTA · WORK ORDER</span><h2 id="workEditDrawerTitle">Chỉnh sửa công việc</h2><p>Chỉnh nội dung, trạng thái, người thực hiện và hình ảnh mà không rời danh sách.</p></div>
+      <button id="closeWorkEditDrawer" type="button" aria-label="Đóng chỉnh sửa">×</button>
+    </header>
+    <div id="workEditDrawerMount" class="workEditDrawerMount"></div>
+  </aside>
+</div>
+<div id="workPage" class="page modulePage proModulePage hide">
 
+<div id="workEntryHomeAnchor"></div>
 <section class="workEntryCard">
   <div class="workEntryHeader">
     <div>
@@ -953,6 +965,10 @@
   </form>
 
   <div id="imageInfo" class="workImageInfo"></div>
+  <section id="existingImageSection" class="existingImageSection hide">
+    <div class="existingImageHead"><div><b>Hình ảnh hiện tại</b><small>Nhấn × để loại ảnh sai khỏi công việc. Ảnh chỉ bị xóa sau khi Lưu thay đổi.</small></div><span id="existingImageCount">0 ảnh</span></div>
+    <div id="existingImagePreview" class="existingImagePreview"></div>
+  </section>
   <div id="pendingImagePreview" class="pendingImagePreview workPendingImages"></div>
 </section>
 
