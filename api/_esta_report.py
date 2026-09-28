@@ -19,35 +19,37 @@ def _prepare_montserrat():
     import fontpkg
     from fontTools.ttLib import TTFont as FTFont
     from fontTools.varLib.instancer import instantiateVariableFont
-    root = str(fontpkg.path("Montserrat"))
-    candidates = glob.glob(os.path.join(root, "**", "*.ttf"), recursive=True) if os.path.isdir(root) else [root]
-    static_names = {
-        "Regular":"Montserrat-Regular.ttf","Light":"Montserrat-Light.ttf","Medium":"Montserrat-Medium.ttf",
-        "SemiBold":"Montserrat-SemiBold.ttf","Bold":"Montserrat-Bold.ttf",
-        "ExtraBold":"Montserrat-ExtraBold.ttf","Italic":"Montserrat-Italic.ttf"
-    }
-    by_base = {os.path.basename(p): p for p in candidates}
-    if all(v in by_base for v in static_names.values()):
-        return os.path.dirname(by_base["Montserrat-Regular.ttf"])
 
-    normal = next((p for p in candidates if "Italic" not in os.path.basename(p)), None)
-    italic = next((p for p in candidates if "Italic" in os.path.basename(p)), None)
-    if not normal or not italic:
-        raise RuntimeError("Không tìm thấy Montserrat trong gói fontpkg-montserrat")
     out = "/tmp/esta_montserrat"
     os.makedirs(out, exist_ok=True)
-    weights = {"Light":300,"Regular":400,"Medium":500,"SemiBold":600,"Bold":700,"ExtraBold":800}
-    for label, weight in weights.items():
+
+    def make_static(label, weight, style="normal"):
         dst = os.path.join(out, f"Montserrat-{label}.ttf")
-        if not os.path.exists(dst):
-            ft = FTFont(normal)
-            instantiateVariableFont(ft, {"wght": weight}, inplace=True)
-            ft.save(dst)
-    dst = os.path.join(out, "Montserrat-Italic.ttf")
-    if not os.path.exists(dst):
-        ft = FTFont(italic)
-        instantiateVariableFont(ft, {"wght": 400}, inplace=True)
+        if os.path.exists(dst):
+            return dst
+        src = str(fontpkg.path("Montserrat", weight=weight, style=style, nearest=True))
+        ft = FTFont(src)
+        if "fvar" in ft:
+            axes = {a.axisTag for a in ft["fvar"].axes}
+            coords = {}
+            if "wght" in axes:
+                coords["wght"] = weight
+            if "ital" in axes and style == "italic":
+                coords["ital"] = 1
+            if "slnt" in axes and style == "italic":
+                coords["slnt"] = -10
+            if coords:
+                instantiateVariableFont(ft, coords, inplace=True)
         ft.save(dst)
+        return dst
+
+    make_static("Light", 300)
+    make_static("Regular", 400)
+    make_static("Medium", 500)
+    make_static("SemiBold", 600)
+    make_static("Bold", 700)
+    make_static("ExtraBold", 800)
+    make_static("Italic", 400, "italic")
     return out
 
 AUB = colors.HexColor("#411437")
