@@ -1393,8 +1393,17 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
    const worker=html2pdf().set({
      margin:workCombinedReport?[0,0,0,0]:(inspectionReport?[18,18,18,18]:[8,8,9,8]),
      filename:finalName,
-     image:{type:"jpeg",quality:0.98},
-     html2canvas:{scale:1.8,useCORS:true,allowTaint:false,backgroundColor:workCombinedReport?"#f7dfb6":"#ffffff",logging:false,scrollX:0,scrollY:0},
+     image:{type:"jpeg",quality:workCombinedReport?0.92:0.98},
+     html2canvas:{
+       scale:workCombinedReport?1.15:1.8,
+       useCORS:true,
+       allowTaint:false,
+       backgroundColor:workCombinedReport?"#f7dfb6":"#ffffff",
+       logging:false,
+       scrollX:0,
+       scrollY:0,
+       imageTimeout:15000
+     },
      jsPDF:{unit:"mm",format:"a4",orientation:landscape?"landscape":"portrait",compress:true},
      pagebreak:{mode:["css","legacy"],avoid:["figure",".note",".sign",".jobHead",".detailCard",".signature3"]}
    }).from(body).toPdf();
@@ -1451,7 +1460,7 @@ async function downloadReportPdf(html,filename="",previewWindow=null){
    setTimeout(()=>{if(pdfUrl)URL.revokeObjectURL(pdfUrl)},300000);
  }catch(err){
    console.warn("PDF generation failed",err);
-   toast("Không tạo được PDF tự động. Đang mở bản xem dự phòng...");
+   toast("PDF chưa tạo được. Đang mở bản xem báo cáo dự phòng...");
    try{
      let w=previewWindow;
      if(!w||w.closed)w=open("","_blank");
@@ -1488,10 +1497,9 @@ document.querySelectorAll(".exportChoices button").forEach(b=>b.onclick=()=>{
  else{let r=rangeDates(kind);a=filtered(r.from,r.to)}
  if(!a.length){$("#exportModal").classList.add("hide");toast("Không có dữ liệu để xuất PDF");return}
  const photoLayout=Number(document.querySelector('input[name="workPdfImageLayout"]:checked')?.value||2)===1?1:2;
- let preview=null;
- try{preview=window.open("","_blank");if(preview)writeReportLoadingTab(preview)}catch(e){}
  $("#exportModal").classList.add("hide");
- openReport(a,kind,preview,photoLayout);
+ toast("Đang chuẩn bị báo cáo · vui lòng chờ...");
+ openReport(a,kind,null,photoLayout);
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeImageViewer();$("#exportModal").classList.add("hide")}});
 setTimeout(()=>ensureHtml2Pdf().catch(()=>{}),900);
