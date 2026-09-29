@@ -25,6 +25,7 @@ function ensureRoot(){
   root.addEventListener("click",e=>{const p=e.target.closest("[data-cc-project]");if(p)return openProject(p.dataset.ccProject);const t=e.target.closest("[data-cc-task]");if(t)return openTask(t.dataset.building,t.dataset.taskId);const a=e.target.closest("[data-cc-alert]");if(a)return openAlert(a.dataset.building,a.dataset.module,a.dataset.refId,a.dataset.taskId)});
  }
  const admin=!!currentAccount?.is_admin;root.classList.toggle("hide",!admin);
+ $c("#app")?.classList.toggle("adminCommandHome",admin);
  if(admin){const h=home.querySelector(".homeWelcomeCopy h1");if(h)h.textContent="Trung tâm điều hành";const p=home.querySelector(".homeWelcomeCopy p");if(p)p.textContent="Theo dõi công việc, cảnh báo và vận hành của tất cả dự án ESTA.";const top=$c("#topHomeTitle h1");if(top)top.textContent="Trung tâm điều hành"}
  return root;
 }
