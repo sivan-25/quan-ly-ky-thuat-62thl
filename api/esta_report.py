@@ -194,16 +194,11 @@ def make_page_fns(step_label):
     def first(c,doc):
         background(c); bh=38*mm; c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
         c.setFillColor(COPPER); c.rect(0,PH-bh-1.5,PW,1.5,stroke=0,fill=1)
-        draw_star(c,MX+6*mm,PH-19*mm,6.5*mm,CREAM); c.setFillColor(CREAM); c.setFont("Mont-XBold",27)
-        c.drawString(MX+16*mm,PH-20.5*mm,"ESTA")
-        tracked(c,MX+16.3*mm,PH-26.5*mm,"PROPERTY MANAGEMENT","Mont-Light",6.3,2.4,CREAM)
         tracked(c,PW-MX,PH-17*mm,"BÁO CÁO CÔNG VIỆC KỸ THUẬT","Mont-Bold",8.5,1.4,CREAM,"r")
         tracked(c,PW-MX,PH-23*mm,step_label.upper(),"Mont-Light",7,1.6,CREAM,"r")
     def later(c,doc):
         background(c); bh=12*mm; c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
         c.setFillColor(COPPER); c.rect(0,PH-bh-1.2,PW,1.2,stroke=0,fill=1)
-        draw_star(c,MX+2.5*mm,PH-6*mm,2.8*mm,CREAM); c.setFillColor(CREAM); c.setFont("Mont-XBold",10)
-        c.drawString(MX+7.5*mm,PH-7.4*mm,"ESTA")
         tracked(c,PW-MX,PH-7.2*mm,"BÁO CÁO CÔNG VIỆC KỸ THUẬT  ·  "+step_label.upper(),
                 "Mont-Light",6.5,1.3,CREAM,"r")
     return first,later
