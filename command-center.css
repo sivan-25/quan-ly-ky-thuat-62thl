@@ -905,3 +905,49 @@ html,body,body *{font-family:"Inter",sans-serif!important}
     background-image:none!important;
   }
 }
+
+
+/* ADMIN_COMMAND_CENTER_PRIMARY_HERO_20260929 */
+/* Admin overview: remove the duplicated legacy hero and use the multi-project command hero as the primary header. */
+#app.adminCommandHome.homeMode .homeWelcome.ccAdminWelcomeHidden{
+  display:none!important;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter.ccRoot{
+  margin-top:0!important;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter>.ccHero{
+  order:1;
+  margin:0!important;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter>.homeKpis{
+  order:2;
+  width:100%!important;
+  margin:0!important;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter>.ccSummary{
+  order:3;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter>.ccProjects{
+  order:4;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter>.ccWorkspace{
+  order:5;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter>.ccActivityPanel{
+  order:6;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter .ccHero{
+  min-height:118px!important;
+  padding:17px 22px!important;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter .ccHero h2{
+  font-size:24px!important;
+}
+#app.adminCommandHome.homeMode #estaCommandCenter .ccHero p{
+  margin-top:4px!important;
+}
