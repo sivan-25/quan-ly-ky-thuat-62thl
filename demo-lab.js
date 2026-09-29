@@ -2,9 +2,9 @@
 "use strict";
 const DEMO_ID="DEMO";
 const DEMO_MODULES=["incident","inspection","documents","reports"];
-let demoCache={loaded:false,incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};
+let demoCache={loaded:false,buildingId:"",incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};
 let demoSelectedIncident="",demoSelectedInspection="",demoSelectedDocument="";
-const demoIs=()=>currentBuilding?.id===DEMO_ID;
+const demoIs=()=>!!currentBuilding?.id&&!$("#navWork")?.classList.contains("hide");
 const originalAdminProjectCard=adminProjectCard;
 adminProjectCard=function(b,index=0){
  const html=originalAdminProjectCard(b,index);
@@ -32,9 +32,11 @@ function demoStock(m){
 }
 async function demoLoad(force=false){
  if(!demoIs())return demoCache;
- if(demoCache.loaded&&!force)return demoCache;
+ const buildingId=String(currentBuilding?.id||"");
+ if(!buildingId)return demoCache;
+ if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force)return demoCache;
  try{
-  const b="building_id=eq."+demoQs(DEMO_ID);
+  const b="building_id=eq."+demoQs(buildingId);
   const [inc,ins,docs,reps,assets,cons,mats,tx]=await Promise.all([
    demoRest("incidents",b+"&select=*&order=detected_at.desc"),
    demoRest("inspections",b+"&select=*&order=inspection_date.desc"),
@@ -45,8 +47,8 @@ async function demoLoad(force=false){
    demoRest("inventory_materials",b+"&select=*&order=name.asc"),
    demoRest("inventory_material_transactions",b+"&select=*&order=tx_date.desc")
   ]);
-  demoCache={loaded:true,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
- }catch(e){console.warn("Demo data load failed",e)}
+  demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
+ }catch(e){console.warn("Project operations data load failed",e)}
  return demoCache;
 }
 function demoHideSpecialPages(){
@@ -238,7 +240,7 @@ resetForm=function(...args){const r=originalResetForm(...args);if(demoIs())demoR
 
 async function demoSyncContractorTask(obj){
  const taskId=String(obj.id);
- const q="building_id=eq."+demoQs(DEMO_ID)+"&source_task_id=eq."+demoQs(taskId);
+ const q="building_id=eq."+demoQs(currentBuilding.id)+"&source_task_id=eq."+demoQs(taskId);
  try{
   const existing=await demoRest("contractor_jobs",q+"&select=id,contractor_id,source_task_id");
   if(!obj.contractorId){
@@ -248,7 +250,7 @@ async function demoSyncContractorTask(obj){
   }
   const completed=obj.s==="Đã hoàn thành"?(String(obj.completedAt||"").slice(0,10)||obj.d||null):null;
   const body={
-   building_id:DEMO_ID,
+   building_id:currentBuilding.id,
    contractor_id:obj.contractorId,
    work_date:obj.d||today(),
    completed_date:completed,
@@ -273,14 +275,14 @@ async function demoFinalizeLinks(obj,old){
  if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành")return;
  const jobs=[];
  for(const m of obj.materials||[]){
-  jobs.push(demoPost("inventory_material_transactions",{building_id:DEMO_ID,material_id:m.materialId,tx_date:obj.d,tx_type:"out",qty:m.qty,performer:obj.a||"",note:"Tự động xuất theo công việc "+obj.id}));
+  jobs.push(demoPost("inventory_material_transactions",{building_id:currentBuilding.id,material_id:m.materialId,tx_date:obj.d,tx_type:"out",qty:m.qty,performer:obj.a||"",note:"Tự động xuất theo công việc "+obj.id}));
  }
  if(obj.assetId&&obj.t==="Bảo trì"){
   const asset=demoAsset(obj.assetId),next=new Date(obj.d+"T00:00:00");next.setDate(next.getDate()+Number(asset?.frequency_days||30));
-  jobs.push(demoPost("maintenance_records",{building_id:DEMO_ID,asset_id:obj.assetId,service_date:obj.d,maintenance_type:"Định kỳ",performer:obj.a||"",result_status:"Hoàn thành",work_done:obj.result||obj.c,note:obj.n||"",next_due_date:next.toLocaleDateString("en-CA"),cost:0}));
+  jobs.push(demoPost("maintenance_records",{building_id:currentBuilding.id,asset_id:obj.assetId,service_date:obj.d,maintenance_type:"Định kỳ",performer:obj.a||"",result_status:"Hoàn thành",work_done:obj.result||obj.c,note:obj.n||"",next_due_date:next.toLocaleDateString("en-CA"),cost:0}));
  }
  if(obj.incidentCode){
-  jobs.push(demoPatch("incidents","building_id=eq."+demoQs(DEMO_ID)+"&incident_code=eq."+demoQs(obj.incidentCode),{status:"Theo dõi",solution:obj.result||obj.n||"Đã xử lý qua công việc "+obj.id,related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
+  jobs.push(demoPatch("incidents","building_id=eq."+demoQs(currentBuilding.id)+"&incident_code=eq."+demoQs(obj.incidentCode),{status:"Theo dõi",solution:obj.result||obj.n||"Đã xử lý qua công việc "+obj.id,related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
  }
  await Promise.allSettled(jobs);
  demoCache.loaded=false;await demoLoad(true);
@@ -318,7 +320,7 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
      latest=latest.map(x=>String(x.id)!==String(id)?x:{...x,imgs:mergedImgs,i:mergedImgs.length});
      localStorage.setItem(storageKey,JSON.stringify(latest));
 
-     // DEMO fix: persist the COMPLETE task after Storage upload.
+     // Persist the complete linked task after Storage upload.
      // This avoids the previous race where the file existed in Storage
      // but the project snapshot could still keep imgs: [].
      await syncTaskRecord("upsert_task",obj,buildingId);
@@ -339,7 +341,7 @@ window.delTask=async id=>{
  await originalDemoDelTask(id);
  if(load().some(x=>String(x.id)===String(id)))return;
  try{
-  await sbFetch("/rest/v1/contractor_jobs?building_id=eq."+demoQs(DEMO_ID)+"&source_task_id=eq."+demoQs(String(id)),{method:"DELETE",token:demoTok()});
+  await sbFetch("/rest/v1/contractor_jobs?building_id=eq."+demoQs(currentBuilding.id)+"&source_task_id=eq."+demoQs(String(id)),{method:"DELETE",token:demoTok()});
   if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
  }catch(e){console.warn("Delete linked contractor job failed",e)}
 };
@@ -408,7 +410,7 @@ async function demoRenderHomeOps(){
   low?'<div class="demoOpsAlert"><b>▣ '+low+' vật tư dưới mức tối thiểu</b><span>Kiểm tra kho →</span></div>':"",
   overdue?'<div class="demoOpsAlert"><b>⏱ '+overdue+' công việc quá hạn</b><span>Cần xử lý hôm nay</span></div>':""
  ].filter(Boolean).join("");
- sec.innerHTML='<div class="demoPanel"><div class="demoPanelHead"><div><h2>Trung tâm hành động · DEMO</h2><p>Liên kết Công việc ↔ Thiết bị ↔ Sự cố ↔ Checklist ↔ Nhà thầu ↔ Vật tư</p></div><span class="demoPill blue">PROTOTYPE</span></div><div class="demoPanelBody"><div class="demoOpsCards">'+
+ sec.innerHTML='<div class="demoPanel"><div class="demoPanelHead"><div><h2>Trung tâm liên kết dự án</h2><p>Liên kết Công việc ↔ Thiết bị ↔ Sự cố ↔ Checklist ↔ Nhà thầu ↔ Vật tư</p></div><span class="demoPill blue">LIÊN KẾT</span></div><div class="demoPanelBody"><div class="demoOpsCards">'+
  '<button class="demoOpsCard" onclick="showModule(\'incident\')"><b>'+openInc+'</b><span>Sự cố đang mở</span></button>'+
  '<button class="demoOpsCard" onclick="showModule(\'inspection\')"><b>'+badIns+'</b><span>Checklist cần xử lý</span></button>'+
  '<button class="demoOpsCard" onclick="showModule(\'maintenance\')"><b>'+due+'</b><span>Thiết bị đến hạn 30 ngày</span></button>'+
@@ -443,7 +445,7 @@ function demoEnsureAssetPassport(){
  if(!demoIs()||$("#maintenancePage")?.classList.contains("hide"))return;
  let p=$("#demoAssetPassport");
  if(!p){p=document.createElement("section");p.id="demoAssetPassport";p.className="demoAssetPassport";document.querySelector("#maintenancePage .maintenanceHero")?.insertAdjacentElement("afterend",p)}
- p.innerHTML='<div><b>Hồ sơ thiết bị liên kết & QR</b><span>Mỗi thiết bị dùng một mã cố định để mở hồ sơ, lịch sử bảo trì, sự cố và tài liệu. Mẫu: DEMO/GEN-01.</span></div><button class="demoBtn primary" onclick="showModule(\'documents\')">Xem hồ sơ liên kết</button>';
+ p.innerHTML='<div><b>Hồ sơ thiết bị liên kết & QR</b><span>Mỗi thiết bị dùng một mã cố định để mở hồ sơ, lịch sử bảo trì, sự cố và tài liệu. Mã hồ sơ được tạo theo mã dự án và thiết bị.</span></div><button class="demoBtn primary" onclick="showModule(\'documents\')">Xem hồ sơ liên kết</button>';
 }
 
 function demoSeverityClass(v){return v==="Khẩn cấp"||v==="Cao"?"red":v==="Trung bình"?"amber":"blue"}
@@ -470,13 +472,13 @@ async function demoRenderIncidents(){
  '<div class="demoDetailSection"><span>THAO TÁC LIÊN KẾT</span><div class="demoHeroActions"><button class="demoBtn primary" onclick="demoCreateTaskFromIncident(\''+selected.id+'\')">+ Tạo công việc khắc phục</button>'+(selected.status!=="Đã đóng"?'<button class="demoBtn good" onclick="demoSetIncidentStatus(\''+selected.id+'\',\'Đã đóng\')">Đóng sự cố</button>':"")+'</div></div></div>';
 }
 window.demoSetIncidentStatus=async(id,status)=>{
- try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(DEMO_ID),{status,updated_at:new Date().toISOString()});await demoLoad(true);demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố")}catch(e){toast(e.message)}
+ try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(currentBuilding.id),{status,updated_at:new Date().toISOString()});await demoLoad(true);demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố")}catch(e){toast(e.message)}
 };
 window.demoCreateTaskFromIncident=async id=>{
  const inc=demoCache.incidents.find(x=>String(x.id)===String(id));if(!inc)return;
- const assignee=projectPeople?.[0]?.name||"Kỹ thuật Demo",taskId=Date.now(),due=new Date();due.setDate(due.getDate()+2);
+ const assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án",taskId=Date.now(),due=new Date();due.setDate(due.getDate()+2);
  const obj={id:taskId,d:today(),c:"Khắc phục "+(inc.area||inc.incident_code),t:"Sự cố",s:"Đang thực hiện",n:inc.symptom,a:assignee,performers:[assignee],imgs:[],i:0,priority:inc.severity,dueDate:due.toLocaleDateString("en-CA"),assetId:inc.asset_id||"",incidentCode:inc.incident_code,inspectionCode:"",contractorId:inc.contractor_id||"",materials:[],result:""};
- save([obj,...load()]);await syncTaskRecord("upsert_task",obj,DEMO_ID);
+ save([obj,...load()]);await syncTaskRecord("upsert_task",obj,currentBuilding.id);
  await demoPatch("incidents","id=eq."+demoQs(id),{related_task_id:String(taskId),status:"Đang xử lý",updated_at:new Date().toISOString()});
  await demoLoad(true);render();showModule("work");toast("Đã tạo công việc và liên kết với "+inc.incident_code);
 };
@@ -484,8 +486,8 @@ window.demoAddIncident=async()=>{
  const symptom=prompt("Mô tả hiện tượng sự cố:");if(!symptom)return;
  const area=prompt("Khu vực / vị trí:","Khu vực kỹ thuật")||"";
  const severity=prompt("Mức độ: Thấp / Trung bình / Cao / Khẩn cấp","Trung bình")||"Trung bình";
- const code="SC-DEMO-"+String(Date.now()).slice(-4);
- try{await demoPost("incidents",{building_id:DEMO_ID,incident_code:code,detected_at:new Date().toISOString(),area,severity:["Thấp","Trung bình","Cao","Khẩn cấp"].includes(severity)?severity:"Trung bình",status:"Mới",symptom,cause:"",solution:"",cost:0});await demoLoad(true);demoSelectedIncident="";demoRenderIncidents();toast("Đã thêm "+code)}catch(e){toast(e.message)}
+ const code="SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
+ try{await demoPost("incidents",{building_id:currentBuilding.id,incident_code:code,detected_at:new Date().toISOString(),area,severity:["Thấp","Trung bình","Cao","Khẩn cấp"].includes(severity)?severity:"Trung bình",status:"Mới",symptom,cause:"",solution:"",cost:0});await demoLoad(true);demoSelectedIncident="";demoRenderIncidents();toast("Đã thêm "+code)}catch(e){toast(e.message)}
 };
 
 window.demoSelectInspection=id=>{demoSelectedInspection=id;demoRenderInspections()};
@@ -506,9 +508,9 @@ async function demoRenderInspections(){
 }
 window.demoCreateTaskFromInspection=async id=>{
  const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(!ins)return;
- const bad=(ins.items||[]).find(x=>x.result!=="Đạt"),assignee=projectPeople?.[0]?.name||"Kỹ thuật Demo",taskId=Date.now(),due=new Date();due.setDate(due.getDate()+3);
+ const bad=(ins.items||[]).find(x=>x.result!=="Đạt"),assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án",taskId=Date.now(),due=new Date();due.setDate(due.getDate()+3);
  const obj={id:taskId,d:today(),c:"Khắc phục checklist · "+(bad?.item||ins.template_name),t:"Bảo trì",s:"Đang thực hiện",n:(bad?.note||ins.recommendation||""),a:assignee,performers:[assignee],imgs:[],i:0,priority:bad?.result==="Không đạt"?"Cao":"Trung bình",dueDate:due.toLocaleDateString("en-CA"),assetId:ins.asset_id||"",incidentCode:"",inspectionCode:ins.inspection_code,contractorId:"",materials:[],result:""};
- save([obj,...load()]);await syncTaskRecord("upsert_task",obj,DEMO_ID);
+ save([obj,...load()]);await syncTaskRecord("upsert_task",obj,currentBuilding.id);
  await demoPatch("inspections","id=eq."+demoQs(id),{related_task_ids:[...new Set([...(ins.related_task_ids||[]),String(taskId)])],updated_at:new Date().toISOString()});
  await demoLoad(true);render();showModule("work");toast("Đã tạo công việc từ checklist");
 };
@@ -519,8 +521,8 @@ function demoInspectionHtml(ins){
 window.demoExportInspection=id=>{const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(ins)downloadReportPdf(demoInspectionHtml(ins),"BaoCao_KiemTra_"+ins.inspection_code+".pdf")};
 window.demoAddChecklist=async()=>{
  const name=prompt("Tên checklist:","Checklist kỹ thuật mẫu");if(!name)return;
- const code="KT-DEMO-"+String(Date.now()).slice(-4);
- try{await demoPost("inspections",{building_id:DEMO_ID,inspection_code:code,template_name:name,inspection_date:today(),period_label:"Kiểm tra bổ sung",result_status:"Cần chú ý",recommendation:"Cập nhật kết quả sau kiểm tra.",items:[{item:"Hạng mục 1",standard:"Theo tiêu chuẩn",result:"Cần chú ý",note:"Chưa kiểm tra"}],related_task_ids:[]});await demoLoad(true);demoSelectedInspection="";demoRenderInspections();toast("Đã tạo checklist mẫu")}catch(e){toast(e.message)}
+ const code="KT-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
+ try{await demoPost("inspections",{building_id:currentBuilding.id,inspection_code:code,template_name:name,inspection_date:today(),period_label:"Kiểm tra bổ sung",result_status:"Cần chú ý",recommendation:"Cập nhật kết quả sau kiểm tra.",items:[{item:"Hạng mục 1",standard:"Theo tiêu chuẩn",result:"Cần chú ý",note:"Chưa kiểm tra"}],related_task_ids:[]});await demoLoad(true);demoSelectedInspection="";demoRenderInspections();toast("Đã tạo checklist")}catch(e){toast(e.message)}
 };
 
 window.demoSelectDocument=id=>{demoSelectedDocument=id;demoRenderDocuments()};
@@ -533,12 +535,12 @@ async function demoRenderDocuments(){
  $("#demoDocCats").innerHTML=cats.map(c=>'<div class="demoDocCat"><b>'+all.filter(x=>x.category===c).length+'</b><span>'+c+'</span></div>').join("");
  $("#demoDocBody").innerHTML=list.map(x=>'<tr onclick="demoSelectDocument(\''+x.id+'\')"><td><b>'+esc(x.title)+'</b><small>'+esc(x.note||"")+'</small></td><td>'+esc(x.category)+'</td><td>'+esc(x.system_type||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.code||"—")+'</td><td>'+esc(demoContractor(x.contractor_id)?.name||"—")+'</td><td>'+esc(new Date(x.created_at).toLocaleDateString("vi-VN"))+'</td></tr>').join("");
  const s=list.find(x=>String(x.id)===String(demoSelectedDocument))||list[0];
- $("#demoDocDetail").innerHTML=s?'<div class="demoPanelHead"><div><h2>'+esc(s.title)+'</h2><p>'+esc(s.category)+' · '+esc(s.system_type||"")+'</p></div></div><div class="demoPanelBody"><div class="demoThumb" style="height:260px">XEM TRƯỚC TÀI LIỆU MẪU</div><div class="demoDetailSection"><span>LIÊN KẾT</span><p>Thiết bị: <strong>'+esc(demoAsset(s.asset_id)?.name||"—")+'</strong><br>Nhà thầu: <strong>'+esc(demoContractor(s.contractor_id)?.name||"—")+'</strong></p></div><div class="demoDetailSection"><span>GHI CHÚ</span><p>'+esc(s.note||"—")+'</p></div><button class="demoBtn primary" onclick="toast(\'Đây là tài liệu mẫu. Bản chính thức sẽ mở file Storage.\')">Mở tài liệu</button></div>':'<div class="demoPanelBody">Chưa có tài liệu.</div>';
+ $("#demoDocDetail").innerHTML=s?'<div class="demoPanelHead"><div><h2>'+esc(s.title)+'</h2><p>'+esc(s.category)+' · '+esc(s.system_type||"")+'</p></div></div><div class="demoPanelBody"><div class="demoThumb" style="height:260px">XEM TRƯỚC TÀI LIỆU</div><div class="demoDetailSection"><span>LIÊN KẾT</span><p>Thiết bị: <strong>'+esc(demoAsset(s.asset_id)?.name||"—")+'</strong><br>Nhà thầu: <strong>'+esc(demoContractor(s.contractor_id)?.name||"—")+'</strong></p></div><div class="demoDetailSection"><span>GHI CHÚ</span><p>'+esc(s.note||"—")+'</p></div><button class="demoBtn primary" onclick="toast(\'Tài liệu chính thức sẽ mở từ Storage khi có file đính kèm.\')">Mở tài liệu</button></div>':'<div class="demoPanelBody">Chưa có tài liệu.</div>';
 }
 window.demoAddDocument=async()=>{
  const title=prompt("Tên tài liệu:","Biên bản kỹ thuật mẫu.pdf");if(!title)return;
  const category=prompt("Loại: Bản vẽ / Catalogue / Manual / Biên bản / Báo giá / Bảo hành","Biên bản")||"Khác";
- try{await demoPost("technical_documents",{building_id:DEMO_ID,title,category,system_type:"Khác",file_ref:"demo://"+Date.now(),note:"Tài liệu mẫu tạo trên dự án DEMO"});await demoLoad(true);demoRenderDocuments();toast("Đã thêm tài liệu mẫu")}catch(e){toast(e.message)}
+ try{await demoPost("technical_documents",{building_id:currentBuilding.id,title,category,system_type:"Khác",file_ref:"project://"+Date.now(),note:"Tài liệu kỹ thuật của dự án "+currentBuilding.id});await demoLoad(true);demoRenderDocuments();toast("Đã thêm tài liệu")}catch(e){toast(e.message)}
 };
 
 function demoIncidentsReportHtml(){
@@ -568,7 +570,7 @@ window.demoExportReport=async type=>{
  if(type==="incident")return downloadReportPdf(demoIncidentsReportHtml(),"BaoCao_SuCo_"+workReportPeriod("week").suffix+".pdf");
  if(type==="inspection"){const ins=demoCache.inspections[0];if(ins)return window.demoExportInspection(ins.id)}
  if(type==="energy"){setEnergyRange("week");const rows=energyRows();if(rows.length)return downloadReportPdf(energyReportHtml(rows),"BaoCao_NangLuong_"+workReportPeriod("week").suffix+".pdf")}
- if(type==="inventory"){await loadInventoryData(DEMO_ID);return inventoryPrintWindow(materialReportHtml(),"BaoCao_VatTu_"+workReportPeriod("week").suffix+".pdf")}
+ if(type==="inventory"){await loadInventoryData(currentBuilding.id);return inventoryPrintWindow(materialReportHtml(),"BaoCao_VatTu_"+workReportPeriod("week").suffix+".pdf")}
 };
 
 document.addEventListener("click",e=>{
@@ -585,7 +587,7 @@ window.demoRefresh=async()=>{
  demoCache.loaded=false;await demoLoad(true);demoPopulateWorkOptions();demoRenderHomeOps();
  const visible=DEMO_MODULES.find(n=>!$("#"+n+"Page")?.classList.contains("hide"));
  if(visible)showModule(visible);
- toast("Đã làm mới dữ liệu DEMO");
+ toast("Đã làm mới dữ liệu dự án");
 };
 
 setTimeout(()=>{demoEnsureWorkPanel();demoSetProjectMode()},400);
