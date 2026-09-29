@@ -604,229 +604,217 @@
 
 
 /* DEMO_WORK_LIGHT_BLUE_REFERENCE_THEME_20260929 */
-/* DEMO → Công việc: Navy + kem sang, dịu mắt, giảm độ chói. */
+/* Chỉ áp dụng cho dự án DEMO + trang Công việc. Màu tham chiếu từ ảnh người dùng. */
 #app.demoSampleProject.workMode{
-  --demo-ref-navy:#0f2f4f;
-  --demo-ref-navy-2:#183f63;
-  --demo-ref-text:#17324d;
-  --demo-ref-blue:#2f668f;
-  --demo-ref-cyan:#5e98a5;
-  --demo-ref-page:#f4ede3;
-  --demo-ref-card:#edf2f3;
-  --demo-ref-card-2:#f3f5f4;
-  --demo-ref-border:#c8d5da;
-  --demo-ref-input:#fffdf9;
-  --demo-ref-muted:#71818e;
+  --demo-ref-navy:#10366a;
+  --demo-ref-navy-2:#214676;
+  --demo-ref-text:#062167;
+  --demo-ref-blue:#0163fd;
+  --demo-ref-cyan:#00dff2;
+  --demo-ref-page:#fbf2e7;
+  --demo-ref-card:#e6f4fd;
+  --demo-ref-card-2:#eef8fe;
+  --demo-ref-border:#9fd8ff;
+  --demo-ref-input:#fffefe;
+  --demo-ref-muted:#6e83ad;
 }
 
-/* Nền kem ấm, sang và bớt trắng gắt */
+/* Nền ngoài kem sáng giống ảnh tham chiếu */
 #app.demoSampleProject.workMode main{
-  background:
-    radial-gradient(circle at 82% 8%,rgba(255,255,255,.58),transparent 28%),
-    linear-gradient(180deg,#f6f0e7 0%,#f2e9dd 100%)!important;
+  background:var(--demo-ref-page)!important;
 }
 #app.demoSampleProject.workMode #workPage{
   background:transparent!important;
 }
 
-/* Header navy sâu, ít bão hòa hơn */
+/* Header navy */
 #app.demoSampleProject.workMode .estaTopbar{
-  border-bottom-color:#274968!important;
-  background:linear-gradient(90deg,#0d2b49 0%,#143858 52%,#0f304f 100%)!important;
-  box-shadow:0 5px 18px rgba(10,35,57,.14)!important;
+  border-bottom-color:#214c7f!important;
+  background:linear-gradient(90deg,#10366a 0%,#163f73 52%,#0d3568 100%)!important;
+  box-shadow:0 5px 18px rgba(5,35,76,.16)!important;
 }
 #app.demoSampleProject.workMode #topWorkTitle h1,
 #app.demoSampleProject.workMode #topWorkTitle p,
 #app.demoSampleProject.workMode .account b,
 #app.demoSampleProject.workMode .account span{
-  color:#f6f4ef!important;
+  color:#f7fbff!important;
 }
 #app.demoSampleProject.workMode #topWorkTitle p,
-#app.demoSampleProject.workMode .account span{
-  color:#c8d2da!important;
-  opacity:1!important;
-}
+#app.demoSampleProject.workMode .account span{opacity:.78}
 #app.demoSampleProject.workMode #topWorkTitle .topModuleIcon{
-  border:1px solid rgba(190,211,222,.22)!important;
+  border:1px solid rgba(126,196,255,.28)!important;
   background:rgba(255,255,255,.055)!important;
-  color:#7fb6bf!important;
+  color:#00e6f3!important;
 }
 #app.demoSampleProject.workMode .headerSearch{
-  border-color:rgba(196,214,226,.20)!important;
-  background:rgba(255,255,255,.055)!important;
-  color:#e9eef1!important;
+  border-color:rgba(177,214,247,.26)!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#e7f4ff!important;
 }
-#app.demoSampleProject.workMode .headerSearch input{color:#f6f5f1!important}
-#app.demoSampleProject.workMode .headerSearch input::placeholder{color:#aebdca!important}
+#app.demoSampleProject.workMode .headerSearch input{
+  color:#f6fbff!important;
+}
+#app.demoSampleProject.workMode .headerSearch input::placeholder{
+  color:#b8cee5!important;
+}
 #app.demoSampleProject.workMode .iconAction,
 #app.demoSampleProject.workMode .pdfAction,
 #app.demoSampleProject.workMode .headerBell{
-  border-color:rgba(196,214,226,.18)!important;
-  background:rgba(255,255,255,.055)!important;
-  color:#e8edf0!important;
+  border-color:rgba(177,214,247,.24)!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#f3f8ff!important;
 }
-#app.demoSampleProject.workMode .pdfAction b{color:#d98b82!important}
-#app.demoSampleProject.workMode .account{border-left-color:rgba(255,255,255,.13)!important}
+#app.demoSampleProject.workMode .pdfAction b{color:#ff7373!important}
+#app.demoSampleProject.workMode .account{
+  border-left-color:rgba(255,255,255,.16)!important;
+}
 
-/* Khối Thêm công việc: xanh xám pha kem, nhẹ mắt */
+/* Khối Thêm công việc */
 #app.demoSampleProject.workMode #workPage .workEntryCard{
-  border:1px solid #c6d2d7!important;
-  background:linear-gradient(135deg,#edf2f3 0%,#e7edef 100%)!important;
-  box-shadow:0 10px 26px rgba(39,65,83,.075)!important;
+  border:1px solid var(--demo-ref-border)!important;
+  background:linear-gradient(135deg,#edf8ff 0%,#dff1fd 100%)!important;
+  box-shadow:0 9px 25px rgba(40,115,174,.10)!important;
 }
 #app.demoSampleProject.workMode #workPage .workEntryHeader{
-  border-bottom:1px solid rgba(107,133,148,.18)!important;
-  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0))!important;
+  border-bottom:1px solid rgba(95,170,224,.22)!important;
+  background:transparent!important;
 }
 #app.demoSampleProject.workMode #workPage .workEntryHeader h2{
-  color:#163550!important;
+  color:var(--demo-ref-text)!important;
 }
 #app.demoSampleProject.workMode #workPage .workEntryHeader p{
-  color:#74848f!important;
+  color:#607ca7!important;
 }
 #app.demoSampleProject.workMode #workPage .workEntryHeader>div:first-child>span{
-  color:#5e7f91!important;
+  color:#147cd9!important;
 }
 #app.demoSampleProject.workMode #workPage .workEntryHeaderIcon{
-  border:1px solid #cfdbdf!important;
-  background:rgba(255,253,249,.62)!important;
-  color:#34698b!important;
+  border:1px solid #c8e9fb!important;
+  background:rgba(255,255,255,.55)!important;
+  color:#0769ef!important;
 }
 
-/* Nhãn + input dịu hơn */
+/* Nhãn + input */
 #app.demoSampleProject.workMode #workPage #taskForm .workField>span{
-  color:#244663!important;
+  color:#0a2b70!important;
 }
 #app.demoSampleProject.workMode #workPage #taskForm .requiredField>span:after{
-  color:#c9665d!important;
+  color:#ff514b!important;
 }
 #app.demoSampleProject.workMode #workPage #taskForm input:not([type="hidden"]),
 #app.demoSampleProject.workMode #workPage #taskForm select,
 #app.demoSampleProject.workMode #workPage #taskForm textarea,
 #app.demoSampleProject.workMode #workPage #taskForm .peopleSelectBtn{
-  border:1px solid #ced9dd!important;
-  background:#fffdf9!important;
-  color:#213d56!important;
-  box-shadow:0 1px 0 rgba(255,255,255,.65) inset!important;
+  border:1px solid #c7e3f5!important;
+  background:var(--demo-ref-input)!important;
+  color:#102b6b!important;
+  box-shadow:none!important;
 }
 #app.demoSampleProject.workMode #workPage #taskForm input::placeholder,
 #app.demoSampleProject.workMode #workPage #taskForm textarea::placeholder,
 #app.demoSampleProject.workMode #workPage #taskForm .peopleButtonSummary>em{
-  color:#87939c!important;
+  color:#7589b0!important;
   opacity:1!important;
 }
 #app.demoSampleProject.workMode #workPage #taskForm input:focus,
 #app.demoSampleProject.workMode #workPage #taskForm select:focus,
 #app.demoSampleProject.workMode #workPage #taskForm textarea:focus,
 #app.demoSampleProject.workMode #workPage #taskForm .peopleSelectBtn:focus{
-  border-color:#789cad!important;
-  box-shadow:0 0 0 3px rgba(71,113,135,.10)!important;
+  border-color:#59b8f4!important;
+  box-shadow:0 0 0 3px rgba(57,155,227,.12)!important;
 }
 
 /* Menu người thực hiện */
 #app.demoSampleProject.workMode #workPage .peopleSelectMenu{
-  border-color:#cad5da!important;
-  background:#fffdf9!important;
-  color:#29445b!important;
-  box-shadow:0 12px 30px rgba(32,57,74,.12)!important;
+  border-color:#bcdff4!important;
+  background:#fff!important;
+  color:#18356c!important;
+  box-shadow:0 12px 30px rgba(22,79,128,.14)!important;
 }
 #app.demoSampleProject.workMode #workPage .peopleOption{
-  color:#5c7180!important;
+  color:#49678e!important;
   opacity:1!important;
 }
 #app.demoSampleProject.workMode #workPage .peopleOption:hover,
 #app.demoSampleProject.workMode #workPage .peopleOption.selected{
-  background:#edf2f1!important;
-  color:#1c405a!important;
+  background:#eaf6fd!important;
+  color:#092b73!important;
 }
 
-/* Ảnh + nút thêm: giảm xanh điện, dùng navy trung tính */
+/* Ảnh + nút thêm */
 #app.demoSampleProject.workMode #workPage #taskForm .imageActionBtn{
-  border:1px solid #c4d2d8!important;
-  background:rgba(255,253,249,.64)!important;
-  color:#315674!important;
+  border:1px solid #b5d9f0!important;
+  background:rgba(255,255,255,.58)!important;
+  color:#12377c!important;
 }
 #app.demoSampleProject.workMode #workPage #taskForm .cameraBtn{
-  border-color:#bdd0d7!important;
-  background:#f4f7f6!important;
-  color:#356b83!important;
+  border-color:#9fd7f7!important;
+  background:#eef9ff!important;
+  color:#086cf0!important;
 }
 #app.demoSampleProject.workMode #workPage #taskForm .workSave{
-  border:1px solid #2b5878!important;
-  background:linear-gradient(100deg,#1d4b70 0%,#285f87 62%,#3c748f 100%)!important;
+  border:0!important;
+  background:linear-gradient(100deg,#0867f9 0%,#0062ff 62%,#00a9ee 100%)!important;
   color:#fff!important;
-  box-shadow:0 8px 18px rgba(24,67,98,.16)!important;
-}
-#app.demoSampleProject.workMode #workPage #taskForm .workSave:hover{
-  background:linear-gradient(100deg,#173f61 0%,#24577d 62%,#356c87 100%)!important;
+  box-shadow:0 8px 18px rgba(0,99,253,.20)!important;
 }
 
 /* Liên kết nâng cao */
 #app.demoSampleProject.workMode #demoWorkLinks{
-  border:1px solid #c5d2d7!important;
-  background:linear-gradient(135deg,#eef2f1 0%,#e8eeed 100%)!important;
-  box-shadow:0 7px 20px rgba(45,69,83,.065)!important;
+  border:1px solid var(--demo-ref-border)!important;
+  background:linear-gradient(135deg,#edf8ff 0%,#e4f4fd 100%)!important;
+  box-shadow:0 7px 20px rgba(54,116,164,.08)!important;
 }
 #app.demoSampleProject.workMode #demoWorkLinks summary{
-  color:#315e7d!important;
+  color:#0862dc!important;
 }
 #app.demoSampleProject.workMode #demoWorkLinks summary::marker{
-  color:#5c8396!important;
+  color:#0871e9!important;
 }
 #app.demoSampleProject.workMode #demoWorkLinks .demoWorkLinkGrid label{
-  color:#34536a!important;
+  color:#123678!important;
 }
 #app.demoSampleProject.workMode #demoWorkLinks input,
 #app.demoSampleProject.workMode #demoWorkLinks select,
 #app.demoSampleProject.workMode #demoWorkLinks textarea{
-  border-color:#cbd6da!important;
-  background:#fffdf9!important;
-  color:#29445b!important;
+  border-color:#c7e3f5!important;
+  background:#fff!important;
+  color:#193872!important;
 }
 #app.demoSampleProject.workMode #demoWorkLinks select option{
-  color:#34536a!important;
-  background:#fffdf9!important;
+  color:#24477f!important;
+  background:#fff!important;
 }
 
-/* KPI và bảng: trắng kem, viền xám xanh dịu */
+/* KPI và bảng phía dưới đồng bộ tông nhưng vẫn dễ đọc */
 #app.demoSampleProject.workMode #workPage .stats article,
 #app.demoSampleProject.workMode #workPage .premiumTableCard{
-  border-color:#d0d9db!important;
-  background:rgba(255,253,249,.92)!important;
-  box-shadow:0 7px 20px rgba(43,63,77,.055)!important;
+  border-color:#c8e3f3!important;
+  background:rgba(255,255,255,.92)!important;
+  box-shadow:0 7px 20px rgba(46,101,145,.07)!important;
 }
 #app.demoSampleProject.workMode #workPage .stats strong,
 #app.demoSampleProject.workMode #workPage .taskContentCell>b{
-  color:#173852!important;
+  color:#0b2c69!important;
 }
 #app.demoSampleProject.workMode #workPage .premiumTableCard .tableTop{
-  border-bottom-color:#dde4e5!important;
-  background:#faf8f3!important;
+  border-bottom-color:#dcebf5!important;
+  background:#f7fbfe!important;
 }
 #app.demoSampleProject.workMode #workPage .premiumTableCard th{
-  border-bottom-color:#d9e1e2!important;
-  background:#eef1ef!important;
-  color:#526b79!important;
+  border-bottom-color:#d9e9f4!important;
+  background:#eef7fd!important;
+  color:#3c618c!important;
 }
 #app.demoSampleProject.workMode #workPage .premiumTableCard td{
-  border-bottom-color:#ecefed!important;
-  color:#4a6170!important;
-}
-
-/* Badge trạng thái và KPI bớt bão hòa */
-#app.demoSampleProject.workMode #workPage .stats article[data-work-stat-filter].active{
-  border-color:#7296a7!important;
-  box-shadow:0 0 0 2px rgba(82,126,145,.10),0 10px 24px rgba(41,76,96,.09)!important;
-}
-#app.demoSampleProject.workMode #workPage .stats article[data-work-stat-filter]:hover{
-  border-color:#9bb2bd!important;
-  box-shadow:0 9px 24px rgba(43,75,94,.08)!important;
+  border-bottom-color:#edf3f7!important;
+  color:#405f7d!important;
 }
 
 /* Mobile giữ cùng palette */
 @media(max-width:760px){
   #app.demoSampleProject.workMode .estaTopbar{
-    background:linear-gradient(90deg,#0d2b49,#173b5c)!important;
+    background:linear-gradient(90deg,#10366a,#16477d)!important;
   }
   #app.demoSampleProject.workMode #workPage .workEntryCard,
   #app.demoSampleProject.workMode #demoWorkLinks{
