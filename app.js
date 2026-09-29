@@ -967,10 +967,12 @@ $("#taskForm").onsubmit=async e=>{
  }catch(err){toast(err.message||"Không thể lưu công việc")}
  finally{btn.disabled=false}
 };
+let workStatFilter="";
 function filtered(fx,ex){
  let q=($("#search").value+" "+$("#globalSearch").value).toLowerCase().trim(),s=$("#filterStatus").value,t=$("#filterType").value,f=fx===undefined?$("#fromDate").value:fx,e=ex===undefined?$("#toDate").value:ex;
+ const statMatch=x=>!workStatFilter||(workStatFilter==="today"?x.d===today():workStatFilter==="doing"?x.s==="Đang thực hiện":workStatFilter==="done"?x.s==="Đã hoàn thành":workStatFilter==="waiting"?x.s==="Chờ xử lý":true);
  return load()
-   .filter(x=>(!q||(x.c+" "+x.n+" "+x.a).toLowerCase().includes(q))&&(!s||x.s===s)&&(!t||(x.t||"Hằng ngày")===t)&&(!f||x.d>=f)&&(!e||x.d<=e))
+   .filter(x=>(!q||(x.c+" "+x.n+" "+x.a).toLowerCase().includes(q))&&(!s||x.s===s)&&(!t||(x.t||"Hằng ngày")===t)&&(!f||x.d>=f)&&(!e||x.d<=e)&&statMatch(x))
    .sort((a,b)=>{
      const ai=Number(a?.id),bi=Number(b?.id);
      if(Number.isFinite(ai)&&Number.isFinite(bi)&&ai!==bi)return ai-bi;
@@ -988,7 +990,12 @@ function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div 
  $("#statDoing").textContent=all.filter(x=>x.s==="Đang thực hiện").length;
  $("#statDone").textContent=all.filter(x=>x.s==="Đã hoàn thành").length;
  $("#statWait").textContent=all.filter(x=>x.s==="Chờ xử lý").length;
- $("#count").textContent="("+a.length+")";
+ $("#count").textContent=a.length+" công việc";
+ document.querySelectorAll("#workPage .stats article[data-work-stat-filter]").forEach(card=>{
+   const active=card.dataset.workStatFilter===workStatFilter;
+   card.classList.toggle("active",active);
+   card.setAttribute("aria-pressed",String(active));
+ });
  $("#empty").classList.toggle("hide",a.length>0);
  $("#tbody").innerHTML=a.map((x,i)=>'<tr><td class="sttCell">'+(i+1)+'</td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+esc(x.n||"—")+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
  $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard"><div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+esc(x.n||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
@@ -1022,6 +1029,22 @@ $("#closeViewer").onclick=e=>{e.stopPropagation();closeImageViewer()};
 $("#viewer").addEventListener("click",e=>{
  if(e.target===$("#viewer"))closeImageViewer();
 });
+/* WORK_KPI_FILTERS */
+document.querySelectorAll("#workPage .stats article[data-work-stat-filter]").forEach(card=>{
+  const toggle=()=>{
+    const next=card.dataset.workStatFilter||"";
+    workStatFilter=workStatFilter===next?"":next;
+    render();
+  };
+  card.addEventListener("click",toggle);
+  card.addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===" "){
+      e.preventDefault();
+      toggle();
+    }
+  });
+});
+/* END_WORK_KPI_FILTERS */
 /* WORK_ROW_ACTION_MENU_SINGLE_OPEN */
 document.addEventListener("click",e=>{
   const summary=e.target.closest?.("#workPage .rowActionMenu summary");
@@ -1087,7 +1110,7 @@ document.addEventListener("pointerdown",e=>{
 },true);
 document.addEventListener("keydown",e=>{
  if(e.key==="Escape")closeWorkFilter();
-});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let first=new Date(d.getFullYear(),d.getMonth(),1),last=new Date(d.getFullYear(),d.getMonth()+1,0),day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);if(a<first)a=first;if(b>last)b=last;from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";render()};function reportStatusClass(s){
+});["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let first=new Date(d.getFullYear(),d.getMonth(),1),last=new Date(d.getFullYear(),d.getMonth()+1,0),day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);if(a<first)a=first;if(b>last)b=last;from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";workStatFilter="";render()};function reportStatusClass(s){
  if(s==="Đã hoàn thành")return "done";
  if(s==="Đang thực hiện")return "doing";
  return "waiting";
