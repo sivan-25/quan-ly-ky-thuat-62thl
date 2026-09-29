@@ -1727,7 +1727,11 @@ $("#quickReport").onclick=()=>{if($("#navWork").classList.contains("hide"))retur
 $("#energyToday").textContent=new Date().toLocaleDateString("vi-VN",{day:"2-digit",month:"2-digit",year:"numeric"});
 document.querySelectorAll("[data-energy-type]").forEach(b=>b.onclick=()=>{
  energyType=b.dataset.energyType;
- document.querySelectorAll("[data-energy-type]").forEach(x=>x.classList.toggle("active",x===b));
+ document.querySelectorAll("[data-energy-type]").forEach(x=>{
+  const selected=x===b;
+  x.classList.toggle("active",selected);
+  x.setAttribute("aria-selected",String(selected));
+ });
  resetEnergyForm();
  renderEnergy();
 });
@@ -1888,7 +1892,11 @@ window.editEnergy=id=>{
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
  const x=energyLoad().find(v=>String(v.id)===String(id));if(!x)return;
  energyType=x.type;
- document.querySelectorAll("[data-energy-type]").forEach(b=>b.classList.toggle("active",b.dataset.energyType===energyType));
+ document.querySelectorAll("[data-energy-type]").forEach(b=>{
+ const selected=b.dataset.energyType===energyType;
+ b.classList.toggle("active",selected);
+ b.setAttribute("aria-selected",String(selected));
+});
  $("#energyEditId").value=x.id;$("#energyDate").value=x.date;$("#energyValue").value=x.value;setPeopleSelected("energy",performerArray(x));$("#energyNote").value=x.note||"";
  $("#energyImagePreview").innerHTML=x.image?mediaImgHtml(x.image,"")+'<span>Ảnh hiện tại</span>':"";hydrateMediaImages($("#energyImagePreview"));
  $("#energySaveBtn").textContent="Cập nhật chỉ số";$("#energyCancelEdit").classList.remove("hide");renderEnergy();
