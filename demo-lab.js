@@ -272,7 +272,14 @@ async function demoSyncContractorTask(obj){
  }
 }
 async function demoFinalizeLinks(obj,old){
- if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành")return;
+ const linkJobs=[];
+ if(obj.incidentCode)linkJobs.push(demoPatch("incidents","building_id=eq."+demoQs(currentBuilding.id)+"&incident_code=eq."+demoQs(obj.incidentCode),{related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
+ if(obj.inspectionCode){
+  const ins=demoCache.inspections.find(x=>String(x.inspection_code)===String(obj.inspectionCode));
+  if(ins)linkJobs.push(demoPatch("inspections","building_id=eq."+demoQs(currentBuilding.id)+"&inspection_code=eq."+demoQs(obj.inspectionCode),{related_task_ids:[...new Set([...(Array.isArray(ins.related_task_ids)?ins.related_task_ids:[]),String(obj.id)])],updated_at:new Date().toISOString()}));
+ }
+ if(linkJobs.length)await Promise.allSettled(linkJobs);
+ if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành"){demoCache.loaded=false;await demoLoad(true);return}
  const jobs=[];
  for(const m of obj.materials||[]){
   jobs.push(demoPost("inventory_material_transactions",{building_id:currentBuilding.id,material_id:m.materialId,tx_date:obj.d,tx_type:"out",qty:m.qty,performer:obj.a||"",note:"Tự động xuất theo công việc "+obj.id}));
@@ -450,6 +457,7 @@ function demoEnsureAssetPassport(){
 
 function demoSeverityClass(v){return v==="Khẩn cấp"||v==="Cao"?"red":v==="Trung bình"?"amber":"blue"}
 function demoStatusClass(v){return v==="Đã đóng"||v==="Đạt"?"green":v==="Đang xử lý"?"blue":v==="Theo dõi"||v==="Cần chú ý"?"amber":"red"}
+window.demoOpenLinkedTask=id=>{showModule("work");const n=Number(id);setTimeout(()=>{if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)},90)};
 window.demoSelectIncident=id=>{demoSelectedIncident=id;demoRenderIncidents()};
 async function demoRenderIncidents(){
  await demoLoad();
@@ -504,7 +512,7 @@ async function demoRenderInspections(){
  $("#demoInspectionList").innerHTML=list.map(x=>'<button class="demoOpsAlert" onclick="demoSelectInspection(\''+x.id+'\')"><b>'+esc(x.template_name)+'<small>'+esc(x.inspection_code)+' · '+esc(x.period_label)+'</small></b><span class="demoPill '+demoStatusClass(x.result_status)+'">'+esc(x.result_status)+'</span></button>').join("");
  const d=$("#demoInspectionDetail");if(!s){d.innerHTML="Chưa có checklist";return}
  const items=Array.isArray(s.items)?s.items:[];
- d.innerHTML='<div class="demoPanelHead"><div><h2>'+esc(s.template_name)+'</h2><p>'+esc(s.inspection_code)+' · '+esc(s.period_label)+'</p></div><span class="demoPill '+demoStatusClass(s.result_status)+'">'+esc(s.result_status)+'</span></div><div class="demoPanelBody"><div class="demoChecklist">'+items.map((it,i)=>'<div class="demoChecklistRow"><b>'+(i+1)+'. '+esc(it.item)+'</b><span>'+esc(it.standard||"—")+'</span><span class="demoPill '+demoStatusClass(it.result)+'">'+esc(it.result)+'</span><span>'+esc(it.note||"—")+'</span></div>').join("")+'</div><div class="demoDetailSection"><span>KIẾN NGHỊ</span><p>'+esc(s.recommendation||"—")+'</p></div><div class="demoHeroActions"><button class="demoBtn primary" onclick="demoCreateTaskFromInspection(\''+s.id+'\')">+ Tạo công việc khắc phục</button><button class="demoBtn" onclick="demoExportInspection(\''+s.id+'\')">Xuất PDF checklist</button></div></div>';
+ d.innerHTML='<div class="demoPanelHead"><div><h2>'+esc(s.template_name)+'</h2><p>'+esc(s.inspection_code)+' · '+esc(s.period_label)+'</p></div><span class="demoPill '+demoStatusClass(s.result_status)+'">'+esc(s.result_status)+'</span></div><div class="demoPanelBody"><div class="demoChecklist">'+items.map((it,i)=>'<div class="demoChecklistRow"><b>'+(i+1)+'. '+esc(it.item)+'</b><span>'+esc(it.standard||"—")+'</span><span class="demoPill '+demoStatusClass(it.result)+'">'+esc(it.result)+'</span><span>'+esc(it.note||"—")+'</span></div>').join("")+'</div><div class="demoDetailSection"><span>KIẾN NGHỊ</span><p>'+esc(s.recommendation||"—")+'</p></div><div class="demoDetailSection"><span>CÔNG VIỆC LIÊN KẾT</span><div class="demoHeroActions">'+((s.related_task_ids||[]).map(tid=>'<button class="demoBtn" onclick="demoOpenLinkedTask(\''+tid+'\')">CV '+esc(tid)+'</button>').join("")||'<span>Chưa có công việc liên kết</span>')+'</div></div><div class="demoHeroActions"><button class="demoBtn primary" onclick="demoCreateTaskFromInspection(\''+s.id+'\')">+ Tạo công việc khắc phục</button><button class="demoBtn" onclick="demoExportInspection(\''+s.id+'\')">Xuất PDF checklist</button></div></div>';
 }
 window.demoCreateTaskFromInspection=async id=>{
  const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(!ins)return;
