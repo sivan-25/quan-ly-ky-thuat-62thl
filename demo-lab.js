@@ -67,7 +67,9 @@ function demoSpecialSearchPlaceholder(name){
  return ({incident:"Tìm sự cố, khu vực, thiết bị...",inspection:"Tìm checklist, mã kiểm tra...",documents:"Tìm tài liệu, hệ thống, nhà thầu...",reports:"Tìm báo cáo, kỳ, mã báo cáo..."})[name]||"Tìm...";
 }
 function demoSetProjectMode(){
- const on=demoIs()&&($("#adminPage")?.classList.contains("hide")??true);
+ const shell=demoIs();
+ const on=shell&&($("#adminPage")?.classList.contains("hide")??true);
+ $("#app")?.classList.toggle("demoProjectShell",shell);
  $("#app")?.classList.toggle("demoProjectMode",on);
  $("#app")?.classList.toggle("demoSampleProject",on&&String(currentBuilding?.id||"")===DEMO_ID);
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
