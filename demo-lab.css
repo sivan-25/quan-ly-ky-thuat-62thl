@@ -821,3 +821,107 @@
     border-radius:14px!important;
   }
 }
+
+
+/* DEMO_WORK_EDIT_DRAWER_CLEANUP_20260929 */
+/* DEMO edit drawer only: no horizontal scroll, simpler advanced links, actions at the true end. */
+.workEditDrawer.demoWorkEditDrawer .workEditDrawerCard,
+.workEditDrawer.demoWorkEditDrawer .workEditDrawerMount,
+.workEditDrawer.demoWorkEditDrawer .workEntryCard,
+.workEditDrawer.demoWorkEditDrawer #taskForm,
+.workEditDrawer.demoWorkEditDrawer #demoWorkLinks,
+.workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workEditDrawerMount{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workEntryCard{
+  overflow:hidden!important;
+}
+.workEditDrawer.demoWorkEditDrawer #taskForm.workEntryForm{
+  width:100%!important;
+}
+.workEditDrawer.demoWorkEditDrawer #demoWorkLinks{
+  width:auto!important;
+  margin:0 16px 14px!important;
+  overflow:hidden!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:100%!important;
+  overflow:hidden!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid>label{
+  min-width:0!important;
+  width:100%!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid input,
+.workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid select,
+.workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid textarea{
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoAdvancedAsset,
+.workEditDrawer.demoWorkEditDrawer .demoAdvancedInspection{
+  display:none!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid .span2{
+  grid-column:1/-1!important;
+}
+
+/* Buttons are moved after images + advanced links, so this becomes the actual footer of the edit page. */
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{
+  width:auto!important;
+  margin:0 16px 18px!important;
+  padding:14px 0 0!important;
+  border-top:1px solid #25344d!important;
+  display:grid!important;
+  grid-template-columns:minmax(120px,.35fr) minmax(210px,1fr)!important;
+  gap:10px!important;
+  position:static!important;
+  background:transparent!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoEditFooter .workCancel,
+.workEditDrawer.demoWorkEditDrawer .demoEditFooter .workSave{
+  min-height:48px!important;
+  border-radius:10px!important;
+  font-size:13px!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoEditFooter .workCancel{
+  border:1px solid #35415b!important;
+  background:#151f34!important;
+  color:#c3cede!important;
+}
+.workEditDrawer.demoWorkEditDrawer .demoEditFooter .workSave{
+  border:0!important;
+  background:linear-gradient(96deg,#315f8d 0%,#24708f 100%)!important;
+  color:#fff!important;
+  font-weight:850!important;
+}
+
+/* Keep every edit-drawer descendant inside the available width. */
+.workEditDrawer.demoWorkEditDrawer *{
+  max-width:100%;
+}
+.workEditDrawer.demoWorkEditDrawer .peopleSelectMenu{
+  max-width:100%!important;
+}
+@media(max-width:760px){
+  .workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid{
+    grid-template-columns:1fr!important;
+  }
+  .workEditDrawer.demoWorkEditDrawer .demoWorkLinkGrid .span2{
+    grid-column:1!important;
+  }
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{
+    grid-template-columns:100px minmax(0,1fr)!important;
+    margin:0 14px calc(18px + env(safe-area-inset-bottom))!important;
+    padding-top:12px!important;
+  }
+}
