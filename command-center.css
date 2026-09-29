@@ -951,3 +951,124 @@ html,body,body *{font-family:"Inter",sans-serif!important}
 #app.adminCommandHome.homeMode #estaCommandCenter .ccHero p{
   margin-top:4px!important;
 }
+
+
+/* ADMIN_DISPATCH_MODAL_DARK_SYNC_20260929 */
+/* Giao công việc: đồng bộ với Command Center navy + cyan, bỏ nền trắng lệch tông. */
+#ccDispatchModal.ccModal{
+  background:transparent!important;
+}
+#ccDispatchModal .ccModalBackdrop{
+  background:rgba(4,18,31,.72)!important;
+  backdrop-filter:blur(5px)!important;
+}
+#ccDispatchModal .ccModalCard{
+  border:1px solid #2f4961!important;
+  background:#101b2d!important;
+  box-shadow:0 30px 90px rgba(0,14,27,.52)!important;
+}
+#ccDispatchModal .ccModalHead{
+  border-bottom:1px solid #294059!important;
+  background:
+    radial-gradient(circle at 86% 18%,rgba(55,199,215,.10),transparent 30%),
+    linear-gradient(135deg,#10243a 0%,#11374c 100%)!important;
+}
+#ccDispatchModal .ccModalHead span{
+  color:#63dce9!important;
+}
+#ccDispatchModal .ccModalHead h3{
+  color:#f6fbff!important;
+}
+#ccDispatchModal .ccModalHead p{
+  color:#a8bfd0!important;
+}
+#ccDispatchModal .ccClose{
+  border:1px solid #38536d!important;
+  background:#17283e!important;
+  color:#e5f4fb!important;
+}
+#ccDispatchModal .ccClose:hover{
+  border-color:#4f718c!important;
+  background:#1c334d!important;
+}
+#ccDispatchModal .ccDispatchForm{
+  background:#101b2d!important;
+}
+#ccDispatchModal .ccDispatchForm label{
+  color:#afc7d6!important;
+}
+#ccDispatchModal .ccDispatchForm input,
+#ccDispatchModal .ccDispatchForm select,
+#ccDispatchModal .ccDispatchForm textarea{
+  border:1px solid #314a63!important;
+  background:#16243a!important;
+  color:#edf6fb!important;
+  box-shadow:none!important;
+}
+#ccDispatchModal .ccDispatchForm input::placeholder,
+#ccDispatchModal .ccDispatchForm textarea::placeholder{
+  color:#748ca0!important;
+}
+#ccDispatchModal .ccDispatchForm select option{
+  background:#16243a!important;
+  color:#edf6fb!important;
+}
+#ccDispatchModal .ccDispatchForm input:focus,
+#ccDispatchModal .ccDispatchForm select:focus,
+#ccDispatchModal .ccDispatchForm textarea:focus{
+  border-color:#4bcfdf!important;
+  background:#192a42!important;
+  box-shadow:0 0 0 3px rgba(75,207,223,.10)!important;
+}
+#ccDispatchModal .ccDispatchProjectsHead{
+  color:#d4e6ee!important;
+}
+#ccDispatchModal .ccDispatchProjectsHead label{
+  color:#bad0dc!important;
+}
+#ccDispatchModal .ccDispatchProjects label{
+  border:1px solid #30465e!important;
+  background:#142238!important;
+}
+#ccDispatchModal .ccDispatchProjects label:hover{
+  border-color:#3d657c!important;
+  background:#172a41!important;
+}
+#ccDispatchModal .ccDispatchProjects label:has(input:checked){
+  border-color:#48cddd!important;
+  background:#17364a!important;
+  box-shadow:inset 0 0 0 1px rgba(72,205,221,.12)!important;
+}
+#ccDispatchModal .ccDispatchProjects input,
+#ccDispatchModal .ccDispatchProjectsHead input{
+  accent-color:#45d7e6!important;
+}
+#ccDispatchModal .ccDispatchProjects span{
+  color:#a9c2d0!important;
+}
+#ccDispatchModal .ccDispatchProjects b{
+  color:#f0f7fb!important;
+}
+#ccDispatchModal .ccDispatchActions{
+  border-top:1px solid #263b51!important;
+  margin-top:4px!important;
+  padding-top:12px!important;
+}
+#ccDispatchModal .ccBtn.cancel{
+  border:1px solid #3a5068!important;
+  background:#172238!important;
+  color:#cbdce6!important;
+}
+#ccDispatchModal .ccBtn.cancel:hover{
+  background:#1d3048!important;
+  color:#fff!important;
+}
+#ccDispatchModal .ccBtn.primary{
+  border-color:#58d6e6!important;
+  background:linear-gradient(135deg,#54d5e5 0%,#40bfd5 100%)!important;
+  color:#0b2b3a!important;
+  box-shadow:0 8px 18px rgba(40,182,205,.18)!important;
+}
+#ccDispatchModal .ccBtn.primary:hover{
+  filter:brightness(1.04)!important;
+}
