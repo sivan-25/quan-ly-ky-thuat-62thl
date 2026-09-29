@@ -1247,3 +1247,84 @@
     line-height:1.15!important;
   }
 }
+
+
+/* ESTA_DEMO_SINGLE_OCEAN_BLUE_SIDEBAR_20260929 */
+/* One flat ocean-blue sidebar across EVERY DEMO module. No page-specific navy/black switching. */
+#app.demoProjectMode{
+  --demo-ocean-sidebar:#124b69;
+  --demo-ocean-sidebar-line:rgba(255,255,255,.10);
+  --demo-ocean-text:#c5d8e4;
+  --demo-ocean-muted:#86a9bc;
+  --demo-ocean-cyan:#35d7e8;
+}
+#app.demoProjectMode .estaSidebar{
+  background:#124b69!important;
+  background-image:none!important;
+  border-right:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:none!important;
+}
+#app.demoProjectMode .estaSidebarBrand{
+  border-bottom-color:var(--demo-ocean-sidebar-line)!important;
+}
+#app.demoProjectMode .estaNav:before{
+  color:#83aabd!important;
+}
+#app.demoProjectMode .estaNav button{
+  border-color:transparent!important;
+  background:transparent!important;
+  color:var(--demo-ocean-text)!important;
+}
+#app.demoProjectMode .estaNav button:hover{
+  border-color:rgba(255,255,255,.08)!important;
+  background:rgba(255,255,255,.06)!important;
+  color:#fff!important;
+}
+#app.demoProjectMode .estaNav button.active{
+  border-color:rgba(74,215,231,.18)!important;
+  background:rgba(255,255,255,.09)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.demoProjectMode .estaNav button.active:before{
+  background:var(--demo-ocean-cyan)!important;
+  box-shadow:0 0 10px rgba(53,215,232,.30)!important;
+}
+#app.demoProjectMode .estaNav button.active svg{
+  color:var(--demo-ocean-cyan)!important;
+}
+#app.demoProjectMode .estaSidebar .sideBackup{
+  border-top-color:var(--demo-ocean-sidebar-line)!important;
+}
+#app.demoProjectMode .estaSidebar .sideBackup button,
+#app.demoProjectMode .sideLogout{
+  border-color:rgba(255,255,255,.11)!important;
+  background:rgba(255,255,255,.045)!important;
+  color:#c1d5e0!important;
+}
+#app.demoProjectMode .estaSidebar .sideBackup button:hover,
+#app.demoProjectMode .sideLogout:hover{
+  background:rgba(255,255,255,.085)!important;
+  color:#fff!important;
+}
+#app.demoProjectMode .estaSidebar .sideBottom{
+  border-top-color:var(--demo-ocean-sidebar-line)!important;
+}
+#app.demoProjectMode .sideUserCard{
+  border-color:rgba(255,255,255,.10)!important;
+  background:rgba(255,255,255,.045)!important;
+}
+#app.demoProjectMode .sideUserCard #sideUser{
+  color:#a9c4d3!important;
+}
+#app.demoProjectMode .sideUserCard #sideUser b{
+  color:#fff!important;
+}
+
+/* Keep the exact same sidebar shade on desktop, tablet and mobile drawers. */
+@media(max-width:1024px){
+  #app.demoProjectMode .estaSidebar{
+    background:#124b69!important;
+    background-image:none!important;
+  }
+}
