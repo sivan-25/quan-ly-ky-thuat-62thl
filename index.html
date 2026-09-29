@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260929-workedit-mobile01">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260929-workrefine02">
 <link rel="stylesheet" href="contractor.css?v=20260928-linkedwork04"><link rel="stylesheet" href="construction.css?v=20260924-2035"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
@@ -578,7 +578,106 @@
     text-size-adjust:100%;
   }
 }
-</style><link rel="stylesheet" href="demo-lab.css?v=20260929-workedit-mobile01"></head><body>
+</style><link rel="stylesheet" href="demo-lab.css?v=20260929-workrefine02">
+<!-- WORK_PAGE_FINAL_CASCADE_FIX_20260929 -->
+<style id="work-page-final-cascade-fix">
+:root{
+  --label-accent:#63d9ea;
+  --label-required:#ff7a72;
+  --work-muted-option:#8997ad;
+  --work-active-option:#f4f8ff;
+}
+
+/* Final cascade layer: these rules must win over the older inline V11.x styles above. */
+#app #workPage #taskForm .workField>span,
+.workEditDrawer #taskForm .workField>span,
+#demoWorkLinks .demoWorkLinkGrid label{
+  color:var(--label-accent)!important;
+  font-weight:760!important;
+}
+#app #workPage #taskForm .requiredField>span:after,
+.workEditDrawer #taskForm .requiredField>span:after{
+  content:" *"!important;
+  color:var(--label-required)!important;
+  font-weight:900!important;
+}
+
+/* Native selects: dropdown rows are muted; the selected/hovered row is clear. */
+#app #workPage #taskForm select option,
+.workEditDrawer #taskForm select option,
+#demoWorkLinks .demoWorkLinkGrid select option{
+  color:var(--work-muted-option)!important;
+  background:#172238!important;
+}
+#app #workPage #taskForm select option:checked,
+.workEditDrawer #taskForm select option:checked,
+#demoWorkLinks .demoWorkLinkGrid select option:checked{
+  color:var(--work-active-option)!important;
+  background:#22314f!important;
+}
+#app #workPage #taskForm select option:hover,
+.workEditDrawer #taskForm select option:hover,
+#demoWorkLinks .demoWorkLinkGrid select option:hover{
+  color:var(--work-active-option)!important;
+  background:#22314f!important;
+}
+
+/* Placeholder-like values. */
+#app #workPage #taskForm .peopleButtonSummary>em,
+.workEditDrawer #taskForm .peopleButtonSummary>em{
+  color:var(--work-muted-option)!important;
+  opacity:.7!important;
+}
+#demoWorkLinks .demoWorkLinkGrid select:has(option[value=""]:checked),
+#demoWorkLinks #demoTaskLinkSummary,
+#demoWorkLinks input::placeholder,
+#demoWorkLinks textarea::placeholder{
+  color:var(--work-muted-option)!important;
+  opacity:.72!important;
+}
+
+/* Custom people dropdown items. */
+#app #workPage .peopleOption,
+.workEditDrawer .peopleOption{
+  color:var(--work-muted-option)!important;
+  opacity:.7!important;
+}
+#app #workPage .peopleOption:hover,
+#app #workPage .peopleOption.selected,
+.workEditDrawer .peopleOption:hover,
+.workEditDrawer .peopleOption.selected{
+  color:var(--work-active-option)!important;
+  opacity:1!important;
+}
+
+/* Requirement: work-content text is regular, not bold. */
+#app #workPage .premiumTableCard .taskContentCell .taskTitle,
+#app #workPage .proTaskCard .taskTitle{
+  font-weight:400!important;
+}
+
+/* Compact count only; no duplicated table title. */
+#app #workPage .premiumTableCard .tableTop.workTableMeta{
+  min-height:42px!important;
+  padding:9px 14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+}
+#app #workPage .premiumTableCard .tableTop.workTableMeta #count{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:24px!important;
+  padding:0 9px!important;
+  border:1px solid rgba(99,217,234,.28)!important;
+  border-radius:999px!important;
+  background:rgba(99,217,234,.08)!important;
+  color:#79cddb!important;
+  font-size:9px!important;
+  font-weight:750!important;
+}
+</style>
+</head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -1993,5 +2092,5 @@
 </div>
 <div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260929-esta-only-report02"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20260928-linkedwork05"></script><script src="construction.js?v=20260924-2255"></script><script src="demo-lab.js?v=20260929-workedit-mobile01"></script></body></html>
+<script src="app.js?v=20260929-workrefine02"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="contractor.js?v=20260928-linkedwork05"></script><script src="construction.js?v=20260924-2255"></script><script src="demo-lab.js?v=20260929-workrefine02"></script></body></html>
