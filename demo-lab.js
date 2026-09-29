@@ -69,6 +69,7 @@ function demoSpecialSearchPlaceholder(name){
 function demoSetProjectMode(){
  const on=demoIs()&&($("#adminPage")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoProjectMode",on);
+ $("#app")?.classList.toggle("demoSampleProject",on&&String(currentBuilding?.id||"")===DEMO_ID);
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
  if(on){demoEnsureWorkPanel();demoLoad().then(()=>{demoPopulateWorkOptions();demoRenderHomeOps();demoEnsureAssetPassport()})}
