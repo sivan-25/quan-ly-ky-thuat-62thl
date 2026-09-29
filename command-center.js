@@ -1,7 +1,7 @@
 (()=>{
 "use strict";
 const ROOT_ID="estaCommandCenter";
-let rows=[],loading=false,lastUpdated="";
+let rows=[],activity=[],loading=false,lastUpdated="";
 const $c=s=>document.querySelector(s);
 const escC=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const todayC=()=>typeof today==="function"?today():new Date().toLocaleDateString("en-CA");
@@ -16,7 +16,7 @@ function ensureRoot(){
  let root=$c("#"+ROOT_ID);
  if(!root){
   root=document.createElement("section");root.id=ROOT_ID;root.className="ccRoot hide";
-  root.innerHTML='<div class="ccHero"><div><span>ESTA · CENTRAL OPERATIONS</span><h2>Trung tâm điều hành đa dự án</h2><p>Theo dõi toàn bộ công việc, cảnh báo và trạng thái vận hành trong một màn hình.</p></div><div class="ccHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary"></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel"><div class="ccPanelHead"><div><span>CÔNG VIỆC TOÀN HỆ THỐNG</span><h3>Tất cả dự án</h3><p id="ccTaskMeta">Đang tải dữ liệu...</p></div></div><div class="ccFilters"><select id="ccProjectFilter"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter"><option value="">Tất cả trạng thái</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option></select><select id="ccPriorityFilter"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th>Dự án</th><th>Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div></section><aside class="ccPanel ccAlertsPanel"><div class="ccPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div></aside></div>';
+  root.innerHTML='<div class="ccHero"><div><span>ESTA · CENTRAL OPERATIONS</span><h2>Trung tâm điều hành đa dự án</h2><p>Theo dõi toàn bộ công việc, cảnh báo và trạng thái vận hành trong một màn hình.</p></div><div class="ccHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary"></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel"><div class="ccPanelHead"><div><span>CÔNG VIỆC TOÀN HỆ THỐNG</span><h3>Tất cả dự án</h3><p id="ccTaskMeta">Đang tải dữ liệu...</p></div></div><div class="ccFilters"><select id="ccProjectFilter"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter"><option value="">Tất cả trạng thái</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option></select><select id="ccPriorityFilter"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th>Dự án</th><th>Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div></section><aside class="ccPanel ccAlertsPanel"><div class="ccPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div></aside></div><section class="ccPanel ccActivityPanel"><div class="ccPanelHead"><div><span>NHẬT KÝ VẬN HÀNH</span><h3>Hoạt động gần đây</h3><p>Lịch sử cập nhật snapshot theo dự án và tài khoản thực hiện.</p></div></div><div id="ccActivityList" class="ccActivityList"></div></section>';
   const anchor=home.querySelector(".homeKpis");if(anchor)anchor.insertAdjacentElement("afterend",root);else home.prepend(root);
   root.querySelector("#ccRefresh").addEventListener("click",()=>loadCenter(true));
   root.querySelector("#ccDispatch").addEventListener("click",openDispatch);
@@ -58,8 +58,18 @@ function renderLists(){
  const ab=$c("#ccAlertList");if(ab)ab.innerHTML=list.length?list.slice(0,50).map(a=>'<button class="ccAlert sev'+a.sev+'" type="button" data-cc-alert data-building="'+escC(a.bid)+'" data-module="'+escC(a.module)+'" data-ref-id="'+escC(a.refId||"")+'" data-task-id="'+escC(a.taskId||"")+'"><i></i><div><span>'+escC(a.bid)+' · '+escC(a.title)+'</span><b>'+escC(a.detail)+'</b><small>'+escC(a.tag||"Cần xử lý")+'</small></div><strong>→</strong></button>').join(""):'<div class="ccEmpty">Không có cảnh báo theo bộ lọc hiện tại.</div>';
  const n=$c("#ccAlertCount");if(n)n.textContent=list.length;
 }
-function renderCenter(){const root=ensureRoot();if(!root||!currentAccount?.is_admin)return;renderFilters();const a=alerts(),t=taskRows();renderSummary(a,t);renderProjects(a);renderLists();if(lastUpdated&&$c("#homeUpdatedAt"))$c("#homeUpdatedAt").textContent="Cập nhật "+new Date(lastUpdated).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}
-async function loadCenter(force=false){if(!currentAccount?.is_admin)return;const root=ensureRoot();if(!root||loading)return;loading=true;root.classList.add("loading");try{const res=await sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession?.access_token,body:{}});rows=Array.isArray(res?.rows)?res.rows:[];lastUpdated=res?.generated_at||new Date().toISOString();renderCenter()}catch(e){console.warn("Admin Command Center failed",e);if($c("#ccAlertList"))$c("#ccAlertList").innerHTML='<div class="ccEmpty">Không tải được dữ liệu. Nhấn Làm mới để thử lại.</div>'}finally{loading=false;root.classList.remove("loading")}}
+
+function renderActivity(){
+ const box=$c("#ccActivityList");if(!box)return;
+ const ids=activeIds();
+ const list=(activity||[]).filter(x=>ids.has(String(x.building_id||""))).slice(0,16);
+ box.innerHTML=list.length?list.map(x=>{
+   const when=x.saved_at?new Date(x.saved_at).toLocaleString("vi-VN",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
+   return '<button type="button" class="ccActivity" data-cc-project="'+escC(x.building_id)+'"><span class="ccActivityDot"></span><div><b>'+escC(x.building_id)+' · Cập nhật dữ liệu dự án</b><small>'+escC(x.actor||"Tài khoản dự án")+' · '+escC(when)+'</small></div><em>'+Number(x.task_count||0)+' CV</em></button>';
+ }).join(""):'<div class="ccEmpty">Chưa có lịch sử cập nhật.</div>';
+}
+function renderCenter(){const root=ensureRoot();if(!root||!currentAccount?.is_admin)return;renderFilters();const a=alerts(),t=taskRows();renderSummary(a,t);renderProjects(a);renderLists();renderActivity();if(lastUpdated&&$c("#homeUpdatedAt"))$c("#homeUpdatedAt").textContent="Cập nhật "+new Date(lastUpdated).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}
+async function loadCenter(force=false){if(!currentAccount?.is_admin)return;const root=ensureRoot();if(!root||loading)return;loading=true;root.classList.add("loading");try{const res=await sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession?.access_token,body:{}});rows=Array.isArray(res?.rows)?res.rows:[];activity=Array.isArray(res?.activity)?res.activity:[];lastUpdated=res?.generated_at||new Date().toISOString();renderCenter()}catch(e){console.warn("Admin Command Center failed",e);if($c("#ccAlertList"))$c("#ccAlertList").innerHTML='<div class="ccEmpty">Không tải được dữ liệu. Nhấn Làm mới để thử lại.</div>'}finally{loading=false;root.classList.remove("loading")}}
 async function openProject(id){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(id));if(b)await enterProject(b,{target:"work"})}
 async function openTask(buildingId,taskId){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;await enterProject(b,{target:"work"});const n=Number(taskId);setTimeout(()=>{if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)},120)}
 async function openAlert(buildingId,module,refId,taskId){if(module==="work")return openTask(buildingId,taskId);const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;await enterProject(b,{target:"work"});if(typeof showModule==="function")showModule(module);setTimeout(()=>{if(module==="incident"&&refId&&typeof window.demoSelectIncident==="function")window.demoSelectIncident(refId);if(module==="inspection"&&refId&&typeof window.demoSelectInspection==="function")window.demoSelectInspection(refId)},120)}
@@ -76,8 +86,62 @@ async function submitDispatch(e){
  const btn=m.querySelector("#ccDispatchSave");btn.disabled=true;const base=Date.now(),group="DG-"+base.toString(36).toUpperCase();
  try{const results=await Promise.allSettled(targets.map((buildingId,i)=>{const obj={id:base+i,d:start,c:title,t:m.querySelector("#ccDispatchType").value,s:"Đang thực hiện",n:m.querySelector("#ccDispatchNote").value.trim(),a:assignee,performers:[assignee],imgs:[],i:0,priority:m.querySelector("#ccDispatchPriority").value,dueDate:due,assetId:"",incidentCode:"",inspectionCode:"",contractorId:"",materials:[],cause:"",result:"",dispatchGroupId:group,dispatchedByAdmin:true,dispatchedAt:new Date().toISOString()};return syncTaskRecord("upsert_task",obj,buildingId)}));const ok=results.filter(x=>x.status==="fulfilled").length,fail=results.length-ok;if(!ok)throw new Error("Không thể giao công việc xuống dự án");closeDispatch();toast(fail?"Đã giao "+ok+" dự án · "+fail+" dự án chưa đồng bộ":"Đã giao công việc xuống "+ok+" dự án");m.querySelector("#ccDispatchForm").reset();await loadCenter(true)}catch(err){console.warn(err);toast(err?.message||"Không thể giao công việc")}finally{btn.disabled=false}
 }
+
+let navAlertSeq=0,navAlertTimer=0;
+const navBadgeIds=["navWork","navIncident","navInspection","navInventory","navMaintenance","navContractor"];
+function clearNavBadges(){navBadgeIds.forEach(id=>{const b=$c("#"+id+" .ccNavBadge");if(b)b.remove()})}
+function setNavBadge(id,count,level="normal"){
+ const btn=$c("#"+id);if(!btn)return;
+ let badge=btn.querySelector(".ccNavBadge");
+ if(!count){badge?.remove();return}
+ if(!badge){badge=document.createElement("b");badge.className="ccNavBadge";btn.appendChild(badge)}
+ badge.textContent=count>99?"99+":String(count);
+ badge.className="ccNavBadge "+level;
+ badge.title=count+" cảnh báo cần chú ý";
+}
+function scheduleNavAlerts(delay=90){clearTimeout(navAlertTimer);navAlertTimer=setTimeout(updateProjectNavAlerts,delay)}
+async function updateProjectNavAlerts(){
+ const bid=String(currentBuilding?.id||"");
+ if(!bid||!centralSession?.access_token||$c("#navWork")?.classList.contains("hide")){clearNavBadges();return}
+ const seq=++navAlertSeq,b=encodeURIComponent(bid),td=todayC(),future=new Date(td+"T00:00:00");future.setDate(future.getDate()+7);const soon=future.toLocaleDateString("en-CA");
+ try{
+  const [incidents,inspections,assets,materials,tx,jobs]=await Promise.all([
+   sbFetch("/rest/v1/incidents?building_id=eq."+b+"&select=id,severity,status",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/inspections?building_id=eq."+b+"&select=id,result_status",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/maintenance_assets?building_id=eq."+b+"&select=id,status,next_due_date",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/inventory_materials?building_id=eq."+b+"&select=id,min_qty,opening_qty",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/inventory_material_transactions?building_id=eq."+b+"&select=material_id,tx_type,qty",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/contractor_jobs?building_id=eq."+b+"&select=id,status",{token:centralSession.access_token})
+  ]);
+  if(seq!==navAlertSeq||String(currentBuilding?.id||"")!==bid)return;
+  const tasks=typeof load==="function"?load():[];
+  const work=tasks.filter(t=>!isDone(t)&&((t.dueDate&&String(t.dueDate)<=td)||priorityRank(t.priority)>=3)).length;
+  const incident=(incidents||[]).filter(x=>x.status!=="Đã đóng"&&(x.severity==="Cao"||x.severity==="Khẩn cấp")).length;
+  const inspection=(inspections||[]).filter(x=>x.result_status&&x.result_status!=="Đạt").length;
+  const maintenance=(assets||[]).filter(x=>x.status==="Hỏng"||(x.next_due_date&&String(x.next_due_date)<=soon)).length;
+  const qty=new Map((materials||[]).map(m=>[String(m.id),Number(m.opening_qty||0)]));
+  (tx||[]).forEach(x=>qty.set(String(x.material_id),(qty.get(String(x.material_id))||0)+(x.tx_type==="in"?1:-1)*Number(x.qty||0)));
+  const inventory=(materials||[]).filter(m=>Number(m.min_qty||0)>0&&(qty.get(String(m.id))||0)<=Number(m.min_qty||0)).length;
+  const contractor=(jobs||[]).filter(x=>x.status==="Chờ xử lý"||x.status==="Tạm dừng").length;
+  setNavBadge("navWork",work,work?"high":"normal");
+  setNavBadge("navIncident",incident,incident?"critical":"normal");
+  setNavBadge("navInspection",inspection,inspection?"high":"normal");
+  setNavBadge("navMaintenance",maintenance,maintenance?"critical":"normal");
+  setNavBadge("navInventory",inventory,inventory?"high":"normal");
+  setNavBadge("navContractor",contractor,contractor?"normal":"normal");
+ }catch(e){console.warn("Project alert badges failed",e)}
+}
+
+const baseShowModuleAlerts=showModule;
+showModule=function(name){const r=baseShowModuleAlerts.apply(this,arguments);scheduleNavAlerts();return r};
+const baseApplyBuildingUIAlerts=applyBuildingUI;
+applyBuildingUI=function(){const r=baseApplyBuildingUIAlerts.apply(this,arguments);scheduleNavAlerts();return r};
+const baseTaskRenderAlerts=render;
+render=function(){const r=baseTaskRenderAlerts.apply(this,arguments);scheduleNavAlerts();return r};
+setInterval(()=>{if(!document.hidden)scheduleNavAlerts(0)},60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)scheduleNavAlerts(0)});
 const baseRender=renderHomeDashboard;
 renderHomeDashboard=function(){const result=baseRender.apply(this,arguments);if(currentAccount?.is_admin&&!$c("#homePage")?.classList.contains("hide"))setTimeout(()=>loadCenter(false),30);else $c("#"+ROOT_ID)?.classList.add("hide");return result};
 window.estaCommandCenterRefresh=()=>loadCenter(true);
-setTimeout(()=>{ensureRoot();if(currentAccount?.is_admin&&!$c("#homePage")?.classList.contains("hide"))loadCenter(true)},650);
+setTimeout(()=>{ensureRoot();scheduleNavAlerts(0);if(currentAccount?.is_admin&&!$c("#homePage")?.classList.contains("hide"))loadCenter(true)},650);
 })();
