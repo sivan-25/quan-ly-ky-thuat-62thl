@@ -428,20 +428,34 @@ function demoDecorateWork(){
   if(foot&&!foot.querySelector(".demoViewTask"))foot.insertAdjacentHTML("beforeend",'<button class="demoViewTask" type="button" onclick="demoOpenTaskDrawer('+x.id+')">Hồ sơ liên kết</button>');
  });
 }
+window.demoSelectTaskTab=tab=>{
+ const dr=$("#demoTaskDrawer");if(!dr)return;
+ dr.querySelectorAll("[data-demo-task-tab]").forEach(btn=>btn.classList.toggle("active",btn.dataset.demoTaskTab===tab));
+ dr.querySelectorAll("[data-demo-task-panel]").forEach(panel=>panel.classList.toggle("active",panel.dataset.demoTaskPanel===tab));
+};
 window.demoOpenTaskDrawer=id=>{
  const x=load().find(y=>String(y.id)===String(id));if(!x)return;
  let dr=$("#demoTaskDrawer");
  if(!dr){dr=document.createElement("div");dr.id="demoTaskDrawer";dr.className="demoDrawer hide";document.body.appendChild(dr)}
  const asset=demoAsset(x.assetId),con=demoContractor(x.contractorId);
+ const inc=x.incidentCode?demoCache.incidents.find(v=>String(v.incident_code)===String(x.incidentCode)):null;
+ const materialRows=(x.materials||[]).map(m=>'<div class="demoTaskCostRow"><span>'+esc(m.name||"Vật tư")+'</span><b>'+esc(m.qty||0)+' '+esc(m.unit||"")+'</b></div>').join("");
+ const imageRows=(x.imgs||[]).map((ref,i)=>'<button type="button" class="demoTaskImage" onclick="viewImages('+x.id+')">'+mediaImgHtml(ref,"demoTaskImagePhoto")+'<span>Hình '+(i+1)+'</span></button>').join("");
+ const linkedActions=[
+  asset?'<button class="demoBtn" type="button" onclick="document.querySelector(\'#demoTaskDrawer\').classList.add(\'hide\');showModule(\'maintenance\')">Mở thiết bị</button>':"",
+  x.incidentCode?'<button class="demoBtn" type="button" onclick="document.querySelector(\'#demoTaskDrawer\').classList.add(\'hide\');showModule(\'incident\')">Mở sự cố</button>':"",
+  x.inspectionCode?'<button class="demoBtn" type="button" onclick="document.querySelector(\'#demoTaskDrawer\').classList.add(\'hide\');showModule(\'inspection\')">Mở checklist</button>':"",
+  con?'<button class="demoBtn" type="button" onclick="document.querySelector(\'#demoTaskDrawer\').classList.add(\'hide\');showModule(\'contractor\')">Mở nhà thầu</button>':""
+ ].filter(Boolean).join("");
  dr.innerHTML='<div class="demoDrawerCard"><div class="demoDrawerHead"><div><span class="demoPill blue">CV-'+esc(String(x.id).slice(-6))+'</span><h2>'+esc(x.c)+'</h2></div><button class="demoDrawerClose" onclick="document.querySelector(\'#demoTaskDrawer\').classList.add(\'hide\')">×</button></div>'+
- '<div class="demoTabs"><button class="active">Thông tin</button><button>Liên kết</button><button>Vật tư & chi phí</button><button>Hình ảnh</button><button>Nhật ký</button></div>'+
- '<div class="demoTaskDetailGrid"><div><small>Trạng thái</small><b>'+esc(x.s)+'</b></div><div><small>Ưu tiên</small><b>'+esc(x.priority||"Trung bình")+'</b></div><div><small>Bắt đầu</small><b>'+esc(x.d)+'</b></div><div><small>Hạn hoàn thành</small><b>'+esc(x.dueDate||x.d)+'</b></div><div><small>Người thực hiện</small><b>'+esc(x.a||"—")+'</b></div><div><small>Loại</small><b>'+esc(x.t||"Hằng ngày")+'</b></div></div>'+
- '<div class="demoDetailSection"><span>LIÊN KẾT CHUẨN</span><p>Thiết bị: <strong>'+esc(asset?asset.code+" · "+asset.name:"—")+'</strong><br>Sự cố: <strong>'+esc(x.incidentCode||"—")+'</strong><br>Checklist: <strong>'+esc(x.inspectionCode||"—")+'</strong><br>Nhà thầu: <strong>'+esc(con?.name||"—")+'</strong></p></div>'+
- '<div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div>'+
- '<div class="demoDetailSection"><span>VẬT TƯ</span><p>'+((x.materials||[]).map(m=>esc(m.name)+" × "+esc(m.qty)+" "+esc(m.unit||"")).join("<br>")||"—")+'</p></div>'+
- '<div class="demoDetailSection"><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div>'+
- '<div class="demoDetailSection"><span>NHẬT KÝ</span><div class="demoTimeline"><div><i></i><span><b>Tạo / cập nhật công việc</b><br>'+esc(x.d)+'</span></div>'+(x.completedAt?'<div><i></i><span><b>Hoàn thành</b><br>'+esc(new Date(x.completedAt).toLocaleString("vi-VN"))+'</span></div>':"")+'</div></div></div>';
+ '<div class="demoTabs demoTaskTabs"><button type="button" class="active" data-demo-task-tab="info" onclick="demoSelectTaskTab(\'info\')">Thông tin</button><button type="button" data-demo-task-tab="links" onclick="demoSelectTaskTab(\'links\')">Liên kết</button><button type="button" data-demo-task-tab="cost" onclick="demoSelectTaskTab(\'cost\')">Vật tư & chi phí</button><button type="button" data-demo-task-tab="images" onclick="demoSelectTaskTab(\'images\')">Hình ảnh'+((x.imgs||[]).length?' ('+(x.imgs||[]).length+')':'')+'</button><button type="button" data-demo-task-tab="log" onclick="demoSelectTaskTab(\'log\')">Nhật ký</button></div>'+
+ '<div class="demoTaskTabPanel active" data-demo-task-panel="info"><div class="demoTaskDetailGrid"><div><small>Trạng thái</small><b>'+esc(x.s)+'</b></div><div><small>Ưu tiên</small><b>'+esc(x.priority||"Trung bình")+'</b></div><div><small>Bắt đầu</small><b>'+esc(x.d)+'</b></div><div><small>Hạn hoàn thành</small><b>'+esc(x.dueDate||x.d)+'</b></div><div><small>Người thực hiện</small><b>'+esc(x.a||"—")+'</b></div><div><small>Loại</small><b>'+esc(x.t||"Hằng ngày")+'</b></div></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div></div>'+
+ '<div class="demoTaskTabPanel" data-demo-task-panel="links"><div class="demoTaskLinkCards"><div><small>Thiết bị</small><b>'+esc(asset?asset.code+" · "+asset.name:"—")+'</b></div><div><small>Sự cố / Defect</small><b>'+esc(x.incidentCode||"—")+'</b></div><div><small>Checklist</small><b>'+esc(x.inspectionCode||"—")+'</b></div><div><small>Nhà thầu</small><b>'+esc(con?.name||"—")+'</b></div></div><div class="demoTaskTabActions">'+(linkedActions||'<span class="demoTaskEmpty">Chưa có liên kết để mở.</span>')+'</div></div>'+
+ '<div class="demoTaskTabPanel" data-demo-task-panel="cost"><div class="demoDetailSection"><span>VẬT TƯ ĐÃ SỬ DỤNG</span><div class="demoTaskCostList">'+(materialRows||'<div class="demoTaskEmpty">Chưa ghi nhận vật tư.</div>')+'</div></div><div class="demoDetailSection"><span>CHI PHÍ</span><p>'+(inc&&Number(inc.cost||0)>0?Number(inc.cost||0).toLocaleString("vi-VN")+'đ · Theo sự cố '+esc(inc.incident_code):'Chưa ghi nhận chi phí.')+'</p></div></div>'+
+ '<div class="demoTaskTabPanel" data-demo-task-panel="images"><div class="demoTaskImageGrid">'+(imageRows||'<div class="demoTaskEmpty">Công việc này chưa có hình ảnh.</div>')+'</div></div>'+
+ '<div class="demoTaskTabPanel" data-demo-task-panel="log"><div class="demoTimeline"><div><i></i><span><b>Tạo / cập nhật công việc</b><br>'+esc(x.d)+'</span></div>'+(x.completedAt?'<div><i></i><span><b>Hoàn thành</b><br>'+esc(new Date(x.completedAt).toLocaleString("vi-VN"))+'</span></div>':'')+'</div></div></div>';
  dr.classList.remove("hide");
+ hydrateMediaImages(dr);
 };
 
 async function demoRenderHomeOps(){
