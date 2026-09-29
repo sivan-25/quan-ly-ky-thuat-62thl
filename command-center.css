@@ -347,3 +347,430 @@ html,body,body *{font-family:"Inter",sans-serif!important}
     box-shadow:0 5px 16px rgba(29,58,77,.04)!important;
   }
 }
+
+
+/* ESTA_ADMIN_DEMO_DARK_NO_HORIZONTAL_SCROLL_20260929 */
+/* Admin overview inherits the dark DEMO visual language and never requires horizontal table scrolling. */
+#app.adminCommandHome.homeMode{
+  --admin-demo-bg:#0d1422;
+  --admin-demo-panel:#11192a;
+  --admin-demo-panel-2:#141f32;
+  --admin-demo-panel-3:#18243a;
+  --admin-demo-border:#29364e;
+  --admin-demo-border-soft:#243149;
+  --admin-demo-text:#eef4fb;
+  --admin-demo-muted:#94a5ba;
+  --admin-demo-muted-2:#71849d;
+  --admin-demo-cyan:#62dbea;
+  --admin-demo-blue:#6fb5ff;
+  --admin-demo-green:#67ddb2;
+  --admin-demo-amber:#ffbd64;
+  --admin-demo-red:#ff8d98;
+}
+
+/* Entire Admin overview canvas */
+#app.adminCommandHome.homeMode main{
+  min-width:0!important;
+  background:var(--admin-demo-bg)!important;
+}
+#app.adminCommandHome.homeMode .homeDashboard{
+  background:var(--admin-demo-bg)!important;
+}
+#app.adminCommandHome.homeMode .estaTopbar{
+  border-bottom:1px solid #223149!important;
+  background:#0b1322!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
+}
+#app.adminCommandHome.homeMode .topModuleTitle h1,
+#app.adminCommandHome.homeMode .topModuleTitle p,
+#app.adminCommandHome.homeMode .account b,
+#app.adminCommandHome.homeMode .account span{
+  color:var(--admin-demo-text)!important;
+}
+#app.adminCommandHome.homeMode .topModuleTitle p,
+#app.adminCommandHome.homeMode .account span{
+  color:var(--admin-demo-muted)!important;
+}
+#app.adminCommandHome.homeMode .topModuleIcon{
+  border:1px solid #30415d!important;
+  background:#172238!important;
+  color:var(--admin-demo-cyan)!important;
+}
+#app.adminCommandHome.homeMode .headerSearch{
+  border-color:#34425e!important;
+  background:#121c30!important;
+  color:#dce6f5!important;
+}
+#app.adminCommandHome.homeMode .headerSearch input{
+  color:#eef4fb!important;
+}
+#app.adminCommandHome.homeMode .headerSearch input::placeholder{
+  color:#7f91a9!important;
+}
+#app.adminCommandHome.homeMode .iconAction,
+#app.adminCommandHome.homeMode .pdfAction,
+#app.adminCommandHome.homeMode .headerBell{
+  border-color:#34425e!important;
+  background:#172238!important;
+  color:#dce6f5!important;
+}
+
+/* Top Admin hero */
+#app.adminCommandHome.homeMode .homeWelcome{
+  border-color:#29364e!important;
+  background:
+    radial-gradient(circle at 80% 24%,rgba(36,166,190,.13),transparent 27%),
+    linear-gradient(120deg,#101a2d 0%,#12263a 58%,#11364a 100%)!important;
+  color:#fff!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.18)!important;
+}
+#app.adminCommandHome.homeMode .homeWelcome:before{
+  opacity:.35!important;
+}
+#app.adminCommandHome.homeMode .homeEyebrow{
+  color:#78e7f4!important;
+}
+#app.adminCommandHome.homeMode .homeWelcome h1{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .homeWelcome p{
+  color:#b5c4d6!important;
+}
+#app.adminCommandHome.homeMode .unifiedCommandIcon{
+  border-color:#34445e!important;
+  background:#172238!important;
+  color:#67dbe9!important;
+}
+
+/* Original Admin KPIs */
+#app.adminCommandHome.homeMode .kpiCard{
+  border-color:#29364e!important;
+  background:#111a2c!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.12)!important;
+}
+#app.adminCommandHome.homeMode .kpiCard small{
+  color:#aebdd0!important;
+}
+#app.adminCommandHome.homeMode .kpiCard strong{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .kpiCard>div:last-child>span{
+  color:#71849d!important;
+}
+#app.adminCommandHome.homeMode .kpiIcon{
+  border:1px solid #30405a!important;
+  background:#18263e!important;
+}
+#app.adminCommandHome.homeMode .kpiBlue .kpiIcon{color:#64ddec!important}
+#app.adminCommandHome.homeMode .kpiAmber .kpiIcon{color:#ffbd64!important}
+#app.adminCommandHome.homeMode .kpiGreen .kpiIcon{color:#67ddb2!important}
+#app.adminCommandHome.homeMode .kpiRed .kpiIcon{color:#ff8d98!important}
+
+/* Any legacy overview panels visible below the command center */
+#app.adminCommandHome.homeMode .homePanel{
+  border-color:#29364e!important;
+  background:#11192a!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.12)!important;
+}
+#app.adminCommandHome.homeMode .homePanelHead{
+  border-bottom-color:#27344c!important;
+  background:#11192a!important;
+}
+#app.adminCommandHome.homeMode .homePanelHead h2{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .homePanelHead p,
+#app.adminCommandHome.homeMode .panelKicker{
+  color:#8fa1b7!important;
+}
+#app.adminCommandHome.homeMode .homePanelHead>button{
+  border-color:#34425e!important;
+  background:#172238!important;
+  color:#dce6f5!important;
+}
+
+/* Project-linked DEMO block */
+#app.adminCommandHome.homeMode #demoHomeOps .demoPanel,
+#app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard,
+#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert{
+  border-color:#29364e!important;
+  background:#141f32!important;
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead{
+  border-bottom-color:#27344c!important;
+  background:#11192a!important;
+}
+#app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead h2,
+#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert b{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead p,
+#app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard span,
+#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert span{
+  color:#94a5ba!important;
+}
+#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert:hover{
+  border-color:#3b516d!important;
+  background:#18263d!important;
+}
+
+/* Admin Command Center */
+#app.adminCommandHome.homeMode .ccHero{
+  border-color:#2b4057!important;
+  background:linear-gradient(135deg,#10253b 0%,#113c50 100%)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.16)!important;
+}
+#app.adminCommandHome.homeMode .ccHero span,
+#app.adminCommandHome.homeMode .ccPanelHead span{
+  color:#73d9e8!important;
+}
+#app.adminCommandHome.homeMode .ccHero h2{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .ccHero p{
+  color:#b5c4d6!important;
+}
+#app.adminCommandHome.homeMode .ccBtn.primary{
+  border-color:#62dbea!important;
+  background:#62dbea!important;
+  color:#10263a!important;
+}
+#app.adminCommandHome.homeMode .ccBtn.ghost{
+  border-color:#3b5168!important;
+  background:#172238!important;
+  color:#e8f1f8!important;
+}
+
+/* Summary + project cards */
+#app.adminCommandHome.homeMode .ccSummary article,
+#app.adminCommandHome.homeMode .ccProjectCard{
+  border-color:#29364e!important;
+  background:#111a2c!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.10)!important;
+}
+#app.adminCommandHome.homeMode .ccSummary span,
+#app.adminCommandHome.homeMode .ccSummary small,
+#app.adminCommandHome.homeMode .ccProjectCard>div>span{
+  color:#8fa1b7!important;
+}
+#app.adminCommandHome.homeMode .ccSummary b,
+#app.adminCommandHome.homeMode .ccProjectCard h3{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .ccSummary .warn b{color:#ffbd64!important}
+#app.adminCommandHome.homeMode .ccSummary .danger b{color:#ff8d98!important}
+#app.adminCommandHome.homeMode .ccProjectCard>i{color:#62dbea!important}
+#app.adminCommandHome.homeMode .ccProjectStats span{
+  background:#18243a!important;
+  color:#91a4bc!important;
+}
+#app.adminCommandHome.homeMode .ccProjectStats b{
+  color:#dce6f5!important;
+}
+#app.adminCommandHome.homeMode .ccProjectStats .hot{
+  background:#2b1c2a!important;
+  color:#ff8d98!important;
+}
+#app.adminCommandHome.homeMode .ccProjectStats .hot b{color:#ff8d98!important}
+
+/* Main panels */
+#app.adminCommandHome.homeMode .ccPanel{
+  border-color:#29364e!important;
+  background:#11192a!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.12)!important;
+}
+#app.adminCommandHome.homeMode .ccPanelHead{
+  border-bottom-color:#27344c!important;
+  background:#11192a!important;
+}
+#app.adminCommandHome.homeMode .ccPanelHead h3{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .ccPanelHead p{
+  color:#8fa1b7!important;
+}
+
+/* Filters */
+#app.adminCommandHome.homeMode .ccFilters{
+  border-bottom-color:#263149!important;
+  background:#141f32!important;
+}
+#app.adminCommandHome.homeMode .ccFilters select,
+#app.adminCommandHome.homeMode .ccFilters input{
+  border-color:#34425e!important;
+  background:#172238!important;
+  color:#eef3fb!important;
+}
+#app.adminCommandHome.homeMode .ccFilters input::placeholder{
+  color:#8496ad!important;
+}
+#app.adminCommandHome.homeMode .ccFilters select:focus,
+#app.adminCommandHome.homeMode .ccFilters input:focus{
+  border-color:#62dbea!important;
+  box-shadow:0 0 0 3px rgba(98,219,234,.08)!important;
+}
+
+/* No horizontal scrollbar: fit the entire seven-column table into its panel. */
+#app.adminCommandHome.homeMode .ccTableWrap{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  background:#11192a!important;
+}
+#app.adminCommandHome.homeMode .ccTable{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  table-layout:fixed!important;
+  border-collapse:collapse!important;
+}
+#app.adminCommandHome.homeMode .ccTable th,
+#app.adminCommandHome.homeMode .ccTable td{
+  min-width:0!important;
+  max-width:none!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  white-space:normal!important;
+}
+#app.adminCommandHome.homeMode .ccTable th:nth-child(1),
+#app.adminCommandHome.homeMode .ccTable td:nth-child(1){width:9%!important}
+#app.adminCommandHome.homeMode .ccTable th:nth-child(2),
+#app.adminCommandHome.homeMode .ccTable td:nth-child(2){width:31%!important}
+#app.adminCommandHome.homeMode .ccTable th:nth-child(3),
+#app.adminCommandHome.homeMode .ccTable td:nth-child(3){width:11%!important}
+#app.adminCommandHome.homeMode .ccTable th:nth-child(4),
+#app.adminCommandHome.homeMode .ccTable td:nth-child(4){width:9%!important}
+#app.adminCommandHome.homeMode .ccTable th:nth-child(5),
+#app.adminCommandHome.homeMode .ccTable td:nth-child(5){width:14%!important}
+#app.adminCommandHome.homeMode .ccTable th:nth-child(6),
+#app.adminCommandHome.homeMode .ccTable td:nth-child(6){width:9%!important}
+#app.adminCommandHome.homeMode .ccTable th:nth-child(7),
+#app.adminCommandHome.homeMode .ccTable td:nth-child(7){width:17%!important}
+
+#app.adminCommandHome.homeMode .ccTable th{
+  border-bottom-color:#31405a!important;
+  background:#18243a!important;
+  color:#aebed1!important;
+}
+#app.adminCommandHome.homeMode .ccTable td{
+  border-bottom-color:#263149!important;
+  background:#11192a!important;
+  color:#dce6f0!important;
+}
+#app.adminCommandHome.homeMode .ccTable tr[data-cc-task]:hover td{
+  background:#151f33!important;
+}
+#app.adminCommandHome.homeMode .ccTable td:nth-child(2)b{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .ccTable td:first-child small,
+#app.adminCommandHome.homeMode .ccTable td:nth-child(2) small{
+  color:#7e90a7!important;
+}
+#app.adminCommandHome.homeMode .ccProjectTag{
+  background:#152b49!important;
+  color:#6fb5ff!important;
+}
+
+/* Dark badges */
+#app.adminCommandHome.homeMode .ccStatus.doing{background:#152b49!important;color:#6fb5ff!important}
+#app.adminCommandHome.homeMode .ccStatus.waiting{background:#2d2619!important;color:#ffbd64!important}
+#app.adminCommandHome.homeMode .ccStatus.done{background:#142c28!important;color:#67ddb2!important}
+#app.adminCommandHome.homeMode .ccPriority.p4,
+#app.adminCommandHome.homeMode .ccWarn.critical{background:#2b1c2a!important;color:#ff8d98!important}
+#app.adminCommandHome.homeMode .ccPriority.p3,
+#app.adminCommandHome.homeMode .ccWarn.high{background:#2d2619!important;color:#ffbd64!important}
+#app.adminCommandHome.homeMode .ccPriority.p2{background:#152b49!important;color:#84bdf5!important}
+#app.adminCommandHome.homeMode .ccPriority.p1,
+#app.adminCommandHome.homeMode .ccWarn.ok{background:#18243a!important;color:#9eafc2!important}
+
+/* Right alert column */
+#app.adminCommandHome.homeMode .ccAlertsPanel,
+#app.adminCommandHome.homeMode .ccAlertList{
+  background:#101a2c!important;
+}
+#app.adminCommandHome.homeMode .ccAlertCount{
+  background:#2b1c2a!important;
+  color:#ff8d98!important;
+}
+#app.adminCommandHome.homeMode .ccAlert{
+  border-bottom-color:#263149!important;
+  background:#11192a!important;
+}
+#app.adminCommandHome.homeMode .ccAlert:hover{
+  background:#151f33!important;
+}
+#app.adminCommandHome.homeMode .ccAlert span{
+  color:#8fa1b7!important;
+}
+#app.adminCommandHome.homeMode .ccAlert b{
+  color:#fff!important;
+}
+#app.adminCommandHome.homeMode .ccAlert small{
+  background:#18243a!important;
+  color:#9aabbd!important;
+}
+#app.adminCommandHome.homeMode .ccAlert strong{
+  color:#62dbea!important;
+}
+
+/* Activity log */
+#app.adminCommandHome.homeMode .ccActivityPanel,
+#app.adminCommandHome.homeMode .ccActivityList,
+#app.adminCommandHome.homeMode .ccActivity{
+  background:#11192a!important;
+}
+#app.adminCommandHome.homeMode .ccActivity{
+  border-right-color:#263149!important;
+  border-bottom-color:#263149!important;
+}
+#app.adminCommandHome.homeMode .ccActivity:hover{
+  background:#151f33!important;
+}
+#app.adminCommandHome.homeMode .ccActivity b{
+  color:#eef4fb!important;
+}
+#app.adminCommandHome.homeMode .ccActivity small{
+  color:#8fa1b7!important;
+}
+#app.adminCommandHome.homeMode .ccActivity em{
+  background:#18243a!important;
+  color:#9aabbd!important;
+}
+
+/* Prevent any child from widening the admin home canvas. */
+#app.adminCommandHome.homeMode .homeDashboard,
+#app.adminCommandHome.homeMode .ccRoot,
+#app.adminCommandHome.homeMode .ccWorkspace,
+#app.adminCommandHome.homeMode .ccPanel,
+#app.adminCommandHome.homeMode .ccTableWrap{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+
+/* Desktop proportion remains about 76/24. */
+@media(min-width:1101px){
+  #app.adminCommandHome.homeMode .ccWorkspace{
+    grid-template-columns:minmax(0,76fr) minmax(260px,24fr)!important;
+  }
+}
+
+/* On narrower screens, still no horizontal table scrolling. */
+@media(max-width:1100px){
+  #app.adminCommandHome.homeMode .ccTable{
+    table-layout:fixed!important;
+    min-width:0!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable th,
+  #app.adminCommandHome.homeMode .ccTable td{
+    padding-left:6px!important;
+    padding-right:6px!important;
+    font-size:9px!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable td:nth-child(2)b{
+    font-size:10.5px!important;
+  }
+}
