@@ -9769,3 +9769,136 @@ body.workEditOpen{overflow:hidden!important}
     min-height:44px;
   }
 }
+
+
+/* WORK_EDIT_CENTER_MODAL_DEMO_STYLE_20260929 */
+@media (min-width:761px){
+  /* Chế độ chỉnh sửa công việc: hiển thị như modal demo, không dùng panel trượt bên phải. */
+  .workEditDrawer{
+    align-items:center!important;
+    justify-content:center!important;
+    padding:28px!important;
+    background:rgba(2,8,18,.72)!important;
+    backdrop-filter:blur(5px)!important;
+  }
+  .workEditDrawerBackdrop{
+    display:block!important;
+    position:absolute!important;
+    inset:0!important;
+  }
+  .workEditDrawerCard{
+    width:min(940px,94vw)!important;
+    height:auto!important;
+    max-height:min(90dvh,860px)!important;
+    border:1px solid #31415e!important;
+    border-radius:20px!important;
+    background:#0f182a!important;
+    box-shadow:0 28px 90px rgba(0,0,0,.58)!important;
+  }
+  .workEditDrawerHead{
+    padding:22px 26px 18px!important;
+    border-bottom:1px solid #26344e!important;
+    background:linear-gradient(180deg,#121d31 0%,#0f182a 100%)!important;
+  }
+  .workEditDrawerHead span{
+    margin-bottom:7px!important;
+    color:#31def1!important;
+    font-size:10px!important;
+    letter-spacing:1.55px!important;
+  }
+  .workEditDrawerHead h2{
+    font-size:28px!important;
+    letter-spacing:-.35px!important;
+  }
+  .workEditDrawerHead p{
+    margin-top:7px!important;
+    max-width:650px!important;
+    font-size:12px!important;
+    line-height:1.55!important;
+  }
+  #closeWorkEditDrawer{
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
+    border-radius:12px!important;
+    font-size:25px!important;
+  }
+  .workEditDrawerMount{
+    padding:0!important;
+    overflow:auto!important;
+  }
+  .workEditDrawer .workEntryCard{
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+  }
+  /* Header bên trong form bị lặp khi đã có header modal ở trên. */
+  .workEditDrawer .workEntryHeader{
+    display:none!important;
+  }
+  .workEditDrawer #taskForm.workEntryForm{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:14px 12px!important;
+    padding:20px 24px 16px!important;
+  }
+  .workEditDrawer #taskForm .workDate{grid-column:span 1!important}
+  .workEditDrawer #taskForm .workContent{grid-column:span 2!important}
+  .workEditDrawer #taskForm .workType{grid-column:span 1!important}
+  .workEditDrawer #taskForm .workStatus{grid-column:span 1!important}
+  .workEditDrawer #taskForm .workPerformer{grid-column:span 1!important}
+  .workEditDrawer #taskForm .workNote{grid-column:span 2!important}
+  .workEditDrawer #taskForm .workImage{grid-column:span 1!important}
+  .workEditDrawer #taskForm .workField>span{
+    margin-bottom:7px!important;
+    font-size:12px!important;
+    font-weight:750!important;
+  }
+  .workEditDrawer #taskForm input:not([type="hidden"]),
+  .workEditDrawer #taskForm select,
+  .workEditDrawer #taskForm textarea,
+  .workEditDrawer #taskForm .peopleSelectBtn{
+    min-height:48px!important;
+    padding-left:13px!important;
+    padding-right:13px!important;
+    border-color:#34445f!important;
+    border-radius:11px!important;
+    background:#172239!important;
+    font-size:13px!important;
+  }
+  .workEditDrawer #taskForm input:not([type="hidden"]):focus,
+  .workEditDrawer #taskForm select:focus,
+  .workEditDrawer #taskForm textarea:focus,
+  .workEditDrawer #taskForm .peopleSelectBtn:focus{
+    border-color:#22c8e5!important;
+    box-shadow:0 0 0 3px rgba(34,200,229,.10)!important;
+    outline:0!important;
+  }
+  .workEditDrawer #taskForm .imageNativeActions{
+    min-height:48px!important;
+    grid-template-columns:1fr 1fr!important;
+  }
+  .workEditDrawer .workFormActions{
+    grid-column:1/-1!important;
+    display:flex!important;
+    justify-content:flex-end!important;
+    gap:10px!important;
+    padding-top:4px!important;
+  }
+  .workEditDrawer #taskForm .workCancel{
+    min-width:110px!important;
+    padding:0 18px!important;
+  }
+  .workEditDrawer #taskForm .workSave{
+    min-width:180px!important;
+    padding:0 22px!important;
+  }
+  .workEditDrawer .workImageInfo{
+    padding:0 24px 10px!important;
+  }
+  .workEditDrawer .existingImageSection{
+    margin:0 24px 18px!important;
+  }
+  .workEditDrawer .workPendingImages{
+    margin:0 24px 18px!important;
+  }
+}
