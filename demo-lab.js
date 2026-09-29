@@ -413,10 +413,10 @@ async function demoRenderHomeOps(){
  const low=demoCache.materials.filter(m=>Number(m.min_qty)>0&&demoStock(m)<=Number(m.min_qty)).length;
  const overdue=load().filter(x=>x.s!=="Đã hoàn thành"&&(x.dueDate||x.d)<today()).length;
  const alertRows=[
-  openInc?'<div class="demoOpsAlert"><b>⚠ '+openInc+' sự cố/defect đang mở</b><span>Mở Sự cố & Defect →</span></div>':"",
-  badIns?'<div class="demoOpsAlert"><b>✓ '+badIns+' checklist cần chú ý/khắc phục</b><span>Mở Kiểm tra định kỳ →</span></div>':"",
-  low?'<div class="demoOpsAlert"><b>▣ '+low+' vật tư dưới mức tối thiểu</b><span>Kiểm tra kho →</span></div>':"",
-  overdue?'<div class="demoOpsAlert"><b>⏱ '+overdue+' công việc quá hạn</b><span>Cần xử lý hôm nay</span></div>':""
+  openInc?'<button type="button" class="demoOpsAlert demoOpsAlertLink" onclick="showModule(\'incident\')"><b>⚠ '+openInc+' sự cố/defect đang mở</b><span>Mở Sự cố & Defect →</span></button>':"",
+  badIns?'<button type="button" class="demoOpsAlert demoOpsAlertLink" onclick="showModule(\'inspection\')"><b>✓ '+badIns+' checklist cần chú ý/khắc phục</b><span>Mở Kiểm tra định kỳ →</span></button>':"",
+  low?'<button type="button" class="demoOpsAlert demoOpsAlertLink" onclick="showModule(\'inventory\')"><b>▣ '+low+' vật tư dưới mức tối thiểu</b><span>Kiểm tra kho →</span></button>':"",
+  overdue?'<button type="button" class="demoOpsAlert demoOpsAlertLink" onclick="showModule(\'work\')"><b>⏱ '+overdue+' công việc quá hạn</b><span>Cần xử lý hôm nay →</span></button>':""
  ].filter(Boolean).join("");
  sec.innerHTML='<div class="demoPanel"><div class="demoPanelHead"><div><h2>Trung tâm liên kết dự án</h2><p>Liên kết Công việc ↔ Thiết bị ↔ Sự cố ↔ Checklist ↔ Nhà thầu ↔ Vật tư</p></div><span class="demoPill blue">LIÊN KẾT</span></div><div class="demoPanelBody"><div class="demoOpsCards">'+
  '<button class="demoOpsCard" onclick="showModule(\'incident\')"><b>'+openInc+'</b><span>Sự cố đang mở</span></button>'+
