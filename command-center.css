@@ -774,3 +774,18 @@ html,body,body *{font-family:"Inter",sans-serif!important}
     font-size:10.5px!important;
   }
 }
+
+
+/* ESTA_ADMIN_BEIGE_CANVAS_MATCH_DEMO_20260929 */
+/* Admin overview uses the exact same beige canvas as DEMO; all operational cards remain dark. */
+#app.adminCommandHome.homeMode{
+  --admin-demo-beige:#f7dfb6;
+}
+#app.adminCommandHome.homeMode main,
+#app.adminCommandHome.homeMode #homePage,
+#app.adminCommandHome.homeMode .homeDashboard{
+  background:var(--admin-demo-beige)!important;
+}
+#app.adminCommandHome.homeMode .ccRoot{
+  background:transparent!important;
+}
