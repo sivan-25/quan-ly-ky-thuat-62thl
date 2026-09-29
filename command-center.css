@@ -27,3 +27,323 @@ html,body,body *{font-family:"Inter",sans-serif!important}
 .ccActivity:hover{background:#f8fcfd}.ccActivityDot{width:8px;height:8px;border-radius:50%;background:#67bdcc;box-shadow:0 0 0 4px rgba(103,189,204,.09)}
 .ccActivity b{display:block;color:#294f65;font-size:9.5px;font-weight:650}.ccActivity small{display:block;margin-top:2px;color:#8a9da8;font-size:8px}.ccActivity em{font-style:normal;color:#6d8998;font-size:8px;padding:3px 6px;border-radius:6px;background:#f2f6f8}
 @media(max-width:720px){.ccActivityList{grid-template-columns:1fr}.ccActivity{border-right:0}.estaNav button .ccNavBadge{min-width:22px;height:22px;font-size:9px}}
+
+
+/* ESTA_COMMAND_CENTER_COMPACT_DESKTOP_20260929 */
+/* Desktop-first refinement requested from Admin DEMO screenshots. */
+@media (min-width:1101px){
+  /* 1) Compact top area and let the dashboard use the full available canvas. */
+  #app.adminCommandHome.homeMode .estaTopbar{
+    height:62px!important;
+    padding:0 18px!important;
+  }
+  #app.adminCommandHome.homeMode .homeDashboard{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:12px 16px 24px!important;
+  }
+  #app.adminCommandHome.homeMode .homeWelcome{
+    min-height:118px!important;
+    padding:17px 24px!important;
+    border-radius:16px!important;
+    box-shadow:0 8px 22px rgba(15,45,71,.08)!important;
+    animation:none!important;
+    transition:none!important;
+  }
+  #app.adminCommandHome.homeMode .homeWelcome:before{
+    animation:none!important;
+    transition:none!important;
+  }
+  #app.adminCommandHome.homeMode .homeWelcome h1{
+    margin:5px 0 3px!important;
+    font-size:26px!important;
+    line-height:1.08!important;
+  }
+  #app.adminCommandHome.homeMode .homeWelcome p{
+    font-size:10.5px!important;
+  }
+  #app.adminCommandHome.homeMode .homeEyebrow{
+    font-size:7.5px!important;
+  }
+  #app.adminCommandHome.homeMode .unifiedCommandIcon{
+    width:48px!important;
+    height:48px!important;
+    flex:0 0 48px!important;
+  }
+
+  /* 2) Original four KPI cards: around 25% smaller. */
+  #app.adminCommandHome.homeMode .homeKpis{
+    gap:10px!important;
+    margin:9px 0!important;
+  }
+  #app.adminCommandHome.homeMode .kpiCard{
+    min-height:82px!important;
+    gap:11px!important;
+    padding:11px 14px!important;
+    border-radius:13px!important;
+  }
+  #app.adminCommandHome.homeMode .kpiIcon{
+    width:36px!important;
+    height:36px!important;
+    flex:0 0 36px!important;
+    border-radius:10px!important;
+  }
+  #app.adminCommandHome.homeMode .kpiIcon svg{
+    width:18px!important;
+    height:18px!important;
+  }
+  #app.adminCommandHome.homeMode .kpiCard small{
+    font-size:8px!important;
+  }
+  #app.adminCommandHome.homeMode .kpiCard strong{
+    margin:2px 0!important;
+    font-size:22px!important;
+  }
+  #app.adminCommandHome.homeMode .kpiCard>div:last-child>span{
+    font-size:8px!important;
+  }
+
+  /* 3) Linked project center: compact cards + compact, fully clickable alert rows. */
+  #app.adminCommandHome.homeMode #demoHomeOps{
+    margin:8px 0!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead{
+    min-height:0!important;
+    padding:9px 13px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead h2{
+    font-size:14px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead p{
+    margin-top:2px!important;
+    font-size:9px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelBody{
+    padding:9px 12px 10px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCards{
+    gap:8px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard{
+    min-height:64px!important;
+    padding:9px 11px!important;
+    border-radius:10px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard b{
+    font-size:20px!important;
+    line-height:1!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard span{
+    margin-top:4px!important;
+    font-size:9px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsList{
+    gap:6px!important;
+    margin-top:8px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert{
+    width:100%!important;
+    min-height:38px!important;
+    padding:7px 10px!important;
+    border-radius:8px!important;
+    text-align:left!important;
+    cursor:pointer!important;
+    transition:background .14s ease,border-color .14s ease!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert:hover{
+    border-color:#3d526d!important;
+    background:#18253a!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert b{
+    font-size:10px!important;
+  }
+  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert span{
+    font-size:9px!important;
+  }
+
+  /* 4) Stop visual flicker while admin data refreshes. */
+  #app.adminCommandHome.homeMode .ccRoot.loading{
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+  #app.adminCommandHome.homeMode .ccHero,
+  #app.adminCommandHome.homeMode .ccHero *,
+  #app.adminCommandHome.homeMode .ccRoot{
+    animation:none!important;
+  }
+  #app.adminCommandHome.homeMode .ccHero{
+    transition:none!important;
+  }
+
+  /* Compact Command Center spacing without changing its data logic. */
+  #app.adminCommandHome.homeMode .ccRoot{
+    margin:10px 0 14px!important;
+    gap:10px!important;
+  }
+  #app.adminCommandHome.homeMode .ccHero{
+    min-height:0!important;
+    padding:14px 18px!important;
+    border-radius:15px!important;
+    box-shadow:0 9px 24px rgba(15,54,82,.09)!important;
+  }
+  #app.adminCommandHome.homeMode .ccHero h2{
+    margin:3px 0!important;
+    font-size:20px!important;
+  }
+  #app.adminCommandHome.homeMode .ccHero p{
+    font-size:11px!important;
+  }
+  #app.adminCommandHome.homeMode .ccBtn{
+    min-height:36px!important;
+    padding:0 12px!important;
+  }
+
+  /* 5) Wider tasks area (roughly 76/24), alert panel flush to the right. */
+  #app.adminCommandHome.homeMode .ccWorkspace{
+    width:100%!important;
+    grid-template-columns:minmax(0,3.2fr) minmax(285px,1fr)!important;
+    gap:10px!important;
+    align-items:start!important;
+  }
+  #app.adminCommandHome.homeMode .ccWorkspace>.ccPanel:first-child{
+    min-width:0!important;
+    width:100%!important;
+  }
+  #app.adminCommandHome.homeMode .ccAlertsPanel{
+    width:100%!important;
+    min-width:0!important;
+    justify-self:stretch!important;
+    position:sticky!important;
+    top:72px!important;
+    background:#edf4f7!important;
+  }
+
+  /* Replace stark white with a soft cool operational background. */
+  #app.adminCommandHome.homeMode .ccPanel{
+    border-color:#d4e0e6!important;
+    background:#f5f8fa!important;
+    box-shadow:0 7px 20px rgba(29,58,77,.045)!important;
+  }
+  #app.adminCommandHome.homeMode .ccPanelHead{
+    padding:14px 16px 11px!important;
+    border-bottom-color:#dde7ec!important;
+    background:#f2f6f8!important;
+  }
+  #app.adminCommandHome.homeMode .ccPanelHead span{
+    font-size:10px!important;
+  }
+  #app.adminCommandHome.homeMode .ccPanelHead h3{
+    font-size:17px!important;
+  }
+  #app.adminCommandHome.homeMode .ccPanelHead p{
+    font-size:10.5px!important;
+  }
+  #app.adminCommandHome.homeMode .ccFilters{
+    grid-template-columns:165px 165px 155px minmax(240px,1fr)!important;
+    gap:8px!important;
+    padding:10px 12px!important;
+    background:#eaf1f5!important;
+    border-bottom-color:#d8e3e9!important;
+  }
+  #app.adminCommandHome.homeMode .ccFilters select,
+  #app.adminCommandHome.homeMode .ccFilters input{
+    height:39px!important;
+    border-color:#cbd9e1!important;
+    background:#f9fbfc!important;
+    font-size:11.5px!important;
+  }
+
+  /* Readability: larger table type, taller rows, stronger task hierarchy. */
+  #app.adminCommandHome.homeMode .ccTableWrap{
+    max-height:610px!important;
+    background:#f8fafb!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable{
+    min-width:980px!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable th{
+    height:42px!important;
+    padding:0 11px!important;
+    background:#e8f0f4!important;
+    color:#506b7b!important;
+    font-size:9.5px!important;
+    letter-spacing:.15px!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable td{
+    min-height:48px!important;
+    padding:11px!important;
+    background:#f8fafb!important;
+    color:#3f5e70!important;
+    font-size:11.5px!important;
+    line-height:1.45!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable tr[data-cc-task]:hover td{
+    background:#edf5f8!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable td:first-child small,
+  #app.adminCommandHome.homeMode .ccTable td:nth-child(2) small{
+    margin-top:3px!important;
+    color:#7d929f!important;
+    font-size:9.5px!important;
+  }
+  #app.adminCommandHome.homeMode .ccTable td:nth-child(2)b{
+    color:#163f59!important;
+    font-size:13px!important;
+    font-weight:720!important;
+  }
+  #app.adminCommandHome.homeMode .ccProjectTag{
+    font-size:9px!important;
+  }
+  #app.adminCommandHome.homeMode .ccStatus,
+  #app.adminCommandHome.homeMode .ccPriority,
+  #app.adminCommandHome.homeMode .ccWarn{
+    min-height:25px!important;
+    padding:0 8px!important;
+    font-size:9.5px!important;
+  }
+
+  /* Right alert column: larger text and softer background, no white slab. */
+  #app.adminCommandHome.homeMode .ccAlertCount{
+    min-width:34px!important;
+    height:34px!important;
+    font-size:13px!important;
+  }
+  #app.adminCommandHome.homeMode .ccAlertList{
+    max-height:610px!important;
+    background:#edf4f7!important;
+  }
+  #app.adminCommandHome.homeMode .ccAlert{
+    min-height:64px!important;
+    padding:11px 13px!important;
+    border-bottom-color:#dbe6eb!important;
+    background:#edf4f7!important;
+  }
+  #app.adminCommandHome.homeMode .ccAlert:hover{
+    background:#e3eef3!important;
+  }
+  #app.adminCommandHome.homeMode .ccAlert span{
+    color:#5f7a89!important;
+    font-size:9.5px!important;
+  }
+  #app.adminCommandHome.homeMode .ccAlert b{
+    margin:3px 0!important;
+    color:#173f59!important;
+    font-size:12.5px!important;
+    line-height:1.4!important;
+  }
+  #app.adminCommandHome.homeMode .ccAlert small{
+    padding:3px 6px!important;
+    background:#dfe9ee!important;
+    color:#607a89!important;
+    font-size:9px!important;
+  }
+
+  /* Summary/project cards also lose the harsh pure-white fill. */
+  #app.adminCommandHome.homeMode .ccSummary article,
+  #app.adminCommandHome.homeMode .ccProjectCard{
+    border-color:#d7e2e7!important;
+    background:#f7f9fa!important;
+    box-shadow:0 5px 16px rgba(29,58,77,.04)!important;
+  }
+}
