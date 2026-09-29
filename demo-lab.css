@@ -925,3 +925,50 @@
     padding-top:12px!important;
   }
 }
+
+
+/* ESTA_DEMO_GLOBAL_BEIGE_CANVAS_20260929 */
+/* One shared beige outer canvas for every DEMO module. Internal cards/panels remain navy. */
+#app.demoProjectMode{
+  --esta-demo-beige:#f7dfb6;
+  background:var(--esta-demo-beige)!important;
+}
+#app.demoProjectMode.homeMode main,
+#app.demoProjectMode.workMode main,
+#app.demoProjectMode.energyMode main,
+#app.demoProjectMode.inventoryMode main,
+#app.demoProjectMode.maintenanceMode main,
+#app.demoProjectMode.contractorMode main,
+#app.demoProjectMode.constructionMode main,
+#app.demoProjectMode.incidentMode main,
+#app.demoProjectMode.inspectionMode main,
+#app.demoProjectMode.documentsMode main,
+#app.demoProjectMode.reportsMode main{
+  background:var(--esta-demo-beige)!important;
+}
+
+/* Lock the visible page canvas too, so page-specific styles cannot fall back to white/gray/dark. */
+#app.demoProjectMode #homePage,
+#app.demoProjectMode #workPage,
+#app.demoProjectMode #energyPage,
+#app.demoProjectMode #inventoryPage,
+#app.demoProjectMode #maintenancePage,
+#app.demoProjectMode #contractorPage,
+#app.demoProjectMode #constructionMaterialPage,
+#app.demoProjectMode #incidentPage,
+#app.demoProjectMode #inspectionPage,
+#app.demoProjectMode #documentsPage,
+#app.demoProjectMode #reportsPage{
+  background:var(--esta-demo-beige)!important;
+}
+
+/* Work page previously had a separate lighter cream reference background; DEMO now uses the same beige as every other page. */
+#app.demoProjectMode.demoSampleProject.workMode main,
+#app.demoProjectMode.demoSampleProject.workMode #workPage{
+  background:var(--esta-demo-beige)!important;
+}
+
+/* Special feature pages should show beige only around the dark content blocks. */
+#app.demoProjectMode .demoFeaturePage{
+  background:var(--esta-demo-beige)!important;
+}
