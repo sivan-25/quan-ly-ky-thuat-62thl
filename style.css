@@ -10006,3 +10006,91 @@ body.workEditOpen{overflow:hidden!important}
 #app #workPage .proTaskCard .taskTitle{
   font-weight:400!important;
 }
+
+
+/* WORK_ROW_ACTION_HORIZONTAL_INLINE_20260929 */
+/* Work table action popup: align with the row, open horizontally to the left, one line only. */
+#app.workMode #workPage .actionCell{
+  position:relative!important;
+  overflow:visible!important;
+}
+#app.workMode #workPage .rowActionMenu{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  overflow:visible!important;
+}
+#app.workMode #workPage .rowActionMenu>div{
+  position:absolute!important;
+  z-index:500!important;
+  top:50%!important;
+  right:calc(100% + 8px)!important;
+  transform:translateY(-50%)!important;
+  width:max-content!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:42px!important;
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:nowrap!important;
+  gap:5px!important;
+  padding:4px!important;
+  border:1px solid #33415c!important;
+  border-radius:10px!important;
+  background:#10192b!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.34)!important;
+  white-space:nowrap!important;
+}
+#app.workMode #workPage .rowActionMenu>div button{
+  width:auto!important;
+  min-width:max-content!important;
+  height:32px!important;
+  min-height:32px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+  padding:0 11px!important;
+  border:1px solid transparent!important;
+  border-radius:7px!important;
+  background:#172238!important;
+  color:#c7d3e5!important;
+  text-align:center!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+#app.workMode #workPage .rowActionMenu>div button:hover{
+  border-color:#31516d!important;
+  background:#1b2b44!important;
+  color:#fff!important;
+}
+#app.workMode #workPage .rowActionMenu>div button.danger{
+  border-color:#4d3039!important;
+  background:#281a23!important;
+  color:#ee929e!important;
+}
+#app.workMode #workPage .rowActionMenu>div button.danger:hover{
+  border-color:#71404a!important;
+  background:#351f29!important;
+  color:#ffb0ba!important;
+}
+/* Let the action popover render above the table instead of being clipped. */
+#app.workMode #workPage .premiumTableCard,
+#app.workMode #workPage .premiumTableCard .tableWrap,
+#app.workMode #workPage .premiumTableCard table,
+#app.workMode #workPage .premiumTableCard tbody,
+#app.workMode #workPage .premiumTableCard tr{
+  overflow:visible!important;
+}
+@media(max-width:760px){
+  #app.workMode #workPage .rowActionMenu>div{
+    right:calc(100% + 6px)!important;
+    height:42px!important;
+    max-width:calc(100vw - 74px)!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    flex-wrap:nowrap!important;
+  }
+}
