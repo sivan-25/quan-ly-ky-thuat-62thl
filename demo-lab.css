@@ -1250,81 +1250,109 @@
 
 
 /* ESTA_DEMO_SINGLE_OCEAN_BLUE_SIDEBAR_20260929 */
-/* One flat ocean-blue sidebar across EVERY DEMO module. No page-specific navy/black switching. */
-#app.demoProjectMode{
-  --demo-ocean-sidebar:#124b69;
-  --demo-ocean-sidebar-line:rgba(255,255,255,.10);
-  --demo-ocean-text:#c5d8e4;
-  --demo-ocean-muted:#86a9bc;
-  --demo-ocean-cyan:#35d7e8;
+/* Persistent DEMO shell: one fresh ocean-blue sidebar on every page, including Dự án. */
+#app.demoProjectShell{
+  --demo-ocean-sidebar:#0f5c78;
+  --demo-ocean-sidebar-active:#176f8f;
+  --demo-ocean-sidebar-hover:#146983;
+  --demo-ocean-sidebar-line:rgba(220,244,250,.15);
+  --demo-ocean-text:#d4e7ef;
+  --demo-ocean-muted:#9ec1d0;
+  --demo-ocean-cyan:#4ee1eb;
 }
-#app.demoProjectMode .estaSidebar{
-  background:#124b69!important;
+#app.demoProjectShell .estaSidebar{
+  background:#0f5c78!important;
   background-image:none!important;
-  border-right:1px solid rgba(255,255,255,.10)!important;
-  box-shadow:none!important;
+  border-right:1px solid rgba(223,247,252,.18)!important;
+  box-shadow:8px 0 22px rgba(10,67,89,.10)!important;
 }
-#app.demoProjectMode .estaSidebarBrand{
+#app.demoProjectShell.adminMode .estaSidebar,
+#app.demoProjectShell.homeMode .estaSidebar,
+#app.demoProjectShell.workMode .estaSidebar,
+#app.demoProjectShell.energyMode .estaSidebar,
+#app.demoProjectShell.inventoryMode .estaSidebar,
+#app.demoProjectShell.maintenanceMode .estaSidebar,
+#app.demoProjectShell.contractorMode .estaSidebar,
+#app.demoProjectShell.constructionMode .estaSidebar,
+#app.demoProjectShell.incidentMode .estaSidebar,
+#app.demoProjectShell.inspectionMode .estaSidebar,
+#app.demoProjectShell.documentsMode .estaSidebar,
+#app.demoProjectShell.reportsMode .estaSidebar{
+  background:#0f5c78!important;
+  background-image:none!important;
+}
+#app.demoProjectShell .estaSidebarBrand{
   border-bottom-color:var(--demo-ocean-sidebar-line)!important;
 }
-#app.demoProjectMode .estaNav:before{
-  color:#83aabd!important;
+#app.demoProjectShell .estaSidebarBrand b{
+  color:#e0c4ae!important;
 }
-#app.demoProjectMode .estaNav button{
+#app.demoProjectShell .estaSidebarBrand small{
+  color:#add0dc!important;
+}
+#app.demoProjectShell .estaNav:before{
+  color:#8fc1d1!important;
+}
+#app.demoProjectShell .estaNav button{
   border-color:transparent!important;
   background:transparent!important;
   color:var(--demo-ocean-text)!important;
 }
-#app.demoProjectMode .estaNav button:hover{
-  border-color:rgba(255,255,255,.08)!important;
-  background:rgba(255,255,255,.06)!important;
+#app.demoProjectShell .estaNav button svg{
+  color:#b7d4df!important;
+}
+#app.demoProjectShell .estaNav button:hover{
+  border-color:rgba(255,255,255,.10)!important;
+  background:#146983!important;
   color:#fff!important;
 }
-#app.demoProjectMode .estaNav button.active{
-  border-color:rgba(74,215,231,.18)!important;
-  background:rgba(255,255,255,.09)!important;
-  color:#fff!important;
-  box-shadow:none!important;
+#app.demoProjectShell .estaNav button:hover svg{
+  color:#dff9fc!important;
 }
-#app.demoProjectMode .estaNav button.active:before{
+#app.demoProjectShell .estaNav button.active{
+  border-color:rgba(78,225,235,.25)!important;
+  background:#176f8f!important;
+  color:#fff!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+#app.demoProjectShell .estaNav button.active:before{
   background:var(--demo-ocean-cyan)!important;
-  box-shadow:0 0 10px rgba(53,215,232,.30)!important;
+  box-shadow:0 0 12px rgba(78,225,235,.34)!important;
 }
-#app.demoProjectMode .estaNav button.active svg{
+#app.demoProjectShell .estaNav button.active svg{
   color:var(--demo-ocean-cyan)!important;
 }
-#app.demoProjectMode .estaSidebar .sideBackup{
+#app.demoProjectShell .estaSidebar .sideBackup{
   border-top-color:var(--demo-ocean-sidebar-line)!important;
 }
-#app.demoProjectMode .estaSidebar .sideBackup button,
-#app.demoProjectMode .sideLogout{
-  border-color:rgba(255,255,255,.11)!important;
-  background:rgba(255,255,255,.045)!important;
-  color:#c1d5e0!important;
+#app.demoProjectShell .estaSidebar .sideBackup button,
+#app.demoProjectShell .sideLogout{
+  border-color:rgba(235,250,253,.15)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#d0e4ec!important;
 }
-#app.demoProjectMode .estaSidebar .sideBackup button:hover,
-#app.demoProjectMode .sideLogout:hover{
-  background:rgba(255,255,255,.085)!important;
+#app.demoProjectShell .estaSidebar .sideBackup button:hover,
+#app.demoProjectShell .sideLogout:hover{
+  background:rgba(255,255,255,.10)!important;
   color:#fff!important;
 }
-#app.demoProjectMode .estaSidebar .sideBottom{
+#app.demoProjectShell .estaSidebar .sideBottom{
   border-top-color:var(--demo-ocean-sidebar-line)!important;
 }
-#app.demoProjectMode .sideUserCard{
-  border-color:rgba(255,255,255,.10)!important;
-  background:rgba(255,255,255,.045)!important;
+#app.demoProjectShell .sideUserCard{
+  border-color:rgba(255,255,255,.12)!important;
+  background:rgba(255,255,255,.055)!important;
 }
-#app.demoProjectMode .sideUserCard #sideUser{
-  color:#a9c4d3!important;
+#app.demoProjectShell .sideUserCard #sideUser{
+  color:#b5d2dd!important;
 }
-#app.demoProjectMode .sideUserCard #sideUser b{
+#app.demoProjectShell .sideUserCard #sideUser b{
   color:#fff!important;
 }
-
-/* Keep the exact same sidebar shade on desktop, tablet and mobile drawers. */
+/* Same shade on mobile/tablet drawers. */
 @media(max-width:1024px){
-  #app.demoProjectMode .estaSidebar{
-    background:#124b69!important;
+  #app.demoProjectShell .estaSidebar{
+    background:#0f5c78!important;
     background-image:none!important;
   }
 }
