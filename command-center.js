@@ -26,7 +26,20 @@ function ensureRoot(){
  }
  const admin=!!currentAccount?.is_admin;root.classList.toggle("hide",!admin);
  $c("#app")?.classList.toggle("adminCommandHome",admin);
- if(admin){const h=home.querySelector(".homeWelcomeCopy h1");if(h)h.textContent="Trung tâm điều hành";const p=home.querySelector(".homeWelcomeCopy p");if(p)p.textContent="Theo dõi công việc, cảnh báo và vận hành của tất cả dự án ESTA.";const top=$c("#topHomeTitle h1");if(top)top.textContent="Trung tâm điều hành"}
+ const welcome=home.querySelector(".homeWelcome");
+ const kpis=home.querySelector(".homeKpis");
+ const hero=root.querySelector(".ccHero");
+ if(admin){
+  welcome?.classList.add("ccAdminWelcomeHidden");
+  if(kpis&&hero&&kpis.parentElement!==root)hero.insertAdjacentElement("afterend",kpis);
+  const top=$c("#topHomeTitle h1");if(top)top.textContent="Trung tâm điều hành";
+ }else{
+  welcome?.classList.remove("ccAdminWelcomeHidden");
+  if(kpis&&kpis.parentElement===root){
+   if(welcome)welcome.insertAdjacentElement("afterend",kpis);
+   else home.prepend(kpis);
+  }
+ }
  return root;
 }
 function taskRows(){const out=[];activeRows().forEach(r=>{const b=r.building||{};(Array.isArray(r.snapshot?.tasks)?r.snapshot.tasks:[]).forEach(t=>out.push({...t,_buildingId:b.id,_buildingName:b.name||b.id}))});return out}
