@@ -578,7 +578,7 @@
     text-size-adjust:100%;
   }
 }
-</style><link rel="stylesheet" href="demo-lab.css?v=20260929-energy-tabs08"><link rel="stylesheet" href="command-center.css?v=20260929-admin-beige03">
+</style><link rel="stylesheet" href="demo-lab.css?v=20260929-energy-selected09"><link rel="stylesheet" href="command-center.css?v=20260929-admin-beige03">
 <!-- WORK_PAGE_FINAL_CASCADE_FIX_20260929 -->
 <style id="work-page-final-cascade-fix">
 :root{
@@ -1122,13 +1122,13 @@
   </section>
 
   <section class="energyTabs" aria-label="Loại chỉ số">
-    <button type="button" class="active" data-energy-type="electric">
+    <button type="button" class="active" aria-selected="true" data-energy-type="electric">
       <svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg><span>Chỉ số điện</span>
     </button>
-    <button type="button" data-energy-type="water">
+    <button type="button" aria-selected="false" data-energy-type="water">
       <svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg><span>Chỉ số nước</span>
     </button>
-    <button type="button" data-energy-type="solar">
+    <button type="button" aria-selected="false" data-energy-type="solar">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Năng lượng mặt trời</span>
     </button>
   </section>
@@ -2092,5 +2092,5 @@
 </div>
 <div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260929-session01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260929-energy-selected09"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260928-linkedwork05"></script><script src="construction.js?v=20260924-2255"></script><script src="demo-lab.js?v=20260929-info-actions07"></script><script src="command-center.js?v=20260929-dashboard-compact01"></script></body></html>
