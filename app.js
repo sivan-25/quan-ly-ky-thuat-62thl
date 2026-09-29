@@ -59,10 +59,47 @@ function capitalizeAllDataFields(root=document){
  });
 }
 
+let centralRefreshPromise=null;
+async function refreshCentralSession(){
+ if(!centralSession?.refresh_token)throw new Error("Phiên đăng nhập đã hết hạn");
+ if(centralRefreshPromise)return centralRefreshPromise;
+ const refreshToken=centralSession.refresh_token;
+ centralRefreshPromise=(async()=>{
+   const res=await fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{
+     method:"POST",
+     headers:{"apikey":SB_KEY,"Content-Type":"application/json"},
+     body:JSON.stringify({refresh_token:refreshToken})
+   });
+   let data=null;try{data=await res.json()}catch(e){}
+   if(!res.ok||!data?.access_token)throw new Error(data?.msg||data?.message||data?.error_description||"Không thể làm mới phiên đăng nhập");
+   centralSession={access_token:data.access_token,refresh_token:data.refresh_token||refreshToken,expires_at:data.expires_at||0};
+   localStorage.setItem("esta_central_session",JSON.stringify(centralSession));
+   return centralSession;
+ })();
+ try{return await centralRefreshPromise}finally{centralRefreshPromise=null}
+}
+async function ensureCentralSessionFresh(force=false){
+ if(!centralSession?.access_token)return centralSession;
+ const expiresAt=Number(centralSession.expires_at||0),now=Math.floor(Date.now()/1000);
+ if(!force&&(!expiresAt||expiresAt>now+90))return centralSession;
+ return refreshCentralSession();
+}
+async function centralAuthFetch(url,options={}){
+ await ensureCentralSessionFresh();
+ const make=()=>fetch(url,{...options,headers:{...(options.headers||{}),"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token}});
+ let res=await make();
+ if(res.status===401&&centralSession?.refresh_token){
+   await ensureCentralSessionFresh(true);
+   res=await make();
+ }
+ return res;
+}
 async function sbFetch(path,{method="GET",body=null,token=null}={}){
- const headers={"apikey":SB_KEY,"Content-Type":"application/json"};
- if(token)headers.Authorization="Bearer "+token;
- const res=await fetch(SB_URL+path,{method,headers,body:body===null?null:JSON.stringify(body)});
+ const usesCentral=!!token&&token===centralSession?.access_token;
+ if(usesCentral){await ensureCentralSessionFresh();token=centralSession?.access_token||token}
+ const make=()=>{const headers={"apikey":SB_KEY,"Content-Type":"application/json"};if(token)headers.Authorization="Bearer "+token;return fetch(SB_URL+path,{method,headers,body:body===null?null:JSON.stringify(body)})};
+ let res=await make();
+ if(res.status===401&&usesCentral&&centralSession?.refresh_token){await ensureCentralSessionFresh(true);token=centralSession.access_token;res=await make()}
  let data=null;try{data=await res.json()}catch(e){}
  if(!res.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||"Không thể kết nối máy chủ");err.status=res.status;throw err}
  return data;
@@ -78,9 +115,7 @@ async function mediaObjectUrl(ref){
  const path=storagePathFromRef(ref),cached=mediaUrlCache.get(path);
  if(cached?.url)return cached.url;
  if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
- const res=await fetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
-   headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token}
- });
+ const res=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path));
  if(!res.ok)throw new Error("Không thể tải hình ảnh");
  const blob=await res.blob(),url=URL.createObjectURL(blob);
  mediaUrlCache.set(path,{url});
@@ -126,9 +161,9 @@ async function uploadMediaBlob(blob,kind,recordId,index=0,buildingId=currentBuil
  if(!centralSession?.access_token)throw new Error("Cần đăng nhập tài khoản trung tâm để tải hình");
  const uid=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
  const path=buildingId+"/"+kind+"/"+recordId+"/"+Date.now()+"-"+index+"-"+uid+".jpg";
- const res=await fetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
+ const res=await centralAuthFetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
    method:"POST",
-   headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"image/jpeg","x-upsert":"false"},
+   headers:{"Content-Type":"image/jpeg","x-upsert":"false"},
    body:blob
  });
  if(!res.ok){let d={};try{d=await res.json()}catch(e){}throw new Error(d?.message||d?.error||"Không thể tải hình lên máy chủ")}
@@ -187,9 +222,7 @@ window.downloadViewerMedia=async index=>{
    let blob;
    if(isStorageRef(ref)){
      const path=storagePathFromRef(ref);
-     const res=await fetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
-       headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token}
-     });
+     const res=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path));
      if(!res.ok)throw new Error("Không thể tải hình");
      blob=await res.blob();
    }else{
@@ -855,9 +888,9 @@ async function deleteStoredMediaRefs(refs){
    const cached=mediaUrlCache.get(path);
    if(cached?.url?.startsWith("blob:"))URL.revokeObjectURL(cached.url);
    mediaUrlCache.delete(path);
-   const res=await fetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET,{
+   const res=await centralAuthFetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET,{
      method:"DELETE",
-     headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token,"Content-Type":"application/json"},
+     headers:{"Content-Type":"application/json"},
      body:JSON.stringify({prefixes:[path]})
    });
    if(!res.ok)throw new Error("Không thể dọn file ảnh "+path);
@@ -1357,10 +1390,7 @@ async function reportImageDataUrl(ref){
    if(isStorageRef(ref)){
      if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
      const path=storagePathFromRef(ref);
-     response=await fetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
-       headers:{"apikey":SB_KEY,"Authorization":"Bearer "+centralSession.access_token},
-       cache:"force-cache"
-     });
+     response=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{cache:"force-cache"});
    }else{
      response=await fetch(ref,{cache:"force-cache"});
    }
@@ -1578,6 +1608,7 @@ function estaGeneratorPayload(rows){
 }
 async function exportEstaGeneratorPdf(rows){
  if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ await ensureCentralSessionFresh();
  const controller=new AbortController();
  const timer=setTimeout(()=>controller.abort(),115000);
  try{
