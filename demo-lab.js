@@ -185,7 +185,6 @@ function demoUpdateLinkSummary(){
 }
 function demoResetWorkLinks(clear=true){
  if(!demoIs())return;
- const d=$("#date")?.value||today();
  if(clear){
   $("#demoTaskPriority")&&($("#demoTaskPriority").value="Trung bình");
   $("#demoTaskAsset")&&($("#demoTaskAsset").value="");
@@ -197,14 +196,15 @@ function demoResetWorkLinks(clear=true){
   $("#demoTaskCause")&&($("#demoTaskCause").value="");
   $("#demoTaskResult")&&($("#demoTaskResult").value="");
  }
- if($("#demoTaskDue")&&!$("#demoTaskDue").value)$("#demoTaskDue").value=d;
+ if(clear&&$("#demoTaskDue"))$("#demoTaskDue").value="";
  demoUpdateLinkSummary();
 }
 function demoReadWorkLinks(){
  const mid=$("#demoTaskMaterial")?.value||"",m=demoMaterial(mid),qty=Number($("#demoTaskMaterialQty")?.value||0);
  return {
   priority:$("#demoTaskPriority")?.value||"Trung bình",
-  dueDate:$("#demoTaskDue")?.value||$("#date")?.value||today(),
+  dueDate:$("#demoTaskDue")?.value||"",
+  dueDateExplicit:!!$("#demoTaskDue")?.value,
   assetId:$("#demoTaskAsset")?.value||"",
   incidentCode:$("#demoTaskIncident")?.value||"",
   inspectionCode:$("#demoTaskInspection")?.value||"",
@@ -217,7 +217,7 @@ function demoReadWorkLinks(){
 function demoFillWorkLinks(x){
  demoEnsureWorkPanel();demoPopulateWorkOptions();
  $("#demoTaskPriority")&&($("#demoTaskPriority").value=x.priority||"Trung bình");
- $("#demoTaskDue")&&($("#demoTaskDue").value=x.dueDate||x.d||today());
+ $("#demoTaskDue")&&($("#demoTaskDue").value=(x.dueDateExplicit||x.dueDate&&x.dueDate!==x.d)?x.dueDate:"");
  $("#demoTaskAsset")&&($("#demoTaskAsset").value=x.assetId||"");
  $("#demoTaskIncident")&&($("#demoTaskIncident").value=x.incidentCode||"");
  $("#demoTaskInspection")&&($("#demoTaskInspection").value=x.inspectionCode||"");
@@ -408,7 +408,7 @@ function demoTaskLinkHtml(x){
  if(x.inspectionCode)chips.push(x.inspectionCode);
  const c=demoContractor(x.contractorId);if(c)chips.push(c.name);
  (x.materials||[]).forEach(m=>chips.push(m.name+" ×"+m.qty));
- if(x.dueDate&&x.s!=="Đã hoàn thành"&&x.dueDate<today())chips.push("QUÁ HẠN");
+ if((x.dueDateExplicit||x.dueDate&&x.dueDate!==x.d)&&x.s!=="Đã hoàn thành"&&x.dueDate<today())chips.push("QUÁ HẠN");
  return chips.map(v=>'<span class="demoLinkChip">'+esc(v)+'</span>').join("");
 }
 function demoDecorateWork(){
@@ -461,7 +461,7 @@ window.demoOpenTaskDrawer=id=>{
  ].filter(Boolean).join("");
  dr.innerHTML='<div class="demoDrawerCard"><div class="demoDrawerHead"><div><span class="demoPill blue">'+esc(demoTaskDisplayCode(x))+'</span><h2>'+esc(x.c)+'</h2></div><button class="demoDrawerClose" onclick="document.querySelector(\'#demoTaskDrawer\').classList.add(\'hide\')">×</button></div>'+
  '<div class="demoTabs demoTaskTabs"><button type="button" class="active" data-demo-task-tab="info" onclick="demoSelectTaskTab(\'info\')">Thông tin</button><button type="button" data-demo-task-tab="links" onclick="demoSelectTaskTab(\'links\')">Liên kết</button><button type="button" data-demo-task-tab="cost" onclick="demoSelectTaskTab(\'cost\')">Vật tư & chi phí</button><button type="button" data-demo-task-tab="images" onclick="demoSelectTaskTab(\'images\')">Hình ảnh'+((x.imgs||[]).length?' ('+(x.imgs||[]).length+')':'')+'</button><button type="button" data-demo-task-tab="log" onclick="demoSelectTaskTab(\'log\')">Nhật ký</button></div>'+
- '<div class="demoTaskTabPanel active" data-demo-task-panel="info"><div class="demoTaskDetailGrid"><div><small>Trạng thái</small><b>'+esc(x.s)+'</b></div><div><small>Ưu tiên</small><b>'+esc(x.priority||"Trung bình")+'</b></div><div><small>Bắt đầu</small><b>'+esc(demoFormatDate(x.d))+'</b></div><div><small>Hạn hoàn thành</small><b>'+esc(x.dueDate?demoFormatDate(x.dueDate):"Chưa đặt hạn")+'</b></div><div><small>Người thực hiện</small><b>'+esc(x.a||"—")+'</b></div><div><small>Loại</small><b>'+esc(x.t||"Hằng ngày")+'</b></div></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div></div>'+
+ '<div class="demoTaskTabPanel active" data-demo-task-panel="info"><div class="demoTaskDetailGrid"><div><small>Trạng thái</small><b>'+esc(x.s)+'</b></div><div><small>Ưu tiên</small><b>'+esc(x.priority||"Trung bình")+'</b></div><div><small>Bắt đầu</small><b>'+esc(demoFormatDate(x.d))+'</b></div><div><small>Hạn hoàn thành</small><b>'+esc((x.dueDateExplicit||x.dueDate&&x.dueDate!==x.d)?demoFormatDate(x.dueDate):"Chưa đặt hạn")+'</b></div><div><small>Người thực hiện</small><b>'+esc(x.a||"—")+'</b></div><div><small>Loại</small><b>'+esc(x.t||"Hằng ngày")+'</b></div></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(x.cause||"Chưa ghi nhận")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div></div>'+
  '<div class="demoTaskTabPanel" data-demo-task-panel="links"><div class="demoTaskLinkCards"><div><small>Thiết bị</small><b>'+esc(asset?asset.code+" · "+asset.name:"—")+'</b></div><div><small>Sự cố / Defect</small><b>'+esc(x.incidentCode||"—")+'</b></div><div><small>Checklist</small><b>'+esc(x.inspectionCode||"—")+'</b></div><div><small>Nhà thầu</small><b>'+esc(con?.name||"—")+'</b></div></div><div class="demoTaskTabActions">'+(linkedActions||'<span class="demoTaskEmpty">Chưa có liên kết để mở.</span>')+'</div></div>'+
  '<div class="demoTaskTabPanel" data-demo-task-panel="cost"><div class="demoDetailSection"><span>VẬT TƯ ĐÃ SỬ DỤNG</span><div class="demoTaskCostList">'+(materialRows||'<div class="demoTaskEmpty">Chưa ghi nhận vật tư.</div>')+'</div></div><div class="demoDetailSection"><span>CHI PHÍ</span><p>'+(inc&&Number(inc.cost||0)>0?Number(inc.cost||0).toLocaleString("vi-VN")+'đ · Theo sự cố '+esc(inc.incident_code):'Chưa ghi nhận chi phí.')+'</p></div></div>'+
  '<div class="demoTaskTabPanel" data-demo-task-panel="images"><div class="demoTaskImageGrid">'+(imageRows||'<div class="demoTaskEmpty">Công việc này chưa có hình ảnh.</div>')+'</div></div>'+
