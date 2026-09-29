@@ -141,15 +141,14 @@ function demoEnsureWorkPanel(){
   box.innerHTML='<summary>⌁ Liên kết nâng cao · Thiết bị / Sự cố / Nhà thầu / Vật tư</summary><div class="demoWorkLinkGrid">'+
    '<label>Ưu tiên<select id="demoTaskPriority"><option>Thấp</option><option selected>Trung bình</option><option>Cao</option><option>Khẩn cấp</option></select></label>'+
    '<label>Hạn hoàn thành<input id="demoTaskDue" type="date"></label>'+
-   '<label>Thiết bị<select id="demoTaskAsset"><option value="">Không liên kết</option></select></label>'+
+   '<label class="demoAdvancedAsset">Thiết bị<select id="demoTaskAsset"><option value="">Không liên kết</option></select></label>'+
    '<label>Sự cố / Defect<select id="demoTaskIncident"><option value="">Không liên kết</option></select></label>'+
-   '<label>Checklist<select id="demoTaskInspection"><option value="">Không liên kết</option></select></label>'+
+   '<label class="demoAdvancedInspection">Checklist<select id="demoTaskInspection"><option value="">Không liên kết</option></select></label>'+
    '<label>Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
    '<label>Vật tư sử dụng<select id="demoTaskMaterial"><option value="">Không sử dụng</option></select></label>'+
    '<label>Số lượng<input id="demoTaskMaterialQty" type="number" min="0" step="0.01" value="1"></label>'+
    '<label class="span2">Nguyên nhân<textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
    '<label class="span2">Hướng xử lý / Kết quả<textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
-   '<label class="span2">Mã liên kết tự động<input id="demoTaskLinkSummary" readonly placeholder="Hệ thống tự tạo từ các lựa chọn trên"></label>'+
    '</div>';
   card.appendChild(box);
   ["demoTaskAsset","demoTaskIncident","demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.addEventListener("change",demoUpdateLinkSummary));
@@ -231,13 +230,56 @@ function demoFillWorkLinks(x){
  demoUpdateLinkSummary();
  $("#demoWorkLinks")?.setAttribute("open","");
 }
+function demoArrangeWorkEditDrawer(){
+ if(!demoIs())return;
+ const drawer=$("#workEditDrawer"),card=drawer?.querySelector(".workEntryCard"),links=$("#demoWorkLinks"),actions=card?.querySelector(".workFormActions");
+ if(!drawer||drawer.classList.contains("hide")||!card)return;
+ drawer.classList.add("demoWorkEditDrawer");
+ if(links){
+  const summary=links.querySelector("summary");
+  if(summary){
+   if(!summary.dataset.fullText)summary.dataset.fullText=summary.textContent;
+   summary.textContent="⌁ Liên kết nâng cao · Sự cố / Nhà thầu / Vật tư";
+  }
+  links.setAttribute("open","");
+ }
+ if(actions&&links){
+  actions.classList.add("demoEditFooter");
+  const save=actions.querySelector("#saveBtn");
+  if(save)save.setAttribute("form","taskForm");
+  links.insertAdjacentElement("afterend",actions);
+ }
+}
+function demoRestoreWorkEditLayout(){
+ const drawer=$("#workEditDrawer"),form=$("#taskForm"),actions=document.querySelector(".workFormActions"),links=$("#demoWorkLinks");
+ drawer?.classList.remove("demoWorkEditDrawer");
+ if(links){
+  const summary=links.querySelector("summary");
+  if(summary?.dataset.fullText){summary.textContent=summary.dataset.fullText;delete summary.dataset.fullText}
+ }
+ if(form&&actions&&actions.parentElement!==form){
+  actions.classList.remove("demoEditFooter");
+  const save=actions.querySelector("#saveBtn");
+  if(save)save.removeAttribute("form");
+  form.appendChild(actions);
+ }
+}
 const originalEditTask=window.editTask;
 window.editTask=id=>{
  originalEditTask(id);
- if(demoIs()){const x=load().find(y=>String(y.id)===String(id));if(x)demoFillWorkLinks(x)}
+ if(demoIs()){
+  const x=load().find(y=>String(y.id)===String(id));
+  if(x)demoFillWorkLinks(x);
+  requestAnimationFrame(demoArrangeWorkEditDrawer);
+ }
 };
 const originalResetForm=resetForm;
-resetForm=function(...args){const r=originalResetForm(...args);if(demoIs())demoResetWorkLinks(true);return r};
+resetForm=function(...args){
+ const wasDemo=demoIs();
+ const r=originalResetForm(...args);
+ if(wasDemo){demoRestoreWorkEditLayout();demoResetWorkLinks(true)}
+ return r
+};
 
 async function demoSyncContractorTask(obj){
  const taskId=String(obj.id);
