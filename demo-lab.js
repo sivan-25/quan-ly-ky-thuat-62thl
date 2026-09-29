@@ -317,7 +317,12 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
      obj.imgs=mergedImgs;obj.i=mergedImgs.length;
      latest=latest.map(x=>String(x.id)!==String(id)?x:{...x,imgs:mergedImgs,i:mergedImgs.length});
      localStorage.setItem(storageKey,JSON.stringify(latest));
-     await appendTaskImages(id,uploaded,buildingId);
+
+     // DEMO fix: persist the COMPLETE task after Storage upload.
+     // This avoids the previous race where the file existed in Storage
+     // but the project snapshot could still keep imgs: [].
+     await syncTaskRecord("upsert_task",obj,buildingId);
+     toast("Đã tải xong "+uploaded.length+" hình");
     }
     await demoSyncContractorTask(obj);
     await demoFinalizeLinks(obj,old);
