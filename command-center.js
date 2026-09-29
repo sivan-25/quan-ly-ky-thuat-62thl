@@ -34,7 +34,7 @@ function alerts(){
  const out=[],td=todayC(),d7=new Date(td+"T00:00:00");d7.setDate(d7.getDate()+7);const soon=d7.toLocaleDateString("en-CA");
  activeRows().forEach(r=>{
   const b=r.building||{},bid=String(b.id||""),bn=b.name||bid;
-  (r.snapshot?.tasks||[]).forEach(t=>{if(isDone(t))return;const due=String(t.dueDate||"");if(due&&due<td)out.push({sev:3,bid,bn,module:"work",taskId:t.id,title:"Công việc quá hạn",detail:t.c||"Công việc kỹ thuật",tag:"Quá hạn",date:due});else if(due===td)out.push({sev:2,bid,bn,module:"work",taskId:t.id,title:"Đến hạn hôm nay",detail:t.c||"Công việc kỹ thuật",tag:t.priority||"Hôm nay",date:due});else if(priorityRank(t.priority)>=3)out.push({sev:t.priority==="Khẩn cấp"?3:2,bid,bn,module:"work",taskId:t.id,title:"Công việc ưu tiên "+String(t.priority||"").toLowerCase(),detail:t.c||"Công việc kỹ thuật",tag:t.priority||"Ưu tiên",date:due||t.d||""})});
+  (r.snapshot?.tasks||[]).forEach(t=>{if(isDone(t))return;const due=String(t.dueDate||""),assignee=String(t.a||"").trim();if(due&&due<td)out.push({sev:3,bid,bn,module:"work",taskId:t.id,title:"Công việc quá hạn",detail:t.c||"Công việc kỹ thuật",tag:"Quá hạn",date:due});else if(due===td)out.push({sev:2,bid,bn,module:"work",taskId:t.id,title:"Đến hạn hôm nay",detail:t.c||"Công việc kỹ thuật",tag:t.priority||"Hôm nay",date:due});else if(due&&due<=soon)out.push({sev:1,bid,bn,module:"work",taskId:t.id,title:"Sắp đến hạn công việc",detail:t.c||"Công việc kỹ thuật",tag:fmtC(due),date:due});else if(priorityRank(t.priority)>=3)out.push({sev:t.priority==="Khẩn cấp"?3:2,bid,bn,module:"work",taskId:t.id,title:"Công việc ưu tiên "+String(t.priority||"").toLowerCase(),detail:t.c||"Công việc kỹ thuật",tag:t.priority||"Ưu tiên",date:due||t.d||""});if(!assignee)out.push({sev:2,bid,bn,module:"work",taskId:t.id,title:"Chưa có người thực hiện",detail:t.c||"Công việc kỹ thuật",tag:"Cần phân công",date:due||t.d||""})});
   (r.ops?.incidents||[]).forEach(x=>{if(x.status!=="Đã đóng"&&(x.severity==="Khẩn cấp"||x.severity==="Cao"))out.push({sev:x.severity==="Khẩn cấp"?3:2,bid,bn,module:"incident",refId:x.id,title:"Sự cố "+x.severity.toLowerCase(),detail:(x.incident_code||"Sự cố")+" · "+(x.area||x.symptom||""),tag:x.status||"Đang mở",date:String(x.detected_at||"").slice(0,10)})});
   (r.ops?.inspections||[]).forEach(x=>{if(x.result_status!=="Đạt")out.push({sev:(x.result_status==="Không đạt"||x.result_status==="Cần khắc phục")?2:1,bid,bn,module:"inspection",refId:x.id,title:"Checklist "+String(x.result_status||"cần chú ý").toLowerCase(),detail:(x.inspection_code||"")+" · "+(x.template_name||"Kiểm tra định kỳ"),tag:x.result_status||"Cần chú ý",date:x.inspection_date||""})});
   (r.ops?.maintenance_assets||[]).forEach(x=>{const due=String(x.next_due_date||"");if(x.status==="Hỏng")out.push({sev:3,bid,bn,module:"maintenance",refId:x.id,title:"Thiết bị hỏng",detail:(x.code||"")+" · "+(x.name||"Thiết bị"),tag:"Hỏng",date:due});else if(due&&due<td)out.push({sev:3,bid,bn,module:"maintenance",refId:x.id,title:"Bảo trì quá hạn",detail:(x.code||"")+" · "+(x.name||"Thiết bị"),tag:fmtC(due),date:due});else if(due&&due<=soon)out.push({sev:1,bid,bn,module:"maintenance",refId:x.id,title:"Sắp đến hạn bảo trì",detail:(x.code||"")+" · "+(x.name||"Thiết bị"),tag:fmtC(due),date:due})});
@@ -59,13 +59,28 @@ function renderLists(){
  const n=$c("#ccAlertCount");if(n)n.textContent=list.length;
 }
 
+function auditLabel(x){
+ const action=String(x?.action||"").toLowerCase(),entity=String(x?.entity_type||"").toLowerCase();
+ const entityName=({task:"công việc",energy:"năng lượng",incidents:"sự cố",inspections:"checklist",technical_documents:"tài liệu",report_registry:"báo cáo",maintenance_assets:"thiết bị",maintenance_records:"bảo trì",inventory_materials:"vật tư",inventory_material_transactions:"xuất/nhập vật tư",inventory_tools:"dụng cụ",contractors:"nhà thầu",contractor_jobs:"công việc nhà thầu",building_people:"người thực hiện",snapshot:"dữ liệu dự án"})[entity]||"dữ liệu";
+ if(action==="insert")return "Thêm "+entityName;
+ if(action==="update")return "Cập nhật "+entityName;
+ if(action==="delete")return "Xóa "+entityName;
+ if(action==="upsert_task")return "Cập nhật công việc";
+ if(action==="delete_task")return "Xóa công việc";
+ if(action==="append_task_images")return "Thêm hình công việc";
+ if(action==="upsert_energy")return "Cập nhật năng lượng";
+ if(action==="delete_energy")return "Xóa chỉ số năng lượng";
+ if(action==="merge_snapshot")return "Đồng bộ dữ liệu dự án";
+ return "Cập nhật "+entityName;
+}
 function renderActivity(){
  const box=$c("#ccActivityList");if(!box)return;
  const ids=activeIds();
- const list=(activity||[]).filter(x=>ids.has(String(x.building_id||""))).slice(0,16);
+ const list=(activity||[]).filter(x=>ids.has(String(x.building_id||""))).slice(0,20);
  box.innerHTML=list.length?list.map(x=>{
    const when=x.saved_at?new Date(x.saved_at).toLocaleString("vi-VN",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
-   return '<button type="button" class="ccActivity" data-cc-project="'+escC(x.building_id)+'"><span class="ccActivityDot"></span><div><b>'+escC(x.building_id)+' · Cập nhật dữ liệu dự án</b><small>'+escC(x.actor||"Tài khoản dự án")+' · '+escC(when)+'</small></div><em>'+Number(x.task_count||0)+' CV</em></button>';
+   const label=auditLabel(x),summary=String(x.summary||"").trim();
+   return '<button type="button" class="ccActivity" data-cc-project="'+escC(x.building_id)+'"><span class="ccActivityDot"></span><div><b>'+escC(x.building_id)+' · '+escC(label)+'</b><small>'+escC(x.actor||"Hệ thống")+' · '+escC(when)+(summary?' · '+escC(summary):'')+'</small></div><em>Chi tiết</em></button>';
  }).join(""):'<div class="ccEmpty">Chưa có lịch sử cập nhật.</div>';
 }
 function renderCenter(){const root=ensureRoot();if(!root||!currentAccount?.is_admin)return;renderFilters();const a=alerts(),t=taskRows();renderSummary(a,t);renderProjects(a);renderLists();renderActivity();if(lastUpdated&&$c("#homeUpdatedAt"))$c("#homeUpdatedAt").textContent="Cập nhật "+new Date(lastUpdated).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}
