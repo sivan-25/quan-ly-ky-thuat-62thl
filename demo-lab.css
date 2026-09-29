@@ -486,3 +486,34 @@
   #app.demoProjectMode .demoHeroActions{grid-template-columns:1fr!important}
   #app.demoProjectMode .demoHeroActions .demoBtn{grid-column:auto!important}
 }
+
+
+/* DEMO_WORK_FORM_LABELS_AND_OPTIONS_20260929 */
+.demoWorkLinkGrid label{
+  color:var(--label-accent,#63d9ea)!important;
+  font-weight:800!important;
+}
+.demoWorkLinkGrid select{
+  color:#f2f6ff;
+}
+.demoWorkLinkGrid select option{
+  color:var(--work-muted-option,#8997ad);
+  background:#172238;
+}
+.demoWorkLinkGrid select option:checked,
+.demoWorkLinkGrid select option:hover{
+  color:var(--work-active-option,#f4f8ff);
+  background:#22314f;
+}
+.demoWorkLinkGrid select:has(option[value=""]:checked){
+  color:var(--work-muted-option,#8997ad)!important;
+  opacity:.72;
+}
+.demoWorkLinkGrid input::placeholder,
+.demoWorkLinkGrid textarea::placeholder{
+  color:var(--work-muted-option,#8997ad)!important;
+  opacity:.72;
+}
+.demoWorkLinkGrid #demoTaskLinkSummary{
+  color:var(--work-muted-option,#8997ad)!important;
+}
