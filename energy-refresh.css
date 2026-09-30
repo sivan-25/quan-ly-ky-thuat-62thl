@@ -1359,3 +1359,146 @@
     font-size:16px!important;
   }
 }
+
+
+/* ENERGY_MOBILE_READABILITY_20260930 */
+.energyDateCompact{display:none}
+@media(max-width:700px){
+  /* Date: show a short DD/MM/YYYY value while preserving the native picker. */
+  #app #energyPage #energyForm>label:first-of-type{
+    position:relative!important;
+    overflow:hidden!important;
+  }
+  #app #energyPage #energyDate{
+    height:48px!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding:0 42px 0 14px!important;
+    color:transparent!important;
+    -webkit-text-fill-color:transparent!important;
+    text-align:left!important;
+    overflow:hidden!important;
+  }
+  #app #energyPage #energyDate::-webkit-date-and-time-value,
+  #app #energyPage #energyDate::-webkit-datetime-edit{
+    opacity:0!important;
+  }
+  #app #energyPage #energyDate::-webkit-calendar-picker-indicator{
+    right:12px!important;
+    opacity:.9!important;
+    filter:invert(90%) sepia(8%) saturate(420%) hue-rotate(180deg)!important;
+  }
+  #app #energyPage .energyDateCompact{
+    position:absolute!important;
+    left:14px!important;
+    right:48px!important;
+    bottom:13px!important;
+    z-index:2!important;
+    display:block!important;
+    pointer-events:none!important;
+    overflow:hidden!important;
+    color:#f5f8ff!important;
+    font-size:16px!important;
+    font-weight:650!important;
+    line-height:1.15!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+
+  /* KPI / summary cards */
+  #app #energyPage .energySummaryCards article{
+    border-color:#31415e!important;
+    background:#10192c!important;
+  }
+  #app #energyPage .energySummaryCards small{
+    color:#c2cde0!important;
+    font-size:12px!important;
+    font-weight:560!important;
+    letter-spacing:0!important;
+  }
+  #app #energyPage .energySummaryCards strong{
+    color:#ffffff!important;
+    font-size:20px!important;
+    font-weight:760!important;
+  }
+
+  /* Entry form labels, values and helper text */
+  #app #energyPage .energyCardTitle h2,
+  #app #energyPage #energyForm label>span{
+    color:#eef4ff!important;
+  }
+  #app #energyPage .energyCardTitle h2{
+    font-size:19px!important;
+    font-weight:720!important;
+  }
+  #app #energyPage #energyUnitHint,
+  #app #energyPage .energyFormHelp{
+    color:#aebbd0!important;
+  }
+  #app #energyPage #energyForm input:not([type="file"]),
+  #app #energyPage #energyForm textarea,
+  #app #energyPage #energyPeopleButton{
+    border-color:#40506d!important;
+    background:#18233d!important;
+    color:#f5f8ff!important;
+    -webkit-text-fill-color:#f5f8ff;
+  }
+  #app #energyPage #energyValue::placeholder,
+  #app #energyPage #energyNote::placeholder{
+    color:#8998b2!important;
+    opacity:1!important;
+  }
+  #app #energyPage #energyPeopleButton .peopleButtonSummary>em,
+  #app #energyPage #energyPeopleButton>span{
+    color:#c2cde0!important;
+  }
+  #app #energyPage .energyUploadPrompt{
+    border-color:#42536f!important;
+    color:#dbe5f4!important;
+  }
+  #app #energyPage .energyUploadPrompt b{color:#eaf2ff!important}
+  #app #energyPage .energyUploadPrompt small{color:#97a7bf!important}
+
+  /* Mobile history cards */
+  #app #energyPage .proEnergyCard{
+    border-color:#33445f!important;
+    background:#10192c!important;
+    color:#e8eef8!important;
+    box-shadow:0 8px 20px rgba(4,10,20,.18)!important;
+  }
+  #app #energyPage .proEnergyCard .mobileCardTop small{
+    color:#bcc9dc!important;
+    font-size:11px!important;
+  }
+  #app #energyPage .proEnergyCard .mobileCardTop h4{
+    color:#ffffff!important;
+    font-size:18px!important;
+    font-weight:760!important;
+  }
+  #app #energyPage .proEnergyCard .mobileDiff{
+    color:#52e3bd!important;
+    font-size:13px!important;
+    font-weight:720!important;
+  }
+  #app #energyPage .proEnergyCard>p{
+    color:#d4deec!important;
+    font-size:12px!important;
+    line-height:1.5!important;
+  }
+  #app #energyPage .proEnergyCard .mobileCardFoot{
+    border-top-color:#2b3953!important;
+  }
+  #app #energyPage .proEnergyCard .mobileCardFoot>span{
+    color:#aebbd0!important;
+    font-size:10.5px!important;
+  }
+  #app #energyPage .proEnergyCard .mobileCardFoot>button{
+    border-color:#3b506f!important;
+    background:#17243b!important;
+    color:#eaf2ff!important;
+  }
+
+  /* History heading on small screens */
+  #app #energyPage .energyTableTop h2{color:#f5f8ff!important}
+  #app #energyPage .energyTableTop p{color:#a9b7cc!important}
+}
