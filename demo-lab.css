@@ -1414,3 +1414,22 @@
 #app.demoProjectMode #workPage .workTaskTable tbody tr:hover .sttCell{
   color:#b9f4ff!important;
 }
+
+
+/* DEMO WORK NOTE CONTRAST — keep note text readable on navy rows */
+#app.demoSampleProject.workMode #workPage .premiumTableCard td.noteCell,
+#app.demoProjectMode.workMode #workPage .premiumTableCard td.noteCell{
+  color:#d2deef!important;
+  font-size:12.5px!important;
+  font-weight:450!important;
+  line-height:1.5!important;
+  opacity:1!important;
+}
+#app.demoSampleProject.workMode #workPage .premiumTableCard td.noteCell .mutedDash,
+#app.demoProjectMode.workMode #workPage .premiumTableCard td.noteCell .mutedDash{
+  color:#8192ad!important;
+}
+#app.demoSampleProject.workMode #workPage .premiumTableCard tbody tr:hover td.noteCell,
+#app.demoProjectMode.workMode #workPage .premiumTableCard tbody tr:hover td.noteCell{
+  color:#f0f5ff!important;
+}
