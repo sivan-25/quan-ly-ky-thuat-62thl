@@ -1736,10 +1736,22 @@ document.querySelectorAll("[data-energy-type]").forEach(b=>b.onclick=()=>{
  resetEnergyForm();
  renderEnergy();
 });
+function syncEnergyDateCompact(){
+ const input=$("#energyDate"),out=$("#energyDateCompact");
+ if(!input||!out)return;
+ const v=String(input.value||"");
+ if(/^\d{4}-\d{2}-\d{2}$/.test(v)){
+  const [y,m,d]=v.split("-");
+  out.textContent=d+"/"+m+"/"+y;
+ }else out.textContent="—";
+}
+$("#energyDate")?.addEventListener("input",syncEnergyDateCompact);
+$("#energyDate")?.addEventListener("change",syncEnergyDateCompact);
+
 function resetEnergyForm(){
  const m=ENERGY_META[energyType];
  $("#energyEditId").value="";
- $("#energyDate").value=today();
+ $("#energyDate").value=today();syncEnergyDateCompact();
  $("#energyValue").value="";
  setPeopleSelected("energy",[]);
  $("#energyNote").value="";
@@ -1898,7 +1910,7 @@ window.editEnergy=id=>{
  b.classList.toggle("active",selected);
  b.setAttribute("aria-selected",String(selected));
 });
- $("#energyEditId").value=x.id;$("#energyDate").value=x.date;$("#energyValue").value=x.value;setPeopleSelected("energy",performerArray(x));$("#energyNote").value=x.note||"";
+ $("#energyEditId").value=x.id;$("#energyDate").value=x.date;syncEnergyDateCompact();$("#energyValue").value=x.value;setPeopleSelected("energy",performerArray(x));$("#energyNote").value=x.note||"";
  $("#energyImagePreview").innerHTML=x.image?mediaImgHtml(x.image,"")+'<span>Ảnh hiện tại</span>':"";hydrateMediaImages($("#energyImagePreview"));
  $("#energySaveBtn").textContent="Cập nhật chỉ số";$("#energyCancelEdit").classList.remove("hide");renderEnergy();
  window.scrollTo({top:0,behavior:"smooth"});
