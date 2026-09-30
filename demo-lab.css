@@ -2014,3 +2014,112 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     border-radius:8px!important;
   }
 }
+
+/* ESTA_DEMO_ENERGY_TOPBAR_FINAL_20260930 */
+/* Energy was the one remaining module that still hid the shared topbar on desktop.
+   Force the Công việc-standard bar to be the visible command bar in DEMO only. */
+#app.demoExactProject.demoProjectMode.energyMode .estaTopbar{
+  display:flex!important;
+  height:66px!important;
+  min-height:66px!important;
+  padding:0 20px!important;
+  gap:14px!important;
+  border-bottom:1px solid #214c7f!important;
+  background:linear-gradient(90deg,#10366a 0%,#163f73 52%,#0d3568 100%)!important;
+  box-shadow:0 5px 18px rgba(5,35,76,.16)!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode #topEnergyTitle{
+  display:flex!important;
+  align-items:center!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode #topEnergyTitle .topModuleIcon{
+  width:46px!important;
+  height:46px!important;
+  flex:0 0 46px!important;
+  border:1px solid rgba(126,196,255,.28)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#00e6f3!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode #topEnergyTitle h1{
+  color:#f6f8ff!important;
+  font-size:22px!important;
+  line-height:1.1!important;
+  font-weight:650!important;
+  letter-spacing:-.2px!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode .headerTools{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  margin-left:auto!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode .headerSearch{
+  display:flex!important;
+  width:170px!important;
+  min-width:120px!important;
+  max-width:190px!important;
+  height:44px!important;
+  border:1px solid rgba(177,214,247,.26)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#e7f4ff!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode .headerSearch input{
+  color:#f6fbff!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode .headerSearch input::placeholder{
+  color:#b8cee5!important;
+  opacity:1!important;
+}
+#app.demoExactProject.demoProjectMode.energyMode .headerBell{
+  display:grid!important;
+  width:44px!important;
+  height:44px!important;
+  border:1px solid rgba(177,214,247,.24)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#f3f8ff!important;
+}
+
+/* Remove the old Energy-only command header so the page has only one header standard. */
+#app.demoExactProject.demoProjectMode.energyMode #energyPage .energyHead{
+  display:none!important;
+}
+
+/* The Energy desktop layout previously assumed its own 80px header and a hidden global bar.
+   Recalculate the available canvas now that the shared 66px bar is visible. */
+@media(min-width:901px){
+  #app.demoExactProject.demoProjectMode.energyMode main{
+    height:100vh!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  #app.demoExactProject.demoProjectMode.energyMode #energyPage:not(.hide){
+    height:calc(100vh - 66px)!important;
+    max-height:calc(100vh - 66px)!important;
+    min-height:0!important;
+    grid-template-rows:auto auto minmax(0,1fr)!important;
+    align-content:stretch!important;
+  }
+}
+
+/* Keep the same navy standard on phones; the Energy page must not fall back to its legacy black bar. */
+@media(max-width:900px){
+  #app.demoExactProject.demoProjectMode.energyMode .estaTopbar{
+    display:flex!important;
+    min-height:62px!important;
+    height:62px!important;
+    padding:0 10px!important;
+    background:linear-gradient(90deg,#10366a 0%,#163f73 52%,#0d3568 100%)!important;
+    border-bottom:1px solid #214c7f!important;
+  }
+  #app.demoExactProject.demoProjectMode.energyMode #topEnergyTitle h1{
+    font-size:18px!important;
+  }
+  #app.demoExactProject.demoProjectMode.energyMode #topEnergyTitle .topModuleIcon{
+    width:34px!important;
+    height:34px!important;
+    flex-basis:34px!important;
+  }
+}
