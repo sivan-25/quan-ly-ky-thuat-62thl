@@ -888,6 +888,33 @@ def _prepare_energy_data(payload, token, temp_dir):
     data["rows"].sort(key=lambda x: (x.get("date") or ""))
     return data, missing_images
 
+def _prepare_tools_data(payload):
+    tools = payload.get("tools") or []
+    if not isinstance(tools, list) or len(tools) > 1000:
+        raise ValueError("Dữ liệu dụng cụ không hợp lệ")
+
+    data = {
+        "building": str(payload.get("building") or "[CẦN BỔ SUNG]"),
+        "report_date": str(payload.get("report_date") or ""),
+        "period_label": str(payload.get("period_label") or "DANH MỤC HIỆN TẠI"),
+        "tools": [],
+    }
+    for row in tools:
+        if not isinstance(row, dict):
+            continue
+        data["tools"].append({
+            "name": str(row.get("name") or ""),
+            "brand": str(row.get("brand") or ""),
+            "qty": row.get("qty") or 0,
+            "unit": str(row.get("unit") or ""),
+            "location": str(row.get("location") or ""),
+            "keeper": str(row.get("keeper") or ""),
+            "condition_status": str(row.get("condition_status") or ""),
+            "acquired_date": str(row.get("acquired_date") or ""),
+            "note": str(row.get("note") or ""),
+        })
+    return data
+
 def generate_pdf(payload, token):
     with tempfile.TemporaryDirectory(prefix="esta_report_") as td:
         report_type = str(payload.get("report_type") or "work").lower()
@@ -897,6 +924,11 @@ def generate_pdf(payload, token):
             data, missing_images = _prepare_energy_data(payload, token, td)
             build_energy_doc(out_path, data)
             item_count = len(data["rows"])
+        elif report_type == "tools":
+            data = _prepare_tools_data(payload)
+            missing_images = 0
+            build_tools_doc(out_path, data)
+            item_count = len(data["tools"])
         else:
             data, missing_images = _prepare_data(payload, token, td)
             build_doc(
