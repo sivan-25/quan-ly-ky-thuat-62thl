@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260930-work-toolbar-stable02"><link rel="stylesheet" href="energy-refresh.css?v=20260930-68-energy04">
+</style><link rel="stylesheet" href="unified.css?v=20260930-work-header03"><link rel="stylesheet" href="energy-refresh.css?v=20260930-68-energy04">
 <style id="esta-mobile-ios-no-zoom">
 /* iOS Safari zooms focused form controls below 16px. This important layer
    takes precedence over the existing unlayered !important form styles. */
@@ -862,7 +862,16 @@
   </div>
 
   <div class="headerTools">
-    
+    <div id="workControls" class="workHeaderActions" role="group" aria-label="Bộ lọc và xuất báo cáo công việc">
+    <div class="filterWrap workFilterWrap">
+      <button id="toggleFilter" class="estaReportPdfBtn" type="button" title="Bộ lọc" aria-label="Mở bộ lọc" aria-controls="filterBar" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6.2 7.1v5.2l-3.6 1.8v-7L4 5z"/></svg>
+        <span>Bộ lọc</span>
+      </button>
+      <div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label class="filterDateField">Từ ngày<input id="fromDate" type="date"></label><label class="filterDateField">Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div>
+    </div>
+    <button id="exportBtn" class="estaReportPdfBtn" type="button" title="Xuất PDF" aria-label="Xuất PDF công việc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span></button>
+    </div>
     <div class="headerSearch">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
       <input id="globalSearch" placeholder="Tìm công việc...">
@@ -1067,16 +1076,7 @@
 
 
 <section class="stats"><article data-work-stat-filter="today" role="button" tabindex="0" aria-pressed="false"><i class="blue"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h5"/></svg></i><div><small>CÔNG VIỆC HÔM NAY</small><strong id="statToday">0</strong></div></article><article data-work-stat-filter="doing" role="button" tabindex="0" aria-pressed="false"><i class="orange"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i><div><small>ĐANG XỬ LÝ</small><strong id="statDoing">0</strong></div></article><article data-work-stat-filter="done" role="button" tabindex="0" aria-pressed="false"><i class="green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></i><div><small>HOÀN THÀNH</small><strong id="statDone">0</strong></div></article><article data-work-stat-filter="waiting" role="button" tabindex="0" aria-pressed="false"><i class="red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></i><div><small>CHỜ XỬ LÝ</small><strong id="statWait">0</strong></div></article></section>
-<section class="tableCard premiumTableCard"><div class="tableTop workTableMeta"><span id="count"></span><div id="workControls" class="workTableActions" role="group" aria-label="Bộ lọc và xuất báo cáo công việc">
-    <div class="filterWrap workFilterWrap">
-      <button id="toggleFilter" class="estaReportPdfBtn" type="button" title="Bộ lọc" aria-label="Mở bộ lọc" aria-controls="filterBar" aria-expanded="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6.2 7.1v5.2l-3.6 1.8v-7L4 5z"/></svg>
-        <span>Bộ lọc</span>
-      </button>
-      <div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label class="filterDateField">Từ ngày<input id="fromDate" type="date"></label><label class="filterDateField">Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div>
-    </div>
-    <button id="exportBtn" class="estaReportPdfBtn" type="button" title="Xuất PDF" aria-label="Xuất PDF công việc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span></button>
-</div></div><div class="desktopTable"><table class="workTaskTable"><colgroup><col style="width:3.5%"><col style="width:23.5%"><col style="width:8%"><col style="width:10%"><col style="width:8%"><col style="width:10.5%"><col style="width:13%"><col style="width:17.5%"><col style="width:6%"></colgroup><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
+<section class="tableCard premiumTableCard"><div class="tableTop workTableMeta"><span id="count"></span></div><div class="desktopTable"><table class="workTaskTable"><colgroup><col style="width:3.5%"><col style="width:23.5%"><col style="width:8%"><col style="width:10%"><col style="width:8%"><col style="width:10.5%"><col style="width:13%"><col style="width:17.5%"><col style="width:6%"></colgroup><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
 </div>
 <div id="incidentPage" class="page demoFeaturePage hide">
   <section class="demoHero"><div class="demoHeroCopy"><span>ESTA · INCIDENT CONTROL</span><h1>Sự cố & Defect</h1><p>Quản lý toàn bộ vòng đời sự cố và liên kết trực tiếp sang Công việc.</p></div><div class="demoHeroActions"><button id="demoIncidentAdd" class="demoBtn primary" type="button" onclick="demoAddIncident()">+ Thêm sự cố</button><button class="demoBtn" type="button" onclick="demoRefresh()">Làm mới</button><button class="demoBtn" type="button" onclick="demoExportReport('incident')">Xuất PDF</button></div></section>

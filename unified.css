@@ -5091,39 +5091,38 @@ label,span,b,strong,small,p,h1,h2,h3,h4,h5,h6,a,summary,details{
   font-family:"Inter",sans-serif!important;
 }
 
-/* Work controls belong to the visible page, independent of shell mode/classes.
-   One pair of real controls; never proxy clicks through a hidden topbar. */
+/* One pair of work controls in the topbar. Visibility follows the actual page,
+   so background renders or unrelated shell classes cannot hide these actions. */
 #app #workPage .workTableMeta{
   display:flex!important;
   align-items:center!important;
-  justify-content:space-between!important;
-  flex-wrap:wrap!important;
-  gap:10px!important;
-  min-height:64px!important;
+  min-height:54px!important;
 }
 #app #workPage .workTableMeta #count{
-  order:0!important;
-  margin:0 auto 0 0!important;
+  margin:0!important;
   white-space:nowrap!important;
 }
-#app #workPage #workControls{
+#app #workControls{
+  display:none!important;
+}
+#app:has(#workPage:not(.hide)) #workControls{
   display:flex!important;
   align-items:center!important;
   justify-content:flex-end!important;
   flex:0 0 auto!important;
   gap:8px!important;
-  margin-left:auto!important;
+  margin:0!important;
   visibility:visible!important;
   opacity:1!important;
 }
-#app #workPage #workControls .workFilterWrap{
+#app #workControls .workFilterWrap{
   display:block!important;
   position:relative!important;
   flex:0 0 auto!important;
   visibility:visible!important;
 }
-#app #workPage #workControls #toggleFilter,
-#app #workPage #workControls #exportBtn{
+#app #workControls #toggleFilter,
+#app #workControls #exportBtn{
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -5139,12 +5138,13 @@ label,span,b,strong,small,p,h1,h2,h3,h4,h5,h6,a,summary,details{
   font-size:14px!important;
   font-weight:600!important;
 }
-#app #workPage #workControls button span{
+#app #workControls button span{
   display:inline!important;
   font-size:14px!important;
   color:inherit!important;
+  white-space:nowrap!important;
 }
-#app #workPage #workControls #filterBar:not(.hide){
+#app #workControls #filterBar:not(.hide){
   display:grid!important;
   position:fixed!important;
   right:auto!important;
@@ -5156,40 +5156,63 @@ label,span,b,strong,small,p,h1,h2,h3,h4,h5,h6,a,summary,details{
   overflow-y:auto!important;
   z-index:5000!important;
 }
-#app #workPage #workControls #filterBar.hide{
+#app #workControls #filterBar.hide{
   display:none!important;
 }
-#app #workPage #workControls #filterBar>*{
+#app #workControls #filterBar>*{
   min-width:0!important;
   max-width:100%!important;
 }
-#app.workMode .headerTools{
-  flex:0 1 260px!important;
-  min-width:0!important;
-  max-width:260px!important;
-  margin-left:auto!important;
+#app:has(#workPage:not(.hide)) .estaTopbar{
+  backdrop-filter:none!important;
 }
-#app.workMode .headerSearch{
-  flex:1 1 190px!important;
-  width:190px!important;
+#app:has(#workPage:not(.hide)) .headerTools{
+  display:flex!important;
+  align-items:center!important;
+  flex:0 1 auto!important;
   min-width:0!important;
-  max-width:210px!important;
+  max-width:none!important;
+  margin-left:auto!important;
+  visibility:visible!important;
+}
+#app:has(#workPage:not(.hide)) .headerSearch{
+  flex:1 1 170px!important;
+  width:170px!important;
+  min-width:120px!important;
+  max-width:190px!important;
+}
+@media(max-width:1100px){
+  #app:has(#workPage:not(.hide)) .account{
+    display:none!important;
+  }
+  #app:has(#workPage:not(.hide)) .headerSearch{
+    display:none!important;
+  }
 }
 @media(max-width:760px){
-  #app #workPage .workTableMeta{
+  #app:has(#workPage:not(.hide)) .estaTopbar{
+    height:auto!important;
+    min-height:62px!important;
+    flex-wrap:wrap!important;
     padding:10px!important;
-    gap:8px!important;
+    row-gap:8px!important;
   }
-  #app #workPage #workControls{
+  #app:has(#workPage:not(.hide)) .headerTools{
+    flex:0 0 100%!important;
+    width:100%!important;
+    justify-content:flex-end!important;
+    margin-left:0!important;
+  }
+  #app #workControls{
     gap:6px!important;
   }
-  #app #workPage #workControls #toggleFilter,
-  #app #workPage #workControls #exportBtn{
+  #app #workControls #toggleFilter,
+  #app #workControls #exportBtn{
     min-width:96px!important;
     padding:0 10px!important;
   }
-  #app #workPage #workControls #filterBar select,
-  #app #workPage #workControls #filterBar input{
+  #app #workControls #filterBar select,
+  #app #workControls #filterBar input{
     font-size:16px!important;
   }
 }
