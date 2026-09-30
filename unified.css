@@ -4816,6 +4816,107 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
   border-color:#315269!important;
 }
 
+
+/* ESTA_PDF_BUTTON_VISIBILITY_20260930 */
+.estaReportPdfBtn{
+  min-width:118px!important;
+  height:38px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  padding:0 13px!important;
+  border:1px solid #2aaec0!important;
+  border-radius:10px!important;
+  background:#122238!important;
+  color:#eef7ff!important;
+  box-shadow:0 5px 14px rgba(8,34,56,.14)!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+}
+.estaReportPdfBtn svg{
+  width:17px!important;
+  height:17px!important;
+  flex:0 0 17px!important;
+  fill:none!important;
+  stroke:#42dceb!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.estaReportPdfBtn:hover{
+  border-color:#52d9e8!important;
+  background:#182c46!important;
+  color:#fff!important;
+}
+#app #workPage .premiumTableCard .tableTop.workTableMeta{
+  justify-content:space-between!important;
+  gap:10px!important;
+}
+#app #workPage #workExportPdfVisible{
+  display:inline-flex!important;
+  margin-left:auto!important;
+}
+#app #energyPage .energyTopTools{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+}
+#app #energyPage #energyExportPdf{
+  display:inline-flex!important;
+  flex:0 0 auto!important;
+}
+#app #inventoryToolsPane #toolExportPdf{
+  display:inline-flex!important;
+  width:auto!important;
+}
+@media(max-width:760px){
+  .estaReportPdfBtn{
+    min-width:104px!important;
+    height:40px!important;
+    padding:0 11px!important;
+    font-size:10.5px!important;
+  }
+  #app #workPage .premiumTableCard .tableTop.workTableMeta{
+    display:flex!important;
+    justify-content:space-between!important;
+    align-items:center!important;
+  }
+  #app #workPage #workExportPdfVisible{
+    display:inline-flex!important;
+  }
+  #app #energyPage .energyTopTools{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:8px!important;
+  }
+  #app #energyPage .energySearch{
+    width:100%!important;
+    min-width:0!important;
+  }
+  #app #energyPage #energyExportPdf{
+    display:inline-flex!important;
+  }
+  #app #inventoryToolsPane .inventoryToolbarActions{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:8px!important;
+  }
+  #app #inventoryToolsPane .inventorySearch{
+    grid-column:1/-1!important;
+  }
+  #app #inventoryToolsPane #toolExportPdf{
+    display:inline-flex!important;
+    width:auto!important;
+  }
+}
+
 /* IMAGE_ONLY_VIEWER_FINAL */
 #viewer.viewer.imageOnlyViewer{
   z-index:5000!important;
