@@ -7,6 +7,10 @@ function contractorStatusClass(status=""){
 function contractorJobStatusClass(status=""){
   return status==="Hoàn thành"?"done":status==="Đang thực hiện"?"doing":status==="Chờ xử lý"?"waiting":"paused";
 }
+function contractorCauseValue(v){
+  const s=String(v||"").trim();
+  return !s||["[Chưa xác định]","Chưa xác định","Chưa ghi nhận"].includes(s)||/^Liên kết sự cố\s+/i.test(s)?"":s;
+}
 function contractorStoredJobsFor(id){
   return contractorJobs.filter(x=>String(x.contractor_id)===String(id));
 }
@@ -31,7 +35,7 @@ function contractorLinkedTaskJobs(id){
         work_date:t.d||today(),
         completed_date:completed,
         work_content:t.c||"Công việc liên kết",
-        cause:t.cause||(t.incidentCode?("Liên kết sự cố "+t.incidentCode):""),
+        cause:contractorCauseValue(t.cause),
         solution:t.result||"",
         status:t.s||"Đang thực hiện",
         note:t.n||"",
@@ -210,7 +214,7 @@ function renderContractorJobs(){
       '<div class="contractorJobTop"><div><small>NGÀY THỰC HIỆN</small><b>'+fmt(x.work_date)+'</b></div><div><small>HOÀN THÀNH</small><b>'+(x.completed_date?fmt(x.completed_date):"—")+'</b></div><span class="contractorJobStatus '+contractorJobStatusClass(x.status)+'">'+esc(x.status)+'</span></div>'+
       sourceLine+
       '<div class="contractorJobContent"><span>NỘI DUNG CÔNG VIỆC</span><p>'+esc(x.work_content||"—")+'</p></div>'+
-      '<div class="contractorJobDiagnosis"><div><span>NGUYÊN NHÂN</span><p>'+esc(String(x.cause||"").trim()||"—")+'</p></div><div><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.solution||"Chưa ghi nhận")+'</p></div></div>'+
+      '<div class="contractorJobDiagnosis"><div><span>NGUYÊN NHÂN</span><p>'+esc(contractorCauseValue(x.cause)||"—")+'</p></div><div><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.solution||"Chưa ghi nhận")+'</p></div></div>'+
       (x.note?'<div class="contractorJobNote"><span>GHI CHÚ</span><p>'+esc(x.note)+'</p></div>':'')+
       photos+actions+
       '</div></article>';
@@ -295,8 +299,8 @@ function contractorDirectoryReportHtml(){
 function contractorDetailReportHtml(){
   const c=contractors.find(x=>String(x.id)===String(selectedContractorId));if(!c)return "";
   const jobs=contractorJobsFor(c.id).sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")));
-  const hasCause=jobs.some(x=>String(x.cause||"").trim());
-  const rows=jobs.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+fmt(x.work_date)+'</td><td>'+(x.completed_date?fmt(x.completed_date):"—")+'</td><td><b>'+esc(x.work_content||"—")+'</b></td>'+(hasCause?'<td>'+esc(String(x.cause||"").trim()||"—")+'</td>':"")+'<td>'+esc(x.solution||"—")+'</td><td>'+esc(x.status)+'</td></tr>').join("");
+  const hasCause=jobs.some(x=>!!contractorCauseValue(x.cause));
+  const rows=jobs.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+fmt(x.work_date)+'</td><td>'+(x.completed_date?fmt(x.completed_date):"—")+'</td><td><b>'+esc(x.work_content||"—")+'</b></td>'+(hasCause?'<td>'+esc(contractorCauseValue(x.cause)||"—")+'</td>':"")+'<td>'+esc(x.solution||"—")+'</td><td>'+esc(x.status)+'</td></tr>').join("");
   const causeHead=hasCause?"<th>Nguyên nhân</th>":"";
   return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Hồ sơ '+esc(c.name)+'</title><style>'+inventoryPdfCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>HỒ SƠ nhà thầu: '+esc(c.name)+'</h1><p>'+esc(c.specialty||"nhà thầu")+' · '+esc(c.status)+'</p></div><div class="summary"><div><span>Số điện thoại</span><b>'+esc(c.phone||"—")+'</b></div><div><span>Người liên hệ</span><b>'+esc(c.contact_name||"—")+'</b></div><div><span>Thời hạn hợp đồng</span><b>'+esc([c.contract_start_date?fmt(c.contract_start_date):"",c.contract_end_date?fmt(c.contract_end_date):""].filter(Boolean).join(" → ")||"—")+'</b></div><div><span>Tổng công việc</span><b>'+jobs.length+'</b></div></div><table><thead><tr><th>STT</th><th>Ngày thực hiện</th><th>Hoàn thành</th><th>Nội dung</th>'+causeHead+'<th>Hướng xử lý</th><th>Tình trạng</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Hồ sơ nhà thầu · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
 }
