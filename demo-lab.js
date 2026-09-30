@@ -66,11 +66,22 @@ function demoMatches(values){
 function demoSpecialSearchPlaceholder(name){
  return ({incident:"Tìm sự cố, khu vực, thiết bị...",inspection:"Tìm checklist, mã kiểm tra...",documents:"Tìm tài liệu, hệ thống, nhà thầu...",reports:"Tìm báo cáo, kỳ, mã báo cáo..."})[name]||"Tìm...";
 }
+function demoModuleSearchPlaceholder(name){
+ return ({
+  work:"Tìm công việc...",
+  energy:"Tìm chỉ số, ngày, người thực hiện...",
+  inventory:"Tìm vật tư, dụng cụ...",
+  maintenance:"Tìm thiết bị bảo trì...",
+  contractor:"Tìm nhà thầu...",
+  construction:"Tìm vật tư thi công..."
+ })[name]||"Tìm trong dự án...";
+}
 function demoSetProjectMode(){
  const shell=demoIs();
  const on=shell&&($("#adminPage")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoProjectShell",shell);
  $("#app")?.classList.toggle("demoProjectMode",on);
+ $("#app")?.classList.toggle("demoExactProject",on&&String(currentBuilding?.id||"")==="DEMO");
  $("#app")?.classList.toggle("demoSampleProject",on&&["DEMO","68PĐL"].includes(String(currentBuilding?.id||"")));
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
@@ -107,7 +118,10 @@ showModule=function(name){
  demoHideSpecialPages();
  originalShowModule(name);
  const generalSearch=$("#globalSearch");
- if(generalSearch)generalSearch.placeholder="Tìm công việc...";
+ if(generalSearch){
+  generalSearch.value="";
+  generalSearch.placeholder=demoModuleSearchPlaceholder(name);
+ }
  if(demoIs()){
   demoSetProjectMode();
   if(name==="work")demoEnsureWorkPanel();
@@ -538,13 +552,31 @@ function demoBindBell(){
   p.classList.toggle("hide");
  });
  $("#globalSearch")?.addEventListener("input",()=>{
- if(!demoIs())return;
- const visible=DEMO_MODULES.find(n=>!$("#"+n+"Page")?.classList.contains("hide"));
- if(visible==="incident")demoRenderIncidents();
- if(visible==="inspection")demoRenderInspections();
- if(visible==="documents")demoRenderDocuments();
- if(visible==="reports")demoRenderReports();
-});
+  if(!demoIs())return;
+  const q=$("#globalSearch")?.value||"";
+  const visible=DEMO_MODULES.find(n=>!$("#"+n+"Page")?.classList.contains("hide"));
+  if(visible==="incident")return demoRenderIncidents();
+  if(visible==="inspection")return demoRenderInspections();
+  if(visible==="documents")return demoRenderDocuments();
+  if(visible==="reports")return demoRenderReports();
+
+  if($("#app")?.classList.contains("energyMode")){
+   if($("#energyQuickSearch"))$("#energyQuickSearch").value=q;
+   if(typeof renderEnergy==="function")renderEnergy();
+  }else if($("#app")?.classList.contains("inventoryMode")){
+   if($("#materialSearch"))$("#materialSearch").value=q;
+   if($("#toolSearch"))$("#toolSearch").value=q;
+   if(typeof renderMaterials==="function")renderMaterials();
+   if(typeof renderTools==="function")renderTools();
+  }else if($("#app")?.classList.contains("maintenanceMode")){
+   if($("#maintenanceSearch"))$("#maintenanceSearch").value=q;
+   if(typeof renderMaintenance==="function")renderMaintenance();
+  }else if($("#app")?.classList.contains("constructionMode")){
+   if($("#constructionSearch"))$("#constructionSearch").value=q;
+   if(typeof renderConstructionMaterials==="function")renderConstructionMaterials();
+  }
+ });
+
 
 document.addEventListener("click",e=>{const p=$("#demoNoticePanel");if(p&&!p.contains(e.target)&&!bell.contains(e.target))p.classList.add("hide")});
 }
