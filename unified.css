@@ -4596,6 +4596,88 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   background:transparent!important;
 }
 
+/* MAINTENANCE MONTH RAIL — mirror Inventory material tracking */
+#app.maintenanceMode #maintenancePage .maintenanceSchedule{
+  border-color:#25314a!important;
+  background:#11182b!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:6px!important;
+  margin:14px 18px 16px!important;
+  padding:16px 18px 18px!important;
+  border:1px solid #293650!important;
+  border-radius:17px!important;
+  background:
+    linear-gradient(135deg,#111b30 0%,#13243a 58%,#103442 100%)!important;
+  box-shadow:none!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button{
+  min-width:0!important;
+  height:50px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  padding:0 6px!important;
+  border:1px solid #30405b!important;
+  border-radius:9px!important;
+  background:#162138!important;
+  color:#9aa9c2!important;
+  box-shadow:none!important;
+  transition:border-color .16s ease,background .16s ease,color .16s ease!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button span{
+  color:#b3bfd2!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:500!important;
+  letter-spacing:.12px!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button b{
+  margin:0!important;
+  color:#eef5ff!important;
+  font-size:13px!important;
+  line-height:1.1!important;
+  font-weight:600!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button:hover:not(.active){
+  border-color:#46627e!important;
+  background:#1a2a42!important;
+  color:#eef5ff!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button:hover:not(.active) span{
+  color:#eef5ff!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button.active{
+  border-color:#32cadb!important;
+  background:#20b4c8!important;
+  color:#06131f!important;
+  box-shadow:0 0 0 1px rgba(24,217,243,.08),0 6px 18px rgba(8,125,143,.18)!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button.active span,
+#app.maintenanceMode #maintenancePage .maintenanceMonthStrip button.active b{
+  color:#06131f!important;
+}
+@media(max-width:1180px){
+  #app.maintenanceMode #maintenancePage .maintenanceMonthStrip{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:760px){
+  #app.maintenanceMode #maintenancePage .maintenanceMonthStrip{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:6px!important;
+    margin:10px!important;
+    padding:13px!important;
+  }
+  #app.maintenanceMode #maintenancePage .maintenanceMonthStrip button{
+    height:46px!important;
+  }
+}
+
 /* IMAGE_ONLY_VIEWER_FINAL */
 #viewer.viewer.imageOnlyViewer{
   z-index:5000!important;
