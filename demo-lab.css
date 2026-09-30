@@ -1641,3 +1641,229 @@ body.demoModalOpen{overflow:hidden!important}
     font-size:13px;
   }
 }
+
+
+/* CHECKLIST_CREATE_MODAL_20260930 */
+body.demoChecklistModalOpen{overflow:hidden!important}
+#demoChecklistModal{
+  position:fixed;
+  inset:0;
+  z-index:4200;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(4,10,20,.72);
+  backdrop-filter:blur(8px);
+}
+#demoChecklistModal.hide{display:none!important}
+#demoChecklistModal .demoChecklistModalCard{
+  width:min(820px,calc(100vw - 32px));
+  max-height:min(88vh,860px);
+  overflow:auto;
+  border:1px solid #31425f;
+  border-radius:22px;
+  background:#0d1729;
+  box-shadow:0 30px 90px rgba(0,0,0,.48);
+  color:#eef4ff;
+}
+#demoChecklistModal .demoChecklistModalHead{
+  position:sticky;
+  top:0;
+  z-index:3;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+  padding:22px 24px 18px;
+  border-bottom:1px solid #253550;
+  background:linear-gradient(180deg,#111d31 0%,#0d1729 100%);
+}
+#demoChecklistModal .demoChecklistModalHead>div{min-width:0}
+#demoChecklistModal .demoChecklistModalHead span{
+  display:block;
+  margin-bottom:7px;
+  color:#28d6ed;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.4px;
+}
+#demoChecklistModal .demoChecklistModalHead h2{
+  margin:0;
+  color:#fff;
+  font-size:24px;
+  line-height:1.2;
+  font-weight:760;
+}
+#demoChecklistModal .demoChecklistModalHead p{
+  margin:7px 0 0;
+  color:#9fb0c7;
+  font-size:12px;
+  line-height:1.45;
+}
+#demoChecklistModal .demoChecklistModalClose{
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border:1px solid #344660;
+  border-radius:12px;
+  background:#152139;
+  color:#fff;
+  font-size:26px;
+  line-height:1;
+  cursor:pointer;
+}
+#demoChecklistModal .demoChecklistModalClose:hover{
+  border-color:#4e6889;
+  background:#1a2a45;
+}
+#demoChecklistModal .demoChecklistForm{
+  padding:20px 24px 24px;
+}
+#demoChecklistModal .demoChecklistFormGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+#demoChecklistModal .demoChecklistFormGrid label{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:7px;
+}
+#demoChecklistModal .demoChecklistFormGrid label>span{
+  color:#cbd6e6;
+  font-size:11.5px;
+  font-weight:650;
+}
+#demoChecklistModal .demoChecklistFormGrid label>span b{
+  color:#ff7084;
+}
+#demoChecklistModal .demoChecklistFormGrid input,
+#demoChecklistModal .demoChecklistFormGrid select,
+#demoChecklistModal .demoChecklistFormGrid textarea{
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  border:1px solid #374963;
+  border-radius:11px;
+  background:#17233a;
+  color:#f4f8ff;
+  font:inherit;
+  font-size:13px;
+  outline:none;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+#demoChecklistModal .demoChecklistFormGrid input,
+#demoChecklistModal .demoChecklistFormGrid select{
+  height:46px;
+  padding:0 12px;
+}
+#demoChecklistModal .demoChecklistFormGrid textarea{
+  min-height:76px;
+  padding:11px 12px;
+  resize:vertical;
+  line-height:1.5;
+}
+#demoChecklistModal .demoChecklistFormGrid input::placeholder,
+#demoChecklistModal .demoChecklistFormGrid textarea::placeholder{
+  color:#70809a;
+}
+#demoChecklistModal .demoChecklistFormGrid input:focus,
+#demoChecklistModal .demoChecklistFormGrid select:focus,
+#demoChecklistModal .demoChecklistFormGrid textarea:focus{
+  border-color:#28cfe7;
+  background:#192941;
+  box-shadow:0 0 0 3px rgba(40,207,231,.12);
+}
+#demoChecklistModal .demoChecklistWide{
+  grid-column:1/-1;
+}
+#demoChecklistModal .demoChecklistSectionTitle{
+  padding-top:4px;
+  border-top:1px solid #24344d;
+}
+#demoChecklistModal .demoChecklistSectionTitle span{
+  display:block;
+  margin-top:8px;
+  color:#28d6ed;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.2px;
+}
+#demoChecklistModal .demoChecklistSectionTitle small{
+  display:block;
+  margin-top:4px;
+  color:#8393ab;
+  font-size:10.5px;
+}
+#demoChecklistModal .demoChecklistModalFoot{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+  padding-top:18px;
+  border-top:1px solid #24334b;
+}
+#demoChecklistModal .demoChecklistModalFoot .demoBtn{
+  min-width:120px;
+  height:42px;
+}
+#demoChecklistModal #demoChecklistSaveBtn:disabled{
+  opacity:.65;
+  cursor:wait;
+}
+
+@media(max-width:700px){
+  #demoChecklistModal{
+    align-items:end;
+    padding:0;
+  }
+  #demoChecklistModal .demoChecklistModalCard{
+    width:100%;
+    max-height:92dvh;
+    border-radius:20px 20px 0 0;
+    border-bottom:0;
+  }
+  #demoChecklistModal .demoChecklistModalHead{
+    padding:18px 18px 14px;
+  }
+  #demoChecklistModal .demoChecklistModalHead h2{
+    font-size:20px;
+  }
+  #demoChecklistModal .demoChecklistModalHead p{
+    font-size:11.5px;
+  }
+  #demoChecklistModal .demoChecklistForm{
+    padding:16px 16px calc(18px + env(safe-area-inset-bottom));
+  }
+  #demoChecklistModal .demoChecklistFormGrid{
+    grid-template-columns:1fr;
+    gap:13px;
+  }
+  #demoChecklistModal .demoChecklistWide{
+    grid-column:1;
+  }
+  #demoChecklistModal .demoChecklistFormGrid input,
+  #demoChecklistModal .demoChecklistFormGrid select,
+  #demoChecklistModal .demoChecklistFormGrid textarea{
+    font-size:16px;
+  }
+  #demoChecklistModal .demoChecklistFormGrid input,
+  #demoChecklistModal .demoChecklistFormGrid select{
+    height:48px;
+  }
+  #demoChecklistModal .demoChecklistModalFoot{
+    position:sticky;
+    bottom:0;
+    z-index:3;
+    margin:18px -16px -16px;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:#0d1729;
+  }
+  #demoChecklistModal .demoChecklistModalFoot .demoBtn{
+    flex:1 1 0;
+    min-height:46px;
+    height:46px;
+    font-size:13px;
+  }
+}
