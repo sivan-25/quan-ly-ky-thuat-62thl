@@ -732,18 +732,74 @@ def _prepare_data(payload, token, temp_dir):
         data["tasks"].append(row)
     return data, missing_images
 
+def _prepare_energy_data(payload, token, temp_dir):
+    rows = payload.get("rows") or []
+    if not isinstance(rows, list) or len(rows) > 500:
+        raise ValueError("Dữ liệu năng lượng không hợp lệ")
+
+    data = {
+        "building": str(payload.get("building") or "[CẦN BỔ SUNG]"),
+        "report_date": str(payload.get("report_date") or ""),
+        "energy_name": str(payload.get("energy_name") or "Năng lượng"),
+        "unit": str(payload.get("unit") or ""),
+        "period_label": str(payload.get("period_label") or "THEO BỘ LỌC"),
+        "rows": [],
+    }
+    img_dir = os.path.join(temp_dir, "energy_images")
+    os.makedirs(img_dir, exist_ok=True)
+    missing_images = 0
+
+    for ri, row in enumerate(rows, 1):
+        if not isinstance(row, dict):
+            continue
+        out = {
+            "date": str(row.get("date") or ""),
+            "date_display": str(row.get("date_display") or row.get("date") or ""),
+            "value": row.get("value"),
+            "diff": row.get("diff"),
+            "performer": str(row.get("performer") or ""),
+            "note": str(row.get("note") or ""),
+            "image_path": None,
+        }
+        source = str(row.get("image") or "")
+        if source:
+            try:
+                raw, ext = _download_image(source, token)
+                if raw:
+                    local_path = os.path.join(img_dir, "energy_%03d%s" % (ri, ext))
+                    with open(local_path, "wb") as fh:
+                        fh.write(raw)
+                    out["image_path"] = local_path
+                else:
+                    missing_images += 1
+            except Exception:
+                missing_images += 1
+        data["rows"].append(out)
+
+    data["rows"].sort(key=lambda x: (x.get("date") or ""))
+    return data, missing_images
+
 def generate_pdf(payload, token):
     with tempfile.TemporaryDirectory(prefix="esta_report_") as td:
-        data, missing_images = _prepare_data(payload, token, td)
+        report_type = str(payload.get("report_type") or "work").lower()
         out_path = os.path.join(td, OUTPUT_NAME)
-        build_doc(
-            out_path,
-            lambda: story_merged(data),
-            "Tổng hợp & chi tiết",
-            "ESTA - Báo cáo công việc kỹ thuật",
-        )
+
+        if report_type == "energy":
+            data, missing_images = _prepare_energy_data(payload, token, td)
+            build_energy_doc(out_path, data)
+            item_count = len(data["rows"])
+        else:
+            data, missing_images = _prepare_data(payload, token, td)
+            build_doc(
+                out_path,
+                lambda: story_merged(data),
+                "Tổng hợp & chi tiết",
+                "ESTA - Báo cáo công việc kỹ thuật",
+            )
+            item_count = len(data["tasks"])
+
         with open(out_path, "rb") as fh:
-            return fh.read(), missing_images, len(data["tasks"])
+            return fh.read(), missing_images, item_count
 
 class handler(BaseHTTPRequestHandler):
     def _send_json(self, status, obj):
