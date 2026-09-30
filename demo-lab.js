@@ -686,10 +686,79 @@ function demoInspectionHtml(ins){
 }
 window.demoExportInspection=id=>{const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(ins)downloadReportPdf(demoInspectionHtml(ins),"BaoCao_KiemTra_"+ins.inspection_code+".pdf")};
 window.demoAddChecklist=async()=>{
- const name=prompt("Tên checklist:","Checklist kỹ thuật mẫu");if(!name)return;
- const code="KT-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
- try{await demoPost("inspections",{building_id:currentBuilding.id,inspection_code:code,template_name:name,inspection_date:today(),period_label:"Kiểm tra bổ sung",result_status:"Cần chú ý",recommendation:"Cập nhật kết quả sau kiểm tra.",items:[{item:"Hạng mục 1",standard:"Theo tiêu chuẩn",result:"Cần chú ý",note:"Chưa kiểm tra"}],related_task_ids:[]});await demoLoad(true);demoSelectedInspection="";demoRenderInspections();toast("Đã tạo checklist")}catch(e){toast(e.message)}
+ await demoLoad();
+ const modal=$("#demoChecklistModal");if(!modal)return;
+ $("#demoChecklistName").value="";
+ $("#demoChecklistDate").value=today();
+ $("#demoChecklistPeriod").value="Kiểm tra bổ sung";
+ $("#demoChecklistOverall").value="Cần chú ý";
+ $("#demoChecklistItem").value="";
+ $("#demoChecklistStandard").value="";
+ $("#demoChecklistItemResult").value="Cần chú ý";
+ $("#demoChecklistItemNote").value="";
+ $("#demoChecklistRecommendation").value="";
+ const assetSelect=$("#demoChecklistAsset");
+ if(assetSelect){
+  assetSelect.innerHTML='<option value="">Không gắn thiết bị</option>'+demoCache.assets.map(a=>'<option value="'+esc(a.id)+'">'+esc((a.code?a.code+" · ":"")+a.name)+'</option>').join("");
+  assetSelect.value="";
+ }
+ modal.classList.remove("hide");
+ document.body.classList.add("demoChecklistModalOpen");
+ setTimeout(()=>$("#demoChecklistName")?.focus(),60);
 };
+
+window.demoCloseChecklistModal=()=>{
+ $("#demoChecklistModal")?.classList.add("hide");
+ document.body.classList.remove("demoChecklistModalOpen");
+};
+
+window.demoSubmitChecklist=async e=>{
+ e?.preventDefault();
+ const name=$("#demoChecklistName")?.value.trim()||"";
+ const inspection_date=$("#demoChecklistDate")?.value||today();
+ const period_label=$("#demoChecklistPeriod")?.value.trim()||"Kiểm tra bổ sung";
+ const asset_id=$("#demoChecklistAsset")?.value||null;
+ const result_status=$("#demoChecklistOverall")?.value||"Cần chú ý";
+ const item=$("#demoChecklistItem")?.value.trim()||"";
+ const standard=$("#demoChecklistStandard")?.value.trim()||"";
+ const itemResult=$("#demoChecklistItemResult")?.value||"Cần chú ý";
+ const note=$("#demoChecklistItemNote")?.value.trim()||"";
+ const recommendation=$("#demoChecklistRecommendation")?.value.trim()||"";
+ if(!name){toast("Vui lòng nhập tên checklist");$("#demoChecklistName")?.focus();return}
+ if(!item){toast("Vui lòng nhập nội dung kiểm tra");$("#demoChecklistItem")?.focus();return}
+ const code="KT-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
+ const btn=$("#demoChecklistSaveBtn");if(btn){btn.disabled=true;btn.textContent="Đang lưu..."}
+ try{
+  await demoPost("inspections",{
+   building_id:currentBuilding.id,
+   inspection_code:code,
+   template_name:name,
+   inspection_date,
+   period_label,
+   asset_id,
+   result_status:["Đạt","Cần chú ý","Cần khắc phục","Không đạt"].includes(result_status)?result_status:"Cần chú ý",
+   recommendation,
+   items:[{
+    item,
+    standard,
+    result:["Đạt","Cần chú ý","Cần khắc phục","Không đạt"].includes(itemResult)?itemResult:"Cần chú ý",
+    note
+   }],
+   related_task_ids:[]
+  });
+  demoCloseChecklistModal();
+  await demoLoad(true);
+  demoSelectedInspection="";
+  demoRenderInspections();
+  demoRenderHomeOps();
+  toast("Đã tạo "+code);
+ }catch(err){toast(err.message||"Không thể lưu checklist")}
+ finally{if(btn){btn.disabled=false;btn.textContent="Lưu checklist"}}
+};
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"&&!$("#demoChecklistModal")?.classList.contains("hide"))demoCloseChecklistModal();
+});
 
 window.demoSelectDocument=id=>{demoSelectedDocument=id;demoRenderDocuments()};
 async function demoRenderDocuments(){
