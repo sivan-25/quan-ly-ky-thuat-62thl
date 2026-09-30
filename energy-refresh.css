@@ -1502,3 +1502,72 @@
   #app #energyPage .energyTableTop h2{color:#f5f8ff!important}
   #app #energyPage .energyTableTop p{color:#a9b7cc!important}
 }
+
+
+/* ENERGY_FORM_COLUMN_ALIGNMENT_20260930 */
+@media (min-width:701px){
+  #app #energyPage #energyForm{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    grid-template-areas:
+      "edate value"
+      "eperformer eperformer"
+      "eimage enote"
+      "actions actions"!important;
+    align-items:start!important;
+    column-gap:12px!important;
+    row-gap:12px!important;
+  }
+  #app #energyPage #energyForm>label:nth-of-type(1),
+  #app #energyPage #energyForm>label:nth-of-type(2),
+  #app #energyPage #energyForm .energyImageField,
+  #app #energyPage #energyForm .energyNoteField{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+  #app #energyPage #energyDate,
+  #app #energyPage #energyValue{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:42px!important;
+    box-sizing:border-box!important;
+  }
+  #app #energyPage .energyDateCompact{
+    display:none!important;
+  }
+  #app #energyPage .energyImageField,
+  #app #energyPage .energyNoteField{
+    min-height:78px!important;
+  }
+  #app #energyPage .energyUploadPrompt,
+  #app #energyPage #energyNote{
+    width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+@media (max-width:700px){
+  #app #energyPage #energyForm{
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:
+      "edate"
+      "value"
+      "eperformer"
+      "enote"
+      "eimage"
+      "actions"!important;
+    align-items:stretch!important;
+  }
+  #app #energyPage #energyForm>label,
+  #app #energyPage #energyForm .energyPerformerField,
+  #app #energyPage #energyForm .energyImageField,
+  #app #energyPage #energyForm .energyNoteField,
+  #app #energyPage #energyForm .energyActions{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #app #energyPage #energyDateCompact{
+    display:block!important;
+  }
+}
