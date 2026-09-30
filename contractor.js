@@ -118,8 +118,8 @@ function renderContractors(){
   const allJobs=contractors.flatMap(c=>contractorJobsFor(c.id));
   $("#contractorCount").textContent=contractors.length;
   $("#contractorYearJobCount").textContent=allJobs.filter(x=>String(x.work_date||"").startsWith(year)).length;
-  $("#contractorOpenJobCount").textContent=allJobs.filter(x=>x.status!=="Hoàn thành").length;
-  $("#contractorDoneJobCount").textContent=allJobs.filter(x=>x.status==="Hoàn thành").length;
+  $("#contractorOpenJobCount").textContent=allJobs.filter(x=>!["Hoàn thành","Đã hoàn thành"].includes(String(x.status||""))).length;
+  $("#contractorDoneJobCount").textContent=allJobs.filter(x=>["Hoàn thành","Đã hoàn thành"].includes(String(x.status||""))).length;
   $("#contractorResultCount").textContent="("+list.length+")";
 
   $("#contractorGrid").innerHTML=list.map(c=>{
