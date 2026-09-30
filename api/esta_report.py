@@ -598,7 +598,7 @@ def story_energy(data):
         for idx,r in enumerate(image_rows,1):
             cap=(str(r.get("date_display") or r.get("date") or "")+"  ·  "+
                  _energy_num(r.get("value"))+" "+unit)
-            slot=ImageSlot(CW,82*mm,r.get("image_path"),cap,fit="contain")
+            slot=ImageSlot(CW-16,82*mm,r.get("image_path"),cap,fit="contain")
             box=Table([[P(f"{idx:02d}  ·  {energy_name}",ST["sec"])],[slot]],colWidths=[CW])
             box.setStyle(TableStyle([
                 ("BOX",(0,0),(-1,-1),.6,TAUPE),
