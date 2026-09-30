@@ -615,6 +615,115 @@ def story_energy(data):
     return story
 
 
+# ===== TECHNICAL TOOLS REPORT — ESTA STANDARD =====
+def build_tools_doc(path,data):
+    ensure_fonts()
+    report_title="BÁO CÁO DỤNG CỤ KỸ THUẬT"
+    first,later=make_energy_page_fns(report_title,str(data.get("period_label") or "DANH MỤC HIỆN TẠI"))
+    doc=BaseDocTemplate(path,pagesize=A4,title=report_title,
+        author="ESTA Property Management",subject="Danh mục dụng cụ kỹ thuật",
+        creator="ESTA Property Management",leftMargin=MX,rightMargin=MX)
+    f1=Frame(MX,21*mm,CW,PH-38*mm-8*mm-21*mm,id="tf1",
+             leftPadding=0,rightPadding=0,topPadding=0,bottomPadding=0)
+    f2=Frame(MX,21*mm,CW,PH-12*mm-8*mm-21*mm,id="tf2",
+             leftPadding=0,rightPadding=0,topPadding=0,bottomPadding=0)
+    doc.addPageTemplates([
+        PageTemplate("first",[f1],onPage=first,autoNextPageTemplate="later"),
+        PageTemplate("later",[f2],onPage=later)
+    ])
+    doc.build(story_tools(data),canvasmaker=NumberedCanvas)
+
+def story_tools(data):
+    P=Paragraph
+    tools=data.get("tools") or []
+    good_status={"Tốt","Đang sử dụng"}
+    repair_status={"Cần kiểm tra","Cần sửa","Hỏng","Hư hỏng"}
+    good=sum(1 for t in tools if str(t.get("condition_status") or "") in good_status)
+    repair=sum(1 for t in tools if str(t.get("condition_status") or "") in repair_status)
+    total_qty=sum(float(t.get("qty") or 0) for t in tools)
+
+    story=[
+        P("PHẦN 1  ·  QUẢN LÝ DỤNG CỤ",ST["eyebrow"]),Spacer(1,3),
+        P("Danh mục dụng cụ kỹ thuật",ST["h1"]),
+        HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)
+    ]
+
+    meta=Table([
+        [P("TÒA NHÀ",ST["lbl"]),P(str(data.get("building") or "—"),ST["val"]),
+         P("NGÀY BÁO CÁO",ST["lbl"]),P(str(data.get("report_date") or "—"),ST["val"])],
+        [P("HẠNG MỤC",ST["lbl"]),P("Dụng cụ kỹ thuật",ST["val"]),
+         P("KỲ BÁO CÁO",ST["lbl"]),P(str(data.get("period_label") or "Danh mục hiện tại"),ST["val"])]
+    ],colWidths=[28*mm,59*mm,28*mm,CW-115*mm])
+    meta.setStyle(TableStyle([
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("LINEBELOW",(0,0),(-1,-1),.4,TAUPE),
+        ("TOPPADDING",(0,0),(-1,-1),3.5),
+        ("BOTTOMPADDING",(0,0),(-1,-1),3.5),
+        ("LEFTPADDING",(0,0),(-1,-1),0),
+        ("RIGHTPADDING",(0,0),(-1,-1),6)
+    ]))
+    story += [meta,Spacer(1,10)]
+
+    gap=3*mm; kw=(CW-3*gap)/4
+    cards=[
+        (len(tools),"DANH MỤC",True),
+        (_energy_num(total_qty),"TỔNG SỐ LƯỢNG",False),
+        (good,"TỐT / ĐANG DÙNG",False),
+        (repair,"CẦN KIỂM TRA / SỬA",False)
+    ]
+    cells=[]; widths=[]
+    for i,(num,label,dark) in enumerate(cards):
+        if i: cells.append(""); widths.append(gap)
+        cells.append([P(str(num),ST["kpi_n_d" if dark else "kpi_n"]),
+                      P(label,ST["kpi_l_d" if dark else "kpi_l"])])
+        widths.append(kw)
+    k=Table([cells],colWidths=widths)
+    ks=[
+        ("TOPPADDING",(0,0),(-1,-1),8),("BOTTOMPADDING",(0,0),(-1,-1),8),
+        ("LEFTPADDING",(0,0),(-1,-1),8),("RIGHTPADDING",(0,0),(-1,-1),2),
+        ("VALIGN",(0,0),(-1,-1),"TOP"),("BACKGROUND",(0,0),(0,0),AUB)
+    ]
+    for ci in range(2,len(cells),2):
+        ks += [("BACKGROUND",(ci,0),(ci,0),CREAM_L),("LINEABOVE",(ci,0),(ci,0),2,COPPER)]
+    k.setStyle(TableStyle(ks))
+    story += [k,Spacer(1,14)]
+
+    story += [P("DANH SÁCH DỤNG CỤ KỸ THUẬT",ST["sec"]),Spacer(1,4)]
+    head=["STT","DỤNG CỤ","NHÃN HIỆU","SỐ LƯỢNG","VỊ TRÍ","PHỤ TRÁCH","TÌNH TRẠNG","GHI CHÚ"]
+    rows=[[P(h,ST["th"]) for h in head]]
+    for i,t in enumerate(tools,1):
+        qty=_energy_num(t.get("qty"))
+        unit=str(t.get("unit") or "")
+        rows.append([
+            P(f"{i:02d}",ST["td_s"]),
+            P(str(t.get("name") or "—"),ST["td_b"]),
+            P(str(t.get("brand") or "—"),ST["td"]),
+            P((qty+(" "+unit if unit else "")),ST["td_b"]),
+            P(str(t.get("location") or "—"),ST["td"]),
+            P(str(t.get("keeper") or "—"),ST["td_s"]),
+            P(str(t.get("condition_status") or "—"),ST["td_b"]),
+            P(str(t.get("note") or "—"),ST["note"])
+        ])
+    col=[8,33,20,20,25,27,24,37]
+    col=[w*mm*CW/(sum(col)*mm) for w in col]
+    tb=Table(rows,colWidths=col,repeatRows=1)
+    style=[
+        ("BACKGROUND",(0,0),(-1,0),AUB),
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("TOPPADDING",(0,0),(-1,-1),4),
+        ("BOTTOMPADDING",(0,0),(-1,-1),4),
+        ("LEFTPADDING",(0,0),(-1,-1),4),
+        ("RIGHTPADDING",(0,0),(-1,-1),3),
+        ("LINEBELOW",(0,1),(-1,-1),.4,TAUPE),
+        ("LINEBELOW",(0,-1),(-1,-1),1.5,COPPER)
+    ]
+    for rr in range(2,len(rows),2):
+        style.append(("BACKGROUND",(0,rr),(-1,rr),CREAM_L))
+    tb.setStyle(TableStyle(style))
+    story += [tb,energy_signatures()]
+    return story
+
+
 # ===== VERCEL API HANDLER =====
 # -*- coding: utf-8 -*-
 import base64
