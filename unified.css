@@ -4678,6 +4678,49 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   }
 }
 
+/* MAINTENANCE HISTORY TABLE — alignment + dark hover fix */
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable{
+  width:100%!important;
+  table-layout:fixed!important;
+  border-collapse:collapse!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable th,
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable td{
+  vertical-align:middle!important;
+  text-align:center!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable th:nth-child(5),
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable td:nth-child(5){
+  text-align:left!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable td:nth-child(2) b{
+  display:block!important;
+  width:100%!important;
+  text-align:center!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable tbody tr{
+  background:transparent!important;
+  transition:background .16s ease!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable tbody tr:hover,
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable tbody tr:hover td{
+  background:#152039!important;
+  color:#dce5f4!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable tbody tr:hover td:nth-child(2) b{
+  color:#f3f7ff!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable tbody tr:hover .maintResult.good{
+  background:#103b32!important;
+  color:#54e0bb!important;
+  border-color:#1f6555!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceHistoryTable tbody tr:hover .miniDanger{
+  border-color:#3a4864!important;
+  background:#172238!important;
+  color:#b8c5d9!important;
+}
+
 /* IMAGE_ONLY_VIEWER_FINAL */
 #viewer.viewer.imageOnlyViewer{
   z-index:5000!important;
