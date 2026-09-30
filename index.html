@@ -1075,7 +1075,7 @@
 
 
 <section class="stats"><article data-work-stat-filter="today" role="button" tabindex="0" aria-pressed="false"><i class="blue"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h5"/></svg></i><div><small>CÔNG VIỆC HÔM NAY</small><strong id="statToday">0</strong></div></article><article data-work-stat-filter="doing" role="button" tabindex="0" aria-pressed="false"><i class="orange"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i><div><small>ĐANG XỬ LÝ</small><strong id="statDoing">0</strong></div></article><article data-work-stat-filter="done" role="button" tabindex="0" aria-pressed="false"><i class="green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></i><div><small>HOÀN THÀNH</small><strong id="statDone">0</strong></div></article><article data-work-stat-filter="waiting" role="button" tabindex="0" aria-pressed="false"><i class="red"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></i><div><small>CHỜ XỬ LÝ</small><strong id="statWait">0</strong></div></article></section>
-<section class="tableCard premiumTableCard"><div class="tableTop workTableMeta"><span id="count"></span></div><div class="desktopTable"><table class="workTaskTable"><colgroup><col style="width:3.5%"><col style="width:23.5%"><col style="width:8%"><col style="width:10%"><col style="width:8%"><col style="width:10.5%"><col style="width:13%"><col style="width:17.5%"><col style="width:6%"></colgroup><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
+<section class="tableCard premiumTableCard"><div class="tableTop workTableMeta"><span id="count"></span><button id="workExportPdfVisible" class="estaReportPdfBtn" type="button" onclick="document.getElementById('exportBtn')?.click()" aria-label="Xuất PDF công việc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span></button></div><div class="desktopTable"><table class="workTaskTable"><colgroup><col style="width:3.5%"><col style="width:23.5%"><col style="width:8%"><col style="width:10%"><col style="width:8%"><col style="width:10.5%"><col style="width:13%"><col style="width:17.5%"><col style="width:6%"></colgroup><thead><tr><th>STT</th><th>Nội dung công việc</th><th>Loại</th><th>Trạng thái</th><th>Ngày</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="tbody"></tbody></table></div><div id="mobileCards"></div><div id="empty" class="empty hide">Chưa có công việc phù hợp.</div></section>
 </div>
 <div id="incidentPage" class="page demoFeaturePage hide">
   <section class="demoHero"><div class="demoHeroCopy"><span>ESTA · INCIDENT CONTROL</span><h1>Sự cố & Defect</h1><p>Quản lý toàn bộ vòng đời sự cố và liên kết trực tiếp sang Công việc.</p></div><div class="demoHeroActions"><button id="demoIncidentAdd" class="demoBtn primary" type="button" onclick="demoAddIncident()">+ Thêm sự cố</button><button class="demoBtn" type="button" onclick="demoRefresh()">Làm mới</button><button class="demoBtn" type="button" onclick="demoExportReport('incident')">Xuất PDF</button></div></section>
@@ -1382,8 +1382,8 @@
             <button id="energyApplyFilter" class="primary small" type="button">Áp dụng</button>
             <button id="energyClearFilter" class="secondary small" type="button">Xóa</button>
           </div>
-          <button id="energyExportPdf" class="pdfAction" type="button"><b>PDF</b> ⇩ Xuất PDF</button>
         </div>
+        <button id="energyExportPdf" class="estaReportPdfBtn" type="button" aria-label="Xuất PDF năng lượng"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span></button>
       </div>
     </div>
 
@@ -1582,8 +1582,8 @@
       </div>
       <div class="inventoryToolbarActions">
         <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="toolSearch" placeholder="Tìm dụng cụ..."></div>
-        <button id="toolExportPdf" class="inventorySecondary" type="button">
-          <svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg> PDF
+        <button id="toolExportPdf" class="inventorySecondary estaReportPdfBtn" type="button" aria-label="Xuất PDF dụng cụ kỹ thuật">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span>
         </button>
         <button id="addToolBtn" class="inventoryPrimary" type="button">＋ Thêm dụng cụ</button>
       </div>
