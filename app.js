@@ -1859,6 +1859,8 @@ function renderEnergy(){
  sync68EnergyTabs();
  const m=ENERGY_META[energyType]||ENERGY_META.electric;
  const dual=is68DualElectric();
+ $("#energyPage")?.classList.toggle("dualEvnMode",dual);
+ $("#energyPage")?.classList.toggle("xlntMode",energyType==="xlnt");
 
  $("#energyFormTitle").textContent=m.form;
  $("#energyUnitHint").textContent="Đơn vị: "+m.unit;
