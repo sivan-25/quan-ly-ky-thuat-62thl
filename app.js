@@ -2347,6 +2347,29 @@ let maintenanceAssets=[],maintenanceRecords=[],maintenanceLoadedBuilding="",main
 function addDaysIso(date,days){
  const d=new Date((date||today())+"T00:00:00");d.setDate(d.getDate()+Number(days||0));return d.toLocaleDateString("en-CA");
 }
+function maintenanceAutoCode(){
+ const project=String(currentBuilding?.id||"DA").replace(/[^A-Za-z0-9]/g,"").toUpperCase()||"DA";
+ return "TB-"+project+"-"+String(Date.now()).slice(-6);
+}
+function maintenanceAutoNext(baseDate,frequencyDays){
+ const freq=Math.max(1,Number(frequencyDays)||30);
+ return baseDate?addDaysIso(baseDate,freq):addDaysIso(today(),freq);
+}
+function maintenanceProjectedDates(asset,yearValue){
+ const year=Number(yearValue||new Date().getFullYear());
+ const freq=Math.max(1,Number(asset?.frequency_days)||30);
+ let cursor=String(asset?.next_due_date||"");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(cursor))return [];
+ const end=year+"-12-31";
+ let guard=0;
+ while(cursor<year+"-01-01"&&guard<500){cursor=addDaysIso(cursor,freq);guard++}
+ const out=[];
+ while(cursor<=end&&guard<1000){
+  if(cursor.startsWith(String(year)+"-"))out.push(cursor);
+  cursor=addDaysIso(cursor,freq);guard++;
+ }
+ return out;
+}
 function maintenanceDueClass(asset){
  if(asset.status==="Ngừng sử dụng")return "paused";
  const d=asset.next_due_date;if(!d)return "unknown";
@@ -2374,13 +2397,15 @@ async function loadMaintenanceData(buildingId=currentBuilding?.id,force=false){
 function renderMaintenance(){
  const q=($("#maintenanceSearch")?.value||"").trim().toLocaleLowerCase("vi-VN"),sys=$("#maintenanceSystemFilter")?.value||"",due=$("#maintenanceDueFilter")?.value||"";
  const year=String(new Date().getFullYear());
- const list=maintenanceAssets.filter(a=>(!sys||a.system_type===sys)&&(!due||maintenanceDueClass(a)===due)&&(!maintenanceActiveMonth||String(a.next_due_date||"").startsWith(year+"-"+String(maintenanceActiveMonth).padStart(2,"0")))&&(!q||[a.name,a.code,a.location,a.system_type,a.assigned_to,a.model].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
+ const selectedMonth=maintenanceActiveMonth?String(maintenanceActiveMonth).padStart(2,"0"):"";
+ const hasProjectedMonth=(a)=>!selectedMonth||maintenanceProjectedDates(a,year).some(d=>d.slice(5,7)===selectedMonth);
+ const list=maintenanceAssets.filter(a=>(!sys||a.system_type===sys)&&(!due||maintenanceDueClass(a)===due)&&hasProjectedMonth(a)&&(!q||[a.name,a.location,a.system_type,a.assigned_to,a.model].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
  const monthStrip=$("#maintenanceMonthStrip");
  if(monthStrip){
    monthStrip.innerHTML=Array.from({length:12},(_,i)=>{
-     const m=i+1,prefix=year+"-"+String(m).padStart(2,"0");
-     const count=maintenanceAssets.filter(a=>String(a.next_due_date||"").startsWith(prefix)).length;
-     return '<button type="button" class="'+(String(maintenanceActiveMonth)===String(m)?"active":"")+'" data-maint-month="'+m+'"><span>Th'+String(m).padStart(2,"0")+'</span><b>'+count+'</b></button>';
+     const m=i+1,mm=String(m).padStart(2,"0");
+     const count=maintenanceAssets.reduce((sum,a)=>sum+maintenanceProjectedDates(a,year).filter(d=>d.slice(5,7)===mm).length,0);
+     return '<button type="button" class="'+(String(maintenanceActiveMonth)===String(m)?"active":"")+'" data-maint-month="'+m+'"><span>Th'+mm+'</span><b>'+count+'</b></button>';
    }).join("");
    monthStrip.querySelectorAll("[data-maint-month]").forEach(b=>b.onclick=()=>{const m=Number(b.dataset.maintMonth);maintenanceActiveMonth=String(maintenanceActiveMonth)===String(m)?"":m;renderMaintenance()});
  }
@@ -2391,7 +2416,7 @@ function renderMaintenance(){
  $("#maintDoneYearCount").textContent=maintenanceRecords.filter(r=>String(r.service_date||"").startsWith(yr)&&r.result_status==="Hoàn thành").length;
  $("#maintenanceAssetGrid").innerHTML=list.map(a=>{
    const cls=maintenanceDueClass(a),last=a.last_service_date?fmt(a.last_service_date):"Chưa có",next=a.next_due_date?fmt(a.next_due_date):"Chưa đặt";
-   return '<article class="maintenanceAssetCard '+cls+'"><div class="maintCardTop"><span class="maintSystem">'+esc(a.system_type)+'</span><span class="maintDue '+cls+'">'+maintenanceDueText(a)+'</span></div><h3>'+esc(a.name)+'</h3><p>'+esc(a.code||"Không mã")+' · '+esc(a.location||"Chưa ghi vị trí")+'</p><div class="maintDates"><div><small>Gần nhất</small><b>'+last+'</b></div><div><small>Kế tiếp</small><b>'+next+'</b></div><div><small>Chu kỳ</small><b>'+a.frequency_days+' ngày</b></div></div><div class="maintCardMeta"><span>Phụ trách: <b>'+esc(a.assigned_to||"—")+'</b></span><span>Trạng thái: <b>'+esc(a.status)+'</b></span></div><div class="maintCardActions"><button class="primary" onclick="openMaintenanceRecord(\''+a.id+'\')">＋ Ghi bảo trì</button><button onclick="editMaintenanceAsset(\''+a.id+'\')">Sửa</button><button class="danger" onclick="deleteMaintenanceAsset(\''+a.id+'\')">×</button></div></article>';
+   return '<article class="maintenanceAssetCard '+cls+'"><div class="maintCardTop"><span class="maintSystem">'+esc(a.system_type)+'</span><span class="maintDue '+cls+'">'+maintenanceDueText(a)+'</span></div><h3>'+esc(a.name)+'</h3><p>'+esc(a.location||"Chưa ghi vị trí")+'</p><div class="maintDates"><div><small>Gần nhất</small><b>'+last+'</b></div><div><small>Kế tiếp</small><b>'+next+'</b></div><div><small>Chu kỳ</small><b>'+a.frequency_days+' ngày</b></div></div><div class="maintCardMeta"><span>Phụ trách: <b>'+esc(a.assigned_to||"—")+'</b></span><span>Trạng thái: <b>'+esc(a.status)+'</b></span></div><div class="maintCardActions"><button class="primary" onclick="openMaintenanceRecord(\''+a.id+'\')">＋ Ghi bảo trì</button><button onclick="editMaintenanceAsset(\''+a.id+'\')">Sửa</button><button class="danger" onclick="deleteMaintenanceAsset(\''+a.id+'\')">×</button></div></article>';
  }).join("");
  $("#maintenanceEmpty").classList.toggle("hide",list.length>0);
  const byId=Object.fromEntries(maintenanceAssets.map(a=>[a.id,a]));
@@ -2400,12 +2425,12 @@ function renderMaintenance(){
  $("#maintenanceHistoryEmpty").classList.toggle("hide",rec.length>0);
 }
 function resetMaintenanceAssetForm(name="",system="HVAC",freq=30){
- $("#maintenanceAssetId").value="";$("#maintenanceCode").value="";$("#maintenanceName").value=name;$("#maintenanceSystem").value=system;$("#maintenanceLocation").value="";$("#maintenanceManufacturer").value="";$("#maintenanceModel").value="";$("#maintenanceSerial").value="";$("#maintenanceFrequency").value=freq;$("#maintenanceLastDate").value="";$("#maintenanceNextDate").value="";$("#maintenanceAssigned").value="";$("#maintenanceStatus").value="Hoạt động";$("#maintenanceNote").value="";$("#maintenanceAssetModalTitle").textContent="Thêm thiết bị";
+ $("#maintenanceAssetId").value="";$("#maintenanceName").value=name;$("#maintenanceSystem").value=system;$("#maintenanceLocation").value="";$("#maintenanceManufacturer").value="";$("#maintenanceModel").value="";$("#maintenanceFrequency").value=freq;$("#maintenanceLastDate").value="";$("#maintenanceNextDate").value=maintenanceAutoNext("",freq);$("#maintenanceAssigned").value="";$("#maintenanceStatus").value="Hoạt động";$("#maintenanceNote").value="";$("#maintenanceAssetModalTitle").textContent="Thêm thiết bị";
 }
 function openMaintenanceAssetModal(name="",system="HVAC",freq=30){inventoryFillPeople();resetMaintenanceAssetForm(name,system,freq);$("#maintenanceAssetModal").classList.remove("hide");setTimeout(()=>$("#maintenanceName").focus(),40)}
 window.editMaintenanceAsset=id=>{
  const a=maintenanceAssets.find(x=>String(x.id)===String(id));if(!a)return;inventoryFillPeople();
- $("#maintenanceAssetId").value=a.id;$("#maintenanceCode").value=a.code||"";$("#maintenanceName").value=a.name;$("#maintenanceSystem").value=a.system_type;$("#maintenanceLocation").value=a.location||"";$("#maintenanceManufacturer").value=a.manufacturer||"";$("#maintenanceModel").value=a.model||"";$("#maintenanceSerial").value=a.serial_no||"";$("#maintenanceFrequency").value=a.frequency_days;$("#maintenanceLastDate").value=a.last_service_date||"";$("#maintenanceNextDate").value=a.next_due_date||"";$("#maintenanceAssigned").value=a.assigned_to||"";$("#maintenanceStatus").value=a.status;$("#maintenanceNote").value=a.note||"";$("#maintenanceAssetModalTitle").textContent="Chỉnh sửa thiết bị";$("#maintenanceAssetModal").classList.remove("hide");
+ $("#maintenanceAssetId").value=a.id;$("#maintenanceName").value=a.name;$("#maintenanceSystem").value=a.system_type;$("#maintenanceLocation").value=a.location||"";$("#maintenanceManufacturer").value=a.manufacturer||"";$("#maintenanceModel").value=a.model||"";$("#maintenanceFrequency").value=a.frequency_days;$("#maintenanceLastDate").value=a.last_service_date||"";$("#maintenanceNextDate").value=a.last_service_date?maintenanceAutoNext(a.last_service_date,a.frequency_days):(a.next_due_date||maintenanceAutoNext("",a.frequency_days));$("#maintenanceAssigned").value=a.assigned_to||"";$("#maintenanceStatus").value=a.status;$("#maintenanceNote").value=a.note||"";$("#maintenanceAssetModalTitle").textContent="Chỉnh sửa thiết bị";$("#maintenanceAssetModal").classList.remove("hide");
 };
 window.deleteMaintenanceAsset=async id=>{
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -2414,7 +2439,7 @@ window.deleteMaintenanceAsset=async id=>{
 };
 window.openMaintenanceRecord=id=>{
  const a=maintenanceAssets.find(x=>String(x.id)===String(id));if(!a)return;inventoryFillPeople();
- $("#maintenanceRecordId").value="";$("#maintenanceRecordAssetId").value=a.id;$("#maintenanceRecordAssetName").textContent=a.name+" · "+(a.location||a.system_type);$("#maintenanceRecordDate").value=today();$("#maintenanceRecordType").value="Định kỳ";$("#maintenanceRecordPerformer").value=a.assigned_to||"";$("#maintenanceRecordResult").value="Hoàn thành";$("#maintenanceWorkDone").value="";$("#maintenanceRecordNextDate").value=addDaysIso(today(),a.frequency_days);$("#maintenanceCost").value="0";$("#maintenanceRecordNote").value="";$("#maintenanceRecordModal").classList.remove("hide");
+ $("#maintenanceRecordId").value="";$("#maintenanceRecordAssetId").value=a.id;$("#maintenanceRecordAssetName").textContent=a.name+" · "+(a.location||a.system_type);$("#maintenanceRecordDate").value=today();$("#maintenanceRecordType").value="Định kỳ";$("#maintenanceRecordPerformer").value=a.assigned_to||"";$("#maintenanceRecordResult").value="Hoàn thành";$("#maintenanceWorkDone").value="";$("#maintenanceRecordNextDate").value=maintenanceAutoNext(today(),a.frequency_days);$("#maintenanceCost").value="0";$("#maintenanceRecordNote").value="";$("#maintenanceRecordModal").classList.remove("hide");
 };
 window.deleteMaintenanceRecord=async id=>{
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -2574,27 +2599,39 @@ document.querySelectorAll("[data-maint-report-range]").forEach(b=>b.onclick=()=>
 document.querySelectorAll("[data-maint-sample]").forEach(b=>b.onclick=()=>{const [n,s,f]=b.dataset.maintSample.split("|");openMaintenanceAssetModal(n,s,Number(f))});
 $("#closeMaintenanceAssetModal").onclick=$("#cancelMaintenanceAssetModal").onclick=()=>$("#maintenanceAssetModal").classList.add("hide");
 $("#closeMaintenanceRecordModal").onclick=$("#cancelMaintenanceRecordModal").onclick=()=>$("#maintenanceRecordModal").classList.add("hide");
-$("#maintenanceLastDate").onchange=()=>{if($("#maintenanceLastDate").value&&!$("#maintenanceNextDate").value)$("#maintenanceNextDate").value=addDaysIso($("#maintenanceLastDate").value,Number($("#maintenanceFrequency").value)||30)};
-$("#maintenanceFrequency").onchange=()=>{if($("#maintenanceLastDate").value)$("#maintenanceNextDate").value=addDaysIso($("#maintenanceLastDate").value,Number($("#maintenanceFrequency").value)||30)};
+function syncMaintenanceNextDate(){
+ const freq=Math.max(1,Number($("#maintenanceFrequency").value)||30);
+ const last=$("#maintenanceLastDate").value;
+ $("#maintenanceNextDate").value=maintenanceAutoNext(last,freq);
+}
+$("#maintenanceLastDate").onchange=syncMaintenanceNextDate;
+$("#maintenanceFrequency").oninput=syncMaintenanceNextDate;
+$("#maintenanceFrequency").onchange=syncMaintenanceNextDate;
+$("#maintenanceRecordDate").onchange=()=>{
+ const assetId=$("#maintenanceRecordAssetId").value,a=maintenanceAssets.find(x=>String(x.id)===String(assetId));
+ if(a&&$("#maintenanceRecordDate").value)$("#maintenanceRecordNextDate").value=maintenanceAutoNext($("#maintenanceRecordDate").value,a.frequency_days);
+};
 $("#maintenanceAssetForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
- const id=$("#maintenanceAssetId").value,freq=Math.max(1,Number($("#maintenanceFrequency").value)||30),last=$("#maintenanceLastDate").value||null,next=$("#maintenanceNextDate").value||(last?addDaysIso(last,freq):addDaysIso(today(),freq));
- const body={building_id:currentBuilding.id,code:$("#maintenanceCode").value.trim(),name:$("#maintenanceName").value.trim(),system_type:$("#maintenanceSystem").value,location:$("#maintenanceLocation").value.trim(),manufacturer:$("#maintenanceManufacturer").value.trim(),model:$("#maintenanceModel").value.trim(),serial_no:$("#maintenanceSerial").value.trim(),frequency_days:freq,last_service_date:last,next_due_date:next,assigned_to:$("#maintenanceAssigned").value,status:$("#maintenanceStatus").value,note:$("#maintenanceNote").value.trim(),updated_at:new Date().toISOString()};
+ const id=$("#maintenanceAssetId").value,freq=Math.max(1,Number($("#maintenanceFrequency").value)||30),last=$("#maintenanceLastDate").value||null,next=maintenanceAutoNext(last,freq);
+ const existing=id?maintenanceAssets.find(x=>String(x.id)===String(id)):null;
+ const body={building_id:currentBuilding.id,code:existing?.code||maintenanceAutoCode(),name:$("#maintenanceName").value.trim(),system_type:$("#maintenanceSystem").value,location:$("#maintenanceLocation").value.trim(),manufacturer:$("#maintenanceManufacturer").value.trim(),model:$("#maintenanceModel").value.trim(),frequency_days:freq,last_service_date:last,next_due_date:next,assigned_to:$("#maintenanceAssigned").value,status:$("#maintenanceStatus").value,note:$("#maintenanceNote").value.trim(),updated_at:new Date().toISOString()};
  try{
    if(id)await sbFetch("/rest/v1/maintenance_assets?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
    else await sbFetch("/rest/v1/maintenance_assets",{method:"POST",token:centralSession.access_token,body});
-   $("#maintenanceAssetModal").classList.add("hide");await loadMaintenanceData(currentBuilding.id,true);toast(id?"Đã cập nhật thiết bị":"Đã thêm thiết bị");
+   $("#maintenanceAssetModal").classList.add("hide");await loadMaintenanceData(currentBuilding.id,true);toast(id?"Đã cập nhật thiết bị và lịch tự động":"Đã thêm thiết bị và tạo lịch tự động");
  }catch(err){toast(err.status===409?"Thiết bị cùng tên/vị trí đã có":err.message)}
 };
 $("#maintenanceRecordForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
- const assetId=$("#maintenanceRecordAssetId").value,a=maintenanceAssets.find(x=>x.id===assetId);if(!a)return toast("Không tìm thấy thiết bị");
- const serviceDate=$("#maintenanceRecordDate").value,next=$("#maintenanceRecordNextDate").value||addDaysIso(serviceDate,a.frequency_days);
+ const assetId=$("#maintenanceRecordAssetId").value,a=maintenanceAssets.find(x=>String(x.id)===String(assetId));if(!a)return toast("Không tìm thấy thiết bị");
+ const serviceDate=$("#maintenanceRecordDate").value,next=maintenanceAutoNext(serviceDate,a.frequency_days);
+ $("#maintenanceRecordNextDate").value=next;
  const body={building_id:currentBuilding.id,asset_id:assetId,service_date:serviceDate,maintenance_type:$("#maintenanceRecordType").value,performer:$("#maintenanceRecordPerformer").value,result_status:$("#maintenanceRecordResult").value,work_done:$("#maintenanceWorkDone").value.trim(),note:$("#maintenanceRecordNote").value.trim(),next_due_date:next,cost:Math.max(0,inventoryNum($("#maintenanceCost").value))};
  try{
    await sbFetch("/rest/v1/maintenance_records",{method:"POST",token:centralSession.access_token,body});
    await sbFetch("/rest/v1/maintenance_assets?id=eq."+encodeURIComponent(assetId)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body:{last_service_date:serviceDate,next_due_date:next,updated_at:new Date().toISOString()}});
-   $("#maintenanceRecordModal").classList.add("hide");await loadMaintenanceData(currentBuilding.id,true);toast("Đã lưu nhật ký bảo trì");
+   $("#maintenanceRecordModal").classList.add("hide");await loadMaintenanceData(currentBuilding.id,true);toast("Đã lưu bảo trì; hạn kế tiếp được tự động cập nhật");
  }catch(err){toast(err.message)}
 };
 
