@@ -2109,7 +2109,7 @@
       <label><span>Người thực hiện</span><select id="maintenanceRecordPerformer"><option value="">— Chọn —</option></select></label>
       <label><span>Kết quả</span><select id="maintenanceRecordResult"><option>Hoàn thành</option><option>Cần theo dõi</option><option>Cần sửa chữa</option><option>Chưa hoàn thành</option></select></label>
       <label class="wide"><span>Nội dung thực hiện *</span><input id="maintenanceWorkDone" maxlength="500" required placeholder="Vệ sinh, kiểm tra dòng, siết đầu cốt, thay lọc..."></label>
-      <label><span>Hạn bảo trì kế tiếp <em class="maintenanceAutoHint">Tự động</em></span><input id="maintenanceRecordNextDate" type="date" readonly></label>
+      <label><span>Hạn bảo trì kế tiếp <em class="maintenanceAutoHint">Theo chu kỳ cố định</em></span><input id="maintenanceRecordNextDate" type="date" readonly></label>
       <label><span>Chi phí (VNĐ)</span><input id="maintenanceCost" type="number" min="0" step="1000" value="0"></label>
       <label class="wide"><span>Ghi chú</span><input id="maintenanceRecordNote" maxlength="400"></label>
       <div class="inventoryFormActions"><button id="cancelMaintenanceRecordModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu nhật ký</button></div>
@@ -2235,5 +2235,5 @@
 </div>
 <div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20260930-maint-auto01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20260930-maint-fixed-cadence01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20260930-cause-empty01"></script><script src="construction.js?v=20260924-2255"></script><script src="demo-lab.js?v=20260930-checklist-modal01"></script><script src="command-center.js?v=20260929-admin-layout14"></script></body></html>
