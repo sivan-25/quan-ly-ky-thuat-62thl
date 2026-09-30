@@ -4917,6 +4917,85 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
   }
 }
 
+
+/* WORK_PDF_VISIBLE_AND_ENERGY_INTERNAL_SCROLL_20260930 */
+#app #workPage .premiumTableCard .tableTop.workTableMeta{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:10px!important;
+  overflow:visible!important;
+}
+#app #workPage #workExportPdfVisible{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:20!important;
+  width:auto!important;
+  min-width:118px!important;
+  height:38px!important;
+  flex:0 0 auto!important;
+}
+
+/* Desktop Energy: freeze the page and scroll only the history box.
+   This applies to Điện, Nước and Solar because all three share #energyPage. */
+@media(min-width:981px){
+  #app.energyMode{
+    height:100vh!important;
+    min-height:100vh!important;
+    overflow:hidden!important;
+  }
+  #app.energyMode main{
+    height:100vh!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  #app.energyMode #energyPage:not(.hide){
+    height:100vh!important;
+    max-height:100vh!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+    grid-template-rows:auto auto auto minmax(0,1fr)!important;
+    align-content:stretch!important;
+  }
+  #app.energyMode #energyPage .energyCard,
+  #app.energyMode #energyPage .energyTableCard{
+    min-height:0!important;
+    height:100%!important;
+    max-height:100%!important;
+  }
+  #app.energyMode #energyPage .energyTableCard{
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  #app.energyMode #energyPage .energyTableTop{
+    flex:0 0 auto!important;
+  }
+  #app.energyMode #energyPage .energyDesktopTable{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-x:auto!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+  }
+  #app.energyMode #energyPage .energyHistoryTable{
+    margin:0!important;
+  }
+  #app.energyMode #energyPage .energyHistoryTable thead th{
+    position:sticky!important;
+    top:0!important;
+    z-index:4!important;
+  }
+  #app.energyMode #energyPage .energyLegend{
+    flex:0 0 auto!important;
+  }
+}
+
 /* IMAGE_ONLY_VIEWER_FINAL */
 #viewer.viewer.imageOnlyViewer{
   z-index:5000!important;
