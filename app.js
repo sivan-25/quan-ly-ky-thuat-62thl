@@ -661,6 +661,7 @@ function renderHomeDashboard(){
  $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
 }
 function showHome(){
+ closeWorkFilter();
  $("#homePage").classList.remove("hide");
  $("#adminPage").classList.add("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");$("#inventoryPage").classList.add("hide");$("#maintenancePage").classList.add("hide");$("#contractorPage").classList.add("hide");$("#constructionMaterialPage").classList.add("hide");
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
@@ -726,6 +727,7 @@ async function enterProject(building,{target="home"}={}){
  try{applyBuildingUI()}catch(e){console.warn("Final project UI refresh skipped",e)}
 }
 function openAdminPortal(){
+ closeWorkFilter();
  if(!currentAccount?.is_admin)return;
  $("#homePage").classList.add("hide");$("#adminPage").classList.remove("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");$("#inventoryPage").classList.add("hide");$("#maintenancePage").classList.add("hide");$("#contractorPage").classList.add("hide");$("#constructionMaterialPage").classList.add("hide");
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
@@ -1109,7 +1111,30 @@ document.addEventListener("click",e=>{
     document.querySelectorAll("#energyPage .rowActionMenu[open]").forEach(openMenu=>openMenu.removeAttribute("open"));
   }
 });
-/* END_ENERGY_ROW_ACTION_MENU_SINGLE_OPEN */$("#toggleFilter").onclick=e=>{e.stopPropagation();const hidden=$("#filterBar").classList.toggle("hide");$("#toggleFilter").setAttribute("aria-expanded",String(!hidden))};$("#filterBar").onclick=e=>e.stopPropagation();
+/* END_ENERGY_ROW_ACTION_MENU_SINGLE_OPEN */
+// The page toolbar owns the real controls; refreshes only render table rows.
+function positionWorkFilter(){
+ const bar=$("#filterBar"),btn=$("#toggleFilter");
+ if(!bar||!btn||bar.classList.contains("hide"))return;
+ const rect=btn.getBoundingClientRect(),gap=12;
+ const width=Math.min(560,window.innerWidth-gap*2);
+ bar.style.setProperty("width",width+"px","important");
+ bar.style.setProperty("max-height",(window.innerHeight-gap*2)+"px","important");
+ const left=Math.max(gap,Math.min(rect.right-width,window.innerWidth-width-gap));
+ const height=bar.getBoundingClientRect().height;
+ const top=Math.max(gap,Math.min(rect.bottom+8,window.innerHeight-height-gap));
+ bar.style.setProperty("left",left+"px","important");
+ bar.style.setProperty("top",top+"px","important");
+}
+$("#toggleFilter").onclick=e=>{
+ e.stopPropagation();
+ const hidden=$("#filterBar").classList.toggle("hide");
+ $("#toggleFilter").setAttribute("aria-expanded",String(!hidden));
+ if(!hidden)positionWorkFilter();
+};
+$("#filterBar").onclick=e=>e.stopPropagation();
+window.addEventListener("resize",positionWorkFilter);
+window.addEventListener("scroll",positionWorkFilter,true);
 ["fromDate","toDate"].forEach(id=>{
  const input=$("#"+id);
  if(!input)return;
@@ -1689,6 +1714,7 @@ function sync68EnergyTabs(){
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
+ closeWorkFilter();
  const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
  const tops={work:"#topWorkTitle",energy:"#topEnergyTitle",inventory:"#topInventoryTitle",maintenance:"#topMaintenanceTitle",contractor:"#topContractorTitle",construction:"#topConstructionTitle"};
  const navs={work:"#navWork",energy:"#navEnergy",inventory:"#navInventory",maintenance:"#navMaintenance",contractor:"#navContractor",construction:"#navConstruction"};
