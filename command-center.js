@@ -98,7 +98,31 @@ function renderActivity(){
  }).join(""):'<div class="ccEmpty">Chưa có lịch sử cập nhật.</div>';
 }
 function renderCenter(){const root=ensureRoot();if(!root||!currentAccount?.is_admin)return;renderFilters();const a=alerts(),t=taskRows();renderSummary(a,t);renderProjects(a);renderLists();renderActivity();if(lastUpdated&&$c("#homeUpdatedAt"))$c("#homeUpdatedAt").textContent="Cập nhật "+new Date(lastUpdated).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}
-async function loadCenter(force=false){if(!currentAccount?.is_admin)return;const root=ensureRoot();if(!root||loading)return;loading=true;root.classList.add("loading");try{const res=await sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession?.access_token,body:{}});rows=Array.isArray(res?.rows)?res.rows:[];activity=Array.isArray(res?.activity)?res.activity:[];lastUpdated=res?.generated_at||new Date().toISOString();renderCenter()}catch(e){console.warn("Admin Command Center failed",e);if($c("#ccAlertList"))$c("#ccAlertList").innerHTML='<div class="ccEmpty">Không tải được dữ liệu. Nhấn Làm mới để thử lại.</div>'}finally{loading=false;root.classList.remove("loading")}}
+async function loadCenter(force=false){
+ if(!currentAccount?.is_admin)return;
+ const root=ensureRoot();if(!root||loading)return;
+ loading=true;
+ root.classList.add("loading");
+ root.setAttribute("aria-busy","true");
+ const refresh=root.querySelector("#ccRefresh");
+ const oldRefreshText=refresh?.textContent||"Làm mới";
+ if(refresh){refresh.disabled=true;refresh.textContent="Đang tải…"}
+ try{
+   const res=await sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession?.access_token,body:{}});
+   rows=Array.isArray(res?.rows)?res.rows:[];
+   activity=Array.isArray(res?.activity)?res.activity:[];
+   lastUpdated=res?.generated_at||new Date().toISOString();
+   renderCenter();
+ }catch(e){
+   console.warn("Admin Command Center failed",e);
+   if($c("#ccAlertList"))$c("#ccAlertList").innerHTML='<div class="ccEmpty">Không tải được dữ liệu. Nhấn Làm mới để thử lại.</div>';
+ }finally{
+   loading=false;
+   root.classList.remove("loading");
+   root.removeAttribute("aria-busy");
+   if(refresh){refresh.disabled=false;refresh.textContent=oldRefreshText}
+ }
+}
 async function openProject(id){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(id));if(b)await enterProject(b,{target:"work"})}
 async function openTask(buildingId,taskId){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;await enterProject(b,{target:"work"});const n=Number(taskId);setTimeout(()=>{if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)},120)}
 async function openAlert(buildingId,module,refId,taskId){if(module==="work")return openTask(buildingId,taskId);const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;await enterProject(b,{target:"work"});if(typeof showModule==="function")showModule(module);setTimeout(()=>{if(module==="incident"&&refId&&typeof window.demoSelectIncident==="function")window.demoSelectIncident(refId);if(module==="inspection"&&refId&&typeof window.demoSelectInspection==="function")window.demoSelectInspection(refId)},120)}
