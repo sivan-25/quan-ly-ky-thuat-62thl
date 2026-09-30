@@ -1705,7 +1705,7 @@ const ENERGY_META={
  solar:{name:"Năng lượng mặt trời",form:"Ghi sản lượng điện mặt trời",unit:"kWh",valueLabel:"Sản lượng điện (kWh)"},
  xlnt:{name:"Chỉ số XLNT",form:"Ghi chỉ số XLNT",unit:"m³",valueLabel:"Chỉ số XLNT (m³)"}
 };
-const is68Pdl=()=>String(currentBuilding?.id||"")==="68P\\u0110L";
+const is68Pdl=()=>String(currentBuilding?.id||"")==="68PĐL";
 const supportsXlntEnergy=()=>is68Pdl()||String(currentBuilding?.id||"")==="DEMO";
 const is68DualElectric=()=>is68Pdl()&&energyType==="electric";
 function sync68EnergyTabs(){
