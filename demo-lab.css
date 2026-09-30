@@ -1433,3 +1433,211 @@
 #app.demoProjectMode.workMode #workPage .premiumTableCard tbody tr:hover td.noteCell{
   color:#f0f5ff!important;
 }
+
+
+/* INCIDENT_CREATE_MODAL_20260930 */
+body.demoModalOpen{overflow:hidden!important}
+#demoIncidentModal{
+  position:fixed;
+  inset:0;
+  z-index:4200;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(4,10,20,.72);
+  backdrop-filter:blur(8px);
+}
+#demoIncidentModal.hide{display:none!important}
+#demoIncidentModal .demoIncidentModalCard{
+  width:min(780px,calc(100vw - 32px));
+  max-height:min(86vh,820px);
+  overflow:auto;
+  border:1px solid #31425f;
+  border-radius:22px;
+  background:#0d1729;
+  box-shadow:0 30px 90px rgba(0,0,0,.48);
+  color:#eef4ff;
+}
+#demoIncidentModal .demoIncidentModalHead{
+  position:sticky;
+  top:0;
+  z-index:2;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+  padding:22px 24px 18px;
+  border-bottom:1px solid #253550;
+  background:linear-gradient(180deg,#111d31 0%,#0d1729 100%);
+}
+#demoIncidentModal .demoIncidentModalHead>div{min-width:0}
+#demoIncidentModal .demoIncidentModalHead span{
+  display:block;
+  margin-bottom:7px;
+  color:#28d6ed;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.4px;
+}
+#demoIncidentModal .demoIncidentModalHead h2{
+  margin:0;
+  color:#fff;
+  font-size:24px;
+  line-height:1.2;
+  font-weight:760;
+}
+#demoIncidentModal .demoIncidentModalHead p{
+  margin:7px 0 0;
+  color:#9fb0c7;
+  font-size:12px;
+  line-height:1.45;
+}
+#demoIncidentModal .demoIncidentModalClose{
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border:1px solid #344660;
+  border-radius:12px;
+  background:#152139;
+  color:#fff;
+  font-size:26px;
+  line-height:1;
+  cursor:pointer;
+}
+#demoIncidentModal .demoIncidentModalClose:hover{
+  border-color:#4e6889;
+  background:#1a2a45;
+}
+#demoIncidentModal .demoIncidentForm{
+  padding:20px 24px 24px;
+}
+#demoIncidentModal .demoIncidentFormGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+#demoIncidentModal .demoIncidentFormGrid label{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:7px;
+}
+#demoIncidentModal .demoIncidentFormGrid label>span{
+  color:#cbd6e6;
+  font-size:11.5px;
+  font-weight:650;
+}
+#demoIncidentModal .demoIncidentFormGrid label>span b{
+  color:#ff7084;
+}
+#demoIncidentModal .demoIncidentFormGrid input,
+#demoIncidentModal .demoIncidentFormGrid select,
+#demoIncidentModal .demoIncidentFormGrid textarea{
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  border:1px solid #374963;
+  border-radius:11px;
+  background:#17233a;
+  color:#f4f8ff;
+  font:inherit;
+  font-size:13px;
+  outline:none;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+#demoIncidentModal .demoIncidentFormGrid input,
+#demoIncidentModal .demoIncidentFormGrid select{
+  height:46px;
+  padding:0 12px;
+}
+#demoIncidentModal .demoIncidentFormGrid textarea{
+  min-height:84px;
+  padding:11px 12px;
+  resize:vertical;
+  line-height:1.5;
+}
+#demoIncidentModal .demoIncidentFormGrid input::placeholder,
+#demoIncidentModal .demoIncidentFormGrid textarea::placeholder{
+  color:#70809a;
+}
+#demoIncidentModal .demoIncidentFormGrid input:focus,
+#demoIncidentModal .demoIncidentFormGrid select:focus,
+#demoIncidentModal .demoIncidentFormGrid textarea:focus{
+  border-color:#28cfe7;
+  background:#192941;
+  box-shadow:0 0 0 3px rgba(40,207,231,.12);
+}
+#demoIncidentModal .demoIncidentWide{
+  grid-column:1/-1;
+}
+#demoIncidentModal .demoIncidentModalFoot{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+  padding-top:18px;
+  border-top:1px solid #24334b;
+}
+#demoIncidentModal .demoIncidentModalFoot .demoBtn{
+  min-width:110px;
+  height:42px;
+}
+#demoIncidentModal #demoIncidentSaveBtn:disabled{
+  opacity:.65;
+  cursor:wait;
+}
+
+@media(max-width:700px){
+  #demoIncidentModal{
+    align-items:end;
+    padding:0;
+  }
+  #demoIncidentModal .demoIncidentModalCard{
+    width:100%;
+    max-height:92dvh;
+    border-radius:20px 20px 0 0;
+    border-bottom:0;
+  }
+  #demoIncidentModal .demoIncidentModalHead{
+    padding:18px 18px 14px;
+  }
+  #demoIncidentModal .demoIncidentModalHead h2{
+    font-size:20px;
+  }
+  #demoIncidentModal .demoIncidentModalHead p{
+    font-size:11.5px;
+  }
+  #demoIncidentModal .demoIncidentForm{
+    padding:16px 16px calc(18px + env(safe-area-inset-bottom));
+  }
+  #demoIncidentModal .demoIncidentFormGrid{
+    grid-template-columns:1fr;
+    gap:13px;
+  }
+  #demoIncidentModal .demoIncidentWide{
+    grid-column:1;
+  }
+  #demoIncidentModal .demoIncidentFormGrid input,
+  #demoIncidentModal .demoIncidentFormGrid select,
+  #demoIncidentModal .demoIncidentFormGrid textarea{
+    font-size:16px;
+  }
+  #demoIncidentModal .demoIncidentFormGrid input,
+  #demoIncidentModal .demoIncidentFormGrid select{
+    height:48px;
+  }
+  #demoIncidentModal .demoIncidentModalFoot{
+    position:sticky;
+    bottom:0;
+    z-index:2;
+    margin:18px -16px -16px;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:#0d1729;
+  }
+  #demoIncidentModal .demoIncidentModalFoot .demoBtn{
+    flex:1 1 0;
+    min-height:46px;
+    height:46px;
+    font-size:13px;
+  }
+}
