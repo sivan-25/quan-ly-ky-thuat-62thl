@@ -10094,3 +10094,37 @@ body.workEditOpen{overflow:hidden!important}
     flex-wrap:nowrap!important;
   }
 }
+
+
+/* WORK_EDIT_MODAL_NO_HORIZONTAL_SCROLL_20260930 */
+.workEditDrawer,
+.workEditDrawerCard,
+.workEditDrawerMount{
+  overflow-x:hidden!important;
+}
+.workEditDrawerMount{
+  overflow-y:auto!important;
+  max-width:100%!important;
+}
+.workEditDrawerMount .workEntryCard,
+.workEditDrawerMount #taskForm,
+.workEditDrawerMount .demoWorkLinks,
+.workEditDrawerMount .existingImageSection,
+.workEditDrawerMount .pendingImagePreview{
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+.workEditDrawerMount #taskForm>*,
+.workEditDrawerMount .demoWorkLinkGrid>*{
+  min-width:0!important;
+}
+@media(min-width:761px){
+  .workEditDrawerCard{
+    overflow:hidden!important;
+  }
+  .workEditDrawerMount{
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+  }
+}
