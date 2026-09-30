@@ -536,9 +536,9 @@ def story_energy(data):
     gap=3*mm; kw=(CW-3*gap)/4
     vals=[
         (len(rows),"BẢN GHI",True),
-        ((_energy_num(first_value)+" "+unit) if first_value is not None else "—","CHỈ SỐ ĐẦU KỲ",False),
-        ((_energy_num(last_value)+" "+unit) if last_value is not None else "—","CHỈ SỐ CUỐI KỲ",False),
-        ((_energy_num(total)+" "+unit) if total is not None else "—","TIÊU THỤ KỲ",False)
+        ((_energy_num(first_value)) if first_value is not None else "—","CHỈ SỐ ĐẦU KỲ",False),
+        ((_energy_num(last_value)) if last_value is not None else "—","CHỈ SỐ CUỐI KỲ",False),
+        ((_energy_num(total)) if total is not None else "—","TIÊU THỤ KỲ",False)
     ]
     cells=[]; widths=[]
     for i,(num,label,dark) in enumerate(vals):
@@ -566,7 +566,7 @@ def story_energy(data):
         table_rows.append([
             P(f"{i:02d}",ST["td_s"]),
             P(str(r.get("date_display") or r.get("date") or "—"),ST["td"]),
-            P((_energy_num(r.get("value"))+" "+unit),ST["td_b"]),
+            P(_energy_num(r.get("value")),ST["td_b"]),
             P(diff_text,ST["td_b"]),
             P(str(r.get("performer") or "—"),ST["td_s"]),
             P(str(r.get("note") or "—"),ST["note"])
@@ -597,7 +597,7 @@ def story_energy(data):
                   HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)]
         for idx,r in enumerate(image_rows,1):
             cap=(str(r.get("date_display") or r.get("date") or "")+"  ·  "+
-                 _energy_num(r.get("value"))+" "+unit)
+                 _energy_num(r.get("value")))
             slot=ImageSlot(CW-16,82*mm,r.get("image_path"),cap,fit="contain")
             box=Table([[P(f"{idx:02d}  ·  {energy_name}",ST["sec"])],[slot]],colWidths=[CW])
             box.setStyle(TableStyle([
