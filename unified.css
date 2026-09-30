@@ -4583,11 +4583,17 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 }
 
 
-/* MAINTENANCE CREAM CANVAS — match contractor empty-space background */
-#app.maintenanceMode,
-#app.maintenanceMode main,
+/* MAINTENANCE CANVAS — match Inventory dark background */
+#app.maintenanceMode{
+  background:#080e1a!important;
+}
+#app.maintenanceMode main{
+  background:
+    radial-gradient(circle at 90% 4%,rgba(19,157,188,.08),transparent 30%),
+    #080e1a!important;
+}
 #app.maintenanceMode #maintenancePage{
-  background:#f7dfb6!important;
+  background:transparent!important;
 }
 
 /* IMAGE_ONLY_VIEWER_FINAL */
