@@ -2100,10 +2100,12 @@ document.querySelectorAll("[data-energy-report-range]").forEach(b=>b.onclick=()=
 
 function energyRowsForTypeRange(type,from,to){
  const all=energyLoad().filter(x=>x.type===type).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
+ const dual=is68Pdl()&&type==="electric";
  return all.filter(x=>(!from||x.date>=from)&&(!to||x.date<=to)).map(x=>{
    const idx=all.findIndex(v=>String(v.id)===String(x.id));
    const diff=idx>0?Number(x.value)-Number(all[idx-1].value):null;
-   return {...x,diff};
+   const diff2=dual&&idx>0?Number(x.value2)-Number(all[idx-1].value2):null;
+   return {...x,diff,diff2,totalDiff:dual&&diff!==null&&diff2!==null?diff+diff2:diff};
  });
 }
 function combinedReportHtml(kind){
