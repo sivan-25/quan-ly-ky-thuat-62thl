@@ -2429,10 +2429,10 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 #app.inventoryMode #inventoryMaterialsPane .stockFinal{
   min-width:52px!important;
   height:34px!important;
-  border:1px solid #3a3d6f!important;
+  border:1px solid #256b57!important;
   border-radius:999px!important;
-  background:#24234e!important;
-  color:#ecefff!important;
+  background:#123b31!important;
+  color:#8ff0c8!important;
   font-size:12px!important;
 }
 #app.inventoryMode #inventoryMaterialsPane .stockFinal.low{
