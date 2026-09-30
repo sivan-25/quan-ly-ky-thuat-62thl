@@ -1257,7 +1257,8 @@ function reportHtml(a,kind="current",photoLayout=2){
 
  const detailInfo=(x)=>{
    const blocks=[];
-   const cause=x.cause||x._reportIncident?.cause||"";
+   const causeRaw=String(x.cause||x._reportIncident?.cause||"").trim();
+   const cause=["[Chưa xác định]","Chưa xác định","Chưa ghi nhận"].includes(causeRaw)?"":causeRaw;
    const result=x.result||x._reportIncident?.solution||"";
    const asset=x._reportAsset?((x._reportAsset.code?x._reportAsset.code+" · ":"")+x._reportAsset.name):"";
    const contractor=x._reportContractor?.name||x.contractorName||"";
