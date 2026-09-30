@@ -2630,7 +2630,63 @@ $("#addMaterialBtn").onclick=()=>openMaterialModal();
 $("#openStockTxn").onclick=()=>openStockTxnModal();
 $("#addToolBtn").onclick=()=>openToolModal();
 $("#materialExportPdf").onclick=()=>{if(!inventoryMaterials.length)return toast("Chưa có vật tư để xuất PDF");inventoryPrintWindow(materialReportHtml())};
-$("#toolExportPdf").onclick=()=>{if(!inventoryTools.length)return toast("Chưa có dụng cụ để xuất PDF");inventoryPrintWindow(toolReportHtml())};
+function toolsForReport(){
+ const q=($("#toolSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
+ return inventoryTools.filter(t=>!q||[t.name,t.code,t.brand,t.location,t.keeper,t.note,t.condition_status].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
+}
+let toolReportBusy=false;
+async function exportToolsEstaPdf(){
+ const rows=toolsForReport();
+ if(!rows.length)return toast("Chưa có dụng cụ để xuất PDF");
+ if(toolReportBusy)return toast("Báo cáo dụng cụ đang được tạo");
+ if(!centralSession?.access_token)return toast("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ toolReportBusy=true;
+ try{
+  toast("Đang tạo PDF Dụng cụ kỹ thuật theo mẫu ESTA chuẩn...");
+  await ensureCentralSessionFresh();
+  const payload={
+   report_type:"tools",
+   building:String(currentBuilding?.name||"[CẦN BỔ SUNG]"),
+   report_date:new Date().toLocaleDateString("vi-VN"),
+   period_label:"DANH MỤC HIỆN TẠI",
+   tools:rows.map(t=>({
+    name:String(t.name||""),
+    brand:String(t.brand||""),
+    qty:Number(t.qty||0),
+    unit:String(t.unit||""),
+    location:String(t.location||""),
+    keeper:String(t.keeper||""),
+    condition_status:String(t.condition_status||""),
+    acquired_date:String(t.acquired_date||""),
+    note:String(t.note||"")
+   }))
+  };
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),115000);
+  try{
+   const res=await fetch("/api/esta_report",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+centralSession.access_token},
+    body:JSON.stringify(payload),
+    signal:controller.signal
+   });
+   if(!res.ok){
+    let detail={};try{detail=await res.json()}catch(_){}
+    throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo Dụng cụ kỹ thuật");
+   }
+   const blob=await res.blob();
+   if(!blob.size)throw new Error("File PDF trả về bị trống");
+   const url=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=url;a.download="BaoCao_DungCuKyThuat_"+today().replaceAll("-","")+".pdf";
+   document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),60000);
+   toast("Đã xuất PDF Dụng cụ kỹ thuật ESTA chuẩn");
+  }finally{clearTimeout(timer)}
+ }catch(err){
+  if(err?.name==="AbortError")toast("Tạo PDF quá thời gian. Vui lòng thử lại.");
+  else toast(err.message||"Không thể xuất PDF Dụng cụ kỹ thuật");
+ }finally{toolReportBusy=false}
+}
+$("#toolExportPdf").onclick=exportToolsEstaPdf;
 document.querySelectorAll("[data-material-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.materialSample.split("|");b.closest("details")?.removeAttribute("open");openMaterialModal(n,u)});
 document.querySelectorAll("[data-tool-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.toolSample.split("|");openToolModal(n,u)});
 $("#closeMaterialModal").onclick=$("#cancelMaterialModal").onclick=()=>$("#materialItemModal").classList.add("hide");
