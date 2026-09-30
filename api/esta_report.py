@@ -436,6 +436,185 @@ def story_merged(data):
     return story_summary(data,sign=False,pointer=True)+[PageBreak()]+story_detail(data,standalone=False)
 
 
+# ===== ENERGY REPORT — ESTA STANDARD =====
+def energy_signatures():
+    P=Paragraph
+    cols=[("KỸ THUẬT (KT)","(Ký, ghi rõ họ tên)"),
+          ("KIỂM SOÁT / GIÁM SÁT (KST)","(Ký, ghi rõ họ tên)")]
+    t=Table([[P(a,ST["sig"]) for a,_ in cols],
+             [P(b,ST["sig_s"]) for _,b in cols],
+             ["",""]],
+            colWidths=[CW/2]*2,rowHeights=[None,None,14*mm])
+    t.setStyle(TableStyle([
+        ("LINEABOVE",(0,0),(-1,0),1.5,COPPER),
+        ("TOPPADDING",(0,0),(-1,0),7),
+        ("BOTTOMPADDING",(0,0),(-1,-1),1),
+        ("LEFTPADDING",(0,0),(-1,-1),0),
+        ("RIGHTPADDING",(0,0),(-1,-1),10),
+        ("LINEBELOW",(0,2),(-1,2),.4,TAUPE)
+    ]))
+    return KeepTogether([Spacer(1,8),t])
+
+def make_energy_page_fns(report_title, period_label):
+    short=(report_title or "BÁO CÁO NĂNG LƯỢNG").upper()
+    period=(period_label or "").upper()
+    def background(c):
+        c.setFillColor(CREAM); c.rect(0,0,PW,PH,stroke=0,fill=1)
+    def first(c,doc):
+        background(c); bh=38*mm
+        c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
+        c.setFillColor(COPPER); c.rect(0,PH-bh-1.5,PW,1.5,stroke=0,fill=1)
+        tracked(c,PW-MX,PH-17*mm,short,"Mont-Bold",8.5,1.25,CREAM,"r")
+        tracked(c,PW-MX,PH-23*mm,period,"Mont-Light",6.8,1.3,CREAM,"r")
+    def later(c,doc):
+        background(c); bh=12*mm
+        c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
+        c.setFillColor(COPPER); c.rect(0,PH-bh-1.2,PW,1.2,stroke=0,fill=1)
+        tracked(c,PW-MX,PH-7.2*mm,short+"  ·  "+period,
+                "Mont-Light",6.2,1.1,CREAM,"r")
+    return first,later
+
+def build_energy_doc(path,data):
+    ensure_fonts()
+    report_title="BÁO CÁO "+str(data.get("energy_name") or "NĂNG LƯỢNG").upper()
+    first,later=make_energy_page_fns(report_title,data.get("period_label") or "")
+    doc=BaseDocTemplate(path,pagesize=A4,title=report_title,
+        author="ESTA Property Management",subject="Báo cáo năng lượng",
+        creator="ESTA Property Management",leftMargin=MX,rightMargin=MX)
+    f1=Frame(MX,21*mm,CW,PH-38*mm-8*mm-21*mm,id="ef1",
+             leftPadding=0,rightPadding=0,topPadding=0,bottomPadding=0)
+    f2=Frame(MX,21*mm,CW,PH-12*mm-8*mm-21*mm,id="ef2",
+             leftPadding=0,rightPadding=0,topPadding=0,bottomPadding=0)
+    doc.addPageTemplates([
+        PageTemplate("first",[f1],onPage=first,autoNextPageTemplate="later"),
+        PageTemplate("later",[f2],onPage=later)
+    ])
+    doc.build(story_energy(data),canvasmaker=NumberedCanvas)
+
+def _energy_num(v):
+    try:
+        n=float(v)
+        if abs(n-round(n)) < 1e-9:
+            return f"{int(round(n)):,}".replace(",",".")
+        return f"{n:,.2f}".replace(",","X").replace(".",",").replace("X",".").rstrip("0").rstrip(",")
+    except Exception:
+        return "—"
+
+def story_energy(data):
+    P=Paragraph
+    rows=data.get("rows") or []
+    unit=str(data.get("unit") or "")
+    energy_name=str(data.get("energy_name") or "Năng lượng")
+    period_label=str(data.get("period_label") or "THEO BỘ LỌC")
+    first_value=rows[0].get("value") if rows else None
+    last_value=rows[-1].get("value") if rows else None
+    usable=[r.get("diff") for r in rows if isinstance(r.get("diff"),(int,float)) and r.get("diff") >= 0]
+    total=sum(usable) if usable else None
+
+    story=[
+        P("PHẦN 1  ·  BÁO CÁO NĂNG LƯỢNG",ST["eyebrow"]),Spacer(1,3),
+        P("Báo cáo "+energy_name.lower(),ST["h1"]),
+        HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)
+    ]
+
+    meta=Table([
+        [P("TÒA NHÀ",ST["lbl"]),P(str(data.get("building") or "—"),ST["val"]),
+         P("NGÀY BÁO CÁO",ST["lbl"]),P(str(data.get("report_date") or "—"),ST["val"])],
+        [P("KỲ BÁO CÁO",ST["lbl"]),P(period_label,ST["val"]),
+         P("ĐƠN VỊ",ST["lbl"]),P(unit or "—",ST["val"])]
+    ],colWidths=[28*mm,59*mm,28*mm,CW-115*mm])
+    meta.setStyle(TableStyle([
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("LINEBELOW",(0,0),(-1,-1),.4,TAUPE),
+        ("TOPPADDING",(0,0),(-1,-1),3.5),
+        ("BOTTOMPADDING",(0,0),(-1,-1),3.5),
+        ("LEFTPADDING",(0,0),(-1,-1),0),
+        ("RIGHTPADDING",(0,0),(-1,-1),6)
+    ]))
+    story += [meta,Spacer(1,10)]
+
+    gap=3*mm; kw=(CW-3*gap)/4
+    vals=[
+        (len(rows),"BẢN GHI",True),
+        ((_energy_num(first_value)+" "+unit) if first_value is not None else "—","CHỈ SỐ ĐẦU KỲ",False),
+        ((_energy_num(last_value)+" "+unit) if last_value is not None else "—","CHỈ SỐ CUỐI KỲ",False),
+        ((_energy_num(total)+" "+unit) if total is not None else "—","TIÊU THỤ KỲ",False)
+    ]
+    cells=[]; widths=[]
+    for i,(num,label,dark) in enumerate(vals):
+        if i: cells.append(""); widths.append(gap)
+        nstyle=ST["kpi_n_d" if dark else "kpi_n"]
+        lstyle=ST["kpi_l_d" if dark else "kpi_l"]
+        cells.append([P(str(num),nstyle),P(label,lstyle)]); widths.append(kw)
+    k=Table([cells],colWidths=widths)
+    ks=[
+        ("TOPPADDING",(0,0),(-1,-1),8),("BOTTOMPADDING",(0,0),(-1,-1),8),
+        ("LEFTPADDING",(0,0),(-1,-1),8),("RIGHTPADDING",(0,0),(-1,-1),2),
+        ("VALIGN",(0,0),(-1,-1),"TOP"),("BACKGROUND",(0,0),(0,0),AUB)
+    ]
+    for ci in range(2,len(cells),2):
+        ks += [("BACKGROUND",(ci,0),(ci,0),CREAM_L),("LINEABOVE",(ci,0),(ci,0),2,COPPER)]
+    k.setStyle(TableStyle(ks))
+    story += [k,Spacer(1,14)]
+
+    story += [P("BẢNG THEO DÕI CHỈ SỐ",ST["sec"]),Spacer(1,4)]
+    head=["STT","NGÀY","CHỈ SỐ","CHÊNH LỆCH","NGƯỜI THỰC HIỆN","GHI CHÚ"]
+    table_rows=[[P(h,ST["th"]) for h in head]]
+    for i,r in enumerate(rows,1):
+        diff=r.get("diff")
+        diff_text="—" if diff is None else (("+" if diff >= 0 else "")+_energy_num(diff))
+        table_rows.append([
+            P(f"{i:02d}",ST["td_s"]),
+            P(str(r.get("date_display") or r.get("date") or "—"),ST["td"]),
+            P((_energy_num(r.get("value"))+" "+unit),ST["td_b"]),
+            P(diff_text,ST["td_b"]),
+            P(str(r.get("performer") or "—"),ST["td_s"]),
+            P(str(r.get("note") or "—"),ST["note"])
+        ])
+    widths=[9,24,27,25,35,54]
+    widths=[w*mm*CW/(sum(widths)*mm) for w in widths]
+    tb=Table(table_rows,colWidths=widths,repeatRows=1)
+    ts=[
+        ("BACKGROUND",(0,0),(-1,0),AUB),
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("TOPPADDING",(0,0),(-1,-1),4),
+        ("BOTTOMPADDING",(0,0),(-1,-1),4),
+        ("LEFTPADDING",(0,0),(-1,-1),5),
+        ("RIGHTPADDING",(0,0),(-1,-1),4),
+        ("LINEBELOW",(0,1),(-1,-1),.4,TAUPE),
+        ("LINEBELOW",(0,-1),(-1,-1),1.5,COPPER)
+    ]
+    for rr in range(2,len(table_rows),2):
+        ts.append(("BACKGROUND",(0,rr),(-1,rr),CREAM_L))
+    tb.setStyle(TableStyle(ts))
+    story += [tb]
+
+    image_rows=[r for r in rows if r.get("image_path") and os.path.exists(r.get("image_path"))]
+    if image_rows:
+        from reportlab.platypus import PageBreak
+        story += [PageBreak(),P("PHẦN 2  ·  HÌNH ẢNH ĐỒNG HỒ",ST["eyebrow"]),Spacer(1,3),
+                  P("Hình ảnh ghi nhận",ST["h1"]),
+                  HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)]
+        for idx,r in enumerate(image_rows,1):
+            cap=(str(r.get("date_display") or r.get("date") or "")+"  ·  "+
+                 _energy_num(r.get("value"))+" "+unit)
+            slot=ImageSlot(CW,82*mm,r.get("image_path"),cap,fit="contain")
+            box=Table([[P(f"{idx:02d}  ·  {energy_name}",ST["sec"])],[slot]],colWidths=[CW])
+            box.setStyle(TableStyle([
+                ("BOX",(0,0),(-1,-1),.6,TAUPE),
+                ("BACKGROUND",(0,0),(0,0),CREAM_L),
+                ("LINEBELOW",(0,0),(0,0),1.5,COPPER),
+                ("LEFTPADDING",(0,0),(-1,-1),8),
+                ("RIGHTPADDING",(0,0),(-1,-1),8),
+                ("TOPPADDING",(0,0),(-1,-1),5),
+                ("BOTTOMPADDING",(0,0),(-1,-1),5)
+            ]))
+            story += [KeepTogether([box,Spacer(1,9)])]
+
+    story.append(energy_signatures())
+    return story
+
+
 # ===== VERCEL API HANDLER =====
 # -*- coding: utf-8 -*-
 import base64
