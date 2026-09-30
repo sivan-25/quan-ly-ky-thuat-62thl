@@ -1846,87 +1846,97 @@ function energyFmt(v){return Number(v).toLocaleString("vi-VN",{maximumFractionDi
 function weekday(d){return new Date(d+"T00:00:00").toLocaleDateString("vi-VN",{weekday:"long"})}
 function energyRows(){
  const all=energyLoad().filter(x=>x.type===energyType).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
- const prevMap={};
- all.forEach((x,i)=>prevMap[String(x.id)]=i?x.value-all[i-1].value:null);
- return energyRangeFiltered().map(x=>({...x,diff:prevMap[String(x.id)]}));
+ const dual=is68DualElectric(),prevMap={};
+ all.forEach((x,i)=>{
+  if(!i){prevMap[String(x.id)]={diff:null,diff2:null,totalDiff:null};return}
+  const d1=Number(x.value)-Number(all[i-1].value);
+  const d2=dual?Number(x.value2)-Number(all[i-1].value2):null;
+  prevMap[String(x.id)]={diff:d1,diff2:d2,totalDiff:dual&&Number.isFinite(d2)?d1+d2:d1};
+ });
+ return energyRangeFiltered().map(x=>({...x,...(prevMap[String(x.id)]||{diff:null,diff2:null,totalDiff:null})}));
 }
 function renderEnergy(){
- const m=ENERGY_META[energyType];
+ sync68EnergyTabs();
+ const m=ENERGY_META[energyType]||ENERGY_META.electric;
+ const dual=is68DualElectric();
+
  $("#energyFormTitle").textContent=m.form;
  $("#energyUnitHint").textContent="Đơn vị: "+m.unit;
- $("#energyValueLabel").textContent=m.valueLabel;
- $("#energyValueColumn").textContent="Chỉ số ("+m.unit+")";
+ $("#energyValueLabel").textContent=dual?"EVN1 (kWh)":m.valueLabel;
+ $("#energyValue2Field").classList.toggle("hide",!dual);
+ $("#energyImage2Field").classList.toggle("hide",!dual);
+ $("#energyImage2Preview").classList.toggle("hide",!dual);
+ $("#energyValue2").required=dual;
+ $("#energyImageLabel").textContent=dual?"Ảnh đồng hồ EVN1":"Ảnh đồng hồ";
  $("#energyTableTitle").textContent="Bảng theo dõi "+m.name.toLowerCase();
 
- const allType=energyLoad()
-   .filter(x=>x.type===energyType)
-   .sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
+ const head=$("#energyHeadRow"),cols=$("#energyColgroup");
+ if(dual){
+  if(cols)cols.innerHTML='<col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:13%"><col style="width:15%"><col style="width:8%"><col style="width:6%">';
+  if(head)head.innerHTML='<th>Ngày</th><th>EVN1</th><th>Tiêu thụ EVN1</th><th>EVN2</th><th>Tiêu thụ EVN2</th><th>Tổng tiêu thụ</th><th>Người thực hiện</th><th>Ghi chú</th><th>Ảnh</th><th>Thao tác</th>';
+ }else{
+  if(cols)cols.innerHTML='<col style="width:11%"><col style="width:18%"><col style="width:12%"><col style="width:14%"><col style="width:27%"><col style="width:9%"><col style="width:9%">';
+  if(head)head.innerHTML='<th>Ngày</th><th id="energyValueColumn">Chỉ số ('+esc(m.unit)+')</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Ghi chú</th><th>Ảnh</th><th>Thao tác</th>';
+ }
 
+ const allType=energyLoad().filter(x=>x.type===energyType).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
  const periodRows=energyRows();
  const q=($("#energyQuickSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
  const rows=q?periodRows.filter(x=>{
-   const hay=[
-     x.date,
-     fmt(x.date),
-     weekday(x.date),
-     performerArray(x).join(" "),
-     x.note||"",
-     String(x.value??"")
-   ].join(" ").toLocaleLowerCase("vi-VN");
+   const hay=[x.date,fmt(x.date),weekday(x.date),performerArray(x).join(" "),x.note||"",String(x.value??""),String(x.value2??"")].join(" ").toLocaleLowerCase("vi-VN");
    return hay.includes(q);
  }):periodRows;
 
  const currentMonth=today().slice(0,7);
  const monthCount=allType.filter(x=>String(x.date||"").slice(0,7)===currentMonth).length;
  const latest=allType.length?allType[allType.length-1]:null;
- const usableDiffs=periodRows.filter(x=>typeof x.diff==="number"&&Number.isFinite(x.diff)&&x.diff>=0);
- const totalUse=usableDiffs.length?usableDiffs.reduce((s,x)=>s+x.diff,0):null;
- const totalLabel=energyType==="electric"?"Tổng điện":energyType==="water"?"Tổng nước":"Tổng điện mặt trời";
+ const positiveSum=(key)=>periodRows.filter(x=>typeof x[key]==="number"&&Number.isFinite(x[key])&&x[key]>=0).reduce((s,x)=>s+x[key],0);
+ const hasUse=periodRows.some(x=>typeof x.diff==="number"&&Number.isFinite(x.diff)&&x.diff>=0);
+ const totalUse1=hasUse?positiveSum("diff"):null;
+ const totalUse2=dual&&periodRows.some(x=>typeof x.diff2==="number"&&Number.isFinite(x.diff2)&&x.diff2>=0)?positiveSum("diff2"):null;
+ const totalUse=dual?(totalUse1!==null||totalUse2!==null?Number(totalUse1||0)+Number(totalUse2||0):null):totalUse1;
+ const totalLabel=energyType==="electric"?"Tổng điện":energyType==="water"?"Tổng nước":energyType==="xlnt"?"Tổng XLNT":"Tổng điện mặt trời";
 
  $("#energyRecordCount").textContent=monthCount;
- $("#energyLatestValue").textContent=latest?energyFmt(latest.value)+" "+m.unit:"—";
- $("#energyPeriodUse").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—";
+ if(dual){
+  $("#energyLatestValue").textContent=latest?"EVN1 "+energyFmt(latest.value)+" · EVN2 "+energyFmt(latest.value2):"—";
+  $("#energyPeriodUse").textContent=totalUse!==null?"EVN1 "+energyFmt(totalUse1||0)+" · EVN2 "+energyFmt(totalUse2||0)+" · Tổng "+energyFmt(totalUse):"—";
+ }else{
+  $("#energyLatestValue").textContent=latest?energyFmt(latest.value)+" "+m.unit:"—";
+  $("#energyPeriodUse").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—";
+ }
 
  const totalBox=$("#energyTotalInline");
  if(totalBox){
    totalBox.querySelector("span").textContent=totalLabel;
    totalBox.querySelector("strong").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—";
  }
-
  $("#energyEmpty").classList.toggle("hide",rows.length>0);
 
  $("#energyTbody").innerHTML=rows.map(x=>{
    const sun=new Date(x.date+"T00:00:00").getDay()===0;
+   if(dual){
+    const d1=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
+    const d2=x.diff2===null?"—":(x.diff2>=0?"+":"")+energyFmt(x.diff2);
+    const dt=x.totalDiff===null?"—":(x.totalDiff>=0?"+":"")+energyFmt(x.totalDiff);
+    const imgs=(x.image||x.image2)?'<div class="energyDualThumbs">'+(x.image?'<span onclick="viewEnergyImage(\''+x.id+'\')"><small>EVN1</small>'+mediaImgHtml(x.image,"energyThumb")+'</span>':'')+(x.image2?'<span onclick="viewEnergyImage(\''+x.id+'\')"><small>EVN2</small>'+mediaImgHtml(x.image2,"energyThumb")+'</span>':'')+'</div>':"—";
+    return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+d1+'</td><td class="meterValue"><b>'+energyFmt(x.value2)+'</b></td><td class="meterDiff">'+d2+'</td><td class="meterDiff total">'+dt+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+imgs+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Sửa bản ghi</button>'+((x.image||x.image2)?'<button type="button" onclick="viewEnergyImage(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="deleteEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>';
+   }
    const diff=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
    const img=x.image?'<span class="energyThumbWrap" onclick="viewEnergyImage(\''+x.id+'\')">'+mediaImgHtml(x.image,"energyThumb")+'</span>':"—";
-   return '<tr class="'+(sun?"sunday":"")+'">'+
-     '<td class="dateCell">'+fmt(x.date)+'</td>'+
-     '<td class="meterValue"><b>'+energyFmt(x.value)+'</b></td>'+
-     '<td class="meterDiff">'+diff+'</td>'+
-     '<td>'+performerChipsHtml(x)+'</td>'+
-     '<td class="noteCell">'+esc(x.note||"—")+'</td>'+
-     '<td>'+img+'</td>'+
-     '<td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div>'+
-       '<button type="button" onclick="editEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Sửa bản ghi</button>'+
-       (x.image?'<button type="button" onclick="viewEnergyImage(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+
-       '<button class="danger" type="button" onclick="deleteEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button>'+
-     '</div></details></td>'+
-   '</tr>';
+   return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+img+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Sửa bản ghi</button>'+(x.image?'<button type="button" onclick="viewEnergyImage(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="deleteEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>';
  }).join("");
 
- $("#energyMobileCards").innerHTML=rows.map(x=>
-   '<article class="mcard proEnergyCard '+(new Date(x.date+"T00:00:00").getDay()===0?"sunday":"")+'">'+
-     '<div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>'+energyFmt(x.value)+' '+m.unit+'</h4></div>'+
-     '<span class="mobileDiff">'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</span></div>'+
-     '<div class="mobileMeta">'+performerChipsHtml(x,2)+'</div>'+
-     '<p>'+esc(x.note||"Không có ghi chú")+'</p>'+
-     '<div class="mobileCardFoot"><span>'+(x.image?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div>'+
-   '</article>'
- ).join("");
+ $("#energyMobileCards").innerHTML=rows.map(x=>{
+  const sunday=new Date(x.date+"T00:00:00").getDay()===0;
+  if(dual){
+   return '<article class="mcard proEnergyCard '+(sunday?"sunday":"")+'"><div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>EVN1 '+energyFmt(x.value)+' · EVN2 '+energyFmt(x.value2)+'</h4></div><span class="mobileDiff">Tổng '+(x.totalDiff===null?"—":(x.totalDiff>=0?"+":"")+energyFmt(x.totalDiff))+'</span></div><div class="energyDualMobileDiff"><span>EVN1 '+(x.diff===null?"—":energyFmt(x.diff))+'</span><span>EVN2 '+(x.diff2===null?"—":energyFmt(x.diff2))+'</span></div><div class="mobileMeta">'+performerChipsHtml(x,2)+'</div><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+((x.image||x.image2)?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div></article>';
+  }
+  return '<article class="mcard proEnergyCard '+(sunday?"sunday":"")+'"><div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>'+energyFmt(x.value)+' '+m.unit+'</h4></div><span class="mobileDiff">'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</span></div><div class="mobileMeta">'+performerChipsHtml(x,2)+'</div><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+(x.image?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div></article>';
+ }).join("");
 
  if(q)$("#energySummaryText").textContent=rows.length?"Tìm thấy "+rows.length+" bản ghi phù hợp.":"Không tìm thấy bản ghi phù hợp.";
  else $("#energySummaryText").textContent=periodRows.length?"Lịch sử "+periodRows.length+" bản ghi theo ngày.":"Lịch sử chỉ số theo ngày.";
-
  hydrateMediaImages($("#energyTbody"));
 }
 window.editEnergy=id=>{
