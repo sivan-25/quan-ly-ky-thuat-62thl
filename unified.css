@@ -4721,6 +4721,71 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   color:#b8c5d9!important;
 }
 
+/* MAINTENANCE PLANNER READABILITY — larger text */
+#app.maintenanceMode #maintenancePage .maintenanceToolbar{
+  min-height:92px!important;
+  padding:16px 18px!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceToolbar .inventoryKicker{
+  font-size:10px!important;
+  line-height:1.2!important;
+  letter-spacing:1.45px!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceToolbar h2{
+  margin-top:5px!important;
+  font-size:24px!important;
+  line-height:1.15!important;
+  font-weight:650!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceToolbar p{
+  margin-top:6px!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceToolbar .inventorySearch{
+  min-width:260px!important;
+  height:44px!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceToolbar .inventorySearch input{
+  font-size:13px!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceToolbar .inventorySearch input::placeholder{
+  font-size:13px!important;
+}
+#app.maintenanceMode #maintenancePage :is(#maintenanceSystemFilter,#maintenanceDueFilter){
+  height:44px!important;
+  min-width:120px!important;
+  padding:0 12px!important;
+  font-size:12px!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceExamples{
+  min-height:58px!important;
+  padding:11px 18px!important;
+  gap:8px!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceExamples>span{
+  font-size:11px!important;
+  font-weight:600!important;
+}
+#app.maintenanceMode #maintenancePage .maintenanceExamples button{
+  min-height:34px!important;
+  padding:0 12px!important;
+  font-size:11px!important;
+  line-height:1!important;
+}
+@media(max-width:760px){
+  #app.maintenanceMode #maintenancePage .maintenanceToolbar h2{
+    font-size:20px!important;
+  }
+  #app.maintenanceMode #maintenancePage .maintenanceToolbar p{
+    font-size:12px!important;
+  }
+  #app.maintenanceMode #maintenancePage .maintenanceToolbar .inventorySearch{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+
 /* IMAGE_ONLY_VIEWER_FINAL */
 #viewer.viewer.imageOnlyViewer{
   z-index:5000!important;
