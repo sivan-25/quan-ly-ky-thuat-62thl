@@ -4786,6 +4786,36 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   }
 }
 
+
+/* MAINTENANCE_AUTO_SCHEDULE_20260930 */
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .maintenanceAutoHint{
+  display:inline-flex!important;
+  align-items:center!important;
+  margin-left:6px!important;
+  padding:2px 6px!important;
+  border:1px solid rgba(40,214,237,.28)!important;
+  border-radius:999px!important;
+  background:rgba(40,214,237,.09)!important;
+  color:#56dced!important;
+  font-size:8px!important;
+  font-style:normal!important;
+  font-weight:700!important;
+  letter-spacing:.2px!important;
+  vertical-align:middle!important;
+}
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) input[readonly]{
+  border-color:#315269!important;
+  background:#102a38!important;
+  color:#bff5fb!important;
+  -webkit-text-fill-color:#bff5fb!important;
+  cursor:default!important;
+}
+body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) input[readonly]:focus{
+  outline:none!important;
+  box-shadow:none!important;
+  border-color:#315269!important;
+}
+
 /* IMAGE_ONLY_VIEWER_FINAL */
 #viewer.viewer.imageOnlyViewer{
   z-index:5000!important;
