@@ -1931,7 +1931,105 @@ function energyReportHtml(rows){
  const m=ENERGY_META[energyType],f=$("#energyFromDate").value,e=$("#energyToDate").value,period=f||e?((f?fmt(f):"Đầu kỳ")+" - "+(e?fmt(e):"Hiện tại")):"Toàn bộ dữ liệu";
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Báo cáo '+m.name+'</title><style>@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");@page{size:A4;margin:14mm}body{font-family:"Inter";color:#1f2937;font-size:10px}.head{display:flex;justify-content:space-between;border-bottom:3px solid #0e4d7e;padding-bottom:9px}.brand{font-size:18px;font-weight:800;color:#0e4d7e}.brand small{display:block;font-size:8px;color:#64748b;letter-spacing:1px}.title{text-align:center;margin:16px 0}.title h1{font-size:18px;color:#0e4d7e;margin:0 0 5px}.title p{margin:0;color:#64748b}table{width:100%;border-collapse:collapse}th,td{border:1px solid #cbd5e1;padding:7px;text-align:left}th{background:#edf4fb;color:#214d72}.sun{background:#fff7d6}.photo{width:75px;height:55px;object-fit:cover}.foot{margin-top:25px;text-align:center;color:#94a3b8;font-size:8px}</style></head><body><div class="head"><div class="brand">ESTA<small>BUILDING MANAGEMENT</small></div><div>'+esc(currentBuilding.name).toLocaleUpperCase("vi-VN")+'<br>TP. Hồ Chí Minh</div></div><div class="title"><h1>BÁO CÁO '+m.name.toUpperCase()+'</h1><p>Thời gian: <b>'+period+'</b></p></div><table><thead><tr><th>Ngày</th><th>Thứ</th><th>Chỉ số ('+m.unit+')</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Hình ảnh</th><th>Ghi chú</th></tr></thead><tbody>'+rows.map(x=>'<tr class="'+(new Date(x.date+"T00:00:00").getDay()===0?"sun":"")+'"><td>'+fmt(x.date)+'</td><td>'+weekday(x.date)+'</td><td><b>'+energyFmt(x.value)+'</b></td><td>'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</td><td>'+esc(performerArray(x).join(", ")||"—")+'</td><td>'+(x.image?'<img class="photo" src="'+x.image+'">':"—")+'</td><td>'+esc(x.note||"—")+'</td></tr>').join("")+'</tbody></table><div class="foot">ESTA · Quản lý năng lượng · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),600)<\/script></body></html>'
 }
-$("#energyExportPdf").onclick=()=>{const rows=energyRows();if(!rows.length){toast("Không có dữ liệu để xuất PDF");return}downloadReportPdf(energyReportHtml(rows),"ESTA-"+currentBuilding.id+"-bao-cao-"+energyType+"-"+today()+".pdf")};
+function energyReportPeriod(kind="current",rows=[]){
+ const m=ENERGY_META[energyType],now=new Date(),y=now.getFullYear(),mon=now.getMonth(),day=now.getDate(),mm=String(mon+1).padStart(2,"0"),dd=String(day).padStart(2,"0");
+ const first=new Date(y,mon,1),firstOffset=(first.getDay()+6)%7,weekNo=Math.floor((day+firstOffset-1)/7)+1;
+ let from="",to="",label="",suffix="";
+ if(kind==="today"){
+  const r=rangeDates("today");from=r.from;to=r.to;label="NGÀY "+dd+"/"+mm+"/"+y;suffix="Ngay"+dd+"_"+mm+"_"+y;
+ }else if(kind==="week"){
+  const r=rangeDates("week");from=r.from;to=r.to;label="TUẦN "+weekNo+" THÁNG "+mm+"/"+y;suffix="Tuan"+weekNo+"_Thang"+mm+"_"+y;
+ }else if(kind==="month"){
+  const r=rangeDates("month");from=r.from;to=r.to;label="THÁNG "+mm+"/"+y;suffix="Thang"+mm+"_"+y;
+ }else{
+  from=$("#energyFromDate").value||"";to=$("#energyToDate").value||"";
+  if((!from||!to)&&rows.length){
+   const dates=rows.map(x=>x.date).filter(Boolean).sort();
+   if(!from)from=dates[0]||"";
+   if(!to)to=dates[dates.length-1]||"";
+  }
+  const pf=from?fmt(from):"Đầu kỳ",pt=to?fmt(to):"Hiện tại";
+  label=from===to&&from?"NGÀY "+pf:"TỪ "+pf+" ĐẾN "+pt;
+  suffix=from&&to?"Tu"+from.replaceAll("-","")+"_Den"+to.replaceAll("-",""):"TheoBoLoc";
+ }
+ return {kind,from,to,label,suffix,name:m.name,unit:m.unit};
+}
+function energyRowsForReport(kind="current"){
+ if(kind==="current")return energyRows();
+ const r=rangeDates(kind);
+ return energyRowsForTypeRange(energyType,r.from,r.to);
+}
+function energyReportFilename(period){
+ const typeName=energyType==="electric"?"Dien":energyType==="water"?"Nuoc":"Solar";
+ return "BaoCao_NangLuong_"+typeName+"_"+period.suffix+".pdf";
+}
+let energyReportBusy=false;
+async function exportEnergyEstaPdf(rows,kind="current"){
+ if(!rows.length)return toast("Không có dữ liệu để xuất PDF");
+ if(energyReportBusy)return toast("Báo cáo năng lượng đang được tạo");
+ if(!centralSession?.access_token)return toast("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ energyReportBusy=true;
+ const period=energyReportPeriod(kind,rows),m=ENERGY_META[energyType];
+ try{
+  toast("Đang tạo PDF Năng lượng theo mẫu ESTA chuẩn...");
+  await ensureCentralSessionFresh();
+  const payload={
+   report_type:"energy",
+   building:String(currentBuilding?.name||"[CẦN BỔ SUNG]"),
+   report_date:new Date().toLocaleDateString("vi-VN"),
+   energy_name:m.name,
+   unit:m.unit,
+   period_label:period.label,
+   rows:rows.map(x=>({
+    date:String(x.date||""),
+    date_display:x.date?fmt(x.date):"",
+    value:Number(x.value),
+    diff:(typeof x.diff==="number"&&Number.isFinite(x.diff))?Number(x.diff):null,
+    performer:performerArray(x).join(", "),
+    note:String(x.note||""),
+    image:String(x.image||"")
+   }))
+  };
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),115000);
+  try{
+   const res=await fetch("/api/esta_report",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+centralSession.access_token},
+    body:JSON.stringify(payload),
+    signal:controller.signal
+   });
+   if(!res.ok){
+    let detail={};try{detail=await res.json()}catch(_){}
+    throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo Năng lượng");
+   }
+   const blob=await res.blob();
+   if(!blob.size)throw new Error("File PDF trả về bị trống");
+   const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
+   const url=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=url;a.download=energyReportFilename(period);
+   document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),60000);
+   toast(missing?"Đã xuất PDF ESTA · "+missing+" hình không tải được":"Đã xuất PDF Năng lượng ESTA chuẩn");
+  }finally{clearTimeout(timer)}
+ }catch(err){
+  if(err?.name==="AbortError")toast("Tạo PDF quá thời gian. Vui lòng thử lại.");
+  else toast(err.message||"Không thể xuất PDF Năng lượng");
+ }finally{energyReportBusy=false}
+}
+$("#energyExportPdf").onclick=()=>{
+ const rows=energyRows();
+ if(!rows.length)return toast("Không có dữ liệu để xuất PDF");
+ const title=$("#energyExportModalTitle");if(title)title.textContent="Báo cáo "+ENERGY_META[energyType].name.toLowerCase();
+ $("#energyExportModal")?.classList.remove("hide");
+};
+$("#closeEnergyExport").onclick=()=>$("#energyExportModal").classList.add("hide");
+$("#energyExportModal").onclick=e=>{if(e.target===$("#energyExportModal"))$("#energyExportModal").classList.add("hide")};
+document.querySelectorAll("[data-energy-report-range]").forEach(b=>b.onclick=()=>{
+ const kind=b.dataset.energyReportRange||"current";
+ const rows=energyRowsForReport(kind);
+ $("#energyExportModal").classList.add("hide");
+ exportEnergyEstaPdf(rows,kind);
+});
 
 function energyRowsForTypeRange(type,from,to){
  const all=energyLoad().filter(x=>x.type===type).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
