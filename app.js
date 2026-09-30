@@ -1756,55 +1756,76 @@ $("#energyDate")?.addEventListener("input",syncEnergyDateCompact);
 $("#energyDate")?.addEventListener("change",syncEnergyDateCompact);
 
 function resetEnergyForm(){
+ sync68EnergyTabs();
  const m=ENERGY_META[energyType];
+ const dual=is68DualElectric();
  $("#energyEditId").value="";
  $("#energyDate").value=today();syncEnergyDateCompact();
  $("#energyValue").value="";
+ $("#energyValue2").value="";
+ $("#energyValue2").required=dual;
+ $("#energyValue2Field").classList.toggle("hide",!dual);
+ $("#energyImage2Field").classList.toggle("hide",!dual);
+ $("#energyImage2Preview").classList.toggle("hide",!dual);
  setPeopleSelected("energy",[]);
  $("#energyNote").value="";
  $("#energyImage").value="";
+ $("#energyImage2").value="";
  $("#energyImagePreview").innerHTML="";
+ $("#energyImage2Preview").innerHTML="";
  $("#energySaveBtn").textContent="Lưu chỉ số";
  $("#energyCancelEdit").classList.add("hide");
  $("#energyFormTitle").textContent=m.form;
  $("#energyUnitHint").textContent="Đơn vị: "+m.unit;
- $("#energyValueLabel").textContent=m.valueLabel;
- $("#energyValueColumn").textContent="Chỉ số ("+m.unit+")";
+ $("#energyValueLabel").textContent=dual?"EVN1 (kWh)":m.valueLabel;
+ $("#energyValue2Label").textContent="EVN2 (kWh)";
+ $("#energyImageLabel").textContent=dual?"Ảnh đồng hồ EVN1":"Ảnh đồng hồ";
  $("#energyTableTitle").textContent="Bảng theo dõi "+m.name.toLowerCase();
 }
 $("#energyCancelEdit").onclick=resetEnergyForm;
-let energyPreviewObjectUrl="";
-$("#energyImage").onchange=e=>{
- const f=e.target.files[0];
- if(energyPreviewObjectUrl){URL.revokeObjectURL(energyPreviewObjectUrl);energyPreviewObjectUrl=""}
- if(!f){$("#energyImagePreview").innerHTML="";return}
- if(!f.type.startsWith("image/")){toast("Chỉ hỗ trợ file hình ảnh");e.target.value="";return}
- energyPreviewObjectUrl=URL.createObjectURL(f);
- $("#energyImagePreview").innerHTML='<img src="'+energyPreviewObjectUrl+'" alt="Ảnh đồng hồ"><span>Ảnh đã chọn</span>';
-};
+let energyPreviewObjectUrl="",energyPreviewObjectUrl2="";
+function bindEnergyImagePreview(inputId,previewId,slot){
+ const input=$("#"+inputId),preview=$("#"+previewId);
+ if(!input||!preview)return;
+ input.onchange=e=>{
+  const file=e.target.files[0];
+  if(slot===1&&energyPreviewObjectUrl2){URL.revokeObjectURL(energyPreviewObjectUrl2);energyPreviewObjectUrl2=""}
+  if(slot===0&&energyPreviewObjectUrl){URL.revokeObjectURL(energyPreviewObjectUrl);energyPreviewObjectUrl=""}
+  if(!file){preview.innerHTML="";return}
+  if(!file.type.startsWith("image/")){toast("Chỉ hỗ trợ file hình ảnh");e.target.value="";return}
+  const url=URL.createObjectURL(file);
+  if(slot===1)energyPreviewObjectUrl2=url;else energyPreviewObjectUrl=url;
+  preview.innerHTML='<img src="'+url+'" alt="Ảnh đồng hồ"><span>Ảnh đã chọn</span>';
+ };
+}
+bindEnergyImagePreview("energyImage","energyImagePreview",0);
+bindEnergyImagePreview("energyImage2","energyImage2Preview",1);
+
 $("#energyForm").onsubmit=async e=>{
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
  if(!energySelectedPeople.length){toast("Vui lòng chọn ít nhất 1 người thực hiện");$("#energyPeopleButton").focus();return}
+ const dual=is68DualElectric();
+ if(dual&&!$("#energyValue2").value){toast("Vui lòng nhập chỉ số EVN2");$("#energyValue2").focus();return}
  const btn=$("#energySaveBtn");btn.disabled=true;
  try{
   const editId=$("#energyEditId").value,id=editId||Date.now();
   const all=energyLoad(),old=editId?all.find(x=>String(x.id)===String(editId)):null;
-  let image=old?.image||"";
-  const f=$("#energyImage").files[0];
-  if(f){
-    const blob=await imageFileToBlob(f);
-    image=await uploadMediaBlob(blob,"energy",id,0);
-  }
+  let image=old?.image||"",image2=old?.image2||"";
+  const f=$("#energyImage").files[0],f2=$("#energyImage2").files[0];
+  if(f){const blob=await imageFileToBlob(f);image=await uploadMediaBlob(blob,"energy",id,0)}
+  if(dual&&f2){const blob=await imageFileToBlob(f2);image2=await uploadMediaBlob(blob,"energy",id,1)}
   const obj={
     id,
     type:energyType,
     date:$("#energyDate").value,
     value:Number($("#energyValue").value),
+    value2:dual?Number($("#energyValue2").value):null,
     a:energySelectedPeople.join(", "),
     performers:[...energySelectedPeople],
     note:$("#energyNote").value.trim(),
     image,
+    image2:dual?image2:"",
     createdAt:old?.createdAt||new Date().toISOString()
   };
   const next=editId?all.map(x=>String(x.id)===String(editId)?obj:x):[obj,...all];
