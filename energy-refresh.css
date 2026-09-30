@@ -1571,3 +1571,118 @@
     display:block!important;
   }
 }
+
+
+
+/* ENERGY_68_DUAL_EVN_XLNT_20260930 */
+#app #energyPage .energy68Only.hide{display:none!important}
+#app #energyPage .energyEvn2Field.hide,
+#app #energyPage .energyImage2Field.hide,
+#app #energyPage #energyImage2Preview.hide{display:none!important}
+
+#app #energyPage.dualEvnMode #energyForm{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-areas:
+    "edate edate"
+    "value value2"
+    "eperformer eperformer"
+    "eimage eimage2"
+    "enote enote"
+    "actions actions"!important;
+}
+#app #energyPage.dualEvnMode #energyForm>label:nth-of-type(1){grid-area:edate!important}
+#app #energyPage.dualEvnMode #energyForm>label:nth-of-type(2){grid-area:value!important}
+#app #energyPage.dualEvnMode #energyForm #energyValue2Field{grid-area:value2!important}
+#app #energyPage.dualEvnMode #energyForm .energyPerformerField{grid-area:eperformer!important}
+#app #energyPage.dualEvnMode #energyForm .energyImageField{grid-area:eimage!important}
+#app #energyPage.dualEvnMode #energyForm .energyImage2Field{grid-area:eimage2!important}
+#app #energyPage.dualEvnMode #energyForm .energyNoteField{grid-area:enote!important}
+#app #energyPage.dualEvnMode #energyForm .energyActions{grid-area:actions!important}
+#app #energyPage.dualEvnMode #energyValue2,
+#app #energyPage.dualEvnMode #energyValue{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:42px!important;
+  box-sizing:border-box!important;
+}
+#app #energyPage.dualEvnMode .energyImage2Field{
+  min-width:0!important;
+  min-height:78px!important;
+}
+#app #energyPage.dualEvnMode .energyImage2Field input[type="file"]{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+#app #energyPage.dualEvnMode .energyImage2Field .energyUploadPrompt{
+  min-height:60px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  cursor:pointer!important;
+}
+#app #energyPage.dualEvnMode .energyDualThumbs{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+}
+#app #energyPage.dualEvnMode .energyDualThumbs>span{
+  display:grid!important;
+  gap:2px!important;
+  justify-items:center!important;
+  cursor:pointer!important;
+}
+#app #energyPage.dualEvnMode .energyDualThumbs small{
+  color:#9fb0c7!important;
+  font-size:8px!important;
+}
+#app #energyPage.dualEvnMode .meterDiff.total{
+  color:#69e4b7!important;
+  font-weight:760!important;
+}
+#app #energyPage.dualEvnMode #energyLatestValue,
+#app #energyPage.dualEvnMode #energyPeriodUse{
+  font-size:14px!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+}
+#app #energyPage .energyDualMobileDiff{
+  display:flex!important;
+  gap:7px!important;
+  flex-wrap:wrap!important;
+  margin:8px 0 0!important;
+}
+#app #energyPage .energyDualMobileDiff span{
+  padding:4px 7px!important;
+  border:1px solid #30405c!important;
+  border-radius:999px!important;
+  background:#17243a!important;
+  color:#c8d7e9!important;
+  font-size:10px!important;
+}
+
+@media(max-width:700px){
+  #app #energyPage.dualEvnMode #energyForm{
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:
+      "edate"
+      "value"
+      "value2"
+      "eperformer"
+      "enote"
+      "eimage"
+      "eimage2"
+      "actions"!important;
+  }
+  #app #energyPage.dualEvnMode .energySummaryCards{
+    grid-template-columns:1fr!important;
+  }
+  #app #energyPage.dualEvnMode #energyLatestValue,
+  #app #energyPage.dualEvnMode #energyPeriodUse{
+    font-size:15px!important;
+  }
+}
