@@ -71,7 +71,7 @@ function demoSetProjectMode(){
  const on=shell&&($("#adminPage")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoProjectShell",shell);
  $("#app")?.classList.toggle("demoProjectMode",on);
- $("#app")?.classList.toggle("demoSampleProject",on&&String(currentBuilding?.id||"")===DEMO_ID);
+ $("#app")?.classList.toggle("demoSampleProject",on&&["DEMO","68P\\u0110L"].includes(String(currentBuilding?.id||"")));
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
  if(on){demoEnsureWorkPanel();demoLoad().then(()=>{demoPopulateWorkOptions();demoRenderHomeOps();demoEnsureAssetPassport()})}
