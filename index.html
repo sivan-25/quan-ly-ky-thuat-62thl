@@ -1330,6 +1330,9 @@
     <button type="button" aria-selected="false" data-energy-type="solar">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Năng lượng mặt trời</span>
     </button>
+    <button type="button" class="energy68Only hide" aria-selected="false" data-energy-type="xlnt">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 7V4h8v3M7 12h10M9 17v3M15 17v3"/></svg><span>Chỉ số XLNT</span>
+    </button>
   </section>
 
   <section class="energySummaryCards" aria-label="Tổng quan chỉ số">
@@ -1376,10 +1379,21 @@
         <input id="energyValue" type="number" step="0.01" min="0" required placeholder="Nhập chỉ số">
       </label>
 
+      <label id="energyValue2Field" class="energyEvn2Field hide">
+        <span id="energyValue2Label">EVN2 (kWh)</span>
+        <input id="energyValue2" type="number" step="0.01" min="0" placeholder="Nhập chỉ số EVN2">
+      </label>
+
       <label class="energyImageField">
-        <span>Ảnh đồng hồ</span>
+        <span id="energyImageLabel">Ảnh đồng hồ</span>
         <input id="energyImage" type="file" accept="image/*">
         <div class="energyUploadPrompt" aria-hidden="true"><span>↑</span><b>Chọn ảnh</b><small>JPG, PNG hoặc ảnh chụp</small></div>
+      </label>
+
+      <label id="energyImage2Field" class="energyImage2Field hide">
+        <span>Ảnh đồng hồ EVN2</span>
+        <input id="energyImage2" type="file" accept="image/*">
+        <div class="energyUploadPrompt" aria-hidden="true"><span>↑</span><b>Chọn ảnh EVN2</b><small>JPG, PNG hoặc ảnh chụp</small></div>
       </label>
 
       <label class="energyPerformerField">
@@ -1406,6 +1420,7 @@
       </div>
     </form>
     <div id="energyImagePreview" class="energyImagePreview"></div>
+    <div id="energyImage2Preview" class="energyImagePreview hide"></div>
   </section>
 
   <section class="energyTableCard premiumTableCard">
@@ -1443,7 +1458,7 @@
 
     <div class="desktopTable energyDesktopTable">
       <table class="energyHistoryTable">
-        <colgroup>
+        <colgroup id="energyColgroup">
           <col style="width:11%">
           <col style="width:18%">
           <col style="width:12%">
@@ -1453,7 +1468,7 @@
           <col style="width:9%">
         </colgroup>
         <thead>
-          <tr>
+          <tr id="energyHeadRow">
             <th>Ngày</th>
             <th id="energyValueColumn">Chỉ số (kWh)</th>
             <th>Chênh lệch</th>
