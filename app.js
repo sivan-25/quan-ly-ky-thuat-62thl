@@ -2027,7 +2027,7 @@ function energyRowsForReport(kind="current"){
  return energyRowsForTypeRange(energyType,r.from,r.to);
 }
 function energyReportFilename(period){
- const typeName=energyType==="electric"?"Dien":energyType==="water"?"Nuoc":"Solar";
+ const typeName=energyType==="electric"?"Dien":energyType==="water"?"Nuoc":energyType==="xlnt"?"XLNT":"Solar";
  return "BaoCao_NangLuong_"+typeName+"_"+period.suffix+".pdf";
 }
 let energyReportBusy=false;
@@ -2040,6 +2040,7 @@ async function exportEnergyEstaPdf(rows,kind="current"){
  try{
   toast("Đang tạo PDF Năng lượng theo mẫu ESTA chuẩn...");
   await ensureCentralSessionFresh();
+  const dual=is68DualElectric();
   const payload={
    report_type:"energy",
    building:String(currentBuilding?.name||"[CẦN BỔ SUNG]"),
@@ -2047,14 +2048,21 @@ async function exportEnergyEstaPdf(rows,kind="current"){
    energy_name:m.name,
    unit:m.unit,
    period_label:period.label,
+   dual_meter:dual,
+   meter1_label:dual?"EVN1":"",
+   meter2_label:dual?"EVN2":"",
    rows:rows.map(x=>({
     date:String(x.date||""),
     date_display:x.date?fmt(x.date):"",
     value:Number(x.value),
+    value2:dual?Number(x.value2):null,
     diff:(typeof x.diff==="number"&&Number.isFinite(x.diff))?Number(x.diff):null,
+    diff2:dual&&typeof x.diff2==="number"&&Number.isFinite(x.diff2)?Number(x.diff2):null,
+    total_diff:dual&&typeof x.totalDiff==="number"&&Number.isFinite(x.totalDiff)?Number(x.totalDiff):null,
     performer:performerArray(x).join(", "),
     note:String(x.note||""),
-    image:String(x.image||"")
+    image:String(x.image||""),
+    image2:dual?String(x.image2||""):""
    }))
   };
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),115000);
