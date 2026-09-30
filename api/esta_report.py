@@ -846,17 +846,37 @@ def _prepare_energy_data(payload, token, temp_dir):
     if not isinstance(rows, list) or len(rows) > 500:
         raise ValueError("Dữ liệu năng lượng không hợp lệ")
 
+    dual_meter = bool(payload.get("dual_meter"))
     data = {
         "building": str(payload.get("building") or "[CẦN BỔ SUNG]"),
         "report_date": str(payload.get("report_date") or ""),
         "energy_name": str(payload.get("energy_name") or "Năng lượng"),
         "unit": str(payload.get("unit") or ""),
         "period_label": str(payload.get("period_label") or "THEO BỘ LỌC"),
+        "dual_meter": dual_meter,
+        "meter1_label": str(payload.get("meter1_label") or "EVN1"),
+        "meter2_label": str(payload.get("meter2_label") or "EVN2"),
         "rows": [],
     }
     img_dir = os.path.join(temp_dir, "energy_images")
     os.makedirs(img_dir, exist_ok=True)
     missing_images = 0
+
+    def download_slot(source, filename):
+        nonlocal missing_images
+        if not source:
+            return None
+        try:
+            raw, ext = _download_image(str(source), token)
+            if raw:
+                local_path = os.path.join(img_dir, filename + ext)
+                with open(local_path, "wb") as fh:
+                    fh.write(raw)
+                return local_path
+            missing_images += 1
+        except Exception:
+            missing_images += 1
+        return None
 
     for ri, row in enumerate(rows, 1):
         if not isinstance(row, dict):
@@ -865,24 +885,18 @@ def _prepare_energy_data(payload, token, temp_dir):
             "date": str(row.get("date") or ""),
             "date_display": str(row.get("date_display") or row.get("date") or ""),
             "value": row.get("value"),
+            "value2": row.get("value2"),
             "diff": row.get("diff"),
+            "diff2": row.get("diff2"),
+            "total_diff": row.get("total_diff"),
             "performer": str(row.get("performer") or ""),
             "note": str(row.get("note") or ""),
             "image_path": None,
+            "image2_path": None,
         }
-        source = str(row.get("image") or "")
-        if source:
-            try:
-                raw, ext = _download_image(source, token)
-                if raw:
-                    local_path = os.path.join(img_dir, "energy_%03d%s" % (ri, ext))
-                    with open(local_path, "wb") as fh:
-                        fh.write(raw)
-                    out["image_path"] = local_path
-                else:
-                    missing_images += 1
-            except Exception:
-                missing_images += 1
+        out["image_path"] = download_slot(row.get("image"), "energy_%03d_1" % ri)
+        if dual_meter:
+            out["image2_path"] = download_slot(row.get("image2"), "energy_%03d_2" % ri)
         data["rows"].append(out)
 
     data["rows"].sort(key=lambda x: (x.get("date") or ""))
