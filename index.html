@@ -1152,6 +1152,86 @@
   <section class="demoKpis"><article class="demoKpi"><i>▣</i><div><b id="demoInspectionCount">0</b><span>CHECKLIST</span><small>Đã tạo</small></div></article><article class="demoKpi"><i>✓</i><div><b id="demoInspectionPass">0</b><span>ĐẠT</span><small>Không cần xử lý</small></div></article><article class="demoKpi"><i>◷</i><div><b id="demoInspectionAttention">0</b><span>CẦN CHÚ Ý</span><small>Theo dõi</small></div></article><article class="demoKpi"><i>!</i><div><b id="demoInspectionFail">0</b><span>CẦN KHẮC PHỤC</span><small>Tạo công việc</small></div></article></section>
   <section class="demoGrid2"><div class="demoPanel"><div class="demoPanelHead"><div><h2>Danh sách checklist</h2><p>Chọn checklist để xem kết quả chi tiết.</p></div></div><div id="demoInspectionList" class="demoPanelBody demoOpsList"></div></div><aside id="demoInspectionDetail" class="demoPanel"></aside></section>
 </div>
+
+<div id="demoChecklistModal" class="demoChecklistModal hide" role="dialog" aria-modal="true" aria-labelledby="demoChecklistModalTitle" onclick="if(event.target===this)demoCloseChecklistModal()">
+  <div class="demoChecklistModalCard">
+    <div class="demoChecklistModalHead">
+      <div>
+        <span>ESTA · INSPECTION</span>
+        <h2 id="demoChecklistModalTitle">Tạo checklist kiểm tra</h2>
+        <p>Nhập thông tin kiểm tra trong một cửa sổ duy nhất thay vì hộp thoại trình duyệt.</p>
+      </div>
+      <button type="button" class="demoChecklistModalClose" onclick="demoCloseChecklistModal()" aria-label="Đóng">×</button>
+    </div>
+    <form id="demoChecklistForm" class="demoChecklistForm" onsubmit="demoSubmitChecklist(event)">
+      <div class="demoChecklistFormGrid">
+        <label class="demoChecklistWide">
+          <span>Tên checklist <b>*</b></span>
+          <input id="demoChecklistName" type="text" maxlength="160" placeholder="VD: Checklist bơm PCCC" required>
+        </label>
+        <label>
+          <span>Ngày kiểm tra <b>*</b></span>
+          <input id="demoChecklistDate" type="date" required>
+        </label>
+        <label>
+          <span>Kỳ kiểm tra</span>
+          <input id="demoChecklistPeriod" type="text" maxlength="100" placeholder="VD: Tuần 4 tháng 09/2026">
+        </label>
+        <label>
+          <span>Thiết bị liên quan</span>
+          <select id="demoChecklistAsset">
+            <option value="">Không gắn thiết bị</option>
+          </select>
+        </label>
+        <label>
+          <span>Kết quả tổng thể</span>
+          <select id="demoChecklistOverall">
+            <option value="Đạt">Đạt</option>
+            <option value="Cần chú ý" selected>Cần chú ý</option>
+            <option value="Cần khắc phục">Cần khắc phục</option>
+            <option value="Không đạt">Không đạt</option>
+          </select>
+        </label>
+
+        <div class="demoChecklistSectionTitle demoChecklistWide">
+          <span>HẠNG MỤC KIỂM TRA</span>
+          <small>Tạo hạng mục đầu tiên cho checklist.</small>
+        </div>
+
+        <label class="demoChecklistWide">
+          <span>Nội dung kiểm tra <b>*</b></span>
+          <input id="demoChecklistItem" type="text" maxlength="220" placeholder="VD: Áp lực đường ống" required>
+        </label>
+        <label>
+          <span>Tiêu chuẩn</span>
+          <input id="demoChecklistStandard" type="text" maxlength="180" placeholder="VD: Theo thiết kế">
+        </label>
+        <label>
+          <span>Kết quả hạng mục</span>
+          <select id="demoChecklistItemResult">
+            <option value="Đạt">Đạt</option>
+            <option value="Cần chú ý" selected>Cần chú ý</option>
+            <option value="Cần khắc phục">Cần khắc phục</option>
+            <option value="Không đạt">Không đạt</option>
+          </select>
+        </label>
+        <label class="demoChecklistWide">
+          <span>Ghi chú hạng mục</span>
+          <textarea id="demoChecklistItemNote" rows="2" maxlength="500" placeholder="Có thể để trống"></textarea>
+        </label>
+        <label class="demoChecklistWide">
+          <span>Kiến nghị</span>
+          <textarea id="demoChecklistRecommendation" rows="2" maxlength="800" placeholder="Có thể để trống"></textarea>
+        </label>
+      </div>
+      <div class="demoChecklistModalFoot">
+        <button type="button" class="demoBtn" onclick="demoCloseChecklistModal()">Hủy</button>
+        <button id="demoChecklistSaveBtn" type="submit" class="demoBtn primary">Lưu checklist</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="documentsPage" class="page demoFeaturePage hide">
   <section class="demoHero"><div class="demoHeroCopy"><span>ESTA · DOCUMENT CONTROL</span><h1>Tài liệu kỹ thuật</h1><p>Tập trung bản vẽ, catalogue, manual, biên bản, báo giá và liên kết hồ sơ thiết bị.</p></div><div class="demoHeroActions"><button id="demoDocumentAdd" class="demoBtn primary" type="button" onclick="demoAddDocument()">+ Thêm tài liệu</button><button class="demoBtn" type="button" onclick="demoRefresh()">Làm mới</button></div></section>
   <div id="demoDocCats" class="demoDocCats"></div>
