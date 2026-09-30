@@ -1708,9 +1708,17 @@ const ENERGY_META={
 const is68Pdl=()=>String(currentBuilding?.id||"")==="68PĐL";
 const supportsXlntEnergy=()=>is68Pdl()||String(currentBuilding?.id||"")==="DEMO";
 const is68DualElectric=()=>is68Pdl()&&energyType==="electric";
+function syncEnergyTabSelection(){
+ document.querySelectorAll("[data-energy-type]").forEach(b=>{
+  const selected=b.dataset.energyType===energyType;
+  b.classList.toggle("active",selected);
+  b.setAttribute("aria-selected",String(selected));
+ });
+}
 function sync68EnergyTabs(){
  document.querySelectorAll(".energy68Only").forEach(el=>el.classList.toggle("hide",!supportsXlntEnergy()));
  if(!supportsXlntEnergy()&&energyType==="xlnt")energyType="electric";
+ syncEnergyTabSelection();
 }
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
@@ -1762,11 +1770,7 @@ $("#quickReport").onclick=()=>{if($("#navWork").classList.contains("hide"))retur
 $("#energyToday").textContent=new Date().toLocaleDateString("vi-VN",{day:"2-digit",month:"2-digit",year:"numeric"});
 document.querySelectorAll("[data-energy-type]").forEach(b=>b.onclick=()=>{
  energyType=b.dataset.energyType;
- document.querySelectorAll("[data-energy-type]").forEach(x=>{
-  const selected=x===b;
-  x.classList.toggle("active",selected);
-  x.setAttribute("aria-selected",String(selected));
- });
+ syncEnergyTabSelection();
  resetEnergyForm();
  renderEnergy();
 });
