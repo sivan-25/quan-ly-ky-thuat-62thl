@@ -1677,8 +1677,15 @@ let energyType="electric";
 const ENERGY_META={
  electric:{name:"Chỉ số điện",form:"Ghi chỉ số điện",unit:"kWh",valueLabel:"Chỉ số điện (kWh)"},
  water:{name:"Chỉ số nước",form:"Ghi chỉ số nước",unit:"m³",valueLabel:"Chỉ số nước (m³)"},
- solar:{name:"Năng lượng mặt trời",form:"Ghi sản lượng điện mặt trời",unit:"kWh",valueLabel:"Sản lượng điện (kWh)"}
+ solar:{name:"Năng lượng mặt trời",form:"Ghi sản lượng điện mặt trời",unit:"kWh",valueLabel:"Sản lượng điện (kWh)"},
+ xlnt:{name:"Chỉ số XLNT",form:"Ghi chỉ số XLNT",unit:"m³",valueLabel:"Chỉ số XLNT (m³)"}
 };
+const is68Pdl=()=>String(currentBuilding?.id||"")==="68P\u0110L";
+const is68DualElectric=()=>is68Pdl()&&energyType==="electric";
+function sync68EnergyTabs(){
+ document.querySelectorAll(".energy68Only").forEach(el=>el.classList.toggle("hide",!is68Pdl()));
+ if(!is68Pdl()&&energyType==="xlnt")energyType="electric";
+}
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
