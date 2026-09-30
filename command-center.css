@@ -1072,3 +1072,35 @@ html,body,body *{font-family:"Inter",sans-serif!important}
 #ccDispatchModal .ccBtn.primary:hover{
   filter:brightness(1.04)!important;
 }
+
+
+
+/* MOBILE_COMMAND_CENTER_LOADING_NO_DIM_20260930 */
+/* Không làm mờ/khóa toàn bộ Trung tâm điều hành trong lúc tải dữ liệu nền. */
+#estaCommandCenter.ccRoot.loading{
+  opacity:1!important;
+  pointer-events:auto!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+#estaCommandCenter.ccRoot.loading .ccHero,
+#estaCommandCenter.ccRoot.loading .ccSummary,
+#estaCommandCenter.ccRoot.loading .ccProjects,
+#estaCommandCenter.ccRoot.loading .ccWorkspace,
+#estaCommandCenter.ccRoot.loading .ccActivityPanel{
+  opacity:1!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+#estaCommandCenter #ccRefresh:disabled{
+  opacity:.72!important;
+  cursor:wait!important;
+}
+@media(max-width:760px){
+  #estaCommandCenter.ccRoot,
+  #estaCommandCenter.ccRoot.loading{
+    opacity:1!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+  }
+}
