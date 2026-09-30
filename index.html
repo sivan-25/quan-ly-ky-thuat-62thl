@@ -2078,19 +2078,17 @@
 <div id="maintenanceAssetModal" class="modal hide">
   <div class="modalCard inventoryModalCard maintenanceModalCard">
     <button id="closeMaintenanceAssetModal" class="modalClose" type="button">×</button>
-    <div class="inventoryModalHead"><span>ESTA · ASSET REGISTER</span><h3 id="maintenanceAssetModalTitle">Thêm thiết bị</h3><p>Chu kỳ bảo trì được dùng để tự tính hạn bảo trì kế tiếp.</p></div>
+    <div class="inventoryModalHead"><span>ESTA · ASSET REGISTER</span><h3 id="maintenanceAssetModalTitle">Thêm thiết bị</h3><p>Chọn ngày bảo trì gần nhất và chu kỳ. Hệ thống sẽ tự tính và tiếp tục lịch bảo trì kế tiếp.</p></div>
     <form id="maintenanceAssetForm" class="inventoryForm">
       <input id="maintenanceAssetId" type="hidden">
-      <label><span>Mã thiết bị</span><input id="maintenanceCode" maxlength="40" placeholder="VD: HVAC-FCU-06"></label>
       <label class="wide"><span>Tên thiết bị *</span><input id="maintenanceName" maxlength="140" required placeholder="VD: FCU tầng 6"></label>
       <label><span>Hệ thống</span><select id="maintenanceSystem"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Khác</option></select></label>
       <label><span>Vị trí</span><input id="maintenanceLocation" maxlength="120" placeholder="Tầng / phòng kỹ thuật"></label>
       <label><span>Hãng</span><input id="maintenanceManufacturer" maxlength="100"></label>
       <label><span>Model</span><input id="maintenanceModel" maxlength="100"></label>
-      <label><span>Serial</span><input id="maintenanceSerial" maxlength="100"></label>
       <label><span>Chu kỳ (ngày) *</span><input id="maintenanceFrequency" type="number" min="1" required value="30"></label>
       <label><span>Bảo trì gần nhất</span><input id="maintenanceLastDate" type="date"></label>
-      <label><span>Hạn kế tiếp</span><input id="maintenanceNextDate" type="date"></label>
+      <label><span>Hạn kế tiếp <em class="maintenanceAutoHint">Tự động</em></span><input id="maintenanceNextDate" type="date" readonly></label>
       <label><span>Người phụ trách</span><select id="maintenanceAssigned"><option value="">— Chọn —</option></select></label>
       <label><span>Trạng thái</span><select id="maintenanceStatus"><option>Hoạt động</option><option>Tạm dừng</option><option>Hỏng</option><option>Ngừng sử dụng</option></select></label>
       <label class="wide"><span>Ghi chú</span><input id="maintenanceNote" maxlength="400"></label>
@@ -2111,7 +2109,7 @@
       <label><span>Người thực hiện</span><select id="maintenanceRecordPerformer"><option value="">— Chọn —</option></select></label>
       <label><span>Kết quả</span><select id="maintenanceRecordResult"><option>Hoàn thành</option><option>Cần theo dõi</option><option>Cần sửa chữa</option><option>Chưa hoàn thành</option></select></label>
       <label class="wide"><span>Nội dung thực hiện *</span><input id="maintenanceWorkDone" maxlength="500" required placeholder="Vệ sinh, kiểm tra dòng, siết đầu cốt, thay lọc..."></label>
-      <label><span>Hạn bảo trì kế tiếp</span><input id="maintenanceRecordNextDate" type="date"></label>
+      <label><span>Hạn bảo trì kế tiếp <em class="maintenanceAutoHint">Tự động</em></span><input id="maintenanceRecordNextDate" type="date" readonly></label>
       <label><span>Chi phí (VNĐ)</span><input id="maintenanceCost" type="number" min="0" step="1000" value="0"></label>
       <label class="wide"><span>Ghi chú</span><input id="maintenanceRecordNote" maxlength="400"></label>
       <div class="inventoryFormActions"><button id="cancelMaintenanceRecordModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu nhật ký</button></div>
