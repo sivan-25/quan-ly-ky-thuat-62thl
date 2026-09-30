@@ -300,7 +300,7 @@ async function demoSyncContractorTask(obj){
    work_date:obj.d||today(),
    completed_date:completed,
    work_content:obj.c||"Công việc liên kết",
-   cause:obj.cause||(obj.incidentCode?("Liên kết sự cố "+obj.incidentCode):""),
+   cause:demoCauseValue(obj.cause),
    solution:obj.result||"",
    status:obj.s||"Đang thực hiện",
    note:obj.n||"",
