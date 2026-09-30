@@ -791,121 +791,88 @@ html,body,body *{font-family:"Inter",sans-serif!important}
 }
 
 
-/* ESTA_GLOBAL_FRESH_OCEAN_SIDEBAR_20260929 */
-/* Global shell theme: one fresh ocean-blue sidebar for Admin + every project + every module. */
+/* ESTA_GLOBAL_NAVY_SIDEBAR_20260930 */
+/* Match the Work topbar across the full sidebar, including project and mobile modes. */
 #app{
-  --global-side-bg:#116b87;
-  --global-side-active:#1685a4;
-  --global-side-hover:#147893;
-  --global-side-border:rgba(230,249,252,.16);
-  --global-side-text:#d9edf3;
-  --global-side-muted:#a8c9d6;
+  --global-side-bg:linear-gradient(90deg,#10366a 0%,#163f73 52%,#0d3568 100%);
+  --global-side-active:#24558b;
+  --global-side-hover:#1c497e;
+  --global-side-border:rgba(177,214,247,.20);
+  --global-side-text:#e7f0fb;
+  --global-side-muted:#b8cee5;
   --global-side-accent:#57e4ee;
 }
 
-/* Force one flat color everywhere; override all mode/project-specific sidebar rules. */
-#app .estaSidebar,
-#app.homeMode .estaSidebar,
-#app.adminMode .estaSidebar,
-#app.workMode .estaSidebar,
-#app.energyMode .estaSidebar,
-#app.inventoryMode .estaSidebar,
-#app.maintenanceMode .estaSidebar,
-#app.contractorMode .estaSidebar,
-#app.constructionMode .estaSidebar,
-#app.incidentMode .estaSidebar,
-#app.inspectionMode .estaSidebar,
-#app.documentsMode .estaSidebar,
-#app.reportsMode .estaSidebar,
-#app.demoProjectMode .estaSidebar,
-#app.demoProjectShell .estaSidebar,
-#app.adminCommandHome .estaSidebar{
-  background:#116b87!important;
-  background-image:none!important;
+/* The sidebar ID keeps legacy project palettes from replacing this shared theme. */
+#app #mobileSidebar{
+  background:var(--global-side-bg)!important;
   border-right:1px solid var(--global-side-border)!important;
-  box-shadow:8px 0 24px rgba(13,77,98,.10)!important;
+  box-shadow:8px 0 24px rgba(5,35,76,.10)!important;
 }
-
-/* Brand divider and labels */
-#app .estaSidebarBrand{
+#app #mobileSidebar .estaSidebarBrand{
   border-bottom-color:var(--global-side-border)!important;
 }
-#app .estaSidebarBrand b{
+#app #mobileSidebar .estaSidebarBrand b{
   color:#e3c4ad!important;
 }
-#app .estaSidebarBrand small{
-  color:#b7d4de!important;
+#app #mobileSidebar .estaSidebarBrand small,
+#app #mobileSidebar .estaNav:before{
+  color:var(--global-side-muted)!important;
 }
-#app .estaNav:before{
-  color:#9bc8d7!important;
-}
-
-/* Navigation items */
-#app .estaNav button{
+#app #mobileSidebar .estaNav button{
   border-color:transparent!important;
   background:transparent!important;
   color:var(--global-side-text)!important;
 }
-#app .estaNav button svg{
-  color:#c0dbe4!important;
+#app #mobileSidebar .estaNav button svg{
+  color:#c3d8f0!important;
 }
-#app .estaNav button:hover{
-  border-color:rgba(255,255,255,.10)!important;
-  background:#147893!important;
+#app #mobileSidebar .estaNav button:hover{
+  border-color:rgba(177,214,247,.24)!important;
+  background:var(--global-side-hover)!important;
   color:#fff!important;
 }
-#app .estaNav button:hover svg{
+#app #mobileSidebar .estaNav button:hover svg{
   color:#e9fbfd!important;
 }
-#app .estaNav button.active{
-  border-color:rgba(87,228,238,.24)!important;
-  background:#1685a4!important;
+#app #mobileSidebar .estaNav button.active{
+  border-color:rgba(117,186,247,.40)!important;
+  background:var(--global-side-active)!important;
   color:#fff!important;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
 }
-#app .estaNav button.active:before{
+#app #mobileSidebar .estaNav button.active:before{
   background:var(--global-side-accent)!important;
   box-shadow:0 0 12px rgba(87,228,238,.34)!important;
 }
-#app .estaNav button.active svg{
+#app #mobileSidebar .estaNav button.active svg{
   color:var(--global-side-accent)!important;
 }
-
-/* Bottom utility area */
-#app .estaSidebar .sideBackup,
-#app .estaSidebar .sideBottom{
+#app #mobileSidebar .sideBackup,
+#app #mobileSidebar .sideBottom{
   border-top-color:var(--global-side-border)!important;
 }
-#app .estaSidebar .sideBackup button,
-#app .sideLogout{
-  border-color:rgba(239,252,254,.15)!important;
+#app #mobileSidebar .sideBackup button,
+#app #mobileSidebar .sideLogout{
+  border-color:rgba(177,214,247,.24)!important;
   background:rgba(255,255,255,.06)!important;
-  color:#d8ebf1!important;
+  color:var(--global-side-text)!important;
 }
-#app .estaSidebar .sideBackup button:hover,
-#app .sideLogout:hover{
+#app #mobileSidebar .sideBackup button:hover,
+#app #mobileSidebar .sideLogout:hover{
   background:rgba(255,255,255,.11)!important;
   color:#fff!important;
 }
-#app .sideUserCard{
-  border-color:rgba(255,255,255,.12)!important;
+#app #mobileSidebar .sideUserCard{
+  border-color:rgba(177,214,247,.20)!important;
   background:rgba(255,255,255,.055)!important;
 }
-#app .sideUserCard #sideUser{
-  color:#bdd8e1!important;
+#app #mobileSidebar .sideUserCard #sideUser{
+  color:var(--global-side-muted)!important;
 }
-#app .sideUserCard #sideUser b{
+#app #mobileSidebar .sideUserCard #sideUser b{
   color:#fff!important;
 }
-
-/* Keep the same exact sidebar tone in mobile/tablet drawer mode. */
-@media(max-width:1024px){
-  #app .estaSidebar{
-    background:#116b87!important;
-    background-image:none!important;
-  }
-}
-
 
 /* ADMIN_COMMAND_CENTER_PRIMARY_HERO_20260929 */
 /* Admin overview: remove the duplicated legacy hero and use the multi-project command hero as the primary header. */
