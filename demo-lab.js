@@ -72,6 +72,9 @@ function demoSetProjectMode(){
  $("#app")?.classList.toggle("demoProjectShell",shell);
  $("#app")?.classList.toggle("demoProjectMode",on);
  $("#app")?.classList.toggle("demoSampleProject",on&&["DEMO","68P\\u0110L"].includes(String(currentBuilding?.id||"")));
+ $("#app")?.classList.toggle("demoWorkToolbar",on&&String(currentBuilding?.id||"")===DEMO_ID);
+ const workPdfLabel=$("#exportBtn b");
+ if(workPdfLabel)workPdfLabel.textContent=on&&String(currentBuilding?.id||"")===DEMO_ID?"Xuất PDF":"PDF";
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
  if(on){demoEnsureWorkPanel();demoLoad().then(()=>{demoPopulateWorkOptions();demoRenderHomeOps();demoEnsureAssetPassport()})}
