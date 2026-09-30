@@ -2355,6 +2355,11 @@ function maintenanceAutoNext(baseDate,frequencyDays){
  const freq=Math.max(1,Number(frequencyDays)||30);
  return baseDate?addDaysIso(baseDate,freq):addDaysIso(today(),freq);
 }
+function maintenanceNextFromSchedule(asset){
+ const freq=Math.max(1,Number(asset?.frequency_days)||30);
+ const anchor=String(asset?.next_due_date||asset?.last_service_date||today());
+ return addDaysIso(anchor,freq);
+}
 function maintenanceProjectedDates(asset,yearValue){
  const year=Number(yearValue||new Date().getFullYear());
  const freq=Math.max(1,Number(asset?.frequency_days)||30);
@@ -2439,7 +2444,7 @@ window.deleteMaintenanceAsset=async id=>{
 };
 window.openMaintenanceRecord=id=>{
  const a=maintenanceAssets.find(x=>String(x.id)===String(id));if(!a)return;inventoryFillPeople();
- $("#maintenanceRecordId").value="";$("#maintenanceRecordAssetId").value=a.id;$("#maintenanceRecordAssetName").textContent=a.name+" · "+(a.location||a.system_type);$("#maintenanceRecordDate").value=today();$("#maintenanceRecordType").value="Định kỳ";$("#maintenanceRecordPerformer").value=a.assigned_to||"";$("#maintenanceRecordResult").value="Hoàn thành";$("#maintenanceWorkDone").value="";$("#maintenanceRecordNextDate").value=maintenanceAutoNext(today(),a.frequency_days);$("#maintenanceCost").value="0";$("#maintenanceRecordNote").value="";$("#maintenanceRecordModal").classList.remove("hide");
+ $("#maintenanceRecordId").value="";$("#maintenanceRecordAssetId").value=a.id;$("#maintenanceRecordAssetName").textContent=a.name+" · "+(a.location||a.system_type);$("#maintenanceRecordDate").value=today();$("#maintenanceRecordType").value="Định kỳ";$("#maintenanceRecordPerformer").value=a.assigned_to||"";$("#maintenanceRecordResult").value="Hoàn thành";$("#maintenanceWorkDone").value="";$("#maintenanceRecordNextDate").value=maintenanceNextFromSchedule(a);$("#maintenanceCost").value="0";$("#maintenanceRecordNote").value="";$("#maintenanceRecordModal").classList.remove("hide");
 };
 window.deleteMaintenanceRecord=async id=>{
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -2609,7 +2614,7 @@ $("#maintenanceFrequency").oninput=syncMaintenanceNextDate;
 $("#maintenanceFrequency").onchange=syncMaintenanceNextDate;
 $("#maintenanceRecordDate").onchange=()=>{
  const assetId=$("#maintenanceRecordAssetId").value,a=maintenanceAssets.find(x=>String(x.id)===String(assetId));
- if(a&&$("#maintenanceRecordDate").value)$("#maintenanceRecordNextDate").value=maintenanceAutoNext($("#maintenanceRecordDate").value,a.frequency_days);
+ if(a)$("#maintenanceRecordNextDate").value=maintenanceNextFromSchedule(a);
 };
 $("#maintenanceAssetForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
@@ -2625,13 +2630,13 @@ $("#maintenanceAssetForm").onsubmit=async e=>{
 $("#maintenanceRecordForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  const assetId=$("#maintenanceRecordAssetId").value,a=maintenanceAssets.find(x=>String(x.id)===String(assetId));if(!a)return toast("Không tìm thấy thiết bị");
- const serviceDate=$("#maintenanceRecordDate").value,next=maintenanceAutoNext(serviceDate,a.frequency_days);
+ const serviceDate=$("#maintenanceRecordDate").value,next=maintenanceNextFromSchedule(a);
  $("#maintenanceRecordNextDate").value=next;
  const body={building_id:currentBuilding.id,asset_id:assetId,service_date:serviceDate,maintenance_type:$("#maintenanceRecordType").value,performer:$("#maintenanceRecordPerformer").value,result_status:$("#maintenanceRecordResult").value,work_done:$("#maintenanceWorkDone").value.trim(),note:$("#maintenanceRecordNote").value.trim(),next_due_date:next,cost:Math.max(0,inventoryNum($("#maintenanceCost").value))};
  try{
    await sbFetch("/rest/v1/maintenance_records",{method:"POST",token:centralSession.access_token,body});
    await sbFetch("/rest/v1/maintenance_assets?id=eq."+encodeURIComponent(assetId)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body:{last_service_date:serviceDate,next_due_date:next,updated_at:new Date().toISOString()}});
-   $("#maintenanceRecordModal").classList.add("hide");await loadMaintenanceData(currentBuilding.id,true);toast("Đã lưu bảo trì; hạn kế tiếp được tự động cập nhật");
+   $("#maintenanceRecordModal").classList.add("hide");await loadMaintenanceData(currentBuilding.id,true);toast("Đã lưu bảo trì; lịch kế tiếp tiếp tục đúng chu kỳ đã đặt");
  }catch(err){toast(err.message)}
 };
 
