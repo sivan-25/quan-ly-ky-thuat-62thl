@@ -506,10 +506,22 @@ def story_energy(data):
     unit=str(data.get("unit") or "")
     energy_name=str(data.get("energy_name") or "Năng lượng")
     period_label=str(data.get("period_label") or "THEO BỘ LỌC")
+    dual=bool(data.get("dual_meter"))
+    meter1=str(data.get("meter1_label") or "EVN1")
+    meter2=str(data.get("meter2_label") or "EVN2")
+
     first_value=rows[0].get("value") if rows else None
     last_value=rows[-1].get("value") if rows else None
     usable=[r.get("diff") for r in rows if isinstance(r.get("diff"),(int,float)) and r.get("diff") >= 0]
     total=sum(usable) if usable else None
+
+    if dual:
+        usable2=[r.get("diff2") for r in rows if isinstance(r.get("diff2"),(int,float)) and r.get("diff2") >= 0]
+        total2=sum(usable2) if usable2 else None
+        total_all=(total or 0)+(total2 or 0) if (total is not None or total2 is not None) else None
+    else:
+        total2=None
+        total_all=total
 
     story=[
         P("PHẦN 1  ·  BÁO CÁO NĂNG LƯỢNG",ST["eyebrow"]),Spacer(1,3),
@@ -534,12 +546,22 @@ def story_energy(data):
     story += [meta,Spacer(1,10)]
 
     gap=3*mm; kw=(CW-3*gap)/4
-    vals=[
-        (len(rows),"BẢN GHI",True),
-        ((_energy_num(first_value)) if first_value is not None else "—","CHỈ SỐ ĐẦU KỲ",False),
-        ((_energy_num(last_value)) if last_value is not None else "—","CHỈ SỐ CUỐI KỲ",False),
-        ((_energy_num(total)) if total is not None else "—","TIÊU THỤ KỲ",False)
-    ]
+    if dual:
+        latest2=rows[-1].get("value2") if rows else None
+        vals=[
+            (len(rows),"BẢN GHI",True),
+            ((_energy_num(last_value)+" / "+_energy_num(latest2)) if rows else "—",meter1+" / "+meter2+" CUỐI KỲ",False),
+            ((_energy_num(total)+" / "+_energy_num(total2)) if (total is not None or total2 is not None) else "—","TIÊU THỤ "+meter1+" / "+meter2,False),
+            ((_energy_num(total_all)) if total_all is not None else "—","TỔNG TIÊU THỤ",False)
+        ]
+    else:
+        vals=[
+            (len(rows),"BẢN GHI",True),
+            ((_energy_num(first_value)) if first_value is not None else "—","CHỈ SỐ ĐẦU KỲ",False),
+            ((_energy_num(last_value)) if last_value is not None else "—","CHỈ SỐ CUỐI KỲ",False),
+            ((_energy_num(total_all)) if total_all is not None else "—","TIÊU THỤ KỲ",False)
+        ]
+
     cells=[]; widths=[]
     for i,(num,label,dark) in enumerate(vals):
         if i: cells.append(""); widths.append(gap)
@@ -558,20 +580,40 @@ def story_energy(data):
     story += [k,Spacer(1,14)]
 
     story += [P("BẢNG THEO DÕI CHỈ SỐ",ST["sec"]),Spacer(1,4)]
-    head=["STT","NGÀY","CHỈ SỐ","CHÊNH LỆCH","NGƯỜI THỰC HIỆN","GHI CHÚ"]
-    table_rows=[[P(h,ST["th"]) for h in head]]
-    for i,r in enumerate(rows,1):
-        diff=r.get("diff")
-        diff_text="—" if diff is None else (("+" if diff >= 0 else "")+_energy_num(diff))
-        table_rows.append([
-            P(f"{i:02d}",ST["td_s"]),
-            P(str(r.get("date_display") or r.get("date") or "—"),ST["td"]),
-            P(_energy_num(r.get("value")),ST["td_b"]),
-            P(diff_text,ST["td_b"]),
-            P(str(r.get("performer") or "—"),ST["td_s"]),
-            P(str(r.get("note") or "—"),ST["note"])
-        ])
-    widths=[9,24,27,25,35,54]
+
+    if dual:
+        head=["STT","NGÀY",meter1,"TT "+meter1,meter2,"TT "+meter2,"TỔNG TT","NGƯỜI THỰC HIỆN","GHI CHÚ"]
+        table_rows=[[P(h,ST["th"]) for h in head]]
+        for i,r in enumerate(rows,1):
+            d1=r.get("diff"); d2=r.get("diff2"); dt=r.get("total_diff")
+            table_rows.append([
+                P(f"{i:02d}",ST["td_s"]),
+                P(str(r.get("date_display") or r.get("date") or "—"),ST["td"]),
+                P(_energy_num(r.get("value")),ST["td_b"]),
+                P("—" if d1 is None else (("+" if d1 >= 0 else "")+_energy_num(d1)),ST["td_b"]),
+                P(_energy_num(r.get("value2")),ST["td_b"]),
+                P("—" if d2 is None else (("+" if d2 >= 0 else "")+_energy_num(d2)),ST["td_b"]),
+                P("—" if dt is None else (("+" if dt >= 0 else "")+_energy_num(dt)),ST["td_b"]),
+                P(str(r.get("performer") or "—"),ST["td_s"]),
+                P(str(r.get("note") or "—"),ST["note"])
+            ])
+        widths=[7,19,17,16,17,16,18,28,36]
+    else:
+        head=["STT","NGÀY","CHỈ SỐ","CHÊNH LỆCH","NGƯỜI THỰC HIỆN","GHI CHÚ"]
+        table_rows=[[P(h,ST["th"]) for h in head]]
+        for i,r in enumerate(rows,1):
+            diff=r.get("diff")
+            diff_text="—" if diff is None else (("+" if diff >= 0 else "")+_energy_num(diff))
+            table_rows.append([
+                P(f"{i:02d}",ST["td_s"]),
+                P(str(r.get("date_display") or r.get("date") or "—"),ST["td"]),
+                P(_energy_num(r.get("value")),ST["td_b"]),
+                P(diff_text,ST["td_b"]),
+                P(str(r.get("performer") or "—"),ST["td_s"]),
+                P(str(r.get("note") or "—"),ST["note"])
+            ])
+        widths=[9,24,27,25,35,54]
+
     widths=[w*mm*CW/(sum(widths)*mm) for w in widths]
     tb=Table(table_rows,colWidths=widths,repeatRows=1)
     ts=[
@@ -579,8 +621,8 @@ def story_energy(data):
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
         ("TOPPADDING",(0,0),(-1,-1),4),
         ("BOTTOMPADDING",(0,0),(-1,-1),4),
-        ("LEFTPADDING",(0,0),(-1,-1),5),
-        ("RIGHTPADDING",(0,0),(-1,-1),4),
+        ("LEFTPADDING",(0,0),(-1,-1),4),
+        ("RIGHTPADDING",(0,0),(-1,-1),3),
         ("LINEBELOW",(0,1),(-1,-1),.4,TAUPE),
         ("LINEBELOW",(0,-1),(-1,-1),1.5,COPPER)
     ]
@@ -589,27 +631,34 @@ def story_energy(data):
     tb.setStyle(TableStyle(ts))
     story += [tb]
 
-    image_rows=[r for r in rows if r.get("image_path") and os.path.exists(r.get("image_path"))]
+    image_rows=[r for r in rows if (r.get("image_path") and os.path.exists(r.get("image_path"))) or (r.get("image2_path") and os.path.exists(r.get("image2_path")))]
     if image_rows:
         from reportlab.platypus import PageBreak
         story += [PageBreak(),P("PHẦN 2  ·  HÌNH ẢNH ĐỒNG HỒ",ST["eyebrow"]),Spacer(1,3),
                   P("Hình ảnh ghi nhận",ST["h1"]),
                   HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)]
-        for idx,r in enumerate(image_rows,1):
-            cap=(str(r.get("date_display") or r.get("date") or "")+"  ·  "+
-                 _energy_num(r.get("value")))
-            slot=ImageSlot(CW-16,82*mm,r.get("image_path"),cap,fit="contain")
-            box=Table([[P(f"{idx:02d}  ·  {energy_name}",ST["sec"])],[slot]],colWidths=[CW])
-            box.setStyle(TableStyle([
-                ("BOX",(0,0),(-1,-1),.6,TAUPE),
-                ("BACKGROUND",(0,0),(0,0),CREAM_L),
-                ("LINEBELOW",(0,0),(0,0),1.5,COPPER),
-                ("LEFTPADDING",(0,0),(-1,-1),8),
-                ("RIGHTPADDING",(0,0),(-1,-1),8),
-                ("TOPPADDING",(0,0),(-1,-1),5),
-                ("BOTTOMPADDING",(0,0),(-1,-1),5)
-            ]))
-            story += [KeepTogether([box,Spacer(1,9)])]
+        counter=0
+        for r in image_rows:
+            pairs=[]
+            if r.get("image_path") and os.path.exists(r.get("image_path")):
+                pairs.append((meter1 if dual else energy_name,r.get("image_path"),r.get("value")))
+            if dual and r.get("image2_path") and os.path.exists(r.get("image2_path")):
+                pairs.append((meter2,r.get("image2_path"),r.get("value2")))
+            for label,path,val in pairs:
+                counter+=1
+                cap=str(r.get("date_display") or r.get("date") or "")+"  ·  "+_energy_num(val)
+                slot=ImageSlot(CW-16,82*mm,path,cap,fit="contain")
+                box=Table([[P(f"{counter:02d}  ·  {label}",ST["sec"])],[slot]],colWidths=[CW])
+                box.setStyle(TableStyle([
+                    ("BOX",(0,0),(-1,-1),.6,TAUPE),
+                    ("BACKGROUND",(0,0),(0,0),CREAM_L),
+                    ("LINEBELOW",(0,0),(0,0),1.5,COPPER),
+                    ("LEFTPADDING",(0,0),(-1,-1),8),
+                    ("RIGHTPADDING",(0,0),(-1,-1),8),
+                    ("TOPPADDING",(0,0),(-1,-1),5),
+                    ("BOTTOMPADDING",(0,0),(-1,-1),5)
+                ]))
+                story += [KeepTogether([box,Spacer(1,9)])]
 
     story.append(energy_signatures())
     return story
