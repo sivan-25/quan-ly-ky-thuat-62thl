@@ -1112,7 +1112,7 @@ document.addEventListener("click",e=>{
   }
 });
 /* END_ENERGY_ROW_ACTION_MENU_SINGLE_OPEN */
-// The page toolbar owns the real controls; refreshes only render table rows.
+// The topbar owns the real work controls; background refreshes only render table rows.
 function positionWorkFilter(){
  const bar=$("#filterBar"),btn=$("#toggleFilter");
  if(!bar||!btn||bar.classList.contains("hide"))return;
