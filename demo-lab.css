@@ -1356,3 +1356,49 @@
     background-image:none!important;
   }
 }
+
+
+/* INCIDENT DETAIL ACTIONS — keep primary actions visible in the top-right */
+#app.demoProjectMode #demoIncidentDetail .demoIncidentDetailHead{
+  align-items:flex-start!important;
+  gap:14px!important;
+}
+#app.demoProjectMode #demoIncidentDetail .demoIncidentHeadCopy{
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+#app.demoProjectMode #demoIncidentDetail .demoIncidentHeadActions{
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:7px!important;
+  margin-left:auto!important;
+}
+#app.demoProjectMode #demoIncidentDetail .demoIncidentHeadActions .demoBtn{
+  height:36px!important;
+  min-height:36px!important;
+  padding:0 11px!important;
+  border-radius:9px!important;
+  font-size:10px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+@media(max-width:760px){
+  #app.demoProjectMode #demoIncidentDetail .demoIncidentDetailHead{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  #app.demoProjectMode #demoIncidentDetail .demoIncidentHeadActions{
+    width:100%!important;
+    margin-left:0!important;
+    justify-content:stretch!important;
+  }
+  #app.demoProjectMode #demoIncidentDetail .demoIncidentHeadActions .demoBtn{
+    flex:1 1 0!important;
+    min-height:44px!important;
+    height:44px!important;
+    font-size:11.5px!important;
+  }
+}
