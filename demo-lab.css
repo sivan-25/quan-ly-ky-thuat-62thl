@@ -1164,6 +1164,9 @@
 }
 
 
+/* Keep project-specific energy tabs truly hidden even under DEMO theme overrides. */
+#app.demoProjectMode.energyMode #energyPage .energyTabs button.energy68Only.hide{display:none!important}
+
 /* DEMO_ENERGY_TABS_BEIGE_NAVY_20260929 */
 /* DEMO Energy tabs: strong contrast on beige canvas. */
 #app.demoProjectMode.energyMode #energyPage .energyTabs{
