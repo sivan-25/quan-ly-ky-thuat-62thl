@@ -593,12 +593,68 @@ window.demoCreateTaskFromIncident=async id=>{
  await demoLoad(true);render();showModule("work");toast("Đã tạo công việc và liên kết với "+inc.incident_code);
 };
 window.demoAddIncident=async()=>{
- const symptom=prompt("Mô tả hiện tượng sự cố:");if(!symptom)return;
- const area=prompt("Khu vực / vị trí:","Khu vực kỹ thuật")||"";
- const severity=prompt("Mức độ: Thấp / Trung bình / Cao / Khẩn cấp","Trung bình")||"Trung bình";
- const code="SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
- try{await demoPost("incidents",{building_id:currentBuilding.id,incident_code:code,detected_at:new Date().toISOString(),area,severity:["Thấp","Trung bình","Cao","Khẩn cấp"].includes(severity)?severity:"Trung bình",status:"Mới",symptom,cause:"",solution:"",cost:0});await demoLoad(true);demoSelectedIncident="";demoRenderIncidents();toast("Đã thêm "+code)}catch(e){toast(e.message)}
+ await demoLoad();
+ const modal=$("#demoIncidentModal");if(!modal)return;
+ $("#demoIncidentDetectedDate").value=today();
+ $("#demoIncidentArea").value="";
+ $("#demoIncidentSeverity").value="Trung bình";
+ $("#demoIncidentStatus").value="Mới";
+ $("#demoIncidentSymptom").value="";
+ $("#demoIncidentCause").value="";
+ $("#demoIncidentSolution").value="";
+ const assetSelect=$("#demoIncidentAsset");
+ if(assetSelect){
+  assetSelect.innerHTML='<option value="">Không gắn thiết bị</option>'+demoCache.assets.map(a=>'<option value="'+esc(a.id)+'">'+esc((a.code?a.code+" · ":"")+a.name)+'</option>').join("");
+  assetSelect.value="";
+ }
+ modal.classList.remove("hide");
+ document.body.classList.add("demoModalOpen");
+ setTimeout(()=>$("#demoIncidentArea")?.focus(),60);
 };
+window.demoCloseIncidentModal=()=>{
+ $("#demoIncidentModal")?.classList.add("hide");
+ document.body.classList.remove("demoModalOpen");
+};
+window.demoSubmitIncident=async e=>{
+ e?.preventDefault();
+ const date=$("#demoIncidentDetectedDate")?.value||today();
+ const area=$("#demoIncidentArea")?.value.trim()||"";
+ const symptom=$("#demoIncidentSymptom")?.value.trim()||"";
+ const severity=$("#demoIncidentSeverity")?.value||"Trung bình";
+ const status=$("#demoIncidentStatus")?.value||"Mới";
+ const asset_id=$("#demoIncidentAsset")?.value||null;
+ const cause=$("#demoIncidentCause")?.value.trim()||"";
+ const solution=$("#demoIncidentSolution")?.value.trim()||"";
+ if(!area){toast("Vui lòng nhập khu vực / vị trí");$("#demoIncidentArea")?.focus();return}
+ if(!symptom){toast("Vui lòng nhập hiện tượng sự cố");$("#demoIncidentSymptom")?.focus();return}
+ const code="SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
+ const btn=$("#demoIncidentSaveBtn");if(btn){btn.disabled=true;btn.textContent="Đang lưu..."}
+ try{
+  await demoPost("incidents",{
+   building_id:currentBuilding.id,
+   incident_code:code,
+   detected_at:new Date(date+"T12:00:00").toISOString(),
+   area,
+   asset_id,
+   severity:["Thấp","Trung bình","Cao","Khẩn cấp"].includes(severity)?severity:"Trung bình",
+   status:["Mới","Theo dõi","Đang xử lý"].includes(status)?status:"Mới",
+   symptom,
+   cause,
+   solution,
+   cost:0
+  });
+  demoCloseIncidentModal();
+  await demoLoad(true);
+  demoSelectedIncident="";
+  demoRenderIncidents();
+  demoRenderHomeOps();
+  toast("Đã thêm "+code);
+ }catch(err){toast(err.message||"Không thể lưu sự cố")}
+ finally{if(btn){btn.disabled=false;btn.textContent="Lưu sự cố"}}
+};
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"&&!$("#demoIncidentModal")?.classList.contains("hide"))demoCloseIncidentModal();
+});
 
 window.demoSelectInspection=id=>{demoSelectedInspection=id;demoRenderInspections()};
 async function demoRenderInspections(){
