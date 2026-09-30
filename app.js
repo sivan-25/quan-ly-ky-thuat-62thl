@@ -1943,18 +1943,47 @@ window.editEnergy=id=>{
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
  const x=energyLoad().find(v=>String(v.id)===String(id));if(!x)return;
  energyType=x.type;
+ sync68EnergyTabs();
  document.querySelectorAll("[data-energy-type]").forEach(b=>{
- const selected=b.dataset.energyType===energyType;
- b.classList.toggle("active",selected);
- b.setAttribute("aria-selected",String(selected));
-});
- $("#energyEditId").value=x.id;$("#energyDate").value=x.date;syncEnergyDateCompact();$("#energyValue").value=x.value;setPeopleSelected("energy",performerArray(x));$("#energyNote").value=x.note||"";
- $("#energyImagePreview").innerHTML=x.image?mediaImgHtml(x.image,"")+'<span>Ảnh hiện tại</span>':"";hydrateMediaImages($("#energyImagePreview"));
- $("#energySaveBtn").textContent="Cập nhật chỉ số";$("#energyCancelEdit").classList.remove("hide");renderEnergy();
+  const selected=b.dataset.energyType===energyType;
+  b.classList.toggle("active",selected);
+  b.setAttribute("aria-selected",String(selected));
+ });
+ const dual=is68DualElectric();
+ $("#energyEditId").value=x.id;
+ $("#energyDate").value=x.date;syncEnergyDateCompact();
+ $("#energyValue").value=x.value;
+ $("#energyValue2").value=dual?(x.value2??""):"";
+ $("#energyValue2").required=dual;
+ $("#energyValue2Field").classList.toggle("hide",!dual);
+ $("#energyImage2Field").classList.toggle("hide",!dual);
+ $("#energyImage2Preview").classList.toggle("hide",!dual);
+ setPeopleSelected("energy",performerArray(x));
+ $("#energyNote").value=x.note||"";
+ $("#energyImagePreview").innerHTML=x.image?mediaImgHtml(x.image,"")+'<span>Ảnh hiện tại EVN1</span>':"";
+ $("#energyImage2Preview").innerHTML=dual&&x.image2?mediaImgHtml(x.image2,"")+'<span>Ảnh hiện tại EVN2</span>':"";
+ hydrateMediaImages($("#energyImagePreview"));
+ hydrateMediaImages($("#energyImage2Preview"));
+ $("#energySaveBtn").textContent="Cập nhật chỉ số";
+ $("#energyCancelEdit").classList.remove("hide");
+ renderEnergy();
  window.scrollTo({top:0,behavior:"smooth"});
 };
-window.deleteEnergy=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(!confirm("Xóa bản ghi chỉ số này?"))return;energySaveAll(energyLoad().filter(x=>String(x.id)!==String(id)));await syncEnergyRecord("delete_energy",id);renderEnergy();renderHomeDashboard();toast("Đã xóa bản ghi")};
-window.viewEnergyImage=async id=>{const x=energyLoad().find(v=>String(v.id)===String(id));if(!x?.image)return;viewerMediaRefs=[x.image];$("#viewerImages").innerHTML='<div class="viewerMedia">'+mediaImgHtml(x.image,"viewerLargeImage")+'<button class="viewerDownloadBtn" type="button" onclick="downloadViewerMedia(0)">⇩ Tải hình</button></div>';$("#viewer").classList.remove("hide");await hydrateMediaImages($("#viewerImages"))};
+window.deleteEnergy=async id=>{
+ if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
+ if(!confirm("Xóa bản ghi chỉ số này?"))return;
+ energySaveAll(energyLoad().filter(x=>String(x.id)!==String(id)));
+ await syncEnergyRecord("delete_energy",id);
+ renderEnergy();renderHomeDashboard();toast("Đã xóa bản ghi");
+};
+window.viewEnergyImage=async id=>{
+ const x=energyLoad().find(v=>String(v.id)===String(id));if(!x)return;
+ const refs=[x.image,x.image2].filter(Boolean);if(!refs.length)return;
+ viewerMediaRefs=refs;
+ $("#viewerImages").innerHTML=refs.map((ref,i)=>'<div class="viewerMedia">'+mediaImgHtml(ref,"viewerLargeImage")+'<button class="viewerDownloadBtn" type="button" onclick="downloadViewerMedia('+i+')">⇩ Tải hình '+(refs.length>1?(i===0?"EVN1":"EVN2"):"")+'</button></div>').join("");
+ $("#viewer").classList.remove("hide");
+ await hydrateMediaImages($("#viewerImages"));
+};
 function setEnergyRange(kind){
  document.querySelectorAll("[data-erange]").forEach(b=>b.classList.toggle("active",b.dataset.erange===kind));
  if(kind==="all"){$("#energyFromDate").value="";$("#energyToDate").value=""}
