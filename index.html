@@ -1082,6 +1082,71 @@
   <section class="demoKpis"><article class="demoKpi"><i>!</i><div><b id="demoIncidentOpen">0</b><span>ĐANG MỞ</span><small>Cần theo dõi</small></div></article><article class="demoKpi"><i>!</i><div><b id="demoIncidentUrgent">0</b><span>KHẨN CẤP</span><small>Ưu tiên xử lý</small></div></article><article class="demoKpi"><i>◷</i><div><b id="demoIncidentWatch">0</b><span>THEO DÕI</span><small>Chờ xác nhận</small></div></article><article class="demoKpi"><i>✓</i><div><b id="demoIncidentClosed">0</b><span>ĐÃ ĐÓNG</span><small>Lịch sử xử lý</small></div></article></section>
   <section class="demoGrid2"><div class="demoPanel"><div class="demoPanelHead"><div><h2>Danh sách sự cố</h2><p>Mã sự cố · thiết bị/khu vực · mức độ · trạng thái</p></div></div><div class="demoTableWrap"><table class="demoTable"><thead><tr><th>Mã sự cố</th><th>Khu vực</th><th>Thiết bị</th><th>Hiện tượng</th><th>Mức độ</th><th>Trạng thái</th></tr></thead><tbody id="demoIncidentBody"></tbody></table></div></div><aside id="demoIncidentDetail" class="demoPanel"></aside></section>
 </div>
+
+<div id="demoIncidentModal" class="demoIncidentModal hide" role="dialog" aria-modal="true" aria-labelledby="demoIncidentModalTitle" onclick="if(event.target===this)demoCloseIncidentModal()">
+  <div class="demoIncidentModalCard">
+    <div class="demoIncidentModalHead">
+      <div>
+        <span>ESTA · INCIDENT</span>
+        <h2 id="demoIncidentModalTitle">Thêm sự cố / Defect</h2>
+        <p>Nhập thông tin sự cố. Các mục không có dữ liệu có thể để trống.</p>
+      </div>
+      <button type="button" class="demoIncidentModalClose" onclick="demoCloseIncidentModal()" aria-label="Đóng">×</button>
+    </div>
+    <form id="demoIncidentForm" class="demoIncidentForm" onsubmit="demoSubmitIncident(event)">
+      <div class="demoIncidentFormGrid">
+        <label>
+          <span>Ngày phát hiện <b>*</b></span>
+          <input id="demoIncidentDetectedDate" type="date" required>
+        </label>
+        <label>
+          <span>Khu vực / vị trí <b>*</b></span>
+          <input id="demoIncidentArea" type="text" maxlength="120" placeholder="VD: Tầng 6, Phòng máy..." required>
+        </label>
+        <label>
+          <span>Thiết bị liên quan</span>
+          <select id="demoIncidentAsset">
+            <option value="">Không gắn thiết bị</option>
+          </select>
+        </label>
+        <label>
+          <span>Mức độ <b>*</b></span>
+          <select id="demoIncidentSeverity" required>
+            <option value="Thấp">Thấp</option>
+            <option value="Trung bình" selected>Trung bình</option>
+            <option value="Cao">Cao</option>
+            <option value="Khẩn cấp">Khẩn cấp</option>
+          </select>
+        </label>
+        <label>
+          <span>Trạng thái</span>
+          <select id="demoIncidentStatus">
+            <option value="Mới" selected>Mới</option>
+            <option value="Theo dõi">Theo dõi</option>
+            <option value="Đang xử lý">Đang xử lý</option>
+          </select>
+        </label>
+        <label class="demoIncidentWide">
+          <span>Hiện tượng <b>*</b></span>
+          <textarea id="demoIncidentSymptom" rows="3" maxlength="1000" placeholder="Mô tả hiện tượng sự cố..." required></textarea>
+        </label>
+        <label class="demoIncidentWide">
+          <span>Nguyên nhân</span>
+          <textarea id="demoIncidentCause" rows="2" maxlength="1000" placeholder="Có thể để trống nếu chưa xác định"></textarea>
+        </label>
+        <label class="demoIncidentWide">
+          <span>Hướng xử lý</span>
+          <textarea id="demoIncidentSolution" rows="2" maxlength="1000" placeholder="Có thể bổ sung sau"></textarea>
+        </label>
+      </div>
+      <div class="demoIncidentModalFoot">
+        <button type="button" class="demoBtn" onclick="demoCloseIncidentModal()">Hủy</button>
+        <button id="demoIncidentSaveBtn" type="submit" class="demoBtn primary">Lưu sự cố</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="inspectionPage" class="page demoFeaturePage hide">
   <section class="demoHero"><div class="demoHeroCopy"><span>ESTA · INSPECTION</span><h1>Kiểm tra định kỳ</h1><p>Checklist chuẩn, kết quả kiểm tra và tự tạo công việc khắc phục.</p></div><div class="demoHeroActions"><button id="demoInspectionAdd" class="demoBtn primary" type="button" onclick="demoAddChecklist()">+ Tạo checklist</button><button class="demoBtn" type="button" onclick="demoRefresh()">Làm mới</button></div></section>
   <section class="demoKpis"><article class="demoKpi"><i>▣</i><div><b id="demoInspectionCount">0</b><span>CHECKLIST</span><small>Đã tạo</small></div></article><article class="demoKpi"><i>✓</i><div><b id="demoInspectionPass">0</b><span>ĐẠT</span><small>Không cần xử lý</small></div></article><article class="demoKpi"><i>◷</i><div><b id="demoInspectionAttention">0</b><span>CẦN CHÚ Ý</span><small>Theo dõi</small></div></article><article class="demoKpi"><i>!</i><div><b id="demoInspectionFail">0</b><span>CẦN KHẮC PHỤC</span><small>Tạo công việc</small></div></article></section>
