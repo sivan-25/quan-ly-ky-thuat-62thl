@@ -119,45 +119,69 @@ async function submitDispatch(e){
 let navAlertSeq=0,navAlertTimer=0;
 const navBadgeIds=["navWork","navIncident","navInspection","navInventory","navMaintenance","navContractor"];
 function clearNavBadges(){navBadgeIds.forEach(id=>{const b=$c("#"+id+" .ccNavBadge");if(b)b.remove()})}
-function setNavBadge(id,count,level="normal"){
+function setNavBadge(id,count,level="normal",label="mục cần xử lý"){
  const btn=$c("#"+id);if(!btn)return;
  let badge=btn.querySelector(".ccNavBadge");
  if(!count){badge?.remove();return}
  if(!badge){badge=document.createElement("b");badge.className="ccNavBadge";btn.appendChild(badge)}
  badge.textContent=count>99?"99+":String(count);
  badge.className="ccNavBadge "+level;
- badge.title=count+" cảnh báo cần chú ý";
+ const tip=count+" "+label;
+ badge.title=tip;
+ badge.setAttribute("aria-label",tip);
 }
 function scheduleNavAlerts(delay=90){clearTimeout(navAlertTimer);navAlertTimer=setTimeout(updateProjectNavAlerts,delay)}
 async function updateProjectNavAlerts(){
  const bid=String(currentBuilding?.id||"");
  if(!bid||!centralSession?.access_token||$c("#navWork")?.classList.contains("hide")){clearNavBadges();return}
- const seq=++navAlertSeq,b=encodeURIComponent(bid),td=todayC(),future=new Date(td+"T00:00:00");future.setDate(future.getDate()+7);const soon=future.toLocaleDateString("en-CA");
+ const seq=++navAlertSeq,b=encodeURIComponent(bid),td=todayC(),future=new Date(td+"T00:00:00");future.setDate(future.getDate()+30);const soon=future.toLocaleDateString("en-CA");
  try{
   const [incidents,inspections,assets,materials,tx,jobs]=await Promise.all([
    sbFetch("/rest/v1/incidents?building_id=eq."+b+"&select=id,severity,status",{token:centralSession.access_token}),
    sbFetch("/rest/v1/inspections?building_id=eq."+b+"&select=id,result_status",{token:centralSession.access_token}),
    sbFetch("/rest/v1/maintenance_assets?building_id=eq."+b+"&select=id,status,next_due_date",{token:centralSession.access_token}),
-   sbFetch("/rest/v1/inventory_materials?building_id=eq."+b+"&select=id,min_qty,opening_qty",{token:centralSession.access_token}),
-   sbFetch("/rest/v1/inventory_material_transactions?building_id=eq."+b+"&select=material_id,tx_type,qty",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/inventory_materials?building_id=eq."+b+"&select=id,min_qty,opening_qty,tracking_start_date,created_at",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/inventory_material_transactions?building_id=eq."+b+"&select=material_id,tx_type,qty,tx_date",{token:centralSession.access_token}),
    sbFetch("/rest/v1/contractor_jobs?building_id=eq."+b+"&select=id,status",{token:centralSession.access_token})
   ]);
   if(seq!==navAlertSeq||String(currentBuilding?.id||"")!==bid)return;
+
+  // Badge = số mục thực tế còn phải theo dõi/xử lý trong từng module.
   const tasks=typeof load==="function"?load():[];
-  const work=tasks.filter(t=>!isDone(t)&&((t.dueDate&&String(t.dueDate)<=td)||priorityRank(t.priority)>=3)).length;
-  const incident=(incidents||[]).filter(x=>x.status!=="Đã đóng"&&(x.severity==="Cao"||x.severity==="Khẩn cấp")).length;
+  const work=tasks.filter(t=>!isDone(t)).length;
+
+  const openIncidents=(incidents||[]).filter(x=>x.status!=="Đã đóng");
+  const incident=openIncidents.length;
+  const incidentCritical=openIncidents.some(x=>x.severity==="Cao"||x.severity==="Khẩn cấp");
+
   const inspection=(inspections||[]).filter(x=>x.result_status&&x.result_status!=="Đạt").length;
-  const maintenance=(assets||[]).filter(x=>x.status==="Hỏng"||(x.next_due_date&&String(x.next_due_date)<=soon)).length;
+
+  const activeAssets=(assets||[]).filter(x=>x.status!=="Ngừng sử dụng");
+  const maintenance=activeAssets.filter(x=>x.status==="Hỏng"||(x.next_due_date&&String(x.next_due_date)<=soon)).length;
+  const maintenanceCritical=activeAssets.some(x=>x.status==="Hỏng"||(x.next_due_date&&String(x.next_due_date)<td));
+
+  // Tồn kho phải tính đúng theo ngày bắt đầu theo dõi và chỉ lấy giao dịch đến hiện tại.
+  const materialMap=new Map((materials||[]).map(m=>[String(m.id),m]));
   const qty=new Map((materials||[]).map(m=>[String(m.id),Number(m.opening_qty||0)]));
-  (tx||[]).forEach(x=>qty.set(String(x.material_id),(qty.get(String(x.material_id))||0)+(x.tx_type==="in"?1:-1)*Number(x.qty||0)));
-  const inventory=(materials||[]).filter(m=>Number(m.min_qty||0)>0&&(qty.get(String(m.id))||0)<=Number(m.min_qty||0)).length;
-  const contractor=(jobs||[]).filter(x=>x.status==="Chờ xử lý"||x.status==="Tạm dừng").length;
-  setNavBadge("navWork",work,work?"high":"normal");
-  setNavBadge("navIncident",incident,incident?"critical":"normal");
-  setNavBadge("navInspection",inspection,inspection?"high":"normal");
-  setNavBadge("navMaintenance",maintenance,maintenance?"critical":"normal");
-  setNavBadge("navInventory",inventory,inventory?"high":"normal");
-  setNavBadge("navContractor",contractor,contractor?"normal":"normal");
+  (tx||[]).forEach(x=>{
+   const m=materialMap.get(String(x.material_id));if(!m)return;
+   const start=String(m.tracking_start_date||m.created_at||td).slice(0,10);
+   const txDate=String(x.tx_date||"").slice(0,10);
+   if(!txDate||txDate<start||txDate>td)return;
+   qty.set(String(x.material_id),(qty.get(String(x.material_id))||0)+(x.tx_type==="in"?1:-1)*Number(x.qty||0));
+  });
+  const lowMaterials=(materials||[]).filter(m=>Number(m.min_qty||0)>0&&(qty.get(String(m.id))||0)<=Number(m.min_qty||0));
+  const inventory=lowMaterials.length;
+  const inventoryCritical=lowMaterials.some(m=>(qty.get(String(m.id))||0)<=0);
+
+  const contractor=(jobs||[]).filter(x=>!["Hoàn thành","Đã hoàn thành"].includes(String(x.status||""))).length;
+
+  setNavBadge("navWork",work,work?"high":"normal","công việc chưa hoàn thành");
+  setNavBadge("navIncident",incident,incidentCritical?"critical":incident?"high":"normal","sự cố/defect đang mở");
+  setNavBadge("navInspection",inspection,inspection?"high":"normal","checklist cần chú ý hoặc khắc phục");
+  setNavBadge("navMaintenance",maintenance,maintenanceCritical?"critical":maintenance?"high":"normal","thiết bị hỏng, quá hạn hoặc đến hạn trong 30 ngày");
+  setNavBadge("navInventory",inventory,inventoryCritical?"critical":inventory?"high":"normal","vật tư hết hoặc dưới mức tồn tối thiểu");
+  setNavBadge("navContractor",contractor,contractor?"normal":"normal","công việc nhà thầu chưa hoàn thành");
  }catch(e){console.warn("Project alert badges failed",e)}
 }
 
