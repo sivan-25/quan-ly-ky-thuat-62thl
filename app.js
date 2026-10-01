@@ -1709,8 +1709,10 @@ const ENERGY_META={
  solar:{name:"Năng lượng mặt trời",form:"Ghi sản lượng điện mặt trời",unit:"kWh",valueLabel:"Sản lượng điện (kWh)"},
  xlnt:{name:"Chỉ số XLNT",form:"Ghi chỉ số XLNT",unit:"m³",valueLabel:"Chỉ số XLNT (m³)"}
 };
-const is68Pdl=()=>String(currentBuilding?.id||"")==="68PĐL";
-const supportsXlntEnergy=()=>is68Pdl()||String(currentBuilding?.id||"")==="DEMO";
+const currentBuildingId=()=>String(currentBuilding?.id||"");
+const is68Pdl=()=>currentBuildingId()==="68PĐL";
+const supportsXlntEnergy=()=>is68Pdl()||currentBuildingId()==="DEMO";
+const supportsSolarEnergy=()=>!["127HH","130HH"].includes(currentBuildingId());
 const is68DualElectric=()=>is68Pdl()&&energyType==="electric";
 function syncEnergyTabSelection(){
  document.querySelectorAll("[data-energy-type]").forEach(b=>{
@@ -1721,7 +1723,8 @@ function syncEnergyTabSelection(){
 }
 function sync68EnergyTabs(){
  document.querySelectorAll(".energy68Only").forEach(el=>el.classList.toggle("hide",!supportsXlntEnergy()));
- if(!supportsXlntEnergy()&&energyType==="xlnt")energyType="electric";
+ document.querySelectorAll('[data-energy-type="solar"]').forEach(el=>el.classList.toggle("hide",!supportsSolarEnergy()));
+ if((!supportsXlntEnergy()&&energyType==="xlnt")||(!supportsSolarEnergy()&&energyType==="solar"))energyType="electric";
  syncEnergyTabSelection();
 }
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
