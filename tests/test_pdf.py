@@ -35,6 +35,15 @@ class ReportTests(unittest.TestCase):
             raw, missing, count = generate_pdf(payload, '')
             self.assertTrue(raw.startswith(b'%PDF')); self.assertEqual(missing, 1)
 
+    def test_current_encoded_storage_project_path_is_accepted(self):
+        payload = operations()
+        payload['building_id'] = '68PĐL'
+        encoded = 'b-' + ''.join(f'{b:02x}' for b in payload['building_id'].encode('utf-8'))
+        payload['photos'] = [{'ref':'data:image/png;base64,' + photo((300,500)).split(',',1)[1], 'caption':'Ảnh hợp lệ'}]
+        raw, missing, count = generate_pdf(payload, '')
+        self.assertTrue(raw.startswith(b'%PDF'))
+        self.assertEqual(missing, 0)
+
     def test_empty_selected_period_exports_without_invented_records(self):
         payload = operations()
         payload['sections'][0].update(rows=[], count=0)
