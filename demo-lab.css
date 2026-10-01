@@ -2102,3 +2102,66 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     flex-basis:34px!important;
   }
 }
+
+/* Image upload fields for Incident / Defect */
+.demoIncidentImageField{
+  padding:12px!important;
+  border:1px dashed #d6e3e9!important;
+  border-radius:12px!important;
+  background:#f8fbfc!important;
+}
+.demoIncidentImageField input[type="file"]{
+  width:100%!important;
+  height:auto!important;
+  padding:9px!important;
+  border:1px solid #dbe5ea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+}
+.demoIncidentImageField>small{
+  display:block;
+  margin-top:6px;
+  color:#7c909d;
+  font-size:8px;
+}
+.demoIncidentImagePreview{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:8px;
+}
+.demoIncidentImageChip{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 8px;
+  border:1px solid #dbe5ea;
+  border-radius:8px;
+  background:#fff;
+  color:#294b61;
+  font-size:8px;
+}
+.demoIncidentImageChip span{
+  max-width:190px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.demoIncidentThumb{
+  min-height:120px;
+  overflow:hidden;
+  border-radius:10px;
+  background:#f4f7f8;
+  border:1px solid #e1e8ec;
+}
+.demoIncidentThumb img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  display:block;
+}
+.demoIncidentThumb small{
+  display:block;
+  padding:7px 9px;
+  color:#627b89;
+}
