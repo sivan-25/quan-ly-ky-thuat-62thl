@@ -597,6 +597,42 @@ function demoCauseValue(v){
 }
 window.demoOpenLinkedTask=id=>{showModule("work");const n=Number(id);setTimeout(()=>{if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)},90)};
 window.demoSelectIncident=id=>{demoSelectedIncident=id;demoRenderIncidents()};
+let demoIncidentBeforeFiles=[],demoIncidentAfterFiles=[];
+function demoIncidentFilePreview(kind){
+ const files=kind==="before"?demoIncidentBeforeFiles:demoIncidentAfterFiles;
+ const box=$("#"+(kind==="before"?"demoIncidentBeforePreview":"demoIncidentAfterPreview"));
+ if(!box)return;
+ box.innerHTML=files.map((f,i)=>'<div class="demoIncidentImageChip"><span>'+esc(f.name||("Ảnh "+(i+1)))+'</span><button type="button" data-demo-incident-remove="'+kind+'" data-index="'+i+'" aria-label="Bỏ ảnh">×</button></div>').join("");
+}
+function resetDemoIncidentFiles(){
+ demoIncidentBeforeFiles=[];demoIncidentAfterFiles=[];
+ const before=$("#demoIncidentBeforeImages"),after=$("#demoIncidentAfterImages");
+ if(before)before.value="";if(after)after.value="";
+ demoIncidentFilePreview("before");demoIncidentFilePreview("after");
+}
+document.addEventListener("change",e=>{
+ if(e.target?.id==="demoIncidentBeforeImages"){
+  demoIncidentBeforeFiles.push(...[...(e.target.files||[])].filter(f=>f.type?.startsWith("image/")));
+  e.target.value="";demoIncidentFilePreview("before");
+ }
+ if(e.target?.id==="demoIncidentAfterImages"){
+  demoIncidentAfterFiles.push(...[...(e.target.files||[])].filter(f=>f.type?.startsWith("image/")));
+  e.target.value="";demoIncidentFilePreview("after");
+ }
+});
+document.addEventListener("click",e=>{
+ const btn=e.target.closest?.("[data-demo-incident-remove]");if(!btn)return;
+ e.preventDefault();
+ const list=btn.dataset.demoIncidentRemove==="before"?demoIncidentBeforeFiles:demoIncidentAfterFiles;
+ list.splice(Number(btn.dataset.index),1);
+ demoIncidentFilePreview(btn.dataset.demoIncidentRemove);
+});
+function demoIncidentThumbHtml(refs,label){
+ refs=Array.isArray(refs)?refs.filter(Boolean):[];
+ if(!refs.length)return '<div class="demoIncidentThumb"><small>'+esc(label)+' · Chưa có ảnh</small></div>';
+ return '<div class="demoIncidentThumb">'+mediaImgHtml(refs[0],"")+'<small>'+esc(label)+' · '+refs.length+' ảnh</small></div>';
+}
+
 async function demoRenderIncidents(){
  await demoLoad();
  const all=demoCache.incidents;
@@ -614,7 +650,8 @@ async function demoRenderIncidents(){
  box.innerHTML='<div class="demoPanelHead demoIncidentDetailHead"><div class="demoIncidentHeadCopy"><h2 class="demoDetailTitle">'+esc(selected.incident_code)+'</h2><p>'+esc(selected.area||"")+' · '+esc(asset?.name||"Không gắn thiết bị")+'</p></div><div class="demoIncidentHeadActions"><button class="demoBtn primary" onclick="demoCreateTaskFromIncident(\''+selected.id+'\')">+ Tạo công việc</button>'+(selected.status!=="Đã đóng"?'<button class="demoBtn good" onclick="demoSetIncidentStatus(\''+selected.id+'\',\'Đã đóng\')">Đóng sự cố</button>':"")+'</div></div><div class="demoPanelBody"><div class="demoDetailMeta"><span class="demoPill '+demoSeverityClass(selected.severity)+'">'+esc(selected.severity)+'</span><span class="demoPill '+demoStatusClass(selected.status)+'">'+esc(selected.status)+'</span></div>'+
  '<div class="demoDetailSection"><span>HIỆN TƯỢNG</span><p>'+esc(selected.symptom)+'</p></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(demoCauseValue(selected.cause)||"—")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ</span><p>'+esc(selected.solution||"[Chưa cập nhật]")+'</p></div>'+
  '<div class="demoDetailSection"><span>NHÀ THẦU / CHI PHÍ</span><p><strong>'+esc(con?.name||"—")+'</strong> · '+Number(selected.cost||0).toLocaleString("vi-VN")+'đ</p></div>'+
- '<div class="demoDetailSection"><span>HÌNH ẢNH TRƯỚC / SAU</span><div class="demoThumbPair"><div class="demoThumb">TRƯỚC XỬ LÝ</div><div class="demoThumb">SAU XỬ LÝ</div></div></div></div>';
+ '<div class="demoDetailSection"><span>HÌNH ẢNH TRƯỚC / SAU</span><div class="demoThumbPair">'+demoIncidentThumbHtml(selected.before_images,"TRƯỚC XỬ LÝ")+demoIncidentThumbHtml(selected.after_images,"SAU XỬ LÝ")+'</div></div></div>';
+ if(typeof hydrateMediaImages==="function")hydrateMediaImages(box);
 }
 window.demoSetIncidentStatus=async(id,status)=>{
  try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(currentBuilding.id),{status,updated_at:new Date().toISOString()});await demoLoad(true);demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố")}catch(e){toast(e.message)}
@@ -637,6 +674,7 @@ window.demoAddIncident=async()=>{
  $("#demoIncidentSymptom").value="";
  $("#demoIncidentCause").value="";
  $("#demoIncidentSolution").value="";
+ resetDemoIncidentFiles();
  const assetSelect=$("#demoIncidentAsset");
  if(assetSelect){
   assetSelect.innerHTML='<option value="">Không gắn thiết bị</option>'+demoCache.assets.map(a=>'<option value="'+esc(a.id)+'">'+esc((a.code?a.code+" · ":"")+a.name)+'</option>').join("");
@@ -663,9 +701,19 @@ window.demoSubmitIncident=async e=>{
  if(!area){toast("Vui lòng nhập khu vực / vị trí");$("#demoIncidentArea")?.focus();return}
  if(!symptom){toast("Vui lòng nhập hiện tượng sự cố");$("#demoIncidentSymptom")?.focus();return}
  const code="SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
- const btn=$("#demoIncidentSaveBtn");if(btn){btn.disabled=true;btn.textContent="Đang lưu..."}
+ const incidentId=crypto.randomUUID?crypto.randomUUID():String(Date.now());
+ const beforeFiles=[...demoIncidentBeforeFiles],afterFiles=[...demoIncidentAfterFiles];
+ const btn=$("#demoIncidentSaveBtn");if(btn){btn.disabled=true;btn.textContent=(beforeFiles.length||afterFiles.length)?"Đang tải ảnh...":"Đang lưu..."}
+ let beforeRefs=[],afterRefs=[],saved=false;
  try{
+  if(beforeFiles.length)beforeRefs=await uploadMediaFiles(beforeFiles,"incident-before",incidentId,(done,total)=>{
+    if(btn)btn.textContent="Ảnh trước "+done+"/"+total+"...";
+  },currentBuilding.id);
+  if(afterFiles.length)afterRefs=await uploadMediaFiles(afterFiles,"incident-after",incidentId,(done,total)=>{
+    if(btn)btn.textContent="Ảnh sau "+done+"/"+total+"...";
+  },currentBuilding.id);
   await demoPost("incidents",{
+   id:incidentId,
    building_id:currentBuilding.id,
    incident_code:code,
    detected_at:new Date(date+"T12:00:00").toISOString(),
@@ -676,17 +724,23 @@ window.demoSubmitIncident=async e=>{
    symptom,
    cause,
    solution,
-   cost:0
+   cost:0,
+   before_images:beforeRefs,
+   after_images:afterRefs
   });
+  saved=true;
   demoCloseIncidentModal();
+  resetDemoIncidentFiles();
   await demoLoad(true);
   demoSelectedIncident="";
   demoRenderIncidents();
   demoRenderHomeOps();
-  toast("Đã thêm "+code);
- }catch(err){toast(err.message||"Không thể lưu sự cố")}
- finally{if(btn){btn.disabled=false;btn.textContent="Lưu sự cố"}}
-};
+  toast("Đã thêm "+code+(beforeRefs.length||afterRefs.length?" · kèm hình ảnh":""));
+ }catch(err){
+  if(!saved&&(beforeRefs.length||afterRefs.length))await deleteStoredMediaRefs([...beforeRefs,...afterRefs]);
+  toast(err.message||"Không thể lưu sự cố");
+ }finally{if(btn){btn.disabled=false;btn.textContent="Lưu sự cố"}}
+}
 document.addEventListener("keydown",e=>{
  if(e.key==="Escape"&&!$("#demoIncidentModal")?.classList.contains("hide"))demoCloseIncidentModal();
 });
