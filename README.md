@@ -25,7 +25,7 @@ npm test
 python3 -m unittest discover -s tests -v
 ```
 
-`tests/browser-preview.html` kiểm tra giao diện báo cáo với khung 1440 / 1024 / 768 / 390 / 320 px. Trang này ghi rõ dữ liệu giả lập, không đọc phiên đăng nhập và không gọi API nghiệp vụ. Các số thử nghiệm không được dùng trong báo cáo thật. Nút PDF trong fixture chủ động trả lỗi để kiểm tra thông báo; PDF thực được kiểm thử bằng Python và ứng dụng đăng nhập.
+`tests/browser-preview.html` kiểm tra giao diện báo cáo với khung 1440 / 1024 / 768 / 390 / 320 px. Mặc định dùng dữ liệu giả lập độc lập, không đọc phiên đăng nhập và không gọi API nghiệp vụ. Các số thử nghiệm không được dùng trong báo cáo thật. Nút PDF trong fixture chủ động trả lỗi để kiểm tra thông báo; PDF thực được kiểm thử bằng Python và ứng dụng đăng nhập. Tùy chọn “Ứng dụng thật” mở ứng dụng cùng nguồn trong khung kiểm thử, giữ nguyên yêu cầu đăng nhập và quyền hiện hữu; thao tác lưu ở chế độ này ghi dữ liệu thật.
 
 ## Cấu trúc
 
