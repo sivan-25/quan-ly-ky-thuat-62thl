@@ -125,7 +125,7 @@
     const energyTotals = [];
     for (const type of ["electric", "water", "solar", "xlnt"]) {
       const id = "energy_" + type, unit = ["water", "xlnt"].includes(type) ? "m³" : "kWh";
-      const dual = options.buildingId === "68PĐL" && type === "electric";
+      const dual = false; // 68 PĐL uses the same single-meter report model as DEMO
       const rows = energyRows(raw.energy, type, r, dual);
       const columns = dual ? ["Ngày", "EVN1", "Chênh lệch EVN1", "EVN2", "Chênh lệch EVN2", "Người thực hiện / Ghi chú"] : ["Ngày", "Chỉ số (" + unit + ")", "Chênh lệch (" + unit + ")", "Người thực hiện", "Ghi chú"];
       add(id, columns, rows.map(x => {
