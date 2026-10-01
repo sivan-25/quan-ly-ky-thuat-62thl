@@ -59,7 +59,7 @@
     if (r.kind === "week") {
       const first = new Date(r.from.slice(0, 7) + "-01T12:00:00Z");
       const nth = Math.floor((Number(r.from.slice(8)) - 1 + (first.getUTCDay() + 6) % 7) / 7) + 1;
-      return "Tuần " + nth + " tháng " + r.from.slice(5, 7) + "/" + r.from.slice(0, 4);
+      return "Tuần thứ " + nth + " của tháng " + Number(r.from.slice(5, 7)) + "/" + r.from.slice(0, 4);
     }
     return date(r.from) + " – " + date(r.to);
   }
