@@ -40,7 +40,7 @@
 #reportsPage .rc-message.is-error { color: #9f303a; background: #fff3f2; border: 1px solid #efc1c1; padding: 12px; border-radius: 8px; }
 #reportsPage .rc-workspace { display: grid; grid-template-columns: minmax(270px,330px) minmax(0,1fr); gap: 22px; align-items: start; }
 #reportsPage :is(.rc-controls,.rc-preview,.rc-history) { min-width: 0; background: var(--rc-paper); border: 1px solid var(--rc-line); border-radius: 14px; }
-#reportsPage .rc-controls { padding: 21px; position: sticky; top: 84px; }
+#reportsPage .rc-controls { display: block; width: 100%; color: var(--rc-ink); padding: 21px; position: sticky; top: 84px; }
 #reportsPage .rc-card-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 #reportsPage .rc-card-heading h3 { font-size: 17px; font-weight: 600; color: var(--rc-ink); }
 #reportsPage .rc-card-heading > span { font-size: 11px; color: var(--rc-muted); }
