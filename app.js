@@ -109,6 +109,10 @@ const mediaUrlCache=new Map();
 function isStorageRef(v){return typeof v==="string"&&v.startsWith("storage:")}
 function storagePathFromRef(v){return isStorageRef(v)?v.slice(8):v}
 function mediaPathUrl(path){return path.split("/").map(encodeURIComponent).join("/")}
+function storageProjectSegment(buildingId){
+ const bytes=new TextEncoder().encode(String(buildingId||""));
+ return "b-"+Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+}
 async function mediaObjectUrl(ref){
  if(!ref)return "";
  if(!isStorageRef(ref))return ref;
@@ -160,7 +164,7 @@ function imageFileToBlob(file){
 async function uploadMediaBlob(blob,kind,recordId,index=0,buildingId=currentBuilding.id){
  if(!centralSession?.access_token)throw new Error("Cần đăng nhập tài khoản trung tâm để tải hình");
  const uid=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
- const path=buildingId+"/"+kind+"/"+recordId+"/"+Date.now()+"-"+index+"-"+uid+".jpg";
+ const path=storageProjectSegment(buildingId)+"/"+kind+"/"+recordId+"/"+Date.now()+"-"+index+"-"+uid+".jpg";
  const res=await centralAuthFetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
    method:"POST",
    headers:{"Content-Type":"image/jpeg","x-upsert":"false"},
