@@ -32,4 +32,7 @@ check('Invalid month does not throw',()=>assert.equal(M.validRange(M.range('mont
 check('Future material is excluded',()=>assert.equal(M.build({materials:[{created_at:'2026-10-01'}]},r,['materials']).count,0));
 check('Paused asset keeps its actual state',()=>assert.equal(M.build({assets:[{status:'Ngừng sử dụng',next_due_date:'2025-01-01'}]},r,['maintenance']).schedule[0].status.text,'Ngừng sử dụng'));
 check('Timestamp near midnight uses Vietnam report day',()=>{assert.equal(M.date('2026-08-31T18:00:00+00:00'),'01/09/2026');assert.equal(M.build({incidents:[{detected_at:'2026-08-31T18:00:00+00:00'}]},r,['incident']).count,1)});
+check('Latest report date only uses selected modules',()=>{const d={snapshot:{tasks:[{d:'2026-09-29'}],energy:[{date:'2026-10-01',type:'xlnt'}]},incidents:[{detected_at:'2026-10-01'}]};assert.equal(M.latestRecordDate(d,['work']),'2026-09-29');assert.equal(M.latestRecordDate(d,['energy_xlnt']),'2026-10-01');assert.equal(M.latestRecordDate(d,['energy_water']),'')});
+check('Latest date handles linked contractor tasks and Vietnam midnight',()=>{assert.equal(M.latestRecordDate({snapshot:{tasks:[{d:'2026-09-29',contractorId:'c'}]}},['contractor']),'2026-09-29');assert.equal(M.latestRecordDate({incidents:[{detected_at:'2026-09-30T18:00:00Z'}]},['incident']),'2026-10-01')});
+check('Latest date does not invent dates for empty or invalid records',()=>{assert.equal(M.latestRecordDate({},['work']),'');assert.equal(M.latestRecordDate({snapshot:{tasks:[{d:'2026-02-30'},{d:''}]}},['work']),'')});
 console.log(tests+' model tests passed');

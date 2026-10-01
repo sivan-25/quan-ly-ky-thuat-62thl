@@ -35,6 +35,15 @@ class ReportTests(unittest.TestCase):
             raw, missing, count = generate_pdf(payload, '')
             self.assertTrue(raw.startswith(b'%PDF')); self.assertEqual(missing, 1)
 
+    def test_empty_selected_period_exports_without_invented_records(self):
+        payload = operations()
+        payload['sections'][0].update(rows=[], count=0)
+        payload['counts'] = {'records':0, 'tasks':0, 'done':0}
+        payload['health'] = [{'label':'Công việc','text':'Chưa có dữ liệu','tone':'muted'}]
+        raw, missing, count = generate_pdf(payload, '')
+        self.assertTrue(raw.startswith(b'%PDF'))
+        self.assertEqual((missing, count), (0, 0))
+
     def test_long_vietnamese_cells_and_notes(self):
         payload = operations()
         payload['sections'][0]['rows'][0][1] = 'Nội dung thử nghiệm có dấu tiếng Việt. ' * 300

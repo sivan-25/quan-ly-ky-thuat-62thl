@@ -70,6 +70,26 @@
       return { ...x, diff: difference("value"), diff2: dual ? difference("value2") : null };
     }).filter(x => inRange(x.date, r));
   }
+  function latestRecordDate(data, selected) {
+    const chosen = new Set(selected), raw = data.snapshot || {}, dates = [];
+    const collect = (rows, field) => arr(rows).forEach(row => {
+      const value = day(row[field]);
+      if (validRange({ from: value, to: value })) dates.push(value);
+    });
+    if (chosen.has("work")) collect(raw.tasks, "d");
+    if (chosen.has("incident")) collect(data.incidents, "detected_at");
+    if (chosen.has("inspection")) collect(data.inspections, "inspection_date");
+    for (const type of ["electric", "water", "solar", "xlnt"]) {
+      if (chosen.has("energy_" + type)) collect(arr(raw.energy).filter(row => row.type === type), "date");
+    }
+    if (chosen.has("maintenance")) collect(data.maintenance, "service_date");
+    if (chosen.has("contractor")) {
+      collect(data.jobs, "work_date");
+      collect(arr(raw.tasks).filter(row => row.contractorId), "d");
+    }
+    if (chosen.has("materials")) collect(data.materials, "tracking_start_date");
+    return dates.sort().at(-1) || "";
+  }
   function build(data, r, selected, options = {}) {
     if (!validRange(r)) throw new Error("Vui lòng chọn ngày hợp lệ; ngày kết thúc phải từ ngày bắt đầu trở đi.");
     const chosen = new Set(selected), sections = [], photos = [], notes = [];
@@ -151,5 +171,5 @@
     const schedule = chosen.has("maintenance") ? assets.map(x => ({ name: [x.code, x.name].filter(Boolean).join(" · "), due: date(x.next_due_date), status: status(x.status === "Ngừng sử dụng" ? x.status : !x.next_due_date ? "Chưa đặt lịch" : x.next_due_date < localDay() ? "Quá hạn" : x.next_due_date <= soon.toISOString().slice(0, 10) ? "Sắp đến hạn" : "Đúng kế hoạch") })) : [];
     return { sections: selectedSections, allSections: sections, photos, notes, health, schedule, energyTotals, count: selectedCount, taskCount: chosen.has("work") ? tasks.length : null, done: chosen.has("work") ? done : null, pending: chosen.has("work") ? pending : null, period: periodLabel(r), range: { ...r } };
   }
-  return { modules, build, range, validRange, periodLabel, localDay, date, fmt, status, energyRows };
+  return { modules, build, range, validRange, periodLabel, localDay, date, fmt, status, energyRows, latestRecordDate };
 });

@@ -677,7 +677,7 @@
   font-weight:750!important;
 }
 </style>
-<link rel="stylesheet" href="report-center.css?v=20261001-report04"></head><body>
+<link rel="stylesheet" href="report-center.css?v=20261001-empty-period01"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -1270,7 +1270,8 @@
         <label class="rc-field"><span>Bố cục ảnh</span><select id="rcPhotoLayout"><option value="auto">Tự động · ảnh đứng 2 / ngang 1</option><option value="1">1 ảnh mỗi dòng</option><option value="2">2 ảnh mỗi dòng</option></select></label>
         <p>Ảnh và ghi chú lấy theo các bản ghi đã chọn trong kỳ.</p>
       </div>
-      <div class="rc-export-actions"><button id="demoReportCombinedExport" type="button" class="rc-button rc-primary" disabled>Xuất PDF tổng hợp</button><button id="rcPrint" type="button" class="rc-button" disabled>In báo cáo</button></div>
+      <div id="rcExportState" class="rc-export-state hide"><p id="rcExportNote" role="status"></p><button id="rcLatestPeriod" type="button" class="rc-button hide">Xem tháng có dữ liệu gần nhất</button></div>
+      <div class="rc-export-actions"><button id="demoReportCombinedExport" type="button" class="rc-button rc-primary" aria-describedby="rcExportNote" disabled>Xuất PDF tổng hợp</button><button id="rcPrint" type="button" class="rc-button" aria-describedby="rcExportNote" disabled>In báo cáo</button></div>
     </section>
     <article id="rcPreview" class="rc-preview" aria-label="Xem trước báo cáo" aria-busy="true">
       <div class="rc-empty"><h3>Đang chuẩn bị báo cáo</h3><p>Dữ liệu sẽ hiển thị sau khi tải xong.</p></div>
@@ -2287,4 +2288,4 @@
 <div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="app.js?v=20260930-xlnt-demo-m3-04"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20260930-cause-empty01"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-report01"></script><script src="report-center.js?v=20261001-report01"></script><script src="demo-lab.js?v=20261001-report02"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
+<script src="contractor.js?v=20260930-cause-empty01"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-empty-period01"></script><script src="report-center.js?v=20261001-empty-period01"></script><script src="demo-lab.js?v=20261001-report02"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>

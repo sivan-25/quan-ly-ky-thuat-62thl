@@ -22,13 +22,25 @@
   const icon = (name) => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + paths[name] + '"/></svg>';
   const available = () => M.modules.filter(m => m.id !== "energy_xlnt" || ["DEMO", "68PĐL"].includes(state.buildingId));
   function message(value, error = false) { q("#rcMessage").textContent = value; q("#rcMessage").classList.toggle("is-error", error); }
+  function canExport() {
+    return !state.loading && !state.busy && !!state.data && !!state.model?.sections.length && state.buildingId === String(currentBuilding?.id);
+  }
   function buttons() {
-    const disabled = state.loading || state.busy || !state.data || !state.selected.size || !(state.model?.count || state.model?.schedule.length);
+    const disabled = !canExport();
     q("#demoReportCombinedExport").disabled = disabled;
     q("#rcPrint").disabled = disabled;
     q("#rcRefresh").disabled = state.loading || state.busy;
     q("#demoReportCombinedExport").textContent = state.busy ? "Đang tạo PDF…" : "Xuất PDF tổng hợp";
     q("#rcPreview").setAttribute("aria-busy", String(state.loading));
+    const empty = state.data && state.model?.sections.length && !state.model.count && !state.model.schedule.length;
+    const latest = empty ? M.latestRecordDate(state.data, [...state.selected]) : "";
+    const note = state.loading ? "Đang tải dữ liệu. Nút xuất sẽ sẵn sàng sau khi tải xong." : !state.data ? "Chưa tải đủ dữ liệu. Nhấn Làm mới dữ liệu ở đầu trang để thử lại." : !state.selected.size ? "Chọn ít nhất một hạng mục để xuất báo cáo." : empty ? "Không có bản ghi từ " + M.date(state.range.from) + " đến " + M.date(state.range.to) + " cho hạng mục đã chọn. Bạn vẫn có thể xuất PDF hoặc in; báo cáo sẽ ghi rõ “Chưa có dữ liệu”." : "";
+    q("#rcExportNote").textContent = note;
+    q("#rcExportState").classList.toggle("hide", !note);
+    const latestButton = q("#rcLatestPeriod");
+    latestButton.classList.toggle("hide", !latest || latest >= state.range.from && latest <= state.range.to);
+    latestButton.disabled = state.loading || state.busy;
+    if (latest) latestButton.textContent = "Xem tháng " + latest.slice(5, 7) + "/" + latest.slice(0, 4) + " có dữ liệu";
   }
   function moduleList() {
     q("#demoReportModuleGrid").innerHTML = available().map(m => {
@@ -137,8 +149,16 @@
     state.range = next; render();
   }
   function selectAll(value) { state.selected = new Set(value ? available().map(m => m.id) : []); render(); }
+  function showLatestPeriod() {
+    if (state.loading || state.busy || !state.data) return;
+    const latest = M.latestRecordDate(state.data, [...state.selected]);
+    if (!latest) return;
+    q("#rcMonth").value = latest.slice(0, 7);
+    chooseRange("month", false);
+    applyRange();
+  }
   async function exportPdf() {
-    if (state.busy || state.loading || !(state.model?.count || state.model?.schedule.length) || state.buildingId !== String(currentBuilding?.id)) return;
+    if (!canExport()) return;
     const buildingId = state.buildingId, buildingName = state.buildingName, model = state.model;
     const author = currentAccount?.display_name || "Chưa cập nhật người lập", createdBy = currentAccount?.id;
     const editable = canProjectEdit();
@@ -165,7 +185,7 @@
     finally { state.busy = false; buttons(); }
   }
   async function printReport() {
-    if (!(state.model?.count || state.model?.schedule.length) || state.busy || state.loading) return;
+    if (!canExport()) return;
     const details = [...q("#rcPreview").querySelectorAll("details")];
     const previous = details.map(d => d.open);
     details.forEach(d => d.open = true); showPhotos();
@@ -185,6 +205,7 @@
   q("#rcIncludePhotos").addEventListener("change", render);
   q("#demoReportCombinedExport").addEventListener("click", exportPdf);
   q("#rcPrint").addEventListener("click", printReport);
+  q("#rcLatestPeriod").addEventListener("click", showLatestPeriod);
   window.ESTAReports = { open, renderHistory: history };
   window.demoReportSelectAll = selectAll;
   window.demoExportSelectedReports = exportPdf;

@@ -57,6 +57,9 @@
 #reportsPage .rc-options > label:first-child { display: flex; gap: 9px; align-items: center; font-size: 12px; }
 #reportsPage .rc-options p { color: var(--rc-muted); font-size: 11px; line-height: 1.6; }
 #reportsPage .rc-export-actions { display: grid; gap: 8px; margin-top: 18px; }
+#reportsPage .rc-export-state { padding: 12px; margin-top: 16px; border: 1px solid #ead3a0; border-radius: 8px; background: #fff7e6; }
+#reportsPage .rc-export-state p { color: #72541e; font-size: 12px; line-height: 1.65; }
+#reportsPage .rc-export-state button { margin-top: 10px; white-space: normal; width: 100%; }
 #reportsPage .rc-preview { padding: 28px; box-shadow: 0 4px 18px #173f7005; }
 #reportsPage .rc-preview-header { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 20px; border-bottom: 2px solid var(--rc-brand); }
 #reportsPage .rc-brand { display: flex; align-items: center; gap: 9px; color: var(--rc-brand); }

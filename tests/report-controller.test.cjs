@@ -67,6 +67,33 @@ function setup() {
     t.q('#rcPeriodForm').dispatchEvent(new t.w.Event('submit', { cancelable: true }));
     assert.ok(t.q('#rcRangeHint').classList.contains('is-error')); assert.ok(t.q('#rcPreview').textContent.includes('30/09/2026')); t.close();
   });
+  await check('Empty selected period still exports and prints with an explicit explanation', async () => {
+    const t = setup(); await t.w.ESTAReports.open();
+    t.q('#rcSelectNone').click(); const work = t.q('input[value="work"]'); work.checked = true; work.dispatchEvent(new t.w.Event('change', { bubbles: true }));
+    t.q('#rcMonth').value = '2026-10'; t.q('#rcPeriodForm').dispatchEvent(new t.w.Event('submit', { cancelable: true }));
+    assert.equal(t.q('#demoReportCombinedExport').disabled, false); assert.equal(t.q('#rcPrint').disabled, false);
+    assert.ok(t.q('#rcExportNote').textContent.includes('Không có bản ghi từ 01/10/2026')); assert.ok(t.q('#rcExportNote').textContent.includes('Chưa có dữ liệu'));
+    t.q('#demoReportCombinedExport').click(); await next(); await next();
+    const payload = t.calls.find(x => x.report_type === 'operations');
+    assert.equal(payload.counts.records, 0); assert.equal(payload.sections.length, 1); assert.equal(payload.sections[0].rows.length, 0); assert.equal(payload.range.from, '2026-10-01');
+    assert.equal(t.posts.length, 1); assert.equal(t.posts[0].period_from, '2026-10-01');
+    let printed = 0; t.w.print = () => { printed++; t.w.dispatchEvent(new t.w.Event('afterprint')); };
+    t.q('#rcPrint').click(); await next(); await next(); assert.equal(printed, 1); t.close();
+  });
+  await check('Suggested month changes only on click and retains selected modules', async () => {
+    const t = setup(); await t.w.ESTAReports.open(); t.q('#rcSelectNone').click();
+    const work = t.q('input[value="work"]'); work.checked = true; work.dispatchEvent(new t.w.Event('change', { bubbles: true }));
+    t.q('#rcMonth').value = '2026-10'; t.q('#rcPeriodForm').dispatchEvent(new t.w.Event('submit', { cancelable: true }));
+    assert.equal(t.q('#rcMonth').value, '2026-10'); assert.equal(t.q('#rcLatestPeriod').classList.contains('hide'), false);
+    assert.ok(t.q('#rcLatestPeriod').textContent.includes('09/2026'));
+    t.q('#rcLatestPeriod').click(); assert.equal(t.q('#rcMonth').value, '2026-09'); assert.ok(t.q('#rcPreview').textContent.includes('1 bản ghi'));
+    assert.equal(t.q('#demoReportSelectedCount').textContent, '1 hạng mục'); assert.equal(t.q('#rcExportState').classList.contains('hide'), true); t.close();
+  });
+  await check('A project without any records has no fabricated month suggestion', async () => {
+    const t = setup(); t.w.projectSync = async () => ({ snapshot: {} }); await t.w.ESTAReports.open();
+    assert.equal(t.q('#demoReportCombinedExport').disabled, false); assert.equal(t.q('#rcLatestPeriod').classList.contains('hide'), true);
+    t.q('#rcSelectNone').click(); assert.equal(t.q('#demoReportCombinedExport').disabled, true); assert.ok(t.q('#rcExportNote').textContent.includes('Chọn ít nhất')); t.close();
+  });
   await check('Incomplete reads block export and clear history', async () => {
     const t = setup(); await t.w.ESTAReports.open(); t.mode('read-error'); await t.w.ESTAReports.open();
     assert.equal(t.q('#demoReportCombinedExport').disabled, true); assert.ok(t.q('#rcMessage').classList.contains('is-error')); assert.equal(t.q('#rcHistoryCount').textContent, '0 báo cáo'); t.close();
