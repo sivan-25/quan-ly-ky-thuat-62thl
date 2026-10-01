@@ -20,7 +20,11 @@
     building: "M4 22V3h12v19M16 9h4v13M8 7h4M8 11h4M8 15h4M8 22v-3h4v3",
   };
   const icon = (name) => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + paths[name] + '"/></svg>';
-  const available = () => M.modules.filter(m => m.id !== "energy_xlnt" || ["DEMO", "68PĐL"].includes(state.buildingId));
+  const available = () => M.modules.filter(m => {
+    if (m.id === "energy_xlnt") return ["DEMO", "68PĐL"].includes(state.buildingId);
+    if (m.id === "energy_solar") return !["127HH", "130HH"].includes(state.buildingId);
+    return true;
+  });
   function message(value, error = false) { q("#rcMessage").textContent = value; q("#rcMessage").classList.toggle("is-error", error); }
   function canExport() {
     return !state.loading && !state.busy && !!state.data && !!state.model?.sections.length && state.buildingId === String(currentBuilding?.id);
