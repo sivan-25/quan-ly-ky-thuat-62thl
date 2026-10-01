@@ -1139,6 +1139,18 @@
           <span>Hướng xử lý</span>
           <textarea id="demoIncidentSolution" rows="2" maxlength="1000" placeholder="Có thể bổ sung sau"></textarea>
         </label>
+        <label class="demoIncidentWide demoIncidentImageField">
+          <span>Hình ảnh trước xử lý</span>
+          <input id="demoIncidentBeforeImages" type="file" accept="image/*" multiple>
+          <small>Chọn một hoặc nhiều ảnh hiện trạng.</small>
+          <div id="demoIncidentBeforePreview" class="demoIncidentImagePreview"></div>
+        </label>
+        <label class="demoIncidentWide demoIncidentImageField">
+          <span>Hình ảnh sau xử lý</span>
+          <input id="demoIncidentAfterImages" type="file" accept="image/*" multiple>
+          <small>Có thể để trống và cập nhật sau.</small>
+          <div id="demoIncidentAfterPreview" class="demoIncidentImagePreview"></div>
+        </label>
       </div>
       <div class="demoIncidentModalFoot">
         <button type="button" class="demoBtn" onclick="demoCloseIncidentModal()">Hủy</button>
@@ -2119,6 +2131,13 @@
       <label class="jobCauseField"><span>Nguyên nhân</span><textarea id="contractorJobCause" rows="3" maxlength="1000" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></textarea></label>
       <label class="jobSolutionField"><span>Hướng xử lý</span><textarea id="contractorJobSolution" rows="3" maxlength="1000" placeholder="Phương án xử lý, thay thế, khắc phục..."></textarea></label>
       <label class="jobNoteField"><span>Ghi chú</span><textarea id="contractorJobNote" rows="2" maxlength="800" placeholder="Ghi chú thêm nếu có..."></textarea></label>
+
+      <label class="contractorJobImageField">
+        <span>Hình ảnh công việc</span>
+        <input id="contractorJobImages" type="file" accept="image/*" multiple>
+        <small>Chọn nhiều ảnh nếu cần. Ảnh sẽ được nén và lưu theo dự án.</small>
+        <div id="contractorJobImagePreview" class="contractorJobImagePreview"></div>
+      </label>
 
       <div class="contractorFormActions contractorJobFormActions">
         <button id="cancelContractorJobModal" type="button" class="contractorBtn ghost">Hủy</button>
