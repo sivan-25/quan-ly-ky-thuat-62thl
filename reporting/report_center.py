@@ -142,7 +142,11 @@ def _prepare_photo(index_photo, data, token, temp_dir, downloader):
     caption = str(photo.get("caption") or f"Ảnh {index + 1}")
     try:
         if ref.startswith("storage:"):
-            if not ref[8:].startswith(str(data.get("building_id")) + "/"):
+            storage_path = ref[8:]
+            building_id = str(data.get("building_id") or "")
+            encoded_segment = "b-" + "".join(f"{byte:02x}" for byte in building_id.encode("utf-8"))
+            # Accept both the current encoded project folder and the legacy plain-id folder.
+            if not (storage_path.startswith(encoded_segment + "/") or storage_path.startswith(building_id + "/")):
                 raise ValueError("Ảnh không thuộc dự án báo cáo")
         elif ref.startswith("data:image/"):
             pass
