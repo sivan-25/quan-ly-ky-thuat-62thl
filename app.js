@@ -1707,7 +1707,7 @@ const ENERGY_META={
 };
 const is68Pdl=()=>String(currentBuilding?.id||"")==="68PĐL";
 const supportsXlntEnergy=()=>is68Pdl()||String(currentBuilding?.id||"")==="DEMO";
-const is68DualElectric=()=>is68Pdl()&&energyType==="electric";
+const is68DualElectric=()=>false; // 68 PĐL follows the same single-meter electric mode as DEMO
 function syncEnergyTabSelection(){
  document.querySelectorAll("[data-energy-type]").forEach(b=>{
   const selected=b.dataset.energyType===energyType;
@@ -2141,7 +2141,7 @@ document.querySelectorAll("[data-energy-report-range]").forEach(b=>b.onclick=()=
 
 function energyRowsForTypeRange(type,from,to){
  const all=energyLoad().filter(x=>x.type===type).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
- const dual=is68Pdl()&&type==="electric";
+ const dual=false; // 68 PĐL follows DEMO report structure
  return all.filter(x=>(!from||x.date>=from)&&(!to||x.date<=to)).map(x=>{
    const idx=all.findIndex(v=>String(v.id)===String(x.id));
    const diff=idx>0?Number(x.value)-Number(all[idx-1].value):null;
