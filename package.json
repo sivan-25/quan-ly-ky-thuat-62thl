@@ -1,0 +1,9 @@
+{
+  "name": "esta-property-management",
+  "private": true,
+  "scripts": {
+    "test": "node tests/report-model.test.cjs && node tests/report-controller.test.cjs",
+    "dev": "python3 tools/dev_server.py"
+  },
+  "devDependencies": { "jsdom": "26.1.0" }
+}

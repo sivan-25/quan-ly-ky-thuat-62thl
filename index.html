@@ -1,5 +1,5 @@
-<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20260930-edit-nosx01">
-<link rel="stylesheet" href="contractor.css?v=20260928-linkedwork04"><link rel="stylesheet" href="construction.css?v=20260924-2035"><style id="esta-work-v11">
+<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20261001-report02">
+<link rel="stylesheet" href="contractor.css?v=20261001-report02"><link rel="stylesheet" href="construction.css?v=20260924-2035"><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20260930-work-header03"><link rel="stylesheet" href="energy-refresh.css?v=20260930-68-energy04">
+</style><link rel="stylesheet" href="unified.css?v=20261001-report02"><link rel="stylesheet" href="energy-refresh.css?v=20261001-report02">
 <style id="esta-mobile-ios-no-zoom">
 /* iOS Safari zooms focused form controls below 16px. This important layer
    takes precedence over the existing unlayered !important form styles. */
@@ -578,7 +578,7 @@
     text-size-adjust:100%;
   }
 }
-</style><link rel="stylesheet" href="demo-lab.css?v=20260930-demo-energy-topbar-final01"><link rel="stylesheet" href="command-center.css?v=20260930-sidebar-navy01">
+</style><link rel="stylesheet" href="demo-lab.css?v=20261001-report02"><link rel="stylesheet" href="command-center.css?v=20261001-report02">
 <!-- WORK_PAGE_FINAL_CASCADE_FIX_20260929 -->
 <style id="work-page-final-cascade-fix">
 :root{
@@ -677,7 +677,7 @@
   font-weight:750!important;
 }
 </style>
-</head><body>
+<link rel="stylesheet" href="report-center.css?v=20261001-report01"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -1239,63 +1239,44 @@
   <section class="demoGrid2"><div class="demoPanel"><div class="demoPanelHead"><div><h2>Kho tài liệu</h2><p>Tìm theo loại tài liệu, thiết bị hoặc nhà thầu.</p></div></div><div class="demoTableWrap"><table class="demoTable"><thead><tr><th>Tên tài liệu</th><th>Loại</th><th>Hệ thống</th><th>Thiết bị</th><th>Nhà thầu</th><th>Ngày tải</th></tr></thead><tbody id="demoDocBody"></tbody></table></div></div><aside id="demoDocDetail" class="demoPanel"></aside></section>
 </div>
 <div id="reportsPage" class="page demoFeaturePage hide">
-  <section class="demoReportBuilder">
-    <div class="demoReportBuilderTop">
-      <div class="demoReportBuilderTitle">
-        <span>ESTA · REPORT CENTER</span>
-        <h1>Xuất báo cáo tổng hợp</h1>
-        <p>Chọn thời gian và các hạng mục cần đưa vào cùng một file PDF.</p>
-      </div>
-      <div class="demoReportBuilderActions">
-        <span id="demoReportPeriod" class="demoPill blue">Kỳ hiện tại</span>
-        <button class="demoBtn" type="button" onclick="demoRefresh()">Làm mới</button>
-      </div>
-    </div>
-
-    <div class="demoReportControls">
-      <div class="demoReportRange">
-        <b>Khoảng thời gian</b>
-        <div class="demoReportRangeButtons">
-          <button type="button" data-demo-report-range="today">Hôm nay</button>
-          <button type="button" data-demo-report-range="week" class="active">Tuần này</button>
-          <button type="button" data-demo-report-range="month">Tháng này</button>
-          <button type="button" data-demo-report-range="custom">Tùy chọn</button>
-        </div>
-        <div id="demoReportCustomDates" class="demoReportCustomDates hide">
-          <label>Từ ngày<input id="demoReportFrom" type="date"></label>
-          <label>Đến ngày<input id="demoReportTo" type="date"></label>
-        </div>
-      </div>
-
-      <div class="demoReportSelectHead">
-        <b>Hạng mục cần xuất</b>
-        <div>
-          <button type="button" onclick="demoReportSelectAll(true)">Chọn tất cả</button>
-          <button type="button" onclick="demoReportSelectAll(false)">Bỏ chọn</button>
-        </div>
-      </div>
-
-      <div id="demoReportModuleGrid" class="demoReportModuleGrid">
-        <label><input type="checkbox" value="work" checked><span><b>Công việc</b><small>Công việc kỹ thuật trong kỳ</small></span></label>
-        <label><input type="checkbox" value="incident" checked><span><b>Sự cố & Defect</b><small>Hiện tượng, nguyên nhân, trạng thái</small></span></label>
-        <label><input type="checkbox" value="inspection" checked><span><b>Kiểm tra định kỳ</b><small>Checklist và kết quả kiểm tra</small></span></label>
-        <label><input type="checkbox" value="energy_electric"><span><b>Điện</b><small>Chỉ số và tiêu thụ điện</small></span></label>
-        <label><input type="checkbox" value="energy_water"><span><b>Nước</b><small>Chỉ số và tiêu thụ nước</small></span></label>
-        <label><input type="checkbox" value="energy_solar"><span><b>Solar</b><small>Sản lượng điện mặt trời</small></span></label>
-        <label><input type="checkbox" value="materials"><span><b>Vật tư tiêu hao</b><small>Nhập · xuất · tồn</small></span></label>
-        <label><input type="checkbox" value="tools"><span><b>Dụng cụ kỹ thuật</b><small>Số lượng và tình trạng</small></span></label>
-        <label><input type="checkbox" value="maintenance"><span><b>Bảo trì thiết bị</b><small>Lịch sử và hạn kế tiếp</small></span></label>
-        <label><input type="checkbox" value="contractor"><span><b>Nhà thầu</b><small>Công việc và tình trạng thực hiện</small></span></label>
-      </div>
-
-      <div class="demoReportExportBar">
-        <div><strong id="demoReportSelectedCount">3 hạng mục đã chọn</strong><small>File PDF sẽ chỉ chứa các phần đã tick.</small></div>
-        <button id="demoReportCombinedExport" class="demoBtn primary" type="button" onclick="demoExportSelectedReports()">Xuất PDF tổng hợp</button>
-      </div>
-    </div>
+  <section class="rc-heading rc-no-print">
+    <div><span class="rc-eyebrow">ESTA · REPORT CENTER</span><h2>Báo cáo vận hành kỹ thuật</h2><p>Chọn kỳ, xem dữ liệu và xuất báo cáo theo từng hạng mục.</p></div>
+    <button id="rcRefresh" class="rc-button" type="button">Làm mới dữ liệu</button>
   </section>
-
-  <section class="demoPanel demoReportHistory"><div class="demoPanelHead"><div><h2>Lịch sử báo cáo</h2><p>Các báo cáo đã phát hành trong dự án.</p></div></div><div class="demoTableWrap"><table class="demoTable"><thead><tr><th>Mã báo cáo</th><th>Loại</th><th>Kỳ</th><th>Ngày tạo</th><th>Tên file</th></tr></thead><tbody id="demoReportBody"></tbody></table></div></section>
+  <form id="rcPeriodForm" class="rc-period rc-no-print">
+    <div class="rc-period-label">Kỳ báo cáo</div>
+    <div class="rc-segments" role="group" aria-label="Chọn kỳ báo cáo">
+      <button type="button" data-demo-report-range="today">Hôm nay</button>
+      <button type="button" data-demo-report-range="week">Tuần này</button>
+      <button type="button" data-demo-report-range="month" class="active" aria-pressed="true">Tháng</button>
+      <button type="button" data-demo-report-range="custom">Khoảng ngày</button>
+    </div>
+    <label id="rcMonthField" class="rc-field"><span>Chọn tháng</span><input id="rcMonth" type="month" required></label>
+    <div id="demoReportCustomDates" class="rc-custom-dates hide">
+      <label class="rc-field"><span>Từ ngày</span><input id="demoReportFrom" type="date"></label>
+      <label class="rc-field"><span>Đến ngày</span><input id="demoReportTo" type="date"></label>
+    </div>
+    <button type="submit" class="rc-button rc-primary">Áp dụng</button>
+    <p id="rcRangeHint" class="rc-range-hint" role="status"></p>
+  </form>
+  <p id="rcMessage" class="rc-message rc-no-print" role="status" aria-live="polite">Đang tải dữ liệu báo cáo…</p>
+  <div class="rc-workspace">
+    <aside class="rc-controls rc-no-print" aria-label="Nội dung báo cáo">
+      <div class="rc-card-heading"><h3>Nội dung báo cáo</h3><span id="demoReportSelectedCount"></span></div>
+      <div class="rc-select-actions"><button type="button" id="rcSelectAll">Chọn tất cả</button><button type="button" id="rcSelectNone">Bỏ chọn</button></div>
+      <div id="demoReportModuleGrid" class="rc-module-list"></div>
+      <div class="rc-options">
+        <label><input id="rcIncludePhotos" type="checkbox" checked><span>Đính kèm ảnh hiện trường</span></label>
+        <label class="rc-field"><span>Bố cục ảnh</span><select id="rcPhotoLayout"><option value="auto">Tự động · ảnh đứng 2 / ngang 1</option><option value="1">1 ảnh mỗi dòng</option><option value="2">2 ảnh mỗi dòng</option></select></label>
+        <p>Ảnh và ghi chú lấy theo các bản ghi đã chọn trong kỳ.</p>
+      </div>
+      <div class="rc-export-actions"><button id="demoReportCombinedExport" type="button" class="rc-button rc-primary" disabled>Xuất PDF tổng hợp</button><button id="rcPrint" type="button" class="rc-button" disabled>In báo cáo</button></div>
+    </aside>
+    <article id="rcPreview" class="rc-preview" aria-label="Xem trước báo cáo" aria-busy="true">
+      <div class="rc-empty"><h3>Đang chuẩn bị báo cáo</h3><p>Dữ liệu sẽ hiển thị sau khi tải xong.</p></div>
+    </article>
+  </div>
+  <section class="rc-history rc-no-print"><div class="rc-card-heading"><div><h3>Lịch sử báo cáo</h3><p>Các lần xuất PDF đã được ghi nhận tại dự án.</p></div><span id="rcHistoryCount"></span></div><div class="rc-table-wrap"><table><thead><tr><th>Mã báo cáo</th><th>Loại</th><th>Kỳ báo cáo</th><th>Ngày tạo</th><th>Tên file</th></tr></thead><tbody id="demoReportBody"></tbody></table></div></section>
 </div>
 <div id="energyHero" class="heroStrip hide"></div>
 <div id="energyPage" class="page modulePage proModulePage hide">
@@ -2306,5 +2287,4 @@
 <div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 </div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="app.js?v=20260930-xlnt-demo-m3-04"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20260930-cause-empty01"></script><script src="construction.js?v=20260924-2255"></script><script src="demo-lab.js?v=20260930-demo-topbar-standard02"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
-
+<script src="contractor.js?v=20260930-cause-empty01"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-report01"></script><script src="report-center.js?v=20261001-report01"></script><script src="demo-lab.js?v=20261001-report02"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>

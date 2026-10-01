@@ -16,32 +16,8 @@ from reportlab.lib.utils import ImageReader
 # Font bootstrap for Vercel: Montserrat only. The report layout below is the
 # ESTA_Report_Generator template supplied by the user; only font packaging is adapted.
 def _prepare_montserrat():
-    import urllib.request
-
-    out = "/tmp/esta_montserrat"
-    os.makedirs(out, exist_ok=True)
-    files = [
-        "Montserrat-Light.ttf",
-        "Montserrat-Regular.ttf",
-        "Montserrat-Medium.ttf",
-        "Montserrat-SemiBold.ttf",
-        "Montserrat-Bold.ttf",
-        "Montserrat-ExtraBold.ttf",
-        "Montserrat-Italic.ttf",
-    ]
-    base = "https://raw.githubusercontent.com/JulietaUla/Montserrat/master/fonts/ttf/"
-    for filename in files:
-        dst = os.path.join(out, filename)
-        if os.path.exists(dst) and os.path.getsize(dst) > 10000:
-            continue
-        req = urllib.request.Request(base + filename, headers={"User-Agent":"ESTA-Report-Generator/1.0"})
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            raw = resp.read()
-        if len(raw) < 10000:
-            raise RuntimeError("Không tải được font Montserrat: " + filename)
-        with open(dst, "wb") as fh:
-            fh.write(raw)
-    return out
+    font_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "reporting", "fonts")
+    return font_dir
 
 AUB = colors.HexColor("#411437")
 AUB_D = colors.HexColor("#2B1526")
@@ -983,7 +959,13 @@ def generate_pdf(payload, token):
         report_type = str(payload.get("report_type") or "work").lower()
         out_path = os.path.join(td, OUTPUT_NAME)
 
-        if report_type == "energy":
+        if report_type == "operations":
+            from reporting.report_center import build_operations_doc
+            ensure_fonts()
+            missing_images, item_count = build_operations_doc(
+                out_path, payload, token, td, _download_image
+            )
+        elif report_type == "energy":
             data, missing_images = _prepare_energy_data(payload, token, td)
             build_energy_doc(out_path, data)
             item_count = len(data["rows"])

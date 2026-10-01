@@ -2,7 +2,6 @@
 .contractorPage{
   max-width:1580px;
   margin:0 auto;
-  padding:20px 22px 34px!important;
   color:#183b56;
 }
 .contractorOverview,.contractorDetail{width:100%}
@@ -669,7 +668,6 @@
   .contractorForm label,.contractorForm label.wide,.contractorForm label.full{grid-column:1/-1}
 }
 
-
 /* Contractor maintenance refinement */
 .contractorContactGrid3{
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -724,22 +722,15 @@
   .contractorDetailCloseBtn{width:38px!important}
 }
 
-
 /* =========================================================
    CONTRACTOR V2 — FULL WIDTH DIRECTORY + FULL DETAIL PAGE
    ========================================================= */
-.contractorPage{
-  width:100%!important;
-  max-width:none!important;
-}
 .contractorGrid{
   display:flex!important;
   flex-direction:column!important;
   gap:8px!important;
-  width:100%!important;
 }
 .contractorRowCard{
-  width:100%!important;
   min-height:92px;
   display:grid;
   grid-template-columns:minmax(260px,1.55fr) minmax(135px,.72fr) minmax(150px,.85fr) 86px 116px 118px 104px;
@@ -779,9 +770,6 @@
 }
 .contractorRowIdentity h3{
   margin:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
   color:#173d58;
   font-size:13px;
   line-height:1.3;
@@ -965,7 +953,6 @@
 }
 .contractorToolbar h2{
   font-size:18px!important;
-  line-height:1.25!important;
 }
 .contractorToolbar h2 span{
   font-size:15px!important;
@@ -1011,7 +998,6 @@
   padding:0 10px;
 }
 .contractorGrid{
-  display:block!important;
   width:100%!important;
   gap:0!important;
   border:1px solid #dfe7ec;
@@ -1022,32 +1008,18 @@
 .contractorRowCard{
   width:100%!important;
   min-height:68px!important;
-  display:grid!important;
   grid-template-columns:minmax(240px,1.5fr) 145px minmax(160px,1fr) minmax(160px,1fr) 90px 125px 125px 92px!important;
-  align-items:center!important;
-  gap:0!important;
   padding:0 16px!important;
   margin:0!important;
-  border:0!important;
   border-bottom:1px solid #e8eef1!important;
-  border-radius:0!important;
-  background:#fff!important;
-  box-shadow:none!important;
-}
-.contractorRowCard:last-child{
-  border-bottom:0!important;
 }
 .contractorRowCard:hover,.contractorRowCard:focus{
-  transform:none!important;
   background:#f9fcfd!important;
   box-shadow:inset 3px 0 0 #1ab6d0!important;
 }
 .contractorRowIdentity{
-  min-width:0!important;
   display:flex!important;
-  align-items:center!important;
   gap:10px!important;
-  padding:0 10px!important;
 }
 .contractorRowIdentity .contractorBuildingIcon{
   width:36px!important;
@@ -1061,8 +1033,6 @@
 }
 .contractorRowIdentity h3{
   margin:0!important;
-  color:#173d58!important;
-  font-size:15px!important;
   line-height:1.3!important;
   font-weight:780!important;
   overflow:hidden;
@@ -1230,7 +1200,6 @@
     radial-gradient(circle at 25% 12%,rgba(183,107,29,.14),transparent 20%),
     linear-gradient(180deg,#491039 0%,#3f0d32 100%)!important;
   border-right:1px solid rgba(255,236,206,.12)!important;
-  box-shadow:none!important;
 }
 #app.contractorMode .estaSidebarBrand{
   border-bottom-color:rgba(255,238,211,.13)!important;
@@ -1262,7 +1231,6 @@
   padding:0 24px!important;
   border-bottom:0!important;
   background:#4b103c!important;
-  box-shadow:none!important;
 }
 #app.contractorMode .contractorTopTitle{
   min-width:300px!important;
@@ -1413,7 +1381,6 @@
 
 /* stats */
 .contractorStats{
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
   gap:18px!important;
   margin:24px 0 26px!important;
 }
@@ -1482,7 +1449,6 @@
   box-shadow:none!important;
 }
 .contractorToolbar h2{
-  margin:0!important;
   color:#4b103c!important;
   font-size:29px!important;
   line-height:1.15!important;
@@ -1550,15 +1516,11 @@
   align-items:center!important;
   gap:0!important;
   padding:0 25px!important;
-  border:0!important;
   border-bottom:1px solid #ead7bd!important;
-  border-radius:0!important;
   background:#fff8ea!important;
-  box-shadow:none!important;
 }
 .contractorRowCard:nth-child(even){background:#fbefd9!important}
 .contractorRowCard:hover,.contractorRowCard:focus{
-  transform:none!important;
   background:#fff2dc!important;
   box-shadow:inset 4px 0 0 #b96d1e!important;
 }

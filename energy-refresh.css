@@ -1360,7 +1360,6 @@
   }
 }
 
-
 /* ENERGY_MOBILE_READABILITY_20260930 */
 .energyDateCompact{display:none}
 @media(max-width:700px){
@@ -1503,7 +1502,6 @@
   #app #energyPage .energyTableTop p{color:#a9b7cc!important}
 }
 
-
 /* ENERGY_FORM_COLUMN_ALIGNMENT_20260930 */
 @media (min-width:701px){
   #app #energyPage #energyForm{
@@ -1571,8 +1569,6 @@
     display:block!important;
   }
 }
-
-
 
 /* ENERGY_68_DUAL_EVN_XLNT_20260930 */
 #app #energyPage .energy68Only.hide{display:none!important}

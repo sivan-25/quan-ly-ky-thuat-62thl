@@ -28,7 +28,6 @@ html,body,body *{font-family:"Inter",sans-serif!important}
 .ccActivity b{display:block;color:#294f65;font-size:9.5px;font-weight:650}.ccActivity small{display:block;margin-top:2px;color:#8a9da8;font-size:8px}.ccActivity em{font-style:normal;color:#6d8998;font-size:8px;padding:3px 6px;border-radius:6px;background:#f2f6f8}
 @media(max-width:720px){.ccActivityList{grid-template-columns:1fr}.ccActivity{border-right:0}.estaNav button .ccNavBadge{min-width:22px;height:22px;font-size:9px}}
 
-
 /* ESTA_COMMAND_CENTER_COMPACT_DESKTOP_20260929 */
 /* Desktop-first refinement requested from Admin DEMO screenshots. */
 @media (min-width:1101px){
@@ -347,7 +346,6 @@ html,body,body *{font-family:"Inter",sans-serif!important}
     box-shadow:0 5px 16px rgba(29,58,77,.04)!important;
   }
 }
-
 
 /* ESTA_ADMIN_DEMO_DARK_NO_HORIZONTAL_SCROLL_20260929 */
 /* Admin overview inherits the dark DEMO visual language and never requires horizontal table scrolling. */
@@ -775,7 +773,6 @@ html,body,body *{font-family:"Inter",sans-serif!important}
   }
 }
 
-
 /* ESTA_ADMIN_BEIGE_CANVAS_MATCH_DEMO_20260929 */
 /* Admin overview uses the exact same beige canvas as DEMO; all operational cards remain dark. */
 #app.adminCommandHome.homeMode{
@@ -789,7 +786,6 @@ html,body,body *{font-family:"Inter",sans-serif!important}
 #app.adminCommandHome.homeMode .ccRoot{
   background:transparent!important;
 }
-
 
 /* ESTA_GLOBAL_NAVY_SIDEBAR_20260930 */
 /* Match the Work topbar across the full sidebar, including project and mobile modes. */
@@ -919,7 +915,6 @@ html,body,body *{font-family:"Inter",sans-serif!important}
   margin-top:4px!important;
 }
 
-
 /* ADMIN_DISPATCH_MODAL_DARK_SYNC_20260929 */
 /* Giao công việc: đồng bộ với Command Center navy + cyan, bỏ nền trắng lệch tông. */
 #ccDispatchModal.ccModal{
@@ -1039,8 +1034,6 @@ html,body,body *{font-family:"Inter",sans-serif!important}
 #ccDispatchModal .ccBtn.primary:hover{
   filter:brightness(1.04)!important;
 }
-
-
 
 /* MOBILE_COMMAND_CENTER_LOADING_NO_DIM_20260930 */
 /* Không làm mờ/khóa toàn bộ Trung tâm điều hành trong lúc tải dữ liệu nền. */

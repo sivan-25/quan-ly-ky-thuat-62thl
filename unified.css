@@ -327,7 +327,6 @@
   .inventoryToolbar,.maintenanceToolbar,.homePanelHead,.adminSectionHead{align-items:flex-start!important;flex-direction:column!important}
 }
 
-
 /* Final alignment: Inventory / Maintenance / Admin command headers use Contractor geometry */
 .inventoryCommand{
   min-height:112px!important;
@@ -605,24 +604,19 @@
   background:
     radial-gradient(circle at 88% 15%,rgba(24,217,243,.11),transparent 28%),
     linear-gradient(125deg,#111b30,#102236 60%,#0d2d38)!important;
-  box-shadow:none!important;
 }
-#app.inventoryMode #inventoryPage .inventoryCommandIcon{
-  background:#19243a!important;border:1px solid #34425b!important;color:#18d9f3!important;box-shadow:none!important
+#app.inventoryMode #inventoryPage .inventoryCommandIcon{color:#18d9f3!important
 }
 #app.inventoryMode #inventoryPage .inventoryCommandBrand>div:last-child>span{color:#18d9f3!important}
 #app.inventoryMode #inventoryPage .inventoryCommand h1{color:#f6f8ff!important}
 #app.inventoryMode #inventoryPage .inventoryCommand p{color:#8390aa!important}
 #app.inventoryMode #inventoryPage .inventoryLocalTabs{
-  border-color:#2b3854!important;background:#141e33!important
+  border-color:#2b3854!important
 }
 #app.inventoryMode #inventoryPage .inventoryLocalTabs button{color:#7f8daa!important}
-#app.inventoryMode #inventoryPage .inventoryLocalTabs button.active{
-  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
-}
 #app.inventoryMode #inventoryPage .inventoryCommandMeta>div,
 #app.inventoryMode #inventoryPage .inventoryCommandMeta>label{
-  border-color:#34425a!important;background:#172238!important
+  border-color:#34425a!important
 }
 #app.inventoryMode #inventoryPage .inventoryCommandMeta small{color:#71809e!important}
 #app.inventoryMode #inventoryPage .inventoryCommandMeta b,
@@ -652,18 +646,13 @@
 #app.inventoryMode #inventoryPage .inventoryCardTitle>small,
 #app.inventoryMode #inventoryPage .inventoryQuickAddHead p{color:#71809e!important}
 #app.inventoryMode #inventoryPage .inventorySearch{
-  border-color:#2b3854!important;background:#141e33!important
+  border-color:#2b3854!important
 }
-#app.inventoryMode #inventoryPage .inventorySearch input{color:#dce4f3!important}
 #app.inventoryMode #inventoryPage .inventorySearch input::placeholder{color:#687692!important}
-#app.inventoryMode #inventoryPage .inventoryPrimary{
-  background:linear-gradient(96deg,#6c63ff 0%,#4c83f6 45%,#27c6df 100%)!important;color:#06121e!important
+#app.inventoryMode #inventoryPage .inventoryPrimary{color:#06121e!important
 }
 #app.inventoryMode #inventoryPage .inventorySecondary{
-  border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
-}
-#app.inventoryMode #inventoryPage .stockMoveBtn{
-  border-color:#1d5368!important;background:#0f2837!important;color:#20ddef!important
+  border-color:#34415b!important;color:#aab5ca!important
 }
 #app.inventoryMode #inventoryPage .inventoryStats .inventoryMetric{
   border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
@@ -1016,7 +1005,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 }
 #app.workMode #workPage .noteCell{
   color:#9aa9c3!important;
-  font-size:12px!important;
 }
 #app.workMode #workPage .mutedDash{color:#74839f!important}
 
@@ -1891,7 +1879,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   padding:10px 12px!important;
   border:1px solid #26334d!important;
   border-radius:11px!important;
-  background:#111b2e!important;
   color:#dce5f4!important;
 }
 #app.homeMode #homePage .quickActions>button:hover{
@@ -2018,12 +2005,10 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 }
 #app.homeMode #homePage .homeTaskLead b{
   color:#f5f8ff!important;
-  font-size:13.5px!important;
   font-weight:720!important;
 }
 #app.homeMode #homePage .homeTaskLead small{
   color:#91a1bb!important;
-  font-size:11px!important;
 }
 #app.homeMode #homePage .homeTaskRow>i{
   color:#8da0be!important;
@@ -2082,12 +2067,10 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 }
 #app.homeMode #homePage .activityRow b{
   color:#f0f5ff!important;
-  font-size:12.5px!important;
   font-weight:700!important;
 }
 #app.homeMode #homePage .activityRow span{
   color:#8e9db7!important;
-  font-size:10.5px!important;
 }
 #app.homeMode #homePage .activityRow time{
   color:#9aabc5!important;
@@ -2361,7 +2344,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 #app.inventoryMode #inventoryMaterialsPane .materialMonthTabs button.active{
   border-color:#1aa4bb!important;
   background:#16a9bf!important;
-  color:#06131f!important;
   box-shadow:none!important;
 }
 #app.inventoryMode #inventoryMaterialsPane .materialMonthTabs button.hasActivity:after{
@@ -2383,14 +2365,12 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 }
 #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable thead th{
   height:48px!important;
-  padding:0 14px!important;
   border:0!important;
   border-bottom:1px solid #26334d!important;
   background:#0f1728!important;
   color:#91a3c1!important;
   font-size:11px!important;
   letter-spacing:.25px!important;
-  text-transform:none!important;
 }
 #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td{
   height:68px!important;
@@ -2610,9 +2590,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 #app.inventoryMode #inventoryToolsPane .toolsTable tbody tr:nth-child(even) td{
   background:#101729!important;
 }
-#app.inventoryMode #inventoryToolsPane .toolsTable tbody tr:hover td{
-  background:#152039!important;
-}
 #app.inventoryMode #inventoryToolsPane .toolNameCell b{
   color:#f1f5ff!important;
   font-size:14px!important;
@@ -2684,16 +2661,11 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 }
 #app.inventoryMode #inventoryToolsPane .toolsTable thead th{
   height:50px!important;
-  padding:0 14px!important;
   background:#0d1729!important;
   color:#d5e0f1!important;
   border-bottom:1px solid #2e4966!important;
   font-size:12px!important;
-  line-height:1!important;
   letter-spacing:.15px!important;
-  text-transform:none!important;
-  font-weight:500!important;
-  white-space:nowrap!important;
 }
 #app.inventoryMode #inventoryToolsPane .toolsTable thead th:first-child{
   color:#8fdff0!important;
@@ -2915,19 +2887,14 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   min-width:0!important;
 }
 #app.adminMode #adminPage .adminProjectCard small{
-  display:block!important;
   margin-bottom:4px!important;
   color:#8fa5c1!important;
-  font-size:10.5px!important;
   line-height:1.2!important;
   letter-spacing:.35px!important;
 }
 #app.adminMode #adminPage .adminProjectCard h3{
-  margin:0!important;
-  color:#f2f6ff!important;
   font-size:15px!important;
   line-height:1.28!important;
-  font-weight:600!important;
 }
 #app.adminMode #adminPage .adminProjectCard p{
   display:none!important;
@@ -3661,7 +3628,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 }
 #app.workMode .filterWrap .filterPopover .clearFilter:hover{
   border-color:#6b7890!important;
-  color:#fff!important;
 }
 #app.workMode #toggleFilter.filterActionBtn{
   border-color:#1b7184!important;
@@ -4410,13 +4376,11 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
    ========================================================= */
 #app.workMode .filterWrap .filterPopover{
   border:1px solid #415675!important;
-  background:#162238!important;
   box-shadow:0 20px 54px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.025)!important;
 }
 #app.workMode .filterWrap .filterPopover:before{
   border-left-color:#415675!important;
   border-top-color:#415675!important;
-  background:#162238!important;
 }
 
 /* Inputs stand clearly apart from the popup background */
@@ -4474,7 +4438,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
 /* Give each field a little breathing room inside the single container */
 #app.workMode .filterWrap .filterPopover{
   padding:13px!important;
-  gap:9px!important;
 }
 /* =========================================================
    WORK FILTER CLOSE + KPI LABEL SIZE 29
@@ -4581,7 +4544,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
     grid-template-columns:1fr 1fr!important;
   }
 }
-
 
 /* MAINTENANCE CANVAS — match Inventory dark background */
 #app.maintenanceMode{
@@ -4786,7 +4748,6 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   }
 }
 
-
 /* MAINTENANCE_AUTO_SCHEDULE_20260930 */
 body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModal) .maintenanceAutoHint{
   display:inline-flex!important;
@@ -4815,7 +4776,6 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
   box-shadow:none!important;
   border-color:#315269!important;
 }
-
 
 /* ESTA_PDF_BUTTON_VISIBILITY_20260930 */
 .estaReportPdfBtn{
@@ -4854,10 +4814,8 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
 }
 #app #workPage .premiumTableCard .tableTop.workTableMeta{
   justify-content:space-between!important;
-  gap:10px!important;
 }
 #app #workPage #workExportPdfVisible{
-  display:inline-flex!important;
   margin-left:auto!important;
 }
 #app #energyPage .energyTopTools{
@@ -4916,7 +4874,6 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
     width:auto!important;
   }
 }
-
 
 /* WORK_PDF_VISIBLE_AND_ENERGY_INTERNAL_SCROLL_20260930 */
 #app #workPage .premiumTableCard .tableTop.workTableMeta{
@@ -5082,7 +5039,6 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
     font-size:16px!important;
   }
 }
-
 
 /* ESTA_GLOBAL_SINGLE_FONT_20260929 */
 html,body,#login,#app,#adminPage,#homePage,.page,.modulePage,

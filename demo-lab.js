@@ -52,6 +52,7 @@ async function demoLoad(force=false){
  return demoCache;
 }
 function demoHideSpecialPages(){
+ DEMO_MODULES.forEach(n=>$("#app")?.classList.remove(n+"Mode"));
  DEMO_MODULES.forEach(n=>$("#"+n+"Page")?.classList.add("hide"));
  document.querySelectorAll(".demoTopTitle").forEach(el=>el.classList.add("hide"));
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.remove("active"));
@@ -100,6 +101,7 @@ function demoShowSpecial(name){
  $("#top"+name[0].toUpperCase()+name.slice(1)+"Title")?.classList.remove("hide");
  $("#nav"+name[0].toUpperCase()+name.slice(1))?.classList.add("active");
  $("#app").classList.remove("homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode","adminMode");
+ DEMO_MODULES.forEach(n=>$("#app").classList.remove(n+"Mode"));
  $("#app").classList.add(name+"Mode","demoProjectMode");
  const demoSearch=$("#globalSearch");
  if(demoSearch){demoSearch.value="";demoSearch.placeholder=demoSpecialSearchPlaceholder(name)}
@@ -558,7 +560,7 @@ function demoBindBell(){
   if(visible==="incident")return demoRenderIncidents();
   if(visible==="inspection")return demoRenderInspections();
   if(visible==="documents")return demoRenderDocuments();
-  if(visible==="reports")return demoRenderReports();
+  if(visible==="reports")return window.ESTAReports.renderHistory();
 
   if($("#app")?.classList.contains("energyMode")){
    if($("#energyQuickSearch"))$("#energyQuickSearch").value=q;
@@ -819,20 +821,7 @@ function demoIncidentsReportHtml(){
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><style>@page{size:A4;margin:20mm}body{font-family:Arial;color:#243746;font-size:10px}h1{text-align:center;color:#173d58}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccd7de;padding:6px}th{background:#173d58;color:white}.sign{display:flex;justify-content:space-around;margin-top:40px}</style></head><body data-pdf-report="inspection"><h1>BÁO CÁO SỰ CỐ & DEFECT</h1><p>'+esc(currentBuilding.name)+' · '+esc(workReportPeriod("week").label)+'</p><table><tr><th>Mã</th><th>Khu vực</th><th>Hiện tượng</th>'+causeHead+'<th>Mức độ</th><th>Trạng thái</th></tr>'+bodyRows+'</table><div class="sign"><div>NGƯỜI KIỂM TRA (KT)<br><br><br>Họ tên: ________</div><div>NGƯỜI KIỂM SOÁT (KST)<br><br><br>Họ tên: ________</div></div></body></html>';
 }
 async function demoRenderReports(){
- await demoLoad();
- const p=workReportPeriod("week");
- $("#demoReportPeriod").textContent=p.label;
- const cards=[
-  ["Công việc","Tự lấy công việc và liên kết","work"],
-  ["Bảo trì thiết bị","Thiết bị đến hạn và lịch sử","maintenance"],
-  ["Sự cố & Defect","Toàn bộ sự cố trong dự án","incident"],
-  ["Kiểm tra định kỳ","Checklist và kết quả","inspection"],
-  ["Năng lượng","Điện / Nước / Solar","energy"],
-  ["Dụng cụ - Vật tư","Nhập / xuất / tồn","inventory"]
- ];
- $("#demoReportCards").innerHTML=cards.map(x=>'<article class="demoReportCard"><h3>'+x[0]+'</h3><p>'+x[1]+'</p><button class="demoBtn primary" onclick="demoExportReport(\''+x[2]+'\')">Xuất '+esc(p.label)+'</button></article>').join("");
- const rows=demoCache.reports.filter(x=>demoMatches([x.report_code,x.report_type,x.period_label,x.file_name]));
- $("#demoReportBody").innerHTML=rows.map(x=>'<tr><td><b>'+esc(x.report_code)+'</b></td><td>'+esc(x.report_type)+'</td><td>'+esc(x.period_label)+'</td><td>'+esc(new Date(x.created_at).toLocaleDateString("vi-VN"))+'</td><td>'+esc(x.file_name||"—")+'</td></tr>').join("");
+ return window.ESTAReports.open();
 }
 window.demoExportReport=async type=>{
  const r=rangeDates("week");
@@ -863,4 +852,3 @@ window.demoRefresh=async()=>{
 
 setTimeout(()=>{demoEnsureWorkPanel();demoSetProjectMode()},400);
 })();
-

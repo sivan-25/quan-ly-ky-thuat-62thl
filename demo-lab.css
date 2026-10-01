@@ -15,14 +15,13 @@
 .demoTimeline{display:grid;gap:10px}.demoTimeline div{display:flex;gap:9px;align-items:flex-start}.demoTimeline i{width:9px;height:9px;border-radius:50%;margin-top:4px;background:#2f80ed}.demoTimeline b{font-size:10px;color:#fff}.demoTimeline span{font-size:10px;color:#8496ac}
 .demoChecklist{display:grid;gap:8px}.demoChecklistRow{display:grid;grid-template-columns:1.4fr 1.1fr 95px 1fr;gap:8px;align-items:center;padding:10px 11px;border:1px solid #29374f;border-radius:10px;background:#141e31}.demoChecklistRow b{font-size:11px}.demoChecklistRow span{font-size:10px;color:#90a1b6}
 .demoDocCats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:12px 0}.demoDocCat{padding:13px;border:1px solid #29364e;border-radius:12px;background:#11192a}.demoDocCat b{font-size:18px}.demoDocCat span{display:block;margin-top:4px;font-size:10px;color:#91a2b7}
-.demoReportCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.demoReportCard{padding:14px;border:1px solid #29364e;border-radius:13px;background:#11192a}.demoReportCard h3{margin:0 0 5px;font-size:14px}.demoReportCard p{min-height:32px;margin:0 0 12px;color:#8fa0b5;font-size:10px}.demoReportCard .demoBtn{width:100%}
 .demoWorkLinks{margin:0 16px 14px;padding:0;border:1px solid #2b3850;border-radius:13px;background:#111a2c;color:#eaf2ff}.demoWorkLinks summary{padding:12px 14px;cursor:pointer;font-weight:800;color:#62dbea;list-style:none}.demoWorkLinks summary::-webkit-details-marker{display:none}.demoWorkLinkGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:0 14px 14px}.demoWorkLinkGrid label{display:grid;gap:5px;color:#8496ad;font-size:9px;font-weight:800}.demoWorkLinkGrid input,.demoWorkLinkGrid select,.demoWorkLinkGrid textarea{width:100%;min-height:40px;padding:0 10px;border:1px solid #34425e;border-radius:9px;background:#172238;color:#eef3fb;font-size:12px}.demoWorkLinkGrid textarea{min-height:72px;padding:10px;resize:vertical}.demoWorkLinkGrid .span2{grid-column:span 2}.demoLinkChips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.demoLinkChip{display:inline-flex;align-items:center;min-height:20px;padding:0 6px;border:1px solid #2c5669;border-radius:999px;background:#132d37;color:#72dce8;font-size:7.5px;font-weight:800}
 .demoDrawer{position:fixed;z-index:1200;inset:0;background:rgba(3,10,21,.65);display:flex;justify-content:flex-end}.demoDrawer.hide{display:none}.demoDrawerCard{width:min(520px,95vw);height:100%;overflow:auto;padding:18px;background:#10192a;color:#eef4ff;box-shadow:-20px 0 60px rgba(0,0,0,.3)}.demoDrawerHead{display:flex;justify-content:space-between;gap:12px}.demoDrawerHead h2{margin:0;font-size:20px}.demoDrawerClose{width:38px;height:38px;border:1px solid #34425e;border-radius:10px;background:#172238;color:#fff;font-size:20px}.demoTabs{display:flex;gap:6px;overflow:auto;margin:14px 0}.demoTabs button{height:32px;padding:0 10px;border:1px solid #34425e;border-radius:9px;background:#172238;color:#dce6f5;font-size:10px;font-weight:800}.demoTabs button.active{border-color:#2f80ed;background:#2f80ed;color:white}.demoTaskDetailGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.demoTaskDetailGrid div{padding:10px;border:1px solid #2b3850;border-radius:10px;background:#141f33}.demoTaskDetailGrid small{display:block;color:#8496ad;font-size:8px}.demoTaskDetailGrid b{display:block;margin-top:4px;font-size:11px}
 .demoHomeOps{margin:12px 0}.demoHomeOps .demoPanel{background:#11192a}.demoOpsCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.demoOpsCard{padding:13px;border:1px solid #29364e;border-radius:12px;background:#141f32;color:#fff;cursor:pointer}.demoOpsCard b{display:block;font-size:23px}.demoOpsCard span{display:block;margin-top:4px;font-size:10px;color:#94a5ba}.demoOpsList{display:grid;gap:7px;margin-top:10px}.demoOpsAlert{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border:1px solid #29364e;border-radius:10px;background:#141f32}.demoOpsAlert b{font-size:10px}.demoOpsAlert span{font-size:9px;color:#8da0b5}
 .demoNoticePanel{position:fixed;z-index:1300;right:88px;top:68px;width:min(390px,calc(100vw - 28px));padding:12px;border:1px solid #32435e;border-radius:14px;background:#10192a;box-shadow:0 18px 50px rgba(0,0,0,.35)}.demoNoticePanel.hide{display:none}.demoNoticePanel h3{margin:0 0 10px;color:#fff}.demoNoticePanel .demoOpsAlert{margin-top:7px}
 .demoAssetPassport{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:12px 15px;border:1px solid #29364e;border-radius:13px;background:#111a2c;color:#fff}.demoAssetPassport b{display:block}.demoAssetPassport span{display:block;margin-top:3px;color:#8fa1b7;font-size:10px}
-@media(max-width:1000px){.demoKpis,.demoReportCards{grid-template-columns:repeat(2,minmax(0,1fr))}.demoGrid2{grid-template-columns:1fr}.demoDocCats{grid-template-columns:repeat(3,1fr)}.demoWorkLinkGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.demoOpsCards{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.demoFeaturePage{padding:10px}.demoHero{align-items:flex-start;flex-direction:column}.demoHeroCopy h1{font-size:20px}.demoHeroActions{width:100%}.demoHeroActions .demoBtn{flex:1}.demoKpis{grid-template-columns:1fr 1fr;gap:8px}.demoKpi{min-height:80px;padding:10px}.demoKpi b{font-size:20px}.demoGrid2{grid-template-columns:1fr}.demoPanelHead{padding:13px}.demoPanelBody{padding:10px}.demoChecklistRow{grid-template-columns:1fr}.demoDocCats{grid-template-columns:1fr 1fr}.demoReportCards{grid-template-columns:1fr 1fr}.demoWorkLinks{margin:0 10px 12px}.demoWorkLinkGrid{grid-template-columns:1fr}.demoWorkLinkGrid .span2{grid-column:auto}.demoOpsCards{grid-template-columns:1fr 1fr}.demoAssetPassport{align-items:flex-start;flex-direction:column}.demoNoticePanel{right:14px;top:62px}.demoDrawerCard{width:100%}}
+@media(max-width:1000px){.demoKpis{grid-template-columns:repeat(2,minmax(0,1fr))}.demoGrid2{grid-template-columns:1fr}.demoDocCats{grid-template-columns:repeat(3,1fr)}.demoWorkLinkGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.demoOpsCards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.demoFeaturePage{padding:10px}.demoHero{align-items:flex-start;flex-direction:column}.demoHeroCopy h1{font-size:20px}.demoHeroActions{width:100%}.demoHeroActions .demoBtn{flex:1}.demoKpis{grid-template-columns:1fr 1fr;gap:8px}.demoKpi{min-height:80px;padding:10px}.demoKpi b{font-size:20px}.demoGrid2{grid-template-columns:1fr}.demoPanelHead{padding:13px}.demoPanelBody{padding:10px}.demoChecklistRow{grid-template-columns:1fr}.demoDocCats{grid-template-columns:1fr 1fr}.demoWorkLinks{margin:0 10px 12px}.demoWorkLinkGrid{grid-template-columns:1fr}.demoWorkLinkGrid .span2{grid-column:auto}.demoOpsCards{grid-template-columns:1fr 1fr}.demoAssetPassport{align-items:flex-start;flex-direction:column}.demoNoticePanel{right:14px;top:62px}.demoDrawerCard{width:100%}}
 
 .demoProjectBadge{display:inline-flex;align-items:center;height:22px;margin-left:7px;padding:0 7px;border:1px solid #2f80ed;border-radius:999px;background:#eaf4ff;color:#2f80ed;font-size:8px;font-weight:900;vertical-align:middle;letter-spacing:.5px}
 
@@ -204,8 +203,6 @@
 }
 #app.demoProjectMode .demoDocCat b{font-size:21px!important;color:#fff!important}
 #app.demoProjectMode .demoDocCat span{font-size:11px!important;color:#a8b7ca!important}
-#app.demoProjectMode .demoReportCard h3{font-size:16px!important;color:#fff!important}
-#app.demoProjectMode .demoReportCard p{font-size:11.5px!important;line-height:1.45!important;color:#a9b8cb!important}
 
 /* Energy QA in DEMO: full desktop use + no low-contrast cream history rows. */
 @media (min-width:1101px){
@@ -417,10 +414,6 @@
     gap:8px!important;
   }
   #app.demoProjectMode .demoDocCat{min-height:76px!important}
-  #app.demoProjectMode .demoReportCards{grid-template-columns:1fr!important}
-  #app.demoProjectMode .demoReportCard{padding:14px!important}
-  #app.demoProjectMode .demoReportCard h3{font-size:16px!important}
-  #app.demoProjectMode .demoReportCard p{font-size:11.5px!important}
 
   /* DEMO linked fields inside the new Work edit drawer. */
   #app.demoProjectMode .demoWorkLinks{
@@ -487,7 +480,6 @@
   #app.demoProjectMode .demoHeroActions .demoBtn{grid-column:auto!important}
 }
 
-
 /* DEMO_WORK_FORM_LABELS_AND_OPTIONS_20260929 */
 .demoWorkLinkGrid label{
   color:var(--label-accent,#63d9ea)!important;
@@ -517,7 +509,6 @@
 .demoWorkLinkGrid #demoTaskLinkSummary{
   color:var(--work-muted-option,#8997ad)!important;
 }
-
 
 /* DEMO_WORK_FORM_FINAL_OVERRIDES_20260929 */
 /* Loaded last: keep the work-page refinements effective in DEMO/dark theme. */
@@ -601,7 +592,6 @@
 #app #workPage .proTaskCard .taskTitle{
   font-weight:400!important;
 }
-
 
 /* DEMO_WORK_LIGHT_BLUE_REFERENCE_THEME_20260929 */
 /* Chỉ áp dụng cho dự án DEMO + trang Công việc. Màu tham chiếu từ ảnh người dùng. */
@@ -822,7 +812,6 @@
   }
 }
 
-
 /* DEMO_WORK_EDIT_DRAWER_CLEANUP_20260929 */
 /* DEMO edit drawer only: no horizontal scroll, simpler advanced links, actions at the true end. */
 .workEditDrawer.demoWorkEditDrawer .workEditDrawerCard,
@@ -926,7 +915,6 @@
   }
 }
 
-
 /* ESTA_DEMO_GLOBAL_BEIGE_CANVAS_20260929 */
 /* One shared beige outer canvas for every DEMO module. Internal cards/panels remain navy. */
 #app.demoProjectMode{
@@ -972,7 +960,6 @@
 #app.demoProjectMode .demoFeaturePage{
   background:var(--esta-demo-beige)!important;
 }
-
 
 /* DEMO_TASK_DRAWER_FUNCTIONAL_TABS_20260929 */
 #demoTaskDrawer .demoTaskTabs{
@@ -1087,7 +1074,6 @@
   }
 }
 
-
 /* DEMO_TASK_INFO_MANAGE_ACTIONS_20260929 */
 #demoTaskDrawer .demoTaskManageBox{
   margin-top:14px!important;
@@ -1162,7 +1148,6 @@
     grid-template-columns:1fr!important;
   }
 }
-
 
 /* Keep project-specific energy tabs truly hidden even under DEMO theme overrides. */
 #app.demoProjectMode.energyMode #energyPage .energyTabs button.energy68Only.hide{display:none!important}
@@ -1250,7 +1235,6 @@
     line-height:1.15!important;
   }
 }
-
 
 /* ESTA_DEMO_SINGLE_OCEAN_BLUE_SIDEBAR_20260929 */
 /* Persistent DEMO shell: one fresh ocean-blue sidebar on every page, including Dự án. */
@@ -1360,7 +1344,6 @@
   }
 }
 
-
 /* INCIDENT DETAIL ACTIONS — keep primary actions visible in the top-right */
 #app.demoProjectMode #demoIncidentDetail .demoIncidentDetailHead{
   align-items:flex-start!important;
@@ -1406,7 +1389,6 @@
   }
 }
 
-
 /* DEMO WORK TABLE STT — improve row number visibility */
 #app.demoProjectMode #workPage .sttCell{
   color:#79dff1!important;
@@ -1417,7 +1399,6 @@
 #app.demoProjectMode #workPage .workTaskTable tbody tr:hover .sttCell{
   color:#b9f4ff!important;
 }
-
 
 /* DEMO WORK NOTE CONTRAST — keep note text readable on navy rows */
 #app.demoSampleProject.workMode #workPage .premiumTableCard td.noteCell,
@@ -1436,7 +1417,6 @@
 #app.demoProjectMode.workMode #workPage .premiumTableCard tbody tr:hover td.noteCell{
   color:#f0f5ff!important;
 }
-
 
 /* INCIDENT_CREATE_MODAL_20260930 */
 body.demoModalOpen{overflow:hidden!important}
@@ -1644,7 +1624,6 @@ body.demoModalOpen{overflow:hidden!important}
     font-size:13px;
   }
 }
-
 
 /* CHECKLIST_CREATE_MODAL_20260930 */
 body.demoChecklistModalOpen{overflow:hidden!important}

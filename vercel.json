@@ -2,7 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/esta_report.py": {
-      "maxDuration": 120
+      "maxDuration": 120,
+      "includeFiles": "reporting/**"
     }
   },
   "headers": [
