@@ -5,6 +5,7 @@ let tests=0;
 const check=(name,fn)=>{fn();tests++;console.log('PASS '+name)};
 check('Leap year month',()=>assert.deepEqual(M.range('month','2028-02-12'),{from:'2028-02-01',to:'2028-02-29',kind:'month'}));
 check('Week at month boundary',()=>assert.deepEqual(M.range('week','2026-09-30'),{from:'2026-09-28',to:'2026-09-30',kind:'week'}));
+check('ESTA week label wording',()=>assert.equal(M.periodLabel(M.range('week','2026-09-30')),'Tuần thứ 5 của tháng 9/2026'));
 check('Vietnam local date',()=>assert.equal(M.localDay(new Date('2026-09-30T18:00:00Z')),'2026-10-01'));
 check('Invalid/reversed ranges',()=>{assert.equal(M.validRange({from:'2026-02-30',to:'2026-03-02'}),false);assert.equal(M.validRange({from:'2026-09-30',to:'2026-09-01'}),false)});
 const r={from:'2026-09-01',to:'2026-09-30',kind:'month'};
