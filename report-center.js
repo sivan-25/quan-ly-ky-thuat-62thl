@@ -163,11 +163,13 @@
   }
   async function exportPdf() {
     if (!canExport()) return;
+    const signer = await window.requestPdfSignature?.();
+    if (!signer) return;
     const buildingId = state.buildingId, buildingName = state.buildingName, model = state.model;
     const author = currentAccount?.display_name || "Chưa cập nhật người lập", createdBy = currentAccount?.id;
     const editable = canProjectEdit();
     const filename = pdfSafeFilename("ESTA_" + buildingId + "_BaoCaoVanHanh_" + model.range.from + "_" + model.range.to) + ".pdf";
-    const payload = { report_type: "operations", building: buildingName, building_id: buildingId, report_date: M.date(M.localDay()), prepared_by: author, period_label: model.period, range: model.range, sections: model.sections, health: model.health, schedule: model.schedule, notes: model.notes, energy_totals: model.energyTotals, photos: q("#rcIncludePhotos").checked ? model.photos : [], photo_layout: q("#rcPhotoLayout").value, counts: { records: model.count, tasks: model.taskCount, done: model.done } };
+    const payload = { report_type: "operations", building: buildingName, building_id: buildingId, report_date: M.date(M.localDay()), prepared_by: author, period_label: model.period, range: model.range, sections: model.sections, health: model.health, schedule: model.schedule, notes: model.notes, energy_totals: model.energyTotals, photos: q("#rcIncludePhotos").checked ? model.photos : [], photo_layout: q("#rcPhotoLayout").value, counts: { records: model.count, tasks: model.taskCount, done: model.done }, ...(window.pdfSignaturePayload ? window.pdfSignaturePayload(signer) : {}) };
     state.busy = true; buttons(); message("Đang tạo PDF gồm " + model.sections.length + " hạng mục và " + payload.photos.length + " ảnh…");
     try {
       const res = await centralAuthFetch("/api/esta_report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
@@ -190,15 +192,23 @@
   }
   async function printReport() {
     if (!canExport()) return;
-    const details = [...q("#rcPreview").querySelectorAll("details")];
+    const signer = await window.requestPdfSignature?.();
+    if (!signer) return;
+    const preview = q("#rcPreview");
+    const details = [...preview.querySelectorAll("details")];
     const previous = details.map(d => d.open);
     details.forEach(d => d.open = true); showPhotos();
-    await hydrateMediaImages(q("#rcPreview"));
+    await hydrateMediaImages(preview);
+    const signatureBlock = window.appendPdfSignatureToElement?.(preview, signer);
     if (document.fonts?.ready) await document.fonts.ready;
     await waitForReportImages(document);
-    const restore = () => details.forEach((d, i) => d.open = previous[i]);
+    const restore = () => {
+      details.forEach((d, i) => d.open = previous[i]);
+      signatureBlock?.remove();
+    };
     window.addEventListener("afterprint", restore, { once: true });
     window.print();
+    setTimeout(() => { if (signatureBlock?.isConnected) restore(); }, 3000);
   }
   page.querySelectorAll("[data-demo-report-range]").forEach(b => b.addEventListener("click", () => chooseRange(b.dataset.demoReportRange)));
   q("#rcPeriodForm").addEventListener("submit", applyRange);
