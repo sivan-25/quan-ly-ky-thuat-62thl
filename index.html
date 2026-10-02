@@ -554,7 +554,7 @@
     min-width:0!important;
   }
 }
-</style><link rel="stylesheet" href="unified.css?v=20261001-report02"><link rel="stylesheet" href="energy-refresh.css?v=20261001-report02">
+</style><link rel="stylesheet" href="unified.css?v=20261002-workfilter02"><link rel="stylesheet" href="energy-refresh.css?v=20261001-report02">
 <style id="esta-mobile-ios-no-zoom">
 /* iOS Safari zooms focused form controls below 16px. This important layer
    takes precedence over the existing unlayered !important form styles. */
@@ -868,7 +868,15 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6.2 7.1v5.2l-3.6 1.8v-7L4 5z"/></svg>
         <span>Bộ lọc</span>
       </button>
-      <div id="filterBar" class="filterBar filterPopover hide"><select id="quickRange"><option value="">Khoảng thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select><label class="filterDateField">Từ ngày<input id="fromDate" type="date"></label><label class="filterDateField">Đến ngày<input id="toDate" type="date"></label><button id="clear" class="clearFilter" type="button">Xóa lọc</button></div>
+      <div id="filterBar" class="filterBar filterPopover hide" role="dialog" aria-labelledby="workFilterTitle">
+        <div class="workFilterHeading"><strong id="workFilterTitle">Bộ lọc công việc</strong><button id="closeWorkFilter" class="workFilterClose" type="button" aria-label="Đóng bộ lọc" title="Đóng bộ lọc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+        <label class="workFilterField workFilterRange"><span>Khoảng thời gian</span><select id="quickRange"><option value="">Tất cả thời gian</option><option value="today">Hôm nay</option><option value="week">Tuần này</option><option value="month">Tháng này</option></select></label>
+        <label class="workFilterField workFilterType"><span>Loại công việc</span><select id="filterType"><option value="">Tất cả loại</option><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label>
+        <label class="workFilterField workFilterStatus"><span>Trạng thái</span><select id="filterStatus"><option value="">Tất cả trạng thái</option><option>Đã hoàn thành</option><option>Đang thực hiện</option><option>Chờ xử lý</option></select></label>
+        <label class="workFilterField filterDateField workFilterFrom"><span>Từ ngày</span><input id="fromDate" type="date"></label>
+        <label class="workFilterField filterDateField workFilterTo"><span>Đến ngày</span><input id="toDate" type="date"></label>
+        <button id="clear" class="clearFilter" type="button">Xóa lọc</button>
+      </div>
     </div>
     <button id="exportBtn" class="estaReportPdfBtn" type="button" title="Xuất PDF" aria-label="Xuất PDF công việc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span></button>
     </div>
@@ -2410,5 +2418,6 @@
   </div>
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20261002-adminzeromaterial01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20261002-workfilter02"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261001-imgfix04"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261002-adminzeromaterial01"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
+

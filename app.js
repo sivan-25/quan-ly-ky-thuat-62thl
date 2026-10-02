@@ -1163,6 +1163,7 @@ $("#toggleFilter").onclick=e=>{
  e.stopPropagation();
  const hidden=$("#filterBar").classList.toggle("hide");
  $("#toggleFilter").setAttribute("aria-expanded",String(!hidden));
+ $("#toggleFilter").setAttribute("aria-label",hidden?"Mở bộ lọc":"Đóng bộ lọc");
  if(!hidden)positionWorkFilter();
 };
 $("#filterBar").onclick=e=>e.stopPropagation();
@@ -1187,12 +1188,15 @@ window.addEventListener("scroll",positionWorkFilter,true);
    input.focus({preventScroll:true});
    openPicker();
  });
-});function closeWorkFilter(){
+});function closeWorkFilter(restoreFocus=false){
  const bar=$("#filterBar"),btn=$("#toggleFilter");
  if(!bar||bar.classList.contains("hide"))return;
  bar.classList.add("hide");
  btn?.setAttribute("aria-expanded","false");
+ btn?.setAttribute("aria-label","Mở bộ lọc");
+ if(restoreFocus)btn?.focus({preventScroll:true});
 }
+$("#closeWorkFilter").onclick=()=>closeWorkFilter(true);
 document.addEventListener("pointerdown",e=>{
  const bar=$("#filterBar"),btn=$("#toggleFilter");
  if(!bar||bar.classList.contains("hide"))return;
@@ -1200,7 +1204,7 @@ document.addEventListener("pointerdown",e=>{
  closeWorkFilter();
 },true);
 document.addEventListener("keydown",e=>{
- if(e.key==="Escape")closeWorkFilter();
+ if(e.key==="Escape")closeWorkFilter(true);
 });["search","globalSearch","fromDate","toDate"].forEach(x=>$("#"+x).addEventListener("input",render));["filterStatus","filterType"].forEach(x=>$("#"+x).onchange=render);function iso(d){return d.toLocaleDateString("en-CA")}function rangeDates(kind){let d=new Date(),from="",to="";if(kind==="today"){from=to=iso(d)}else if(kind==="week"){let first=new Date(d.getFullYear(),d.getMonth(),1),last=new Date(d.getFullYear(),d.getMonth()+1,0),day=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-day);let b=new Date(a);b.setDate(a.getDate()+6);if(a<first)a=first;if(b>last)b=last;from=iso(a);to=iso(b)}else if(kind==="month"){let a=new Date(d.getFullYear(),d.getMonth(),1),b=new Date(d.getFullYear(),d.getMonth()+1,0);from=iso(a);to=iso(b)}return{from,to}}$("#quickRange").onchange=()=>{let v=$("#quickRange").value;if(!v)return;let r=rangeDates(v);$("#fromDate").value=r.from;$("#toDate").value=r.to;render()};$("#clear").onclick=()=>{$("#search").value=$("#globalSearch").value=$("#fromDate").value=$("#toDate").value=$("#filterStatus").value=$("#filterType").value=$("#quickRange").value="";workStatFilter="";render()};function reportStatusClass(s){
  if(s==="Đã hoàn thành")return "done";
  if(s==="Đang thực hiện")return "doing";
