@@ -1460,7 +1460,7 @@ function estaPdfSignatureBlockHtml(signature){
 }
 function injectPdfSignatureHtml(html,signature){
  const doc=new DOMParser().parseFromString(String(html||""),"text/html");
- doc.querySelectorAll(".sign,.signature3,.estaPdfSignatureBlock").forEach(el=>el.remove());
+ doc.querySelectorAll(".sign,.signature3,.signature,.estaPdfSignatureBlock").forEach(el=>el.remove());
  const style=doc.createElement("style");
  style.textContent='.estaPdfSignatureBlock{display:grid;grid-template-columns:1fr 1fr;gap:18mm;margin-top:12mm;padding-top:4mm;border-top:1.5px solid #a46427;break-inside:avoid;page-break-inside:avoid}.estaPdfSignatureCell{text-align:center;min-height:34mm;color:#411437}.estaPdfSignatureCell>b{display:block;font-size:7.5px;letter-spacing:.2px}.estaPdfSignatureImage,.estaPdfSignatureBlank{height:20mm;margin:2mm auto 1mm;display:flex;align-items:center;justify-content:center}.estaPdfSignatureImage img{display:block;max-width:60mm;max-height:19mm;object-fit:contain}.estaPdfSignatureCell>strong{display:block;font-size:8px;color:#411437}.estaPdfSignatureBlank{border:0}';
  doc.head.appendChild(style);
