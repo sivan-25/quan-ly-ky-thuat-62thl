@@ -9971,3 +9971,29 @@ body.workEditOpen{overflow:hidden!important}
     overflow-y:auto!important;
   }
 }
+
+
+/* ===== PDF KT SIGNATURE ===== */
+.pdfSignatureCard{width:min(560px,calc(100vw - 28px));padding:24px;border-radius:20px}
+.pdfSignatureHead{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
+.pdfSignatureHead h3{margin:0 0 5px;font-size:20px;color:#183a58}
+.pdfSignatureHead p{margin:0;color:#647789;line-height:1.5;font-size:13px}
+.pdfSignatureBadge{flex:0 0 46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#173f70;color:#fff;font-size:16px;font-weight:800;box-shadow:0 8px 20px rgba(23,63,112,.2)}
+.pdfSignatureForm{display:grid;gap:14px}
+.pdfSignatureForm label>span{display:block;margin-bottom:7px;font-size:12px;font-weight:700;color:#344b5f}
+.pdfSignatureForm select,.pdfSignatureForm input[type=file]{width:100%;min-height:46px;border:1px solid #cfdbe4;border-radius:12px;background:#fff;padding:10px 12px;font:inherit;color:#243746}
+.pdfSignatureUpload{position:relative}
+.pdfSignatureUpload input[type=file]{position:absolute;inset:27px 0 0;width:100%;height:76px;opacity:0;cursor:pointer;z-index:2}
+.pdfSignatureUploadBox{height:76px;border:1.5px dashed #9eb4c5;border-radius:14px;background:#f5f9fc;display:grid;place-items:center;align-content:center;gap:4px;color:#173f70}
+.pdfSignatureUploadBox b{font-size:13px}.pdfSignatureUploadBox small{font-size:11px;color:#718497}
+.pdfSignaturePreview{min-height:92px;border:1px solid #d7e2e9;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;padding:10px}
+.pdfSignaturePreview img{display:block;max-width:100%;max-height:86px;object-fit:contain}
+.pdfSignatureError{min-height:18px;margin:0;color:#a63844;font-size:12px;font-weight:700}
+.pdfSignatureActions{display:flex;justify-content:flex-end;gap:10px;padding-top:2px}
+.pdfSignatureActions button{min-height:42px;border-radius:11px;padding:0 16px}
+@media(max-width:640px){
+ .pdfSignatureCard{padding:18px 16px;border-radius:18px}
+ .pdfSignatureHead h3{font-size:18px}
+ .pdfSignatureActions{display:grid;grid-template-columns:1fr 1fr}
+ .pdfSignatureActions button{width:100%}
+}
