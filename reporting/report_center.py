@@ -247,16 +247,26 @@ def _meta_table(data, sections, st):
     return table
 
 
-def _signature_block(st):
+def _signature_block(data, st):
+    name = str(data.get("kt_signer_name") or "").strip()
+    path = str(data.get("_kt_signature_path") or data.get("kt_signature_path") or "").strip()
+    if not name or not path or not os.path.exists(path):
+        raise ValueError("Chưa có chữ ký KT")
+    with PILImage.open(path) as source:
+        iw, ih = source.size
+    scale = min((58 * mm) / max(iw, 1), (18 * mm) / max(ih, 1))
+    signature = Image(path, width=max(1, iw * scale), height=max(1, ih * scale), hAlign="CENTER")
+    signed_name = ParagraphStyle("rc-signed-name", parent=st["meta_value"], alignment=1, fontSize=8, leading=10)
+    signed_head = ParagraphStyle("rc-signed-head", parent=st["meta_label"], alignment=1, fontSize=7, leading=10)
     table = Table([
-        [para("KỸ THUẬT (KT)", st["meta_label"]), para("KIỂM SOÁT / GIÁM SÁT (KST)", st["meta_label"])],
-        [para("(Ký, ghi rõ họ tên)", st["small"]), para("(Ký, ghi rõ họ tên)", st["small"])],
-        ["", ""],
-    ], colWidths=[WIDTH / 2] * 2, rowHeights=[None, None, 14 * mm])
+        [para("KỸ THUẬT (KT)", signed_head), para("KIỂM SOÁT / GIÁM SÁT (KST)", signed_head)],
+        [signature, ""],
+        [para(name, signed_name), ""],
+    ], colWidths=[WIDTH / 2] * 2, rowHeights=[None, 20 * mm, None])
     table.setStyle(TableStyle([
         ("LINEABOVE", (0, 0), (-1, 0), 1.5, COPPER),
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("TOPPADDING", (0, 0), (-1, 0), 7),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
         ("LINEBELOW", (0, 2), (-1, 2), .4, TAUPE),
@@ -380,7 +390,7 @@ def build_operations_doc(path, data, token, temp_dir, downloader):
     else:
         story.append(para("Chưa có ghi chú, tồn tại hoặc kiến nghị được nhập cho các bản ghi đã chọn.", st["small"]))
 
-    story.append(_signature_block(st))
+    story.append(_signature_block(data, st))
 
     missing = 0
     if photos:
