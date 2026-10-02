@@ -10079,3 +10079,76 @@ body.workEditOpen{overflow:hidden!important}
   border-color:#d95a6c!important;
   box-shadow:0 0 0 3px rgba(217,90,108,.10)!important;
 }
+
+
+/* ===== TECHNICAL DOCUMENT UPLOAD MODAL ===== */
+.technicalDocumentModalCard{
+  width:min(760px,calc(100vw - 28px));
+  max-height:min(90dvh,860px);
+  overflow:auto;
+  border-radius:20px;
+  padding:24px;
+}
+.technicalDocumentModalHead{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;padding-right:42px}
+.technicalDocumentModalIcon{
+  flex:0 0 48px;height:48px;border-radius:14px;display:grid;place-items:center;
+  background:#173f70;color:#fff;font-size:22px;font-weight:800;box-shadow:0 8px 24px rgba(23,63,112,.18)
+}
+.technicalDocumentModalHead h3{margin:1px 0 5px;font-size:21px;color:#173a58}
+.technicalDocumentModalHead p{margin:0;color:#6d7f8e;font-size:13px;line-height:1.5}
+.technicalDocumentForm{display:grid;gap:16px}
+.technicalDocumentGrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.technicalDocumentField{display:block;min-width:0}
+.technicalDocumentField.span2{grid-column:1/-1}
+.technicalDocumentField>span{display:block;margin-bottom:7px;font-size:12px;font-weight:750;color:#344c61}
+.technicalDocumentField>span b{color:#cf4f61}
+.technicalDocumentField input,
+.technicalDocumentField select,
+.technicalDocumentField textarea{
+  width:100%;box-sizing:border-box;border:1px solid #cbd8e2;border-radius:12px;background:#fbfdff;
+  color:#20384e;font:inherit;padding:11px 12px;outline:none
+}
+.technicalDocumentField input,.technicalDocumentField select{height:46px}
+.technicalDocumentField textarea{resize:vertical;min-height:84px}
+.technicalDocumentField input:focus,
+.technicalDocumentField select:focus,
+.technicalDocumentField textarea:focus{border-color:#5284aa;box-shadow:0 0 0 3px rgba(65,112,148,.10)}
+.technicalDocumentUpload{
+  position:relative;display:flex;align-items:center;gap:14px;min-height:104px;padding:16px 18px;
+  border:1.5px dashed #8eabc0;border-radius:15px;background:#f3f8fb;cursor:pointer
+}
+.technicalDocumentUpload:hover{border-color:#4d789b;background:#eef6fa}
+.technicalDocumentUpload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.technicalDocumentUploadIcon{
+  flex:0 0 46px;height:46px;border-radius:13px;display:grid;place-items:center;background:#e0edf5;color:#1d5a84;font-size:23px;font-weight:800
+}
+.technicalDocumentUpload>div:last-child{min-width:0;display:grid;gap:3px}
+.technicalDocumentUpload b{color:#173f70;font-size:14px}
+.technicalDocumentUpload small{color:#758899;font-size:11px;line-height:1.4}
+.technicalDocumentUpload strong{color:#334f65;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:570px}
+.technicalDocumentProgress{display:flex;align-items:center;gap:10px;color:#2f607e;font-size:12px;font-weight:700}
+.technicalDocumentProgress>span{width:18px;height:18px;border-radius:50%;border:2px solid #bdd0dd;border-top-color:#2f719b;animation:technicalDocSpin .8s linear infinite}
+@keyframes technicalDocSpin{to{transform:rotate(360deg)}}
+.technicalDocumentError{min-height:18px;margin:0;color:#b13c4d;font-size:12px;font-weight:700}
+.technicalDocumentActions{display:flex;justify-content:flex-end;gap:10px;padding-top:2px}
+.technicalDocumentActions button{min-width:120px;height:43px;border-radius:11px}
+.demoDocumentFileCard{
+  min-height:84px;display:flex;align-items:center;gap:13px;padding:14px;margin-bottom:14px;
+  border:1px solid #d6e1e8;border-radius:14px;background:#f7fafc
+}
+.demoDocumentFileCard i{
+  flex:0 0 48px;height:48px;border-radius:12px;display:grid;place-items:center;background:#173f70;color:#fff;
+  font-style:normal;font-size:11px;font-weight:850;letter-spacing:.3px
+}
+.demoDocumentFileCard div{min-width:0;display:grid;gap:4px}
+.demoDocumentFileCard b{color:#213d55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demoDocumentFileCard small{color:#738595;font-size:11px}
+.demoDocumentActions{display:flex;gap:9px;flex-wrap:wrap}
+@media(max-width:700px){
+  .technicalDocumentModalCard{width:100vw;max-width:none;min-height:100dvh;max-height:100dvh;border-radius:0;padding:18px 15px 24px}
+  .technicalDocumentGrid{grid-template-columns:1fr}
+  .technicalDocumentField.span2{grid-column:auto}
+  .technicalDocumentActions{display:grid;grid-template-columns:1fr 1fr}
+  .technicalDocumentActions button{width:100%;min-width:0}
+  .technicalDocumentUpload strong{max-width:68vw}
+}
