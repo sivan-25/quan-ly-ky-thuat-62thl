@@ -19,7 +19,7 @@ def photo(size):
 
 
 def operations():
-    return {'report_type':'operations', 'building_id':'TEST', 'building':'DỰ ÁN KIỂM THỬ', 'prepared_by':'NGƯỜI KIỂM THỬ', 'range':{'from':'2026-09-01','to':'2026-09-30'}, 'sections':[{'id':'work','title':'Công việc','count':1,'columns':['Ngày','Nội dung','Loại','Trạng thái','Người thực hiện'],'rows':[['01/09/2026','Dữ liệu thử nghiệm','Hằng ngày',{'text':'Đã hoàn thành','tone':'good'},'Kiểm thử']]}]}
+    return {'report_type':'operations', 'building_id':'TEST', 'building':'DỰ ÁN KIỂM THỬ', 'prepared_by':'NGƯỜI KIỂM THỬ', 'kt_signer_name':'Kỹ thuật kiểm thử', 'kt_signature_data_url':photo((420,120)), 'range':{'from':'2026-09-01','to':'2026-09-30'}, 'sections':[{'id':'work','title':'Công việc','count':1,'columns':['Ngày','Nội dung','Loại','Trạng thái','Người thực hiện'],'rows':[['01/09/2026','Dữ liệu thử nghiệm','Hằng ngày',{'text':'Đã hoàn thành','tone':'good'},'Kiểm thử']]}]}
 
 
 class ReportTests(unittest.TestCase):
@@ -66,6 +66,12 @@ class ReportTests(unittest.TestCase):
         raw, _, _ = generate_pdf(payload, '')
         self.assertTrue(raw.startswith(b'%PDF'))
 
+    def test_signature_is_required(self):
+        payload = operations()
+        payload.pop('kt_signature_data_url')
+        with self.assertRaisesRegex(ValueError, 'Chưa có chữ ký KT'):
+            generate_pdf(payload, '')
+
     def test_invalid_column_count_is_rejected(self):
         payload = operations(); payload['sections'][0]['rows'][0] = ['Thiếu cột']
         with self.assertRaises(ValueError): generate_pdf(payload, '')
@@ -77,7 +83,7 @@ class ReportTests(unittest.TestCase):
             {'report_type':'tools','tools':[{'name':'Dụng cụ thử','qty':1,'unit':'Bộ','condition_status':'Tốt'}]},
         ]
         for payload in samples:
-            payload.update(building='DỰ ÁN KIỂM THỬ', report_date='01/09/2026')
+            payload.update(building='DỰ ÁN KIỂM THỬ', report_date='01/09/2026', kt_signer_name='Kỹ thuật kiểm thử', kt_signature_data_url=photo((420,120)))
             raw, _, count = generate_pdf(payload, '')
             self.assertTrue(raw.startswith(b'%PDF')); self.assertEqual(count, 1)
 
