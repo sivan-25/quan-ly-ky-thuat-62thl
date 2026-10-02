@@ -212,12 +212,14 @@ def _signed_kt_kst(data):
     P=Paragraph
     name=str(data.get("kt_signer_name") or "").strip()
     path=str(data.get("kt_signature_path") or "").strip()
-    if not name or not path or not os.path.exists(path):
-        raise ValueError("Chưa có chữ ký KT")
-    iw,ih=ImageReader(path).getSize()
-    scale=min((58*mm)/max(iw,1),(18*mm)/max(ih,1))
-    sig=Image(path,width=max(1,iw*scale),height=max(1,ih*scale))
-    sig.hAlign="CENTER"
+    if not name:
+        raise ValueError("Chưa có họ và tên người ký KT")
+    sig=""
+    if path and os.path.exists(path):
+        iw,ih=ImageReader(path).getSize()
+        scale=min((58*mm)/max(iw,1),(18*mm)/max(ih,1))
+        sig=Image(path,width=max(1,iw*scale),height=max(1,ih*scale))
+        sig.hAlign="CENTER"
     sig_name=S("sig_name",fontName="Mont-Bold",fontSize=8,leading=10,textColor=AUB,alignment=1)
     sig_head=S("sig_head",fontName="Mont-Bold",fontSize=7,leading=10,textColor=AUB,alignment=1)
     t=Table([
@@ -774,8 +776,12 @@ OUTPUT_NAME = "ESTA_BaoCao_KyThuat_TongHop_ChiTiet.pdf"
 def _prepare_signature(payload, temp_dir):
     name=str(payload.get("kt_signer_name") or "").strip()
     source=str(payload.get("kt_signature_data_url") or "").strip()
-    if not name or not source:
-        raise ValueError("Chưa có chữ ký KT. Vui lòng chọn người ký và ảnh chữ ký trước khi xuất PDF.")
+    if not name:
+        raise ValueError("Chưa có họ và tên người ký KT.")
+    payload["kt_signer_name"]=name
+    payload["_kt_signature_path"]=""
+    if not source:
+        return ""
     if not source.startswith("data:image/") or "," not in source:
         raise ValueError("Ảnh chữ ký KT không hợp lệ")
     head,encoded=source.split(",",1)
@@ -796,7 +802,6 @@ def _prepare_signature(payload, temp_dir):
     except Exception:
         raise ValueError("Không đọc được ảnh chữ ký KT")
     payload["_kt_signature_path"]=path
-    payload["kt_signer_name"]=name
     return path
 
 def _json_bytes(obj):
