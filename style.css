@@ -10000,3 +10000,82 @@ body.workEditOpen{overflow:hidden!important}
 
 .pdfSignatureForm label>span small{font-size:10px;font-weight:600;color:#7d8d9c}
 .pdfSignatureForm input[type=text]:focus,.pdfSignatureForm select:focus{outline:2px solid rgba(23,63,112,.14);border-color:#718faa}
+
+
+/* ===== WORK EDIT CONTRAST + COMPLETION NOTE VALIDATION ===== */
+.workEditDrawer .workEntryCard{
+  background:#111c2f!important;
+}
+.workEditDrawer #taskForm input:not([type="hidden"]),
+.workEditDrawer #taskForm select,
+.workEditDrawer #taskForm .peopleSelectBtn{
+  background:#1b2a43!important;
+  border:1px solid #5a708e!important;
+  color:#f4f8ff!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)!important;
+}
+.workEditDrawer #taskForm input::placeholder{color:#9bacbf!important;opacity:1!important}
+.workEditDrawer #taskForm input:focus,
+.workEditDrawer #taskForm select:focus,
+.workEditDrawer #taskForm .peopleSelectBtn:focus{
+  border-color:#48d8eb!important;
+  box-shadow:0 0 0 3px rgba(72,216,235,.13)!important;
+  outline:none!important;
+}
+.workEditDrawer #taskForm .workField>span{
+  color:#74e5f0!important;
+  text-shadow:none!important;
+}
+#closeWorkEditDrawer{
+  border:1px solid #b95363!important;
+  background:#622936!important;
+  color:#fff!important;
+  box-shadow:0 6px 18px rgba(90,24,38,.28)!important;
+  transition:background .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+#closeWorkEditDrawer:hover,
+#closeWorkEditDrawer:focus-visible{
+  background:#873546!important;
+  border-color:#e47786!important;
+  transform:translateY(-1px)!important;
+  outline:none!important;
+}
+.workEditDrawer .workCancel{
+  background:#35212a!important;
+  border:1px solid #995465!important;
+  color:#ffd5dc!important;
+}
+.workEditDrawer .workCancel:hover{
+  background:#4c2935!important;
+  border-color:#c66a7e!important;
+}
+.workEditDrawer .completionNoteHint{
+  display:block;
+  margin-top:6px;
+  color:#ff9ca8!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+  font-weight:700!important;
+}
+.workEditDrawer .completionNoteHint.hide{display:none!important}
+.workEditDrawer .workNote.completionNoteRequired>span{
+  color:#ff9ca8!important;
+}
+.workEditDrawer .workNote.completionNoteRequired #note{
+  border-color:#e26978!important;
+  background:#2a1d2a!important;
+  box-shadow:0 0 0 3px rgba(226,105,120,.12)!important;
+}
+#workPage .completionNoteHint{
+  display:block;
+  margin-top:5px;
+  color:#b33b4d;
+  font-size:11px;
+  line-height:1.35;
+  font-weight:700;
+}
+#workPage .completionNoteHint.hide{display:none!important}
+#workPage .workNote.completionNoteRequired #note{
+  border-color:#d95a6c!important;
+  box-shadow:0 0 0 3px rgba(217,90,108,.10)!important;
+}
