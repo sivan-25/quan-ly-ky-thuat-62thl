@@ -83,8 +83,10 @@ function demoSetProjectMode(){
  const on=shell&&($("#adminPage")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoProjectShell",shell);
  $("#app")?.classList.toggle("demoProjectMode",on);
- $("#app")?.classList.toggle("demoExactProject",on&&String(currentBuilding?.id||"")==="DEMO");
- $("#app")?.classList.toggle("demoSampleProject",on&&["DEMO","68PĐL"].includes(String(currentBuilding?.id||"")));
+ // DEMO is the single visual reference. Every project must receive the exact same
+ // shell/topbar/work-page theme; project-specific differences are data/config only.
+ $("#app")?.classList.toggle("demoExactProject",on);
+ $("#app")?.classList.toggle("demoSampleProject",on);
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
  if(on){demoEnsureWorkPanel();demoLoad().then(()=>{demoPopulateWorkOptions();demoRenderHomeOps();demoEnsureAssetPassport()})}
@@ -141,7 +143,7 @@ showHome=function(){
 const originalOpenAdminPortal=openAdminPortal;
 openAdminPortal=function(){
  demoHideSpecialPages();
- $("#app")?.classList.remove("demoProjectMode");
+ $("#app")?.classList.remove("demoProjectMode","demoExactProject","demoSampleProject");
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.add("hide"));
  originalOpenAdminPortal();
 };
