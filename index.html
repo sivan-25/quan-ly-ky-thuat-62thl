@@ -2305,6 +2305,30 @@
   <div class="workPdfFixedOption"><b>Tự động theo chiều ảnh</b><small>2 ảnh dọc liên tiếp sẽ ghép cạnh nhau; ảnh ngang hoặc ảnh dọc lẻ hiển thị khung lớn. Giữ nguyên thứ tự, không cắt ảnh; công việc không có ảnh sẽ bỏ phần hình ảnh.</small></div>
 </div>
 <div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
-</div></div><div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20261001-imgfix04"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261001-imgfix04"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261001-empty-period01"></script><script src="demo-lab.js?v=20261001-imgfix04"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
+</div></div>
+<div id="pdfSignatureModal" class="modal hide">
+  <div class="modalCard pdfSignatureCard">
+    <button id="closePdfSignature" class="modalClose" type="button" aria-label="Đóng">×</button>
+    <div class="pdfSignatureHead">
+      <span class="pdfSignatureBadge">KT</span>
+      <div><h3>Ký xác nhận báo cáo</h3><p>Chọn người ký kỹ thuật và tải ảnh chữ ký. Ảnh chỉ dùng cho lần xuất PDF này, không lưu lại.</p></div>
+    </div>
+    <form id="pdfSignatureForm" class="pdfSignatureForm">
+      <label><span>Người ký KT</span><select id="pdfSignerName" required></select></label>
+      <label class="pdfSignatureUpload">
+        <span>Ảnh chữ ký KT</span>
+        <input id="pdfSignatureFile" type="file" accept="image/*" required>
+        <div class="pdfSignatureUploadBox"><b>＋ Chọn ảnh chữ ký</b><small>JPG, PNG hoặc ảnh chụp chữ ký</small></div>
+      </label>
+      <div id="pdfSignaturePreview" class="pdfSignaturePreview hide"></div>
+      <p id="pdfSignatureError" class="pdfSignatureError" role="alert"></p>
+      <div class="pdfSignatureActions">
+        <button id="cancelPdfSignature" class="secondary" type="button">Hủy</button>
+        <button class="primary" type="submit">Tiếp tục xuất PDF</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
+<script src="app.js?v=20261002-signature01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="contractor.js?v=20261001-imgfix04"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature01"></script><script src="demo-lab.js?v=20261001-imgfix04"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
