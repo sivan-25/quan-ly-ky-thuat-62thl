@@ -165,14 +165,19 @@ function demoEnsureWorkPanel(){
    '<label>Sự cố / Defect<select id="demoTaskIncident"><option value="">Không liên kết</option></select></label>'+
    '<label class="demoAdvancedInspection">Checklist<select id="demoTaskInspection"><option value="">Không liên kết</option></select></label>'+
    '<label>Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
-   '<label>Vật tư sử dụng<select id="demoTaskMaterial"><option value="">Không sử dụng</option></select></label>'+
-   '<label>Số lượng<input id="demoTaskMaterialQty" type="number" min="0" step="0.01" value="1"></label>'+
+   '<div class="span2 demoTaskMaterialsField"><div class="demoTaskMaterialsHead"><span>Vật tư sử dụng</span><button id="demoAddTaskMaterial" type="button">+ Thêm vật tư</button></div><div id="demoTaskMaterialsRows" class="demoTaskMaterialsRows"></div><small id="demoTaskMaterialsEmpty" class="demoTaskMaterialsEmpty hide">Chưa có vật tư trong kho dự án.</small></div>'+
    '<label class="span2">Nguyên nhân<textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
    '<label class="span2">Hướng xử lý / Kết quả<textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
    '</div>';
   card.appendChild(box);
   ["demoTaskAsset","demoTaskIncident","demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.addEventListener("change",demoUpdateLinkSummary));
-  $("#demoTaskIncident")?.addEventListener("change",()=>{
+  $("#demoAddTaskMaterial")?.addEventListener("click",()=>{
+    const box=$("#demoTaskMaterialsRows");
+    if(!(demoCache.materials||[]).length){toast("Chưa có vật tư trong kho dự án");return}
+    box?.insertAdjacentHTML("beforeend",demoTaskMaterialRowHtml());
+    demoBindTaskMaterialRows();
+  });
+    $("#demoTaskIncident")?.addEventListener("change",()=>{
     const inc=demoCache.incidents.find(x=>String(x.incident_code)===String($("#demoTaskIncident").value||""));
     if(inc&&$("#demoTaskCause")&&!$("#demoTaskCause").value.trim())$("#demoTaskCause").value=inc.cause||"";
     if(inc&&$("#demoTaskResult")&&!$("#demoTaskResult").value.trim())$("#demoTaskResult").value=inc.solution||"";
@@ -180,6 +185,72 @@ function demoEnsureWorkPanel(){
  }
  box.classList.toggle("hide",!demoIs());
  if(demoIs()){demoLoad().then(()=>{demoPopulateWorkOptions();demoResetWorkLinks(false)})}
+}
+function demoTaskMaterialOptions(selected=""){
+ const materials=demoCache.materials||[];
+ if(!materials.length)return '<option value="">Chưa có vật tư</option>';
+ return '<option value="">— Chọn vật tư —</option>'+materials.map(m=>{
+  const stock=demoStock(m);
+  return '<option value="'+esc(m.id)+'" '+(String(m.id)===String(selected)?'selected':'')+'>'+esc(m.name)+' · tồn '+stock+' '+esc(m.unit)+'</option>';
+ }).join("");
+}
+function demoTaskMaterialRowHtml(item={},index=0){
+ const id=item.materialId||"",qty=Number(item.qty)>0?Number(item.qty):1,m=demoMaterial(id);
+ return '<div class="demoTaskMaterialRow" data-material-row>'+
+  '<select class="demoTaskMaterialSelect" aria-label="Vật tư sử dụng">'+demoTaskMaterialOptions(id)+'</select>'+
+  '<div class="demoTaskMaterialQtyWrap"><input class="demoTaskMaterialQty" type="number" min="0.01" step="0.01" value="'+qty+'" aria-label="Số lượng sử dụng"><span class="demoTaskMaterialUnit">'+esc(m?.unit||"ĐVT")+'</span></div>'+
+  '<button class="demoTaskMaterialRemove" type="button" aria-label="Xóa vật tư">×</button>'+
+ '</div>';
+}
+function demoBindTaskMaterialRows(){
+ const box=$("#demoTaskMaterialsRows");if(!box)return;
+ box.querySelectorAll("[data-material-row]").forEach(row=>{
+  const select=row.querySelector(".demoTaskMaterialSelect"),unit=row.querySelector(".demoTaskMaterialUnit");
+  select?.addEventListener("change",()=>{
+   const m=demoMaterial(select.value);
+   if(unit)unit.textContent=m?.unit||"ĐVT";
+  });
+  row.querySelector(".demoTaskMaterialRemove")?.addEventListener("click",()=>{
+   row.remove();
+   if(!box.querySelector("[data-material-row]")&&(demoCache.materials||[]).length)box.insertAdjacentHTML("beforeend",demoTaskMaterialRowHtml());
+   demoBindTaskMaterialRows();
+  });
+ });
+}
+function demoRenderTaskMaterials(items=[]){
+ const box=$("#demoTaskMaterialsRows"),empty=$("#demoTaskMaterialsEmpty");if(!box)return;
+ const materials=demoCache.materials||[];
+ empty?.classList.toggle("hide",materials.length>0);
+ if(!materials.length){box.innerHTML="";return}
+ const clean=Array.isArray(items)&&items.length?items:[{}];
+ box.innerHTML=clean.map((x,i)=>demoTaskMaterialRowHtml(x,i)).join("");
+ demoBindTaskMaterialRows();
+}
+function demoRefreshTaskMaterialOptions(){
+ const rows=[...($("#demoTaskMaterialsRows")?.querySelectorAll("[data-material-row]")||[])];
+ if(!rows.length){demoRenderTaskMaterials([]);return}
+ rows.forEach(row=>{
+  const sel=row.querySelector(".demoTaskMaterialSelect"),cur=sel?.value||"";
+  if(sel)sel.innerHTML=demoTaskMaterialOptions(cur);
+  const m=demoMaterial(cur),unit=row.querySelector(".demoTaskMaterialUnit");
+  if(unit)unit.textContent=m?.unit||"ĐVT";
+ });
+ $("#demoTaskMaterialsEmpty")?.classList.toggle("hide",(demoCache.materials||[]).length>0);
+}
+function demoReadTaskMaterials(){
+ const rows=[...($("#demoTaskMaterialsRows")?.querySelectorAll("[data-material-row]")||[])];
+ const merged=new Map();
+ for(const row of rows){
+  const id=String(row.querySelector(".demoTaskMaterialSelect")?.value||"").trim();
+  if(!id)continue;
+  const m=demoMaterial(id);
+  if(!m)throw new Error("Vật tư đã chọn không còn trong kho dự án.");
+  const qty=Number(row.querySelector(".demoTaskMaterialQty")?.value||0);
+  if(!Number.isFinite(qty)||qty<=0)throw new Error("Số lượng vật tư phải lớn hơn 0.");
+  const old=merged.get(id);
+  if(old)old.qty+=qty;else merged.set(id,{materialId:m.id,name:m.name,qty,unit:m.unit});
+ }
+ return [...merged.values()].map(x=>({...x,qty:Number(x.qty.toFixed(2))}));
 }
 function demoPopulateWorkOptions(){
  if(!demoIs())return;
@@ -193,7 +264,7 @@ function demoPopulateWorkOptions(){
  set("demoTaskIncident",demoCache.incidents,x=>x.incident_code+" · "+(x.area||x.symptom),x=>x.incident_code);
  set("demoTaskInspection",demoCache.inspections,x=>x.inspection_code+" · "+x.template_name,x=>x.inspection_code);
  set("demoTaskContractor",demoCache.contractors,x=>x.name+" · "+(x.specialty||""),x=>x.id);
- set("demoTaskMaterial",demoCache.materials,x=>x.name+" · tồn "+demoStock(x)+" "+x.unit,x=>x.id);
+ demoRefreshTaskMaterialOptions();
 }
 function demoUpdateLinkSummary(){
  const parts=[];
@@ -211,8 +282,7 @@ function demoResetWorkLinks(clear=true){
   $("#demoTaskIncident")&&($("#demoTaskIncident").value="");
   $("#demoTaskInspection")&&($("#demoTaskInspection").value="");
   $("#demoTaskContractor")&&($("#demoTaskContractor").value="");
-  $("#demoTaskMaterial")&&($("#demoTaskMaterial").value="");
-  $("#demoTaskMaterialQty")&&($("#demoTaskMaterialQty").value="1");
+  demoRenderTaskMaterials([]);
   $("#demoTaskCause")&&($("#demoTaskCause").value="");
   $("#demoTaskResult")&&($("#demoTaskResult").value="");
  }
@@ -220,7 +290,6 @@ function demoResetWorkLinks(clear=true){
  demoUpdateLinkSummary();
 }
 function demoReadWorkLinks(){
- const mid=$("#demoTaskMaterial")?.value||"",m=demoMaterial(mid),qty=Number($("#demoTaskMaterialQty")?.value||0);
  return {
   priority:$("#demoTaskPriority")?.value||"Trung bình",
   dueDate:$("#demoTaskDue")?.value||"",
@@ -229,7 +298,7 @@ function demoReadWorkLinks(){
   incidentCode:$("#demoTaskIncident")?.value||"",
   inspectionCode:$("#demoTaskInspection")?.value||"",
   contractorId:$("#demoTaskContractor")?.value||"",
-  materials:m&&qty>0?[{materialId:m.id,name:m.name,qty,unit:m.unit}]:[],
+  materials:demoReadTaskMaterials(),
   cause:$("#demoTaskCause")?.value.trim()||"",
   result:$("#demoTaskResult")?.value.trim()||""
  };
@@ -242,9 +311,7 @@ function demoFillWorkLinks(x){
  $("#demoTaskIncident")&&($("#demoTaskIncident").value=x.incidentCode||"");
  $("#demoTaskInspection")&&($("#demoTaskInspection").value=x.inspectionCode||"");
  $("#demoTaskContractor")&&($("#demoTaskContractor").value=x.contractorId||"");
- const mu=Array.isArray(x.materials)?x.materials[0]:null;
- $("#demoTaskMaterial")&&($("#demoTaskMaterial").value=mu?.materialId||"");
- $("#demoTaskMaterialQty")&&($("#demoTaskMaterialQty").value=mu?.qty||1);
+ demoRenderTaskMaterials(Array.isArray(x.materials)?x.materials:[]);
  $("#demoTaskCause")&&($("#demoTaskCause").value=x.cause||"");
  $("#demoTaskResult")&&($("#demoTaskResult").value=x.result||"");
  demoUpdateLinkSummary();
@@ -344,9 +411,6 @@ async function demoFinalizeLinks(obj,old){
  if(linkJobs.length)await Promise.allSettled(linkJobs);
  if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành"){demoCache.loaded=false;await demoLoad(true);return}
  const jobs=[];
- for(const m of obj.materials||[]){
-  jobs.push(demoPost("inventory_material_transactions",{building_id:currentBuilding.id,material_id:m.materialId,tx_date:obj.d,tx_type:"out",qty:m.qty,performer:obj.a||"",note:"Tự động xuất theo công việc "+obj.id}));
- }
  if(obj.assetId&&obj.t==="Bảo trì"){
   const asset=demoAsset(obj.assetId),next=new Date(obj.d+"T00:00:00");next.setDate(next.getDate()+Number(asset?.frequency_days||30));
   jobs.push(demoPost("maintenance_records",{building_id:currentBuilding.id,asset_id:obj.assetId,service_date:obj.d,maintenance_type:"Định kỳ",performer:obj.a||"",result_status:"Hoàn thành",work_done:obj.result||obj.c,note:obj.n||"",next_due_date:next.toLocaleDateString("en-CA"),cost:0}));
@@ -363,7 +427,12 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
  if(!taskSelectedPeople.length){toast("Vui lòng chọn ít nhất 1 người thực hiện");$("#taskPeopleButton").focus();return}
- const links=demoReadWorkLinks();
+ let links;
+ try{links=demoReadWorkLinks()}catch(materialError){
+  toast(materialError.message||"Vật tư sử dụng không hợp lệ");
+  $("#demoWorkLinks")?.setAttribute("open","");
+  return;
+ }
  if($("#status").value==="Đã hoàn thành"&&!links.result){toast("Vui lòng nhập Kết quả xử lý trước khi hoàn thành");$("#demoTaskResult")?.focus();$("#demoWorkLinks")?.setAttribute("open","");return}
  const btn=$("#saveBtn");btn.disabled=true;
  try{
@@ -371,17 +440,21 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
   const files=[...pendingTaskFiles],removedRefs=[...removedTaskImageRefs];
   const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
-  const obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length,...links};
+  let obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length,...links};
   if(obj.s==="Đã hoàn thành")obj.completedAt=old?.completedAt||new Date().toISOString();
-  a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
+
+  // Inventory reconciliation is blocking: insufficient stock means the work order is not saved.
+  const syncResult=await syncTaskRecord("upsert_task",obj,buildingId);
+  if(syncResult?.item)obj={...obj,...syncResult.item};
+  a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
   resetForm();render();renderHomeDashboard();
-  toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc liên kết");
+  toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
+
   (async()=>{
    try{
-    const taskSync=syncTaskRecord("upsert_task",obj,buildingId);
     const imageUpload=files.length?uploadMediaFiles(files,"tasks",id,null,buildingId):Promise.resolve([]);
-    const [,uploaded]=await Promise.all([taskSync,imageUpload]);
+    const uploaded=await imageUpload;
     if(removedRefs.length)await deleteStoredMediaRefs(removedRefs);
     if(uploaded.length){
      let latest=[];try{latest=JSON.parse(localStorage.getItem(storageKey)||"[]")}catch(_){}
@@ -398,10 +471,16 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
     }
     await demoSyncContractorTask(obj);
     await demoFinalizeLinks(obj,old);
+    if(typeof inventoryLoadedBuilding!=="undefined")inventoryLoadedBuilding="";
+    demoCache.loaded=false;await demoLoad(true);
     if(currentBuilding.id===buildingId){render();renderHomeDashboard();demoRenderHomeOps()}
-   }catch(err){console.warn(err);toast("Đã lưu công việc, một số liên kết chưa đồng bộ")}
+   }catch(err){console.warn(err);toast("Công việc đã lưu, một số liên kết phụ chưa đồng bộ")}
   })();
- }catch(err){toast(err.message||"Không thể lưu công việc")}
+ }catch(err){
+  const message=err.message||"Không thể lưu công việc";
+  toast(message);
+  if(/tồn kho|vật tư/i.test(message))$("#demoWorkLinks")?.setAttribute("open","");
+ }
  finally{btn.disabled=false}
 };
 
