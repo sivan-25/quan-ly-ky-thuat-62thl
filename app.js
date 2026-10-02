@@ -1444,10 +1444,11 @@ function signatureFileToDataUrl(file){
  });
 }
 function resetPdfSignatureModal(){
- const select=$("#pdfSignerName"),file=$("#pdfSignatureFile"),preview=$("#pdfSignaturePreview"),err=$("#pdfSignatureError");
+ const select=$("#pdfSignerName"),fullName=$("#pdfSignerFullName"),file=$("#pdfSignatureFile"),preview=$("#pdfSignaturePreview"),err=$("#pdfSignatureError");
  if(!select||!file)return;
  select.innerHTML='<option value="">-- Chọn người ký KT --</option>'+pdfSignaturePeople().map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join("");
  select.value="";
+ if(fullName)fullName.value="";
  file.value="";
  if(pdfSignaturePreviewUrl){URL.revokeObjectURL(pdfSignaturePreviewUrl);pdfSignaturePreviewUrl=""}
  if(preview){preview.innerHTML="";preview.classList.add("hide")}
@@ -1474,8 +1475,9 @@ function pdfSignaturePayload(signature){
 function estaPdfSignatureBlockHtml(signature){
  const name=esc(String(signature?.name||""));
  const src=esc(String(signature?.image_data_url||""));
+ const image=src?'<div class="estaPdfSignatureImage"><img src="'+src+'" alt="Chữ ký KT"></div>':'<div class="estaPdfSignatureBlank"></div>';
  return '<section class="estaPdfSignatureBlock">'+
-   '<div class="estaPdfSignatureCell"><b>KỸ THUẬT (KT)</b><div class="estaPdfSignatureImage"><img src="'+src+'" alt="Chữ ký KT"></div><strong>'+name+'</strong></div>'+
+   '<div class="estaPdfSignatureCell"><b>KỸ THUẬT (KT)</b>'+image+'<strong>'+name+'</strong></div>'+
    '<div class="estaPdfSignatureCell"><b>KIỂM SOÁT / GIÁM SÁT (KST)</b><div class="estaPdfSignatureBlank"></div><strong>&nbsp;</strong></div>'+
  '</section>';
 }
@@ -1508,6 +1510,11 @@ window.pdfSignaturePayload=pdfSignaturePayload;
 window.estaPdfSignatureBlockHtml=estaPdfSignatureBlockHtml;
 window.appendPdfSignatureToElement=appendPdfSignatureToElement;
 
+$("#pdfSignerName")?.addEventListener("change",e=>{
+ const fullName=$("#pdfSignerFullName");
+ if(fullName&&!fullName.value.trim())fullName.value=String(e.target.value||"");
+ const err=$("#pdfSignatureError");if(err)err.textContent="";
+});
 $("#pdfSignatureFile")?.addEventListener("change",e=>{
  const file=e.target.files?.[0],preview=$("#pdfSignaturePreview"),err=$("#pdfSignatureError");
  if(err)err.textContent="";
@@ -1519,16 +1526,16 @@ $("#pdfSignatureFile")?.addEventListener("change",e=>{
 });
 $("#pdfSignatureForm")?.addEventListener("submit",async e=>{
  e.preventDefault();
- const name=String($("#pdfSignerName")?.value||"").trim();
+ const signer=String($("#pdfSignerName")?.value||"").trim();
+ const name=String($("#pdfSignerFullName")?.value||"").trim();
  const file=$("#pdfSignatureFile")?.files?.[0];
  const err=$("#pdfSignatureError"),submit=e.currentTarget.querySelector('button[type="submit"]');
- if(!name){if(err)err.textContent="Vui lòng chọn người ký KT.";return}
- if(!file){if(err)err.textContent="Chưa có chữ ký KT. Vui lòng chọn ảnh chữ ký trước khi xuất PDF.";return}
+ if(!signer){if(err)err.textContent="Vui lòng chọn người ký KT.";return}
+ if(!name){if(err)err.textContent="Vui lòng nhập họ và tên người ký KT.";$("#pdfSignerFullName")?.focus();return}
  submit.disabled=true;
  try{
-   const image_data_url=await signatureFileToDataUrl(file);
-   if(!image_data_url){if(err)err.textContent="Chưa đọc được chữ ký KT. Vui lòng chọn lại ảnh.";return}
-   closePdfSignatureModal({name,image_data_url});
+   const image_data_url=file?await signatureFileToDataUrl(file):"";
+   closePdfSignatureModal({signer,name,image_data_url});
  }catch(ex){if(err)err.textContent=ex.message||"Không thể xử lý ảnh chữ ký KT."}
  finally{submit.disabled=false}
 });
