@@ -1250,6 +1250,84 @@
   <div id="demoDocCats" class="demoDocCats"></div>
   <section class="demoGrid2"><div class="demoPanel"><div class="demoPanelHead"><div><h2>Kho tài liệu</h2><p>Tìm theo loại tài liệu, thiết bị hoặc nhà thầu.</p></div></div><div class="demoTableWrap"><table class="demoTable"><thead><tr><th>Tên tài liệu</th><th>Loại</th><th>Hệ thống</th><th>Thiết bị</th><th>Nhà thầu</th><th>Ngày tải</th></tr></thead><tbody id="demoDocBody"></tbody></table></div></div><aside id="demoDocDetail" class="demoPanel"></aside></section>
 </div>
+<div id="technicalDocumentModal" class="modal hide">
+  <div class="modalCard technicalDocumentModalCard">
+    <button id="technicalDocumentModalClose" class="modalClose" type="button" aria-label="Đóng">×</button>
+    <div class="technicalDocumentModalHead">
+      <span class="technicalDocumentModalIcon">▤</span>
+      <div>
+        <h3>Thêm tài liệu kỹ thuật</h3>
+        <p>Nhập thông tin và tải file trực tiếp lên kho tài liệu của dự án.</p>
+      </div>
+    </div>
+    <form id="technicalDocumentForm" class="technicalDocumentForm">
+      <div class="technicalDocumentGrid">
+        <label class="technicalDocumentField span2">
+          <span>Tên tài liệu <b>*</b></span>
+          <input id="technicalDocumentTitle" type="text" maxlength="200" required placeholder="Ví dụ: Biên bản bảo trì hệ PCCC tháng 10">
+        </label>
+        <label class="technicalDocumentField">
+          <span>Loại tài liệu <b>*</b></span>
+          <select id="technicalDocumentCategory" required>
+            <option value="Bản vẽ">Bản vẽ</option>
+            <option value="Catalogue">Catalogue</option>
+            <option value="Manual">Manual</option>
+            <option value="Biên bản" selected>Biên bản</option>
+            <option value="Báo giá">Báo giá</option>
+            <option value="Bảo hành">Bảo hành</option>
+            <option value="Khác">Khác</option>
+          </select>
+        </label>
+        <label class="technicalDocumentField">
+          <span>Hệ thống</span>
+          <select id="technicalDocumentSystem">
+            <option value="Khác">Khác</option>
+            <option value="HVAC">HVAC / Máy lạnh</option>
+            <option value="Điện">Điện</option>
+            <option value="Nước">Nước</option>
+            <option value="PCCC">PCCC</option>
+            <option value="Thang máy">Thang máy</option>
+            <option value="Solar">Solar</option>
+            <option value="XLNT">XLNT</option>
+            <option value="Kiến trúc">Kiến trúc</option>
+          </select>
+        </label>
+        <label class="technicalDocumentField">
+          <span>Thiết bị liên kết</span>
+          <select id="technicalDocumentAsset"><option value="">Không liên kết</option></select>
+        </label>
+        <label class="technicalDocumentField">
+          <span>Nhà thầu liên kết</span>
+          <select id="technicalDocumentContractor"><option value="">Không liên kết</option></select>
+        </label>
+        <label class="technicalDocumentField span2">
+          <span>Ghi chú</span>
+          <textarea id="technicalDocumentNote" rows="3" maxlength="1000" placeholder="Nội dung ghi chú, phạm vi áp dụng hoặc thông tin cần lưu ý..."></textarea>
+        </label>
+      </div>
+
+      <label class="technicalDocumentUpload" for="technicalDocumentFile">
+        <input id="technicalDocumentFile" type="file" required>
+        <div class="technicalDocumentUploadIcon">⇧</div>
+        <div>
+          <b>Chọn file tải lên</b>
+          <small>Hỗ trợ PDF, Word, Excel, CAD, hình ảnh, ZIP và các định dạng khác · tối đa 50 MB</small>
+          <strong id="technicalDocumentFileName">Chưa chọn file</strong>
+        </div>
+      </label>
+
+      <div id="technicalDocumentProgress" class="technicalDocumentProgress hide">
+        <span></span><b>Đang tải tài liệu...</b>
+      </div>
+      <p id="technicalDocumentError" class="technicalDocumentError" role="alert"></p>
+      <div class="technicalDocumentActions">
+        <button id="technicalDocumentCancel" class="secondary" type="button">Hủy</button>
+        <button id="technicalDocumentSubmit" class="primary" type="submit">Tải lên & lưu</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="reportsPage" class="page demoFeaturePage hide">
   <section class="rc-heading rc-no-print">
     <div><span class="rc-eyebrow">ESTA · REPORT CENTER</span><h2>Báo cáo vận hành kỹ thuật</h2><p>Chọn kỳ, xem dữ liệu và xuất báo cáo theo từng hạng mục.</p></div>
@@ -2332,4 +2410,4 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="app.js?v=20261002-signature02"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261001-imgfix04"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261001-imgfix04"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
+<script src="contractor.js?v=20261001-imgfix04"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261002-docupload01"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
