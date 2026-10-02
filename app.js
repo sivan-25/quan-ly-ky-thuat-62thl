@@ -1486,7 +1486,8 @@ function injectPdfSignatureHtml(html,signature){
  style.textContent='.estaPdfSignatureBlock{display:grid;grid-template-columns:1fr 1fr;gap:18mm;margin-top:12mm;padding-top:4mm;border-top:1.5px solid #a46427;break-inside:avoid;page-break-inside:avoid}.estaPdfSignatureCell{text-align:center;min-height:34mm;color:#411437}.estaPdfSignatureCell>b{display:block;font-size:7.5px;letter-spacing:.2px}.estaPdfSignatureImage,.estaPdfSignatureBlank{height:20mm;margin:2mm auto 1mm;display:flex;align-items:center;justify-content:center}.estaPdfSignatureImage img{display:block;max-width:60mm;max-height:19mm;object-fit:contain}.estaPdfSignatureCell>strong{display:block;font-size:8px;color:#411437}.estaPdfSignatureBlank{border:0}';
  doc.head.appendChild(style);
  const holder=doc.createElement("div");holder.innerHTML=estaPdfSignatureBlockHtml(signature);
- doc.body.appendChild(holder.firstElementChild);
+ const block=holder.firstElementChild,footer=doc.body.querySelector(".foot");
+ if(footer)doc.body.insertBefore(block,footer);else doc.body.appendChild(block);
  return '<!doctype html>'+doc.documentElement.outerHTML;
 }
 function appendPdfSignatureToElement(root,signature){
@@ -1498,7 +1499,8 @@ function appendPdfSignatureToElement(root,signature){
  block.querySelectorAll(".estaPdfSignatureCell").forEach(el=>Object.assign(el.style,{textAlign:"center",minHeight:"34mm",color:"#411437"}));
  block.querySelectorAll(".estaPdfSignatureImage,.estaPdfSignatureBlank").forEach(el=>Object.assign(el.style,{height:"20mm",margin:"2mm auto 1mm",display:"flex",alignItems:"center",justifyContent:"center"}));
  const img=block.querySelector("img");if(img)Object.assign(img.style,{display:"block",maxWidth:"60mm",maxHeight:"19mm",objectFit:"contain"});
- root.appendChild(block);
+ const footer=root.querySelector(".rc-preview-footer");
+ if(footer)root.insertBefore(block,footer);else root.appendChild(block);
  return block;
 }
 window.requestPdfSignature=requestPdfSignature;
