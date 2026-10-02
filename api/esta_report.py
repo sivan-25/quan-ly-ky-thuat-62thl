@@ -10,7 +10,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas as rl_canvas
 from reportlab.platypus import (BaseDocTemplate, Flowable, Frame, HRFlowable,
                                 KeepTogether, PageTemplate, Paragraph, Spacer,
-                                Table, TableStyle)
+                                Table, TableStyle, Image)
 from reportlab.lib.utils import ImageReader
 
 # Font bootstrap for Vercel: Montserrat only. The report layout below is the
@@ -208,17 +208,37 @@ def intro(data,eyebrow,title="Danh sách công việc kỹ thuật"):
     return [P(eyebrow.upper(),ST["eyebrow"]),Spacer(1,3),P(title,ST["h1"]),
             HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8),meta,Spacer(1,8)]
 
-def signatures():
+def _signed_kt_kst(data):
     P=Paragraph
-    cols=[("NGƯỜI LẬP BÁO CÁO","(Ký, ghi rõ họ tên)"),
-          ("TRƯỞNG BỘ PHẬN KỸ THUẬT","(Ký, ghi rõ họ tên)"),
-          ("BAN QUẢN LÝ TÒA NHÀ","(Ký, ghi rõ họ tên)")]
-    t=Table([[P(a,ST["sig"]) for a,_ in cols],[P(b,ST["sig_s"]) for _,b in cols],["","",""]],
-            colWidths=[CW/3]*3,rowHeights=[None,None,13*mm])
-    t.setStyle(TableStyle([("LINEABOVE",(0,0),(-1,0),1.5,COPPER),("TOPPADDING",(0,0),(-1,0),6),
-        ("BOTTOMPADDING",(0,0),(-1,-1),1),("LEFTPADDING",(0,0),(-1,-1),0),
-        ("RIGHTPADDING",(0,0),(-1,-1),8),("LINEBELOW",(0,2),(-1,2),.4,TAUPE)]))
-    return KeepTogether([Spacer(1,6),t])
+    name=str(data.get("kt_signer_name") or "").strip()
+    path=str(data.get("kt_signature_path") or "").strip()
+    if not name or not path or not os.path.exists(path):
+        raise ValueError("Chưa có chữ ký KT")
+    iw,ih=ImageReader(path).getSize()
+    scale=min((58*mm)/max(iw,1),(18*mm)/max(ih,1))
+    sig=Image(path,width=max(1,iw*scale),height=max(1,ih*scale))
+    sig.hAlign="CENTER"
+    sig_name=S("sig_name",fontName="Mont-Bold",fontSize=8,leading=10,textColor=AUB,alignment=1)
+    sig_head=S("sig_head",fontName="Mont-Bold",fontSize=7,leading=10,textColor=AUB,alignment=1)
+    t=Table([
+        [P("KỸ THUẬT (KT)",sig_head),P("KIỂM SOÁT / GIÁM SÁT (KST)",sig_head)],
+        [sig,""],
+        [P(name,sig_name),""]
+    ],colWidths=[CW/2]*2,rowHeights=[None,20*mm,None])
+    t.setStyle(TableStyle([
+        ("LINEABOVE",(0,0),(-1,0),1.5,COPPER),
+        ("ALIGN",(0,0),(-1,-1),"CENTER"),
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("TOPPADDING",(0,0),(-1,0),7),
+        ("BOTTOMPADDING",(0,0),(-1,-1),1),
+        ("LEFTPADDING",(0,0),(-1,-1),4),
+        ("RIGHTPADDING",(0,0),(-1,-1),4),
+        ("LINEBELOW",(0,2),(-1,2),.4,TAUPE)
+    ]))
+    return KeepTogether([Spacer(1,8),t])
+
+def signatures(data):
+    return _signed_kt_kst(data)
 
 def story_summary(data,sign=True,pointer=False):
     P=Paragraph; tasks=data["tasks"]; n=counts(tasks); story=intro(data,"Phần 1  ·  Báo cáo tổng hợp")
@@ -255,7 +275,7 @@ def story_summary(data,sign=True,pointer=False):
     tb.setStyle(TableStyle(style)); story.append(tb)
     if pointer:
         story += [Spacer(1,10),P("PHẦN 2  ·  CHI TIẾT VÀ HÌNH ẢNH TỪNG CÔNG VIỆC  —  XEM TỪ TRANG 2",ST["sec"])]
-    if sign: story.append(signatures())
+    if sign: story.append(signatures(data))
     return story
 
 IMG_H=76*mm
@@ -405,7 +425,7 @@ def story_detail(data,standalone=True):
                HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=6)]
     story += [P(summary_line(tasks),ST["sec"]),Spacer(1,8)]
     for i,t in enumerate(tasks,1): story += task_card(i,t,1)
-    story.append(signatures()); return story
+    story.append(signatures(data)); return story
 
 def story_merged(data):
     from reportlab.platypus import PageBreak
@@ -413,23 +433,8 @@ def story_merged(data):
 
 
 # ===== ENERGY REPORT — ESTA STANDARD =====
-def energy_signatures():
-    P=Paragraph
-    cols=[("KỸ THUẬT (KT)","(Ký, ghi rõ họ tên)"),
-          ("KIỂM SOÁT / GIÁM SÁT (KST)","(Ký, ghi rõ họ tên)")]
-    t=Table([[P(a,ST["sig"]) for a,_ in cols],
-             [P(b,ST["sig_s"]) for _,b in cols],
-             ["",""]],
-            colWidths=[CW/2]*2,rowHeights=[None,None,14*mm])
-    t.setStyle(TableStyle([
-        ("LINEABOVE",(0,0),(-1,0),1.5,COPPER),
-        ("TOPPADDING",(0,0),(-1,0),7),
-        ("BOTTOMPADDING",(0,0),(-1,-1),1),
-        ("LEFTPADDING",(0,0),(-1,-1),0),
-        ("RIGHTPADDING",(0,0),(-1,-1),10),
-        ("LINEBELOW",(0,2),(-1,2),.4,TAUPE)
-    ]))
-    return KeepTogether([Spacer(1,8),t])
+def energy_signatures(data):
+    return _signed_kt_kst(data)
 
 def make_energy_page_fns(report_title, period_label):
     short=(report_title or "BÁO CÁO NĂNG LƯỢNG").upper()
@@ -636,7 +641,7 @@ def story_energy(data):
                 ]))
                 story += [KeepTogether([box,Spacer(1,9)])]
 
-    story.append(energy_signatures())
+    story.append(energy_signatures(data))
     return story
 
 
@@ -745,7 +750,7 @@ def story_tools(data):
     for rr in range(2,len(rows),2):
         style.append(("BACKGROUND",(0,rr),(-1,rr),CREAM_L))
     tb.setStyle(TableStyle(style))
-    story += [tb,energy_signatures()]
+    story += [tb,energy_signatures(data)]
     return story
 
 
@@ -765,6 +770,34 @@ SB_URL = "https://upcjcrycahdfroxggsdz.supabase.co"
 SB_KEY = "sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa"
 MEDIA_BUCKET = "task-images"
 OUTPUT_NAME = "ESTA_BaoCao_KyThuat_TongHop_ChiTiet.pdf"
+
+def _prepare_signature(payload, temp_dir):
+    name=str(payload.get("kt_signer_name") or "").strip()
+    source=str(payload.get("kt_signature_data_url") or "").strip()
+    if not name or not source:
+        raise ValueError("Chưa có chữ ký KT. Vui lòng chọn người ký và ảnh chữ ký trước khi xuất PDF.")
+    if not source.startswith("data:image/") or "," not in source:
+        raise ValueError("Ảnh chữ ký KT không hợp lệ")
+    head,encoded=source.split(",",1)
+    if ";base64" not in head.lower():
+        raise ValueError("Ảnh chữ ký KT không hợp lệ")
+    try:
+        raw=base64.b64decode(encoded,validate=True)
+    except Exception:
+        raise ValueError("Ảnh chữ ký KT không hợp lệ")
+    if not raw or len(raw)>1_500_000:
+        raise ValueError("Ảnh chữ ký KT quá lớn hoặc không hợp lệ")
+    ext=".png" if "png" in head.lower() else ".jpg"
+    path=os.path.join(temp_dir,"kt_signature"+ext)
+    with open(path,"wb") as fh:
+        fh.write(raw)
+    try:
+        ImageReader(path).getSize()
+    except Exception:
+        raise ValueError("Không đọc được ảnh chữ ký KT")
+    payload["_kt_signature_path"]=path
+    payload["kt_signer_name"]=name
+    return path
 
 def _json_bytes(obj):
     return json.dumps(obj, ensure_ascii=False).encode("utf-8")
@@ -817,6 +850,8 @@ def _prepare_data(payload, token, temp_dir):
         "building": str(payload.get("building") or "[CẦN BỔ SUNG]"),
         "report_date": str(payload.get("report_date") or ""),
         "prepared_by": str(payload.get("prepared_by") or ""),
+        "kt_signer_name": str(payload.get("kt_signer_name") or ""),
+        "kt_signature_path": str(payload.get("_kt_signature_path") or ""),
         "images_per_row": 2 if int(payload.get("images_per_row") or 1) == 2 else 1,
         "tasks": [],
     }
@@ -881,6 +916,8 @@ def _prepare_energy_data(payload, token, temp_dir):
         "dual_meter": dual_meter,
         "meter1_label": str(payload.get("meter1_label") or "EVN1"),
         "meter2_label": str(payload.get("meter2_label") or "EVN2"),
+        "kt_signer_name": str(payload.get("kt_signer_name") or ""),
+        "kt_signature_path": str(payload.get("_kt_signature_path") or ""),
         "rows": [],
     }
     img_dir = os.path.join(temp_dir, "energy_images")
@@ -936,6 +973,8 @@ def _prepare_tools_data(payload):
         "building": str(payload.get("building") or "[CẦN BỔ SUNG]"),
         "report_date": str(payload.get("report_date") or ""),
         "period_label": str(payload.get("period_label") or "DANH MỤC HIỆN TẠI"),
+        "kt_signer_name": str(payload.get("kt_signer_name") or ""),
+        "kt_signature_path": str(payload.get("_kt_signature_path") or ""),
         "tools": [],
     }
     for row in tools:
@@ -958,6 +997,7 @@ def generate_pdf(payload, token):
     with tempfile.TemporaryDirectory(prefix="esta_report_") as td:
         report_type = str(payload.get("report_type") or "work").lower()
         out_path = os.path.join(td, OUTPUT_NAME)
+        _prepare_signature(payload, td)
 
         if report_type == "operations":
             from reporting.report_center import build_operations_doc
