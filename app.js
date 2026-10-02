@@ -2591,7 +2591,12 @@ function renderMaterials(){
    return allYear?d.startsWith(String(y)):d.startsWith(y+"-"+String(month).padStart(2,"0"));
  }).slice(0,allYear?120:60);
  $("#materialTxnSubtitle").textContent=allYear?("Các phát sinh trong năm "+y+"."):("Các phát sinh trong tháng "+String(month).padStart(2,"0")+" / "+y+".");
- $("#materialTxnBody").innerHTML=tx.map(x=>'<tr><td>'+fmt(x.tx_date)+'</td><td><b>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</b></td><td><span class="stockType '+x.tx_type+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></td><td><b>'+inventoryFmt(x.qty)+'</b></td><td>'+esc(x.performer||"—")+'</td><td>'+esc(x.note||"—")+'</td><td><button class="miniDanger" onclick="deleteStockTxn(\''+x.id+'\')">'+trashIcon+'</button></td></tr>').join("");
+ $("#materialTxnBody").innerHTML=tx.map(x=>{
+   const linked=x.source_type==="work_task"&&x.source_task_id;
+   const note=esc(x.note||"—")+(linked?'<button class="materialTaskLink" type="button" onclick="openLinkedTaskFromStockTxn(\''+esc(String(x.source_task_id))+'\')">↗ '+esc(x.source_task_title||"Mở công việc")+'</button>':'');
+   const action=linked?'<span class="materialSystemTxn" title="Giao dịch được tạo tự động từ công việc">Tự động</span>':'<button class="miniDanger" onclick="deleteStockTxn(\''+x.id+'\')">'+trashIcon+'</button>';
+   return '<tr><td>'+fmt(x.tx_date)+'</td><td><b>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</b></td><td><span class="stockType '+x.tx_type+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></td><td><b>'+inventoryFmt(x.qty)+'</b></td><td>'+esc(x.performer||"—")+'</td><td>'+note+'</td><td>'+action+'</td></tr>';
+ }).join("");
  $("#materialTxnEmpty").classList.toggle("hide",tx.length>0);
 
  const sel=$("#stockTxnMaterial"),old=sel.value;
@@ -2673,8 +2678,16 @@ window.openStockTxnModal=id=>{
  if(chosen&&$("#stockTxnDate").value<inventoryTrackingStart(chosen))$("#stockTxnDate").value=inventoryTrackingStart(chosen);
  $("#stockTxnModal").classList.remove("hide");
 };
+window.openLinkedTaskFromStockTxn=id=>{
+ const task=load().find(x=>String(x.id)===String(id));
+ if(!task)return toast("Công việc liên kết đã bị xóa. Giao dịch vật tư vẫn được giữ lại theo lịch sử.");
+ showModule("work");
+ requestAnimationFrame(()=>window.editTask?.(id));
+};
 window.deleteStockTxn=async id=>{
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ const tx=inventoryTransactions.find(x=>String(x.id)===String(id));
+ if(tx?.source_type==="work_task")return toast("Giao dịch này được tạo từ Công việc. Hãy chỉnh vật tư trong công việc để hệ thống tự cân đối.");
  if(!confirm("Xóa giao dịch nhập/xuất này?"))return;
  try{await sbFetch("/rest/v1/inventory_material_transactions?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"DELETE",token:centralSession.access_token});await loadInventoryData(currentBuilding.id,true);toast("Đã xóa giao dịch")}catch(e){toast(e.message)}
 };
