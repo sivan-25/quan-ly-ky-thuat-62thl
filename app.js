@@ -1512,7 +1512,7 @@ window.appendPdfSignatureToElement=appendPdfSignatureToElement;
 
 $("#pdfSignerName")?.addEventListener("change",e=>{
  const fullName=$("#pdfSignerFullName");
- if(fullName&&!fullName.value.trim())fullName.value=String(e.target.value||"");
+ if(fullName)fullName.value=String(e.target.value||"");
  const err=$("#pdfSignatureError");if(err)err.textContent="";
 });
 $("#pdfSignatureFile")?.addEventListener("change",e=>{
