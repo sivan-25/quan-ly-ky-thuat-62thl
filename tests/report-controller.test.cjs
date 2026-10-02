@@ -33,6 +33,11 @@ function setup() {
     },
     canProjectEdit: () => mode !== 'viewer',
     pdfSafeFilename: x => x,
+    requestPdfSignature: async () => ({ name: 'Kỹ thuật kiểm thử', image_data_url: 'data:image/jpeg;base64,AA==' }),
+    pdfSignaturePayload: s => ({ kt_signer_name: s.name, kt_signature_data_url: s.image_data_url }),
+    appendPdfSignatureToElement: (root, s) => {
+      const el = w.document.createElement('div'); el.className = 'estaPdfSignatureBlock'; el.textContent = s.name; root.appendChild(el); return el;
+    },
     centralAuthFetch: async (url, opts) => {
       calls.push(JSON.parse(opts.body));
       if (mode === 'pdf-error') return { ok: false, status: 500, json: async () => ({ error: 'test PDF error' }) };
@@ -75,6 +80,7 @@ function setup() {
     assert.ok(t.q('#rcExportNote').textContent.includes('Không có bản ghi từ 01/10/2026')); assert.ok(t.q('#rcExportNote').textContent.includes('Chưa có dữ liệu'));
     t.q('#demoReportCombinedExport').click(); await next(); await next();
     const payload = t.calls.find(x => x.report_type === 'operations');
+    assert.equal(payload.kt_signer_name, 'Kỹ thuật kiểm thử'); assert.ok(payload.kt_signature_data_url.startsWith('data:image/'));
     assert.equal(payload.counts.records, 0); assert.equal(payload.sections.length, 1); assert.equal(payload.sections[0].rows.length, 0); assert.equal(payload.range.from, '2026-10-01');
     assert.equal(t.posts.length, 1); assert.equal(t.posts[0].period_from, '2026-10-01');
     let printed = 0; t.w.print = () => { printed++; t.w.dispatchEvent(new t.w.Event('afterprint')); };
