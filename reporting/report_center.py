@@ -250,12 +250,14 @@ def _meta_table(data, sections, st):
 def _signature_block(data, st):
     name = str(data.get("kt_signer_name") or "").strip()
     path = str(data.get("_kt_signature_path") or data.get("kt_signature_path") or "").strip()
-    if not name or not path or not os.path.exists(path):
-        raise ValueError("Chưa có chữ ký KT")
-    with PILImage.open(path) as source:
-        iw, ih = source.size
-    scale = min((58 * mm) / max(iw, 1), (18 * mm) / max(ih, 1))
-    signature = Image(path, width=max(1, iw * scale), height=max(1, ih * scale), hAlign="CENTER")
+    if not name:
+        raise ValueError("Chưa có họ và tên người ký KT")
+    signature = ""
+    if path and os.path.exists(path):
+        with PILImage.open(path) as source:
+            iw, ih = source.size
+        scale = min((58 * mm) / max(iw, 1), (18 * mm) / max(ih, 1))
+        signature = Image(path, width=max(1, iw * scale), height=max(1, ih * scale), hAlign="CENTER")
     signed_name = ParagraphStyle("rc-signed-name", parent=st["meta_value"], alignment=1, fontSize=8, leading=10)
     signed_head = ParagraphStyle("rc-signed-head", parent=st["meta_label"], alignment=1, fontSize=7, leading=10)
     table = Table([
