@@ -1412,6 +1412,108 @@ function blobAsDataUrl(blob){
    reader.readAsDataURL(blob);
  });
 }
+
+/* ===== REQUIRED KT SIGNATURE FOR EVERY PDF EXPORT ===== */
+let pdfSignatureResolver=null;
+let pdfSignaturePreviewUrl="";
+function pdfSignaturePeople(){
+ const names=[...(Array.isArray(projectPeople)?projectPeople:[]).map(x=>String(x?.name||"").trim())];
+ const accountName=String(currentAccount?.display_name||"").trim();
+ if(accountName)names.push(accountName);
+ return [...new Set(names.filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi"));
+}
+function resetPdfSignatureModal(){
+ const select=$("#pdfSignerName"),file=$("#pdfSignatureFile"),preview=$("#pdfSignaturePreview"),err=$("#pdfSignatureError");
+ if(!select||!file)return;
+ select.innerHTML='<option value="">-- Chọn người ký KT --</option>'+pdfSignaturePeople().map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join("");
+ select.value="";
+ file.value="";
+ if(pdfSignaturePreviewUrl){URL.revokeObjectURL(pdfSignaturePreviewUrl);pdfSignaturePreviewUrl=""}
+ if(preview){preview.innerHTML="";preview.classList.add("hide")}
+ if(err)err.textContent="";
+}
+function closePdfSignatureModal(result=null){
+ $("#pdfSignatureModal")?.classList.add("hide");
+ if(pdfSignaturePreviewUrl){URL.revokeObjectURL(pdfSignaturePreviewUrl);pdfSignaturePreviewUrl=""}
+ const resolve=pdfSignatureResolver;pdfSignatureResolver=null;
+ if(resolve)resolve(result);
+}
+function requestPdfSignature(){
+ if(pdfSignatureResolver)return Promise.reject(new Error("Đang chờ xác nhận chữ ký KT"));
+ resetPdfSignatureModal();
+ $("#pdfSignatureModal")?.classList.remove("hide");
+ return new Promise(resolve=>{pdfSignatureResolver=resolve});
+}
+function pdfSignaturePayload(signature){
+ return {
+   kt_signer_name:String(signature?.name||""),
+   kt_signature_data_url:String(signature?.image_data_url||"")
+ };
+}
+function estaPdfSignatureBlockHtml(signature){
+ const name=esc(String(signature?.name||""));
+ const src=esc(String(signature?.image_data_url||""));
+ return '<section class="estaPdfSignatureBlock">'+
+   '<div class="estaPdfSignatureCell"><b>KỸ THUẬT (KT)</b><div class="estaPdfSignatureImage"><img src="'+src+'" alt="Chữ ký KT"></div><strong>'+name+'</strong></div>'+
+   '<div class="estaPdfSignatureCell"><b>KIỂM SOÁT / GIÁM SÁT (KST)</b><div class="estaPdfSignatureBlank"></div><strong>&nbsp;</strong></div>'+
+ '</section>';
+}
+function injectPdfSignatureHtml(html,signature){
+ const doc=new DOMParser().parseFromString(String(html||""),"text/html");
+ doc.querySelectorAll(".sign,.signature3,.estaPdfSignatureBlock").forEach(el=>el.remove());
+ const style=doc.createElement("style");
+ style.textContent='.estaPdfSignatureBlock{display:grid;grid-template-columns:1fr 1fr;gap:18mm;margin-top:12mm;padding-top:4mm;border-top:1.5px solid #a46427;break-inside:avoid;page-break-inside:avoid}.estaPdfSignatureCell{text-align:center;min-height:34mm;color:#411437}.estaPdfSignatureCell>b{display:block;font-size:7.5px;letter-spacing:.2px}.estaPdfSignatureImage,.estaPdfSignatureBlank{height:20mm;margin:2mm auto 1mm;display:flex;align-items:center;justify-content:center}.estaPdfSignatureImage img{display:block;max-width:60mm;max-height:19mm;object-fit:contain}.estaPdfSignatureCell>strong{display:block;font-size:8px;color:#411437}.estaPdfSignatureBlank{border:0}';
+ doc.head.appendChild(style);
+ const holder=doc.createElement("div");holder.innerHTML=estaPdfSignatureBlockHtml(signature);
+ doc.body.appendChild(holder.firstElementChild);
+ return '<!doctype html>'+doc.documentElement.outerHTML;
+}
+function appendPdfSignatureToElement(root,signature){
+ if(!root)return null;
+ root.querySelectorAll(".estaPdfSignatureBlock").forEach(el=>el.remove());
+ const holder=document.createElement("div");holder.innerHTML=estaPdfSignatureBlockHtml(signature);
+ const block=holder.firstElementChild;
+ Object.assign(block.style,{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"18mm",marginTop:"12mm",paddingTop:"4mm",borderTop:"1.5px solid #a46427",breakInside:"avoid",pageBreakInside:"avoid"});
+ block.querySelectorAll(".estaPdfSignatureCell").forEach(el=>Object.assign(el.style,{textAlign:"center",minHeight:"34mm",color:"#411437"}));
+ block.querySelectorAll(".estaPdfSignatureImage,.estaPdfSignatureBlank").forEach(el=>Object.assign(el.style,{height:"20mm",margin:"2mm auto 1mm",display:"flex",alignItems:"center",justifyContent:"center"}));
+ const img=block.querySelector("img");if(img)Object.assign(img.style,{display:"block",maxWidth:"60mm",maxHeight:"19mm",objectFit:"contain"});
+ root.appendChild(block);
+ return block;
+}
+window.requestPdfSignature=requestPdfSignature;
+window.pdfSignaturePayload=pdfSignaturePayload;
+window.estaPdfSignatureBlockHtml=estaPdfSignatureBlockHtml;
+window.appendPdfSignatureToElement=appendPdfSignatureToElement;
+
+$("#pdfSignatureFile")?.addEventListener("change",e=>{
+ const file=e.target.files?.[0],preview=$("#pdfSignaturePreview"),err=$("#pdfSignatureError");
+ if(err)err.textContent="";
+ if(pdfSignaturePreviewUrl){URL.revokeObjectURL(pdfSignaturePreviewUrl);pdfSignaturePreviewUrl=""}
+ if(!file){preview?.classList.add("hide");if(preview)preview.innerHTML="";return}
+ if(!file.type.startsWith("image/")){e.target.value="";if(err)err.textContent="Chỉ hỗ trợ file hình ảnh.";return}
+ pdfSignaturePreviewUrl=URL.createObjectURL(file);
+ if(preview){preview.innerHTML='<img src="'+pdfSignaturePreviewUrl+'" alt="Xem trước chữ ký KT">';preview.classList.remove("hide")}
+});
+$("#pdfSignatureForm")?.addEventListener("submit",async e=>{
+ e.preventDefault();
+ const name=String($("#pdfSignerName")?.value||"").trim();
+ const file=$("#pdfSignatureFile")?.files?.[0];
+ const err=$("#pdfSignatureError"),submit=e.currentTarget.querySelector('button[type="submit"]');
+ if(!name){if(err)err.textContent="Vui lòng chọn người ký KT.";return}
+ if(!file){if(err)err.textContent="Chưa có chữ ký KT. Vui lòng chọn ảnh chữ ký trước khi xuất PDF.";return}
+ submit.disabled=true;
+ try{
+   const blob=await imageFileToBlob(file);
+   const image_data_url=await blobAsDataUrl(blob);
+   if(!image_data_url){if(err)err.textContent="Chưa đọc được chữ ký KT. Vui lòng chọn lại ảnh.";return}
+   closePdfSignatureModal({name,image_data_url});
+ }catch(ex){if(err)err.textContent=ex.message||"Không thể xử lý ảnh chữ ký KT."}
+ finally{submit.disabled=false}
+});
+$("#closePdfSignature")?.addEventListener("click",()=>closePdfSignatureModal(null));
+$("#cancelPdfSignature")?.addEventListener("click",()=>closePdfSignatureModal(null));
+$("#pdfSignatureModal")?.addEventListener("click",e=>{if(e.target===$("#pdfSignatureModal"))closePdfSignatureModal(null)});
+
 async function reportImageDataUrl(ref){
  if(!ref)return "";
  if(/^data:image\//i.test(ref))return ref;
@@ -1496,8 +1598,11 @@ function writeReportLoadingTab(w){
    w.document.close();
  }catch(e){}
 }
-async function downloadReportPdf(html,filename="",previewWindow=null){
+async function downloadReportPdf(html,filename="",previewWindow=null,signature=null){
  if(!html)return;
+ const signer=signature||await requestPdfSignature();
+ if(!signer){if(previewWindow&&!previewWindow.closed)previewWindow.close();return}
+ html=injectPdfSignatureHtml(html,signer);
  let frame=null,pdfUrl="";
  try{
    toast("Đang tạo file PDF...");
@@ -1638,6 +1743,8 @@ function estaGeneratorPayload(rows){
 }
 async function exportEstaGeneratorPdf(rows){
  if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ const signer=await requestPdfSignature();
+ if(!signer)return false;
  await ensureCentralSessionFresh();
  const controller=new AbortController();
  const timer=setTimeout(()=>controller.abort(),115000);
@@ -1648,7 +1755,7 @@ async function exportEstaGeneratorPdf(rows){
        "Content-Type":"application/json",
        "Authorization":"Bearer "+centralSession.access_token
      },
-     body:JSON.stringify(estaGeneratorPayload(rows)),
+     body:JSON.stringify({...estaGeneratorPayload(rows),...pdfSignaturePayload(signer)}),
      signal:controller.signal
    });
    if(!res.ok){
@@ -2075,6 +2182,8 @@ async function exportEnergyEstaPdf(rows,kind="current"){
  if(!rows.length)return toast("Không có dữ liệu để xuất PDF");
  if(energyReportBusy)return toast("Báo cáo năng lượng đang được tạo");
  if(!centralSession?.access_token)return toast("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ const signer=await requestPdfSignature();
+ if(!signer)return;
  energyReportBusy=true;
  const period=energyReportPeriod(kind,rows),m=ENERGY_META[energyType];
  try{
@@ -2091,6 +2200,7 @@ async function exportEnergyEstaPdf(rows,kind="current"){
    dual_meter:dual,
    meter1_label:dual?"EVN1":"",
    meter2_label:dual?"EVN2":"",
+   ...pdfSignaturePayload(signer),
    rows:rows.map(x=>({
     date:String(x.date||""),
     date_display:x.date?fmt(x.date):"",
@@ -2757,6 +2867,8 @@ async function exportToolsEstaPdf(){
  if(!rows.length)return toast("Chưa có dụng cụ để xuất PDF");
  if(toolReportBusy)return toast("Báo cáo dụng cụ đang được tạo");
  if(!centralSession?.access_token)return toast("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ const signer=await requestPdfSignature();
+ if(!signer)return;
  toolReportBusy=true;
  try{
   toast("Đang tạo PDF Dụng cụ kỹ thuật theo mẫu ESTA chuẩn...");
@@ -2766,6 +2878,7 @@ async function exportToolsEstaPdf(){
    building:String(currentBuilding?.name||"[CẦN BỔ SUNG]"),
    report_date:new Date().toLocaleDateString("vi-VN"),
    period_label:"DANH MỤC HIỆN TẠI",
+   ...pdfSignaturePayload(signer),
    tools:rows.map(t=>({
     name:String(t.name||""),
     brand:String(t.brand||""),
