@@ -9981,7 +9981,7 @@ body.workEditOpen{overflow:hidden!important}
 .pdfSignatureBadge{flex:0 0 46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#173f70;color:#fff;font-size:16px;font-weight:800;box-shadow:0 8px 20px rgba(23,63,112,.2)}
 .pdfSignatureForm{display:grid;gap:14px}
 .pdfSignatureForm label>span{display:block;margin-bottom:7px;font-size:12px;font-weight:700;color:#344b5f}
-.pdfSignatureForm select,.pdfSignatureForm input[type=file]{width:100%;min-height:46px;border:1px solid #cfdbe4;border-radius:12px;background:#fff;padding:10px 12px;font:inherit;color:#243746}
+.pdfSignatureForm select,.pdfSignatureForm input[type=text],.pdfSignatureForm input[type=file]{width:100%;min-height:46px;border:1px solid #cfdbe4;border-radius:12px;background:#fff;padding:10px 12px;font:inherit;color:#243746}
 .pdfSignatureUpload{position:relative}
 .pdfSignatureUpload input[type=file]{position:absolute;inset:27px 0 0;width:100%;height:76px;opacity:0;cursor:pointer;z-index:2}
 .pdfSignatureUploadBox{height:76px;border:1.5px dashed #9eb4c5;border-radius:14px;background:#f5f9fc;display:grid;place-items:center;align-content:center;gap:4px;color:#173f70}
@@ -9997,3 +9997,6 @@ body.workEditOpen{overflow:hidden!important}
  .pdfSignatureActions{display:grid;grid-template-columns:1fr 1fr}
  .pdfSignatureActions button{width:100%}
 }
+
+.pdfSignatureForm label>span small{font-size:10px;font-weight:600;color:#7d8d9c}
+.pdfSignatureForm input[type=text]:focus,.pdfSignatureForm select:focus{outline:2px solid rgba(23,63,112,.14);border-color:#718faa}
