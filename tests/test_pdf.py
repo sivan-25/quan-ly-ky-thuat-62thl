@@ -66,10 +66,17 @@ class ReportTests(unittest.TestCase):
         raw, _, _ = generate_pdf(payload, '')
         self.assertTrue(raw.startswith(b'%PDF'))
 
-    def test_signature_is_required(self):
+    def test_signature_image_is_optional(self):
         payload = operations()
         payload.pop('kt_signature_data_url')
-        with self.assertRaisesRegex(ValueError, 'Chưa có chữ ký KT'):
+        raw, _, _ = generate_pdf(payload, '')
+        self.assertTrue(raw.startswith(b'%PDF'))
+
+    def test_signer_full_name_is_required(self):
+        payload = operations()
+        payload['kt_signer_name'] = ''
+        payload.pop('kt_signature_data_url', None)
+        with self.assertRaisesRegex(ValueError, 'họ và tên'):
             generate_pdf(payload, '')
 
     def test_invalid_column_count_is_rejected(self):
