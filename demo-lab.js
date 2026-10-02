@@ -45,7 +45,7 @@ async function demoLoad(force=false){
    demoRest("report_registry",b+"&select=*&order=created_at.desc"),
    demoRest("maintenance_assets",b+"&select=*&order=code.asc"),
    demoRest("contractors",b+"&select=*&order=name.asc"),
-   demoRest("inventory_materials",b+"&select=*&order=name.asc"),
+   demoRest("inventory_materials",b+"&archived_at=is.null&select=*&order=name.asc"),
    demoRest("inventory_material_transactions",b+"&select=*&order=tx_date.desc")
   ]);
   demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
