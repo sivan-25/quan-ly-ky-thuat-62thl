@@ -390,8 +390,6 @@ def build_operations_doc(path, data, token, temp_dir, downloader):
     else:
         story.append(para("Chưa có ghi chú, tồn tại hoặc kiến nghị được nhập cho các bản ghi đã chọn.", st["small"]))
 
-    story.append(_signature_block(data, st))
-
     missing = 0
     if photos:
         with ThreadPoolExecutor(max_workers=4) as pool:
@@ -434,6 +432,8 @@ def build_operations_doc(path, data, token, temp_dir, downloader):
                 ]))
                 story.append(KeepTogether([row]))
                 index += len(group)
+
+    story.append(_signature_block(data, st))
 
     first_page, later_page = _page_functions(data)
     doc = BaseDocTemplate(
