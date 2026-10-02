@@ -1422,6 +1422,27 @@ function pdfSignaturePeople(){
  if(accountName)names.push(accountName);
  return [...new Set(names.filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi"));
 }
+function signatureFileToDataUrl(file){
+ return new Promise((resolve,reject)=>{
+   if(!file?.type?.startsWith("image/"))return reject(new Error("Chỉ hỗ trợ file hình ảnh"));
+   const url=URL.createObjectURL(file),img=new Image();
+   img.onload=()=>{
+     try{
+       const max=1200,scale=Math.min(1,max/Math.max(img.width,img.height));
+       const w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+       const cv=document.createElement("canvas");cv.width=w;cv.height=h;
+       const ctx=cv.getContext("2d");ctx.fillStyle="#ffffff";ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
+       cv.toBlob(async blob=>{
+         URL.revokeObjectURL(url);
+         if(!blob)return reject(new Error("Không thể xử lý ảnh chữ ký KT"));
+         try{resolve(await blobAsDataUrl(blob))}catch(e){reject(e)}
+       },"image/jpeg",.82);
+     }catch(e){URL.revokeObjectURL(url);reject(e)}
+   };
+   img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Không đọc được ảnh chữ ký KT"))};
+   img.src=url;
+ });
+}
 function resetPdfSignatureModal(){
  const select=$("#pdfSignerName"),file=$("#pdfSignatureFile"),preview=$("#pdfSignaturePreview"),err=$("#pdfSignatureError");
  if(!select||!file)return;
@@ -1503,8 +1524,7 @@ $("#pdfSignatureForm")?.addEventListener("submit",async e=>{
  if(!file){if(err)err.textContent="Chưa có chữ ký KT. Vui lòng chọn ảnh chữ ký trước khi xuất PDF.";return}
  submit.disabled=true;
  try{
-   const blob=await imageFileToBlob(file);
-   const image_data_url=await blobAsDataUrl(blob);
+   const image_data_url=await signatureFileToDataUrl(file);
    if(!image_data_url){if(err)err.textContent="Chưa đọc được chữ ký KT. Vui lòng chọn lại ảnh.";return}
    closePdfSignatureModal({name,image_data_url});
  }catch(ex){if(err)err.textContent=ex.message||"Không thể xử lý ảnh chữ ký KT."}
