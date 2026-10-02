@@ -1,6 +1,7 @@
 (()=>{
 "use strict";
 const DEMO_ID="DEMO";
+const TECH_DOC_BUCKET="technical-documents";
 const DEMO_MODULES=["incident","inspection","documents","reports"];
 let demoCache={loaded:false,buildingId:"",incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};
 let demoSelectedIncident="",demoSelectedInspection="",demoSelectedDocument="";
@@ -850,21 +851,114 @@ document.addEventListener("keydown",e=>{
 });
 
 window.demoSelectDocument=id=>{demoSelectedDocument=id;demoRenderDocuments()};
+function demoDocumentFileSize(bytes){
+ const n=Number(bytes)||0;
+ if(n<1024)return n+" B";
+ if(n<1024*1024)return (n/1024).toFixed(n<10240?1:0)+" KB";
+ return (n/(1024*1024)).toFixed(n<10*1024*1024?1:0)+" MB";
+}
+function demoDocumentStoragePath(ref){
+ const value=String(ref||"");
+ return value.startsWith("docstorage:")?value.slice(11):"";
+}
+function demoSafeDocumentPathName(name){
+ const raw=String(name||"file").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D");
+ const dot=raw.lastIndexOf("."),ext=dot>0?raw.slice(dot).replace(/[^A-Za-z0-9.]/g,"").slice(0,12):"";
+ const stem=(dot>0?raw.slice(0,dot):raw).replace(/[^A-Za-z0-9_-]+/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"").slice(0,70)||"tai-lieu";
+ return stem+ext;
+}
+async function demoUploadTechnicalDocument(file,buildingId){
+ if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+ if(!file)throw new Error("Vui lòng chọn file tài liệu.");
+ if(file.size>50*1024*1024)throw new Error("File vượt quá giới hạn 50 MB.");
+ const uid=crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2);
+ const path=storageProjectSegment(buildingId)+"/documents/"+Date.now()+"-"+uid+"-"+demoSafeDocumentPathName(file.name);
+ const res=await centralAuthFetch(SB_URL+"/storage/v1/object/"+TECH_DOC_BUCKET+"/"+mediaPathUrl(path),{
+  method:"POST",
+  headers:{"Content-Type":file.type||"application/octet-stream","x-upsert":"false"},
+  body:file
+ });
+ if(!res.ok){let d={};try{d=await res.json()}catch(_){}
+  throw new Error(d?.message||d?.error||"Không thể tải tài liệu lên máy chủ");
+ }
+ return "docstorage:"+path;
+}
+async function demoDeleteUploadedDocument(ref){
+ const path=demoDocumentStoragePath(ref);if(!path)return;
+ await centralAuthFetch(SB_URL+"/storage/v1/object/"+TECH_DOC_BUCKET,{
+  method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({prefixes:[path]})
+ }).catch(()=>null);
+}
+async function demoDocumentBlob(doc){
+ const path=demoDocumentStoragePath(doc?.file_ref);
+ if(!path)throw new Error("Tài liệu này chưa có file đính kèm.");
+ const res=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+TECH_DOC_BUCKET+"/"+mediaPathUrl(path));
+ if(!res.ok)throw new Error("Không thể tải file tài liệu.");
+ return await res.blob();
+}
+window.demoOpenDocument=async(id,download=false)=>{
+ const doc=demoCache.documents.find(x=>String(x.id)===String(id));if(!doc)return;
+ try{
+  const blob=await demoDocumentBlob(doc),url=URL.createObjectURL(blob);
+  if(download){
+   const a=document.createElement("a");a.href=url;a.download=doc.file_name||doc.title||"ESTA-tai-lieu";
+   document.body.appendChild(a);a.click();a.remove();
+  }else{
+   const w=window.open(url,"_blank","noopener");
+   if(!w){
+    const a=document.createElement("a");a.href=url;a.download=doc.file_name||doc.title||"ESTA-tai-lieu";
+    document.body.appendChild(a);a.click();a.remove();
+   }
+  }
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+ }catch(e){toast(e.message||"Không thể mở tài liệu")}
+};
+function demoDocumentIcon(doc){
+ const type=String(doc?.mime_type||"").toLowerCase(),name=String(doc?.file_name||doc?.title||"").toLowerCase();
+ if(type.includes("pdf")||name.endsWith(".pdf"))return "PDF";
+ if(type.includes("image/"))return "IMG";
+ if(/word|\.docx?$/.test(type+" "+name))return "DOC";
+ if(/sheet|excel|\.xlsx?$/.test(type+" "+name))return "XLS";
+ if(/zip|rar|7z/.test(type+" "+name))return "ZIP";
+ if(/dwg|dxf/.test(name))return "CAD";
+ return "FILE";
+}
 async function demoRenderDocuments(){
  await demoLoad();
  const all=demoCache.documents;
- const list=all.filter(x=>demoMatches([x.title,x.category,x.system_type,x.note,demoAsset(x.asset_id)?.name,demoContractor(x.contractor_id)?.name]));
+ const list=all.filter(x=>demoMatches([x.title,x.file_name,x.category,x.system_type,x.note,demoAsset(x.asset_id)?.name,demoContractor(x.contractor_id)?.name]));
  if((!demoSelectedDocument||!list.some(x=>String(x.id)===String(demoSelectedDocument)))&&list[0])demoSelectedDocument=list[0].id;
  const cats=["Bản vẽ","Catalogue","Manual","Biên bản","Báo giá","Bảo hành"];
- $("#demoDocCats").innerHTML=cats.map(c=>'<div class="demoDocCat"><b>'+all.filter(x=>x.category===c).length+'</b><span>'+c+'</span></div>').join("");
- $("#demoDocBody").innerHTML=list.map(x=>'<tr onclick="demoSelectDocument(\''+x.id+'\')"><td><b>'+esc(x.title)+'</b><small>'+esc(x.note||"")+'</small></td><td>'+esc(x.category)+'</td><td>'+esc(x.system_type||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.code||"—")+'</td><td>'+esc(demoContractor(x.contractor_id)?.name||"—")+'</td><td>'+esc(new Date(x.created_at).toLocaleDateString("vi-VN"))+'</td></tr>').join("");
+ $("#demoDocCats").innerHTML=cats.map(cat=>'<div class="demoDocCat"><b>'+all.filter(x=>x.category===cat).length+'</b><span>'+cat+'</span></div>').join("");
+ $("#demoDocBody").innerHTML=list.map(x=>'<tr onclick="demoSelectDocument(\''+x.id+'\')"><td><b>'+esc(x.title)+'</b><small>'+esc(x.file_name||x.note||"")+'</small></td><td>'+esc(x.category)+'</td><td>'+esc(x.system_type||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.code||"—")+'</td><td>'+esc(demoContractor(x.contractor_id)?.name||"—")+'</td><td>'+esc(new Date(x.created_at).toLocaleDateString("vi-VN"))+'</td></tr>').join("");
  const s=list.find(x=>String(x.id)===String(demoSelectedDocument))||list[0];
- $("#demoDocDetail").innerHTML=s?'<div class="demoPanelHead"><div><h2>'+esc(s.title)+'</h2><p>'+esc(s.category)+' · '+esc(s.system_type||"")+'</p></div></div><div class="demoPanelBody"><div class="demoThumb" style="height:260px">XEM TRƯỚC TÀI LIỆU</div><div class="demoDetailSection"><span>LIÊN KẾT</span><p>Thiết bị: <strong>'+esc(demoAsset(s.asset_id)?.name||"—")+'</strong><br>Nhà thầu: <strong>'+esc(demoContractor(s.contractor_id)?.name||"—")+'</strong></p></div><div class="demoDetailSection"><span>GHI CHÚ</span><p>'+esc(s.note||"—")+'</p></div><button class="demoBtn primary" onclick="toast(\'Tài liệu chính thức sẽ mở từ Storage khi có file đính kèm.\')">Mở tài liệu</button></div>':'<div class="demoPanelBody">Chưa có tài liệu.</div>';
+ if(!s){$("#demoDocDetail").innerHTML='<div class="demoPanelBody">Chưa có tài liệu.</div>';return}
+ const hasFile=!!demoDocumentStoragePath(s.file_ref);
+ const fileMeta=[s.file_name||"",s.file_size?demoDocumentFileSize(s.file_size):"",s.mime_type||""].filter(Boolean).join(" · ");
+ $("#demoDocDetail").innerHTML=
+  '<div class="demoPanelHead"><div><h2>'+esc(s.title)+'</h2><p>'+esc(s.category)+' · '+esc(s.system_type||"")+'</p></div></div>'+
+  '<div class="demoPanelBody">'+
+   '<div class="demoDocumentFileCard"><i>'+demoDocumentIcon(s)+'</i><div><b>'+esc(s.file_name||"Chưa có file đính kèm")+'</b><small>'+esc(fileMeta||"Hồ sơ dữ liệu cũ")+'</small></div></div>'+
+   '<div class="demoDetailSection"><span>LIÊN KẾT</span><p>Thiết bị: <strong>'+esc(demoAsset(s.asset_id)?.name||"—")+'</strong><br>Nhà thầu: <strong>'+esc(demoContractor(s.contractor_id)?.name||"—")+'</strong></p></div>'+
+   '<div class="demoDetailSection"><span>GHI CHÚ</span><p>'+esc(s.note||"—")+'</p></div>'+
+   (hasFile?'<div class="demoDocumentActions"><button class="demoBtn primary" type="button" onclick="demoOpenDocument(\''+s.id+'\',false)">Mở tài liệu</button><button class="demoBtn" type="button" onclick="demoOpenDocument(\''+s.id+'\',true)">Tải xuống</button></div>':'<button class="demoBtn" type="button" disabled>Chưa có file đính kèm</button>')+
+  '</div>';
+}
+function demoCloseDocumentModal(){
+ $("#technicalDocumentModal")?.classList.add("hide");
+ $("#technicalDocumentForm")?.reset();
+ $("#technicalDocumentFileName")&&($("#technicalDocumentFileName").textContent="Chưa chọn file");
+ $("#technicalDocumentError")&&($("#technicalDocumentError").textContent="");
+ $("#technicalDocumentProgress")?.classList.add("hide");
 }
 window.demoAddDocument=async()=>{
- const title=prompt("Tên tài liệu:","Biên bản kỹ thuật mẫu.pdf");if(!title)return;
- const category=prompt("Loại: Bản vẽ / Catalogue / Manual / Biên bản / Báo giá / Bảo hành","Biên bản")||"Khác";
- try{await demoPost("technical_documents",{building_id:currentBuilding.id,title,category,system_type:"Khác",file_ref:"project://"+Date.now(),note:"Tài liệu kỹ thuật của dự án "+currentBuilding.id});await demoLoad(true);demoRenderDocuments();toast("Đã thêm tài liệu")}catch(e){toast(e.message)}
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ await demoLoad();
+ const asset=$("#technicalDocumentAsset"),contractor=$("#technicalDocumentContractor");
+ if(asset)asset.innerHTML='<option value="">Không liên kết</option>'+demoCache.assets.map(x=>'<option value="'+esc(x.id)+'">'+esc((x.code?x.code+" · ":"")+x.name)+'</option>').join("");
+ if(contractor)contractor.innerHTML='<option value="">Không liên kết</option>'+demoCache.contractors.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join("");
+ $("#technicalDocumentModal")?.classList.remove("hide");
+ setTimeout(()=>$("#technicalDocumentTitle")?.focus(),50);
 };
 
 function demoIncidentsReportHtml(){
@@ -892,6 +986,51 @@ document.addEventListener("click",e=>{
  if(e.target.closest("#navInspection"))showModule("inspection");
  if(e.target.closest("#navDocuments"))showModule("documents");
  if(e.target.closest("#navReports"))showModule("reports");
+});
+$("#technicalDocumentFile")?.addEventListener("change",e=>{
+ const file=e.target.files?.[0],label=$("#technicalDocumentFileName"),title=$("#technicalDocumentTitle"),err=$("#technicalDocumentError");
+ if(err)err.textContent="";
+ if(!file){if(label)label.textContent="Chưa chọn file";return}
+ if(file.size>50*1024*1024){e.target.value="";if(label)label.textContent="Chưa chọn file";if(err)err.textContent="File vượt quá giới hạn 50 MB.";return}
+ if(label)label.textContent=file.name+" · "+demoDocumentFileSize(file.size);
+ if(title&&!title.value.trim())title.value=file.name.replace(/\.[^.]+$/,"");
+});
+$("#technicalDocumentModalClose")?.addEventListener("click",demoCloseDocumentModal);
+$("#technicalDocumentCancel")?.addEventListener("click",demoCloseDocumentModal);
+$("#technicalDocumentModal")?.addEventListener("click",e=>{if(e.target===$("#technicalDocumentModal"))demoCloseDocumentModal()});
+$("#technicalDocumentForm")?.addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ const file=$("#technicalDocumentFile")?.files?.[0],title=String($("#technicalDocumentTitle")?.value||"").trim();
+ const err=$("#technicalDocumentError"),btn=$("#technicalDocumentSubmit"),progress=$("#technicalDocumentProgress");
+ if(!title){if(err)err.textContent="Vui lòng nhập tên tài liệu.";return}
+ if(!file){if(err)err.textContent="Vui lòng chọn file cần tải lên.";return}
+ if(file.size>50*1024*1024){if(err)err.textContent="File vượt quá giới hạn 50 MB.";return}
+ btn.disabled=true;progress?.classList.remove("hide");if(err)err.textContent="";
+ let fileRef="";
+ try{
+  fileRef=await demoUploadTechnicalDocument(file,currentBuilding.id);
+  await demoPost("technical_documents",{
+   building_id:currentBuilding.id,
+   title,
+   category:$("#technicalDocumentCategory")?.value||"Khác",
+   system_type:$("#technicalDocumentSystem")?.value||"Khác",
+   asset_id:$("#technicalDocumentAsset")?.value||null,
+   contractor_id:$("#technicalDocumentContractor")?.value||null,
+   file_ref:fileRef,
+   file_name:file.name,
+   mime_type:file.type||"application/octet-stream",
+   file_size:file.size,
+   note:String($("#technicalDocumentNote")?.value||"").trim(),
+   uploaded_by:currentAccount?.id||null
+  });
+  demoCloseDocumentModal();
+  await demoLoad(true);await demoRenderDocuments();
+  toast("Đã tải tài liệu lên kho dự án");
+ }catch(ex){
+  if(fileRef)await demoDeleteUploadedDocument(fileRef);
+  if(err)err.textContent=ex.message||"Không thể tải tài liệu.";
+ }finally{btn.disabled=false;progress?.classList.add("hide")}
 });
 $("#demoIncidentAdd")&&($("#demoIncidentAdd").onclick=window.demoAddIncident);
 $("#demoInspectionAdd")&&($("#demoInspectionAdd").onclick=window.demoAddChecklist);
