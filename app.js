@@ -1669,7 +1669,7 @@ async function downloadReportPdf(html,filename="",previewWindow=null,signature=n
        imageTimeout:15000
      },
      jsPDF:{unit:"mm",format:"a4",orientation:landscape?"landscape":"portrait",compress:true},
-     pagebreak:{mode:["css","legacy"],avoid:["figure",".note",".sign",".jobHead",".detailCard",".signature3"]}
+     pagebreak:{mode:["css","legacy"],avoid:["figure",".note",".sign",".signature",".jobHead",".detailCard",".signature3",".estaPdfSignatureBlock"]}
    }).from(body).toPdf();
    const pdf=await worker.get("pdf");
    if(workCombinedReport){
