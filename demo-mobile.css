@@ -2432,13 +2432,13 @@
   #app.demoMobilePilot.demoEnergyCompactPilot.energyMode #workControls #toggleFilter,
   #app.demoMobilePilot.demoEnergyCompactPilot.energyMode #workControls #exportBtn,
   #app.demoMobilePilot.demoEnergyCompactPilot.energyMode .headerBell{
-    width:40px!important;
-    min-width:40px!important;
-    max-width:40px!important;
-    height:40px!important;
-    min-height:40px!important;
-    max-height:40px!important;
-    flex:0 0 40px!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    flex:0 0 44px!important;
     padding:0!important;
     border-radius:10px!important;
   }
@@ -2858,5 +2858,31 @@
   #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyImagePreview.demoEnergyPreviewCompact{
     margin-left:14px!important;
     margin-right:14px!important;
+  }
+}
+
+
+/* DEMO_ENERGY_NEWBIE_QA_OVERLAY_AND_UNIT_20261003_V13 */
+@media (max-width:640px){
+  /* Units are visually secondary on the compact KPI row. */
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .demoEnergyKpiValue{
+    font-size:15px!important;
+    line-height:1.1!important;
+    font-weight:760!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .demoEnergyKpiUnit{
+    margin-left:3px!important;
+    font-size:9px!important;
+    line-height:1!important;
+    font-weight:520!important;
+    vertical-align:baseline!important;
+  }
+
+  /* Do not let the fixed Save bar cover the bottom-sheet people selector. */
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage:has(#energyPeopleMenu:not(.hide)) .energyActions{
+    display:none!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage #energyPeopleMenu{
+    z-index:1100!important;
   }
 }
