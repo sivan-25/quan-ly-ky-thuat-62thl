@@ -1963,6 +1963,19 @@ function syncEnergyDateCompact(){
 $("#energyDate")?.addEventListener("input",syncEnergyDateCompact);
 $("#energyDate")?.addEventListener("change",syncEnergyDateCompact);
 
+function setEnergyNoteOpen(open,{focus=false}={}){
+ const field=$("#energyForm .energyNoteField"),btn=$("#energyNoteToggle");
+ if(!field||!btn)return;
+ field.classList.toggle("energyNoteCollapsed",!open);
+ btn.setAttribute("aria-expanded",String(!!open));
+ btn.textContent=open?"− Ẩn ghi chú":"＋ Thêm ghi chú";
+ if(open&&focus)setTimeout(()=>$("#energyNote")?.focus(),30);
+}
+$("#energyNoteToggle")?.addEventListener("click",()=>{
+ const open=$("#energyNoteToggle")?.getAttribute("aria-expanded")!=="true";
+ setEnergyNoteOpen(open,{focus:open});
+});
+
 function resetEnergyForm(){
  sync68EnergyTabs();
  const m=ENERGY_META[energyType];
@@ -1977,6 +1990,7 @@ function resetEnergyForm(){
  $("#energyImage2Preview").classList.toggle("hide",!dual);
  setPeopleSelected("energy",[]);
  $("#energyNote").value="";
+ setEnergyNoteOpen(false);
  $("#energyImage").value="";
  $("#energyImage2").value="";
  $("#energyImagePreview").innerHTML="";
@@ -2115,6 +2129,14 @@ function renderEnergy(){
   $("#energyLatestValue").textContent=latest?energyFmt(latest.value)+" "+m.unit:"—";
   $("#energyPeriodUse").textContent=totalUse!==null?energyFmt(totalUse)+" "+m.unit:"—";
  }
+ const latestHint=$("#energyLatestHint");
+ if(latestHint){
+  latestHint.textContent=latest
+   ?(dual
+      ?"Chỉ số gần nhất: EVN1 "+energyFmt(latest.value)+" · EVN2 "+energyFmt(latest.value2)
+      :"Chỉ số gần nhất: "+energyFmt(latest.value)+" "+m.unit)
+   :"Chỉ số gần nhất: —";
+ }
 
  const totalBox=$("#energyTotalInline");
  if(totalBox){
@@ -2170,6 +2192,7 @@ window.editEnergy=id=>{
  $("#energyImage2Preview").classList.toggle("hide",!dual);
  setPeopleSelected("energy",performerArray(x));
  $("#energyNote").value=x.note||"";
+ setEnergyNoteOpen(!!String(x.note||"").trim());
  $("#energyImagePreview").innerHTML=x.image?mediaImgHtml(x.image,"")+'<span>Ảnh hiện tại EVN1</span>':"";
  $("#energyImage2Preview").innerHTML=dual&&x.image2?mediaImgHtml(x.image2,"")+'<span>Ảnh hiện tại EVN2</span>':"";
  hydrateMediaImages($("#energyImagePreview"));
