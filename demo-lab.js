@@ -88,7 +88,7 @@ function demoSyncMobilePilot(){
  $("#app")?.classList.toggle("demoMobilePilot",inProject);
 
  // The new ultra-compact Energy pass is intentionally piloted on DEMO only.
- const demoEnergyPilot=inProject&&demoIs();
+ const demoEnergyPilot=inProject&&demoIs()&&demoEnergyIsPhone();
  $("#app")?.classList.toggle("demoEnergyCompactPilot",demoEnergyPilot);
  demoSyncEnergyMobileEnhancements(demoEnergyPilot);
  return inProject;
@@ -210,9 +210,9 @@ function demoSyncEnergyMobileEnhancements(active){
    demoEnsureEnergyRecentToggle();
   },0)));
   window.addEventListener("resize",()=>{
-   if(!demoIs())return;
-   $("#app")?.classList.toggle("demoEnergyCompactPilot",demoEnergyIsPhone());
-   demoSyncEnergyMobileEnhancements(true);
+   const active=demoIs()&&demoEnergyIsPhone();
+   $("#app")?.classList.toggle("demoEnergyCompactPilot",active);
+   demoSyncEnergyMobileEnhancements(active);
   },{passive:true});
  }
 }
