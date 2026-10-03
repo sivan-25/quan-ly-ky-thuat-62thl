@@ -87,6 +87,10 @@ function demoSetProjectMode(){
  // shell/topbar/work-page theme; project-specific differences are data/config only.
  $("#app")?.classList.toggle("demoExactProject",on);
  $("#app")?.classList.toggle("demoSampleProject",on);
+ // Mobile pilot is intentionally scoped to the real DEMO project only.
+ // This lets us QA/refine phone UI without changing other projects or desktop.
+ const demoMobilePilot=on&&String(currentBuilding?.id||"").toUpperCase()===DEMO_ID;
+ $("#app")?.classList.toggle("demoMobilePilot",demoMobilePilot);
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
  if(on){demoEnsureWorkPanel();demoLoad().then(()=>{demoPopulateWorkOptions();demoRenderHomeOps();demoEnsureAssetPassport()})}
@@ -143,7 +147,7 @@ showHome=function(){
 const originalOpenAdminPortal=openAdminPortal;
 openAdminPortal=function(){
  demoHideSpecialPages();
- $("#app")?.classList.remove("demoProjectMode","demoExactProject","demoSampleProject");
+ $("#app")?.classList.remove("demoProjectMode","demoExactProject","demoSampleProject","demoMobilePilot");
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.add("hide"));
  originalOpenAdminPortal();
 };
