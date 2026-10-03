@@ -2165,3 +2165,806 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   padding:7px 9px;
   color:#627b89;
 }
+
+
+/* ESTA_DEMO_MOBILE_PILOT_20261003
+   Mobile-only QA layer for the real DEMO project.
+   Desktop (>=761px) and every non-DEMO project are intentionally untouched. */
+@media (max-width:760px){
+  #app.demoMobilePilot{
+    width:100%!important;
+    max-width:100vw!important;
+    min-height:100dvh!important;
+    overflow-x:hidden!important;
+  }
+  #app.demoMobilePilot,
+  #app.demoMobilePilot *{
+    box-sizing:border-box!important;
+  }
+  #app.demoMobilePilot main{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100vw!important;
+    overflow-x:hidden!important;
+  }
+  #app.demoMobilePilot .page:not(.hide){
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom))!important;
+  }
+
+  /* Shared mobile topbar */
+  #app.demoMobilePilot .estaTopbar{
+    height:auto!important;
+    min-height:64px!important;
+    padding:8px 10px!important;
+    gap:8px!important;
+    flex-wrap:wrap!important;
+    align-items:center!important;
+    overflow:visible!important;
+  }
+  #app.demoMobilePilot .mobileMenuBtn{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    flex:0 0 44px!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:0!important;
+    font-size:22px!important;
+    line-height:1!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot .topModuleTitle{
+    min-width:0!important;
+    flex:1 1 150px!important;
+    gap:7px!important;
+  }
+  #app.demoMobilePilot .topModuleTitle>div:last-child{
+    min-width:0!important;
+  }
+  #app.demoMobilePilot .topModuleTitle h1{
+    min-width:0!important;
+    margin:0!important;
+    font-size:17px!important;
+    line-height:1.16!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  #app.demoMobilePilot .topModuleTitle p{
+    display:none!important;
+  }
+  #app.demoMobilePilot .topModuleIcon{
+    width:34px!important;
+    height:34px!important;
+    flex:0 0 34px!important;
+    border-radius:8px!important;
+  }
+  #app.demoMobilePilot .topModuleIcon svg{
+    width:18px!important;
+    height:18px!important;
+  }
+  #app.demoMobilePilot .headerTools{
+    min-width:0!important;
+    flex:0 0 auto!important;
+    gap:6px!important;
+    margin-left:auto!important;
+  }
+  #app.demoMobilePilot .headerSearch{
+    display:none!important;
+  }
+  #app.demoMobilePilot .headerBell{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    flex:0 0 44px!important;
+    padding:0!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot.workMode .headerTools{
+    width:100%!important;
+    flex:1 0 100%!important;
+    justify-content:flex-end!important;
+    margin:0!important;
+    padding-left:52px!important;
+  }
+  #app.demoMobilePilot .workHeaderActions{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:6px!important;
+    min-width:0!important;
+  }
+  #app.demoMobilePilot .estaTopbar .estaReportPdfBtn{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:10px!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot .estaTopbar .estaReportPdfBtn span{
+    display:none!important;
+  }
+  #app.demoMobilePilot .estaTopbar .estaReportPdfBtn svg{
+    width:20px!important;
+    height:20px!important;
+    margin:0!important;
+  }
+
+  /* Sidebar + overlay */
+  #app.demoMobilePilot .estaSidebar{
+    top:0!important;
+    bottom:0!important;
+    width:min(86vw,320px)!important;
+    max-width:320px!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    padding-top:env(safe-area-inset-top)!important;
+    padding-bottom:env(safe-area-inset-bottom)!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #app.demoMobilePilot .mobileSidebarHeader{
+    position:sticky!important;
+    top:0!important;
+    z-index:5!important;
+    min-height:56px!important;
+    padding:6px 10px!important;
+  }
+  #app.demoMobilePilot #sidebarClose{
+    min-width:84px!important;
+    min-height:44px!important;
+    height:44px!important;
+    padding:0 12px!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot .estaNav button,
+  #app.demoMobilePilot .sideBackup button,
+  #app.demoMobilePilot .sideLogout{
+    min-height:46px!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot #menuBackdrop{
+    position:fixed!important;
+    inset:0!important;
+    z-index:998!important;
+    background:rgba(7,18,31,.48)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot #menuBackdrop[hidden]{
+    display:none!important;
+  }
+  body:has(#app.demoMobilePilot.menuOpen){
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
+
+  /* Work filter: two columns when space allows, one column on narrow phones */
+  #app.demoMobilePilot #filterBar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:14px!important;
+    border-radius:14px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #app.demoMobilePilot #filterBar.hide{
+    display:none!important;
+  }
+  #app.demoMobilePilot #filterBar .workFilterHeading,
+  #app.demoMobilePilot #filterBar .clearFilter{
+    grid-column:1/-1!important;
+  }
+  #app.demoMobilePilot #filterBar .workFilterField{
+    min-width:0!important;
+    width:100%!important;
+  }
+  #app.demoMobilePilot #filterBar .workFilterField>span{
+    display:block!important;
+    margin-bottom:6px!important;
+    font-size:11.5px!important;
+    line-height:1.2!important;
+  }
+  #app.demoMobilePilot #filterBar input,
+  #app.demoMobilePilot #filterBar select{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:48px!important;
+    min-height:48px!important;
+    padding:0 11px!important;
+    font-size:16px!important;
+    line-height:normal!important;
+  }
+  #app.demoMobilePilot #filterBar input[type="date"]{
+    min-inline-size:0!important;
+  }
+  #app.demoMobilePilot #filterBar .workFilterClose{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+  }
+  #app.demoMobilePilot #filterBar .clearFilter{
+    min-height:48px!important;
+    font-size:13px!important;
+  }
+
+  /* Work entry form */
+  #app.demoMobilePilot #workPage{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryCard{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 12px!important;
+    border-radius:14px!important;
+    overflow:hidden!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryHeader{
+    min-height:0!important;
+    padding:13px!important;
+    gap:10px!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryHeader h2{
+    font-size:18px!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryHeader p{
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm.workEntryForm{
+    width:100%!important;
+    min-width:0!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:12px!important;
+    overflow:visible!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .workField{
+    min-width:0!important;
+    width:100%!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .workField>span{
+    margin-bottom:6px!important;
+    font-size:11.5px!important;
+    line-height:1.25!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm input:not([type="hidden"]):not([type="file"]),
+  #app.demoMobilePilot #workPage #taskForm select,
+  #app.demoMobilePilot #workPage #taskForm textarea,
+  #app.demoMobilePilot #workPage #taskForm .peopleSelectBtn{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:48px!important;
+    min-height:48px!important;
+    max-height:none!important;
+    padding:0 11px!important;
+    font-size:16px!important;
+    line-height:normal!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm textarea{
+    height:auto!important;
+    min-height:92px!important;
+    padding-top:11px!important;
+    padding-bottom:11px!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm input[type="date"]{
+    min-inline-size:0!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .workStatus,
+  #app.demoMobilePilot #workPage #taskForm .workContent,
+  #app.demoMobilePilot #workPage #taskForm .workPerformer,
+  #app.demoMobilePilot #workPage #taskForm .workNote,
+  #app.demoMobilePilot #workPage #taskForm .workImage,
+  #app.demoMobilePilot #workPage #taskForm .workFormActions{
+    grid-column:1/-1!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .imageNativeActions{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .imageActionBtn,
+  #app.demoMobilePilot #workPage #taskForm .workSave,
+  #app.demoMobilePilot #workPage #taskForm .workCancel{
+    min-height:48px!important;
+    height:48px!important;
+    font-size:13px!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .workFormActions{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  #app.demoMobilePilot #workPage .existingImagePreview,
+  #app.demoMobilePilot #workPage .pendingImagePreview,
+  #app.demoMobilePilot #workPage .workPendingImages{
+    width:100%!important;
+    max-width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    overflow:hidden!important;
+  }
+  #app.demoMobilePilot #workPage .existingImagePreview img,
+  #app.demoMobilePilot #workPage .pendingImagePreview img,
+  #app.demoMobilePilot #workPage .workPendingImages img{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    object-fit:cover!important;
+  }
+
+  /* Work stats + mobile cards */
+  #app.demoMobilePilot #workPage .stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  #app.demoMobilePilot #workPage .stats article{
+    min-width:0!important;
+    min-height:82px!important;
+    padding:11px!important;
+  }
+  #app.demoMobilePilot #workPage .stats article small{
+    font-size:9.5px!important;
+    line-height:1.25!important;
+  }
+  #app.demoMobilePilot #workPage .desktopTable{
+    display:none!important;
+  }
+  #app.demoMobilePilot #workPage #mobileCards{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  #app.demoMobilePilot #workPage #mobileCards>*{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #app.demoMobilePilot #workPage .rowActionMenu summary{
+    min-width:44px!important;
+    min-height:44px!important;
+    display:grid!important;
+    place-items:center!important;
+    touch-action:manipulation!important;
+  }
+
+  /* DEMO linked work fields */
+  #app.demoMobilePilot #demoWorkLinks{
+    width:auto!important;
+    max-width:100%!important;
+    margin:0 0 12px!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks input,
+  #app.demoMobilePilot #demoWorkLinks select,
+  #app.demoMobilePilot #demoWorkLinks textarea{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:48px!important;
+    font-size:16px!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks textarea{
+    min-height:96px!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks .demoTaskMaterialRow{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks .demoTaskMaterialRemove{
+    min-width:44px!important;
+    min-height:44px!important;
+  }
+
+  /* Full-screen work editor on phones */
+  #app.demoMobilePilot .workEditDrawer{
+    padding:0!important;
+    align-items:stretch!important;
+  }
+  #app.demoMobilePilot .workEditDrawerCard{
+    width:100vw!important;
+    max-width:100vw!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+    overflow:hidden!important;
+  }
+  #app.demoMobilePilot .workEditDrawerHead{
+    position:sticky!important;
+    top:0!important;
+    z-index:10!important;
+    min-height:64px!important;
+    padding:calc(8px + env(safe-area-inset-top)) 12px 8px!important;
+  }
+  #app.demoMobilePilot #closeWorkEditDrawer{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+  }
+  #app.demoMobilePilot .workEditDrawerMount{
+    height:calc(100dvh - 64px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding-bottom:env(safe-area-inset-bottom)!important;
+  }
+  #app.demoMobilePilot .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    margin:0 14px calc(16px + env(safe-area-inset-bottom))!important;
+  }
+
+  /* Energy: no whole-page table overflow; use cards and scrollable tabs */
+  #app.demoMobilePilot #energyPage{
+    width:100%!important;
+    min-width:0!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  #app.demoMobilePilot #energyPage .energyTabs{
+    width:100%!important;
+    max-width:100%!important;
+    display:flex!important;
+    grid-template-columns:none!important;
+    gap:6px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+  }
+  #app.demoMobilePilot #energyPage .energyTabs::-webkit-scrollbar{
+    display:none!important;
+  }
+  #app.demoMobilePilot #energyPage .energyTabs button{
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:88px!important;
+    min-height:44px!important;
+    height:44px!important;
+    padding:0 12px!important;
+    font-size:11px!important;
+    white-space:nowrap!important;
+  }
+  #app.demoMobilePilot #energyPage .energyForm{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  #app.demoMobilePilot #energyPage .energyForm label,
+  #app.demoMobilePilot #energyPage .energyForm>div{
+    min-width:0!important;
+    width:100%!important;
+  }
+  #app.demoMobilePilot #energyPage .energyForm input:not([type="file"]),
+  #app.demoMobilePilot #energyPage .energyForm select,
+  #app.demoMobilePilot #energyPage .energyForm textarea,
+  #app.demoMobilePilot #energyPage .peopleSelectBtn,
+  #app.demoMobilePilot #energyPage .energyFilters input,
+  #app.demoMobilePilot #energyPage .energyFilters select{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:48px!important;
+    font-size:16px!important;
+  }
+  #app.demoMobilePilot #energyPage input[type="date"]{
+    min-inline-size:0!important;
+  }
+  #app.demoMobilePilot #energyPage .energyFilters{
+    width:100%!important;
+    max-width:100%!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  #app.demoMobilePilot #energyPage .energyDesktopTable{
+    display:none!important;
+  }
+  #app.demoMobilePilot #energyPage #energyMobileCards{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  #app.demoMobilePilot #energyPage #energyMobileCards>*{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #app.demoMobilePilot #energyPage #energyExportPdf{
+    min-height:44px!important;
+    touch-action:manipulation!important;
+  }
+
+  /* Inventory / maintenance / contractor / construction */
+  #app.demoMobilePilot #inventoryPage,
+  #app.demoMobilePilot #maintenancePage,
+  #app.demoMobilePilot #contractorPage,
+  #app.demoMobilePilot #constructionMaterialPage,
+  #app.demoMobilePilot #reportsPage{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  #app.demoMobilePilot .inventoryTableScroll,
+  #app.demoMobilePilot .constructionTableScroll,
+  #app.demoMobilePilot .rc-table-wrap,
+  #app.demoMobilePilot .demoTableWrap{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    overscroll-behavior-x:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #app.demoMobilePilot .inventoryTableScroll table,
+  #app.demoMobilePilot .constructionTableScroll table,
+  #app.demoMobilePilot .rc-table-wrap table{
+    min-width:720px!important;
+  }
+  #app.demoMobilePilot .demoTableWrap .demoTable{
+    min-width:720px!important;
+  }
+  #app.demoMobilePilot .inventorySwitchBar,
+  #app.demoMobilePilot .inventoryCommand,
+  #app.demoMobilePilot .contractorJobFilters,
+  #app.demoMobilePilot .contractorSpecialtyFilters{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+
+  /* Special DEMO feature pages */
+  #app.demoMobilePilot .demoFeaturePage{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding:10px!important;
+  }
+  #app.demoMobilePilot .demoHero{
+    width:100%!important;
+    min-width:0!important;
+    padding:14px!important;
+  }
+  #app.demoMobilePilot .demoHeroCopy h1{
+    font-size:21px!important;
+  }
+  #app.demoMobilePilot .demoHeroActions{
+    grid-template-columns:1fr!important;
+  }
+  #app.demoMobilePilot .demoHeroActions .demoBtn{
+    width:100%!important;
+    min-height:46px!important;
+    font-size:12.5px!important;
+  }
+  #app.demoMobilePilot .demoPanel,
+  #app.demoMobilePilot .demoGrid2{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #app.demoMobilePilot .demoKpis{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  /* Forms throughout DEMO: iPhone-safe typography and touch sizes */
+  #app.demoMobilePilot input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+  #app.demoMobilePilot select,
+  #app.demoMobilePilot textarea{
+    max-width:100%!important;
+    min-width:0!important;
+    font-size:16px!important;
+  }
+  #app.demoMobilePilot input[type="date"]{
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+  }
+  #app.demoMobilePilot .demoBtn,
+  #app.demoMobilePilot .inventoryPrimary,
+  #app.demoMobilePilot .inventorySecondary,
+  #app.demoMobilePilot .contractorBtn{
+    min-height:44px!important;
+    touch-action:manipulation!important;
+  }
+
+  /* Generic app modals used by inventory, maintenance, contractor, project settings */
+  #app.demoMobilePilot .modal:not(.hide){
+    padding:10px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+  }
+  #app.demoMobilePilot .modalCard{
+    width:100%!important;
+    max-width:560px!important;
+    max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+    margin:0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom))!important;
+  }
+  #app.demoMobilePilot .modalClose{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    z-index:8!important;
+    touch-action:manipulation!important;
+  }
+  #app.demoMobilePilot .inventoryForm,
+  #app.demoMobilePilot .contractorForm,
+  #app.demoMobilePilot .technicalDocumentForm,
+  #app.demoMobilePilot .pdfSignatureForm,
+  #app.demoMobilePilot .settingsInlineForm,
+  #app.demoMobilePilot .settingsAccountForm{
+    grid-template-columns:1fr!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #app.demoMobilePilot .inventoryForm input,
+  #app.demoMobilePilot .inventoryForm select,
+  #app.demoMobilePilot .inventoryForm textarea,
+  #app.demoMobilePilot .contractorForm input,
+  #app.demoMobilePilot .contractorForm select,
+  #app.demoMobilePilot .contractorForm textarea,
+  #app.demoMobilePilot .technicalDocumentForm input,
+  #app.demoMobilePilot .technicalDocumentForm select,
+  #app.demoMobilePilot .technicalDocumentForm textarea{
+    width:100%!important;
+    min-width:0!important;
+    min-height:48px!important;
+    font-size:16px!important;
+  }
+
+  /* Incident / checklist create modals */
+  #app.demoMobilePilot #demoIncidentModal,
+  #app.demoMobilePilot #demoChecklistModal{
+    padding:0!important;
+  }
+  #app.demoMobilePilot #demoIncidentModal .demoIncidentModalCard,
+  #app.demoMobilePilot #demoChecklistModal .demoChecklistModalCard{
+    width:100vw!important;
+    max-width:100vw!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+  }
+  #app.demoMobilePilot #demoIncidentModal .demoIncidentModalClose,
+  #app.demoMobilePilot #demoChecklistModal .demoChecklistModalClose{
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+  }
+  #app.demoMobilePilot #demoIncidentModal input,
+  #app.demoMobilePilot #demoIncidentModal select,
+  #app.demoMobilePilot #demoIncidentModal textarea,
+  #app.demoMobilePilot #demoChecklistModal input,
+  #app.demoMobilePilot #demoChecklistModal select,
+  #app.demoMobilePilot #demoChecklistModal textarea{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    font-size:16px!important;
+  }
+
+  /* Image viewer */
+  #app.demoMobilePilot .viewer:not(.hide){
+    padding:0!important;
+  }
+  #app.demoMobilePilot .viewerCard{
+    width:100vw!important;
+    max-width:100vw!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    margin:0!important;
+    border-radius:0!important;
+    overflow:auto!important;
+    padding:calc(8px + env(safe-area-inset-top)) 8px calc(12px + env(safe-area-inset-bottom))!important;
+  }
+  #app.demoMobilePilot #closeViewer{
+    position:sticky!important;
+    top:0!important;
+    margin-left:auto!important;
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    z-index:10!important;
+  }
+  #app.demoMobilePilot #viewerImages img{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    object-fit:contain!important;
+  }
+}
+
+@media (max-width:390px){
+  #app.demoMobilePilot .estaTopbar{
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  #app.demoMobilePilot .topModuleTitle h1{
+    font-size:16px!important;
+  }
+  #app.demoMobilePilot .topModuleIcon{
+    width:32px!important;
+    height:32px!important;
+    flex-basis:32px!important;
+  }
+  #app.demoMobilePilot #filterBar{
+    grid-template-columns:1fr!important;
+  }
+  #app.demoMobilePilot #filterBar .workFilterField,
+  #app.demoMobilePilot #filterBar .workFilterHeading,
+  #app.demoMobilePilot #filterBar .clearFilter{
+    grid-column:1!important;
+  }
+  #app.demoMobilePilot #workPage .stats,
+  #app.demoMobilePilot .demoKpis{
+    grid-template-columns:1fr!important;
+  }
+  #app.demoMobilePilot #energyPage .energyFilters{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media (max-width:360px){
+  #app.demoMobilePilot #workPage #taskForm.workEntryForm{
+    grid-template-columns:1fr!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .workDate,
+  #app.demoMobilePilot #workPage #taskForm .workType,
+  #app.demoMobilePilot #workPage #taskForm .workStatus,
+  #app.demoMobilePilot #workPage #taskForm .workContent,
+  #app.demoMobilePilot #workPage #taskForm .workPerformer,
+  #app.demoMobilePilot #workPage #taskForm .workNote,
+  #app.demoMobilePilot #workPage #taskForm .workImage,
+  #app.demoMobilePilot #workPage #taskForm .workFormActions{
+    grid-column:1!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .imageNativeActions{
+    grid-template-columns:1fr!important;
+  }
+  #app.demoMobilePilot .topModuleIcon{
+    display:none!important;
+  }
+  #app.demoMobilePilot.workMode .headerTools{
+    padding-left:0!important;
+  }
+}
