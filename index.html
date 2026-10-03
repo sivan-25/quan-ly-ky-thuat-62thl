@@ -677,7 +677,7 @@
   font-weight:750!important;
 }
 </style>
-<link rel="stylesheet" href="report-center.css?v=20261001-empty-period01"></head><body>
+<link rel="stylesheet" href="report-center.css?v=20261001-empty-period01"><link rel="stylesheet" href="admin-access.css?v=20261003-multiproject01"></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -744,6 +744,7 @@
     <div><b>ESTA</b><small>PROPERTY MANAGEMENT</small></div>
   </div>
 
+  <div id="technicalProjectSwitcher" class="technicalProjectSwitcher hide"><label for="technicalProjectSelect">Chuyển dự án</label><select id="technicalProjectSelect" aria-label="Chuyển dự án"></select></div>
   <nav class="estaNav">
     <button id="navHome" class="active">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -2366,16 +2367,23 @@
     </section>
 
     <section id="settingsAccounts" class="settingsPane hide">
-      <div class="settingsPaneTitle"><div><h4>Tài khoản kỹ thuật</h4><p>Tạo tài khoản và xóa tài khoản kỹ thuật không còn sử dụng.</p></div></div>
+      <div class="settingsPaneTitle"><div><h4>Tài khoản kỹ thuật</h4><p>Một tài khoản có thể truy cập nhiều dự án. Tích chọn dự án khi tạo hoặc chỉnh sửa quyền bên dưới.</p></div></div>
       <form id="adminCreateAccountForm" class="adminCreateForm settingsAccountForm">
         <label><span>Tên đăng nhập</span><input id="adminUsername" required minlength="3" placeholder="vd: kythuat62"></label>
         <label><span>Tên hiển thị</span><input id="adminDisplayName" required placeholder="vd: Kỹ thuật 62 THL"></label>
         <label><span>Mật khẩu</span><input id="adminPassword" type="password" required minlength="6" placeholder="Tối thiểu 6 ký tự"></label>
-        <label><span>Dự án</span><select id="adminBuildingSelect" required></select></label>
         <label><span>Quyền</span><select id="adminRole"><option value="editor">Được nhập / chỉnh sửa</option><option value="viewer">Chỉ xem</option></select></label>
+        <fieldset class="adminProjectFieldset"><legend>Dự án được truy cập *</legend><div id="adminCreateProjectPicker" class="adminProjectPicker"></div></fieldset>
         <button id="adminCreateBtn" class="primary" type="submit">＋ Tạo tài khoản</button>
       </form>
       <p id="adminCreateHint" class="adminHint">Cần đăng nhập bằng Admin trung tâm để tạo tài khoản thật.</p>
+      <section id="adminProjectAccessEditor" class="adminProjectAccessEditor hide" aria-labelledby="adminProjectAccessTitle">
+        <h4 id="adminProjectAccessTitle">Chọn dự án cho tài khoản</h4><p id="adminProjectAccessName"></p>
+        <form id="adminProjectAccessForm"><fieldset id="adminProjectAccessFields" class="adminProjectFieldset"><legend>Dự án và quyền truy cập</legend><div id="adminEditProjectPicker" class="adminProjectPicker"></div></fieldset>
+          <p class="adminAccessHint">Tích chọn các dự án tài khoản được phép truy cập. Có thể đặt quyền riêng cho từng dự án.</p><p id="adminProjectAccessError" class="adminAccessError" role="alert"></p>
+          <div class="adminAccessActions"><button id="adminCancelProjectAccess" class="secondary" type="button">Hủy</button><button id="adminSaveProjectAccess" class="primary" type="submit">Lưu dự án</button></div>
+        </form>
+      </section>
       <div class="settingsListHead"><b>Danh sách tài khoản</b><button id="refreshAdminUsers" class="secondary small settingsRefreshBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M18 12a6 6 0 0 0-10.2-4.2L5 10M6 12a6 6 0 0 0 10.2 4.2L19 14"/></svg><span>Làm mới</span></button></div>
       <div id="adminUsersList" class="adminUsersList"><div class="empty">Chưa tải danh sách tài khoản.</div></div>
     </section>
@@ -2418,6 +2426,6 @@
   </div>
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="app.js?v=20261002-workfilter02"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js?v=20261003-multiproject01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261001-imgfix04"></script><script src="construction.js?v=20260924-2255"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261003-mobilepilot01"></script><script src="command-center.js?v=20260930-mobile-nodim01"></script></body></html>
 

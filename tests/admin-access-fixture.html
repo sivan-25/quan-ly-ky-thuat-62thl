@@ -1,0 +1,30 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>ESTA · Kiểm thử tài khoản đa dự án</title></head><body><p>Đang nạp dữ liệu giả lập…</p>
+<script>
+(async()=>{
+  const realFetch=window.fetch.bind(window);
+  const [html,code]=await Promise.all([realFetch('index.html').then(r=>r.text()),realFetch('app.js').then(r=>r.text())]);
+  const source=new DOMParser().parseFromString(html,'text/html');
+  for(const node of source.head.querySelectorAll('style,link[rel="stylesheet"],link[rel="preconnect"]'))document.head.appendChild(node.cloneNode(true));
+  const shell=source.getElementById('app');shell.className='adminMode';
+  shell.querySelectorAll('.page').forEach(p=>p.classList.toggle('hide',p.id!=='adminPage'));
+  shell.querySelectorAll('.topModuleTitle').forEach(p=>p.classList.toggle('hide',p.id!=='topAdminTitle'));
+  const settings=source.getElementById('adminSettingsModal');
+  document.body.replaceChildren(shell,settings,source.getElementById('toast'));
+  // Use the full DOM so the production application binds its normal handlers.
+  for(const child of source.body.children){if(child.id!=='app'&&child.id!=='adminSettingsModal'&&child.id!=='toast'&&child.tagName!=='SCRIPT')document.body.appendChild(child.cloneNode(true));}
+  const memory=()=>{const m=new Map();return {getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),clear:()=>m.clear()};};
+  Object.defineProperty(window,'localStorage',{value:memory()});Object.defineProperty(window,'sessionStorage',{value:memory()});
+  window.fetch=async()=>{throw new Error('Trang kiểm thử không truy cập API thật');};
+  window.__fixtureProjects=[{id:'62THL',name:'62 Trần Huy Liệu'},{id:'68PĐL',name:'68 PĐL'},{id:'127HH',name:'127 Hồng Hà'},{id:'130HH',name:'130 Hồng Hà'},{id:'DEMO',name:'ESTA Demo · Tòa nhà mẫu'}];
+  window.__fixtureUsers=[{id:'00000000-0000-4000-8000-000000000123',username:'kythuat-thu',display_name:'Kỹ thuật · Dữ liệu giả lập',active:true,is_admin:false,buildings:[{id:'62THL',name:'62 Trần Huy Liệu',role:'editor'},{id:'68PĐL',name:'68 PĐL',role:'viewer'}]}];
+  window.__fixtureApi=async(path,{body}={})=>{
+    if(body?.action==='list')return {users:window.__fixtureUsers};
+    if(body?.action==='set_buildings'){window.__fixtureUsers[0].buildings=body.memberships.map(m=>({...window.__fixtureProjects.find(b=>b.id===m.building_id),role:m.role}));return {ok:true};}
+    if(body?.action==='create'){window.__fixtureUsers.push({id:'fake-'+window.__fixtureUsers.length,username:body.username,display_name:body.display_name,active:true,buildings:body.building_ids.map(id=>({...window.__fixtureProjects.find(b=>b.id===id),role:body.role}))});return {ok:true};}
+    return [];
+  };
+  const script=document.createElement('script');
+  script.textContent=code+`\ncurrentAccount={is_admin:true,buildings:window.__fixtureProjects};centralSession={access_token:'ISOLATED-TEST-FIXTURE'};sbFetch=window.__fixtureApi;renderAdminPortal();openAdminSettings('accounts');document.getElementById('adminCreateHint').textContent='KIỂM THỬ · Dữ liệu giả lập, không ghi vào hệ thống thật.';`;
+  document.body.appendChild(script);
+})().catch(error=>{document.body.textContent='Không nạp được kiểm thử: '+error.message;});
+</script></body></html>

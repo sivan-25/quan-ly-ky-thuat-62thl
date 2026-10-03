@@ -1,0 +1,37 @@
+/* Project access controls share the existing ESTA admin palette. */
+#adminSettingsModal .adminProjectFieldset{grid-column:1/-1;min-width:0;margin:5px 0 0;padding:12px;border:1px solid #33475f;border-radius:10px;background:#131e30}
+#adminSettingsModal .adminProjectFieldset legend{padding:0 6px;color:#dce7f6;font-size:13px;font-weight:500}
+#adminSettingsModal .adminProjectPickerHead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+#adminSettingsModal .adminProjectSelectionCount{margin-right:auto;color:#a9bbd0;font-size:12px}
+#adminSettingsModal .adminProjectPickerHead button{min-height:32px;padding:5px 10px;border:1px solid #3d526d;border-radius:7px;background:#1b2b42;color:#dfebf8;font-size:12px;cursor:pointer}
+#adminSettingsModal .adminProjectChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#adminSettingsModal .adminProjectChoice{min-width:0;display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid #33475f;border-radius:8px;background:#19263a}
+#adminSettingsModal .adminProjectChoice.selected{border-color:#7c9bb9;background:#213650}
+#adminSettingsModal .adminProjectChoice label{display:flex!important;align-items:center;gap:9px;min-width:0;cursor:pointer}
+#adminSettingsModal .adminProjectChoice label>span{display:block;margin:0!important;color:#edf4fc!important;font-size:13px!important;font-weight:400!important;line-height:1.45;overflow-wrap:anywhere}
+#adminSettingsModal .adminProjectChoice input[type="checkbox"]{appearance:auto!important;width:19px!important;height:19px!important;min-height:19px!important;max-height:19px!important;flex:0 0 19px;margin:0!important;padding:0!important;border-radius:4px!important;accent-color:#97b9d6;box-shadow:none!important;cursor:pointer}
+#adminSettingsModal .adminProjectChoice select{width:100%;min-width:0;height:38px!important;min-height:38px!important;padding:0 8px!important;border:1px solid #46607b;border-radius:7px;background:#17263a;color:#e6eef8;font-size:12px!important;line-height:normal!important}
+#adminSettingsModal .adminProjectChoice select:disabled{opacity:.45}
+#adminSettingsModal .adminProjectPicker button:focus-visible,#adminSettingsModal .adminProjectChoice input:focus-visible{outline:2px solid #b7d4ec;outline-offset:3px}
+#adminSettingsModal .adminProjectAccessEditor{margin-top:18px;padding:16px;border:1px solid #7796b3;border-radius:12px;background:#17273d}
+#adminSettingsModal .adminProjectAccessEditor h4{margin:0 0 5px;color:#edf4fc;font-size:17px;font-weight:500}
+#adminSettingsModal #adminProjectAccessName{margin:0 0 12px;color:#afc5da;font-size:13px;overflow-wrap:anywhere}
+#adminSettingsModal .adminAccessHint{color:#a2b6cd;font-size:12px;line-height:1.5}
+#adminSettingsModal .adminAccessError{min-height:18px;color:#ffb7b7;font-size:13px}
+#adminSettingsModal .adminAccessActions{display:flex;justify-content:flex-end;gap:10px}
+#adminSettingsModal .adminAccessActions button{min-height:42px;padding:0 18px;border:1px solid #526e8a;border-radius:8px;background:#213952;color:#edf4fc;font-size:13px;cursor:pointer}
+#adminSettingsModal .adminAccessActions .primary{background:#d8e4ef;color:#17344f}
+#adminSettingsModal .adminAccessActions button:disabled{opacity:.55;cursor:wait}
+#adminSettingsModal .adminUserMain{flex:1;min-width:0}
+#adminSettingsModal .adminUserActions{flex:0 1 auto!important;max-width:52%}
+#adminSettingsModal .adminUserMain b,#adminSettingsModal .adminUserMain small{overflow-wrap:anywhere}
+#technicalProjectSwitcher{margin:4px 12px 12px;padding:10px;border:1px solid #46607b;border-radius:9px;background:#18344e;min-width:0}
+#technicalProjectSwitcher label{display:block;margin:0 0 7px;font-size:13px;color:#d8e4ef;font-weight:400}
+#technicalProjectSelect{display:block;width:100%;min-width:0;height:42px;padding:0 8px;border:1px solid #6d879f;border-radius:7px;background:#f0e9dd;color:#18344e;font-size:14px}
+@media(max-width:760px){
+ #adminSettingsModal .adminProjectChoices{grid-template-columns:1fr}
+ #adminSettingsModal .adminProjectAccessEditor{padding:12px}
+ #adminSettingsModal .adminUserActions{max-width:100%;justify-content:flex-start!important}
+ #adminSettingsModal .settingsAccountForm input,#adminSettingsModal .settingsAccountForm select,#adminSettingsModal .adminProjectChoice select{font-size:16px!important}
+ #technicalProjectSelect{font-size:16px}
+}

@@ -765,6 +765,7 @@ window.enterAccount=function(account,session=null){
  $("#sideUser").innerHTML=account.is_admin?"Quản trị viên":"Tài khoản dự án";
  $("#navAdmin").classList.toggle("hide",!account.is_admin);
  $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
+ renderTechnicalProjectSwitcher();
  if(account.is_admin){$("#navWork").classList.add("hide");$("#navEnergy").classList.add("hide");$("#navInventory").classList.add("hide");$("#navMaintenance").classList.add("hide");$("#navContractor").classList.add("hide");$("#navConstruction")?.classList.add("hide");showHome()}
  else if(account.buildings?.length){enterProject(account.buildings[0])}
  else{toast("Tài khoản chưa được phân quyền dự án");}
@@ -3111,6 +3112,70 @@ $("#maintenanceRecordForm").onsubmit=async e=>{
 };
 
 /* ===== ADMIN TRUNG TÂM / ĐA DỰ ÁN ===== */
+function renderTechnicalProjectSwitcher(){
+ const list=currentAccount?.buildings||[],select=$("#technicalProjectSelect");
+ $("#technicalProjectSwitcher").classList.toggle("hide",!!currentAccount?.is_admin||list.length<2);
+ select.innerHTML=list.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name||b.id)+'</option>').join("");
+ select.value=list.some(b=>b.id===currentBuilding?.id)?currentBuilding.id:(list[0]?.id||"");
+}
+$("#technicalProjectSelect").onchange=async e=>{
+ const select=e.target,building=currentAccount?.buildings?.find(b=>b.id===select.value);
+ if(!building||building.id===currentBuilding?.id)return;
+ select.disabled=true;
+ try{await enterProject(building,{target:"work"})}catch(err){toast(err.message)}
+ finally{select.value=currentBuilding?.id||"";select.disabled=false}
+};
+let adminUsersCache=[],adminEditingUserId=null,adminAccessSaving=false;
+function adminSelectedProjects(pickerId){
+ const picker=$("#"+pickerId);
+ return Array.from(picker.querySelectorAll('.adminProjectChoice input[type="checkbox"]:checked')).map(input=>({
+   building_id:input.value,
+   role:input.closest(".adminProjectChoice").querySelector("select")?.value||$("#adminRole").value
+ }));
+}
+function renderAdminProjectPicker(pickerId,memberships=[],withRoles=false){
+ const picker=$("#"+pickerId),list=currentAccount?.buildings||[],selected=new Map(memberships.map(b=>[b.building_id||b.id,b.role||"editor"]));
+ picker.innerHTML='<div class="adminProjectPickerHead"><span class="adminProjectSelectionCount" aria-live="polite"></span><button type="button" data-project-pick="all">Chọn tất cả</button><button type="button" data-project-pick="none">Bỏ chọn</button></div><div class="adminProjectChoices">'+
+   (list.length?list.map((b,i)=>{
+     const id=pickerId+"-"+i,checked=selected.has(b.id),role=selected.get(b.id)||"editor";
+     return '<div class="adminProjectChoice"><label for="'+id+'"><input id="'+id+'" type="checkbox" value="'+esc(b.id)+'"'+(checked?' checked':'')+'><span>'+esc(b.name||b.id)+'</span></label>'+
+       (withRoles?'<select aria-label="Quyền tại '+esc(b.name||b.id)+'"'+(checked?'':' disabled')+'><option value="editor"'+(role==="editor"?' selected':'')+'>Được nhập / chỉnh sửa</option><option value="viewer"'+(role==="viewer"?' selected':'')+'>Chỉ xem</option></select>':'')+'</div>';
+   }).join(""):'<p class="adminAccessHint">Chưa có dự án đang hoạt động.</p>')+'</div>';
+ const update=()=>{
+   picker.querySelectorAll(".adminProjectChoice").forEach(row=>{const input=row.querySelector("input"),select=row.querySelector("select");row.classList.toggle("selected",input.checked);if(select)select.disabled=!input.checked});
+   picker.querySelector(".adminProjectSelectionCount").textContent="Đã chọn "+adminSelectedProjects(pickerId).length+" / "+list.length+" dự án";
+ };
+ picker.onchange=update;
+ picker.querySelectorAll("[data-project-pick]").forEach(button=>button.onclick=()=>{picker.querySelectorAll('input[type="checkbox"]').forEach(input=>input.checked=button.dataset.projectPick==="all");update()});
+ update();
+}
+window.adminEditUserProjects=id=>{
+ if(!currentAccount?.is_admin||!centralSession?.access_token||adminAccessSaving)return;
+ const user=adminUsersCache.find(u=>u.id===id);if(!user||user.is_admin)return;
+ adminEditingUserId=id;
+ $("#adminProjectAccessName").textContent=(user.display_name||user.username||"Tài khoản")+(user.username?" · "+user.username:"");
+ $("#adminProjectAccessError").textContent="";
+ renderAdminProjectPicker("adminEditProjectPicker",user.buildings||[],true);
+ const editor=$("#adminProjectAccessEditor");editor.classList.remove("hide");editor.scrollIntoView({block:"nearest",behavior:"smooth"});
+ editor.querySelector('input[type="checkbox"]')?.focus({preventScroll:true});
+};
+function closeAdminProjectAccess(){
+ if(adminAccessSaving)return;
+ adminEditingUserId=null;$("#adminProjectAccessEditor").classList.add("hide");$("#adminProjectAccessError").textContent="";
+}
+$("#adminCancelProjectAccess").onclick=closeAdminProjectAccess;
+$("#adminProjectAccessForm").onsubmit=async e=>{
+ e.preventDefault();if(adminAccessSaving||!adminEditingUserId||!currentAccount?.is_admin)return;
+ const memberships=adminSelectedProjects("adminEditProjectPicker"),error=$("#adminProjectAccessError"),btn=$("#adminSaveProjectAccess");
+ error.textContent="";
+ if(!memberships.length){error.textContent="Hãy chọn ít nhất một dự án.";return}
+ adminAccessSaving=true;btn.disabled=true;btn.textContent="Đang lưu...";$("#adminProjectAccessFields").disabled=true;$("#adminCancelProjectAccess").disabled=true;
+ try{
+   await adminApi("set_buildings",{user_id:adminEditingUserId,memberships});
+   adminAccessSaving=false;closeAdminProjectAccess();await renderAdminUsers();toast("Đã lưu "+memberships.length+" dự án cho tài khoản");
+ }catch(err){error.textContent=err.message}
+ finally{adminAccessSaving=false;btn.disabled=false;btn.textContent="Lưu dự án";$("#adminProjectAccessFields").disabled=false;$("#adminCancelProjectAccess").disabled=false}
+};
 async function adminApi(action,payload={}){
  if(!centralSession?.access_token)throw new Error("Chưa kích hoạt hoặc đăng nhập Admin trung tâm");
  return sbFetch("/functions/v1/admin-users",{method:"POST",token:centralSession.access_token,body:{action,...payload}});
@@ -3124,7 +3189,7 @@ function renderAdminProjects(){
  const list=currentAccount?.buildings||[];
  $("#adminProjectCount").textContent=list.length+" dự án";
  $("#adminProjectGrid").innerHTML=list.length?list.map(adminProjectCard).join(""):'<div class="empty">Chưa có dự án.</div>';
- $("#adminBuildingSelect").innerHTML=list.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name||b.id)+'</option>').join("");
+ renderAdminProjectPicker("adminCreateProjectPicker",adminSelectedProjects("adminCreateProjectPicker"));
 }
 async function refreshAdminBuildings(){
  if(!centralSession?.access_token){renderAdminProjects();return}
@@ -3215,11 +3280,11 @@ async function renderAdminUsers(){
  }
  box.innerHTML='<div class="empty">Đang tải tài khoản...</div>';
  try{
-   const data=await adminApi("list"),users=data.users||[];
+   const data=await adminApi("list"),users=data.users||[];adminUsersCache=users;
    box.innerHTML=users.length?users.map(u=>{
-     const projects=(u.buildings||[]).map(b=>'<span>'+esc(b.name||b.id)+'</span>').join("")||'<span>Chưa phân dự án</span>';
+     const projects=u.is_admin?'<span>Tất cả dự án</span>':(u.buildings||[]).map(b=>'<span>'+esc(b.name||b.id)+(b.role==="viewer"?' · Chỉ xem':'')+'</span>').join("")||'<span>Chưa phân dự án</span>';
      const name=esc(u.display_name||u.username||u.email||"Tài khoản");
-     return '<div class="adminUserRow"><div class="adminUserMain"><div class="adminAvatar">'+name.slice(0,1).toLocaleUpperCase("vi-VN")+'</div><div><b>'+name+'</b><small>'+(u.username?esc(u.username):esc(u.email||""))+'</small><div class="adminUserProjects">'+projects+'</div></div></div><div class="adminUserActions">'+(u.is_admin?'<span class="adminBadge">ADMIN</span>':'<button type="button" onclick="adminResetPassword(\''+u.id+'\')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M15 12v2"/></svg><span>Đổi mật khẩu</span></button><button type="button" class="'+(u.active?"danger":"success")+'" onclick="adminToggleUser(\''+u.id+'\','+(!u.active)+')">'+(u.active?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Khóa</span>':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M9 10V7a4 4 0 0 1 7-2.5"/></svg><span>Mở khóa</span>')+'</button><button type="button" class="danger" onclick="adminDeleteUser(\''+u.id+'\',\''+name.replace(/'/g,"&#39;")+'\')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M9 7V4h6v3M8 10v8M12 10v8M16 10v8M7 7l1 14h8l1-14"/></svg><span>Xóa</span></button>')+'</div></div>';
+     return '<div class="adminUserRow"><div class="adminUserMain"><div class="adminAvatar">'+name.slice(0,1).toLocaleUpperCase("vi-VN")+'</div><div><b>'+name+'</b><small>'+(u.username?esc(u.username):esc(u.email||""))+'</small><div class="adminUserProjects">'+projects+'</div></div></div><div class="adminUserActions">'+(u.is_admin?'<span class="adminBadge">ADMIN</span>':'<button type="button" onclick="adminEditUserProjects(\''+u.id+'\')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg><span>Chọn dự án</span></button><button type="button" onclick="adminResetPassword(\''+u.id+'\')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M15 12v2"/></svg><span>Đổi mật khẩu</span></button><button type="button" class="'+(u.active?"danger":"success")+'" onclick="adminToggleUser(\''+u.id+'\','+(!u.active)+')">'+(u.active?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Khóa</span>':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M9 10V7a4 4 0 0 1 7-2.5"/></svg><span>Mở khóa</span>')+'</button><button type="button" class="danger" onclick="adminDeleteUser(\''+u.id+'\',\''+name.replace(/'/g,"&#39;")+'\')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M9 7V4h6v3M8 10v8M12 10v8M16 10v8M7 7l1 14h8l1-14"/></svg><span>Xóa</span></button>')+'</div></div>';
    }).join(""):'<div class="empty">Chưa có tài khoản kỹ thuật.</div>';
  }catch(err){box.innerHTML='<div class="empty">'+esc(err.message)+'</div>'}
 }
@@ -3243,12 +3308,13 @@ $("#adminCreateAccountForm").onsubmit=async e=>{
      username:$("#adminUsername").value.trim().toLowerCase(),
      password:$("#adminPassword").value,
      display_name:$("#adminDisplayName").value.trim(),
-     building_ids:[$("#adminBuildingSelect").value],
+     building_ids:adminSelectedProjects("adminCreateProjectPicker").map(b=>b.building_id),
      role:$("#adminRole").value
    };
+   if(!payload.building_ids.length)throw new Error("Hãy chọn ít nhất một dự án.");
    await adminApi("create",payload);
    $("#adminCreateAccountForm").reset();
-   renderAdminProjects();
+   renderAdminProjectPicker("adminCreateProjectPicker");renderAdminProjects();
    await renderAdminUsers();
    toast("Đã tạo tài khoản kỹ thuật");
  }catch(err){toast(err.message)}
@@ -3282,6 +3348,7 @@ function setProjectEditability(){
 const oldApplyBuildingUI=applyBuildingUI;
 applyBuildingUI=function(){
  oldApplyBuildingUI();
+ renderTechnicalProjectSwitcher();
  setProjectEditability();
  const role=currentAccount?.is_admin?"Quản trị viên":(currentBuilding.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");
  $("#headerRole").textContent=role+" · "+currentBuilding.id;
