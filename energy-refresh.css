@@ -1682,3 +1682,22 @@
     font-size:15px!important;
   }
 }
+
+
+/* ENERGY_COMPACT_DISCLOSURE_BASE_20261003 */
+/* Mobile-only helpers. Desktop keeps the existing Energy form unchanged. */
+#app #energyPage .energyLatestHint,
+#app #energyPage .energyNoteToggle{
+  display:none;
+}
+#app #energyPage .energyCameraIcon{
+  display:inline-grid;
+  place-items:center;
+}
+#app #energyPage .energyCameraIcon svg{
+  width:18px;
+  height:18px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+}
