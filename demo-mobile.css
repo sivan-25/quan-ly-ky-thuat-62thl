@@ -1,6 +1,7 @@
-/* ESTA DEMO MOBILE FINAL — 2026-10-03
-   Scope: real DEMO project only, phone widths only.
-   Loaded after every legacy stylesheet to keep Desktop and non-DEMO projects unchanged. */
+/* ESTA SHARED PROJECT MOBILE FINAL — 2026-10-03
+   Source of truth: latest approved DEMO mobile layout.
+   Scope: every actual project on phone widths only; Desktop stays unchanged.
+   Loaded after legacy styles so the same mobile rules win consistently across projects. */
 
 @media (max-width:760px){
   #app.demoMobilePilot{
@@ -1196,11 +1197,11 @@
 }
 
 
-/* DEMO_MOBILE_TOPBAR_PRIORITY_LOCK_20261003 */
+/* SHARED_PROJECT_MOBILE_TOPBAR_PRIORITY_LOCK_20261003 */
 @media (max-width:760px){
-  /* Beat legacy :has(#workPage) and multi-class !important rules. */
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .estaTopbar,
-  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .estaTopbar{
+  /* Beat legacy :has(#workPage) and page-mode !important rules for every project. */
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .estaTopbar,
+  #app.demoMobilePilot:has(#workPage:not(.hide)) .estaTopbar{
     height:64px!important;
     min-height:64px!important;
     display:flex!important;
@@ -1210,17 +1211,17 @@
     padding:8px 9px!important;
     overflow:visible!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .topModuleTitle{
     min-width:0!important;
     flex:1 1 auto!important;
     max-width:none!important;
     gap:0!important;
     overflow:hidden!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle .topModuleIcon{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .topModuleTitle .topModuleIcon{
     display:none!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle h1{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .topModuleTitle h1{
     margin:0!important;
     font-size:17px!important;
     line-height:1.15!important;
@@ -1228,11 +1229,11 @@
     overflow:hidden!important;
     text-overflow:ellipsis!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle p{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .topModuleTitle p{
     display:none!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerTools,
-  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .headerTools{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .headerTools,
+  #app.demoMobilePilot:has(#workPage:not(.hide)) .headerTools{
     width:auto!important;
     min-width:0!important;
     max-width:none!important;
@@ -1245,8 +1246,8 @@
     margin:0!important;
     padding:0!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerSearch,
-  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .headerSearch{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .headerSearch,
+  #app.demoMobilePilot:has(#workPage:not(.hide)) .headerSearch{
     display:none!important;
   }
 
@@ -1284,7 +1285,7 @@
     height:19px!important;
     margin:0!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerBell{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .headerBell{
     width:42px!important;
     min-width:42px!important;
     max-width:42px!important;
@@ -1331,18 +1332,18 @@
   }
 }
 @media (max-width:430px){
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .estaTopbar,
-  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .estaTopbar{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .estaTopbar,
+  #app.demoMobilePilot:has(#workPage:not(.hide)) .estaTopbar{
     gap:5px!important;
     padding-left:7px!important;
     padding-right:7px!important;
   }
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle h1{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .topModuleTitle h1{
     font-size:16px!important;
   }
   #app.demoMobilePilot #workControls #toggleFilter,
   #app.demoMobilePilot #workControls #exportBtn,
-  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerBell{
+  #app.demoMobilePilot:has(#homePage:not(.hide),#workPage:not(.hide),#energyPage:not(.hide),#inventoryPage:not(.hide),#maintenancePage:not(.hide),#contractorPage:not(.hide),#constructionMaterialPage:not(.hide)) .headerBell{
     width:40px!important;
     min-width:40px!important;
     max-width:40px!important;
