@@ -2810,3 +2810,53 @@
       "actions"!important;
   }
 }
+
+
+
+/* DEMO_ENERGY_NEWBIE_QA_FIXES_20261003_V12 */
+@media (max-width:640px){
+  /* Preserve original desktop labels; show short labels only in the DEMO phone pilot. */
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyTabs button span[data-mobile-label]{
+    font-size:0!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyTabs button span[data-mobile-label]::after{
+    content:attr(data-mobile-label);
+    font-size:12px!important;
+    line-height:1!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energySummaryCards small[data-mobile-label]{
+    font-size:0!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energySummaryCards small[data-mobile-label]::after{
+    content:attr(data-mobile-label);
+    font-size:9px!important;
+    line-height:1.1!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyUploadPrompt b[data-mobile-label]{
+    font-size:0!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyUploadPrompt b[data-mobile-label]::after{
+    content:attr(data-mobile-label);
+    font-size:12px!important;
+    line-height:1!important;
+  }
+
+  /* Keep the top bar usable in standalone/PWA mode after viewport-fit=cover. */
+  #app.demoMobilePilot.demoEnergyCompactPilot.energyMode .estaTopbar{
+    height:auto!important;
+    min-height:52px!important;
+    padding-top:max(5px,env(safe-area-inset-top))!important;
+    padding-bottom:5px!important;
+  }
+
+  /* During edit mode, keep Save + Cancel on a single 54px row so they do not cover fields. */
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyActions:has(#energyCancelEdit:not(.hide)){
+    grid-template-columns:minmax(0,2fr) minmax(104px,1fr)!important;
+  }
+
+  /* Preview layout must never exceed the card width including margins. */
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyImagePreview.demoEnergyPreviewCompact{
+    margin-left:14px!important;
+    margin-right:14px!important;
+  }
+}
