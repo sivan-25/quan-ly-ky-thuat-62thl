@@ -86,7 +86,135 @@ function demoSyncMobilePilot(){
    &&($("#adminPage")?.classList.contains("hide")??true)
    &&!($("#navWork")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoMobilePilot",inProject);
+
+ // The new ultra-compact Energy pass is intentionally piloted on DEMO only.
+ const demoEnergyPilot=inProject&&demoIs();
+ $("#app")?.classList.toggle("demoEnergyCompactPilot",demoEnergyPilot);
+ demoSyncEnergyMobileEnhancements(demoEnergyPilot);
  return inProject;
+}
+
+function demoEnergyIsPhone(){
+ return window.matchMedia?.("(max-width:640px)")?.matches??false;
+}
+
+function demoEnergyLatestForType(){
+ if(typeof energyLoad!=="function")return null;
+ const rows=energyLoad()
+  .filter(x=>x.type===energyType)
+  .sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||Number(a.id)-Number(b.id));
+ return rows.length?rows[rows.length-1]:null;
+}
+
+function demoEnergyUpdateDeltaHint(){
+ if(!demoIs()||!demoEnergyIsPhone())return;
+ const hint=$("#energyLatestHint"),input=$("#energyValue");
+ if(!hint||!input)return;
+ const latest=demoEnergyLatestForType();
+ const meta=(typeof ENERGY_META!=="undefined"&&ENERGY_META[energyType])||{unit:""};
+ if(!latest){
+  hint.textContent="Chỉ số gần nhất: —";
+  hint.classList.remove("demoEnergyWarning");
+  return;
+ }
+ const latestValue=Number(latest.value);
+ const raw=String(input.value||"").trim();
+ if(!raw){
+  hint.textContent="Chỉ số gần nhất: "+energyFmt(latestValue)+" "+meta.unit;
+  hint.classList.remove("demoEnergyWarning");
+  return;
+ }
+ const current=Number(raw);
+ if(!Number.isFinite(current)){
+  hint.textContent="Chỉ số gần nhất: "+energyFmt(latestValue)+" "+meta.unit;
+  hint.classList.remove("demoEnergyWarning");
+  return;
+ }
+ const diff=current-latestValue;
+ const lower=diff<0;
+ hint.classList.toggle("demoEnergyWarning",lower);
+ hint.textContent=(lower?"⚠ ":"")+"Chỉ số gần nhất: "+energyFmt(latestValue)+" "+meta.unit+
+  " · Chênh lệch: "+(diff>0?"+":"")+energyFmt(diff)+" "+meta.unit+
+  (lower?" · Chỉ số mới đang nhỏ hơn chỉ số cũ":"");
+}
+
+function demoDecorateEnergyPreview(inputId,previewId){
+ const input=$("#"+inputId),preview=$("#"+previewId);
+ if(!input||!preview||!input.files?.length)return;
+ requestAnimationFrame(()=>{
+  if(!input.files?.length||preview.querySelector(".demoEnergyPreviewRemove"))return;
+  preview.classList.add("demoEnergyPreviewCompact");
+  const remove=document.createElement("button");
+  remove.type="button";
+  remove.className="demoEnergyPreviewRemove";
+  remove.setAttribute("aria-label","Xóa ảnh vừa chọn");
+  remove.textContent="×";
+  remove.onclick=()=>{
+   input.value="";
+   preview.innerHTML="";
+   preview.classList.remove("demoEnergyPreviewCompact");
+  };
+  preview.appendChild(remove);
+ });
+}
+
+function demoEnsureEnergyRecentToggle(){
+ const card=$("#energyPage .energyTableCard");
+ if(!card||!demoIs()||!demoEnergyIsPhone())return;
+ let btn=$("#demoEnergyRecentToggle");
+ if(!btn){
+  btn=document.createElement("button");
+  btn.id="demoEnergyRecentToggle";
+  btn.type="button";
+  btn.className="demoEnergyRecentToggle";
+  btn.setAttribute("aria-expanded","false");
+  btn.textContent="Bản ghi gần đây · Mở";
+  const top=card.querySelector(".energyTableTop");
+  top?.prepend(btn);
+  card.classList.add("demoEnergyRecentCollapsed");
+  btn.onclick=()=>{
+   const collapsed=card.classList.toggle("demoEnergyRecentCollapsed");
+   btn.setAttribute("aria-expanded",String(!collapsed));
+   btn.textContent=collapsed?"Bản ghi gần đây · Mở":"Bản ghi gần đây · Thu gọn";
+  };
+ }
+}
+
+function demoSyncEnergyMobileEnhancements(active){
+ const value=$("#energyValue"),value2=$("#energyValue2");
+ const image=$("#energyImage"),image2=$("#energyImage2");
+ if(active){
+  value?.setAttribute("inputmode","decimal");
+  value2?.setAttribute("inputmode","decimal");
+  image?.setAttribute("capture","environment");
+  image2?.setAttribute("capture","environment");
+  demoEnsureEnergyRecentToggle();
+  demoEnergyUpdateDeltaHint();
+ }else{
+  value?.removeAttribute("inputmode");
+  value2?.removeAttribute("inputmode");
+  image?.removeAttribute("capture");
+  image2?.removeAttribute("capture");
+  $("#demoEnergyRecentToggle")?.remove();
+  $("#energyPage .energyTableCard")?.classList.remove("demoEnergyRecentCollapsed");
+ }
+
+ if(!demoSyncEnergyMobileEnhancements.bound){
+  demoSyncEnergyMobileEnhancements.bound=true;
+  value?.addEventListener("input",demoEnergyUpdateDeltaHint);
+  value2?.addEventListener("input",demoEnergyUpdateDeltaHint);
+  image?.addEventListener("change",()=>setTimeout(()=>demoDecorateEnergyPreview("energyImage","energyImagePreview"),0));
+  image2?.addEventListener("change",()=>setTimeout(()=>demoDecorateEnergyPreview("energyImage2","energyImage2Preview"),0));
+  document.querySelectorAll("[data-energy-type]").forEach(btn=>btn.addEventListener("click",()=>setTimeout(()=>{
+   demoEnergyUpdateDeltaHint();
+   demoEnsureEnergyRecentToggle();
+  },0)));
+  window.addEventListener("resize",()=>{
+   if(!demoIs())return;
+   $("#app")?.classList.toggle("demoEnergyCompactPilot",demoEnergyIsPhone());
+   demoSyncEnergyMobileEnhancements(true);
+  },{passive:true});
+ }
 }
 function demoSetProjectMode(){
  const shell=demoIs();
@@ -159,7 +287,7 @@ showHome=function(){
 const originalOpenAdminPortal=openAdminPortal;
 openAdminPortal=function(){
  demoHideSpecialPages();
- $("#app")?.classList.remove("demoProjectMode","demoExactProject","demoSampleProject","demoMobilePilot");
+ $("#app")?.classList.remove("demoProjectMode","demoExactProject","demoSampleProject","demoMobilePilot","demoEnergyCompactPilot");
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.add("hide"));
  originalOpenAdminPortal();
 };
