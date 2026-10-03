@@ -193,6 +193,15 @@ function demoEnergyDecorateKpiUnits(){
   el.innerHTML='<span class="demoEnergyKpiValue">'+esc(value)+'</span><small class="demoEnergyKpiUnit">'+esc(unit)+'</small>';
  });
 }
+function demoEnergyRestoreKpiUnits(){
+ document.querySelectorAll("#energyLatestValue .demoEnergyKpiUnit,#energyPeriodUse .demoEnergyKpiUnit").forEach(unitEl=>{
+  const parent=unitEl.parentElement;
+  if(!parent)return;
+  const value=parent.querySelector(".demoEnergyKpiValue")?.textContent||"";
+  const unit=unitEl.textContent||"";
+  parent.textContent=(value+" "+unit).trim();
+ });
+}
 
 function demoSyncEnergyMobileEnhancements(active){
  const value=$("#energyValue"),value2=$("#energyValue2");
@@ -211,6 +220,7 @@ function demoSyncEnergyMobileEnhancements(active){
   image2?.removeAttribute("capture");
   $("#demoEnergyRecentToggle")?.remove();
   $("#energyPage .energyTableCard")?.classList.remove("demoEnergyRecentCollapsed");
+  demoEnergyRestoreKpiUnits();
  }
 
  if(!demoSyncEnergyMobileEnhancements.bound){
