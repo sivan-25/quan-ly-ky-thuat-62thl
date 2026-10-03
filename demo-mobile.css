@@ -2660,8 +2660,8 @@
   /* Selected image preview: 48px thumbnail + removable X. */
   #app.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyImagePreview.demoEnergyPreviewCompact{
     position:relative!important;
-    width:100%!important;
-    max-width:100%!important;
+    width:calc(100% - 28px)!important;
+    max-width:calc(100% - 28px)!important;
     min-height:52px!important;
     margin:0 14px 8px!important;
     padding:2px 50px 2px 2px!important;
