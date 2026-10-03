@@ -1192,3 +1192,173 @@
     grid-column:1!important;
   }
 }
+
+
+/* DEMO_MOBILE_TOPBAR_PRIORITY_LOCK_20261003 */
+@media (max-width:760px){
+  /* Beat legacy :has(#workPage) and multi-class !important rules. */
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .estaTopbar,
+  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .estaTopbar{
+    height:64px!important;
+    min-height:64px!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    gap:7px!important;
+    padding:8px 9px!important;
+    overflow:visible!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    max-width:none!important;
+    gap:0!important;
+    overflow:hidden!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle .topModuleIcon{
+    display:none!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle h1{
+    margin:0!important;
+    font-size:17px!important;
+    line-height:1.15!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle p{
+    display:none!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerTools,
+  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .headerTools{
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    flex:0 0 auto!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:6px!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerSearch,
+  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .headerSearch{
+    display:none!important;
+  }
+
+  #app.demoMobilePilot #workControls{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    gap:6px!important;
+    flex:0 0 auto!important;
+    width:auto!important;
+    margin:0!important;
+  }
+  #app.demoMobilePilot #workControls #toggleFilter,
+  #app.demoMobilePilot #workControls #exportBtn{
+    display:grid!important;
+    place-items:center!important;
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    height:42px!important;
+    min-height:42px!important;
+    padding:0!important;
+    margin:0!important;
+    gap:0!important;
+    border-radius:10px!important;
+  }
+  #app.demoMobilePilot #workControls #toggleFilter span,
+  #app.demoMobilePilot #workControls #exportBtn span,
+  #app.demoMobilePilot #workControls button span{
+    display:none!important;
+  }
+  #app.demoMobilePilot #workControls #toggleFilter svg,
+  #app.demoMobilePilot #workControls #exportBtn svg{
+    width:19px!important;
+    height:19px!important;
+    margin:0!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerBell{
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    height:42px!important;
+    min-height:42px!important;
+    flex:0 0 42px!important;
+    padding:0!important;
+  }
+
+  #app.demoMobilePilot #workControls #filterBar:not(.hide){
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-areas:
+      "heading heading"
+      "range range"
+      "type status"
+      "from to"
+      "clear clear"!important;
+    gap:10px!important;
+    width:min(94vw,520px)!important;
+    max-width:calc(100vw - 16px)!important;
+    padding:12px!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+  }
+  #app.demoMobilePilot #workControls #filterBar .workFilterHeading{grid-area:heading!important}
+  #app.demoMobilePilot #workControls #filterBar .workFilterRange{grid-area:range!important}
+  #app.demoMobilePilot #workControls #filterBar .workFilterType{grid-area:type!important}
+  #app.demoMobilePilot #workControls #filterBar .workFilterStatus{grid-area:status!important}
+  #app.demoMobilePilot #workControls #filterBar .workFilterFrom{grid-area:from!important}
+  #app.demoMobilePilot #workControls #filterBar .workFilterTo{grid-area:to!important}
+  #app.demoMobilePilot #workControls #filterBar .clearFilter{
+    grid-area:clear!important;
+    grid-column:auto!important;
+  }
+  #app.demoMobilePilot #workControls #filterBar select,
+  #app.demoMobilePilot #workControls #filterBar input[type="date"]{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:48px!important;
+    min-height:48px!important;
+    font-size:16px!important;
+  }
+}
+@media (max-width:430px){
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .estaTopbar,
+  #app.demoMobilePilot.demoExactProject.demoProjectMode:has(#workPage:not(.hide)) .estaTopbar{
+    gap:5px!important;
+    padding-left:7px!important;
+    padding-right:7px!important;
+  }
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .topModuleTitle h1{
+    font-size:16px!important;
+  }
+  #app.demoMobilePilot #workControls #toggleFilter,
+  #app.demoMobilePilot #workControls #exportBtn,
+  #app.demoMobilePilot.demoExactProject.demoProjectMode .headerBell{
+    width:40px!important;
+    min-width:40px!important;
+    max-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    flex-basis:40px!important;
+  }
+}
+@media (max-width:390px){
+  #app.demoMobilePilot #workControls #filterBar:not(.hide){
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "heading"
+      "range"
+      "type"
+      "status"
+      "from"
+      "to"
+      "clear"!important;
+  }
+}
