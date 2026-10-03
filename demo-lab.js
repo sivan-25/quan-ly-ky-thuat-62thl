@@ -180,6 +180,20 @@ function demoEnsureEnergyRecentToggle(){
  }
 }
 
+function demoEnergyDecorateKpiUnits(){
+ if(!demoIs()||!demoEnergyIsPhone()||typeof ENERGY_META==="undefined")return;
+ if(typeof is68DualElectric==="function"&&is68DualElectric())return;
+ const unit=String(ENERGY_META[energyType]?.unit||"").trim();
+ if(!unit)return;
+ ["energyLatestValue","energyPeriodUse"].forEach(id=>{
+  const el=$("#"+id);if(!el)return;
+  const text=String(el.textContent||"").trim();
+  if(!text||text==="—"||!text.endsWith(" "+unit))return;
+  const value=text.slice(0,-unit.length).trim();
+  el.innerHTML='<span class="demoEnergyKpiValue">'+esc(value)+'</span><small class="demoEnergyKpiUnit">'+esc(unit)+'</small>';
+ });
+}
+
 function demoSyncEnergyMobileEnhancements(active){
  const value=$("#energyValue"),value2=$("#energyValue2");
  const image=$("#energyImage"),image2=$("#energyImage2");
@@ -216,6 +230,14 @@ function demoSyncEnergyMobileEnhancements(active){
   },{passive:true});
  }
 }
+const demoOriginalRenderEnergy=renderEnergy;
+renderEnergy=function(){
+ demoOriginalRenderEnergy();
+ demoEnergyDecorateKpiUnits();
+ demoEnergyUpdateDeltaHint();
+ demoEnsureEnergyRecentToggle();
+};
+
 function demoSetProjectMode(){
  const shell=demoIs();
  const on=shell&&($("#adminPage")?.classList.contains("hide")??true);
