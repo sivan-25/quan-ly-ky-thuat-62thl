@@ -79,9 +79,14 @@ function demoModuleSearchPlaceholder(name){
  })[name]||"Tìm trong dự án...";
 }
 function demoSyncMobilePilot(){
- const active=!!currentBuilding?.id&&String(currentBuilding.id).trim().toUpperCase()===DEMO_ID&&($("#adminPage")?.classList.contains("hide")??true);
- $("#app")?.classList.toggle("demoMobilePilot",active);
- return active;
+ // Legacy class name retained for CSS compatibility. The finalized DEMO mobile
+ // layout is now the shared mobile layout for every actual project context.
+ // Admin/portfolio pages stay outside this scope.
+ const inProject=!!currentBuilding?.id
+   &&($("#adminPage")?.classList.contains("hide")??true)
+   &&!($("#navWork")?.classList.contains("hide")??true);
+ $("#app")?.classList.toggle("demoMobilePilot",inProject);
+ return inProject;
 }
 function demoSetProjectMode(){
  const shell=demoIs();
@@ -92,8 +97,8 @@ function demoSetProjectMode(){
  // shell/topbar/work-page theme; project-specific differences are data/config only.
  $("#app")?.classList.toggle("demoExactProject",on);
  $("#app")?.classList.toggle("demoSampleProject",on);
- // Mobile pilot is intentionally scoped to the real DEMO project only.
- // This lets us QA/refine phone UI without changing other projects or desktop.
+ // Reuse the finalized DEMO phone layout across every project.
+ // CSS remains phone-width scoped, so Desktop is unchanged.
  demoSyncMobilePilot();
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
