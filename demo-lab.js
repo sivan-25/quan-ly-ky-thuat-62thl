@@ -78,6 +78,11 @@ function demoModuleSearchPlaceholder(name){
   construction:"Tìm vật tư thi công..."
  })[name]||"Tìm trong dự án...";
 }
+function demoSyncMobilePilot(){
+ const active=!!currentBuilding?.id&&String(currentBuilding.id).trim().toUpperCase()===DEMO_ID&&($("#adminPage")?.classList.contains("hide")??true);
+ $("#app")?.classList.toggle("demoMobilePilot",active);
+ return active;
+}
 function demoSetProjectMode(){
  const shell=demoIs();
  const on=shell&&($("#adminPage")?.classList.contains("hide")??true);
@@ -89,8 +94,7 @@ function demoSetProjectMode(){
  $("#app")?.classList.toggle("demoSampleProject",on);
  // Mobile pilot is intentionally scoped to the real DEMO project only.
  // This lets us QA/refine phone UI without changing other projects or desktop.
- const demoMobilePilot=on&&String(currentBuilding?.id||"").toUpperCase()===DEMO_ID;
- $("#app")?.classList.toggle("demoMobilePilot",demoMobilePilot);
+ demoSyncMobilePilot();
  document.querySelectorAll(".demoOnlyNav").forEach(el=>el.classList.toggle("hide",!on));
  const panel=$("#demoWorkLinks");if(panel)panel.classList.toggle("hide",!on);
  if(on){demoEnsureWorkPanel();demoLoad().then(()=>{demoPopulateWorkOptions();demoRenderHomeOps();demoEnsureAssetPassport()})}
@@ -110,6 +114,7 @@ function demoShowSpecial(name){
  $("#app").classList.remove("homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode","adminMode");
  DEMO_MODULES.forEach(n=>$("#app").classList.remove(n+"Mode"));
  $("#app").classList.add(name+"Mode","demoProjectMode");
+ demoSyncMobilePilot();
  const demoSearch=$("#globalSearch");
  if(demoSearch){demoSearch.value="";demoSearch.placeholder=demoSpecialSearchPlaceholder(name)}
  $("#filterBar")?.classList.add("hide");
@@ -126,6 +131,7 @@ showModule=function(name){
  if(DEMO_MODULES.includes(name))return demoShowSpecial(name);
  demoHideSpecialPages();
  originalShowModule(name);
+ demoSyncMobilePilot();
  const generalSearch=$("#globalSearch");
  if(generalSearch){
   generalSearch.value="";
@@ -141,6 +147,7 @@ const originalShowHome=showHome;
 showHome=function(){
  demoHideSpecialPages();
  originalShowHome();
+ demoSyncMobilePilot();
  demoSetProjectMode();
  if(demoIs())demoLoad().then(demoRenderHomeOps);
 };
@@ -154,6 +161,7 @@ openAdminPortal=function(){
 const originalApplyBuildingUI=applyBuildingUI;
 applyBuildingUI=function(){
  originalApplyBuildingUI();
+ demoSyncMobilePilot();
  demoSetProjectMode();
 };
 document.addEventListener("DOMContentLoaded",demoSetProjectMode);
