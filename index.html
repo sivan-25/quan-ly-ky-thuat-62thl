@@ -930,8 +930,8 @@
     <div class="homePanel energyPanel">
       <div class="homePanelHead"><div><span class="panelKicker">NĂNG LƯỢNG</span><h2>Năng lượng tháng này</h2><p>Tổng hợp nhanh chỉ số tiêu thụ.</p></div><button id="homeOpenEnergy" type="button">Chi tiết →</button></div>
       <div class="homeEnergyList">
-        <article><div class="energyMiniIcon electric"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div><div><span>Điện</span><strong id="homeElectric">—</strong><small>kWh tiêu thụ</small></div></article>
-        <article><div class="energyMiniIcon water"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg></div><div><span>Nước</span><strong id="homeWater">—</strong><small>m³ tiêu thụ</small></div></article>
+        <article><div class="energyMiniIcon electric"><svg viewBox="0 0 24 24"><path d="M13 2 5.5 13H11l-1 9 8.5-12H13z"/></svg></div><div><span data-mobile-label="Điện">Chỉ số điện</span><strong id="homeElectric">—</strong><small>kWh tiêu thụ</small></div></article>
+        <article><div class="energyMiniIcon water"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg></div><div><span data-mobile-label="Nước">Chỉ số nước</span><strong id="homeWater">—</strong><small>m³ tiêu thụ</small></div></article>
         <article><div class="energyMiniIcon solar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></div><div><span>Solar</span><strong id="homeSolar">—</strong><small>kWh sản lượng</small></div></article>
       </div>
     </div>
@@ -1411,27 +1411,27 @@
       <svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg><span>Nước</span>
     </button>
     <button type="button" aria-selected="false" data-energy-type="solar">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Mặt trời</span>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span data-mobile-label="Mặt trời">Năng lượng mặt trời</span>
     </button>
     <button type="button" class="energy68Only hide" aria-selected="false" data-energy-type="xlnt">
-      <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 7V4h8v3M7 12h10M9 17v3M15 17v3"/></svg><span>XLNT</span>
+      <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 7V4h8v3M7 12h10M9 17v3M15 17v3"/></svg><span data-mobile-label="XLNT">Chỉ số XLNT</span>
     </button>
   </section>
 
   <section class="energySummaryCards" aria-label="Tổng quan chỉ số">
     <article>
       <span class="summaryIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v5h5M10 12h6M10 16h6"/></svg></span>
-      <small>Tháng này</small>
+      <small data-mobile-label="Tháng này">Bản ghi tháng này</small>
       <strong id="energyRecordCount">0</strong>
     </article>
     <article>
       <span class="summaryIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 16 5-5 4 4 7-8"/><path d="M15 7h5v5"/></svg></span>
-      <small>Mới nhất</small>
+      <small data-mobile-label="Mới nhất">Chỉ số mới nhất</small>
       <strong id="energyLatestValue">—</strong>
     </article>
     <article>
       <span class="summaryIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 12h16M4 16h16"/></svg></span>
-      <small>Kỳ lọc</small>
+      <small data-mobile-label="Kỳ lọc">Tiêu thụ kỳ lọc</small>
       <strong id="energyPeriodUse">—</strong>
     </article>
   </section>
@@ -1472,13 +1472,13 @@
       <label class="energyImageField">
         <span id="energyImageLabel">Ảnh đồng hồ</span>
         <input id="energyImage" type="file" accept="image/*">
-        <div class="energyUploadPrompt" aria-hidden="true"><span class="energyCameraIcon"><svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg></span><b>Chụp / chọn ảnh</b><small>JPG, PNG hoặc ảnh chụp</small></div>
+        <div class="energyUploadPrompt" aria-hidden="true"><span class="energyCameraIcon"><svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg></span><b data-mobile-label="Chụp / chọn ảnh">Chọn ảnh</b><small>JPG, PNG hoặc ảnh chụp</small></div>
       </label>
 
       <label id="energyImage2Field" class="energyImage2Field hide">
         <span>Ảnh đồng hồ EVN2</span>
         <input id="energyImage2" type="file" accept="image/*">
-        <div class="energyUploadPrompt" aria-hidden="true"><span class="energyCameraIcon"><svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg></span><b>Chụp / chọn ảnh EVN2</b><small>JPG, PNG hoặc ảnh chụp</small></div>
+        <div class="energyUploadPrompt" aria-hidden="true"><span class="energyCameraIcon"><svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg></span><b data-mobile-label="Chụp / chọn ảnh EVN2">Chọn ảnh EVN2</b><small>JPG, PNG hoặc ảnh chụp</small></div>
       </label>
 
       <label class="energyPerformerField">
