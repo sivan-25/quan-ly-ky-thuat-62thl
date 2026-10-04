@@ -1018,113 +1018,162 @@
 }
 
 
-/* UPDATE work-link alignment · remove area field visually and normalize row heights */
+/* UPDATE work-link alignment · compact equal-height controls */
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid{
+  gap:6px 8px!important;
+  padding:0 12px 10px!important;
+}
 #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2),
 #app.updateProjectMode #demoWorkLinks .updateUniformLinkField{
   align-self:start!important;
-  min-height:68px!important;
-  height:68px!important;
-  grid-template-rows:auto 50px!important;
+  min-height:58px!important;
+  height:58px!important;
+  grid-template-rows:auto 42px!important;
+  gap:3px!important;
 }
 #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > select,
 #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > input,
 #app.updateProjectMode #demoWorkLinks .updateUniformLinkField > select{
-  min-height:50px!important;
-  height:50px!important;
+  min-height:42px!important;
+  height:42px!important;
+  padding:0 9px!important;
+  border-radius:8px!important;
 }
+
+/* Hệ thống + SLA: same total height as Checklist / Nhà thầu. */
 #app.updateProjectMode .updateWorkExtrasCompact{
   align-self:start!important;
-  min-height:68px!important;
-  height:68px!important;
+  min-height:58px!important;
+  height:58px!important;
 }
 #app.updateProjectMode .updateWorkContextLine{
-  min-height:68px!important;
-  height:68px!important;
-  padding:4px 8px!important;
+  min-height:58px!important;
+  height:58px!important;
+  padding:3px 8px!important;
   align-items:center!important;
+  gap:8px!important;
 }
 #app.updateProjectMode .updateSystemField{
   display:grid!important;
-  grid-template-rows:auto 50px!important;
-  gap:4px!important;
-  min-width:220px!important;
-  min-height:62px!important;
+  grid-template-rows:auto 42px!important;
+  gap:3px!important;
+  min-width:210px!important;
+  min-height:54px!important;
   color:#123678!important;
   font-size:9px!important;
   font-weight:800!important;
 }
 #app.updateProjectMode .updateSystemField.hide{display:none!important}
 #app.updateProjectMode .updateSystemField select{
-  min-height:50px!important;
-  height:50px!important;
-  padding:0 10px!important;
+  min-height:42px!important;
+  height:42px!important;
+  padding:0 9px!important;
   border:1px solid #c7e3f5!important;
-  border-radius:9px!important;
+  border-radius:8px!important;
   background:#fff!important;
   color:#193872!important;
-  font-size:12px!important;
+  font-size:11px!important;
 }
 #app.updateProjectMode .updateAssetContext{
-  min-height:50px!important;
+  min-height:42px!important;
   align-items:center!important;
 }
 #app.updateProjectMode .updateWorkSlaPreview{
   align-self:center!important;
-  padding:0 4px!important;
+  padding:0 2px!important;
+  font-size:8.5px!important;
 }
 
-/* Empty Vật tư box now matches a normal input row; it expands only after materials are added. */
+/* Vật tư empty state: same 58px total height; expands only after material is added. */
 #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
   align-self:start!important;
-  min-height:68px!important;
-  height:68px!important;
-  padding:8px 10px!important;
+  min-height:58px!important;
+  height:58px!important;
+  padding:6px 9px!important;
   display:flex!important;
   flex-direction:column!important;
   justify-content:center!important;
 }
 #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField:has(.demoTaskMaterialRow){
   height:auto!important;
-  min-height:68px!important;
+  min-height:58px!important;
   justify-content:flex-start!important;
 }
 #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead{
-  min-height:32px!important;
+  min-height:28px!important;
   align-items:center!important;
 }
 #app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial{
-  height:32px!important;
-  min-height:32px!important;
+  height:28px!important;
+  min-height:28px!important;
+  padding:0 8px!important;
+}
+
+/* Nguyên nhân / Kết quả use the same compact control height too. */
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid label.span2{
+  gap:3px!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid textarea{
+  min-height:42px!important;
+  height:42px!important;
+  max-height:84px!important;
+  padding:7px 9px!important;
+  border-radius:8px!important;
+  resize:vertical!important;
 }
 
 /* Khu vực is intentionally hidden in UPDATE; its value remains internal for linked assets. */
 #app.updateProjectMode #updateTaskArea{display:none!important}
 
 @media(max-width:760px){
-  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2),
-  #app.updateProjectMode #demoWorkLinks .updateUniformLinkField,
-  #app.updateProjectMode .updateWorkExtrasCompact,
-  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
-    min-height:auto!important;
-    height:auto!important;
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid{
+    gap:7px!important;
+    padding:0 9px 10px!important;
   }
-  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2){
-    grid-template-rows:auto 50px!important;
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2),
+  #app.updateProjectMode #demoWorkLinks .updateUniformLinkField{
+    min-height:62px!important;
+    height:62px!important;
+    grid-template-rows:auto 46px!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > select,
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > input,
+  #app.updateProjectMode #demoWorkLinks .updateUniformLinkField > select{
+    min-height:46px!important;
+    height:46px!important;
+    font-size:16px!important;
+  }
+  #app.updateProjectMode .updateWorkExtrasCompact{
+    min-height:62px!important;
+    height:auto!important;
   }
   #app.updateProjectMode .updateWorkContextLine{
-    min-height:auto!important;
+    min-height:62px!important;
     height:auto!important;
-    padding:8px!important;
+    padding:5px 8px!important;
   }
   #app.updateProjectMode .updateSystemField{
     width:100%!important;
     min-width:0!important;
-    min-height:auto!important;
+    min-height:58px!important;
+    grid-template-rows:auto 46px!important;
   }
   #app.updateProjectMode .updateSystemField select{
+    min-height:46px!important;
+    height:46px!important;
     font-size:16px!important;
   }
   #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
-    min-height:64px!important;
+    min-height:62px!important;
+    height:62px!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField:has(.demoTaskMaterialRow){
+    height:auto!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid textarea{
+    min-height:46px!important;
+    height:46px!important;
+    max-height:92px!important;
+    font-size:16px!important;
   }
 }
