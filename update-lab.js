@@ -326,7 +326,7 @@ async function updateRenderCommandCenter(){
  plans.filter(p=>p.next_due_date&&new Date(p.next_due_date+"T23:59:59")<new Date()).forEach(p=>{const a=updateAsset(p.asset_id);attention.push({tone:"warn",icon:"⚙",title:p.title,meta:(a?.code||"")+" · PM quá hạn "+uDate(p.next_due_date),action:"asset",id:p.asset_id})});
  low.forEach(m=>attention.push({tone:"warn",icon:"□",title:m.name,meta:"Tồn "+uNum(m._stock)+" "+m.unit+" · Min "+uNum(m.min_qty),action:"inventory"}));
  anoms.filter(a=>Math.abs(Number(a.variance_pct))>=15).forEach(a=>attention.push({tone:"warn",icon:"⌁",title:"Bất thường "+(a.meter_type==="water"?"nước":a.meter_type==="electric"?"điện":a.meter_type),meta:(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+"% so baseline",action:"energy"}));
- if(handover)attention.push({tone:"info",icon:"⇄",title:"Bàn giao ca đang chờ nhận",meta:handover.giver_name+" → "+handover.receiver_name,action:"shift"}));
+ if(handover)attention.push({tone:"info",icon:"⇄",title:"Bàn giao ca đang chờ nhận",meta:handover.giver_name+" → "+handover.receiver_name,action:"shift"});
 
  const systemCards=updateState.systems.map(s=>{
   const aa=updateState.assets.filter(a=>a.system_code===s.code);if(!aa.length)return "";
