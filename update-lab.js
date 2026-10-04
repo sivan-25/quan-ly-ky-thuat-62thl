@@ -2,7 +2,7 @@
 "use strict";
 
 const UPDATE_ID="UPDATE";
-const UPDATE_CACHE_KEY="esta_update_ops_cache_v1";
+const DEMO_ID="DEMO";
 const SLA_RULES={
  Critical:{response:5,target:30,label:"Critical"},
  High:{response:15,target:120,label:"High"},
@@ -10,19 +10,31 @@ const SLA_RULES={
  Low:{response:240,target:1440,label:"Low"}
 };
 const UPDATE_MODULES=["assets","team","shift","cost"];
-let updateState={
- loaded:false,loading:null,offline:false,loadedAt:0,
+const updateNewState=(buildingId="")=>({
+ buildingId,loaded:false,loading:null,offline:false,loadedAt:0,
  systems:[],areas:[],assets:[],records:[],incidents:[],incidentExt:[],inspections:[],
  technicians:[],skills:[],shifts:[],handovers:[],materials:[],materialTx:[],
  contractors:[],vendorScores:[],baselines:[],anomalies:[],costs:[],plans:[],meters:[]
-};
+});
+let updateState=updateNewState();
 let updatePmGenerating=false,updateScannerStream=null,updateScannerTimer=null,updateNotifTimer=null,updateNavSeq=0,updateCurrentRoute="";
 let updateRolePreview=sessionStorage.getItem("esta_update_role_preview")||"leader";
+const updateScopeId=()=>String(currentBuilding?.id||"");
+const updateIsSandbox=()=>updateScopeId()===UPDATE_ID;
+const updateIsEligible=()=>!!updateScopeId()&&updateScopeId()!==DEMO_ID;
+const updateProjectName=()=>String(currentBuilding?.name||updateScopeId()||"Dự án");
+const updateProjectCode=()=>updateScopeId().replace(/[^A-Za-z0-9]/g,"")||"ESTA";
+const updateWoPrefix=()=>updateIsSandbox()?"UPD":updateProjectCode();
+const updateCacheKey=(id=updateScopeId())=>"esta_ops_cache_v2_"+String(id||"none");
 const updateRealAdmin=()=>!!currentAccount?.is_admin;
-const updateTechView=()=>!updateRealAdmin()||updateRolePreview==="technician";
+const updateTechView=()=>!updateRealAdmin()||(updateIsSandbox()&&updateRolePreview==="technician");
 const updateLeaderView=()=>updateRealAdmin()&&!updateTechView();
-
-const updateIs=()=>String(currentBuilding?.id||"")===UPDATE_ID&&!$("#navWork")?.classList.contains("hide");
+const updateIs=()=>updateIsEligible()&&!$("#navWork")?.classList.contains("hide");
+function updateEnsureStateScope(){
+ const id=updateScopeId();
+ if(updateState.buildingId!==id)updateState=updateNewState(id);
+ return id;
+}
 const updateTok=()=>centralSession?.access_token||"";
 const uq=v=>encodeURIComponent(v??"");
 const updateRest=async(table,query="")=>{
@@ -59,24 +71,26 @@ const uPriority=v=>{
 const uPriorityVi=v=>({"Critical":"Khẩn cấp","High":"Cao","Medium":"Trung bình","Low":"Thấp"})[uPriority(v)]||v;
 const uInitials=name=>String(name||"KT").trim().split(/\s+/).slice(-2).map(x=>x[0]||"").join("").toUpperCase();
 
-function updateCacheSave(){
+function updateCacheSave(buildingId=updateScopeId()){
  try{
-  localStorage.setItem(UPDATE_CACHE_KEY,JSON.stringify({...updateState,loading:null}));
+  if(!buildingId)return;
+  localStorage.setItem(updateCacheKey(buildingId),JSON.stringify({...updateState,buildingId,loading:null}));
  }catch(e){}
 }
-function updateCacheRead(){
+function updateCacheRead(buildingId=updateScopeId()){
  try{
-  const x=JSON.parse(localStorage.getItem(UPDATE_CACHE_KEY)||"null");
-  if(x&&Array.isArray(x.assets))return x;
+  const x=JSON.parse(localStorage.getItem(updateCacheKey(buildingId))||"null");
+  if(x&&x.buildingId===buildingId&&Array.isArray(x.assets))return x;
  }catch(e){}
  return null;
 }
 async function updateLoad(force=false){
  if(!updateIs())return updateState;
+ const buildingId=updateEnsureStateScope();
  if(updateState.loading)return updateState.loading;
  if(!force&&updateState.loaded&&Date.now()-updateState.loadedAt<15000)return updateState;
  updateState.loading=(async()=>{
-  const b="building_id=eq."+uq(UPDATE_ID);
+  const b="building_id=eq."+uq(buildingId);
   try{
    const r=await Promise.all([
     updateRest("ops_systems",b+"&active=eq.true&select=*&order=sort_order.asc"),
@@ -100,18 +114,20 @@ async function updateLoad(force=false){
     updateRest("ops_maintenance_plans",b+"&active=eq.true&select=*&order=next_due_date.asc"),
     updateRest("ops_asset_meter_readings",b+"&select=*&order=reading_at.asc")
    ]);
+   if(updateScopeId()!==buildingId)return updateState;
    const keys=["systems","areas","assets","records","incidents","incidentExt","inspections","technicians","skills","shifts","handovers","materials","materialTx","contractors","vendorScores","baselines","anomalies","costs","plans","meters"];
    keys.forEach((k,i)=>updateState[k]=Array.isArray(r[i])?r[i]:[]);
-   updateState.loaded=true;updateState.offline=false;updateState.loadedAt=Date.now();updateCacheSave();
+   updateState.buildingId=buildingId;updateState.loaded=true;updateState.offline=false;updateState.loadedAt=Date.now();updateCacheSave(buildingId);
   }catch(e){
-   console.warn("UPDATE operations load failed",e);
-   const cached=updateCacheRead();
+   console.warn("Operations load failed",buildingId,e);
+   if(updateScopeId()!==buildingId)return updateState;
+   const cached=updateCacheRead(buildingId);
    if(cached){
-    Object.assign(updateState,cached,{loaded:true,offline:true,loadedAt:Date.now(),loading:null});
+    Object.assign(updateState,cached,{buildingId,loaded:true,offline:true,loadedAt:Date.now(),loading:null});
    }else{
-    updateState.loaded=true;updateState.offline=true;updateState.loadedAt=Date.now();
+    updateState.buildingId=buildingId;updateState.loaded=true;updateState.offline=true;updateState.loadedAt=Date.now();
    }
-  }finally{updateState.loading=null}
+  }finally{if(updateState.buildingId===buildingId)updateState.loading=null}
   return updateState;
  })();
  return updateState.loading;
@@ -204,7 +220,7 @@ function updateNotificationOwner(){
  return String(id).replace(/[^a-zA-Z0-9_-]/g,"_");
 }
 function updateNotificationReadKey(){
- return "esta_update_notif_read_"+updateNotificationOwner()+"_"+(updateTechView()?"technician":"leader");
+ return "esta_ops_notif_read_"+updateScopeId()+"_"+updateNotificationOwner()+"_"+(updateTechView()?"technician":"leader");
 }
 function updateNotificationReadSet(){
  try{
@@ -324,7 +340,7 @@ function updateBuildNotifications(limit=5){
 }
 function updateNotificationScopeLabel(){
  const tech=updateTechView()?updateCurrentTechnician():null;
- return tech?"Ưu tiên của "+tech.name:(updateTechView()?"Ưu tiên kỹ thuật · toàn dự án":"Ưu tiên điều hành · UPDATE");
+ return tech?"Ưu tiên của "+tech.name:(updateTechView()?"Ưu tiên kỹ thuật · "+updateProjectName():"Ưu tiên điều hành · "+updateProjectName());
 }
 function updateRefreshNotifications(){
  if(!updateIs())return;
@@ -457,7 +473,7 @@ function updateInjectModals(){
  document.body.insertAdjacentHTML("beforeend",
   '<div id="updateAssetDrawer" class="updateDrawer hide"><button class="updateDrawerBackdrop" data-update-close-drawer></button><aside><header><div><span>ASSET PASSPORT</span><h2 id="updateAssetDrawerTitle">Thiết bị</h2></div><button data-update-close-drawer>×</button></header><div id="updateAssetDrawerBody"></div></aside></div>'+
   '<div id="updateHealthModal" class="modal hide"><div class="modalCard updateModalCard"><button class="modalClose" data-update-close-modal="updateHealthModal">×</button><div id="updateHealthModalBody"></div></div></div>'+
-  '<div id="updateAiModal" class="modal hide"><div class="modalCard updateModalCard updateAiCard"><button class="modalClose" data-update-close-modal="updateAiModal">×</button><span class="updateEyebrow">ESTA AI · PILOT</span><h3>Trợ lý điều hành kỹ thuật</h3><p class="updateMuted">Phân tích dữ liệu UPDATE hiện tại. AI chỉ gợi ý, không tự đóng công việc hay ra quyết định thay Leader.</p><div class="updateAiPrompts"><button data-ai="attention">Hôm nay cần quan tâm gì?</button><button data-ai="risk">Thiết bị nào rủi ro?</button><button data-ai="report">Soạn tóm tắt báo cáo tuần</button></div><div id="updateAiAnswer" class="updateAiAnswer">Chọn một câu hỏi nhanh để bắt đầu.</div></div></div>'+
+  '<div id="updateAiModal" class="modal hide"><div class="modalCard updateModalCard updateAiCard"><button class="modalClose" data-update-close-modal="updateAiModal">×</button><span class="updateEyebrow">ESTA AI · PILOT</span><h3>Trợ lý điều hành kỹ thuật</h3><p class="updateMuted">Phân tích dữ liệu dự án hiện tại. AI chỉ gợi ý, không tự đóng công việc hay ra quyết định thay Leader.</p><div class="updateAiPrompts"><button data-ai="attention">Hôm nay cần quan tâm gì?</button><button data-ai="risk">Thiết bị nào rủi ro?</button><button data-ai="report">Soạn tóm tắt báo cáo tuần</button></div><div id="updateAiAnswer" class="updateAiAnswer">Chọn một câu hỏi nhanh để bắt đầu.</div></div></div>'+
   '<button id="updateAiButton" class="updateAiButton hide" type="button"><span>✦</span> ESTA AI</button>'+
   '<div id="updateScannerModal" class="modal hide"><div class="modalCard updateModalCard updateScannerCard"><button class="modalClose" data-update-close-modal="updateScannerModal">×</button><span class="updateEyebrow">QUICK SCAN</span><h3>Quét QR thiết bị</h3><p class="updateMuted">Đưa camera vào QR ESTA trên thiết bị hoặc nhập mã thiết bị.</p><video id="updateScannerVideo" playsinline muted></video><p id="updateScannerStatus" class="updateScannerStatus"></p><div class="updateScannerManual"><input id="updateScannerCode" placeholder="VD: FWP-01"><button id="updateScannerOpen" type="button">Mở thiết bị</button></div></div></div>'+
   '<div id="updateQuickModal" class="modal hide"><div class="modalCard updateModalCard"><button class="modalClose" data-update-close-modal="updateQuickModal">×</button><div id="updateQuickModalBody"></div></div></div>'+
@@ -545,12 +561,13 @@ function updateArrangeSidebar(on){
 function updateApplyMode(){
  updateInjectShell();
  const on=updateIs()&&($("#adminPage")?.classList.contains("hide")??true);
+ if(on)updateEnsureStateScope();
  updateArrangeSidebar(on);
  updateArrangeWorkStats(on);
  updateArrangeWorkLinkFields(on);
  $("#app")?.classList.toggle("updateProjectMode",on);
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
- $("#updateTrialRibbon")?.classList.toggle("hide",!on);
+ $("#updateTrialRibbon")?.classList.toggle("hide",!on||!updateIsSandbox());
  $("#updateMobileNav")?.classList.toggle("hide",!on);
  $("#updateAiButton")?.classList.toggle("hide",!on);
  $("#app")?.classList.toggle("updateTechnicianView",on&&updateTechView());
@@ -558,12 +575,12 @@ function updateApplyMode(){
   ["navUpdateTeam","navUpdateShift","navUpdateCost"].forEach(id=>$("#"+id)?.classList.add("hide"));
   const roleBtn=$("#updateRolePreviewBtn");
   if(roleBtn){
-    roleBtn.classList.toggle("hide",!updateRealAdmin());
-    updateRefreshRoleChip();
+    roleBtn.classList.toggle("hide",!updateIsSandbox()||!updateRealAdmin());
+    if(updateIsSandbox())updateRefreshRoleChip();
   }
-  document.querySelectorAll(".buildingNameText").forEach(x=>x.textContent="ESTA UPDATE · Sandbox thử nghiệm");
+  document.querySelectorAll(".buildingNameText").forEach(x=>x.textContent=updateProjectName());
   updateEnhanceWorkForm();
-  updateLoad().then(()=>{updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
+  updateLoad().then(()=>{if(!updateIs())return;updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
   updateStartNotificationTimer();
  }else{
   document.querySelectorAll(".updateIntelligencePanel,.updateIntelligenceStrip").forEach(x=>x.remove());
@@ -626,7 +643,7 @@ function updateSetTop(title,subtitle){
  document.querySelectorAll(".topModuleTitle").forEach(x=>x.classList.add("hide"));
  const t=$("#topUpdateTitle");if(t){
   t.classList.remove("hide");$("#topUpdateHeading").textContent=title;
-  const p=t.querySelector("p");if(p)p.textContent=subtitle||"UPDATE · THỬ NGHIỆM";
+  const p=t.querySelector("p");if(p)p.textContent=subtitle||(updateIsSandbox()?"UPDATE · THỬ NGHIỆM":updateProjectName());
  }
 }
 function updateShowStandalone(name){
@@ -882,8 +899,8 @@ function updateOpenTechnicianForm(){
  $("#updateTechForm").onsubmit=async e=>{
   e.preventDefault();
   try{
-   await updatePost("ops_technicians",{building_id:UPDATE_ID,code:$("#uTechCode").value.trim(),name:$("#uTechName").value.trim(),shift_code:$("#uTechShift").value,workload:Number($("#uTechLoad").value||0),avatar_text:uInitials($("#uTechName").value),status:"Sẵn sàng"});
-   updateCloseModal("updateQuickModal");updateState.loaded=false;await updateLoad(true);updateRenderTeam();toast("Đã thêm nhân sự vào UPDATE");
+   await updatePost("ops_technicians",{building_id:updateScopeId(),code:$("#uTechCode").value.trim(),name:$("#uTechName").value.trim(),shift_code:$("#uTechShift").value,workload:Number($("#uTechLoad").value||0),avatar_text:uInitials($("#uTechName").value),status:"Sẵn sàng"});
+   updateCloseModal("updateQuickModal");updateState.loaded=false;await updateLoad(true);updateRenderTeam();toast("Đã thêm nhân sự vào "+updateProjectName());
   }catch(err){toast(err.message||"Không thể thêm nhân sự")}
  };
 }
@@ -918,7 +935,7 @@ function updateHandoverDetails(h){
 }
 async function updateAcknowledgeHandover(id){
  try{
-  await updatePatch("ops_shift_handovers","id=eq."+uq(id)+"&building_id=eq.UPDATE",{status:"Đã nhận",acknowledged_at:new Date().toISOString(),updated_at:new Date().toISOString()});
+  await updatePatch("ops_shift_handovers","id=eq."+uq(id)+"&building_id=eq."+uq(updateScopeId()),{status:"Đã nhận",acknowledged_at:new Date().toISOString(),updated_at:new Date().toISOString()});
   updateState.loaded=false;await updateLoad(true);updateRenderShift();updateRenderCommandCenter();updateRefreshNotifications();toast("Đã xác nhận nhận bàn giao");
  }catch(e){toast(e.message||"Không thể xác nhận bàn giao")}
 }
@@ -930,7 +947,7 @@ function updateOpenHandoverForm(){
   e.preventDefault();
   const lines=id=>$("#"+id).value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
   try{
-   await updatePost("ops_shift_handovers",{building_id:UPDATE_ID,handover_date:new Date().toLocaleDateString("en-CA"),shift_from:$("#uHandoverFrom").value,shift_to:$("#uHandoverTo").value,giver_name:$("#uHandoverGiver").value.trim(),receiver_name:$("#uHandoverReceiver").value.trim(),open_incidents:lines("uHandoverIncident"),watch_assets:lines("uHandoverAsset"),outstanding_work:[],vendors_onsite:[],bypass_systems:[],tenant_notes:"",notes:$("#uHandoverNote").value.trim(),status:"Chờ nhận"});
+   await updatePost("ops_shift_handovers",{building_id:updateScopeId(),handover_date:new Date().toLocaleDateString("en-CA"),shift_from:$("#uHandoverFrom").value,shift_to:$("#uHandoverTo").value,giver_name:$("#uHandoverGiver").value.trim(),receiver_name:$("#uHandoverReceiver").value.trim(),open_incidents:lines("uHandoverIncident"),watch_assets:lines("uHandoverAsset"),outstanding_work:[],vendors_onsite:[],bypass_systems:[],tenant_notes:"",notes:$("#uHandoverNote").value.trim(),status:"Chờ nhận"});
    updateCloseModal("updateQuickModal");updateState.loaded=false;await updateLoad(true);updateRenderShift();toast("Đã tạo bàn giao ca");
   }catch(err){toast(err.message||"Không thể lưu bàn giao")}
  };
@@ -1143,12 +1160,12 @@ async function updateSyncTaskCosts(obj){
  ];
  for(const item of items){
   try{
-   const q="building_id=eq.UPDATE&work_order_id=eq."+uq(workOrderId)+"&cost_type=eq."+uq(item.type)+"&select=id";
+   const q="building_id=eq."+uq(updateScopeId())&work_order_id=eq."+uq(workOrderId)+"&cost_type=eq."+uq(item.type)+"&select=id";
    const existing=await updateRest("ops_cost_entries",q);
-   const body={building_id:UPDATE_ID,entry_date:obj.d||new Date().toLocaleDateString("en-CA"),work_order_id:workOrderId,
+   const body={building_id:updateScopeId(),entry_date:obj.d||new Date().toLocaleDateString("en-CA"),work_order_id:workOrderId,
      asset_id:obj.assetId||null,system_code:obj.systemCode||"",contractor_id:item.type==="Nhà thầu"?(obj.contractorId||null):null,
      cost_type:item.type,amount:Math.max(0,item.amount),description:(obj.c||"Work Order")+" · "+item.type};
-   if(existing?.[0]?.id)await updatePatch("ops_cost_entries","id=eq."+uq(existing[0].id)+"&building_id=eq.UPDATE",body);
+   if(existing?.[0]?.id)await updatePatch("ops_cost_entries","id=eq."+uq(existing[0].id)+"&building_id=eq."+uq(updateScopeId()),body);
    else if(item.amount>0)await updatePost("ops_cost_entries",body);
   }catch(e){console.warn("Task cost sync skipped",item.type,e)}
  }
@@ -1157,7 +1174,7 @@ async function updateSyncTaskCosts(obj){
 
 const updateOriginalSyncTaskRecord=syncTaskRecord;
 syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
- if(action==="upsert_task"&&String(buildingId)===UPDATE_ID&&itemOrId&&typeof itemOrId==="object"){
+ if(action==="upsert_task"&&String(buildingId)!==DEMO_ID&&itemOrId&&typeof itemOrId==="object"){
   const previous=load().find(x=>String(x.id)===String(itemOrId.id))||{};
   const formSaveActive=updateIs()&&!$("#workPage")?.classList.contains("hide")&&$("#saveBtn")?.disabled===true;
   const extra=formSaveActive?updateReadWorkExtras():{};
@@ -1169,7 +1186,7 @@ syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
   obj.createdAt=created;obj.slaResponseMinutes=Number(r.response);obj.slaTargetMinutes=Number(r.target);
   if(priorityChanged||!obj.responseDueAt)obj.responseDueAt=new Date(createdDate.getTime()+obj.slaResponseMinutes*60000).toISOString();
   if(priorityChanged||!obj.resolveDueAt)obj.resolveDueAt=new Date(createdDate.getTime()+obj.slaTargetMinutes*60000).toISOString();
-  if(!obj.woCode)obj.woCode=previous.woCode||"WO-UPD-"+String(obj.id||Date.now()).slice(-5);
+  if(!obj.woCode)obj.woCode=previous.woCode||"WO-"+updateWoPrefix()+"-"+String(obj.id||Date.now()).slice(-5);
   const result=await updateOriginalSyncTaskRecord(action,obj,buildingId);
   const saved=result?.item?{...obj,...result.item}:obj;
   if(updateTok())updateSyncTaskCosts(saved);
@@ -1227,18 +1244,18 @@ async function updateEnsurePmOrders(){
    const already=arr.some(x=>String(x.maintenancePlanId||"")===String(p.id)&&String(x.maintenanceCycleKey||"")===cycleKey);
    if(!already){
     const id=Date.now()+Math.floor(Math.random()*9000),priority=uPriority(p.priority),rule=SLA_RULES[priority],created=new Date().toISOString();
-    let obj={id,woCode:"WO-UPD-PM-"+String(id).slice(-4),d:new Date().toLocaleDateString("en-CA"),c:p.title,t:"Bảo trì",s:"Đang thực hiện",n:"Tự động sinh từ kế hoạch "+p.plan_code,a:asset.assigned_to||"",performers:asset.assigned_to?[asset.assigned_to]:[],imgs:[],i:0,priority,assetId:asset.id,systemCode:asset.system_code,areaCode:asset.area_code,maintenancePlanId:p.id,maintenanceCycleKey:cycleKey,materials:[],cause:"",result:"",createdAt:created,slaResponseMinutes:rule.response,slaTargetMinutes:rule.target,responseDueAt:new Date(Date.now()+rule.response*60000).toISOString(),resolveDueAt:new Date(Date.now()+rule.target*60000).toISOString(),dueDate:p.next_due_date||new Date().toLocaleDateString("en-CA"),dueDateExplicit:true};
-    const res=await updateOriginalSyncTaskRecord("upsert_task",obj,UPDATE_ID);if(res?.item)obj={...obj,...res.item};
+    let obj={id,woCode:"WO-"+updateWoPrefix()+"-PM-"+String(id).slice(-4),d:new Date().toLocaleDateString("en-CA"),c:p.title,t:"Bảo trì",s:"Đang thực hiện",n:"Tự động sinh từ kế hoạch "+p.plan_code,a:asset.assigned_to||"",performers:asset.assigned_to?[asset.assigned_to]:[],imgs:[],i:0,priority,assetId:asset.id,systemCode:asset.system_code,areaCode:asset.area_code,maintenancePlanId:p.id,maintenanceCycleKey:cycleKey,materials:[],cause:"",result:"",createdAt:created,slaResponseMinutes:rule.response,slaTargetMinutes:rule.target,responseDueAt:new Date(Date.now()+rule.response*60000).toISOString(),resolveDueAt:new Date(Date.now()+rule.target*60000).toISOString(),dueDate:p.next_due_date||new Date().toLocaleDateString("en-CA"),dueDateExplicit:true};
+    const res=await updateOriginalSyncTaskRecord("upsert_task",obj,updateScopeId());if(res?.item)obj={...obj,...res.item};
     arr.push(obj);changed=true;
    }
    if(advancePatch){
     try{
-      await updatePatch("ops_maintenance_plans","id=eq."+uq(p.id)+"&building_id=eq.UPDATE",advancePatch);
+      await updatePatch("ops_maintenance_plans","id=eq."+uq(p.id)+"&building_id=eq."+uq(updateScopeId()),advancePatch);
       Object.assign(p,advancePatch);
     }catch(e){console.warn("Could not advance PM plan",p.plan_code,e)}
    }
   }
-  if(changed){save(arr);render?.();updateRenderCommandCenter();updateRefreshNotifications();toast("UPDATE đã tự tạo Work Order cho PM đến hạn")}
+  if(changed){save(arr);render?.();updateRenderCommandCenter();updateRefreshNotifications();toast(updateProjectName()+" đã tự tạo Work Order cho PM đến hạn")}
  }catch(e){console.warn("Auto PM generation skipped",e)}
  finally{updatePmGenerating=false}
 }
@@ -1264,7 +1281,7 @@ function updateAiAnswer(type){
   html=handover?'<b>Bàn giao chưa được xác nhận</b><p>'+uEsc(handover.giver_name)+' → '+uEsc(handover.receiver_name)+'.</p><p>Cần theo dõi: '+uEsc((handover.watch_assets||[]).join(", "))+'</p><p>Sự cố mở: '+uEsc((handover.open_incidents||[]).join(", "))+'</p><p>Ghi chú: '+uEsc(handover.notes||"—")+'</p>':'<b>Không có bàn giao đang chờ nhận.</b>';
  }
  if(type==="report"){
-  html='<b>Tóm tắt vận hành tuần · bản nháp</b><p>UPDATE đang ở mức Health <strong>'+h.score+'/100</strong>. Ghi nhận '+updateState.incidents.length+' sự cố trong dữ liệu thử nghiệm, trong đó '+h.critical+' sự cố Critical đang mở; '+h.overdue+' Work Order quá hạn; PM compliance cần cải thiện do '+h.pmOver+' kế hoạch quá hạn.</p><p>Điểm cần theo dõi: '+(repeat.length?uEsc(repeat.map(x=>x.asset.code+" lỗi lặp "+x.count+" lần/90 ngày").join("; ")):"không có lỗi lặp")+'. Kho có '+low.length+' vật tư chạm ngưỡng tối thiểu.</p>';
+  html='<b>Tóm tắt vận hành tuần · bản nháp</b><p>'+uEsc(updateProjectName())+' đang ở mức Health <strong>'+h.score+'/100</strong>. Ghi nhận '+updateState.incidents.length+' sự cố, trong đó '+h.critical+' sự cố Critical đang mở; '+h.overdue+' Work Order quá hạn; PM compliance cần cải thiện do '+h.pmOver+' kế hoạch quá hạn.</p><p>Điểm cần theo dõi: '+(repeat.length?uEsc(repeat.map(x=>x.asset.code+" lỗi lặp "+x.count+" lần/90 ngày").join("; ")):"không có lỗi lặp")+'. Kho có '+low.length+' vật tư chạm ngưỡng tối thiểu.</p>';
  }
  box.innerHTML=html||"Chưa có dữ liệu phân tích.";
 }
@@ -1335,7 +1352,7 @@ showHome=function(){
  updateApplyMode();
  if(updateIs()){
   updateCurrentRoute="home";
-  updateSetTop("Technical Command Center",updateTechView()?"UPDATE · Technician View":"UPDATE · Leader View");
+  updateSetTop("Technical Command Center",(updateIsSandbox()?"UPDATE":updateProjectName())+" · "+(updateTechView()?"Kỹ thuật":"Leader"));
   if(!$("#homePage")?.classList.contains("hide"))updateRenderCommandCenter();
   if(seq&&seq!==updateNavSeq)return;
  }
@@ -1387,8 +1404,9 @@ if(typeof window.enterAccount==="function"){
  window.enterAccount=function(account,session=null){
   updatePrevEnterAccount(account,session);
   const params=new URLSearchParams(location.search);
-  if(params.get("project")===UPDATE_ID){
-   const b=account?.buildings?.find(x=>x.id===UPDATE_ID);
+  const projectId=params.get("project");
+  if(projectId&&projectId!==DEMO_ID){
+   const b=account?.buildings?.find(x=>String(x.id)===String(projectId));
    if(b)setTimeout(async()=>{try{await enterProject(b,{target:"home"});showHome();const code=params.get("asset");if(code){await updateLoad(true);setTimeout(()=>updateOpenAssetByCode(code),180)}}catch(e){}},180);
   }
  };
