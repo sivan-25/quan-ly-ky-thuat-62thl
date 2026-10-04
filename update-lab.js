@@ -735,7 +735,7 @@ function updateResetWorkExtras(){
 }
 
 async function updateSyncTaskCosts(obj){
- if(!obj||!obj.id)return;
+ if(!obj||!obj.id||!updateTok())return;
  const workOrderId=obj.woCode||String(obj.id);
  const materialCost=(Array.isArray(obj.materials)?obj.materials:[]).reduce((sum,row)=>{
    const m=updateState.materials.find(x=>String(x.id)===String(row.materialId));
@@ -776,8 +776,8 @@ syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
   if(!obj.woCode)obj.woCode=previous.woCode||"WO-UPD-"+String(obj.id||Date.now()).slice(-5);
   const result=await updateOriginalSyncTaskRecord(action,obj,buildingId);
   const saved=result?.item?{...obj,...result.item}:obj;
-  updateSyncTaskCosts(saved);
-  return result?.item?{...result,item:saved}:result;
+  if(updateTok())updateSyncTaskCosts(saved);
+  return result?{...result,item:saved}:{item:saved,offline:true};
  }
  return updateOriginalSyncTaskRecord(action,itemOrId,buildingId);
 };
