@@ -89,6 +89,7 @@ async function loadConstructionMaterialData(buildingId=currentBuilding?.id,force
       sbFetch("/rest/v1/construction_material_logs?select=*&building_id=eq."+b+"&order=work_date.desc,created_at.desc",{token}),
       sbFetch("/rest/v1/construction_material_transactions?select=*&building_id=eq."+b+"&order=tx_date.desc,created_at.desc",{token})
     ]);
+    if(String(currentBuilding?.id||"")!==String(buildingId))return;
     constructionMaterials=Array.isArray(result[0])?result[0]:[];
     constructionLogs=Array.isArray(result[1])?result[1]:[];
     constructionTransactions=Array.isArray(result[2])?result[2]:[];
@@ -98,6 +99,7 @@ async function loadConstructionMaterialData(buildingId=currentBuilding?.id,force
     renderConstructionMaterials();
     if(selectedConstructionMaterialId)renderConstructionDetail();
   }catch(e){
+    if(String(currentBuilding?.id||"")!==String(buildingId))return;
     console.warn("Load construction materials failed",e);
     toast("Không tải được dữ liệu vật tư thi công");
   }

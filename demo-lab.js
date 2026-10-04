@@ -49,6 +49,9 @@ async function demoLoad(force=false){
    demoRest("inventory_materials",b+"&archived_at=is.null&select=*&order=name.asc"),
    demoRest("inventory_material_transactions",b+"&select=*&order=tx_date.desc")
   ]);
+  // Ignore a late response from the project we have already left.
+  // Without this guard, linked Incident/Contractor/Material dropdowns can briefly show data from the previous building.
+  if(String(currentBuilding?.id||"")!==buildingId)return demoCache;
   demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
  }catch(e){console.warn("Project operations data load failed",e)}
  return demoCache;
@@ -562,9 +565,10 @@ resetForm=function(...args){
  return r
 };
 
-async function demoSyncContractorTask(obj){
+async function demoSyncContractorTask(obj,buildingId=currentBuilding?.id){
+ if(!buildingId)return;
  const taskId=String(obj.id);
- const q="building_id=eq."+demoQs(currentBuilding.id)+"&source_task_id=eq."+demoQs(taskId);
+ const q="building_id=eq."+demoQs(buildingId)+"&source_task_id=eq."+demoQs(taskId);
  try{
   const existing=await demoRest("contractor_jobs",q+"&select=id,contractor_id,source_task_id");
   if(!obj.contractorId){
@@ -574,7 +578,7 @@ async function demoSyncContractorTask(obj){
   }
   const completed=obj.s==="Đã hoàn thành"?(String(obj.completedAt||"").slice(0,10)||obj.d||null):null;
   const body={
-   building_id:currentBuilding.id,
+   building_id:buildingId,
    contractor_id:obj.contractorId,
    work_date:obj.d||today(),
    completed_date:completed,
@@ -595,25 +599,44 @@ async function demoSyncContractorTask(obj){
   throw e;
  }
 }
-async function demoFinalizeLinks(obj,old){
+async function demoFinalizeLinks(obj,old,buildingId=currentBuilding?.id){
+ if(!buildingId)return;
  const linkJobs=[];
- if(obj.incidentCode)linkJobs.push(demoPatch("incidents","building_id=eq."+demoQs(currentBuilding.id)+"&incident_code=eq."+demoQs(obj.incidentCode),{related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
+ if(obj.incidentCode)linkJobs.push(demoPatch("incidents","building_id=eq."+demoQs(buildingId)+"&incident_code=eq."+demoQs(obj.incidentCode),{related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
  if(obj.inspectionCode){
-  const ins=demoCache.inspections.find(x=>String(x.inspection_code)===String(obj.inspectionCode));
-  if(ins)linkJobs.push(demoPatch("inspections","building_id=eq."+demoQs(currentBuilding.id)+"&inspection_code=eq."+demoQs(obj.inspectionCode),{related_task_ids:[...new Set([...(Array.isArray(ins.related_task_ids)?ins.related_task_ids:[]),String(obj.id)])],updated_at:new Date().toISOString()}));
+  let ins=(demoCache.buildingId===String(buildingId))?demoCache.inspections.find(x=>String(x.inspection_code)===String(obj.inspectionCode)):null;
+  if(!ins){
+   try{
+    const rows=await demoRest("inspections","building_id=eq."+demoQs(buildingId)+"&inspection_code=eq."+demoQs(obj.inspectionCode)+"&select=id,related_task_ids");
+    ins=rows?.[0]||null;
+   }catch(e){console.warn("Inspection link lookup skipped",e)}
+  }
+  if(ins)linkJobs.push(demoPatch("inspections","building_id=eq."+demoQs(buildingId)+"&inspection_code=eq."+demoQs(obj.inspectionCode),{related_task_ids:[...new Set([...(Array.isArray(ins.related_task_ids)?ins.related_task_ids:[]),String(obj.id)])],updated_at:new Date().toISOString()}));
  }
  if(linkJobs.length)await Promise.allSettled(linkJobs);
- if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành"){demoCache.loaded=false;await demoLoad(true);return}
+ if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành"){
+  if(String(currentBuilding?.id||"")===String(buildingId)){demoCache.loaded=false;await demoLoad(true)}
+  return;
+ }
  const jobs=[];
  if(obj.assetId&&obj.t==="Bảo trì"){
-  const asset=demoAsset(obj.assetId),next=new Date(obj.d+"T00:00:00");next.setDate(next.getDate()+Number(asset?.frequency_days||30));
-  jobs.push(demoPost("maintenance_records",{building_id:currentBuilding.id,asset_id:obj.assetId,service_date:obj.d,maintenance_type:"Định kỳ",performer:obj.a||"",result_status:"Hoàn thành",work_done:obj.result||obj.c,note:obj.n||"",next_due_date:next.toLocaleDateString("en-CA"),cost:0}));
+  let asset=(demoCache.buildingId===String(buildingId))?demoAsset(obj.assetId):null;
+  if(!asset){
+   try{
+    const rows=await demoRest("maintenance_assets","building_id=eq."+demoQs(buildingId)+"&id=eq."+demoQs(obj.assetId)+"&select=id,frequency_days");
+    asset=rows?.[0]||null;
+   }catch(e){console.warn("Maintenance asset lookup skipped",e)}
+  }
+  const next=new Date(obj.d+"T00:00:00");next.setDate(next.getDate()+Number(asset?.frequency_days||30));
+  jobs.push(demoPost("maintenance_records",{building_id:buildingId,asset_id:obj.assetId,service_date:obj.d,maintenance_type:"Định kỳ",performer:obj.a||"",result_status:"Hoàn thành",work_done:obj.result||obj.c,note:obj.n||"",next_due_date:next.toLocaleDateString("en-CA"),cost:0}));
  }
  if(obj.incidentCode){
-  jobs.push(demoPatch("incidents","building_id=eq."+demoQs(currentBuilding.id)+"&incident_code=eq."+demoQs(obj.incidentCode),{status:"Theo dõi",solution:obj.result||obj.n||"Đã xử lý qua công việc "+obj.id,related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
+  jobs.push(demoPatch("incidents","building_id=eq."+demoQs(buildingId)+"&incident_code=eq."+demoQs(obj.incidentCode),{status:"Theo dõi",solution:obj.result||obj.n||"Đã xử lý qua công việc "+obj.id,related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
  }
  await Promise.allSettled(jobs);
- demoCache.loaded=false;await demoLoad(true);
+ if(String(currentBuilding?.id||"")===String(buildingId)){
+  demoCache.loaded=false;await demoLoad(true);
+ }
 }
 const originalTaskSubmit=$("#taskForm")?.onsubmit;
 if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
@@ -642,8 +665,10 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   if(syncResult?.item)obj={...obj,...syncResult.item};
   a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
-  resetForm();render();renderHomeDashboard();
-  toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
+  if(String(currentBuilding?.id||"")===String(buildingId)){
+   resetForm();render();renderHomeDashboard();
+   toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
+  }
 
   (async()=>{
    try{
@@ -663,8 +688,8 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
      await syncTaskRecord("upsert_task",obj,buildingId);
      toast("Đã tải xong "+uploaded.length+" hình");
     }
-    await demoSyncContractorTask(obj);
-    await demoFinalizeLinks(obj,old);
+    await demoSyncContractorTask(obj,buildingId);
+    await demoFinalizeLinks(obj,old,buildingId);
     if(typeof inventoryLoadedBuilding!=="undefined")inventoryLoadedBuilding="";
     demoCache.loaded=false;await demoLoad(true);
     if(currentBuilding.id===buildingId){render();renderHomeDashboard();demoRenderHomeOps()}
@@ -681,10 +706,12 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
 const originalDemoDelTask=window.delTask;
 window.delTask=async id=>{
  if(!demoIs())return originalDemoDelTask(id);
+ const buildingId=String(currentBuilding?.id||"");
  await originalDemoDelTask(id);
+ if(String(currentBuilding?.id||"")!==buildingId)return;
  if(load().some(x=>String(x.id)===String(id)))return;
  try{
-  await sbFetch("/rest/v1/contractor_jobs?building_id=eq."+demoQs(currentBuilding.id)+"&source_task_id=eq."+demoQs(String(id)),{method:"DELETE",token:demoTok()});
+  await sbFetch("/rest/v1/contractor_jobs?building_id=eq."+demoQs(buildingId)+"&source_task_id=eq."+demoQs(String(id)),{method:"DELETE",token:demoTok()});
   if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
  }catch(e){console.warn("Delete linked contractor job failed",e)}
 };
@@ -1046,7 +1073,16 @@ async function demoRenderIncidents(){
  if(typeof hydrateMediaImages==="function")hydrateMediaImages(box);
 }
 window.demoSetIncidentStatus=async(id,status)=>{
- try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(currentBuilding.id),{status,updated_at:new Date().toISOString()});await demoLoad(true);demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố")}catch(e){toast(e.message)}
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
+ try{
+  await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{status,updated_at:new Date().toISOString()});
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố");
+ }catch(e){
+  if(String(currentBuilding?.id||"")===buildingId)toast(e.message);
+ }
 };
 function demoIncidentTaskPriority(severity){
  if(!demoUsesUpdatedOpsUI())return severity||"Trung bình";
@@ -1079,17 +1115,19 @@ function demoOpenIncidentLinkedTask(taskId){
  requestAnimationFrame(()=>requestAnimationFrame(()=>window.editTask?.(Number(taskId))));
 }
 window.demoCreateTaskFromIncident=async id=>{
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const inc=demoCache.incidents.find(x=>String(x.id)===String(id));if(!inc)return;
  const existing=demoFindIncidentLinkedTask(inc);
  if(existing){
   if(String(inc.related_task_id||"")!==String(existing.id)){
-   try{await demoPatch("incidents","id=eq."+demoQs(id),{related_task_id:String(existing.id),updated_at:new Date().toISOString()})}catch(e){}
+   try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{related_task_id:String(existing.id),updated_at:new Date().toISOString()})}catch(e){}
   }
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoOpenIncidentLinkedTask(existing.id);
   toast("Sự cố đã có công việc liên kết · đang mở chỉnh sửa");
   return;
  }
- const assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án";
+ const assignee=projectPeople?.[0]?.name||currentAccount?.display_name||currentAccount?.username||me||"Kỹ thuật dự án";
  const taskId=Date.now();
  const priority=demoIncidentTaskPriority(inc.severity);
  const linkedAsset=demoAsset(inc.asset_id);
@@ -1105,22 +1143,25 @@ window.demoCreateTaskFromIncident=async id=>{
   cause:demoCauseValue(inc.cause)||"",result:String(inc.solution||"").trim()
  };
  try{
-  const syncResult=await syncTaskRecord("upsert_task",obj,currentBuilding.id);
+  const syncResult=await syncTaskRecord("upsert_task",obj,buildingId);
   if(syncResult?.item)obj={...obj,...syncResult.item};
-  save([obj,...load().filter(t=>String(t.id)!==String(taskId))]);
-  await demoPatch("incidents","id=eq."+demoQs(id),{
+  let projectTasks=[];try{projectTasks=JSON.parse(localStorage.getItem(taskStorageKeyFor(buildingId))||"[]")}catch(e){}
+  localStorage.setItem(taskStorageKeyFor(buildingId),JSON.stringify([obj,...projectTasks.filter(t=>String(t.id)!==String(taskId))]));
+  await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{
    related_task_id:String(taskId),status:"Đang xử lý",updated_at:new Date().toISOString()
   });
   if(obj.contractorId){
-   try{await demoSyncContractorTask(obj)}catch(e){console.warn("Incident contractor sync skipped",e)}
+   try{await demoSyncContractorTask(obj,buildingId)}catch(e){console.warn("Incident contractor sync skipped",e)}
   }
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoCache.loaded=false;
   await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   render();
   demoOpenIncidentLinkedTask(taskId);
   toast("Đã tạo công việc · mở chỉnh sửa");
  }catch(e){
-  toast(e.message||"Không thể tạo công việc từ sự cố");
+  if(String(currentBuilding?.id||"")===buildingId)toast(e.message||"Không thể tạo công việc từ sự cố");
  }
 };
 window.demoAddIncident=async()=>{
@@ -1186,6 +1227,7 @@ window.demoCloseIncidentModal=()=>{
 };
 window.demoSubmitIncident=async e=>{
  e?.preventDefault();
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const editing=!!demoEditingIncidentId;
  const existing=editing?demoCache.incidents.find(x=>String(x.id)===String(demoEditingIncidentId)):null;
  const date=$("#demoIncidentDetectedDate")?.value||today();
@@ -1202,7 +1244,7 @@ window.demoSubmitIncident=async e=>{
  const originalAfterRefs=Array.isArray(existing?.after_images)?existing.after_images:[];
  if(!area){toast("Vui lòng nhập khu vực / vị trí");$("#demoIncidentArea")?.focus();return}
  if(!symptom){toast("Vui lòng nhập hiện tượng sự cố");$("#demoIncidentSymptom")?.focus();return}
- const code=existing?.incident_code||("SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4));
+ const code=existing?.incident_code||("SC-"+String(buildingId||"DA").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/Đ/g,"D").replace(/đ/g,"d").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4));
  const incidentId=existing?.id||(crypto.randomUUID?crypto.randomUUID():String(Date.now()));
  const beforeFiles=[...demoIncidentBeforeFiles],afterFiles=[...demoIncidentAfterFiles];
  const btn=$("#demoIncidentSaveBtn");if(btn){btn.disabled=true;btn.textContent=(beforeFiles.length||afterFiles.length)?"Đang tải ảnh...":"Đang lưu..."}
@@ -1210,10 +1252,10 @@ window.demoSubmitIncident=async e=>{
  try{
   if(beforeFiles.length)newBeforeRefs=await uploadMediaFiles(beforeFiles,"incident-before",incidentId,(done,total)=>{
     if(btn)btn.textContent="Ảnh trước "+done+"/"+total+"...";
-  },currentBuilding.id);
+  },buildingId);
   if(afterFiles.length)newAfterRefs=await uploadMediaFiles(afterFiles,"incident-after",incidentId,(done,total)=>{
     if(btn)btn.textContent="Ảnh sau "+done+"/"+total+"...";
-  },currentBuilding.id);
+  },buildingId);
   const payload={
    area,asset_id,contractor_id,
    severity:["Thấp","Trung bình","Cao","Khẩn cấp"].includes(severity)?severity:"Trung bình",
@@ -1226,10 +1268,10 @@ window.demoSubmitIncident=async e=>{
   if(editing){
    // created_at remains the original creation timestamp; detected_at is editable as the operational start date.
    payload.detected_at=new Date(date+"T12:00:00").toISOString();
-   await demoPatch("incidents","id=eq."+demoQs(incidentId)+"&building_id=eq."+demoQs(currentBuilding.id),payload);
+   await demoPatch("incidents","id=eq."+demoQs(incidentId)+"&building_id=eq."+demoQs(buildingId),payload);
   }else{
    await demoPost("incidents",{
-    id:incidentId,building_id:currentBuilding.id,incident_code:code,
+    id:incidentId,building_id:buildingId,incident_code:code,
     detected_at:new Date(date+"T12:00:00").toISOString(),
     ...payload
    });
@@ -1242,19 +1284,21 @@ window.demoSubmitIncident=async e=>{
    ];
    if(removedRefs.length)deleteStoredMediaRefs(removedRefs).catch(()=>{});
   }
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoCloseIncidentModal();
   resetDemoIncidentFiles();
   demoEditingIncidentId="";
   await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoSelectedIncident=String(incidentId);
   demoRenderIncidents();
   demoRenderHomeOps();
   toast(editing?"Đã cập nhật Sự cố / Defect":((demoUseIncidentStartDate()?"Đã ghi nhận defect":"Đã thêm "+code)+(newBeforeRefs.length||newAfterRefs.length?" · kèm hình ảnh":"")));
  }catch(err){
   if(!saved&&(newBeforeRefs.length||newAfterRefs.length))await deleteStoredMediaRefs([...newBeforeRefs,...newAfterRefs]);
-  toast(err.message||"Không thể lưu sự cố");
+  if(String(currentBuilding?.id||"")===buildingId)toast(err.message||"Không thể lưu sự cố");
  }finally{
-  if(btn){btn.disabled=false;btn.textContent=editing?"Lưu thay đổi":"Lưu sự cố"}
+  if(btn&&String(currentBuilding?.id||"")===buildingId){btn.disabled=false;btn.textContent=editing?"Lưu thay đổi":"Lưu sự cố"}
  }
 }
 document.addEventListener("keydown",e=>{
@@ -1278,12 +1322,25 @@ async function demoRenderInspections(){
  d.innerHTML='<div class="demoPanelHead"><div><h2>'+esc(s.template_name)+'</h2><p>'+esc(s.inspection_code)+' · '+esc(s.period_label)+'</p></div><span class="demoPill '+demoStatusClass(s.result_status)+'">'+esc(s.result_status)+'</span></div><div class="demoPanelBody"><div class="demoChecklist">'+items.map((it,i)=>'<div class="demoChecklistRow"><b>'+(i+1)+'. '+esc(it.item)+'</b><span>'+esc(it.standard||"—")+'</span><span class="demoPill '+demoStatusClass(it.result)+'">'+esc(it.result)+'</span><span>'+esc(it.note||"—")+'</span></div>').join("")+'</div><div class="demoDetailSection"><span>KIẾN NGHỊ</span><p>'+esc(s.recommendation||"—")+'</p></div><div class="demoDetailSection"><span>CÔNG VIỆC LIÊN KẾT</span><div class="demoHeroActions">'+((s.related_task_ids||[]).map(tid=>'<button class="demoBtn" onclick="demoOpenLinkedTask(\''+tid+'\')">CV '+esc(tid)+'</button>').join("")||'<span>Chưa có công việc liên kết</span>')+'</div></div><div class="demoHeroActions"><button class="demoBtn primary" onclick="demoCreateTaskFromInspection(\''+s.id+'\')">+ Tạo công việc khắc phục</button><button class="demoBtn" onclick="demoExportInspection(\''+s.id+'\')">Xuất PDF checklist</button></div></div>';
 }
 window.demoCreateTaskFromInspection=async id=>{
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(!ins)return;
- const bad=(ins.items||[]).find(x=>x.result!=="Đạt"),assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án",taskId=Date.now(),due=new Date();due.setDate(due.getDate()+3);
- const obj={id:taskId,d:today(),c:"Khắc phục checklist · "+(bad?.item||ins.template_name),t:"Bảo trì",s:"Đang thực hiện",n:(bad?.note||ins.recommendation||""),a:assignee,performers:[assignee],imgs:[],i:0,priority:bad?.result==="Không đạt"?"Cao":"Trung bình",dueDate:due.toLocaleDateString("en-CA"),assetId:ins.asset_id||"",incidentCode:"",inspectionCode:ins.inspection_code,contractorId:"",materials:[],result:""};
- save([obj,...load()]);await syncTaskRecord("upsert_task",obj,currentBuilding.id);
- await demoPatch("inspections","id=eq."+demoQs(id),{related_task_ids:[...new Set([...(ins.related_task_ids||[]),String(taskId)])],updated_at:new Date().toISOString()});
- await demoLoad(true);render();showModule("work");toast("Đã tạo công việc từ checklist");
+ const bad=(ins.items||[]).find(x=>x.result!=="Đạt");
+ const assignee=projectPeople?.[0]?.name||currentAccount?.display_name||currentAccount?.username||me||"Kỹ thuật dự án";
+ const taskId=Date.now(),due=new Date();due.setDate(due.getDate()+3);
+ let obj={id:taskId,d:today(),c:"Khắc phục checklist · "+(bad?.item||ins.template_name),t:"Bảo trì",s:"Đang thực hiện",n:(bad?.note||ins.recommendation||""),a:assignee,performers:[assignee],imgs:[],i:0,priority:bad?.result==="Không đạt"?"Cao":"Trung bình",dueDate:due.toLocaleDateString("en-CA"),dueDateExplicit:true,assetId:ins.asset_id||"",incidentCode:"",inspectionCode:ins.inspection_code,contractorId:"",materials:[],result:""};
+ try{
+  const syncResult=await syncTaskRecord("upsert_task",obj,buildingId);
+  if(syncResult?.item)obj={...obj,...syncResult.item};
+  let projectTasks=[];try{projectTasks=JSON.parse(localStorage.getItem(taskStorageKeyFor(buildingId))||"[]")}catch(e){}
+  localStorage.setItem(taskStorageKeyFor(buildingId),JSON.stringify([obj,...projectTasks.filter(x=>String(x.id)!==String(taskId))]));
+  await demoPatch("inspections","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{related_task_ids:[...new Set([...(ins.related_task_ids||[]),String(taskId)])],updated_at:new Date().toISOString()});
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  demoCache.loaded=false;await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  render();showModule("work");toast("Đã tạo công việc từ checklist");
+ }catch(e){
+  if(String(currentBuilding?.id||"")===buildingId)toast(e.message||"Không thể tạo công việc từ checklist");
+ }
 };
 function demoInspectionHtml(ins){
  const items=ins.items||[];
@@ -1319,6 +1376,7 @@ window.demoCloseChecklistModal=()=>{
 
 window.demoSubmitChecklist=async e=>{
  e?.preventDefault();
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const name=$("#demoChecklistName")?.value.trim()||"";
  const inspection_date=$("#demoChecklistDate")?.value||today();
  const period_label=$("#demoChecklistPeriod")?.value.trim()||"Kiểm tra bổ sung";
@@ -1331,11 +1389,11 @@ window.demoSubmitChecklist=async e=>{
  const recommendation=$("#demoChecklistRecommendation")?.value.trim()||"";
  if(!name){toast("Vui lòng nhập tên checklist");$("#demoChecklistName")?.focus();return}
  if(!item){toast("Vui lòng nhập nội dung kiểm tra");$("#demoChecklistItem")?.focus();return}
- const code="KT-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
+ const code="KT-"+String(buildingId||"DA").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/Đ/g,"D").replace(/đ/g,"d").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
  const btn=$("#demoChecklistSaveBtn");if(btn){btn.disabled=true;btn.textContent="Đang lưu..."}
  try{
   await demoPost("inspections",{
-   building_id:currentBuilding.id,
+   building_id:buildingId,
    inspection_code:code,
    template_name:name,
    inspection_date,
@@ -1351,14 +1409,19 @@ window.demoSubmitChecklist=async e=>{
    }],
    related_task_ids:[]
   });
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoCloseChecklistModal();
-  await demoLoad(true);
+  demoCache.loaded=false;await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoSelectedInspection="";
   demoRenderInspections();
   demoRenderHomeOps();
   toast("Đã tạo "+code);
- }catch(err){toast(err.message||"Không thể lưu checklist")}
- finally{if(btn){btn.disabled=false;btn.textContent="Lưu checklist"}}
+ }catch(err){
+  if(String(currentBuilding?.id||"")===buildingId)toast(err.message||"Không thể lưu checklist");
+ }finally{
+  if(btn&&String(currentBuilding?.id||"")===buildingId){btn.disabled=false;btn.textContent="Lưu checklist"}
+ }
 };
 
 document.addEventListener("keydown",e=>{
@@ -1516,6 +1579,7 @@ $("#technicalDocumentModal")?.addEventListener("click",e=>{if(e.target===$("#tec
 $("#technicalDocumentForm")?.addEventListener("submit",async e=>{
  e.preventDefault();
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const file=$("#technicalDocumentFile")?.files?.[0],title=String($("#technicalDocumentTitle")?.value||"").trim();
  const err=$("#technicalDocumentError"),btn=$("#technicalDocumentSubmit"),progress=$("#technicalDocumentProgress");
  if(!title){if(err)err.textContent="Vui lòng nhập tên tài liệu.";return}
@@ -1524,9 +1588,9 @@ $("#technicalDocumentForm")?.addEventListener("submit",async e=>{
  btn.disabled=true;progress?.classList.remove("hide");if(err)err.textContent="";
  let fileRef="";
  try{
-  fileRef=await demoUploadTechnicalDocument(file,currentBuilding.id);
+  fileRef=await demoUploadTechnicalDocument(file,buildingId);
   await demoPost("technical_documents",{
-   building_id:currentBuilding.id,
+   building_id:buildingId,
    title,
    category:$("#technicalDocumentCategory")?.value||"Khác",
    system_type:$("#technicalDocumentSystem")?.value||"Khác",
@@ -1539,13 +1603,18 @@ $("#technicalDocumentForm")?.addEventListener("submit",async e=>{
    note:String($("#technicalDocumentNote")?.value||"").trim(),
    uploaded_by:currentAccount?.id||null
   });
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoCloseDocumentModal();
-  await demoLoad(true);await demoRenderDocuments();
+  demoCache.loaded=false;await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  await demoRenderDocuments();
   toast("Đã tải tài liệu lên kho dự án");
  }catch(ex){
   if(fileRef)await demoDeleteUploadedDocument(fileRef);
-  if(err)err.textContent=ex.message||"Không thể tải tài liệu.";
- }finally{btn.disabled=false;progress?.classList.add("hide")}
+  if(err&&String(currentBuilding?.id||"")===buildingId)err.textContent=ex.message||"Không thể tải tài liệu.";
+ }finally{
+  if(String(currentBuilding?.id||"")===buildingId){btn.disabled=false;progress?.classList.add("hide")}
+ }
 });
 $("#demoIncidentAdd")&&($("#demoIncidentAdd").onclick=window.demoAddIncident);
 $("#demoInspectionAdd")&&($("#demoInspectionAdd").onclick=window.demoAddChecklist);

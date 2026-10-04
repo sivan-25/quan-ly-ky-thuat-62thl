@@ -1591,20 +1591,21 @@
 }
 #app.updateProjectMode #workPage .stats.updateCompactWorkStats small{
   margin:0!important;
-  color:#7d909d!important;
-  font-size:7.5px!important;
-  line-height:1!important;
-  letter-spacing:.35px!important;
+  color:#45677c!important;
+  font-size:9.5px!important;
+  line-height:1.05!important;
+  letter-spacing:.2px!important;
+  font-weight:700!important;
   white-space:nowrap!important;
   overflow:hidden!important;
   text-overflow:ellipsis!important;
 }
 #app.updateProjectMode #workPage .stats.updateCompactWorkStats strong{
   margin:0!important;
-  color:#193e58!important;
-  font-size:16px!important;
+  color:#103a63!important;
+  font-size:18px!important;
   line-height:1!important;
-  font-weight:780!important;
+  font-weight:800!important;
   white-space:nowrap!important;
 }
 #app.updateProjectMode #workPage .premiumTableCard .tableTop.workTableMeta #count{
@@ -1639,10 +1640,13 @@
     flex-basis:28px!important;
   }
   #app.updateProjectMode #workPage .stats.updateCompactWorkStats small{
-    font-size:8px!important;
+    color:#3f6178!important;
+    font-size:10px!important;
+    line-height:1.1!important;
   }
   #app.updateProjectMode #workPage .stats.updateCompactWorkStats strong{
-    font-size:17px!important;
+    color:#103a63!important;
+    font-size:19px!important;
   }
   #app.updateProjectMode #workPage .premiumTableCard .tableTop.workTableMeta #count{
     margin-left:auto!important;
@@ -1731,5 +1735,28 @@
     min-height:32px!important;
     height:32px!important;
     font-size:11px!important;
+  }
+}
+
+
+/* Post-rollout mobile QA: keep shared project controls inside the phone viewport. */
+@media(max-width:760px){
+  #app.updateProjectMode #workPage,
+  #app.updateProjectMode #workPage .workEntryCard,
+  #app.updateProjectMode #workPage #taskForm,
+  #app.updateProjectMode #demoWorkLinks,
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid{
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid>label,
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField,
+  #app.updateProjectMode #demoWorkLinks input,
+  #app.updateProjectMode #demoWorkLinks select,
+  #app.updateProjectMode #demoWorkLinks textarea{
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
   }
 }

@@ -701,6 +701,16 @@ function applyBuildingUI(){
 }
 let projectOpenSeq=0;
 function prepareProjectContext(building){
+ // Close project-scoped overlays before changing context so a modal/drawer from
+ // the previous building never remains interactive on the next building.
+ try{restoreWorkEntryCard()}catch(e){}
+ ["demoIncidentModal","demoChecklistModal","technicalDocumentModal","demoTaskDrawer"].forEach(id=>$("#"+id)?.classList.add("hide"));
+ document.body.classList.remove("workEditOpen","demoModalOpen","demoChecklistModalOpen");
+ const checklistBtn=$("#demoChecklistSaveBtn");if(checklistBtn){checklistBtn.disabled=false;checklistBtn.textContent="Lưu checklist"}
+ const incidentBtn=$("#demoIncidentSaveBtn");if(incidentBtn){incidentBtn.disabled=false;incidentBtn.textContent="Lưu sự cố"}
+ const documentBtn=$("#technicalDocumentSubmit");if(documentBtn)documentBtn.disabled=false;
+ $("#technicalDocumentProgress")?.classList.add("hide");
+
  currentBuilding={...building};
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
@@ -2468,16 +2478,17 @@ async function loadInventoryData(buildingId=currentBuilding?.id,force=false){
  if(!force&&inventoryLoadedBuilding===buildingId){renderInventory();return}
  try{
    const b=encodeURIComponent(buildingId),token=centralSession.access_token;
-   [inventoryMaterials,inventoryTransactions,inventoryTools]=await Promise.all([
+   const result=await Promise.all([
      sbFetch("/rest/v1/inventory_materials?select=*&building_id=eq."+b+"&order=name.asc",{token}),
      sbFetch("/rest/v1/inventory_material_transactions?select=*&building_id=eq."+b+"&order=tx_date.desc,created_at.desc",{token}),
      sbFetch("/rest/v1/inventory_tools?select=*&building_id=eq."+b+"&order=name.asc",{token})
    ]);
-   inventoryMaterials=Array.isArray(inventoryMaterials)?inventoryMaterials:[];
-   inventoryTransactions=Array.isArray(inventoryTransactions)?inventoryTransactions:[];
-   inventoryTools=Array.isArray(inventoryTools)?inventoryTools:[];
+   if(String(currentBuilding?.id||"")!==String(buildingId))return;
+   inventoryMaterials=Array.isArray(result[0])?result[0]:[];
+   inventoryTransactions=Array.isArray(result[1])?result[1]:[];
+   inventoryTools=Array.isArray(result[2])?result[2]:[];
    inventoryLoadedBuilding=buildingId;inventoryShowAlertsOnly=false;inventoryFillPeople();renderInventory();
- }catch(e){console.warn("Load inventory failed",e);toast("Không tải được dữ liệu vật tư")}
+ }catch(e){if(String(currentBuilding?.id||"")!==String(buildingId))return;console.warn("Load inventory failed",e);toast("Không tải được dữ liệu vật tư")}
 }
 function renderInventory(){
  inventorySetYears();
@@ -2824,14 +2835,15 @@ async function loadMaintenanceData(buildingId=currentBuilding?.id,force=false){
  if(!force&&maintenanceLoadedBuilding===buildingId){renderMaintenance();return}
  try{
    const b=encodeURIComponent(buildingId),token=centralSession.access_token;
-   [maintenanceAssets,maintenanceRecords]=await Promise.all([
+   const result=await Promise.all([
      sbFetch("/rest/v1/maintenance_assets?select=*&building_id=eq."+b+"&order=next_due_date.asc.nullslast,name.asc",{token}),
      sbFetch("/rest/v1/maintenance_records?select=*&building_id=eq."+b+"&order=service_date.desc,created_at.desc",{token})
    ]);
-   maintenanceAssets=Array.isArray(maintenanceAssets)?maintenanceAssets:[];
-   maintenanceRecords=Array.isArray(maintenanceRecords)?maintenanceRecords:[];
+   if(String(currentBuilding?.id||"")!==String(buildingId))return;
+   maintenanceAssets=Array.isArray(result[0])?result[0]:[];
+   maintenanceRecords=Array.isArray(result[1])?result[1]:[];
    maintenanceLoadedBuilding=buildingId;inventoryFillPeople();renderMaintenance();
- }catch(e){console.warn("Load maintenance failed",e);toast("Không tải được dữ liệu bảo trì")}
+ }catch(e){if(String(currentBuilding?.id||"")!==String(buildingId))return;console.warn("Load maintenance failed",e);toast("Không tải được dữ liệu bảo trì")}
 }
 function renderMaintenance(){
  const q=($("#maintenanceSearch")?.value||"").trim().toLocaleLowerCase("vi-VN"),sys=$("#maintenanceSystemFilter")?.value||"",due=$("#maintenanceDueFilter")?.value||"";
