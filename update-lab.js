@@ -534,7 +534,7 @@ function updateApplyMode(){
   updateLoad().then(()=>{updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
   updateStartNotificationTimer();
  }else{
-  $(".updateIntelligencePanel")?.remove();
+  document.querySelectorAll(".updateIntelligencePanel,.updateIntelligenceStrip").forEach(x=>x.remove());
   updateStopScanner();
   updateStopNotificationTimer();
   updateCloseNotificationCenter();
@@ -936,7 +936,8 @@ function updateRenderCost(){
 }
 
 function updateDecorateEnergyPage(){
- if(!updateIs()||$("#updateEnergyIntel"))return;
+ if(!updateIs())return;
+ $("#updateEnergyIntel")?.remove();
  const page=$("#energyPage");if(!page)return;
  const an=updateState.anomalies.filter(x=>x.status!=="Đã đóng").sort((a,b)=>Math.abs(Number(b.variance_pct||0))-Math.abs(Number(a.variance_pct||0)));
  if(!an.length)return;
@@ -947,7 +948,8 @@ function updateDecorateEnergyPage(){
  page.prepend(panel);
 }
 function updateDecorateIncidentPage(){
- if(!updateIs()||$("#updateIncidentIntel"))return;
+ if(!updateIs())return;
+ $("#updateIncidentIntel")?.remove();
  const page=$("#incidentPage");if(!page)return;
  const open=updateOpenIncidents().map(i=>({i,e:updateIncidentExt(i.id)}));
  const rca=open.filter(x=>x.e?.require_rca&&!String(x.e?.root_cause||"").trim()).length;
@@ -963,7 +965,8 @@ function updateDecorateIncidentPage(){
  page.prepend(panel);
 }
 function updateDecorateInventoryPage(){
- if(!updateIs()||$("#updateInventoryIntel"))return;
+ if(!updateIs())return;
+ $("#updateInventoryIntel")?.remove();
  const page=$("#inventoryPage");if(!page)return;
  const low=updateLowStock().sort((a,b)=>(Number(a._stock)-Number(a.min_qty))-(Number(b._stock)-Number(b.min_qty)));
  if(!low.length)return;
@@ -974,7 +977,8 @@ function updateDecorateInventoryPage(){
  page.prepend(panel);
 }
 function updateDecorateContractorPage(){
- if(!updateIs()||$("#updateVendorIntel"))return;
+ if(!updateIs())return;
+ $("#updateVendorIntel")?.remove();
  const page=$("#contractorPage");if(!page)return;
  const vendors=updateState.contractors.map(c=>{const v=updateVendorScore(c.id);if(!v)return null;return {c,v,avg:(Number(v.quality_score)+Number(v.sla_score)+Number(v.price_score)+Number(v.response_score)+Number(v.safety_score))/5}}).filter(Boolean).sort((a,b)=>a.avg-b.avg);
  if(!vendors.length)return;
