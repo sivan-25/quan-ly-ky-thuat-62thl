@@ -2415,9 +2415,10 @@
 }
 
 
-/* DEMO_ENERGY_ULTRA_COMPACT_PILOT_20261003_V11 */
+/* SHARED_ENERGY_ULTRA_COMPACT_20261004_V16 */
 @media (max-width:640px){
-  /* DEMO-only Energy pilot. Desktop and every non-DEMO project are untouched. */
+  /* Latest approved DEMO Energy mobile layout, now shared by every project.
+     Desktop remains untouched. */
   #app.demoMobilePilot.demoEnergyCompactPilot.energyMode{
     overflow-x:hidden!important;
   }
@@ -2889,5 +2890,25 @@
   }
   #app.demoMobilePilot.demoEnergyCompactPilot #energyPage #energyPeopleMenu{
     z-index:1100!important;
+  }
+}
+
+
+/* SHARED_ENERGY_DUAL_EVN_MOBILE_GUARD_20261004_V16 */
+@media (max-width:640px){
+  /* 68 PĐL and any future dual-meter project keep both EVN values readable
+     inside the same compact KPI strip instead of truncating them. */
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage.dualEvnMode .energySummaryCards article{
+    height:70px!important;
+    min-height:70px!important;
+  }
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage.dualEvnMode #energyLatestValue,
+  #app.demoMobilePilot.demoEnergyCompactPilot #energyPage.dualEvnMode #energyPeriodUse{
+    font-size:10.5px!important;
+    line-height:1.22!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    overflow-wrap:anywhere!important;
   }
 }
