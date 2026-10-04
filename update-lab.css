@@ -345,3 +345,74 @@
   .updateHeroActions{grid-template-columns:1fr 1fr}.updateHeroActions button:first-child{grid-column:1/-1}
   .updateWorkExtrasGrid{grid-template-columns:1fr}
 }
+
+
+/* QA pass 2026-10-04 · readability + technician role + iPhone keyboard */
+.updateTrialRibbon{pointer-events:auto}
+.updateTrialRibbon button{
+  height:24px;padding:0 8px;border:1px solid #d5c5a7;border-radius:999px;background:#fffdf8;
+  color:#6d5534;font:700 9px/1 Inter,sans-serif;cursor:pointer
+}
+.updateTrialRibbon button.hide{display:none!important}
+#app.updateTechnicianView .updateLeaderPanel{display:none!important}
+#app:not(.updateTechnicianView) .updateTechShiftPanel{display:none!important}
+.updateHandoverCompact>div:not(.updateEmpty){padding:9px;border:1px solid #e3e8e9;border-radius:10px;background:#fff}
+.updateHandoverCompact b{display:block;color:#2f4b57;font-size:11px}
+.updateHandoverCompact small{display:block;margin-top:3px;color:#7d8d94;font-size:10px}
+.updateHandoverCompact p{margin:7px 0 0;color:#526a74;font-size:10px;line-height:1.45}
+
+.updatePanel>header>div>span,.updatePanel>header>span,.updateModuleHero>div:first-child>span,.updateEyebrow{font-size:10px}
+.updatePanel>header h2{font-size:17px}
+.updatePanel>header p,.updateModuleHero p,.updateMuted{font-size:11px}
+.updatePanel>header>button,.updateHeroActions button,.updateModuleHeroActions button,.updateFilterChips button,.updateAssetActions button{font-size:11px}
+.updateKpi span{font-size:10px}.updateKpi small{font-size:10px}
+.updateAttentionNo{font-size:10px}.updateAttentionRow div b{font-size:12px}.updateAttentionRow div small{font-size:10px}
+.updateSystemHealth div b{font-size:11px}.updateSystemHealth div small{font-size:9.5px}.updateSystemHealth strong{font-size:11px}
+.updateTeamMini div b{font-size:11px}.updateTeamMini div small{font-size:9.5px}.updateTeamMini>strong{font-size:10px}
+.updateEnergyBriefRow b{font-size:11px}.updateEnergyBriefRow small{font-size:9.5px}.updateEnergyBriefRow strong{font-size:11px}
+.updateAssetTableHead{font-size:9.5px}
+.updateAssetRow>div>b{font-size:11px}.updateAssetRow>div>small{font-size:9.5px}
+.updateAssetIdentity b{font-size:9px!important}.updateAssetIdentity strong{font-size:12px}
+.updateCrit,.updateHealthMini,.updateStatus{font-size:10px}
+.updatePeopleCard h3{font-size:12px}.updatePeopleCard p{font-size:10px}.updatePeopleMeta span,.updateSkillList span:first-child,.updatePeopleCard footer span{font-size:9.5px}
+.updateSkillMatrix .head{font-size:9px}.updateSkillMatrix>div:not(.head)>b{font-size:10px}
+.updateSuggestRow strong{font-size:11px}.updateSuggestRow small{font-size:9.5px}
+.updateHandoverHero span{font-size:9px}.updateHandoverHero p{font-size:10px}.updateHandoverBlock b{font-size:10px}.updateHandoverBlock small{font-size:9px}.updateHandoverNote b{font-size:9.5px}.updateHandoverNote p{font-size:10px}
+.updateShiftCards b{font-size:11px}.updateShiftCards small{font-size:9.5px}
+.updateHandoverHistory>div,.updateCostBars span,.updateCostBars b,.updateVendorScoreList b,.updateVendorScoreList strong,.updateCostTable b,.updateCostTable strong{font-size:10px}
+.updateVendorScoreList small,.updateVendorScoreList em,.updateCostTable span,.updateCostTable small,.updateCostTable em{font-size:9px}
+.updateIntelligencePanel>header span{font-size:9px}.updateIntelligencePanel>header p{font-size:10px}.updateIntelligencePanel>header>b{font-size:10px}
+.updateEnergyIntelGrid b,.updateIncidentIntelRows strong,.updateInventoryIntelRows strong,.updateVendorIntelRows b{font-size:10.5px}
+.updateEnergyIntelGrid small,.updateEnergyIntelGrid p,.updateIncidentIntelRows b,.updateIncidentIntelRows small,.updateIncidentIntelRows em,.updateInventoryIntelRows b,.updateInventoryIntelRows span,.updateInventoryIntelRows small,.updateInventoryIntelRows em,.updateVendorIntelRows small,.updateVendorIntelRows p,.updateVendorIntelRows em{font-size:9px}
+.updateWorkExtrasHead b{font-size:11px}.updateWorkExtrasHead span{font-size:10px}
+.updateWorkExtrasGrid label{font-size:10px!important}
+.updateWorkExtrasGrid input,.updateWorkExtrasGrid select{font-size:12px!important}
+.updateSlaInfo b{font-size:10px}
+.updateAiPrompts button,.updateAiAnswer,.updateScannerStatus,.updateScannerManual button,.updateQuickForm label,.updateQuickForm>button{font-size:11px}
+.updateScannerManual input,.updateQuickForm input,.updateQuickForm select,.updateQuickForm textarea{font-size:12px}
+
+@media(max-width:760px){
+  .updateTrialRibbon{max-width:92vw;gap:5px}
+  .updateTrialRibbon span{display:none}
+  .updateTrialRibbon button{height:25px;font-size:9px}
+  .updateHero p,.updateModuleHero p,.updatePanel>header p{font-size:11px}
+  .updatePanel>header h2{font-size:15px}
+  .updateAttentionRow div b{font-size:12px;white-space:normal}
+  .updateAttentionRow div small{font-size:10px;white-space:normal}
+  .updateSystemHealth div b,.updateTeamMini div b,.updateEnergyBriefRow b{font-size:11px}
+  .updateSystemHealth div small,.updateTeamMini div small,.updateEnergyBriefRow small{font-size:9.5px}
+  .updateAssetIdentity strong{font-size:12px}
+  .updateAssetRow>div>b{font-size:11px}.updateAssetRow>div>small{font-size:9.5px}
+  .updateMobileNav button b{font-size:9px}
+  .updateMobileNav button.scan b{font-size:8.5px}
+  .updateSearch input,
+  .updateWorkExtrasGrid input,.updateWorkExtrasGrid select,
+  .updateScannerManual input,
+  .updateQuickForm input,.updateQuickForm select,.updateQuickForm textarea{
+    font-size:16px!important;
+  }
+  .updateQuickForm label{font-size:11px}
+  .updateWorkExtrasGrid label{font-size:11px!important}
+  .updateWorkExtrasHead b{font-size:12px}.updateWorkExtrasHead span{font-size:10px}
+  .updateKeyboardOpen .updateMobileNav{display:none!important}
+}
