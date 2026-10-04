@@ -674,7 +674,7 @@ function updateShowStandalone(name){
   if(!updateRouteStillActive(seq,route))return;
   updateRenderStandaloneNow(name);
   updateRefreshNotifications();
- }).catch(e=>console.warn("UPDATE route data refresh skipped",e));
+ }).catch(e=>console.warn("Operations route data refresh skipped",e));
 }
 
 function updateEnsureCommandCenter(){
@@ -847,7 +847,7 @@ function updateSparkline(rows){
 function updateRenderQr(a){
  const box=$("#updateQrBox"),canvas=$("#updateQrCanvas");if(!box||!canvas)return;
  box.classList.remove("hide");canvas.innerHTML="";
- const url=location.origin+location.pathname+"?project=UPDATE&asset="+encodeURIComponent(a.code);
+ const url=location.origin+location.pathname+"?project="+encodeURIComponent(updateScopeId())+"&asset="+encodeURIComponent(a.code);
  if(window.QRCode){
   new QRCode(canvas,{text:url,width:150,height:150,colorDark:"#173b56",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
  }else canvas.innerHTML='<div class="updateQrFallback">'+uEsc(a.code)+'</div>';
@@ -962,7 +962,7 @@ function updateRenderCost(){
  page.innerHTML=
   '<section class="updateModuleHero"><div><span>COST & PERFORMANCE</span><h1>Chi phí & KPI</h1><p>Nhìn chi phí theo tài sản/hệ thống/nhà thầu cùng KPI vận hành để ra quyết định sửa hay thay.</p></div><div class="updateModuleHeroStats"><b>'+uMoney(total)+'</b><span>chi phí mẫu YTD</span></div></section>'+
   '<div class="updateKpiGrid cost">'+
-   updateKpi("Tổng chi phí",uMoney(total),"UPDATE sandbox","info","cost")+
+   updateKpi("Tổng chi phí",uMoney(total),updateProjectName(),"info","cost")+
    updateKpi("MTTR","2.4h","Sự cố kỹ thuật","good","cost")+
    updateKpi("PM Compliance","92%","Mục tiêu ≥95%","warn","maintenance")+
    updateKpi("Repeat Failure",updateRepeatAssets().length,"Thiết bị / 90 ngày","warn","assets")+
@@ -1160,7 +1160,7 @@ async function updateSyncTaskCosts(obj){
  ];
  for(const item of items){
   try{
-   const q="building_id=eq."+uq(updateScopeId())&work_order_id=eq."+uq(workOrderId)+"&cost_type=eq."+uq(item.type)+"&select=id";
+   const q="building_id=eq."+uq(updateScopeId())+"&work_order_id=eq."+uq(workOrderId)+"&cost_type=eq."+uq(item.type)+"&select=id";
    const existing=await updateRest("ops_cost_entries",q);
    const body={building_id:updateScopeId(),entry_date:obj.d||new Date().toLocaleDateString("en-CA"),work_order_id:workOrderId,
      asset_id:obj.assetId||null,system_code:obj.systemCode||"",contractor_id:item.type==="Nhà thầu"?(obj.contractorId||null):null,
