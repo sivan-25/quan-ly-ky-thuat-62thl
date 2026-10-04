@@ -665,8 +665,10 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   if(syncResult?.item)obj={...obj,...syncResult.item};
   a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
-  resetForm();render();renderHomeDashboard();
-  toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
+  if(String(currentBuilding?.id||"")===String(buildingId)){
+   resetForm();render();renderHomeDashboard();
+   toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
+  }
 
   (async()=>{
    try{
@@ -1285,7 +1287,7 @@ window.demoSubmitIncident=async e=>{
   if(!saved&&(newBeforeRefs.length||newAfterRefs.length))await deleteStoredMediaRefs([...newBeforeRefs,...newAfterRefs]);
   if(String(currentBuilding?.id||"")===buildingId)toast(err.message||"Không thể lưu sự cố");
  }finally{
-  if(btn){btn.disabled=false;btn.textContent=editing?"Lưu thay đổi":"Lưu sự cố"}
+  if(btn&&String(currentBuilding?.id||"")===buildingId){btn.disabled=false;btn.textContent=editing?"Lưu thay đổi":"Lưu sự cố"}
  }
 }
 document.addEventListener("keydown",e=>{
