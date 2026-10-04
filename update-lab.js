@@ -418,8 +418,20 @@ function updateInjectShell(){
  }
  if(!$("#updateTrialRibbon")){
   const r=document.createElement("div");r.id="updateTrialRibbon";r.className="updateTrialRibbon hide";
-  r.innerHTML='<b>UPDATE</b><span>THỬ NGHIỆM · Không ảnh hưởng dự án thật</span><button id="updateRolePreviewBtn" type="button">Xem như Kỹ thuật viên</button>';
-  document.body.appendChild(r);
+  r.title="Môi trường thử nghiệm · Không ảnh hưởng dự án thật";
+  r.setAttribute("aria-label","UPDATE · Môi trường thử nghiệm");
+  r.innerHTML=
+   '<span class="updateTrialEnvIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v5l-5.2 8.7A2.8 2.8 0 0 0 7.2 21h9.6a2.8 2.8 0 0 0 2.4-4.3L14 8V3"/><path d="M7.5 15h9"/></svg></span>'+
+   '<span class="updateTrialMeta"><b>UPDATE</b><small>TEST</small></span>'+
+   '<button id="updateRolePreviewBtn" type="button" title="Xem như Kỹ thuật viên" aria-label="Xem như Kỹ thuật viên">'+
+    '<svg class="updateRoleSwitchIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13M17 4l3 3-3 3M17 17H4M7 14l-3 3 3 3"/></svg>'+
+    '<span class="updateRoleLabel">Leader</span>'+
+   '</button>';
+  const account=document.querySelector(".estaTopbar .account");
+  const topbar=document.querySelector(".estaTopbar");
+  if(account)account.insertAdjacentElement("beforebegin",r);
+  else if(topbar)topbar.appendChild(r);
+  else document.body.appendChild(r);
  }
  if(!$("#updateMobileNav")){
   const n=document.createElement("nav");n.id="updateMobileNav";n.className="updateMobileNav hide";
@@ -487,6 +499,19 @@ function updateBindNav(){
  });
 }
 
+function updateRefreshRoleChip(){
+ const roleBtn=$("#updateRolePreviewBtn");
+ const ribbon=$("#updateTrialRibbon");
+ if(!roleBtn)return;
+ const tech=updateTechView();
+ const label=roleBtn.querySelector(".updateRoleLabel");
+ if(label)label.textContent=tech?"KTV":"Leader";
+ const hint=tech?"Trở về chế độ Leader":"Xem như Kỹ thuật viên";
+ roleBtn.title=hint;
+ roleBtn.setAttribute("aria-label",hint);
+ ribbon?.classList.toggle("isTechnician",tech);
+}
+
 function updateApplyMode(){
  updateInjectShell();
  const on=updateIs()&&($("#adminPage")?.classList.contains("hide")??true);
@@ -502,7 +527,7 @@ function updateApplyMode(){
   const roleBtn=$("#updateRolePreviewBtn");
   if(roleBtn){
     roleBtn.classList.toggle("hide",!updateRealAdmin());
-    roleBtn.textContent=updateTechView()?"Trở về Leader":"Xem như Kỹ thuật viên";
+    updateRefreshRoleChip();
   }
   document.querySelectorAll(".buildingNameText").forEach(x=>x.textContent="ESTA UPDATE · Sandbox thử nghiệm");
   updateEnhanceWorkForm();
