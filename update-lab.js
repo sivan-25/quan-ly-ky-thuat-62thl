@@ -979,47 +979,63 @@ function updateDecorateContractorPage(){
 function updateEnhanceWorkForm(){
  if(!updateIs())return;
  const links=$("#demoWorkLinks"),grid=links?.querySelector(".demoWorkLinkGrid");if(!grid)return;
+
+ const summary=links.querySelector("summary");
+ if(summary)summary.textContent="⌁ Liên kết công việc";
+
+ const cause=$("#demoTaskCause"),result=$("#demoTaskResult");
+ if(cause){cause.rows=2;cause.placeholder="Nguyên nhân / chẩn đoán";}
+ if(result){result.rows=2;result.placeholder="Hướng xử lý / kết quả";}
+
  const priority=$("#demoTaskPriority");
  if(priority&&!priority.dataset.updateOptions){
-  priority.innerHTML='<option value="Critical">Critical · Khẩn cấp</option><option value="High">High · Cao</option><option value="Medium" selected>Medium · Trung bình</option><option value="Low">Low · Thấp</option>';
+  priority.innerHTML='<option value="Critical">Khẩn cấp</option><option value="High">Cao</option><option value="Medium" selected>Trung bình</option><option value="Low">Thấp</option>';
   priority.dataset.updateOptions="1";
   priority.addEventListener("change",updateWorkSlaPreview);
  }
+
  if(!$("#updateWorkExtras")){
   grid.insertAdjacentHTML("beforeend",
-   '<div id="updateWorkExtras" class="span2 updateWorkExtras"><div class="updateWorkExtrasHead"><b>Thông tin vận hành</b><span id="updateWorkSlaPreview"></span></div>'+
-    '<div id="updateAssetContext" class="updateAssetContext hide"></div>'+
-    '<div class="updateWorkExtrasGrid">'+
-    '<label class="updateManualContext">Hệ thống<select id="updateTaskSystem"><option value="">Chọn hệ thống</option></select></label>'+
-    '<label class="updateManualContext">Khu vực<select id="updateTaskArea"><option value="">Chọn khu vực</option></select></label>'+
-    '<label>Nhân công (₫)<input id="updateTaskLaborCost" type="number" min="0" step="1000" value="0"></label>'+
-    '<label>Nhà thầu (₫)<input id="updateTaskVendorCost" type="number" min="0" step="1000" value="0"></label>'+
-    '<label>Chi phí khác (₫)<input id="updateTaskOtherCost" type="number" min="0" step="1000" value="0"></label>'+
-    '<label class="updateSlaInfo"><span>SLA</span><b>Tự tính theo mức ưu tiên</b></label>'+
-   '</div></div>'
+   '<div id="updateWorkExtras" class="span2 updateWorkExtras updateWorkExtrasCompact">'+
+    '<div class="updateWorkContextLine">'+
+     '<div id="updateAssetContext" class="updateAssetContext hide"></div>'+
+     '<span id="updateWorkSlaPreview" class="updateWorkSlaPreview"></span>'+
+    '</div>'+
+    '<div id="updateManualContextGrid" class="updateWorkExtrasGrid">'+
+     '<label class="updateManualContext">Hệ thống<select id="updateTaskSystem"><option value="">Chọn hệ thống</option></select></label>'+
+     '<label class="updateManualContext">Khu vực<select id="updateTaskArea"><option value="">Chọn khu vực</option></select></label>'+
+    '</div>'+
+    '<input id="updateTaskLaborCost" type="hidden" value="0">'+
+    '<input id="updateTaskVendorCost" type="hidden" value="0">'+
+    '<input id="updateTaskOtherCost" type="hidden" value="0">'+
+   '</div>'
   );
+  const extras=$("#updateWorkExtras"),materials=grid.querySelector(".demoTaskMaterialsField");
+  if(extras&&materials)grid.insertBefore(extras,materials);
   $("#demoTaskAsset")?.addEventListener("change",updateAutofillAssetExtras);
  }
  updatePopulateWorkExtras();
  updateWorkSlaPreview();
+ updateSyncWorkContextUI();
 }
 function updatePopulateWorkExtras(){
- const s=$("#updateTaskSystem"),a=$("#updateTaskArea");if(!s||!a)return;
- const sv=s.value,av=a.value;
- s.innerHTML='<option value="">Tự lấy theo thiết bị</option>'+updateState.systems.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
- a.innerHTML='<option value="">Tự lấy theo thiết bị</option>'+updateState.areas.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
- if([...s.options].some(x=>x.value===sv))s.value=sv;if([...a.options].some(x=>x.value===av))a.value=av;
+ const system=$("#updateTaskSystem"),area=$("#updateTaskArea");if(!system||!area)return;
+ const sv=system.value,av=area.value;
+ system.innerHTML='<option value="">Chọn hệ thống</option>'+updateState.systems.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
+ area.innerHTML='<option value="">Chọn khu vực</option>'+updateState.areas.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
+ if([...system.options].some(x=>x.value===sv))system.value=sv;
+ if([...area.options].some(x=>x.value===av))area.value=av;
  updateSyncWorkContextUI();
 }
 function updateSyncWorkContextUI(){
  const asset=updateAsset($("#demoTaskAsset")?.value);
- const context=$("#updateAssetContext");
- document.querySelectorAll("#updateWorkExtras .updateManualContext").forEach(el=>el.classList.toggle("hide",!!asset));
+ const context=$("#updateAssetContext"),manual=$("#updateManualContextGrid");
+ manual?.classList.toggle("hide",!!asset);
  if(context){
   if(asset){
    const sys=updateSystem(asset.system_code),area=updateArea(asset.area_code);
    context.classList.remove("hide");
-   context.innerHTML='<span>Thiết bị đã chọn</span><b>'+uEsc(asset.code)+' · '+uEsc(sys?.name||asset.system_type||"—")+' · '+uEsc(area?.name||asset.location||"—")+'</b>';
+   context.innerHTML='<span aria-hidden="true">⚙</span><b>'+uEsc(asset.code)+' · '+uEsc(sys?.name||asset.system_type||"—")+' · '+uEsc(area?.name||asset.location||"—")+'</b>';
   }else{
    context.classList.add("hide");context.innerHTML="";
   }
@@ -1035,7 +1051,8 @@ function updateAutofillAssetExtras(){
 }
 function updateWorkSlaPreview(){
  const p=uPriority($("#demoTaskPriority")?.value),r=SLA_RULES[p];
- const box=$("#updateWorkSlaPreview");if(box)box.textContent=p+" · phản hồi "+updateDuration(r.response*60000)+" · mục tiêu "+updateDuration(r.target*60000);
+ const box=$("#updateWorkSlaPreview");
+ if(box)box.textContent=uPriorityVi(p)+" · phản hồi "+updateDuration(r.response*60000)+" · mục tiêu "+updateDuration(r.target*60000);
 }
 function updateReadWorkExtras(){
  const asset=updateAsset($("#demoTaskAsset")?.value),p=uPriority($("#demoTaskPriority")?.value),r=SLA_RULES[p];
@@ -1064,7 +1081,9 @@ function updateResetWorkExtras(){
  if(!updateIs())return;
  ["updateTaskLaborCost","updateTaskVendorCost","updateTaskOtherCost"].forEach(id=>{$("#"+id)&&($("#"+id).value=0)});
  $("#updateTaskSystem")&&($("#updateTaskSystem").value="");$("#updateTaskArea")&&($("#updateTaskArea").value="");
- if($("#demoTaskPriority"))$("#demoTaskPriority").value="Medium";updateSyncWorkContextUI();updateWorkSlaPreview();
+ if($("#demoTaskPriority"))$("#demoTaskPriority").value="Medium";
+ updateSyncWorkContextUI();
+ updateWorkSlaPreview();
 }
 
 async function updateSyncTaskCosts(obj){
