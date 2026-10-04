@@ -4,7 +4,7 @@ const DEMO_ID="DEMO";
 const TECH_DOC_BUCKET="technical-documents";
 const DEMO_MODULES=["incident","inspection","documents","reports"];
 let demoCache={loaded:false,buildingId:"",incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};
-let demoSelectedIncident="",demoSelectedInspection="",demoSelectedDocument="";
+let demoSelectedIncident="",demoSelectedInspection="",demoSelectedDocument="",demoIncidentFilter="";
 const demoIs=()=>!!currentBuilding?.id&&!$("#navWork")?.classList.contains("hide");
 const originalAdminProjectCard=adminProjectCard;
 adminProjectCard=function(b,index=0){
@@ -925,10 +925,48 @@ function demoIncidentThumbHtml(refs,label){
  return '<div class="demoIncidentThumb">'+mediaImgHtml(refs[0],"")+'<small>'+esc(label)+' · '+refs.length+' ảnh</small></div>';
 }
 
+function demoIncidentFilterMatch(x){
+ if(!demoIncidentFilter)return true;
+ if(demoIncidentFilter==="open")return x.status!=="Đã đóng";
+ if(demoIncidentFilter==="urgent")return x.severity==="Khẩn cấp";
+ if(demoIncidentFilter==="watch")return x.status==="Theo dõi";
+ if(demoIncidentFilter==="closed")return x.status==="Đã đóng";
+ return true;
+}
+function demoBindIncidentKpis(){
+ const defs=[
+  ["demoIncidentOpen","open","Đang mở"],
+  ["demoIncidentUrgent","urgent","Khẩn cấp"],
+  ["demoIncidentWatch","watch","Theo dõi"],
+  ["demoIncidentClosed","closed","Đã đóng"]
+ ];
+ defs.forEach(([id,key,label])=>{
+  const card=$("#"+id)?.closest(".demoKpi");if(!card)return;
+  card.classList.add("demoIncidentFilterKpi");
+  card.classList.toggle("active",demoIncidentFilter===key);
+  card.setAttribute("role","button");
+  card.setAttribute("tabindex","0");
+  card.setAttribute("aria-pressed",String(demoIncidentFilter===key));
+  card.setAttribute("title","Lọc: "+label);
+  if(card.dataset.incidentFilterBound==="1")return;
+  card.dataset.incidentFilterBound="1";
+  const toggle=()=>{
+   demoIncidentFilter=demoIncidentFilter===key?"":key;
+   demoSelectedIncident="";
+   demoRenderIncidents();
+  };
+  card.addEventListener("click",toggle);
+  card.addEventListener("keydown",e=>{
+   if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}
+  });
+ });
+}
+
 async function demoRenderIncidents(){
  await demoLoad();
  const all=demoCache.incidents;
- const list=all.filter(x=>demoMatches([x.incident_code,x.area,x.symptom,x.cause,x.solution,x.severity,x.status,demoAsset(x.asset_id)?.name,demoContractor(x.contractor_id)?.name]));
+ demoBindIncidentKpis();
+ const list=all.filter(x=>demoIncidentFilterMatch(x)&&demoMatches([x.incident_code,x.area,x.symptom,x.cause,x.solution,x.severity,x.status,demoAsset(x.asset_id)?.name,demoContractor(x.contractor_id)?.name]));
  if((!demoSelectedIncident||!list.some(x=>String(x.id)===String(demoSelectedIncident)))&&list[0])demoSelectedIncident=list[0].id;
  const selected=list.find(x=>String(x.id)===String(demoSelectedIncident))||list[0]||null;
  $("#demoIncidentOpen").textContent=all.filter(x=>x.status!=="Đã đóng").length;
@@ -948,10 +986,11 @@ async function demoRenderIncidents(){
  const box=$("#demoIncidentDetail");
  if(!selected){box.innerHTML='<div class="demoPanelBody">Chưa có sự cố.</div>';return}
  const asset=demoAsset(selected.asset_id),con=demoContractor(selected.contractor_id),start=demoIncidentStartParts(selected);
- const detailTitle=useStartDate?("Bắt đầu "+start.date+(start.time?" · "+start.time:"")):selected.incident_code;
+ const detailTitle=useStartDate?start.date:selected.incident_code;
  const linkedTask=demoFindIncidentLinkedTask(selected);
- const workButtonLabel=linkedTask?"Mở công việc":"+ Tạo công việc";
- box.innerHTML='<div class="demoPanelHead demoIncidentDetailHead"><div class="demoIncidentHeadCopy"><h2 class="demoDetailTitle">'+esc(detailTitle)+'</h2><p>'+esc(selected.area||"")+' · '+esc(asset?.name||"Không gắn thiết bị")+'</p></div><div class="demoIncidentHeadActions"><button class="demoBtn primary" onclick="demoCreateTaskFromIncident(\''+selected.id+'\')">'+workButtonLabel+'</button>'+(selected.status!=="Đã đóng"?'<button class="demoBtn good" onclick="demoSetIncidentStatus(\''+selected.id+'\',\'Đã đóng\')">Đóng sự cố</button>':"")+'</div></div><div class="demoPanelBody"><div class="demoDetailMeta"><span class="demoPill '+demoSeverityClass(selected.severity)+'">'+esc(selected.severity)+'</span><span class="demoPill '+demoStatusClass(selected.status)+'">'+esc(selected.status)+'</span></div>'+
+ const workButtonLabel=linkedTask?"Chỉnh sửa công việc":"+ Tạo công việc";
+ const titleHtml=useStartDate?('<h2 class="demoDetailTitle demoIncidentStartTitle"><span>Bắt đầu</span><b>'+esc(detailTitle)+'</b></h2>'):('<h2 class="demoDetailTitle">'+esc(detailTitle)+'</h2>');
+ box.innerHTML='<div class="demoPanelHead demoIncidentDetailHead"><div class="demoIncidentHeadCopy">'+titleHtml+'<p>'+esc(selected.area||"")+' · '+esc(asset?.name||"Không gắn thiết bị")+'</p></div><div class="demoIncidentHeadActions"><button class="demoBtn primary" onclick="demoCreateTaskFromIncident(\''+selected.id+'\')">'+workButtonLabel+'</button>'+(selected.status!=="Đã đóng"?'<button class="demoBtn good" onclick="demoSetIncidentStatus(\''+selected.id+'\',\'Đã đóng\')">Đóng sự cố</button>':"")+'</div></div><div class="demoPanelBody"><div class="demoDetailMeta"><span class="demoPill '+demoSeverityClass(selected.severity)+'">'+esc(selected.severity)+'</span><span class="demoPill '+demoStatusClass(selected.status)+'">'+esc(selected.status)+'</span></div>'+
  '<div class="demoDetailSection"><span>HIỆN TƯỢNG</span><p>'+esc(selected.symptom)+'</p></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(demoCauseValue(selected.cause)||"—")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ</span><p>'+esc(selected.solution||"[Chưa cập nhật]")+'</p></div>'+
  '<div class="demoDetailSection"><span>NHÀ THẦU / CHI PHÍ</span><p><strong>'+esc(con?.name||"—")+'</strong> · '+Number(selected.cost||0).toLocaleString("vi-VN")+'đ</p></div>'+
  '<div class="demoDetailSection"><span>HÌNH ẢNH TRƯỚC / SAU</span><div class="demoThumbPair">'+demoIncidentThumbHtml(selected.before_images,"TRƯỚC XỬ LÝ")+demoIncidentThumbHtml(selected.after_images,"SAU XỬ LÝ")+'</div></div></div>';
