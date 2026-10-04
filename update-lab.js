@@ -981,7 +981,7 @@ function updateEnhanceWorkForm(){
  const links=$("#demoWorkLinks"),grid=links?.querySelector(".demoWorkLinkGrid");if(!grid)return;
 
  const summary=links.querySelector("summary");
- if(summary)summary.textContent="⌁ Liên kết công việc";
+ if(summary)summary.textContent="+ Liên kết công việc";
 
  const cause=$("#demoTaskCause"),result=$("#demoTaskResult");
  if(cause){cause.rows=2;cause.placeholder="Nguyên nhân / chẩn đoán";}
@@ -998,13 +998,11 @@ function updateEnhanceWorkForm(){
   grid.insertAdjacentHTML("beforeend",
    '<div id="updateWorkExtras" class="span2 updateWorkExtras updateWorkExtrasCompact">'+
     '<div class="updateWorkContextLine">'+
+     '<label id="updateSystemField" class="updateManualContext updateSystemField">Hệ thống<select id="updateTaskSystem"><option value="">Chọn hệ thống</option></select></label>'+
      '<div id="updateAssetContext" class="updateAssetContext hide"></div>'+
      '<span id="updateWorkSlaPreview" class="updateWorkSlaPreview"></span>'+
     '</div>'+
-    '<div id="updateManualContextGrid" class="updateWorkExtrasGrid">'+
-     '<label class="updateManualContext">Hệ thống<select id="updateTaskSystem"><option value="">Chọn hệ thống</option></select></label>'+
-     '<label class="updateManualContext">Khu vực<select id="updateTaskArea"><option value="">Chọn khu vực</option></select></label>'+
-    '</div>'+
+    '<input id="updateTaskArea" type="hidden" value="">'+
     '<input id="updateTaskLaborCost" type="hidden" value="0">'+
     '<input id="updateTaskVendorCost" type="hidden" value="0">'+
     '<input id="updateTaskOtherCost" type="hidden" value="0">'+
@@ -1014,28 +1012,28 @@ function updateEnhanceWorkForm(){
   if(extras&&materials)grid.insertBefore(extras,materials);
   $("#demoTaskAsset")?.addEventListener("change",updateAutofillAssetExtras);
  }
+ ["demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.closest("label")?.classList.add("updateUniformLinkField"));
+ grid.querySelector(".demoTaskMaterialsField")?.classList.add("updateUniformMaterialField");
  updatePopulateWorkExtras();
  updateWorkSlaPreview();
  updateSyncWorkContextUI();
 }
 function updatePopulateWorkExtras(){
- const system=$("#updateTaskSystem"),area=$("#updateTaskArea");if(!system||!area)return;
- const sv=system.value,av=area.value;
+ const system=$("#updateTaskSystem");if(!system)return;
+ const sv=system.value;
  system.innerHTML='<option value="">Chọn hệ thống</option>'+updateState.systems.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
- area.innerHTML='<option value="">Chọn khu vực</option>'+updateState.areas.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
  if([...system.options].some(x=>x.value===sv))system.value=sv;
- if([...area.options].some(x=>x.value===av))area.value=av;
  updateSyncWorkContextUI();
 }
 function updateSyncWorkContextUI(){
  const asset=updateAsset($("#demoTaskAsset")?.value);
- const context=$("#updateAssetContext"),manual=$("#updateManualContextGrid");
- manual?.classList.toggle("hide",!!asset);
+ const context=$("#updateAssetContext"),systemField=$("#updateSystemField");
+ systemField?.classList.toggle("hide",!!asset);
  if(context){
   if(asset){
-   const sys=updateSystem(asset.system_code),area=updateArea(asset.area_code);
+   const sys=updateSystem(asset.system_code);
    context.classList.remove("hide");
-   context.innerHTML='<span aria-hidden="true">⚙</span><b>'+uEsc(asset.code)+' · '+uEsc(sys?.name||asset.system_type||"—")+' · '+uEsc(area?.name||asset.location||"—")+'</b>';
+   context.innerHTML='<span aria-hidden="true">⚙</span><b>'+uEsc(asset.code)+' · '+uEsc(sys?.name||asset.system_type||"—")+'</b>';
   }else{
    context.classList.add("hide");context.innerHTML="";
   }
@@ -1046,6 +1044,8 @@ function updateAutofillAssetExtras(){
  if(a){
   if($("#updateTaskSystem"))$("#updateTaskSystem").value=a.system_code||"";
   if($("#updateTaskArea"))$("#updateTaskArea").value=a.area_code||"";
+ }else if($("#updateTaskArea")){
+  $("#updateTaskArea").value="";
  }
  updateSyncWorkContextUI();
 }

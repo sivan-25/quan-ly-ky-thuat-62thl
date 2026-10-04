@@ -1016,3 +1016,115 @@
     padding:8px!important;
   }
 }
+
+
+/* UPDATE work-link alignment · remove area field visually and normalize row heights */
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2),
+#app.updateProjectMode #demoWorkLinks .updateUniformLinkField{
+  align-self:start!important;
+  min-height:68px!important;
+  height:68px!important;
+  grid-template-rows:auto 50px!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > select,
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > input,
+#app.updateProjectMode #demoWorkLinks .updateUniformLinkField > select{
+  min-height:50px!important;
+  height:50px!important;
+}
+#app.updateProjectMode .updateWorkExtrasCompact{
+  align-self:start!important;
+  min-height:68px!important;
+  height:68px!important;
+}
+#app.updateProjectMode .updateWorkContextLine{
+  min-height:68px!important;
+  height:68px!important;
+  padding:4px 8px!important;
+  align-items:center!important;
+}
+#app.updateProjectMode .updateSystemField{
+  display:grid!important;
+  grid-template-rows:auto 50px!important;
+  gap:4px!important;
+  min-width:220px!important;
+  min-height:62px!important;
+  color:#123678!important;
+  font-size:9px!important;
+  font-weight:800!important;
+}
+#app.updateProjectMode .updateSystemField.hide{display:none!important}
+#app.updateProjectMode .updateSystemField select{
+  min-height:50px!important;
+  height:50px!important;
+  padding:0 10px!important;
+  border:1px solid #c7e3f5!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:#193872!important;
+  font-size:12px!important;
+}
+#app.updateProjectMode .updateAssetContext{
+  min-height:50px!important;
+  align-items:center!important;
+}
+#app.updateProjectMode .updateWorkSlaPreview{
+  align-self:center!important;
+  padding:0 4px!important;
+}
+
+/* Empty Vật tư box now matches a normal input row; it expands only after materials are added. */
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+  align-self:start!important;
+  min-height:68px!important;
+  height:68px!important;
+  padding:8px 10px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField:has(.demoTaskMaterialRow){
+  height:auto!important;
+  min-height:68px!important;
+  justify-content:flex-start!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead{
+  min-height:32px!important;
+  align-items:center!important;
+}
+#app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial{
+  height:32px!important;
+  min-height:32px!important;
+}
+
+/* Khu vực is intentionally hidden in UPDATE; its value remains internal for linked assets. */
+#app.updateProjectMode #updateTaskArea{display:none!important}
+
+@media(max-width:760px){
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2),
+  #app.updateProjectMode #demoWorkLinks .updateUniformLinkField,
+  #app.updateProjectMode .updateWorkExtrasCompact,
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+    min-height:auto!important;
+    height:auto!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2){
+    grid-template-rows:auto 50px!important;
+  }
+  #app.updateProjectMode .updateWorkContextLine{
+    min-height:auto!important;
+    height:auto!important;
+    padding:8px!important;
+  }
+  #app.updateProjectMode .updateSystemField{
+    width:100%!important;
+    min-width:0!important;
+    min-height:auto!important;
+  }
+  #app.updateProjectMode .updateSystemField select{
+    font-size:16px!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+    min-height:64px!important;
+  }
+}
