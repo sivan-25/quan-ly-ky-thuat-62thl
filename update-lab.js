@@ -16,7 +16,7 @@ let updateState={
  technicians:[],skills:[],shifts:[],handovers:[],materials:[],materialTx:[],
  contractors:[],vendorScores:[],baselines:[],anomalies:[],costs:[],plans:[],meters:[]
 };
-let updatePmGenerating=false,updateScannerStream=null,updateScannerTimer=null,updateNotifTimer=null;
+let updatePmGenerating=false,updateScannerStream=null,updateScannerTimer=null,updateNotifTimer=null,updateNavSeq=0,updateCurrentRoute="";
 let updateRolePreview=sessionStorage.getItem("esta_update_role_preview")||"leader";
 const updateRealAdmin=()=>!!currentAccount?.is_admin;
 const updateTechView=()=>!updateRealAdmin()||updateRolePreview==="technician";
@@ -546,6 +546,50 @@ function updateApplyMode(){
   }
  }
 }
+function updateHideStandalonePages(){
+ document.querySelectorAll(".updateOpsPage").forEach(x=>x.classList.add("hide"));
+ document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.remove("active"));
+ $("#topUpdateTitle")?.classList.add("hide");
+ $("#app")?.classList.remove("updateStandaloneMode");
+}
+function updateHideDemoFeaturePages(){
+ document.querySelectorAll(".demoFeaturePage").forEach(x=>x.classList.add("hide"));
+ document.querySelectorAll(".demoTopTitle").forEach(x=>x.classList.add("hide"));
+ document.querySelectorAll(".demoOnlyNav").forEach(x=>x.classList.remove("active"));
+ ["incident","inspection","documents","reports"].forEach(n=>$("#app")?.classList.remove(n+"Mode"));
+}
+function updateResetRouteShell(){
+ [
+  "#homePage","#adminPage","#workPage","#energyPage","#inventoryPage","#maintenancePage",
+  "#contractorPage","#constructionMaterialPage"
+ ].forEach(sel=>$(sel)?.classList.add("hide"));
+ updateHideStandalonePages();
+ updateHideDemoFeaturePages();
+ $("#workHero")?.classList.add("hide");
+ $("#energyHero")?.classList.add("hide");
+ document.querySelectorAll(".topModuleTitle").forEach(x=>x.classList.add("hide"));
+ document.querySelectorAll(".estaNav button").forEach(x=>x.classList.remove("active"));
+ $("#app")?.classList.remove(
+  "adminMode","homeMode","workMode","energyMode","inventoryMode","maintenanceMode",
+  "contractorMode","constructionMode","incidentMode","inspectionMode","documentsMode","reportsMode",
+  "updateStandaloneMode"
+ );
+}
+function updateBeginRoute(route){
+ updateCurrentRoute=route;
+ updateNavSeq+=1;
+ return updateNavSeq;
+}
+function updateRouteStillActive(seq,route){
+ return seq===updateNavSeq&&updateCurrentRoute===route&&updateIs();
+}
+function updateRenderStandaloneNow(name){
+ if(name==="assets")updateRenderAssets();
+ if(name==="team")updateRenderTeam();
+ if(name==="shift")updateRenderShift();
+ if(name==="cost")updateRenderCost();
+}
+
 function updateSetTop(title,subtitle){
  document.querySelectorAll(".topModuleTitle").forEach(x=>x.classList.add("hide"));
  const t=$("#topUpdateTitle");if(t){
@@ -556,23 +600,32 @@ function updateSetTop(title,subtitle){
 function updateShowStandalone(name){
  if(!updateIs())return;
  if(updateTechView()&&(name==="team"||name==="cost")){toast("Hạng mục này dành cho Leader / Admin");showHome();return}
- closeWorkFilter?.();
- document.querySelectorAll(".page.modulePage").forEach(x=>x.classList.add("hide"));
- $("#workHero")?.classList.add("hide");$("#energyHero")?.classList.add("hide");
- document.querySelectorAll(".estaNav button").forEach(x=>x.classList.remove("active"));
+ const route="standalone:"+name;
  const id={assets:"Assets",team:"Team",shift:"Shift",cost:"Cost"}[name];
- $("#update"+id+"Page")?.classList.remove("hide");
+ const page=$("#update"+id+"Page");
+ if(!id||!page)return;
+ if(updateCurrentRoute===route&&!page.classList.contains("hide")){
+  setMobileMenuOpen(false,true);
+  return;
+ }
+ const seq=updateBeginRoute(route);
+ closeWorkFilter?.();
+ updateResetRouteShell();
+ page.classList.remove("hide");
  $("#navUpdate"+id)?.classList.add("active");
- $("#app").classList.remove("homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode","incidentMode","inspectionMode","documentsMode","reportsMode");
  $("#app").classList.add("updateStandaloneMode","updateProjectMode");
  updateSetTop({assets:"Tài sản & Thiết bị",team:"Nhân sự kỹ thuật",shift:"Ca trực & Bàn giao",cost:"Chi phí & KPI"}[name]);
  setMobileMenuOpen(false,true);
- updateLoad(true).then(()=>{
-  if(name==="assets")updateRenderAssets();
-  if(name==="team")updateRenderTeam();
-  if(name==="shift")updateRenderShift();
-  if(name==="cost")updateRenderCost();
- });
+
+ // Render immediately from the current cache so a navigation click never waits on network.
+ if(updateState.loaded)updateRenderStandaloneNow(name);
+ else page.innerHTML='<div class="updateLoading">Đang tải dữ liệu '+({assets:"tài sản",team:"nhân sự",shift:"ca trực",cost:"chi phí"}[name]||"")+'...</div>';
+
+ updateLoad(false).then(()=>{
+  if(!updateRouteStillActive(seq,route))return;
+  updateRenderStandaloneNow(name);
+  updateRefreshNotifications();
+ }).catch(e=>console.warn("UPDATE route data refresh skipped",e));
 }
 
 function updateEnsureCommandCenter(){
@@ -1201,28 +1254,53 @@ if(updatePrevAdminCard){
 }
 const updatePrevShowHome=showHome;
 showHome=function(){
+ const isUpdateBefore=updateIs();
+ const seq=isUpdateBefore?updateBeginRoute("home"):0;
+ if(isUpdateBefore)updateHideStandalonePages();
  updatePrevShowHome();
  updateApplyMode();
- if(updateIs()){updateSetTop("Technical Command Center","UPDATE · Leader View");updateRenderCommandCenter()}
+ if(updateIs()){
+  updateCurrentRoute="home";
+  updateSetTop("Technical Command Center",updateTechView()?"UPDATE · Technician View":"UPDATE · Leader View");
+  if(!$("#homePage")?.classList.contains("hide"))updateRenderCommandCenter();
+  if(seq&&seq!==updateNavSeq)return;
+ }
 };
 const updatePrevShowModule=showModule;
 showModule=function(name){
+ const isUpdateBefore=updateIs();
+ const route="module:"+name;
+ const seq=isUpdateBefore?updateBeginRoute(route):0;
+ if(isUpdateBefore)updateHideStandalonePages();
  updatePrevShowModule(name);
  updateApplyMode();
  if(updateIs()){
+  updateCurrentRoute=route;
+  // Keep legacy Demo feature pages and UPDATE pages mutually exclusive.
+  if(["incident","inspection","documents","reports"].includes(name)){
+   document.querySelectorAll(".updateOpsPage").forEach(x=>x.classList.add("hide"));
+   document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.remove("active"));
+   $("#topUpdateTitle")?.classList.add("hide");
+   $("#app")?.classList.remove("updateStandaloneMode");
+  }else{
+   updateHideDemoFeaturePages();
+  }
   setTimeout(()=>{
+   if(!updateRouteStillActive(seq,route))return;
    updateEnhanceWorkForm();
    if(name==="energy")updateDecorateEnergyPage();
    if(name==="incident")updateDecorateIncidentPage();
    if(name==="inventory")updateDecorateInventoryPage();
    if(name==="contractor")updateDecorateContractorPage();
-  },30);
+   updateRefreshNotifications();
+  },0);
  }
 };
 const updatePrevApplyBuildingUI=applyBuildingUI;
 applyBuildingUI=function(){updatePrevApplyBuildingUI();updateApplyMode()};
 const updatePrevOpenAdminPortal=openAdminPortal;
 openAdminPortal=function(){
+ updateCurrentRoute="admin";updateNavSeq+=1;
  $("#app")?.classList.remove("updateProjectMode","updateStandaloneMode");
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.add("hide"));
  $("#updateTrialRibbon")?.classList.add("hide");$("#updateMobileNav")?.classList.add("hide");$("#updateAiButton")?.classList.add("hide");
