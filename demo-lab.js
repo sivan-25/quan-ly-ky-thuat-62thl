@@ -1144,7 +1144,8 @@ window.demoCreateTaskFromIncident=async id=>{
  try{
   const syncResult=await syncTaskRecord("upsert_task",obj,buildingId);
   if(syncResult?.item)obj={...obj,...syncResult.item};
-  save([obj,...load().filter(t=>String(t.id)!==String(taskId))]);
+  let projectTasks=[];try{projectTasks=JSON.parse(localStorage.getItem(taskStorageKeyFor(buildingId))||"[]")}catch(e){}
+  localStorage.setItem(taskStorageKeyFor(buildingId),JSON.stringify([obj,...projectTasks.filter(t=>String(t.id)!==String(taskId))]));
   await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{
    related_task_id:String(taskId),status:"Đang xử lý",updated_at:new Date().toISOString()
   });
@@ -1159,7 +1160,7 @@ window.demoCreateTaskFromIncident=async id=>{
   demoOpenIncidentLinkedTask(taskId);
   toast("Đã tạo công việc · mở chỉnh sửa");
  }catch(e){
-  toast(e.message||"Không thể tạo công việc từ sự cố");
+  if(String(currentBuilding?.id||"")===buildingId)toast(e.message||"Không thể tạo công việc từ sự cố");
  }
 };
 window.demoAddIncident=async()=>{
