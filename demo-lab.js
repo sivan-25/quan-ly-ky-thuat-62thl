@@ -49,6 +49,9 @@ async function demoLoad(force=false){
    demoRest("inventory_materials",b+"&archived_at=is.null&select=*&order=name.asc"),
    demoRest("inventory_material_transactions",b+"&select=*&order=tx_date.desc")
   ]);
+  // Ignore a late response from the project we have already left.
+  // Without this guard, linked Incident/Contractor/Material dropdowns can briefly show data from the previous building.
+  if(String(currentBuilding?.id||"")!==buildingId)return demoCache;
   demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
  }catch(e){console.warn("Project operations data load failed",e)}
  return demoCache;
@@ -1089,7 +1092,7 @@ window.demoCreateTaskFromIncident=async id=>{
   toast("Sự cố đã có công việc liên kết · đang mở chỉnh sửa");
   return;
  }
- const assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án";
+ const assignee=projectPeople?.[0]?.name||currentAccount?.display_name||currentAccount?.username||me||"Kỹ thuật dự án";
  const taskId=Date.now();
  const priority=demoIncidentTaskPriority(inc.severity);
  const linkedAsset=demoAsset(inc.asset_id);
