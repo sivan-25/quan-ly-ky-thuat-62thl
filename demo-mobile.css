@@ -2712,9 +2712,14 @@
     font-size:12px!important;
   }
   #app.demoMobilePilot.demoEnergyCompactPilot #energyPage #energyNote{
-    min-height:82px!important;
-    height:82px!important;
+    min-height:48px!important;
+    height:48px!important;
+    max-height:48px!important;
+    padding:11px 12px!important;
     font-size:16px!important;
+    line-height:1.35!important;
+    resize:none!important;
+    overflow-y:auto!important;
   }
 
   /* Fixed save button, safe above iPhone home indicator. */
