@@ -1010,10 +1010,10 @@ function updateEnhanceWorkForm(){
   grid.insertAdjacentHTML("beforeend",
    '<div id="updateWorkExtras" class="span2 updateWorkExtras updateWorkExtrasCompact">'+
     '<div class="updateWorkContextLine">'+
-     '<label id="updateSystemField" class="updateManualContext updateSystemField">Hệ thống<select id="updateTaskSystem"><option value="">Chọn hệ thống</option></select></label>'+
      '<div id="updateAssetContext" class="updateAssetContext hide"></div>'+
      '<span id="updateWorkSlaPreview" class="updateWorkSlaPreview"></span>'+
     '</div>'+
+    '<input id="updateTaskSystem" type="hidden" value="">'+
     '<input id="updateTaskArea" type="hidden" value="">'+
     '<input id="updateTaskLaborCost" type="hidden" value="0">'+
     '<input id="updateTaskVendorCost" type="hidden" value="0">'+
@@ -1031,16 +1031,11 @@ function updateEnhanceWorkForm(){
  updateSyncWorkContextUI();
 }
 function updatePopulateWorkExtras(){
- const system=$("#updateTaskSystem");if(!system)return;
- const sv=system.value;
- system.innerHTML='<option value="">Chọn hệ thống</option>'+updateState.systems.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
- if([...system.options].some(x=>x.value===sv))system.value=sv;
  updateSyncWorkContextUI();
 }
 function updateSyncWorkContextUI(){
  const asset=updateAsset($("#demoTaskAsset")?.value);
- const context=$("#updateAssetContext"),systemField=$("#updateSystemField");
- systemField?.classList.toggle("hide",!!asset);
+ const context=$("#updateAssetContext");
  if(context){
   if(asset){
    const sys=updateSystem(asset.system_code);
@@ -1056,8 +1051,9 @@ function updateAutofillAssetExtras(){
  if(a){
   if($("#updateTaskSystem"))$("#updateTaskSystem").value=a.system_code||"";
   if($("#updateTaskArea"))$("#updateTaskArea").value=a.area_code||"";
- }else if($("#updateTaskArea")){
-  $("#updateTaskArea").value="";
+ }else{
+  if($("#updateTaskSystem"))$("#updateTaskSystem").value="";
+  if($("#updateTaskArea"))$("#updateTaskArea").value="";
  }
  updateSyncWorkContextUI();
 }
@@ -1092,7 +1088,8 @@ function updateFillWorkExtras(x){
 function updateResetWorkExtras(){
  if(!updateIs())return;
  ["updateTaskLaborCost","updateTaskVendorCost","updateTaskOtherCost"].forEach(id=>{$("#"+id)&&($("#"+id).value=0)});
- $("#updateTaskSystem")&&($("#updateTaskSystem").value="");$("#updateTaskArea")&&($("#updateTaskArea").value="");
+ $("#updateTaskSystem")&&($("#updateTaskSystem").value="");
+ $("#updateTaskArea")&&($("#updateTaskArea").value="");
  if($("#demoTaskPriority"))$("#demoTaskPriority").value="Medium";
  updateSyncWorkContextUI();
  updateWorkSlaPreview();
