@@ -701,6 +701,16 @@ function applyBuildingUI(){
 }
 let projectOpenSeq=0;
 function prepareProjectContext(building){
+ // Close project-scoped overlays before changing context so a modal/drawer from
+ // the previous building never remains interactive on the next building.
+ try{restoreWorkEntryCard()}catch(e){}
+ ["demoIncidentModal","demoChecklistModal","technicalDocumentModal","demoTaskDrawer"].forEach(id=>$("#"+id)?.classList.add("hide"));
+ document.body.classList.remove("workEditOpen","demoModalOpen","demoChecklistModalOpen");
+ const checklistBtn=$("#demoChecklistSaveBtn");if(checklistBtn){checklistBtn.disabled=false;checklistBtn.textContent="Lưu checklist"}
+ const incidentBtn=$("#demoIncidentSaveBtn");if(incidentBtn){incidentBtn.disabled=false;incidentBtn.textContent="Lưu sự cố"}
+ const documentBtn=$("#technicalDocumentSubmit");if(documentBtn)documentBtn.disabled=false;
+ $("#technicalDocumentProgress")?.classList.add("hide");
+
  currentBuilding={...building};
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
