@@ -93,6 +93,7 @@ async function loadContractorData(buildingId=currentBuilding?.id,force=false){
       sbFetch("/rest/v1/contractors?select=*&building_id=eq."+b+"&order=name.asc",{token}),
       sbFetch("/rest/v1/contractor_jobs?select=*&building_id=eq."+b+"&order=work_date.desc,created_at.desc",{token})
     ]);
+    if(String(currentBuilding?.id||"")!==String(buildingId))return;
     contractors=Array.isArray(result[0])?result[0]:[];
     contractorJobs=Array.isArray(result[1])?result[1]:[];
     contractorLoadedBuilding=buildingId;
