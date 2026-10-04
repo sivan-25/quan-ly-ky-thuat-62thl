@@ -101,6 +101,7 @@ async function loadContractorData(buildingId=currentBuilding?.id,force=false){
     renderContractors();
     if(selectedContractorId)renderContractorDetail();
   }catch(e){
+    if(String(currentBuilding?.id||"")!==String(buildingId))return;
     console.warn("Load contractor data failed",e);
     contractors=[];contractorJobs=[];contractorLoadedBuilding="";
     if($("#contractorGrid"))$("#contractorGrid").innerHTML="";
