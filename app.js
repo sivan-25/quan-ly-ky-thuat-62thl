@@ -2,6 +2,9 @@ const $=s=>document.querySelector(s);
 const SB_URL="https://upcjcrycahdfroxggsdz.supabase.co";
 const SB_KEY="sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
 let me=null,centralSession=null,currentAccount=null,currentBuilding={id:"62THL",name:"62 Trần Huy Liệu",role:"editor"};
+// Account role and the selected overview scope are separate concerns.
+let projectOverviewActive=false;
+function isAdminOverview(){return !!currentAccount?.is_admin&&!projectOverviewActive}
 
 const taskStorageKeyFor=id=>id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+id;
 const taskStorageKey=()=>taskStorageKeyFor(currentBuilding.id);
@@ -641,7 +644,7 @@ async function renderAdminHomeOverview(){
 function renderHomeDashboard(){
  $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
  if($("#homeUpdatedAt"))$("#homeUpdatedAt").textContent="Cập nhật "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
- const admin=!!currentAccount?.is_admin;
+ const admin=isAdminOverview();
  $("#homeAdminProjects")?.classList.add("hide");
  if(admin){
    const hp=$("#topHomeTitle p");if(hp)hp.textContent="";
@@ -701,6 +704,7 @@ function applyBuildingUI(){
 }
 let projectOpenSeq=0;
 function prepareProjectContext(building){
+ projectOverviewActive=true;
  // Close project-scoped overlays before changing context so a modal/drawer from
  // the previous building never remains interactive on the next building.
  try{restoreWorkEntryCard()}catch(e){}
@@ -742,6 +746,7 @@ async function enterProject(building,{target="home"}={}){
 function openAdminPortal(){
  closeWorkFilter();
  if(!currentAccount?.is_admin)return;
+ projectOverviewActive=false;
  $("#homePage").classList.add("hide");$("#adminPage").classList.remove("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");$("#inventoryPage").classList.add("hide");$("#maintenancePage").classList.add("hide");$("#contractorPage").classList.add("hide");$("#constructionMaterialPage").classList.add("hide");
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
  $("#topHomeTitle").classList.add("hide");$("#topAdminTitle").classList.remove("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");$("#topInventoryTitle").classList.add("hide");$("#topMaintenanceTitle").classList.add("hide");$("#topContractorTitle").classList.add("hide");$("#topConstructionTitle").classList.add("hide");
@@ -767,6 +772,7 @@ window.adminOpenBuilding=async(id,event)=>{
  }
 };
 window.enterAccount=function(account,session=null){
+ projectOverviewActive=false;
  currentAccount=account;centralSession=session;me=account.username||account.email||"user";
  $("#login").classList.add("hide");$("#app").classList.remove("hide");
  $("#headerRole").textContent=account.is_admin?"Quản trị viên":(account.buildings?.[0]?.role==="viewer"?"Chỉ xem":"Kỹ thuật viên");

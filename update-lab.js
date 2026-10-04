@@ -29,7 +29,7 @@ const updateCacheKey=(id=updateScopeId())=>"esta_ops_cache_v2_"+String(id||"none
 const updateRealAdmin=()=>!!currentAccount?.is_admin;
 const updateTechView=()=>!updateRealAdmin()||(updateIsSandbox()&&updateRolePreview==="technician");
 const updateLeaderView=()=>updateRealAdmin()&&!updateTechView();
-const updateIs=()=>updateIsEligible()&&!$("#navWork")?.classList.contains("hide");
+const updateIs=()=>projectOverviewActive&&updateIsEligible()&&!$("#navWork")?.classList.contains("hide");
 function updateEnsureStateScope(){
  const id=updateScopeId();
  if(updateState.buildingId!==id)updateState=updateNewState(id);
@@ -590,6 +590,7 @@ function updateApplyMode(){
  updateArrangeWorkStats(on);
  updateArrangeWorkLinkFields(on);
  $("#app")?.classList.toggle("updateProjectMode",on);
+ $("#updateCommandCenter")?.classList.toggle("hide",!on);
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on||!updateIsSandbox());
  $("#updateMobileNav")?.classList.toggle("hide",!on);
@@ -706,7 +707,8 @@ function updateShowStandalone(name){
 function updateEnsureCommandCenter(){
  const page=$("#homePage");if(!page)return null;
  let el=$("#updateCommandCenter");
- if(!el){el=document.createElement("section");el.id="updateCommandCenter";el.className="updateCommandCenter";page.prepend(el)}
+ if(!el){el=document.createElement("section");el.id="updateCommandCenter";el.className="updateCommandCenter opsOverview";page.prepend(el)}
+ el.classList.remove("hide");
  return el;
 }
 async function updateRenderCommandCenter(){
@@ -732,14 +734,14 @@ async function updateRenderCommandCenter(){
 
 
  root.innerHTML=
-  '<div class="updateHero">'+
-   '<div class="updateHeroCopy"><div class="updateHeroTags"><span>ESTA OPERATIONS</span><b>'+(updateIsSandbox()?"THỬ NGHIỆM":"VẬN HÀNH")+'</b><i class="'+(updateState.offline?"offline":"online")+'">'+(updateState.offline?"OFFLINE CACHE":"LIVE DATA")+'</i></div>'+
-   '<h1>Technical Command Center</h1><p>Một màn hình để thấy ngay hệ thống rủi ro, việc quá hạn và hạng mục cần ưu tiên.</p>'+
-   '<div class="updateHeroActions"><button data-update-action="work-new">＋ Tạo Work Order</button><button data-update-action="scan">⌗ Scan QR</button><button data-update-action="ai">✦ Hỏi ESTA AI</button></div></div>'+
-   '<button class="updateHealthScore '+updateHealthTone(h.score)+'" data-update-action="health"><span>TECHNICAL HEALTH</span><strong>'+h.score+'</strong><small>/100 · bấm để xem lý do</small></button>'+
+  '<div class="updateHero opsHero">'+
+   '<div class="updateHeroCopy opsHeroCopy"><div class="updateHeroTags opsHeroTags"><span>ESTA OPERATIONS</span><b>'+(updateIsSandbox()?"THỬ NGHIỆM":"VẬN HÀNH")+'</b><i class="'+(updateState.offline?"offline":"online")+'">'+(updateState.offline?"OFFLINE CACHE":"LIVE DATA")+'</i></div>'+
+   '<h1>Trung tâm điều hành</h1><p>Một màn hình để thấy ngay hệ thống rủi ro, việc quá hạn và hạng mục cần ưu tiên.</p>'+
+   '<div class="updateHeroActions opsHeroActions"><button data-update-action="work-new">＋ Tạo Work Order</button><button data-update-action="scan">⌗ Scan QR</button><button data-update-action="ai">✦ Hỏi ESTA AI</button></div></div>'+
+   '<button class="updateHealthScore opsHeroMetric '+updateHealthTone(h.score)+'" data-update-action="health"><span>TECHNICAL HEALTH</span><strong>'+h.score+'</strong><small>/100 · bấm để xem lý do</small></button>'+
   '</div>'+
   '<section id="updateFocusNow" class="updateFocusNow"></section>'+
-  '<div class="updateKpiGrid">'+
+  '<div class="updateKpiGrid opsKpiGrid">'+
    updateKpi("Critical",h.critical,"Sự cố cần xử lý","danger","incident")+
    updateKpi("Quá hạn",h.overdue,"Work Order","warn","work")+
    updateKpi("PM",h.pmOver,"Quá hạn bảo trì","warn","maintenance")+
@@ -747,14 +749,18 @@ async function updateRenderCommandCenter(){
    updateKpi("Tồn thấp",h.low,"Vật tư cần đặt","info","inventory")+
    updateKpi("Energy",h.anomaly,"Bất thường","info","energy")+
   '</div>'+
-  '<div class="updateDashboardGrid updateDashboardCompact">'+
-   '<section class="updatePanel"><header><div><span>ASSET HEALTH</span><h2>Sức khỏe hệ thống</h2></div><button data-update-action="assets">Xem tài sản →</button></header><div class="updateSystemGrid">'+systemCards+'</div></section>'+
+  '<div class="updateDashboardGrid updateDashboardCompact opsDashboardGrid">'+
+   '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>ASSET HEALTH</span><h2>Sức khỏe hệ thống</h2></div><button data-update-action="assets">Xem tài sản →</button></header><div class="updateSystemGrid">'+systemCards+'</div></section>'+
 
 
-   '<section class="updatePanel updateEnergyBrief"><header><div><span>ENERGY INTELLIGENCE</span><h2>Bất thường năng lượng</h2></div><button data-update-action="energy">Chi tiết →</button></header>'+
+   '<section class="updatePanel updateEnergyBrief opsPanel"><header class="opsPanelHead"><div><span>ENERGY INTELLIGENCE</span><h2>Bất thường năng lượng</h2></div><button data-update-action="energy">Chi tiết →</button></header>'+
     (anoms.length?anoms.slice(0,3).map(a=>'<div class="updateEnergyBriefRow"><span>'+(a.meter_type==="water"?"💧":a.meter_type==="electric"?"⚡":"⌁")+'</span><div><b>'+uEsc(a.period_label||a.meter_type)+'</b><small>'+uEsc(a.recommendation||"Theo dõi")+'</small></div><strong class="'+(Math.abs(Number(a.variance_pct))>=15?"danger":"warn")+'">'+(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+'%</strong></div>').join(""):'<div class="updateEmpty">Không có bất thường.</div>')+
    '</section>'+
-  '</div>';
+  '</div>'+
+  '<div class="opsDashboardGrid"><section class="opsPanel"><header class="opsPanelHead"><div><span>NĂNG LƯỢNG</span><h2>Năng lượng tháng này</h2><p>Tiêu thụ theo đồng hồ · '+uEsc(today().slice(0,7))+'</p></div><button data-update-action="energy">Chi tiết →</button></header><div class="opsEnergyList">'+window.estaOverviewUI.energyHtml([{id:buildingId,name:updateProjectName(),energy:energyLoad()}])+'</div></section>'+
+  '<section class="opsPanel"><header class="opsPanelHead"><div><span>HOẠT ĐỘNG</span><h2>Hoạt động gần đây</h2><p>'+tasks.length+' công việc · '+tasks.filter(x=>["Đã hoàn thành","Hoàn thành"].includes(x.s)).length+' hoàn thành · '+tasks.filter(x=>x.s==="Chờ xử lý").length+' chờ xử lý</p></div></header><div class="opsProjectActivity">'+(homeActivityRows(tasks,energyLoad())||'<div class="opsEmpty">Chưa có hoạt động gần đây.</div>')+'</div></section></div>'+
+  '<section class="opsQuickActions" aria-label="Thao tác nhanh"><button data-update-action="work-new">＋ Thêm công việc</button><button data-update-action="energy">Ghi chỉ số</button><button data-update-action="inspection">Checklist</button><button data-update-action="reports">Báo cáo</button></section>';
+ root.querySelectorAll("[data-overview-energy]").forEach(b=>b.onclick=()=>updateDoAction("energy"));
  updateRenderFocusNow();
  updateBindDashboard(root);
  updateRefreshNotifications();
@@ -778,7 +784,7 @@ function updateRenderFocusNow(){
 }
 
 function updateKpi(label,value,meta,tone,action){
- return '<button class="updateKpi '+tone+'" data-update-action="'+action+'"><span>'+uEsc(label)+'</span><strong>'+uEsc(value)+'</strong><small>'+uEsc(meta)+'</small></button>';
+ return '<button class="updateKpi opsKpi '+tone+'" data-update-action="'+action+'"><span>'+uEsc(label)+'</span><strong>'+uEsc(value)+'</strong><small>'+uEsc(meta)+'</small></button>';
 }
 function updateBindDashboard(root){
  root.querySelectorAll("[data-update-action]").forEach(b=>b.onclick=()=>updateDoAction(b.dataset.updateAction));
@@ -793,7 +799,7 @@ function updateDoAction(a){
  if(a==="maintenance")return showModule("maintenance");
  if(a==="inventory")return showModule("inventory");
  if(a==="energy")return showModule("energy");
- if(a==="incident")return showModule("incident");
+ if(["incident","inspection","reports"].includes(a))return showModule(a);
  if(a==="scan")return updateOpenScanner();
  if(a==="ai")return $("#updateAiModal")?.classList.remove("hide");
 }
@@ -895,13 +901,13 @@ function updateRenderTeam(){
  const systems=updateState.systems.filter(s=>updateState.skills.some(k=>k.system_code===s.code));
  page.innerHTML=
   '<section class="updateModuleHero"><div><span>PEOPLE OPERATIONS</span><h1>Nhân sự kỹ thuật</h1><p>Skill Matrix + workload + KPI để giao đúng người, không chấm bằng số lượng công việc đơn thuần.</p></div>'+(updateLeaderView()?'<div class="updateModuleHeroActions"><button id="updateSuggestAssignment">✦ Gợi ý giao việc</button><button id="updateAddTechnician">＋ Nhân sự</button></div>':'')+'</section>'+
-  '<section class="updatePanel"><header><div><span>WORKLOAD</span><h2>Tải công việc hiện tại</h2></div></header><div class="updatePeopleCards">'+
+  '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>WORKLOAD</span><h2>Tải công việc hiện tại</h2></div></header><div class="updatePeopleCards">'+
   updateState.technicians.map(t=>{
    const skills=updateState.skills.filter(s=>String(s.technician_id)===String(t.id)).sort((a,b)=>b.skill_level-a.skill_level);
    const score=Math.round((Number(t.sla_score)+Number(t.on_time_score)+Number(t.documentation_score)+Number(t.pm_score))/4);
    return '<article class="updatePeopleCard"><header><span class="updateAvatar big">'+uEsc(t.avatar_text||uInitials(t.name))+'</span><div><h3>'+uEsc(t.name)+'</h3><p>'+uEsc(t.role_title)+' · '+uEsc(t.shift_code)+'</p></div><b class="'+updateWorkloadTone(Number(t.workload))+'">'+uNum(t.workload)+'%</b></header><div class="updateLoadBar"><i style="width:'+uClamp(Number(t.workload),0,100)+'%"></i></div><div class="updatePeopleMeta"><span>Trạng thái <b>'+uEsc(t.status)+'</b></span><span>KPI tổng hợp <b>'+score+'/100</b></span></div><div class="updateSkillList">'+skills.map(k=>'<div><span>'+uEsc(updateSystem(k.system_code)?.name||k.system_code)+'</span>'+updateSkillStars(k.skill_level)+'</div>').join("")+'</div><footer><span>SLA '+uNum(t.sla_score)+'%</span><span>Đúng hạn '+uNum(t.on_time_score)+'%</span><span>Hồ sơ '+uNum(t.documentation_score)+'%</span><span>PM '+uNum(t.pm_score)+'%</span></footer></article>';
   }).join("")+'</div></section>'+
-  '<section class="updatePanel"><header><div><span>SKILL MATRIX</span><h2>Ma trận năng lực</h2></div></header><div class="updateSkillMatrix"><div class="head"><b>Nhân sự</b>'+systems.map(s=>'<span>'+uEsc(s.name)+'</span>').join("")+'</div>'+updateState.technicians.map(t=>'<div><b>'+uEsc(t.name)+'</b>'+systems.map(s=>{const k=updateState.skills.find(k=>String(k.technician_id)===String(t.id)&&k.system_code===s.code);return '<span>'+(k?updateSkillStars(k.skill_level):'<em>—</em>')+'</span>'}).join("")+'</div>').join("")+'</div></section>'+
+  '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>SKILL MATRIX</span><h2>Ma trận năng lực</h2></div></header><div class="updateSkillMatrix"><div class="head"><b>Nhân sự</b>'+systems.map(s=>'<span>'+uEsc(s.name)+'</span>').join("")+'</div>'+updateState.technicians.map(t=>'<div><b>'+uEsc(t.name)+'</b>'+systems.map(s=>{const k=updateState.skills.find(k=>String(k.technician_id)===String(t.id)&&k.system_code===s.code);return '<span>'+(k?updateSkillStars(k.skill_level):'<em>—</em>')+'</span>'}).join("")+'</div>').join("")+'</div></section>'+
   '<section id="updateAssignmentSuggest" class="updatePanel hide"></section>';
  if($("#updateSuggestAssignment"))$("#updateSuggestAssignment").onclick=updateOpenAssignmentSuggest;
  if($("#updateAddTechnician"))$("#updateAddTechnician").onclick=updateOpenTechnicianForm;
@@ -945,10 +951,10 @@ function updateRenderShift(){
   '<section class="updateModuleHero"><div><span>SHIFT OPERATIONS</span><h1>Ca trực & Bàn giao</h1><p>Không để thông tin dừng ở ca trước: sự cố, thiết bị theo dõi, nhà thầu và hệ thống bypass đều có người nhận.</p></div><div class="updateModuleHeroActions"><button id="updateNewHandover">＋ Tạo bàn giao</button></div></section>'+
   (pending?'<section class="updateHandoverHero"><div><span>ĐANG CHỜ NHẬN BÀN GIAO</span><h2>'+uEsc(pending.giver_name)+' <b>→</b> '+uEsc(pending.receiver_name)+'</h2><p>'+uDate(pending.handover_date)+' · '+uEsc(pending.shift_from)+' → '+uEsc(pending.shift_to)+'</p></div><button id="updateAcknowledgeHandover">✓ Tôi đã nhận bàn giao</button></section>':'<section class="updateHandoverHero done"><div><span>BÀN GIAO</span><h2>Không có ca đang chờ nhận</h2><p>Bản bàn giao mới nhất đã được xác nhận.</p></div></section>')+
   '<div class="updateShiftGrid">'+
-   '<section class="updatePanel"><header><div><span>OPEN ITEMS</span><h2>Nội dung bàn giao</h2></div></header>'+updateHandoverDetails(pending||latest)+'</section>'+
-   '<section class="updatePanel"><header><div><span>SHIFT</span><h2>Lịch ca</h2></div></header><div class="updateShiftCards">'+updateState.shifts.map(s=>'<div><span>'+uEsc(s.code)+'</span><div><b>'+uEsc(s.name)+'</b><small>'+uEsc(String(s.start_time).slice(0,5))+' – '+uEsc(String(s.end_time).slice(0,5))+'</small></div></div>').join("")+'</div></section>'+
+   '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>OPEN ITEMS</span><h2>Nội dung bàn giao</h2></div></header>'+updateHandoverDetails(pending||latest)+'</section>'+
+   '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>SHIFT</span><h2>Lịch ca</h2></div></header><div class="updateShiftCards">'+updateState.shifts.map(s=>'<div><span>'+uEsc(s.code)+'</span><div><b>'+uEsc(s.name)+'</b><small>'+uEsc(String(s.start_time).slice(0,5))+' – '+uEsc(String(s.end_time).slice(0,5))+'</small></div></div>').join("")+'</div></section>'+
   '</div>'+
-  '<section class="updatePanel"><header><div><span>HISTORY</span><h2>Lịch sử bàn giao</h2></div></header><div class="updateHandoverHistory">'+updateState.handovers.slice(0,8).map(h=>'<div><span class="updateStatus '+(h.status==="Chờ nhận"?"warn":"good")+'">'+uEsc(h.status)+'</span><b>'+uDate(h.handover_date)+'</b><span>'+uEsc(h.giver_name)+' → '+uEsc(h.receiver_name)+'</span><small>'+(h.acknowledged_at?"Đã nhận "+uTime(h.acknowledged_at):"Chưa xác nhận")+'</small></div>').join("")+'</div></section>';
+  '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>HISTORY</span><h2>Lịch sử bàn giao</h2></div></header><div class="updateHandoverHistory">'+updateState.handovers.slice(0,8).map(h=>'<div><span class="updateStatus '+(h.status==="Chờ nhận"?"warn":"good")+'">'+uEsc(h.status)+'</span><b>'+uDate(h.handover_date)+'</b><span>'+uEsc(h.giver_name)+' → '+uEsc(h.receiver_name)+'</span><small>'+(h.acknowledged_at?"Đã nhận "+uTime(h.acknowledged_at):"Chưa xác nhận")+'</small></div>').join("")+'</div></section>';
  if($("#updateAcknowledgeHandover"))$("#updateAcknowledgeHandover").onclick=()=>updateAcknowledgeHandover(pending.id);
  $("#updateNewHandover").onclick=updateOpenHandoverForm;
 }
@@ -1001,10 +1007,10 @@ function updateRenderCost(){
    updateKpi("Repeat Failure",updateRepeatAssets().length,"Thiết bị / 90 ngày","warn","assets")+
   '</div>'+
   '<div class="updateShiftGrid">'+
-   '<section class="updatePanel"><header><div><span>BY SYSTEM</span><h2>Chi phí theo hệ thống</h2></div></header><div class="updateCostBars">'+Object.entries(bySystem).sort((a,b)=>b[1]-a[1]).map(([code,val])=>{const pct=total?val/total*100:0;return '<div><span>'+uEsc(updateSystem(code)?.name||code)+'</span><i><em style="width:'+pct+'%"></em></i><b>'+uMoney(val)+'</b></div>'}).join("")+'</div></section>'+
-   '<section class="updatePanel"><header><div><span>VENDOR SCORE</span><h2>Hiệu suất nhà thầu</h2></div></header><div class="updateVendorScoreList">'+updateState.contractors.map(c=>{const s=updateVendorScore(c.id);if(!s)return "";const avg=(Number(s.quality_score)+Number(s.sla_score)+Number(s.price_score)+Number(s.response_score)+Number(s.safety_score))/5;return '<div><span><b>'+uEsc(c.name)+'</b><small>'+uEsc(c.specialty)+' · '+s.jobs_ytd+' jobs YTD</small></span><strong>'+avg.toFixed(1)+'/5</strong><em>'+s.repeat_repairs+' sửa lặp</em></div>'}).join("")+'</div></section>'+
+   '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>BY SYSTEM</span><h2>Chi phí theo hệ thống</h2></div></header><div class="updateCostBars">'+Object.entries(bySystem).sort((a,b)=>b[1]-a[1]).map(([code,val])=>{const pct=total?val/total*100:0;return '<div><span>'+uEsc(updateSystem(code)?.name||code)+'</span><i><em style="width:'+pct+'%"></em></i><b>'+uMoney(val)+'</b></div>'}).join("")+'</div></section>'+
+   '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>VENDOR SCORE</span><h2>Hiệu suất nhà thầu</h2></div></header><div class="updateVendorScoreList">'+updateState.contractors.map(c=>{const s=updateVendorScore(c.id);if(!s)return "";const avg=(Number(s.quality_score)+Number(s.sla_score)+Number(s.price_score)+Number(s.response_score)+Number(s.safety_score))/5;return '<div><span><b>'+uEsc(c.name)+'</b><small>'+uEsc(c.specialty)+' · '+s.jobs_ytd+' jobs YTD</small></span><strong>'+avg.toFixed(1)+'/5</strong><em>'+s.repeat_repairs+' sửa lặp</em></div>'}).join("")+'</div></section>'+
   '</div>'+
-  '<section class="updatePanel"><header><div><span>TRANSACTIONS</span><h2>Chi phí gần đây</h2></div></header><div class="updateCostTable">'+updateState.costs.map(c=>{const a=updateAsset(c.asset_id),v=updateContractor(c.contractor_id);return '<div><span>'+uDate(c.entry_date)+'</span><b>'+uEsc(c.description)+'</b><small>'+uEsc(a?.code||updateSystem(c.system_code)?.name||c.system_code)+(v?" · "+uEsc(v.name):"")+'</small><em>'+uEsc(c.cost_type)+'</em><strong>'+uMoney(c.amount)+'</strong></div>'}).join("")+'</div></section>';
+  '<section class="updatePanel opsPanel"><header class="opsPanelHead"><div><span>TRANSACTIONS</span><h2>Chi phí gần đây</h2></div></header><div class="updateCostTable">'+updateState.costs.map(c=>{const a=updateAsset(c.asset_id),v=updateContractor(c.contractor_id);return '<div><span>'+uDate(c.entry_date)+'</span><b>'+uEsc(c.description)+'</b><small>'+uEsc(a?.code||updateSystem(c.system_code)?.name||c.system_code)+(v?" · "+uEsc(v.name):"")+'</small><em>'+uEsc(c.cost_type)+'</em><strong>'+uMoney(c.amount)+'</strong></div>'}).join("")+'</div></section>';
  page.querySelectorAll("[data-update-action]").forEach(b=>b.onclick=()=>updateDoAction(b.dataset.updateAction));
 }
 
@@ -1388,7 +1394,7 @@ showHome=function(){
  updateApplyMode();
  if(updateIs()){
   updateCurrentRoute="home";
-  updateSetTop("Technical Command Center",(updateIsSandbox()?"UPDATE":updateProjectName())+" · "+(updateTechView()?"Kỹ thuật":"Leader"));
+  updateSetTop("Tổng quan",(updateIsSandbox()?"UPDATE":updateProjectName())+" · "+(updateTechView()?"Kỹ thuật":"Leader"));
   if(!$("#homePage")?.classList.contains("hide"))updateRenderCommandCenter();
   if(seq&&seq!==updateNavSeq)return;
  }

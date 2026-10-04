@@ -1,1550 +1,174 @@
-
-/* ESTA Admin Command Center · single-font layer */
-html,body,body *{font-family:"Inter",sans-serif!important}
-.ccRoot{margin:16px 0 18px;display:grid;gap:14px}.ccRoot.loading{opacity:.72;pointer-events:none}
-.ccHero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 22px;border:1px solid #dce6ec;border-radius:18px;background:linear-gradient(135deg,#0f3652,#164f69);color:#fff;box-shadow:0 14px 34px rgba(15,54,82,.13)}
-.ccHero span,.ccPanelHead span{display:block;font-size:9px;font-weight:760;letter-spacing:1.35px;text-transform:uppercase;color:#73d9e8}.ccHero h2{margin:5px 0;font-size:22px;font-weight:720}.ccHero p{margin:0;color:#c9dbe5;font-size:12px}.ccHeroActions{display:flex;gap:8px;flex-wrap:wrap}
-.ccBtn{min-height:40px;border-radius:10px;padding:0 14px;border:1px solid transparent;font-size:11px;font-weight:720}.ccBtn.primary{background:#65d9e8;color:#10384e;border-color:#65d9e8}.ccBtn.ghost{background:rgba(255,255,255,.08);color:#eaf7fb;border-color:rgba(255,255,255,.18)}.ccBtn.cancel{background:#fff;color:#597586;border-color:#d8e3e8}
-.ccSummary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.ccSummary article{min-height:94px;padding:14px 15px;border:1px solid #dde6eb;border-radius:14px;background:#fff;box-shadow:0 7px 20px rgba(28,61,82,.05)}.ccSummary span{display:block;color:#718897;font-size:8.5px;font-weight:760}.ccSummary b{display:block;margin:4px 0 1px;color:#173f59;font-size:26px;line-height:1;font-weight:720}.ccSummary small{color:#92a2ad;font-size:9px}.ccSummary .warn b{color:#b47226}.ccSummary .danger b{color:#c55252}
-.ccProjects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.ccProjectCard{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:14px 15px;border:1px solid #dce5ea;border-radius:14px;background:#fff;text-align:left;box-shadow:0 7px 18px rgba(23,63,89,.045);transition:.18s}.ccProjectCard:hover{transform:translateY(-1px);border-color:#9fd7e2}.ccProjectCard>div{min-width:0}.ccProjectCard>div>span{color:#7a9aaa;font-size:8px;font-weight:800;letter-spacing:.8px}.ccProjectCard h3{margin:3px 0 8px;color:#173f59;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ccProjectCard>i{font-style:normal;color:#75bccc;font-size:18px}
-.ccProjectStats{display:flex;gap:5px;flex-wrap:wrap}.ccProjectStats span{padding:4px 6px;border-radius:6px;background:#f2f6f8;color:#6b8290;font-size:7.5px}.ccProjectStats b{color:#244e67}.ccProjectStats .hot{background:#fff0ed;color:#b5544f}.ccProjectStats .hot b{color:#b5544f}
-.ccWorkspace{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(280px,.75fr);gap:12px;align-items:start}.ccPanel{min-width:0;border:1px solid #dce5ea;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(27,60,80,.045);overflow:hidden}.ccPanelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:15px 16px 12px;border-bottom:1px solid #edf1f4}.ccPanelHead h3{margin:3px 0 2px;color:#173f59;font-size:15px}.ccPanelHead p{margin:0;color:#8799a5;font-size:9.5px}
-.ccFilters{display:grid;grid-template-columns:150px 145px 135px minmax(180px,1fr);gap:7px;padding:10px 12px;background:#f8fafb;border-bottom:1px solid #edf1f4}.ccFilters select,.ccFilters input{height:36px;min-width:0;border:1px solid #d6e1e7;border-radius:8px;background:#fff;color:#31566b;padding:0 9px;font-size:10px;outline:none}.ccFilters select:focus,.ccFilters input:focus{border-color:#6cc3d2;box-shadow:0 0 0 3px rgba(75,178,198,.09)}
-.ccTableWrap{overflow:auto;max-height:520px}.ccTable{width:100%;border-collapse:collapse;min-width:900px}.ccTable th{position:sticky;top:0;z-index:1;height:38px;padding:0 9px;background:#f3f7f9;color:#607c8d;font-size:8px;text-align:left;border-bottom:1px solid #dfe7ec}.ccTable td{padding:9px;border-bottom:1px solid #edf1f3;color:#486677;font-size:10px;vertical-align:middle}.ccTable tr[data-cc-task]{cursor:pointer}.ccTable tr[data-cc-task]:hover td{background:#f8fcfd}.ccTable td:first-child small,.ccTable td:nth-child(2) small{display:block;margin-top:2px;color:#94a4ae;font-size:8px}.ccTable td:nth-child(2)b{display:block;color:#214b65;font-size:10.5px;font-weight:650}
-.ccProjectTag{display:inline-flex;padding:3px 5px;border-radius:5px;background:#edf7f9;color:#2d8194;font-size:8px;font-weight:800}.ccStatus,.ccPriority,.ccWarn{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:999px;font-size:8px;font-weight:730;white-space:nowrap}.ccStatus.doing{background:#edf7fb;color:#2c7f9b}.ccStatus.waiting{background:#fff6e9;color:#a56e28}.ccStatus.done{background:#edf8f1;color:#398360}.ccPriority.p4,.ccWarn.critical{background:#fff0ef;color:#c24e4e}.ccPriority.p3,.ccWarn.high{background:#fff4e8;color:#af6e22}.ccPriority.p2{background:#edf5fb;color:#547d9c}.ccPriority.p1,.ccWarn.ok{background:#f1f4f6;color:#73848f}
-.ccAlertCount{display:grid;place-items:center;min-width:32px;height:32px;border-radius:10px;background:#fff0ef;color:#c34f4f;font-size:12px}.ccAlertList{display:grid;max-height:592px;overflow:auto}.ccAlert{display:grid;grid-template-columns:7px minmax(0,1fr) 18px;gap:9px;align-items:center;width:100%;padding:11px 12px;border:0;border-bottom:1px solid #edf1f3;background:#fff;text-align:left}.ccAlert:hover{background:#f9fcfd}.ccAlert>i{width:7px;height:7px;border-radius:50%;background:#83a7b5}.ccAlert.sev3>i{background:#d65757;box-shadow:0 0 0 4px rgba(214,87,87,.09)}.ccAlert.sev2>i{background:#d79536}.ccAlert.sev1>i{background:#4ba5ba}.ccAlert span{display:block;color:#758d9c;font-size:8px;font-weight:720}.ccAlert b{display:block;margin:2px 0;color:#244a62;font-size:10px;font-weight:650;line-height:1.35}.ccAlert small{display:inline-flex;margin-top:2px;padding:2px 5px;border-radius:5px;background:#f2f5f7;color:#81929c;font-size:7.5px}.ccAlert strong{color:#8abfca}.ccEmpty{padding:20px;color:#8da0aa;font-size:10px;text-align:center}.ccEmptyCell{padding:24px!important;text-align:center;color:#8da0aa!important}
+/* ESTA overview: one shared visual system for account and project scopes. */
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode){background:var(--upd-cream,#f2ede5)!important}
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) main{background:transparent!important}
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .homeDashboard{width:100%!important;max-width:none!important;margin:0!important;padding:12px 16px 24px!important;background:transparent!important}
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .estaSidebar{background:linear-gradient(180deg,#173b56,#1d465e)!important}
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .estaTopbar{height:62px!important;min-height:62px!important;padding:0 18px!important;background:#173b56!important;border-bottom:1px solid #31546c!important;box-shadow:none!important}
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .topModuleTitle h1,#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .account b{color:#fff!important}
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .topModuleTitle p,#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .account span{color:#cfdee6!important}
+#app.homeMode.adminCommandHome #homePage>:not(#estaCommandCenter),#app.homeMode.updateProjectMode #homePage>:not(#updateCommandCenter){display:none!important}
+#app.homeMode .opsOverview{width:100%!important;max-width:none!important;display:grid!important;gap:10px!important;margin:0!important;padding:0!important;color:#20323d;font-family:Inter,sans-serif}
+#app .opsOverview.hide{display:none!important}
+#app.homeMode .opsHero{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;min-height:0!important;padding:16px 20px!important;border:1px solid #31566d!important;border-radius:16px!important;background:linear-gradient(125deg,#173b56,#204d67 60%,#2e6573)!important;box-shadow:0 6px 18px #1f384814!important;overflow:hidden!important;color:#fff!important}
+#app.homeMode .opsHero:after{display:none!important}
+#app.homeMode .opsHeroCopy{min-width:0;flex:1;order:0!important}
+#app.homeMode .opsHeroTags{display:flex!important;align-items:center!important;gap:6px!important;margin:0 0 8px!important;flex-wrap:wrap}
+#app.homeMode .opsHeroTags :is(span,b,i){display:inline-flex!important;align-items:center!important;gap:5px;min-height:22px!important;padding:3px 8px!important;border-radius:6px!important;background:#ffffff17!important;color:#e7f0f4!important;font-size:10px!important;font-style:normal!important;font-weight:500!important;letter-spacing:.3px!important}
+#app.homeMode .opsHeroTags b{background:#f6e2bc!important;color:#6e501f!important}
+#app.homeMode .opsHeroTags i:before{content:"";width:6px;height:6px;border-radius:50%;background:#a9d6bb}
+#app.homeMode .opsHeroTags i.offline:before{background:#eab776}
+#app.homeMode .opsHero :is(h1,h2){margin:0!important;font-size:24px!important;line-height:1.2!important;letter-spacing:-.4px!important;font-weight:600!important;color:#fff!important}
+#app.homeMode .opsHero p{max-width:none!important;margin:6px 0 0!important;color:#d9e5e8!important;font-size:13px!important;line-height:1.45!important}
+#app.homeMode .opsHeroActions{display:flex!important;align-items:center!important;align-self:center!important;gap:7px!important;flex-wrap:wrap;margin-top:10px}
+#app.homeMode .opsHeroActions :is(button,.ccBtn){min-height:38px!important;padding:7px 12px!important;border:1px solid #ffffff40!important;border-radius:8px!important;background:#ffffff17!important;color:#fff!important;font-size:12px!important;font-weight:500!important;cursor:pointer}
+#app.homeMode .opsHeroActions :is(button:first-child,.primary){background:#fff!important;color:#173b56!important;border-color:#fff!important}
+#app.homeMode .opsHeroMetric{display:flex!important;flex-direction:column!important;align-items:center!important;order:1!important;min-width:120px!important;padding:10px 14px!important;border-radius:12px!important;flex:0 0 150px!important}
+#app.homeMode .opsHeroMetric strong{font-size:36px!important;margin:4px 0!important;letter-spacing:-1px!important}
+#app.homeMode .opsHeroMetric span,#app.homeMode .opsHeroMetric small{font-size:10px!important}
+#app.homeMode .opsKpiGrid{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:8px!important;margin:0!important}
+#app.homeMode .opsKpi{position:relative!important;min-width:0!important;min-height:88px!important;padding:11px 12px!important;border:1px solid #dbe3e5!important;border-radius:12px!important;background:#fffdf9!important;text-align:left;box-shadow:0 3px 12px #243a4608!important;color:#20323d!important}
+#app.homeMode .opsKpi:before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:#9ab0b8}
+#app.homeMode .opsKpi.danger:before{background:#a64c4c}
+#app.homeMode .opsKpi.warn:before{background:#a86f2d}
+#app.homeMode .opsKpi.info:before{background:#2f7182}
+#app.homeMode .opsKpi.good:before{background:#3c7b61}
+#app.homeMode .opsKpi>span{display:block!important;color:#607580!important;font-size:11px!important;font-weight:500!important;letter-spacing:.2px!important;margin:0 0 5px!important;line-height:1.3!important}
+#app.homeMode .opsKpi>:is(b,strong){display:block!important;color:#173b56!important;font-size:25px!important;line-height:1.1!important;font-weight:600!important;margin:0!important;overflow-wrap:anywhere}
+#app.homeMode .opsKpi>small{display:block!important;color:#71848d!important;font-size:11px!important;line-height:1.35!important;margin:4px 0 0!important}
+#app.homeMode .opsDashboardGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:0!important;align-items:start!important}
+#app.homeMode .opsPanel{min-width:0!important;padding:0!important;border:1px solid #dbe3e5!important;border-radius:12px!important;background:#fffdf9!important;box-shadow:0 3px 12px #243a4608!important;overflow:hidden}
+#app.homeMode .opsPanelHead{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:12px 14px!important;margin:0!important;border-bottom:1px solid #e5e9e8!important;background:#fffdf9!important}
+#app.homeMode .opsPanelHead span{display:block!important;color:#94725d!important;font-size:10px!important;font-weight:500!important;letter-spacing:.6px!important;margin:0 0 3px!important}
+#app.homeMode .opsPanelHead :is(h2,h3){margin:0!important;font-size:17px!important;line-height:1.25!important;font-weight:600!important;color:#173b56!important}
+#app.homeMode .opsPanelHead p{margin:4px 0 0!important;font-size:12px!important;line-height:1.4!important;color:#71848d!important}
+#app.homeMode .opsPanelHead>button{flex:none;border:0;background:transparent;color:#2f7182;font-size:12px;padding:8px;cursor:pointer}
+#app.homeMode .ccRoot.loading{opacity:1;pointer-events:auto}
+#app.homeMode .ccProjects{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+#app.homeMode .ccProjectCard{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;padding:11px 12px;border:1px solid #dbe3e5;border-radius:12px;background:#fffdf9;text-align:left;color:#173b56;cursor:pointer}
+#app.homeMode .ccProjectCard>div{min-width:0}
+#app.homeMode .ccProjectCard>div>span{color:#94725d;font-size:10px}
+#app.homeMode .ccProjectCard h3{margin:2px 0 7px;font-size:15px;font-weight:600;overflow-wrap:anywhere}
+#app.homeMode .ccProjectCard>i{font-style:normal;color:#71848d}
+#app.homeMode .ccProjectStats{display:flex;flex-wrap:wrap;gap:4px;font-size:11px;color:#607580}
+#app.homeMode .ccProjectStats span{padding:3px 5px;background:#eef3f2;border-radius:5px}
+#app.homeMode .ccProjectStats .hot{color:#a64c4c;background:#f8e7e7}
+#app.homeMode .ccWorkspace{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(290px,.85fr);gap:10px;align-items:start}
+#app.homeMode .ccFilters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(160px,1.3fr);gap:7px;padding:10px 12px;background:#f4f6f4;border-bottom:1px solid #e5e9e8}
+#app.homeMode .ccFilters :is(input,select){width:100%;min-width:0;height:38px;border:1px solid #d5e0e2;border-radius:8px;padding:0 9px;background:#fff;color:#355663;font-size:12px;box-sizing:border-box}
+#app.homeMode .ccTableWrap{max-height:490px;overflow-y:auto;overflow-x:hidden}
+#app.homeMode .ccTable{width:100%;table-layout:fixed;border-collapse:collapse;min-width:0}
+#app.homeMode .ccTable th{position:sticky;top:0;z-index:1;padding:10px 8px;background:#edf4f5;border-bottom:1px solid #dbe3e5;color:#607580;font-size:11px;font-weight:500;text-align:left}
+#app.homeMode .ccTable td{padding:10px 8px;border-bottom:1px solid #e9edeb;color:#48636f;font-size:12px;line-height:1.4;vertical-align:middle;overflow-wrap:anywhere}
+#app.homeMode .ccTable :is(th,td):nth-child(2){width:27%}
+#app.homeMode .ccTable td b{font-weight:500;color:#203f50}
+#app.homeMode .ccTable td small{display:block;margin-top:3px;font-size:11px;color:#71848d}
+#app.homeMode .ccTable tr[data-cc-task]{cursor:pointer}
+#app.homeMode .ccTable tr[data-cc-task]:hover td{background:#f4f7f4}
+#app.homeMode :is(.ccStatus,.ccPriority,.ccWarn,.ccProjectTag){display:inline-block;padding:4px 6px;border-radius:6px;font-size:11px;line-height:1.3;background:#edf3f4;color:#365d6a}
+#app.homeMode :is(.ccStatus.done,.ccWarn.ok){background:#e8f2eb;color:#3c7b61}
+#app.homeMode :is(.ccStatus.waiting,.ccPriority.p3,.ccWarn.high){background:#f9eedf;color:#96672e}
+#app.homeMode :is(.ccPriority.p4,.ccWarn.critical){background:#f8e7e7;color:#a64c4c}
+#app.homeMode .ccAlertCount{padding:5px 9px;border-radius:8px;background:#f8e7e7;color:#a64c4c;font-size:13px}
+#app.homeMode .ccAlertList{display:grid;max-height:none;padding:4px 10px}
+#app.homeMode .ccAlert{width:100%;display:grid;grid-template-columns:8px minmax(0,1fr) 12px;gap:8px;padding:10px 2px;background:transparent;border:0;border-bottom:1px solid #e9edeb;text-align:left;cursor:pointer}
+#app.homeMode .ccAlert>i{width:7px;height:7px;border-radius:50%;background:#71848d;margin-top:5px}
+#app.homeMode .ccAlert.sev3>i{background:#a64c4c}
+#app.homeMode .ccAlert.sev2>i{background:#a86f2d}
+#app.homeMode .ccAlert :is(span,b,small){display:block;font-size:11px;line-height:1.4;color:#71848d;overflow-wrap:anywhere}
+#app.homeMode .ccAlert b{font-size:13px;font-weight:500;color:#203f50;margin:2px 0}
+#app.homeMode .ccAlert strong{font-size:12px;font-weight:500;color:#71848d}
+#app.homeMode .ccActivityList{display:grid;grid-template-columns:1fr}
+#app.homeMode .ccActivity{width:100%;display:grid;grid-template-columns:7px minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 14px;background:transparent;border:0;border-bottom:1px solid #e9edeb;text-align:left;cursor:pointer}
+#app.homeMode .ccActivityDot{width:7px;height:7px;border-radius:50%;background:#2f7182}
+#app.homeMode .ccActivity b{display:block;color:#203f50;font-size:13px;font-weight:500;line-height:1.35}
+#app.homeMode .ccActivity small{display:block;margin-top:3px;color:#71848d;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+#app.homeMode .ccActivity em{font-style:normal;font-size:11px;color:#2f7182}
+#app.homeMode .opsPager{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;color:#607580;font-size:11px;background:#f8f8f4}
+#app.homeMode .opsPager:empty{display:none}
+#app.homeMode .opsPager>div{display:flex;align-items:center;gap:8px}
+#app.homeMode .opsPager button{width:34px;height:34px;border:1px solid #dbe3e5;border-radius:8px;background:#fffdf9;color:#173b56;font-size:20px;cursor:pointer}
+#app.homeMode .opsPager button:disabled{opacity:.4;cursor:default}
+#app.homeMode .opsEnergyList{display:grid;padding:2px 12px}
+#app.homeMode .opsEnergyProject{display:grid;grid-template-columns:110px minmax(0,1fr) 12px;gap:10px;align-items:center;width:100%;padding:10px 0;border:0;border-bottom:1px solid #e9edeb;background:transparent;text-align:left;color:#203f50;cursor:pointer}
+#app.homeMode .opsEnergyProject>b{font-size:13px;font-weight:500;overflow-wrap:anywhere}
+#app.homeMode .opsEnergyProject>i{font-style:normal;font-size:12px;color:#71848d}
+#app.homeMode .opsEnergyMeters{display:flex;gap:8px 14px;flex-wrap:wrap}
+#app.homeMode .opsEnergyMeters>span{display:grid;grid-template-columns:auto auto;align-items:baseline;column-gap:4px}
+#app.homeMode .opsEnergyMeters small{grid-column:1/-1;color:#71848d;font-size:10px;line-height:1.3}
+#app.homeMode .opsEnergyMeters strong{font-size:15px;font-weight:600;color:#173b56}
+#app.homeMode .opsEnergyMeters em{font-size:10px;font-style:normal;color:#71848d}
+#app.homeMode .opsQuickActions{display:flex;gap:8px;flex-wrap:wrap}
+#app.homeMode .opsQuickActions button{min-height:38px;padding:8px 13px;border:1px solid #dbe3e5;border-radius:8px;background:#fffdf9;color:#2f7182;font-size:12px;cursor:pointer}
+#app.homeMode #homePage .opsProjectActivity .activityRow{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #e9edeb;background:transparent!important}
+#app.homeMode #homePage .opsProjectActivity .activityRow>div:nth-child(2){flex:1;min-width:0}
+#app.homeMode #homePage .opsProjectActivity :is(b,span,time){font-size:12px!important;line-height:1.4;color:#48636f!important;font-weight:400!important}
+#app.homeMode #homePage .opsProjectActivity :is(b,span){display:block}
+#app.homeMode .opsLoadMessage{margin:0;padding:0 3px;color:#a86f2d;font-size:12px;line-height:1.45}
+#app.homeMode .opsLoadMessage:empty{display:none}
+#app.homeMode :is(.ccEmpty,.ccEmptyCell,.opsEmpty){padding:20px 12px;text-align:center;color:#71848d;font-size:12px}
+#app.homeMode .updateSystemGrid,#app.homeMode .updateEnergyBriefRow{margin:10px 14px}
+#app.homeMode .updateFocusNow{margin:0;padding:12px 14px;border-radius:12px}
+#app.homeMode .updateFocusHead h2{font-size:17px;font-weight:600}
+#app.homeMode .updateFocusHead p{font-size:12px}
+#app.homeMode .updateFocusRow>div b{font-size:13px;font-weight:500;white-space:normal}
+#app.homeMode .updateFocusRow>div small{font-size:11px;white-space:normal}
+#app.homeMode .updateSystemHealth b{font-size:13px;font-weight:500}
+#app.homeMode .updateSystemHealth small,#app.homeMode .updateEnergyBriefRow small{font-size:11px}
+#app.homeMode .opsOverview :is(button,input,select,tr):focus-visible{outline:2px solid #2f7182;outline-offset:2px}
+@media(max-width:1200px){
+ #app.homeMode .ccWorkspace{grid-template-columns:minmax(0,1fr) 300px}
+ #app.homeMode .ccFilters{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #app.homeMode .ccTable :is(thead,tbody,tr,td){display:block}
+ #app.homeMode .ccTable thead{display:none}
+ #app.homeMode .ccTable tr[data-cc-task]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px;padding:10px 12px;border-bottom:1px solid #e5e9e8}
+ #app.homeMode .ccTable td{width:auto!important;padding:0!important;border:0!important}
+ #app.homeMode .ccTable td:before{content:attr(data-label);display:block;color:#71848d;font-size:10px;line-height:1.4}
+ #app.homeMode .ccTable td:nth-child(2){grid-column:1/-1;grid-row:1}
+ #app.homeMode .opsKpiGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:900px){
+ #app.homeMode .ccWorkspace,#app.homeMode .opsDashboardGrid{grid-template-columns:1fr!important}
+ #app.homeMode .ccAlertsPanel{order:-1}
+ #app.homeMode .ccAlertList{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+}
+@media(max-width:640px){
+ #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .homeDashboard{padding:8px 8px 78px!important}
+ #app.homeMode .opsOverview{gap:8px!important}
+ #app.homeMode .opsHero{padding:12px!important;flex-wrap:wrap!important;gap:10px!important;border-radius:12px!important}
+ #app.homeMode .opsHero :is(h1,h2){font-size:21px!important}
+ #app.homeMode .opsHero p{font-size:12px!important}
+ #app.homeMode .opsHeroActions{width:100%;margin-top:4px;gap:6px!important}
+ #app.homeMode .opsHeroActions button{min-height:42px!important;font-size:12px!important;flex:1}
+ #app.homeMode .opsHeroMetric{flex:0 0 105px!important;min-width:0!important;padding:8px!important}
+ #app.homeMode .opsHeroCopy{flex:1 1 180px}
+ #app.homeMode .opsHeroMetric strong{font-size:30px!important}
+ #app.homeMode .opsHeroMetric :is(span,small){font-size:9px!important}
+ #app.homeMode .opsKpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+ #app.homeMode .opsKpi{min-height:80px!important;padding:10px!important}
+ #app.homeMode .opsKpi>span,#app.homeMode .opsKpi>small{font-size:11px!important}
+ #app.homeMode .opsKpi>:is(b,strong){font-size:23px!important}
+ #app.homeMode .ccProjects{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #app.homeMode .ccProjectCard{padding:10px;align-items:start}
+ #app.homeMode .ccProjectCard h3{font-size:13px}
+ #app.homeMode .ccProjectStats{font-size:10px}
+ #app.homeMode .ccAlertList{grid-template-columns:1fr}
+ #app.homeMode .ccFilters{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px}
+ #app.homeMode .ccFilters :is(select,input){height:42px;font-size:16px;padding:0 6px}
+ #app.homeMode .ccFilters input{grid-column:1/-1}
+ #app.homeMode .ccFilters select:nth-child(3){grid-column:1/-1}
+ #app.homeMode .ccTableWrap{max-height:480px}
+ #app.homeMode .opsPager button{width:42px;height:42px}
+ #app.homeMode .opsEnergyProject{grid-template-columns:88px minmax(0,1fr) 12px;gap:8px}
+ #app.homeMode .opsQuickActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #app.homeMode .opsQuickActions button{min-height:42px}
+ .ccDispatchForm,.ccDispatchProjects{grid-template-columns:1fr}
+ .ccDispatchForm label.wide,.ccDispatchProjectsHead,.ccDispatchProjects,.ccDispatchActions{grid-column:1}
+ .ccModal{padding:8px}.ccModalCard{width:100%;max-height:96vh}.ccModalHead,.ccDispatchForm{padding-left:14px;padding-right:14px}
+ .ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{font-size:16px}
+}
 .ccModal{position:fixed;inset:0;z-index:2200;display:grid;place-items:center;padding:18px}.ccModal.hide{display:none!important}.ccModalBackdrop{position:absolute;inset:0;border:0;background:rgba(5,22,34,.58);backdrop-filter:blur(2px)}.ccModalCard{position:relative;z-index:1;width:min(760px,96vw);max-height:92vh;overflow:auto;border:1px solid #d6e1e7;border-radius:18px;background:#fff;box-shadow:0 28px 90px rgba(0,22,38,.28)}.ccModalHead{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:18px 20px;border-bottom:1px solid #e8eef1;background:linear-gradient(180deg,#fff,#fbfdfe)}.ccModalHead span{color:#4f9fb1;font-size:8.5px;font-weight:800;letter-spacing:1px}.ccModalHead h3{margin:4px 0;color:#173f59;font-size:19px}.ccModalHead p{margin:0;color:#8396a2;font-size:10px}.ccClose{width:36px;height:36px;border:1px solid #d8e2e7;border-radius:10px;background:#fff;color:#627d8e;font-size:22px}
 .ccDispatchForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:18px 20px 20px}.ccDispatchForm label{display:grid;gap:5px;color:#5c7889;font-size:9px;font-weight:720}.ccDispatchForm label.wide{grid-column:1/-1}.ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{width:100%;border:1px solid #d5e0e6;border-radius:9px;background:#fafcfd;color:#274d64;padding:0 10px;font-size:11px;outline:none}.ccDispatchForm input,.ccDispatchForm select{height:40px}.ccDispatchForm textarea{padding:10px;resize:vertical}.ccDispatchForm input:focus,.ccDispatchForm select:focus,.ccDispatchForm textarea:focus{border-color:#66bdcd;background:#fff;box-shadow:0 0 0 3px rgba(66,170,193,.09)}
 .ccDispatchProjectsHead{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;color:#365d73;font-size:10px}.ccDispatchProjectsHead label{display:flex;align-items:center;gap:6px}.ccDispatchProjectsHead input{width:15px;height:15px}.ccDispatchProjects{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ccDispatchProjects label{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #dce5ea;border-radius:9px;background:#f9fbfc;cursor:pointer}.ccDispatchProjects input{width:16px;height:16px;flex:0 0 16px}.ccDispatchProjects span{display:block;color:#536f80;font-size:9px;font-weight:560}.ccDispatchProjects b{display:block;color:#24516a;font-size:9px}.ccDispatchActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:5px}
-@media(max-width:1180px){.ccSummary{grid-template-columns:repeat(3,1fr)}.ccProjects{grid-template-columns:repeat(2,1fr)}.ccWorkspace{grid-template-columns:1fr}.ccAlertsPanel{order:-1}.ccAlertList{max-height:330px}.ccFilters{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:720px){.ccRoot{margin:10px 0}.ccHero{align-items:flex-start;flex-direction:column;padding:16px}.ccHero h2{font-size:18px}.ccHeroActions{width:100%}.ccHeroActions .ccBtn{flex:1}.ccSummary{grid-template-columns:repeat(2,1fr)}.ccSummary article{min-height:82px}.ccSummary article:last-child{grid-column:1/-1}.ccProjects{grid-template-columns:1fr}.ccFilters{grid-template-columns:1fr}.ccTableWrap{max-height:420px}.ccDispatchForm{grid-template-columns:1fr}.ccDispatchForm label.wide,.ccDispatchProjectsHead,.ccDispatchProjects,.ccDispatchActions{grid-column:1}.ccDispatchProjects{grid-template-columns:1fr}.ccModal{padding:8px}.ccModalCard{width:100%;max-height:96vh}.ccModalHead,.ccDispatchForm{padding-left:14px;padding-right:14px}}
 
-/* Project alert badges + activity log */
 .estaNav button .ccNavBadge{margin-left:auto;min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#e8f3f6;color:#34798a;font-size:8px;font-weight:800;line-height:1;box-shadow:inset 0 0 0 1px rgba(52,121,138,.12)}
 .estaNav button .ccNavBadge.high{background:#fff1dd;color:#a7681e}.estaNav button .ccNavBadge.critical{background:#ffe9e7;color:#bd4b48}
-.ccActivityPanel{overflow:hidden}.ccActivityList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
-.ccActivity{display:grid;grid-template-columns:9px minmax(0,1fr) auto;gap:9px;align-items:center;padding:11px 14px;border:0;border-right:1px solid #edf1f3;border-bottom:1px solid #edf1f3;background:#fff;text-align:left}
-.ccActivity:hover{background:#f8fcfd}.ccActivityDot{width:8px;height:8px;border-radius:50%;background:#67bdcc;box-shadow:0 0 0 4px rgba(103,189,204,.09)}
-.ccActivity b{display:block;color:#294f65;font-size:9.5px;font-weight:650}.ccActivity small{display:block;margin-top:2px;color:#8a9da8;font-size:8px}.ccActivity em{font-style:normal;color:#6d8998;font-size:8px;padding:3px 6px;border-radius:6px;background:#f2f6f8}
-@media(max-width:720px){.ccActivityList{grid-template-columns:1fr}.ccActivity{border-right:0}.estaNav button .ccNavBadge{min-width:22px;height:22px;font-size:9px}}
-
-/* ESTA_COMMAND_CENTER_COMPACT_DESKTOP_20260929 */
-/* Desktop-first refinement requested from Admin DEMO screenshots. */
-@media (min-width:1101px){
-  /* 1) Compact top area and let the dashboard use the full available canvas. */
-  #app.adminCommandHome.homeMode .estaTopbar{
-    height:62px!important;
-    padding:0 18px!important;
-  }
-  #app.adminCommandHome.homeMode .homeDashboard{
-    width:100%!important;
-    max-width:none!important;
-    margin:0!important;
-    padding:12px 16px 24px!important;
-  }
-  #app.adminCommandHome.homeMode .homeWelcome{
-    min-height:118px!important;
-    padding:17px 24px!important;
-    border-radius:16px!important;
-    box-shadow:0 8px 22px rgba(15,45,71,.08)!important;
-    animation:none!important;
-    transition:none!important;
-  }
-  #app.adminCommandHome.homeMode .homeWelcome:before{
-    animation:none!important;
-    transition:none!important;
-  }
-  #app.adminCommandHome.homeMode .homeWelcome h1{
-    margin:5px 0 3px!important;
-    font-size:26px!important;
-    line-height:1.08!important;
-  }
-  #app.adminCommandHome.homeMode .homeWelcome p{
-    font-size:10.5px!important;
-  }
-  #app.adminCommandHome.homeMode .homeEyebrow{
-    font-size:7.5px!important;
-  }
-  #app.adminCommandHome.homeMode .unifiedCommandIcon{
-    width:48px!important;
-    height:48px!important;
-    flex:0 0 48px!important;
-  }
-
-  /* 2) Original four KPI cards: around 25% smaller. */
-  #app.adminCommandHome.homeMode .homeKpis{
-    gap:10px!important;
-    margin:9px 0!important;
-  }
-  #app.adminCommandHome.homeMode .kpiCard{
-    min-height:82px!important;
-    gap:11px!important;
-    padding:11px 14px!important;
-    border-radius:13px!important;
-  }
-  #app.adminCommandHome.homeMode .kpiIcon{
-    width:36px!important;
-    height:36px!important;
-    flex:0 0 36px!important;
-    border-radius:10px!important;
-  }
-  #app.adminCommandHome.homeMode .kpiIcon svg{
-    width:18px!important;
-    height:18px!important;
-  }
-  #app.adminCommandHome.homeMode .kpiCard small{
-    font-size:8px!important;
-  }
-  #app.adminCommandHome.homeMode .kpiCard strong{
-    margin:2px 0!important;
-    font-size:22px!important;
-  }
-  #app.adminCommandHome.homeMode .kpiCard>div:last-child>span{
-    font-size:8px!important;
-  }
-
-  /* 3) Linked project center: compact cards + compact, fully clickable alert rows. */
-  #app.adminCommandHome.homeMode #demoHomeOps{
-    margin:8px 0!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead{
-    min-height:0!important;
-    padding:9px 13px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead h2{
-    font-size:14px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead p{
-    margin-top:2px!important;
-    font-size:9px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoPanelBody{
-    padding:9px 12px 10px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCards{
-    gap:8px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard{
-    min-height:64px!important;
-    padding:9px 11px!important;
-    border-radius:10px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard b{
-    font-size:20px!important;
-    line-height:1!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard span{
-    margin-top:4px!important;
-    font-size:9px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsList{
-    gap:6px!important;
-    margin-top:8px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert{
-    width:100%!important;
-    min-height:38px!important;
-    padding:7px 10px!important;
-    border-radius:8px!important;
-    text-align:left!important;
-    cursor:pointer!important;
-    transition:background .14s ease,border-color .14s ease!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert:hover{
-    border-color:#3d526d!important;
-    background:#18253a!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert b{
-    font-size:10px!important;
-  }
-  #app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert span{
-    font-size:9px!important;
-  }
-
-  /* 4) Stop visual flicker while admin data refreshes. */
-  #app.adminCommandHome.homeMode .ccRoot.loading{
-    opacity:1!important;
-    pointer-events:auto!important;
-  }
-  #app.adminCommandHome.homeMode .ccHero,
-  #app.adminCommandHome.homeMode .ccHero *,
-  #app.adminCommandHome.homeMode .ccRoot{
-    animation:none!important;
-  }
-  #app.adminCommandHome.homeMode .ccHero{
-    transition:none!important;
-  }
-
-  /* Compact Command Center spacing without changing its data logic. */
-  #app.adminCommandHome.homeMode .ccRoot{
-    margin:10px 0 14px!important;
-    gap:10px!important;
-  }
-  #app.adminCommandHome.homeMode .ccHero{
-    min-height:0!important;
-    padding:14px 18px!important;
-    border-radius:15px!important;
-    box-shadow:0 9px 24px rgba(15,54,82,.09)!important;
-  }
-  #app.adminCommandHome.homeMode .ccHero h2{
-    margin:3px 0!important;
-    font-size:20px!important;
-  }
-  #app.adminCommandHome.homeMode .ccHero p{
-    font-size:11px!important;
-  }
-  #app.adminCommandHome.homeMode .ccBtn{
-    min-height:36px!important;
-    padding:0 12px!important;
-  }
-
-  /* 5) Wider tasks area (roughly 76/24), alert panel flush to the right. */
-  #app.adminCommandHome.homeMode .ccWorkspace{
-    width:100%!important;
-    grid-template-columns:minmax(0,3.2fr) minmax(285px,1fr)!important;
-    gap:10px!important;
-    align-items:start!important;
-  }
-  #app.adminCommandHome.homeMode .ccWorkspace>.ccPanel:first-child{
-    min-width:0!important;
-    width:100%!important;
-  }
-  #app.adminCommandHome.homeMode .ccAlertsPanel{
-    width:100%!important;
-    min-width:0!important;
-    justify-self:stretch!important;
-    position:sticky!important;
-    top:72px!important;
-    background:#edf4f7!important;
-  }
-
-  /* Replace stark white with a soft cool operational background. */
-  #app.adminCommandHome.homeMode .ccPanel{
-    border-color:#d4e0e6!important;
-    background:#f5f8fa!important;
-    box-shadow:0 7px 20px rgba(29,58,77,.045)!important;
-  }
-  #app.adminCommandHome.homeMode .ccPanelHead{
-    padding:14px 16px 11px!important;
-    border-bottom-color:#dde7ec!important;
-    background:#f2f6f8!important;
-  }
-  #app.adminCommandHome.homeMode .ccPanelHead span{
-    font-size:10px!important;
-  }
-  #app.adminCommandHome.homeMode .ccPanelHead h3{
-    font-size:17px!important;
-  }
-  #app.adminCommandHome.homeMode .ccPanelHead p{
-    font-size:10.5px!important;
-  }
-  #app.adminCommandHome.homeMode .ccFilters{
-    grid-template-columns:165px 165px 155px minmax(240px,1fr)!important;
-    gap:8px!important;
-    padding:10px 12px!important;
-    background:#eaf1f5!important;
-    border-bottom-color:#d8e3e9!important;
-  }
-  #app.adminCommandHome.homeMode .ccFilters select,
-  #app.adminCommandHome.homeMode .ccFilters input{
-    height:39px!important;
-    border-color:#cbd9e1!important;
-    background:#f9fbfc!important;
-    font-size:11.5px!important;
-  }
-
-  /* Readability: larger table type, taller rows, stronger task hierarchy. */
-  #app.adminCommandHome.homeMode .ccTableWrap{
-    max-height:610px!important;
-    background:#f8fafb!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable{
-    min-width:980px!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable th{
-    height:42px!important;
-    padding:0 11px!important;
-    background:#e8f0f4!important;
-    color:#506b7b!important;
-    font-size:9.5px!important;
-    letter-spacing:.15px!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable td{
-    min-height:48px!important;
-    padding:11px!important;
-    background:#f8fafb!important;
-    color:#3f5e70!important;
-    font-size:11.5px!important;
-    line-height:1.45!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable tr[data-cc-task]:hover td{
-    background:#edf5f8!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable td:first-child small,
-  #app.adminCommandHome.homeMode .ccTable td:nth-child(2) small{
-    margin-top:3px!important;
-    color:#7d929f!important;
-    font-size:9.5px!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable td:nth-child(2)b{
-    color:#163f59!important;
-    font-size:13px!important;
-    font-weight:720!important;
-  }
-  #app.adminCommandHome.homeMode .ccProjectTag{
-    font-size:9px!important;
-  }
-  #app.adminCommandHome.homeMode .ccStatus,
-  #app.adminCommandHome.homeMode .ccPriority,
-  #app.adminCommandHome.homeMode .ccWarn{
-    min-height:25px!important;
-    padding:0 8px!important;
-    font-size:9.5px!important;
-  }
-
-  /* Right alert column: larger text and softer background, no white slab. */
-  #app.adminCommandHome.homeMode .ccAlertCount{
-    min-width:34px!important;
-    height:34px!important;
-    font-size:13px!important;
-  }
-  #app.adminCommandHome.homeMode .ccAlertList{
-    max-height:610px!important;
-    background:#edf4f7!important;
-  }
-  #app.adminCommandHome.homeMode .ccAlert{
-    min-height:64px!important;
-    padding:11px 13px!important;
-    border-bottom-color:#dbe6eb!important;
-    background:#edf4f7!important;
-  }
-  #app.adminCommandHome.homeMode .ccAlert:hover{
-    background:#e3eef3!important;
-  }
-  #app.adminCommandHome.homeMode .ccAlert span{
-    color:#5f7a89!important;
-    font-size:9.5px!important;
-  }
-  #app.adminCommandHome.homeMode .ccAlert b{
-    margin:3px 0!important;
-    color:#173f59!important;
-    font-size:12.5px!important;
-    line-height:1.4!important;
-  }
-  #app.adminCommandHome.homeMode .ccAlert small{
-    padding:3px 6px!important;
-    background:#dfe9ee!important;
-    color:#607a89!important;
-    font-size:9px!important;
-  }
-
-  /* Summary/project cards also lose the harsh pure-white fill. */
-  #app.adminCommandHome.homeMode .ccSummary article,
-  #app.adminCommandHome.homeMode .ccProjectCard{
-    border-color:#d7e2e7!important;
-    background:#f7f9fa!important;
-    box-shadow:0 5px 16px rgba(29,58,77,.04)!important;
-  }
-}
-
-/* ESTA_ADMIN_DEMO_DARK_NO_HORIZONTAL_SCROLL_20260929 */
-/* Admin overview inherits the dark DEMO visual language and never requires horizontal table scrolling. */
-#app.adminCommandHome.homeMode{
-  --admin-demo-bg:#0d1422;
-  --admin-demo-panel:#11192a;
-  --admin-demo-panel-2:#141f32;
-  --admin-demo-panel-3:#18243a;
-  --admin-demo-border:#29364e;
-  --admin-demo-border-soft:#243149;
-  --admin-demo-text:#eef4fb;
-  --admin-demo-muted:#94a5ba;
-  --admin-demo-muted-2:#71849d;
-  --admin-demo-cyan:#62dbea;
-  --admin-demo-blue:#6fb5ff;
-  --admin-demo-green:#67ddb2;
-  --admin-demo-amber:#ffbd64;
-  --admin-demo-red:#ff8d98;
-}
-
-/* Entire Admin overview canvas */
-#app.adminCommandHome.homeMode main{
-  min-width:0!important;
-  background:var(--admin-demo-bg)!important;
-}
-#app.adminCommandHome.homeMode .homeDashboard{
-  background:var(--admin-demo-bg)!important;
-}
-#app.adminCommandHome.homeMode .estaTopbar{
-  border-bottom:1px solid #223149!important;
-  background:#0b1322!important;
-  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
-}
-#app.adminCommandHome.homeMode .topModuleTitle h1,
-#app.adminCommandHome.homeMode .topModuleTitle p,
-#app.adminCommandHome.homeMode .account b,
-#app.adminCommandHome.homeMode .account span{
-  color:var(--admin-demo-text)!important;
-}
-#app.adminCommandHome.homeMode .topModuleTitle p,
-#app.adminCommandHome.homeMode .account span{
-  color:var(--admin-demo-muted)!important;
-}
-#app.adminCommandHome.homeMode .topModuleIcon{
-  border:1px solid #30415d!important;
-  background:#172238!important;
-  color:var(--admin-demo-cyan)!important;
-}
-#app.adminCommandHome.homeMode .headerSearch{
-  border-color:#34425e!important;
-  background:#121c30!important;
-  color:#dce6f5!important;
-}
-#app.adminCommandHome.homeMode .headerSearch input{
-  color:#eef4fb!important;
-}
-#app.adminCommandHome.homeMode .headerSearch input::placeholder{
-  color:#7f91a9!important;
-}
-#app.adminCommandHome.homeMode .iconAction,
-#app.adminCommandHome.homeMode .pdfAction,
-#app.adminCommandHome.homeMode .headerBell{
-  border-color:#34425e!important;
-  background:#172238!important;
-  color:#dce6f5!important;
-}
-
-/* Top Admin hero */
-#app.adminCommandHome.homeMode .homeWelcome{
-  border-color:#29364e!important;
-  background:
-    radial-gradient(circle at 80% 24%,rgba(36,166,190,.13),transparent 27%),
-    linear-gradient(120deg,#101a2d 0%,#12263a 58%,#11364a 100%)!important;
-  color:#fff!important;
-  box-shadow:0 12px 30px rgba(0,0,0,.18)!important;
-}
-#app.adminCommandHome.homeMode .homeWelcome:before{
-  opacity:.35!important;
-}
-#app.adminCommandHome.homeMode .homeEyebrow{
-  color:#78e7f4!important;
-}
-#app.adminCommandHome.homeMode .homeWelcome h1{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .homeWelcome p{
-  color:#b5c4d6!important;
-}
-#app.adminCommandHome.homeMode .unifiedCommandIcon{
-  border-color:#34445e!important;
-  background:#172238!important;
-  color:#67dbe9!important;
-}
-
-/* Original Admin KPIs */
-#app.adminCommandHome.homeMode .kpiCard{
-  border-color:#29364e!important;
-  background:#111a2c!important;
-  box-shadow:0 7px 20px rgba(0,0,0,.12)!important;
-}
-#app.adminCommandHome.homeMode .kpiCard small{
-  color:#aebdd0!important;
-}
-#app.adminCommandHome.homeMode .kpiCard strong{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .kpiCard>div:last-child>span{
-  color:#71849d!important;
-}
-#app.adminCommandHome.homeMode .kpiIcon{
-  border:1px solid #30405a!important;
-  background:#18263e!important;
-}
-#app.adminCommandHome.homeMode .kpiBlue .kpiIcon{color:#64ddec!important}
-#app.adminCommandHome.homeMode .kpiAmber .kpiIcon{color:#ffbd64!important}
-#app.adminCommandHome.homeMode .kpiGreen .kpiIcon{color:#67ddb2!important}
-#app.adminCommandHome.homeMode .kpiRed .kpiIcon{color:#ff8d98!important}
-
-/* Any legacy overview panels visible below the command center */
-#app.adminCommandHome.homeMode .homePanel{
-  border-color:#29364e!important;
-  background:#11192a!important;
-  box-shadow:0 8px 24px rgba(0,0,0,.12)!important;
-}
-#app.adminCommandHome.homeMode .homePanelHead{
-  border-bottom-color:#27344c!important;
-  background:#11192a!important;
-}
-#app.adminCommandHome.homeMode .homePanelHead h2{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .homePanelHead p,
-#app.adminCommandHome.homeMode .panelKicker{
-  color:#8fa1b7!important;
-}
-#app.adminCommandHome.homeMode .homePanelHead>button{
-  border-color:#34425e!important;
-  background:#172238!important;
-  color:#dce6f5!important;
-}
-
-/* Project-linked DEMO block */
-#app.adminCommandHome.homeMode #demoHomeOps .demoPanel,
-#app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard,
-#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert{
-  border-color:#29364e!important;
-  background:#141f32!important;
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead{
-  border-bottom-color:#27344c!important;
-  background:#11192a!important;
-}
-#app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead h2,
-#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert b{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode #demoHomeOps .demoPanelHead p,
-#app.adminCommandHome.homeMode #demoHomeOps .demoOpsCard span,
-#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert span{
-  color:#94a5ba!important;
-}
-#app.adminCommandHome.homeMode #demoHomeOps .demoOpsAlert:hover{
-  border-color:#3b516d!important;
-  background:#18263d!important;
-}
-
-/* Admin Command Center */
-#app.adminCommandHome.homeMode .ccHero{
-  border-color:#2b4057!important;
-  background:linear-gradient(135deg,#10253b 0%,#113c50 100%)!important;
-  box-shadow:0 12px 30px rgba(0,0,0,.16)!important;
-}
-#app.adminCommandHome.homeMode .ccHero span,
-#app.adminCommandHome.homeMode .ccPanelHead span{
-  color:#73d9e8!important;
-}
-#app.adminCommandHome.homeMode .ccHero h2{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .ccHero p{
-  color:#b5c4d6!important;
-}
-#app.adminCommandHome.homeMode .ccBtn.primary{
-  border-color:#62dbea!important;
-  background:#62dbea!important;
-  color:#10263a!important;
-}
-#app.adminCommandHome.homeMode .ccBtn.ghost{
-  border-color:#3b5168!important;
-  background:#172238!important;
-  color:#e8f1f8!important;
-}
-
-/* Summary + project cards */
-#app.adminCommandHome.homeMode .ccSummary article,
-#app.adminCommandHome.homeMode .ccProjectCard{
-  border-color:#29364e!important;
-  background:#111a2c!important;
-  box-shadow:0 6px 18px rgba(0,0,0,.10)!important;
-}
-#app.adminCommandHome.homeMode .ccSummary span,
-#app.adminCommandHome.homeMode .ccSummary small,
-#app.adminCommandHome.homeMode .ccProjectCard>div>span{
-  color:#8fa1b7!important;
-}
-#app.adminCommandHome.homeMode .ccSummary b,
-#app.adminCommandHome.homeMode .ccProjectCard h3{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .ccSummary .warn b{color:#ffbd64!important}
-#app.adminCommandHome.homeMode .ccSummary .danger b{color:#ff8d98!important}
-#app.adminCommandHome.homeMode .ccProjectCard>i{color:#62dbea!important}
-#app.adminCommandHome.homeMode .ccProjectStats span{
-  background:#18243a!important;
-  color:#91a4bc!important;
-}
-#app.adminCommandHome.homeMode .ccProjectStats b{
-  color:#dce6f5!important;
-}
-#app.adminCommandHome.homeMode .ccProjectStats .hot{
-  background:#2b1c2a!important;
-  color:#ff8d98!important;
-}
-#app.adminCommandHome.homeMode .ccProjectStats .hot b{color:#ff8d98!important}
-
-/* Main panels */
-#app.adminCommandHome.homeMode .ccPanel{
-  border-color:#29364e!important;
-  background:#11192a!important;
-  box-shadow:0 8px 24px rgba(0,0,0,.12)!important;
-}
-#app.adminCommandHome.homeMode .ccPanelHead{
-  border-bottom-color:#27344c!important;
-  background:#11192a!important;
-}
-#app.adminCommandHome.homeMode .ccPanelHead h3{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .ccPanelHead p{
-  color:#8fa1b7!important;
-}
-
-/* Filters */
-#app.adminCommandHome.homeMode .ccFilters{
-  border-bottom-color:#263149!important;
-  background:#141f32!important;
-}
-#app.adminCommandHome.homeMode .ccFilters select,
-#app.adminCommandHome.homeMode .ccFilters input{
-  border-color:#34425e!important;
-  background:#172238!important;
-  color:#eef3fb!important;
-}
-#app.adminCommandHome.homeMode .ccFilters input::placeholder{
-  color:#8496ad!important;
-}
-#app.adminCommandHome.homeMode .ccFilters select:focus,
-#app.adminCommandHome.homeMode .ccFilters input:focus{
-  border-color:#62dbea!important;
-  box-shadow:0 0 0 3px rgba(98,219,234,.08)!important;
-}
-
-/* No horizontal scrollbar: fit the entire seven-column table into its panel. */
-#app.adminCommandHome.homeMode .ccTableWrap{
-  width:100%!important;
-  max-width:100%!important;
-  overflow-x:hidden!important;
-  overflow-y:auto!important;
-  background:#11192a!important;
-}
-#app.adminCommandHome.homeMode .ccTable{
-  width:100%!important;
-  min-width:0!important;
-  max-width:100%!important;
-  table-layout:fixed!important;
-  border-collapse:collapse!important;
-}
-#app.adminCommandHome.homeMode .ccTable th,
-#app.adminCommandHome.homeMode .ccTable td{
-  min-width:0!important;
-  max-width:none!important;
-  overflow-wrap:anywhere!important;
-  word-break:normal!important;
-  white-space:normal!important;
-}
-#app.adminCommandHome.homeMode .ccTable th:nth-child(1),
-#app.adminCommandHome.homeMode .ccTable td:nth-child(1){width:9%!important}
-#app.adminCommandHome.homeMode .ccTable th:nth-child(2),
-#app.adminCommandHome.homeMode .ccTable td:nth-child(2){width:31%!important}
-#app.adminCommandHome.homeMode .ccTable th:nth-child(3),
-#app.adminCommandHome.homeMode .ccTable td:nth-child(3){width:11%!important}
-#app.adminCommandHome.homeMode .ccTable th:nth-child(4),
-#app.adminCommandHome.homeMode .ccTable td:nth-child(4){width:9%!important}
-#app.adminCommandHome.homeMode .ccTable th:nth-child(5),
-#app.adminCommandHome.homeMode .ccTable td:nth-child(5){width:14%!important}
-#app.adminCommandHome.homeMode .ccTable th:nth-child(6),
-#app.adminCommandHome.homeMode .ccTable td:nth-child(6){width:9%!important}
-#app.adminCommandHome.homeMode .ccTable th:nth-child(7),
-#app.adminCommandHome.homeMode .ccTable td:nth-child(7){width:17%!important}
-
-#app.adminCommandHome.homeMode .ccTable th{
-  border-bottom-color:#31405a!important;
-  background:#18243a!important;
-  color:#aebed1!important;
-}
-#app.adminCommandHome.homeMode .ccTable td{
-  border-bottom-color:#263149!important;
-  background:#11192a!important;
-  color:#dce6f0!important;
-}
-#app.adminCommandHome.homeMode .ccTable tr[data-cc-task]:hover td{
-  background:#151f33!important;
-}
-#app.adminCommandHome.homeMode .ccTable td:nth-child(2)b{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .ccTable td:first-child small,
-#app.adminCommandHome.homeMode .ccTable td:nth-child(2) small{
-  color:#7e90a7!important;
-}
-#app.adminCommandHome.homeMode .ccProjectTag{
-  background:#152b49!important;
-  color:#6fb5ff!important;
-}
-
-/* Dark badges */
-#app.adminCommandHome.homeMode .ccStatus.doing{background:#152b49!important;color:#6fb5ff!important}
-#app.adminCommandHome.homeMode .ccStatus.waiting{background:#2d2619!important;color:#ffbd64!important}
-#app.adminCommandHome.homeMode .ccStatus.done{background:#142c28!important;color:#67ddb2!important}
-#app.adminCommandHome.homeMode .ccPriority.p4,
-#app.adminCommandHome.homeMode .ccWarn.critical{background:#2b1c2a!important;color:#ff8d98!important}
-#app.adminCommandHome.homeMode .ccPriority.p3,
-#app.adminCommandHome.homeMode .ccWarn.high{background:#2d2619!important;color:#ffbd64!important}
-#app.adminCommandHome.homeMode .ccPriority.p2{background:#152b49!important;color:#84bdf5!important}
-#app.adminCommandHome.homeMode .ccPriority.p1,
-#app.adminCommandHome.homeMode .ccWarn.ok{background:#18243a!important;color:#9eafc2!important}
-
-/* Right alert column */
-#app.adminCommandHome.homeMode .ccAlertsPanel,
-#app.adminCommandHome.homeMode .ccAlertList{
-  background:#101a2c!important;
-}
-#app.adminCommandHome.homeMode .ccAlertCount{
-  background:#2b1c2a!important;
-  color:#ff8d98!important;
-}
-#app.adminCommandHome.homeMode .ccAlert{
-  border-bottom-color:#263149!important;
-  background:#11192a!important;
-}
-#app.adminCommandHome.homeMode .ccAlert:hover{
-  background:#151f33!important;
-}
-#app.adminCommandHome.homeMode .ccAlert span{
-  color:#8fa1b7!important;
-}
-#app.adminCommandHome.homeMode .ccAlert b{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .ccAlert small{
-  background:#18243a!important;
-  color:#9aabbd!important;
-}
-#app.adminCommandHome.homeMode .ccAlert strong{
-  color:#62dbea!important;
-}
-
-/* Activity log */
-#app.adminCommandHome.homeMode .ccActivityPanel,
-#app.adminCommandHome.homeMode .ccActivityList,
-#app.adminCommandHome.homeMode .ccActivity{
-  background:#11192a!important;
-}
-#app.adminCommandHome.homeMode .ccActivity{
-  border-right-color:#263149!important;
-  border-bottom-color:#263149!important;
-}
-#app.adminCommandHome.homeMode .ccActivity:hover{
-  background:#151f33!important;
-}
-#app.adminCommandHome.homeMode .ccActivity b{
-  color:#eef4fb!important;
-}
-#app.adminCommandHome.homeMode .ccActivity small{
-  color:#8fa1b7!important;
-}
-#app.adminCommandHome.homeMode .ccActivity em{
-  background:#18243a!important;
-  color:#9aabbd!important;
-}
-
-/* Prevent any child from widening the admin home canvas. */
-#app.adminCommandHome.homeMode .homeDashboard,
-#app.adminCommandHome.homeMode .ccRoot,
-#app.adminCommandHome.homeMode .ccWorkspace,
-#app.adminCommandHome.homeMode .ccPanel,
-#app.adminCommandHome.homeMode .ccTableWrap{
-  min-width:0!important;
-  max-width:100%!important;
-  box-sizing:border-box!important;
-}
-
-/* Desktop proportion remains about 76/24. */
-@media(min-width:1101px){
-  #app.adminCommandHome.homeMode .ccWorkspace{
-    grid-template-columns:minmax(0,76fr) minmax(260px,24fr)!important;
-  }
-}
-
-/* On narrower screens, still no horizontal table scrolling. */
-@media(max-width:1100px){
-  #app.adminCommandHome.homeMode .ccTable{
-    table-layout:fixed!important;
-    min-width:0!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable th,
-  #app.adminCommandHome.homeMode .ccTable td{
-    padding-left:6px!important;
-    padding-right:6px!important;
-    font-size:9px!important;
-  }
-  #app.adminCommandHome.homeMode .ccTable td:nth-child(2)b{
-    font-size:10.5px!important;
-  }
-}
-
-/* ESTA_ADMIN_BEIGE_CANVAS_MATCH_DEMO_20260929 */
-/* Admin overview uses the exact same beige canvas as DEMO; all operational cards remain dark. */
-#app.adminCommandHome.homeMode{
-  --admin-demo-beige:#f7dfb6;
-}
-#app.adminCommandHome.homeMode main,
-#app.adminCommandHome.homeMode #homePage,
-#app.adminCommandHome.homeMode .homeDashboard{
-  background:var(--admin-demo-beige)!important;
-}
-#app.adminCommandHome.homeMode .ccRoot{
-  background:transparent!important;
-}
-
-/* ESTA_GLOBAL_NAVY_SIDEBAR_20260930 */
-/* Match the Work topbar across the full sidebar, including project and mobile modes. */
-#app{
-  --global-side-bg:linear-gradient(90deg,#10366a 0%,#163f73 52%,#0d3568 100%);
-  --global-side-active:#24558b;
-  --global-side-hover:#1c497e;
-  --global-side-border:rgba(177,214,247,.20);
-  --global-side-text:#e7f0fb;
-  --global-side-muted:#b8cee5;
-  --global-side-accent:#57e4ee;
-}
-
-/* The sidebar ID keeps legacy project palettes from replacing this shared theme. */
-#app #mobileSidebar{
-  background:var(--global-side-bg)!important;
-  border-right:1px solid var(--global-side-border)!important;
-  box-shadow:8px 0 24px rgba(5,35,76,.10)!important;
-}
-#app #mobileSidebar .estaSidebarBrand{
-  border-bottom-color:var(--global-side-border)!important;
-}
-#app #mobileSidebar .estaSidebarBrand b{
-  color:#e3c4ad!important;
-}
-#app #mobileSidebar .estaSidebarBrand small,
-#app #mobileSidebar .estaNav:before{
-  color:var(--global-side-muted)!important;
-}
-#app #mobileSidebar .estaNav button{
-  border-color:transparent!important;
-  background:transparent!important;
-  color:var(--global-side-text)!important;
-}
-#app #mobileSidebar .estaNav button svg{
-  color:#c3d8f0!important;
-}
-#app #mobileSidebar .estaNav button:hover{
-  border-color:rgba(177,214,247,.24)!important;
-  background:var(--global-side-hover)!important;
-  color:#fff!important;
-}
-#app #mobileSidebar .estaNav button:hover svg{
-  color:#e9fbfd!important;
-}
-#app #mobileSidebar .estaNav button.active{
-  border-color:rgba(117,186,247,.40)!important;
-  background:var(--global-side-active)!important;
-  color:#fff!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
-}
-#app #mobileSidebar .estaNav button.active:before{
-  background:var(--global-side-accent)!important;
-  box-shadow:0 0 12px rgba(87,228,238,.34)!important;
-}
-#app #mobileSidebar .estaNav button.active svg{
-  color:var(--global-side-accent)!important;
-}
-#app #mobileSidebar .sideBackup,
-#app #mobileSidebar .sideBottom{
-  border-top-color:var(--global-side-border)!important;
-}
-#app #mobileSidebar .sideBackup button,
-#app #mobileSidebar .sideLogout{
-  border-color:rgba(177,214,247,.24)!important;
-  background:rgba(255,255,255,.06)!important;
-  color:var(--global-side-text)!important;
-}
-#app #mobileSidebar .sideBackup button:hover,
-#app #mobileSidebar .sideLogout:hover{
-  background:rgba(255,255,255,.11)!important;
-  color:#fff!important;
-}
-#app #mobileSidebar .sideUserCard{
-  border-color:rgba(177,214,247,.20)!important;
-  background:rgba(255,255,255,.055)!important;
-}
-#app #mobileSidebar .sideUserCard #sideUser{
-  color:var(--global-side-muted)!important;
-}
-#app #mobileSidebar .sideUserCard #sideUser b{
-  color:#fff!important;
-}
-
-/* ADMIN_COMMAND_CENTER_PRIMARY_HERO_20260929 */
-/* Admin overview: remove the duplicated legacy hero and use the multi-project command hero as the primary header. */
-#app.adminCommandHome.homeMode .homeWelcome.ccAdminWelcomeHidden{
-  display:none!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter.ccRoot{
-  margin-top:0!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccHero{
-  order:1;
-  margin:0!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter>.homeKpis{
-  order:2;
-  width:100%!important;
-  margin:0!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccSummary{
-  order:3;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccProjects{
-  order:4;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccWorkspace{
-  order:5;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccActivityPanel{
-  order:6;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:10px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHero{
-  min-height:118px!important;
-  padding:17px 22px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHero h2{
-  font-size:24px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHero p{
-  margin-top:4px!important;
-}
-
-/* ADMIN_DISPATCH_MODAL_DARK_SYNC_20260929 */
-/* Giao công việc: đồng bộ với Command Center navy + cyan, bỏ nền trắng lệch tông. */
-#ccDispatchModal.ccModal{
-  background:transparent!important;
-}
-#ccDispatchModal .ccModalBackdrop{
-  background:rgba(4,18,31,.72)!important;
-  backdrop-filter:blur(5px)!important;
-}
-#ccDispatchModal .ccModalCard{
-  border:1px solid #2f4961!important;
-  background:#101b2d!important;
-  box-shadow:0 30px 90px rgba(0,14,27,.52)!important;
-}
-#ccDispatchModal .ccModalHead{
-  border-bottom:1px solid #294059!important;
-  background:
-    radial-gradient(circle at 86% 18%,rgba(55,199,215,.10),transparent 30%),
-    linear-gradient(135deg,#10243a 0%,#11374c 100%)!important;
-}
-#ccDispatchModal .ccModalHead span{
-  color:#63dce9!important;
-}
-#ccDispatchModal .ccModalHead h3{
-  color:#f6fbff!important;
-}
-#ccDispatchModal .ccModalHead p{
-  color:#a8bfd0!important;
-}
-#ccDispatchModal .ccClose{
-  border:1px solid #38536d!important;
-  background:#17283e!important;
-  color:#e5f4fb!important;
-}
-#ccDispatchModal .ccClose:hover{
-  border-color:#4f718c!important;
-  background:#1c334d!important;
-}
-#ccDispatchModal .ccDispatchForm{
-  background:#101b2d!important;
-}
-#ccDispatchModal .ccDispatchForm label{
-  color:#afc7d6!important;
-}
-#ccDispatchModal .ccDispatchForm input,
-#ccDispatchModal .ccDispatchForm select,
-#ccDispatchModal .ccDispatchForm textarea{
-  border:1px solid #314a63!important;
-  background:#16243a!important;
-  color:#edf6fb!important;
-  box-shadow:none!important;
-}
-#ccDispatchModal .ccDispatchForm input::placeholder,
-#ccDispatchModal .ccDispatchForm textarea::placeholder{
-  color:#748ca0!important;
-}
-#ccDispatchModal .ccDispatchForm select option{
-  background:#16243a!important;
-  color:#edf6fb!important;
-}
-#ccDispatchModal .ccDispatchForm input:focus,
-#ccDispatchModal .ccDispatchForm select:focus,
-#ccDispatchModal .ccDispatchForm textarea:focus{
-  border-color:#4bcfdf!important;
-  background:#192a42!important;
-  box-shadow:0 0 0 3px rgba(75,207,223,.10)!important;
-}
-#ccDispatchModal .ccDispatchProjectsHead{
-  color:#d4e6ee!important;
-}
-#ccDispatchModal .ccDispatchProjectsHead label{
-  color:#bad0dc!important;
-}
-#ccDispatchModal .ccDispatchProjects label{
-  border:1px solid #30465e!important;
-  background:#142238!important;
-}
-#ccDispatchModal .ccDispatchProjects label:hover{
-  border-color:#3d657c!important;
-  background:#172a41!important;
-}
-#ccDispatchModal .ccDispatchProjects label:has(input:checked){
-  border-color:#48cddd!important;
-  background:#17364a!important;
-  box-shadow:inset 0 0 0 1px rgba(72,205,221,.12)!important;
-}
-#ccDispatchModal .ccDispatchProjects input,
-#ccDispatchModal .ccDispatchProjectsHead input{
-  accent-color:#45d7e6!important;
-}
-#ccDispatchModal .ccDispatchProjects span{
-  color:#a9c2d0!important;
-}
-#ccDispatchModal .ccDispatchProjects b{
-  color:#f0f7fb!important;
-}
-#ccDispatchModal .ccDispatchActions{
-  border-top:1px solid #263b51!important;
-  margin-top:4px!important;
-  padding-top:12px!important;
-}
-#ccDispatchModal .ccBtn.cancel{
-  border:1px solid #3a5068!important;
-  background:#172238!important;
-  color:#cbdce6!important;
-}
-#ccDispatchModal .ccBtn.cancel:hover{
-  background:#1d3048!important;
-  color:#fff!important;
-}
-#ccDispatchModal .ccBtn.primary{
-  border-color:#58d6e6!important;
-  background:linear-gradient(135deg,#54d5e5 0%,#40bfd5 100%)!important;
-  color:#0b2b3a!important;
-  box-shadow:0 8px 18px rgba(40,182,205,.18)!important;
-}
-#ccDispatchModal .ccBtn.primary:hover{
-  filter:brightness(1.04)!important;
-}
-
-/* MOBILE_COMMAND_CENTER_LOADING_NO_DIM_20260930 */
-/* Không làm mờ/khóa toàn bộ Trung tâm điều hành trong lúc tải dữ liệu nền. */
-#estaCommandCenter.ccRoot.loading{
-  opacity:1!important;
-  pointer-events:auto!important;
-  filter:none!important;
-  -webkit-filter:none!important;
-}
-#estaCommandCenter.ccRoot.loading .ccHero,
-#estaCommandCenter.ccRoot.loading .ccSummary,
-#estaCommandCenter.ccRoot.loading .ccProjects,
-#estaCommandCenter.ccRoot.loading .ccWorkspace,
-#estaCommandCenter.ccRoot.loading .ccActivityPanel{
-  opacity:1!important;
-  filter:none!important;
-  -webkit-filter:none!important;
-}
-#estaCommandCenter #ccRefresh:disabled{
-  opacity:.72!important;
-  cursor:wait!important;
-}
-@media(max-width:760px){
-  #estaCommandCenter.ccRoot,
-  #estaCommandCenter.ccRoot.loading{
-    opacity:1!important;
-    filter:none!important;
-    -webkit-filter:none!important;
-  }
-}
-
-
-/* ===== ADMIN COMMAND CENTER · UNIFIED WITH PROJECT UI · 2026-10-04 ===== */
-#app.adminCommandHome.homeMode{
-  --ccu-ink:#173b56;
-  --ccu-muted:#7f9098;
-  --ccu-line:#d9e3e5;
-  --ccu-panel:#fffdf9;
-  --ccu-cream:#f7e1b4;
-  --ccu-cyan:#62dbea;
-  --ccu-good:#4f9b78;
-  --ccu-warn:#c68a3c;
-  --ccu-danger:#c76060;
-}
-#app.adminCommandHome.homeMode .ccLegacyKpisHidden{
-  display:none!important;
-}
-
-/* Same frame as the latest project Command Center. */
-#app.adminCommandHome.homeMode main{
-  min-width:0!important;
-  background:linear-gradient(180deg,#fae8bf 0%,#f5dda9 100%)!important;
-}
-#app.adminCommandHome.homeMode .homeDashboard{
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:14px 18px 28px!important;
-  background:transparent!important;
-}
-#app.adminCommandHome.homeMode .estaSidebar{
-  background:linear-gradient(180deg,#18497d 0%,#174577 52%,#194474 100%)!important;
-}
-#app.adminCommandHome.homeMode .estaTopbar{
-  min-height:70px!important;
-  border-bottom:1px solid rgba(255,255,255,.11)!important;
-  background:#1a4879!important;
-  box-shadow:0 6px 18px rgba(28,60,93,.14)!important;
-}
-#app.adminCommandHome.homeMode .topModuleTitle h1,
-#app.adminCommandHome.homeMode .account b{
-  color:#fff!important;
-}
-#app.adminCommandHome.homeMode .topModuleTitle p,
-#app.adminCommandHome.homeMode .account span{
-  color:#a9c0d4!important;
-}
-#app.adminCommandHome.homeMode .topModuleIcon{
-  border:1px solid rgba(127,218,234,.2)!important;
-  background:#173d68!important;
-  color:#63ddeb!important;
-}
-#app.adminCommandHome.homeMode .headerSearch,
-#app.adminCommandHome.homeMode .headerBell,
-#app.adminCommandHome.homeMode .iconAction,
-#app.adminCommandHome.homeMode .pdfAction{
-  border-color:#42678f!important;
-  background:#1d4f82!important;
-  color:#e7f1f8!important;
-}
-#app.adminCommandHome.homeMode .headerSearch input{
-  color:#f1f7fb!important;
-}
-#app.adminCommandHome.homeMode .headerSearch input::placeholder{
-  color:#b0c2d2!important;
-}
-
-/* Root layout: one generation only, no old KPI row. */
-#app.adminCommandHome.homeMode #estaCommandCenter{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:12px!important;
-  width:100%!important;
-  margin:0!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccHero{order:1}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccSummary{order:2}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccProjects{order:3}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccWorkspace{order:4}
-#app.adminCommandHome.homeMode #estaCommandCenter>.ccActivityPanel{order:5}
-
-/* Hero matches Technical Command Center project hero. */
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHero{
-  position:relative!important;
-  overflow:hidden!important;
-  min-height:160px!important;
-  margin:0!important;
-  padding:22px 25px!important;
-  border:1px solid rgba(44,75,90,.11)!important;
-  border-radius:24px!important;
-  background:
-    radial-gradient(circle at 84% 18%,rgba(255,255,255,.18),transparent 27%),
-    linear-gradient(125deg,#173b56 0%,#204d67 60%,#2e6573 100%)!important;
-  box-shadow:0 15px 38px rgba(31,56,72,.15)!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHero:after{
-  content:"";
-  position:absolute;
-  right:-90px;
-  bottom:-145px;
-  width:330px;
-  height:330px;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:50%;
-  box-shadow:0 0 0 46px rgba(255,255,255,.025),0 0 0 92px rgba(255,255,255,.02);
-  pointer-events:none;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroCopy,
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroActions{
-  position:relative;
-  z-index:1;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags{
-  display:flex!important;
-  align-items:center!important;
-  gap:7px!important;
-  flex-wrap:wrap!important;
-  margin:0 0 13px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags span,
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags b,
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags i{
-  display:inline-flex!important;
-  align-items:center!important;
-  min-height:23px!important;
-  margin:0!important;
-  padding:0 8px!important;
-  border-radius:999px!important;
-  font-size:8px!important;
-  line-height:1!important;
-  font-style:normal!important;
-  font-weight:800!important;
-  letter-spacing:.75px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags span{
-  background:rgba(255,255,255,.12)!important;
-  color:#eef7fa!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags b{
-  background:#f6e2bc!important;
-  color:#6e501f!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags i{
-  gap:5px!important;
-  background:rgba(255,255,255,.09)!important;
-  color:#d8e7e8!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags i:before{
-  content:"";
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#71d19a;
-  box-shadow:0 0 0 3px rgba(113,209,154,.12);
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHero h2{
-  margin:0!important;
-  color:#fff!important;
-  font-size:29px!important;
-  line-height:1.08!important;
-  font-weight:720!important;
-  letter-spacing:-.7px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHero p{
-  margin:9px 0 0!important;
-  color:#d9e5e8!important;
-  font-size:11px!important;
-  line-height:1.55!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccHeroActions{
-  align-self:center!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccBtn{
-  min-height:38px!important;
-  border-radius:11px!important;
-  font-size:10px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccBtn.primary{
-  border-color:#fff!important;
-  background:#fff!important;
-  color:#173b56!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccBtn.ghost{
-  border-color:rgba(255,255,255,.2)!important;
-  background:rgba(255,255,255,.1)!important;
-  color:#fff!important;
-}
-
-/* One compact KPI system, aligned to project Command Center. */
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary{
-  display:grid!important;
-  grid-template-columns:repeat(6,minmax(0,1fr))!important;
-  gap:10px!important;
-  margin:0!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary article{
-  position:relative!important;
-  min-width:0!important;
-  min-height:94px!important;
-  padding:13px 14px!important;
-  border:1px solid var(--ccu-line)!important;
-  border-radius:16px!important;
-  background:rgba(255,253,249,.94)!important;
-  box-shadow:0 5px 18px rgba(30,55,68,.045)!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary article:before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:14px;
-  bottom:14px;
-  width:3px;
-  border-radius:0 3px 3px 0;
-  background:#8ca5ae;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary article.info:before{background:#4c8798}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary article.warn:before{background:var(--ccu-warn)}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary article.danger:before{background:var(--ccu-danger)}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary span{
-  color:#7e8f97!important;
-  font-size:8px!important;
-  font-weight:800!important;
-  letter-spacing:.7px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary b{
-  margin:6px 0 2px!important;
-  color:#173b56!important;
-  font-size:23px!important;
-  line-height:1!important;
-  font-weight:730!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary small{
-  color:#89979e!important;
-  font-size:8px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary .warn b{color:#a56f2f!important}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccSummary .danger b{color:#b84f56!important}
-
-/* Project cards use the same light visual family. */
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjects{
-  display:grid!important;
-  grid-template-columns:repeat(5,minmax(0,1fr))!important;
-  gap:10px!important;
-  margin:0!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectCard{
-  min-height:104px!important;
-  padding:13px 14px!important;
-  border:1px solid var(--ccu-line)!important;
-  border-radius:16px!important;
-  background:rgba(255,253,249,.94)!important;
-  box-shadow:0 6px 18px rgba(30,55,68,.045)!important;
-  color:var(--ccu-ink)!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectCard:hover{
-  border-color:#b7cdd3!important;
-  background:#fff!important;
-  box-shadow:0 10px 24px rgba(30,55,68,.08)!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectCard>div>span{
-  color:#877a70!important;
-  font-size:7.5px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectCard h3{
-  margin:3px 0 9px!important;
-  color:#173b56!important;
-  font-size:12px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectCard>i{
-  color:#4a8292!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectStats span{
-  background:#eef3f3!important;
-  color:#74878d!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectStats b{
-  color:#355c68!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectStats .hot{
-  background:#f8e8e8!important;
-  color:#a04b50!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccProjectStats .hot b{color:#a04b50!important}
-
-/* Panels + table are light, same as project command panels. */
-#app.adminCommandHome.homeMode #estaCommandCenter .ccPanel{
-  border:1px solid var(--ccu-line)!important;
-  border-radius:18px!important;
-  background:rgba(255,253,249,.95)!important;
-  box-shadow:0 7px 24px rgba(36,58,70,.055)!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccPanelHead{
-  padding:14px 15px 11px!important;
-  border-bottom:1px solid #e7ecec!important;
-  background:transparent!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccPanelHead span{
-  color:#94725d!important;
-  font-size:7.5px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccPanelHead h3{
-  color:#173b56!important;
-  font-size:15px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccPanelHead p{
-  color:#84939b!important;
-  font-size:8.5px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccAlertCount{
-  background:#f7e7e7!important;
-  color:#a84e54!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccFilters{
-  padding:9px 11px!important;
-  border-bottom:1px solid #e7ecec!important;
-  background:#f4f6f4!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccFilters select,
-#app.adminCommandHome.homeMode #estaCommandCenter .ccFilters input{
-  height:34px!important;
-  border-color:#d5e0e2!important;
-  background:#fff!important;
-  color:#355663!important;
-  font-size:9.5px!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccFilters input::placeholder{
-  color:#94a0a5!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccTableWrap{
-  background:#fffdf9!important;
-  overflow-x:hidden!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccTable{
-  min-width:0!important;
-  width:100%!important;
-  table-layout:fixed!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccTable th{
-  background:#edf4f5!important;
-  color:#607783!important;
-  border-bottom-color:#dae4e6!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccTable td{
-  color:#48636f!important;
-  border-bottom-color:#edf0ef!important;
-  background:#fffdf9!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccTable tr[data-cc-task]:hover td{
-  background:#fbfaf6!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccTable td:nth-child(2)b{
-  color:#274753!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccAlert{
-  border-bottom-color:#e8eceb!important;
-  background:#fffdf9!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccAlert:hover{
-  background:#fbfaf6!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccAlert span{color:#7b8d94!important}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccAlert b{color:#304c57!important}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccAlert small{
-  background:#edf2f2!important;
-  color:#76888f!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccActivity{
-  border-right-color:#e8eceb!important;
-  border-bottom-color:#e8eceb!important;
-  background:#fffdf9!important;
-}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccActivity:hover{background:#fbfaf6!important}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccActivity b{color:#304d59!important}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccActivity small{color:#89979e!important}
-#app.adminCommandHome.homeMode #estaCommandCenter .ccActivity em{
-  background:#eef3f3!important;
-  color:#607b84!important;
-}
-
-/* Desktop compactness: more information above the fold. */
-@media(min-width:1101px){
-  #app.adminCommandHome.homeMode .homeDashboard{
-    padding:12px 16px 24px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter{
-    gap:10px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccHero{
-    min-height:145px!important;
-    padding:19px 22px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccHero h2{
-    font-size:26px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccSummary article{
-    min-height:86px!important;
-    padding:12px 13px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccProjectCard{
-    min-height:96px!important;
-    padding:11px 13px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccWorkspace{
-    gap:10px!important;
-  }
-}
-
-/* Tablet/mobile stays readable and never keeps desktop card density. */
-@media(max-width:1180px){
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccSummary{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccProjects{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-}
-@media(max-width:720px){
-  #app.adminCommandHome.homeMode .estaTopbar{
-    min-height:58px!important;
-  }
-  #app.adminCommandHome.homeMode .homeDashboard{
-    padding:8px 8px 74px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter{
-    gap:8px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccHero{
-    min-height:0!important;
-    padding:15px!important;
-    border-radius:18px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccHeroTags{
-    margin-bottom:9px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccHero h2{
-    font-size:21px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccHero p{
-    font-size:9px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccSummary{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    gap:6px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccSummary article{
-    min-height:78px!important;
-    padding:9px 8px!important;
-    border-radius:12px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccSummary span{
-    font-size:6.5px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccSummary b{
-    font-size:18px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccSummary small{
-    font-size:6.5px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccProjects{
-    grid-template-columns:1fr!important;
-    gap:6px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccProjectCard{
-    min-height:78px!important;
-    padding:10px!important;
-    border-radius:13px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccWorkspace{
-    grid-template-columns:1fr!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccFilters{
-    grid-template-columns:1fr 1fr!important;
-    gap:6px!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccFilters input{
-    grid-column:1/-1!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccTableWrap{
-    overflow-x:auto!important;
-  }
-  #app.adminCommandHome.homeMode #estaCommandCenter .ccTable{
-    min-width:720px!important;
-  }
-}
