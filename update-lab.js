@@ -509,6 +509,18 @@ function updateRefreshRoleChip(){
  ribbon?.classList.toggle("isTechnician",tech);
 }
 
+function updateArrangeWorkStats(on){
+ const page=$("#workPage"),stats=page?.querySelector(".stats"),table=page?.querySelector(".premiumTableCard"),meta=table?.querySelector(".workTableMeta");
+ if(!stats||!table||!meta)return;
+ if(on){
+  stats.classList.add("updateCompactWorkStats");
+  if(stats.parentElement!==meta)meta.insertBefore(stats,meta.firstChild);
+ }else{
+  stats.classList.remove("updateCompactWorkStats");
+  if(stats.parentElement!==page)page.insertBefore(stats,table);
+ }
+}
+
 function updateArrangeSidebar(on){
  const reports=$("#navReports"),assets=$("#navUpdateAssets"),inspection=$("#navInspection"),incident=$("#navIncident"),work=$("#navWork");
  if(on){
@@ -524,6 +536,7 @@ function updateApplyMode(){
  updateInjectShell();
  const on=updateIs()&&($("#adminPage")?.classList.contains("hide")??true);
  updateArrangeSidebar(on);
+ updateArrangeWorkStats(on);
  $("#app")?.classList.toggle("updateProjectMode",on);
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on);
