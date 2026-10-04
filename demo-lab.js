@@ -79,23 +79,29 @@ function demoModuleSearchPlaceholder(name){
  })[name]||"Tìm trong dự án...";
 }
 function demoSyncMobilePilot(){
- // Legacy class name retained for CSS compatibility. The finalized DEMO mobile
- // layout is now the shared mobile layout for every actual project context.
+ // Legacy class names are retained for CSS compatibility. The newest approved
+ // DEMO mobile layout is now the shared mobile standard for every real project.
  // Admin/portfolio pages stay outside this scope.
  const inProject=!!currentBuilding?.id
    &&($("#adminPage")?.classList.contains("hide")??true)
    &&!($("#navWork")?.classList.contains("hide")??true);
  $("#app")?.classList.toggle("demoMobilePilot",inProject);
 
- // The new ultra-compact Energy pass is intentionally piloted on DEMO only.
- const demoEnergyPilot=inProject&&demoIs()&&demoEnergyIsPhone();
- $("#app")?.classList.toggle("demoEnergyCompactPilot",demoEnergyPilot);
- demoSyncEnergyMobileEnhancements(demoEnergyPilot);
+ const energyCompact=inProject&&demoEnergyIsPhone();
+ $("#app")?.classList.toggle("demoEnergyCompactPilot",energyCompact);
+ demoSyncEnergyMobileEnhancements(energyCompact);
  return inProject;
 }
 
 function demoEnergyIsPhone(){
  return window.matchMedia?.("(max-width:640px)")?.matches??false;
+}
+
+function demoEnergyCompactShouldRun(){
+ return !!currentBuilding?.id
+  &&($("#adminPage")?.classList.contains("hide")??true)
+  &&!($("#navWork")?.classList.contains("hide")??true)
+  &&demoEnergyIsPhone();
 }
 
 function demoEnergyLatestForType(){
@@ -107,7 +113,7 @@ function demoEnergyLatestForType(){
 }
 
 function demoEnergyUpdateDeltaHint(){
- if(!demoIs()||!demoEnergyIsPhone())return;
+ if(!demoEnergyCompactShouldRun())return;
  const hint=$("#energyLatestHint"),input=$("#energyValue");
  if(!hint||!input)return;
  const latest=demoEnergyLatestForType();
@@ -160,7 +166,7 @@ function demoDecorateEnergyPreview(inputId,previewId){
 
 function demoEnsureEnergyRecentToggle(){
  const card=$("#energyPage .energyTableCard");
- if(!card||!demoIs()||!demoEnergyIsPhone())return;
+ if(!card||!demoEnergyCompactShouldRun())return;
  let btn=$("#demoEnergyRecentToggle");
  if(!btn){
   btn=document.createElement("button");
@@ -181,7 +187,7 @@ function demoEnsureEnergyRecentToggle(){
 }
 
 function demoEnergyDecorateKpiUnits(){
- if(!demoIs()||!demoEnergyIsPhone()||typeof ENERGY_META==="undefined")return;
+ if(!demoEnergyCompactShouldRun()||typeof ENERGY_META==="undefined")return;
  if(typeof is68DualElectric==="function"&&is68DualElectric())return;
  const unit=String(ENERGY_META[energyType]?.unit||"").trim();
  if(!unit)return;
@@ -234,7 +240,7 @@ function demoSyncEnergyMobileEnhancements(active){
    demoEnsureEnergyRecentToggle();
   },0)));
   window.addEventListener("resize",()=>{
-   const active=demoIs()&&demoEnergyIsPhone();
+   const active=demoEnergyCompactShouldRun();
    $("#app")?.classList.toggle("demoEnergyCompactPilot",active);
    demoSyncEnergyMobileEnhancements(active);
   },{passive:true});
