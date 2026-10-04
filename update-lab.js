@@ -23,7 +23,7 @@ const updateScopeId=()=>String(currentBuilding?.id||"");
 const updateIsSandbox=()=>updateScopeId()===UPDATE_ID;
 const updateIsEligible=()=>!!updateScopeId()&&updateScopeId()!==DEMO_ID;
 const updateProjectName=()=>String(currentBuilding?.name||updateScopeId()||"Dự án");
-const updateProjectCode=()=>updateScopeId().replace(/[^A-Za-z0-9]/g,"")||"ESTA";
+const updateProjectCode=()=>updateScopeId().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/Đ/g,"D").replace(/đ/g,"d").replace(/[^A-Za-z0-9]/g,"")||"ESTA";
 const updateWoPrefix=()=>updateIsSandbox()?"UPD":updateProjectCode();
 const updateCacheKey=(id=updateScopeId())=>"esta_ops_cache_v2_"+String(id||"none");
 const updateRealAdmin=()=>!!currentAccount?.is_admin;
@@ -547,6 +547,26 @@ function updateArrangeWorkLinkFields(on){
  }
 }
 
+function updateRestoreDemoWorkForm(){
+ if(updateScopeId()!==DEMO_ID)return;
+ const priority=$("#demoTaskPriority");
+ if(priority?.dataset.updateOptions){
+  const vi=uPriorityVi(priority.value);
+  priority.innerHTML='<option>Thấp</option><option>Trung bình</option><option>Cao</option><option>Khẩn cấp</option>';
+  if([...priority.options].some(o=>o.value===vi))priority.value=vi;else priority.value="Trung bình";
+  delete priority.dataset.updateOptions;
+ }
+ const summary=$("#demoWorkLinks summary");
+ if(summary&&!document.querySelector(".workEditDrawer.demoWorkEditDrawer:not(.hide)"))summary.textContent="⌁ Liên kết nâng cao · Thiết bị / Sự cố / Nhà thầu / Vật tư";
+ const cause=$("#demoTaskCause"),result=$("#demoTaskResult");
+ if(cause)cause.placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố.";
+ if(result)result.placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành...";
+ $("#demoWorkLinks .demoTaskMaterialsField")?.classList.remove("updateUniformMaterialField");
+ $("#demoTaskCause")?.closest("label")?.classList.remove("updateCauseField");
+ $("#demoTaskResult")?.closest("label")?.classList.remove("updateResultField");
+ ["demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.closest("label")?.classList.remove("updateUniformLinkField"));
+}
+
 function updateArrangeSidebar(on){
  const reports=$("#navReports"),assets=$("#navUpdateAssets"),inspection=$("#navInspection"),incident=$("#navIncident"),work=$("#navWork");
  if(on){
@@ -583,6 +603,7 @@ function updateApplyMode(){
   updateLoad().then(()=>{if(!updateIs())return;updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
   updateStartNotificationTimer();
  }else{
+  updateRestoreDemoWorkForm();
   document.querySelectorAll(".updateIntelligencePanel,.updateIntelligenceStrip").forEach(x=>x.remove());
   updateStopScanner();
   updateStopNotificationTimer();
@@ -1174,7 +1195,7 @@ async function updateSyncTaskCosts(obj){
 
 const updateOriginalSyncTaskRecord=syncTaskRecord;
 syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
- if(action==="upsert_task"&&String(buildingId)!==DEMO_ID&&itemOrId&&typeof itemOrId==="object"){
+ if(action==="upsert_task"&&buildingId&&String(buildingId)!==DEMO_ID&&String(buildingId)===updateScopeId()&&itemOrId&&typeof itemOrId==="object"){
   const previous=load().find(x=>String(x.id)===String(itemOrId.id))||{};
   const formSaveActive=updateIs()&&!$("#workPage")?.classList.contains("hide")&&$("#saveBtn")?.disabled===true;
   const extra=formSaveActive?updateReadWorkExtras():{};
@@ -1209,6 +1230,7 @@ if(typeof resetForm==="function"){
 
 async function updateEnsurePmOrders(){
  if(!updateIs()||updatePmGenerating||!canProjectEdit?.())return;
+ const buildingId=updateScopeId(),projectName=updateProjectName(),woPrefix=updateWoPrefix();
  updatePmGenerating=true;
  try{
   const today=new Date();today.setHours(23,59,59,999);
@@ -1244,18 +1266,20 @@ async function updateEnsurePmOrders(){
    const already=arr.some(x=>String(x.maintenancePlanId||"")===String(p.id)&&String(x.maintenanceCycleKey||"")===cycleKey);
    if(!already){
     const id=Date.now()+Math.floor(Math.random()*9000),priority=uPriority(p.priority),rule=SLA_RULES[priority],created=new Date().toISOString();
-    let obj={id,woCode:"WO-"+updateWoPrefix()+"-PM-"+String(id).slice(-4),d:new Date().toLocaleDateString("en-CA"),c:p.title,t:"Bảo trì",s:"Đang thực hiện",n:"Tự động sinh từ kế hoạch "+p.plan_code,a:asset.assigned_to||"",performers:asset.assigned_to?[asset.assigned_to]:[],imgs:[],i:0,priority,assetId:asset.id,systemCode:asset.system_code,areaCode:asset.area_code,maintenancePlanId:p.id,maintenanceCycleKey:cycleKey,materials:[],cause:"",result:"",createdAt:created,slaResponseMinutes:rule.response,slaTargetMinutes:rule.target,responseDueAt:new Date(Date.now()+rule.response*60000).toISOString(),resolveDueAt:new Date(Date.now()+rule.target*60000).toISOString(),dueDate:p.next_due_date||new Date().toLocaleDateString("en-CA"),dueDateExplicit:true};
-    const res=await updateOriginalSyncTaskRecord("upsert_task",obj,updateScopeId());if(res?.item)obj={...obj,...res.item};
+    let obj={id,woCode:"WO-"+woPrefix+"-PM-"+String(id).slice(-4),d:new Date().toLocaleDateString("en-CA"),c:p.title,t:"Bảo trì",s:"Đang thực hiện",n:"Tự động sinh từ kế hoạch "+p.plan_code,a:asset.assigned_to||"",performers:asset.assigned_to?[asset.assigned_to]:[],imgs:[],i:0,priority,assetId:asset.id,systemCode:asset.system_code,areaCode:asset.area_code,maintenancePlanId:p.id,maintenanceCycleKey:cycleKey,materials:[],cause:"",result:"",createdAt:created,slaResponseMinutes:rule.response,slaTargetMinutes:rule.target,responseDueAt:new Date(Date.now()+rule.response*60000).toISOString(),resolveDueAt:new Date(Date.now()+rule.target*60000).toISOString(),dueDate:p.next_due_date||new Date().toLocaleDateString("en-CA"),dueDateExplicit:true};
+    if(updateScopeId()!==buildingId)return;
+    const res=await updateOriginalSyncTaskRecord("upsert_task",obj,buildingId);if(res?.item)obj={...obj,...res.item};
     arr.push(obj);changed=true;
    }
    if(advancePatch){
     try{
-      await updatePatch("ops_maintenance_plans","id=eq."+uq(p.id)+"&building_id=eq."+uq(updateScopeId()),advancePatch);
+      if(updateScopeId()!==buildingId)return;
+      await updatePatch("ops_maintenance_plans","id=eq."+uq(p.id)+"&building_id=eq."+uq(buildingId),advancePatch);
       Object.assign(p,advancePatch);
     }catch(e){console.warn("Could not advance PM plan",p.plan_code,e)}
    }
   }
-  if(changed){save(arr);render?.();updateRenderCommandCenter();updateRefreshNotifications();toast(updateProjectName()+" đã tự tạo Work Order cho PM đến hạn")}
+  if(changed){save(arr);render?.();updateRenderCommandCenter();updateRefreshNotifications();toast(projectName+" đã tự tạo Work Order cho PM đến hạn")}
  }catch(e){console.warn("Auto PM generation skipped",e)}
  finally{updatePmGenerating=false}
 }
