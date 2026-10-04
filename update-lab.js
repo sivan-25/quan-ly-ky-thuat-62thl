@@ -340,6 +340,7 @@ function updateRefreshNotifications(){
  const mobile=$("#updateMobileNotifBadge");
  if(mobile){mobile.textContent=unread>9?"9+":String(unread);mobile.classList.toggle("hide",unread===0)}
  if(!$("#updateNotificationCenter")?.classList.contains("hide"))updateRenderNotificationCenter();
+ const focus=$("#updateFocusNow");if(focus&&focus.innerHTML)updateRenderFocusNow();
 }
 function updateMarkNotificationRead(key){
  if(!key)return;
@@ -1200,6 +1201,7 @@ openAdminPortal=function(){
  $("#app")?.classList.remove("updateProjectMode","updateStandaloneMode");
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.add("hide"));
  $("#updateTrialRibbon")?.classList.add("hide");$("#updateMobileNav")?.classList.add("hide");$("#updateAiButton")?.classList.add("hide");
+ updateStopNotificationTimer();updateCloseNotificationCenter();
  updatePrevOpenAdminPortal();
 };
 
