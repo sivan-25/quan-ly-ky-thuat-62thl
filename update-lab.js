@@ -151,9 +151,12 @@ function updateOverdueTasks(){
  const td=new Date();td.setHours(0,0,0,0);
  return load().filter(x=>{
   if(x.s==="Đã hoàn thành")return false;
-  const due=x.dueDate||x.d;if(!due)return false;
+  // Legacy tasks used x.d as the work/start date, not a deadline.
+  // Only explicit dueDate values are eligible for overdue status.
+  const due=String(x.dueDate||"").trim();
+  if(!due)return false;
   const d=new Date(due+"T00:00:00");
-  return d<td;
+  return !Number.isNaN(d.getTime())&&d<td;
  });
 }
 function updateDuePlans(){
@@ -273,7 +276,8 @@ function updateBuildNotifications(limit=5){
   if(task.s==="Đã hoàn thành"||criticalTaskIds.has(String(task.id)))return;
   if(updateTechView()&&!updateTaskAssignedToCurrentTech(task,tech))return;
   const sla=updateSlaState(task);
-  const due=task.dueDate||task.d;
+  // Do not turn the legacy work date into a fake deadline.
+  const due=String(task.dueDate||"").trim();
   const dueMs=due?new Date(due+"T23:59:59").getTime():NaN;
   let candidate=null;
   if(sla&&sla.remaining<=0){
