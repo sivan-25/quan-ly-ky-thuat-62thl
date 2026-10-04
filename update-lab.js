@@ -1356,6 +1356,14 @@ window.addEventListener("resize",()=>{if(updateIs())updateApplyMode();updateSync
 window.visualViewport?.addEventListener("resize",updateSyncKeyboard,{passive:true});
 document.addEventListener("focusin",()=>setTimeout(updateSyncKeyboard,80));
 document.addEventListener("focusout",()=>setTimeout(updateSyncKeyboard,120));
+document.addEventListener("click",e=>{
+ if(!updateIs()||$("#workPage")?.classList.contains("hide"))return;
+ const row=e.target.closest?.("[data-work-task-id]");
+ if(!row)return;
+ if(e.target.closest("button,a,input,select,textarea,summary,details,[role=button],.thumbs"))return;
+ const id=Number(row.dataset.workTaskId);
+ if(Number.isFinite(id))window.editTask?.(id);
+});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){updateCloseAssetDrawer();["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal);updateCloseNotificationCenter()}});
 document.addEventListener("DOMContentLoaded",()=>{
  updateInjectShell();updateApplyMode();
