@@ -599,8 +599,7 @@ function renderHomeProjectCards(){
  box.innerHTML=list.length?list.map((b,i)=>'<button class="homeProjectCard" type="button" onclick="adminOpenBuilding(\''+esc(b.id)+'\',event)"><div class="projectMonogram">'+esc((b.id||"ES").slice(0,2))+'</div><div><small>'+esc(b.id)+'</small><b>'+esc(b.name||b.id)+'</b><span>ESTA Property Management</span></div><i>→</i></button>').join(""):'<div class="homeEmpty">Chưa có dự án đang hoạt động.</div>';
 }
 async function renderAdminHomeOverview(){
- $("#homeAdminProjects").classList.toggle("hide",!currentAccount?.is_admin);
- renderHomeProjectCards();
+ $("#homeAdminProjects")?.classList.add("hide");
  if(!currentAccount?.is_admin)return;
  try{
    const result=await sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession.access_token,body:{}});
@@ -643,7 +642,7 @@ function renderHomeDashboard(){
  $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
  if($("#homeUpdatedAt"))$("#homeUpdatedAt").textContent="Cập nhật "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
  const admin=!!currentAccount?.is_admin;
- $("#homeAdminProjects").classList.toggle("hide",!admin);
+ $("#homeAdminProjects")?.classList.add("hide");
  if(admin){
    const hp=$("#topHomeTitle p");if(hp)hp.textContent="";
    $("#homeElectric").textContent=$("#homeWater").textContent=$("#homeSolar").textContent="—";
@@ -3205,8 +3204,8 @@ async function adminApi(action,payload={}){
 }
 function adminProjectCard(b,index=0){
  const safeId=esc(b.id),safeName=esc(b.name||b.id),tone="tone"+(index%4);
- const projectIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V8l6-3 6 3v12M9 11h2v2H9zM13 11h2v2h-2zM9 15h2v2H9zM13 15h2v2h-2z"/></svg>';
- return '<div class="adminProjectCard '+tone+'"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\',event)"><div class="adminProjectIcon">'+projectIcon+'</div><div class="adminProjectCopy"><small>'+safeId+'</small><h3>'+safeName+'</h3></div><span class="adminProjectArrow" aria-hidden="true">→</span></button></div>';
+ const monogram=esc((b.id||"ES").slice(0,2));
+ return '<div class="adminProjectCard '+tone+'"><button class="adminProjectOpen" type="button" onclick="adminOpenBuilding(\''+safeId+'\',event)"><div class="adminProjectIcon adminProjectMonogram">'+monogram+'</div><div class="adminProjectCopy"><small>'+safeId+'</small><h3>'+safeName+'</h3><p>ESTA Property Management</p></div><span class="adminProjectArrow" aria-hidden="true">→</span></button></div>';
 }
 function renderAdminProjects(){
  const list=currentAccount?.buildings||[];
