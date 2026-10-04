@@ -1347,3 +1347,93 @@
     min-height:0!important;
   }
 }
+
+
+/* UPDATE Work Order cleanup · no visible System selector + materials match other fields */
+#app.updateProjectMode #demoWorkLinks .updateWorkContextLine{
+  background:#fbfdff!important;
+  border:1px solid #c7e3f5!important;
+  border-radius:8px!important;
+  color:#193872!important;
+}
+#app.updateProjectMode #demoWorkLinks .updateWorkSlaPreview{
+  color:#6f8194!important;
+}
+#app.updateProjectMode #demoWorkLinks .updateAssetContext>b{
+  color:#193872!important;
+}
+
+/* Material box uses the exact same visual family/height as Checklist, Nhà thầu, Thiết bị and Defect. */
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+  min-height:58px!important;
+  height:58px!important;
+  padding:6px 9px!important;
+  border:1px solid #c7e3f5!important;
+  border-radius:8px!important;
+  background:#fbfdff!important;
+  box-shadow:none!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField:has(.demoTaskMaterialRow){
+  height:auto!important;
+  min-height:58px!important;
+  background:#fbfdff!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead{
+  min-height:28px!important;
+  margin:0!important;
+  align-items:center!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField:has(.demoTaskMaterialRow) .demoTaskMaterialsHead{
+  margin-bottom:7px!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead>span{
+  color:#123678!important;
+  font-size:9px!important;
+  font-weight:800!important;
+}
+#app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial{
+  height:28px!important;
+  min-height:28px!important;
+  padding:0 8px!important;
+  border:1px solid #c7e3f5!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#193872!important;
+  font-size:9px!important;
+  font-weight:750!important;
+}
+#app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial:hover{
+  background:#f4f9fd!important;
+  border-color:#9fcde9!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialRow select,
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialQtyWrap{
+  border:1px solid #c7e3f5!important;
+  background:#fff!important;
+  color:#193872!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialQty{
+  background:transparent!important;
+  color:#193872!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialUnit{
+  border-left:1px solid #c7e3f5!important;
+  color:#617d91!important;
+}
+
+/* System remains only as hidden metadata for reports/asset linkage. */
+#app.updateProjectMode #updateTaskSystem,
+#app.updateProjectMode #updateTaskArea{
+  display:none!important;
+}
+
+@media(max-width:760px){
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+    min-height:62px!important;
+    height:62px!important;
+    padding:7px 9px!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField:has(.demoTaskMaterialRow){
+    height:auto!important;
+  }
+}
