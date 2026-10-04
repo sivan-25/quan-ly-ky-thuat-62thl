@@ -99,6 +99,7 @@ async function loadConstructionMaterialData(buildingId=currentBuilding?.id,force
     renderConstructionMaterials();
     if(selectedConstructionMaterialId)renderConstructionDetail();
   }catch(e){
+    if(String(currentBuilding?.id||"")!==String(buildingId))return;
     console.warn("Load construction materials failed",e);
     toast("Không tải được dữ liệu vật tư thi công");
   }
