@@ -534,7 +534,7 @@ function updateApplyMode(){
   updateLoad().then(()=>{updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
   updateStartNotificationTimer();
  }else{
-  $(".updateIntelligencePanel")?.remove();
+  document.querySelectorAll(".updateIntelligencePanel,.updateIntelligenceStrip").forEach(x=>x.remove());
   updateStopScanner();
   updateStopNotificationTimer();
   updateCloseNotificationCenter();
@@ -642,20 +642,7 @@ async function updateRenderCommandCenter(){
  const h=updateHealth(),tasks=load(),critical=updateOpenIncidents().filter(i=>i.severity==="Khẩn cấp");
  const overdue=updateOverdueTasks(),plans=updateDuePlans(),low=updateLowStock(),anoms=updateState.anomalies.filter(x=>x.status!=="Đã đóng");
  const handover=updateState.handovers.find(x=>x.status==="Chờ nhận");
- const attention=[];
- critical.forEach(x=>attention.push({tone:"danger",icon:"!",title:x.symptom||x.incident_code,meta:x.incident_code+" · "+(x.area||"")+" · Critical",action:"incident",id:x.id}));
- tasks.forEach(x=>{const s=updateSlaState(x);if(s&&["danger","warn"].includes(s.tone))attention.push({tone:s.tone,icon:"⏱",title:x.c||"Work Order",meta:(x.woCode||"WO")+" · "+s.text,action:"task",id:x.id})});
- overdue.forEach(x=>attention.push({tone:"warn",icon:"↗",title:x.c||"Công việc quá hạn",meta:(x.woCode||"WO")+" · Hạn "+uDate(x.dueDate||x.d),action:"task",id:x.id}));
- plans.filter(p=>p.next_due_date&&new Date(p.next_due_date+"T23:59:59")<new Date()).forEach(p=>{const a=updateAsset(p.asset_id);attention.push({tone:"warn",icon:"⚙",title:p.title,meta:(a?.code||"")+" · PM quá hạn "+uDate(p.next_due_date),action:"asset",id:p.asset_id})});
- low.forEach(m=>attention.push({tone:"warn",icon:"□",title:m.name,meta:"Tồn "+uNum(m._stock)+" "+m.unit+" · Min "+uNum(m.min_qty),action:"inventory"}));
- anoms.filter(a=>Math.abs(Number(a.variance_pct))>=15).forEach(a=>attention.push({tone:"warn",icon:"⌁",title:"Bất thường "+(a.meter_type==="water"?"nước":a.meter_type==="electric"?"điện":a.meter_type),meta:(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+"% so baseline",action:"energy"}));
- if(handover)attention.push({tone:"info",icon:"⇄",title:"Bàn giao ca đang chờ nhận",meta:handover.giver_name+" → "+handover.receiver_name,action:"shift"});
- const attentionSeen=new Set(),attentionUnique=[];
- attention.forEach(x=>{
-   const key=(x.action||"")+"::"+String(x.id||x.title||x.meta||"");
-   if(attentionSeen.has(key))return;
-   attentionSeen.add(key);attentionUnique.push(x);
- });
+
 
  const systemCards=updateState.systems.map(s=>{
   const aa=updateState.assets.filter(a=>a.system_code===s.code);if(!aa.length)return "";
@@ -683,10 +670,7 @@ async function updateRenderCommandCenter(){
    updateKpi("Tồn thấp",h.low,"Vật tư cần đặt","info","inventory")+
    updateKpi("Energy",h.anomaly,"Bất thường","info","energy")+
   '</div>'+
-  '<div class="updateDashboardGrid">'+
-   '<section class="updatePanel updateAttention"><header><div><span>CẦN XỬ LÝ</span><h2>Ưu tiên hôm nay</h2></div><b>'+attentionUnique.length+'</b></header><div class="updateAttentionList">'+
-    (attentionUnique.length?attentionUnique.slice(0,8).map((x,i)=>'<button class="updateAttentionRow '+x.tone+'" data-update-att-action="'+x.action+'" data-update-id="'+uEsc(x.id||"")+'"><span class="updateAttentionNo">'+String(i+1).padStart(2,"0")+'</span><i>'+x.icon+'</i><div><b>'+uEsc(x.title)+'</b><small>'+uEsc(x.meta)+'</small></div><em>→</em></button>').join(""):'<div class="updateEmpty">Không có cảnh báo cần xử lý.</div>')+
-   '</div></section>'+
+  '<div class="updateDashboardGrid updateDashboardCompact">'+
    '<section class="updatePanel"><header><div><span>ASSET HEALTH</span><h2>Sức khỏe hệ thống</h2></div><button data-update-action="assets">Xem tài sản →</button></header><div class="updateSystemGrid">'+systemCards+'</div></section>'+
    '<section class="updatePanel updateLeaderPanel"><header><div><span>TEAM</span><h2>Nhân sự & tải công việc</h2></div><button data-update-action="team">Skill Matrix →</button></header><div class="updateTeamMiniList">'+team+'</div></section>'+
    '<section class="updatePanel updateTechShiftPanel"><header><div><span>SHIFT</span><h2>Bàn giao & ca trực</h2></div><button data-update-action="shift">Mở bàn giao →</button></header><div class="updateHandoverCompact">'+
@@ -952,37 +936,56 @@ function updateRenderCost(){
 }
 
 function updateDecorateEnergyPage(){
- if(!updateIs()||$("#updateEnergyIntel"))return;
+ if(!updateIs())return;
+ $("#updateEnergyIntel")?.remove();
  const page=$("#energyPage");if(!page)return;
- const an=updateState.anomalies.filter(x=>x.status!=="Đã đóng");
- const panel=document.createElement("section");panel.id="updateEnergyIntel";panel.className="updateIntelligencePanel updateEnergyIntel";
- panel.innerHTML='<header><div><span>ENERGY INTELLIGENCE</span><h2>Baseline & phát hiện bất thường</h2><p>Chỉ số nhập như cũ; UPDATE bổ sung lớp so sánh để Leader biết khi nào cần kiểm tra.</p></div><b>'+an.length+' cảnh báo</b></header><div class="updateEnergyIntelGrid">'+
-  an.map(a=>'<article><span>'+(a.meter_type==="water"?"💧":a.meter_type==="electric"?"⚡":"⌁")+'</span><div><b>'+uEsc(a.meter_type==="water"?"Nước":a.meter_type==="electric"?"Điện":a.meter_type.toUpperCase())+'</b><small>'+uEsc(a.period_label)+'</small><p>'+uEsc(a.recommendation)+'</p></div><strong class="'+(Math.abs(Number(a.variance_pct))>=15?"danger":"warn")+'">'+(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+'%</strong></article>').join("")+
- '</div>';
+ const an=updateState.anomalies.filter(x=>x.status!=="Đã đóng").sort((a,b)=>Math.abs(Number(b.variance_pct||0))-Math.abs(Number(a.variance_pct||0)));
+ if(!an.length)return;
+ const panel=document.createElement("section");panel.id="updateEnergyIntel";panel.className="updateIntelligenceStrip";
+ panel.innerHTML='<div class="updateStripTitle"><span>ENERGY</span><b>'+an.length+' bất thường</b></div><div class="updateStripItems">'+
+   an.slice(0,3).map(a=>'<span class="updateStripItem '+(Math.abs(Number(a.variance_pct))>=15?"danger":"warn")+'"><i>'+(a.meter_type==="water"?"💧":a.meter_type==="electric"?"⚡":"⌁")+'</i><b>'+uEsc(a.meter_type==="water"?"Nước":a.meter_type==="electric"?"Điện":a.meter_type.toUpperCase())+'</b><strong>'+(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+'%</strong><small>'+uEsc(a.recommendation||"Theo dõi")+'</small></span>').join("")+
+  '</div>';
  page.prepend(panel);
 }
 function updateDecorateIncidentPage(){
- if(!updateIs()||$("#updateIncidentIntel"))return;
+ if(!updateIs())return;
+ $("#updateIncidentIntel")?.remove();
  const page=$("#incidentPage");if(!page)return;
- const rows=updateOpenIncidents().map(i=>({i,e:updateIncidentExt(i.id)}));
- const panel=document.createElement("section");panel.id="updateIncidentIntel";panel.className="updateIntelligencePanel";
- panel.innerHTML='<header><div><span>INCIDENT CONTROL</span><h2>SLA · RCA · Repeat Failure</h2><p>Workflow nâng cao của UPDATE, trong khi danh sách sự cố gốc vẫn giữ nguyên bên dưới.</p></div><b>'+rows.length+' đang mở</b></header><div class="updateIncidentIntelRows">'+rows.map(({i,e})=>'<div><span class="updateStatus '+(e?.priority==="Critical"?"danger":"warn")+'">'+uEsc(e?.priority||i.severity)+'</span><b>'+uEsc(i.incident_code)+'</b><strong>'+uEsc(i.symptom)+'</strong><small>'+uEsc(e?.workflow_status||i.status)+'</small><em>'+(e?.require_rca?"RCA "+(e.root_cause?"✓":"BẮT BUỘC"):"RCA tùy chọn")+'</em></div>').join("")+'</div>'+
-  (updateRepeatAssets().length?'<div class="updateRepeatWarning">⚠ Repeat Failure: '+updateRepeatAssets().map(x=>uEsc(x.asset.code)+" · "+x.count+" lần/90 ngày").join(" · ")+'</div>':"");
+ const open=updateOpenIncidents().map(i=>({i,e:updateIncidentExt(i.id)}));
+ const rca=open.filter(x=>x.e?.require_rca&&!String(x.e?.root_cause||"").trim()).length;
+ const breached=open.filter(x=>x.e?.sla_breached).length;
+ const repeat=updateRepeatAssets();
+ if(!rca&&!breached&&!repeat.length)return;
+ const panel=document.createElement("section");panel.id="updateIncidentIntel";panel.className="updateIntelligenceStrip";
+ panel.innerHTML='<div class="updateStripTitle"><span>RỦI RO SỰ CỐ</span><b>Chỉ hiển thị điểm cần hành động</b></div><div class="updateStripItems">'+
+  (breached?'<span class="updateStripItem danger"><i>⏱</i><b>SLA quá hạn</b><strong>'+breached+'</strong><small>Ưu tiên xử lý</small></span>':'')+
+  (rca?'<span class="updateStripItem danger"><i>!</i><b>RCA bắt buộc</b><strong>'+rca+'</strong><small>Chưa hoàn tất nguyên nhân gốc</small></span>':'')+
+  (repeat.length?'<span class="updateStripItem warn"><i>↻</i><b>Lỗi lặp</b><strong>'+repeat.length+'</strong><small>'+uEsc(repeat.slice(0,2).map(x=>x.asset.code+" · "+x.count+" lần/90 ngày").join(" · "))+'</small></span>':'')+
+  '</div>';
  page.prepend(panel);
 }
 function updateDecorateInventoryPage(){
- if(!updateIs()||$("#updateInventoryIntel"))return;
+ if(!updateIs())return;
+ $("#updateInventoryIntel")?.remove();
  const page=$("#inventoryPage");if(!page)return;
- const low=updateLowStock();
- const panel=document.createElement("section");panel.id="updateInventoryIntel";panel.className="updateIntelligencePanel";
- panel.innerHTML='<header><div><span>SPARE PARTS CONTROL</span><h2>Min / Max / Reorder</h2><p>Kho liên kết thiết bị và cảnh báo đặt hàng trước khi stockout.</p></div><b>'+low.length+' tồn thấp</b></header><div class="updateInventoryIntelRows">'+low.map(m=>'<div><b>'+uEsc(m.code)+'</b><strong>'+uEsc(m.name)+'</strong><span>Tồn '+uNum(m._stock)+' '+uEsc(m.unit)+'</span><small>Min '+uNum(m.min_qty)+' · Reorder '+uNum(m.reorder_point)+' · Max '+uNum(m.max_qty)+' · Lead '+uNum(m.lead_time_days)+' ngày</small><em>'+uEsc(m.supplier)+'</em></div>').join("")+'</div>';
+ const low=updateLowStock().sort((a,b)=>(Number(a._stock)-Number(a.min_qty))-(Number(b._stock)-Number(b.min_qty)));
+ if(!low.length)return;
+ const panel=document.createElement("section");panel.id="updateInventoryIntel";panel.className="updateIntelligenceStrip";
+ panel.innerHTML='<div class="updateStripTitle"><span>TỒN KHO</span><b>'+low.length+' vật tư dưới Min</b></div><div class="updateStripItems">'+
+  low.slice(0,3).map(m=>'<span class="updateStripItem warn"><i>□</i><b>'+uEsc(m.name)+'</b><strong>'+uNum(m._stock)+'/'+uNum(m.min_qty)+' '+uEsc(m.unit)+'</strong><small>Đặt lại '+uNum(m.reorder_point)+' · Lead '+uNum(m.lead_time_days)+' ngày</small></span>').join("")+
+  '</div>';
  page.prepend(panel);
 }
 function updateDecorateContractorPage(){
- if(!updateIs()||$("#updateVendorIntel"))return;
+ if(!updateIs())return;
+ $("#updateVendorIntel")?.remove();
  const page=$("#contractorPage");if(!page)return;
- const panel=document.createElement("section");panel.id="updateVendorIntel";panel.className="updateIntelligencePanel";
- panel.innerHTML='<header><div><span>VENDOR PERFORMANCE</span><h2>Vendor Score</h2><p>Chấm theo chất lượng, SLA, giá, phản hồi, an toàn và sửa lặp.</p></div></header><div class="updateVendorIntelRows">'+updateState.contractors.map(c=>{const s=updateVendorScore(c.id);if(!s)return "";const avg=(Number(s.quality_score)+Number(s.sla_score)+Number(s.price_score)+Number(s.response_score)+Number(s.safety_score))/5;return '<article><div><b>'+uEsc(c.name)+'</b><small>'+uEsc(c.specialty)+'</small></div><strong>'+avg.toFixed(1)+'</strong><span>/5</span><p>Quality '+s.quality_score+' · SLA '+s.sla_score+' · Safety '+s.safety_score+'</p><em>'+s.repeat_repairs+' repeat repair</em></article>'}).join("")+'</div>';
+ const vendors=updateState.contractors.map(c=>{const v=updateVendorScore(c.id);if(!v)return null;return {c,v,avg:(Number(v.quality_score)+Number(v.sla_score)+Number(v.price_score)+Number(v.response_score)+Number(v.safety_score))/5}}).filter(Boolean).sort((a,b)=>a.avg-b.avg);
+ if(!vendors.length)return;
+ const panel=document.createElement("section");panel.id="updateVendorIntel";panel.className="updateIntelligenceStrip";
+ panel.innerHTML='<div class="updateStripTitle"><span>VENDOR SCORE</span><b>'+vendors.length+' nhà thầu đã đánh giá</b></div><div class="updateStripItems">'+
+  vendors.slice(0,3).map(x=>'<span class="updateStripItem '+(x.avg<4?"warn":"good")+'"><i>★</i><b>'+uEsc(x.c.name)+'</b><strong>'+x.avg.toFixed(1)+'/5</strong><small>SLA '+uNum(x.v.sla_score,1)+' · '+x.v.repeat_repairs+' sửa lặp</small></span>').join("")+
+  '</div>';
  page.prepend(panel);
 }
 
@@ -997,13 +1000,15 @@ function updateEnhanceWorkForm(){
  }
  if(!$("#updateWorkExtras")){
   grid.insertAdjacentHTML("beforeend",
-   '<div id="updateWorkExtras" class="span2 updateWorkExtras"><div class="updateWorkExtrasHead"><b>Điều hành nâng cao · UPDATE</b><span id="updateWorkSlaPreview"></span></div><div class="updateWorkExtrasGrid">'+
-    '<label>Hệ thống<select id="updateTaskSystem"><option value="">Tự lấy theo thiết bị</option></select></label>'+
-    '<label>Khu vực<select id="updateTaskArea"><option value="">Tự lấy theo thiết bị</option></select></label>'+
+   '<div id="updateWorkExtras" class="span2 updateWorkExtras"><div class="updateWorkExtrasHead"><b>Thông tin vận hành</b><span id="updateWorkSlaPreview"></span></div>'+
+    '<div id="updateAssetContext" class="updateAssetContext hide"></div>'+
+    '<div class="updateWorkExtrasGrid">'+
+    '<label class="updateManualContext">Hệ thống<select id="updateTaskSystem"><option value="">Chọn hệ thống</option></select></label>'+
+    '<label class="updateManualContext">Khu vực<select id="updateTaskArea"><option value="">Chọn khu vực</option></select></label>'+
     '<label>Nhân công (₫)<input id="updateTaskLaborCost" type="number" min="0" step="1000" value="0"></label>'+
     '<label>Nhà thầu (₫)<input id="updateTaskVendorCost" type="number" min="0" step="1000" value="0"></label>'+
     '<label>Chi phí khác (₫)<input id="updateTaskOtherCost" type="number" min="0" step="1000" value="0"></label>'+
-    '<label class="updateSlaInfo"><span>SLA</span><b>Response + Target tự tính theo Priority</b></label>'+
+    '<label class="updateSlaInfo"><span>SLA</span><b>Tự tính theo mức ưu tiên</b></label>'+
    '</div></div>'
   );
   $("#demoTaskAsset")?.addEventListener("change",updateAutofillAssetExtras);
@@ -1017,11 +1022,29 @@ function updatePopulateWorkExtras(){
  s.innerHTML='<option value="">Tự lấy theo thiết bị</option>'+updateState.systems.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
  a.innerHTML='<option value="">Tự lấy theo thiết bị</option>'+updateState.areas.map(x=>'<option value="'+uEsc(x.code)+'">'+uEsc(x.name)+'</option>').join("");
  if([...s.options].some(x=>x.value===sv))s.value=sv;if([...a.options].some(x=>x.value===av))a.value=av;
+ updateSyncWorkContextUI();
+}
+function updateSyncWorkContextUI(){
+ const asset=updateAsset($("#demoTaskAsset")?.value);
+ const context=$("#updateAssetContext");
+ document.querySelectorAll("#updateWorkExtras .updateManualContext").forEach(el=>el.classList.toggle("hide",!!asset));
+ if(context){
+  if(asset){
+   const sys=updateSystem(asset.system_code),area=updateArea(asset.area_code);
+   context.classList.remove("hide");
+   context.innerHTML='<span>Thiết bị đã chọn</span><b>'+uEsc(asset.code)+' · '+uEsc(sys?.name||asset.system_type||"—")+' · '+uEsc(area?.name||asset.location||"—")+'</b>';
+  }else{
+   context.classList.add("hide");context.innerHTML="";
+  }
+ }
 }
 function updateAutofillAssetExtras(){
- const a=updateAsset($("#demoTaskAsset")?.value);if(!a)return;
- if($("#updateTaskSystem"))$("#updateTaskSystem").value=a.system_code||"";
- if($("#updateTaskArea"))$("#updateTaskArea").value=a.area_code||"";
+ const a=updateAsset($("#demoTaskAsset")?.value);
+ if(a){
+  if($("#updateTaskSystem"))$("#updateTaskSystem").value=a.system_code||"";
+  if($("#updateTaskArea"))$("#updateTaskArea").value=a.area_code||"";
+ }
+ updateSyncWorkContextUI();
 }
 function updateWorkSlaPreview(){
  const p=uPriority($("#demoTaskPriority")?.value),r=SLA_RULES[p];
@@ -1047,13 +1070,14 @@ function updateFillWorkExtras(x){
  if($("#updateTaskLaborCost"))$("#updateTaskLaborCost").value=Number(x.laborCost||0);
  if($("#updateTaskVendorCost"))$("#updateTaskVendorCost").value=Number(x.vendorCost||0);
  if($("#updateTaskOtherCost"))$("#updateTaskOtherCost").value=Number(x.otherCost||0);
+ updateSyncWorkContextUI();
  updateWorkSlaPreview();
 }
 function updateResetWorkExtras(){
  if(!updateIs())return;
  ["updateTaskLaborCost","updateTaskVendorCost","updateTaskOtherCost"].forEach(id=>{$("#"+id)&&($("#"+id).value=0)});
  $("#updateTaskSystem")&&($("#updateTaskSystem").value="");$("#updateTaskArea")&&($("#updateTaskArea").value="");
- if($("#demoTaskPriority"))$("#demoTaskPriority").value="Medium";updateWorkSlaPreview();
+ if($("#demoTaskPriority"))$("#demoTaskPriority").value="Medium";updateSyncWorkContextUI();updateWorkSlaPreview();
 }
 
 async function updateSyncTaskCosts(obj){
