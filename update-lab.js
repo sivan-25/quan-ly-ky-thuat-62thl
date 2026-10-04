@@ -270,16 +270,16 @@ function updateBuildNotifications(limit=5){
    const dueMs=new Date(p.next_due_date+"T23:59:59").getTime();
    const days=(dueMs-now)/86400000;
    if(days<0){
-    items.push({kind:"pm",id:p.asset_id,action:"asset",score:800,tone:"warn",icon:"⚙",state:"pm-overdue",cycle:p.next_due_date,title:p.title,meta:(asset.code||"")+" · quá hạn "+uDate(p.next_due_date),reason:"PM quá hạn"});
+    items.push({kind:"pm",entityKey:"pm:"+p.id,id:p.asset_id,action:"asset",score:800,tone:"warn",icon:"⚙",state:"pm-overdue",cycle:p.next_due_date,title:p.title,meta:(asset.code||"")+" · quá hạn "+uDate(p.next_due_date),reason:"PM quá hạn"});
    }else if(days<=7){
-    items.push({kind:"pm",id:p.asset_id,action:"asset",score:650,tone:"info",icon:"⚙",state:"pm-due",cycle:p.next_due_date,title:p.title,meta:(asset.code||"")+" · đến hạn "+uDate(p.next_due_date),reason:"PM sắp đến hạn"});
+    items.push({kind:"pm",entityKey:"pm:"+p.id,id:p.asset_id,action:"asset",score:650,tone:"info",icon:"⚙",state:"pm-due",cycle:p.next_due_date,title:p.title,meta:(asset.code||"")+" · đến hạn "+uDate(p.next_due_date),reason:"PM sắp đến hạn"});
    }
   }else if(p.trigger_type==="meter"){
    const current=Number(asset.meter_value||0),threshold=Number(p.next_meter_due||Infinity);
    if(current>=threshold){
-    items.push({kind:"pm",id:p.asset_id,action:"asset",score:810,tone:"warn",icon:"⚙",state:"pm-meter-due",cycle:String(threshold),title:p.title,meta:(asset.code||"")+" · "+uNum(current)+" / "+uNum(threshold)+" "+(p.meter_unit||""),reason:"PM theo meter đã đến hạn"});
+    items.push({kind:"pm",entityKey:"pm:"+p.id,id:p.asset_id,action:"asset",score:810,tone:"warn",icon:"⚙",state:"pm-meter-due",cycle:String(threshold),title:p.title,meta:(asset.code||"")+" · "+uNum(current)+" / "+uNum(threshold)+" "+(p.meter_unit||""),reason:"PM theo meter đã đến hạn"});
    }else if(Number.isFinite(threshold)&&threshold>0&&current>=threshold-Number(p.meter_interval||0)*.1){
-    items.push({kind:"pm",id:p.asset_id,action:"asset",score:640,tone:"info",icon:"⚙",state:"pm-meter-near",cycle:String(threshold),title:p.title,meta:(asset.code||"")+" · còn "+uNum(threshold-current)+" "+(p.meter_unit||""),reason:"PM theo meter sắp đến hạn"});
+    items.push({kind:"pm",entityKey:"pm:"+p.id,id:p.asset_id,action:"asset",score:640,tone:"info",icon:"⚙",state:"pm-meter-near",cycle:String(threshold),title:p.title,meta:(asset.code||"")+" · còn "+uNum(threshold-current)+" "+(p.meter_unit||""),reason:"PM theo meter sắp đến hạn"});
    }
   }
  });
@@ -312,7 +312,7 @@ function updateBuildNotifications(limit=5){
 
  const dedup=new Map();
  items.forEach(item=>{
-  const entity=(item.kind==="task"?"task:"+item.id:item.kind+":"+item.id);
+  const entity=item.entityKey||(item.kind==="task"?"task:"+item.id:item.kind+":"+item.id);
   const prev=dedup.get(entity);
   if(!prev||item.score>prev.score)dedup.set(entity,item);
  });
