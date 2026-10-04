@@ -1073,7 +1073,16 @@ async function demoRenderIncidents(){
  if(typeof hydrateMediaImages==="function")hydrateMediaImages(box);
 }
 window.demoSetIncidentStatus=async(id,status)=>{
- try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(currentBuilding.id),{status,updated_at:new Date().toISOString()});await demoLoad(true);demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố")}catch(e){toast(e.message)}
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
+ try{
+  await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{status,updated_at:new Date().toISOString()});
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố");
+ }catch(e){
+  if(String(currentBuilding?.id||"")===buildingId)toast(e.message);
+ }
 };
 function demoIncidentTaskPriority(severity){
  if(!demoUsesUpdatedOpsUI())return severity||"Trung bình";
@@ -1311,12 +1320,25 @@ async function demoRenderInspections(){
  d.innerHTML='<div class="demoPanelHead"><div><h2>'+esc(s.template_name)+'</h2><p>'+esc(s.inspection_code)+' · '+esc(s.period_label)+'</p></div><span class="demoPill '+demoStatusClass(s.result_status)+'">'+esc(s.result_status)+'</span></div><div class="demoPanelBody"><div class="demoChecklist">'+items.map((it,i)=>'<div class="demoChecklistRow"><b>'+(i+1)+'. '+esc(it.item)+'</b><span>'+esc(it.standard||"—")+'</span><span class="demoPill '+demoStatusClass(it.result)+'">'+esc(it.result)+'</span><span>'+esc(it.note||"—")+'</span></div>').join("")+'</div><div class="demoDetailSection"><span>KIẾN NGHỊ</span><p>'+esc(s.recommendation||"—")+'</p></div><div class="demoDetailSection"><span>CÔNG VIỆC LIÊN KẾT</span><div class="demoHeroActions">'+((s.related_task_ids||[]).map(tid=>'<button class="demoBtn" onclick="demoOpenLinkedTask(\''+tid+'\')">CV '+esc(tid)+'</button>').join("")||'<span>Chưa có công việc liên kết</span>')+'</div></div><div class="demoHeroActions"><button class="demoBtn primary" onclick="demoCreateTaskFromInspection(\''+s.id+'\')">+ Tạo công việc khắc phục</button><button class="demoBtn" onclick="demoExportInspection(\''+s.id+'\')">Xuất PDF checklist</button></div></div>';
 }
 window.demoCreateTaskFromInspection=async id=>{
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(!ins)return;
- const bad=(ins.items||[]).find(x=>x.result!=="Đạt"),assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án",taskId=Date.now(),due=new Date();due.setDate(due.getDate()+3);
- const obj={id:taskId,d:today(),c:"Khắc phục checklist · "+(bad?.item||ins.template_name),t:"Bảo trì",s:"Đang thực hiện",n:(bad?.note||ins.recommendation||""),a:assignee,performers:[assignee],imgs:[],i:0,priority:bad?.result==="Không đạt"?"Cao":"Trung bình",dueDate:due.toLocaleDateString("en-CA"),assetId:ins.asset_id||"",incidentCode:"",inspectionCode:ins.inspection_code,contractorId:"",materials:[],result:""};
- save([obj,...load()]);await syncTaskRecord("upsert_task",obj,currentBuilding.id);
- await demoPatch("inspections","id=eq."+demoQs(id),{related_task_ids:[...new Set([...(ins.related_task_ids||[]),String(taskId)])],updated_at:new Date().toISOString()});
- await demoLoad(true);render();showModule("work");toast("Đã tạo công việc từ checklist");
+ const bad=(ins.items||[]).find(x=>x.result!=="Đạt");
+ const assignee=projectPeople?.[0]?.name||currentAccount?.display_name||currentAccount?.username||me||"Kỹ thuật dự án";
+ const taskId=Date.now(),due=new Date();due.setDate(due.getDate()+3);
+ let obj={id:taskId,d:today(),c:"Khắc phục checklist · "+(bad?.item||ins.template_name),t:"Bảo trì",s:"Đang thực hiện",n:(bad?.note||ins.recommendation||""),a:assignee,performers:[assignee],imgs:[],i:0,priority:bad?.result==="Không đạt"?"Cao":"Trung bình",dueDate:due.toLocaleDateString("en-CA"),dueDateExplicit:true,assetId:ins.asset_id||"",incidentCode:"",inspectionCode:ins.inspection_code,contractorId:"",materials:[],result:""};
+ try{
+  const syncResult=await syncTaskRecord("upsert_task",obj,buildingId);
+  if(syncResult?.item)obj={...obj,...syncResult.item};
+  let projectTasks=[];try{projectTasks=JSON.parse(localStorage.getItem(taskStorageKeyFor(buildingId))||"[]")}catch(e){}
+  localStorage.setItem(taskStorageKeyFor(buildingId),JSON.stringify([obj,...projectTasks.filter(x=>String(x.id)!==String(taskId))]));
+  await demoPatch("inspections","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{related_task_ids:[...new Set([...(ins.related_task_ids||[]),String(taskId)])],updated_at:new Date().toISOString()});
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  demoCache.loaded=false;await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  render();showModule("work");toast("Đã tạo công việc từ checklist");
+ }catch(e){
+  if(String(currentBuilding?.id||"")===buildingId)toast(e.message||"Không thể tạo công việc từ checklist");
+ }
 };
 function demoInspectionHtml(ins){
  const items=ins.items||[];
@@ -1352,6 +1374,7 @@ window.demoCloseChecklistModal=()=>{
 
 window.demoSubmitChecklist=async e=>{
  e?.preventDefault();
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const name=$("#demoChecklistName")?.value.trim()||"";
  const inspection_date=$("#demoChecklistDate")?.value||today();
  const period_label=$("#demoChecklistPeriod")?.value.trim()||"Kiểm tra bổ sung";
@@ -1364,11 +1387,11 @@ window.demoSubmitChecklist=async e=>{
  const recommendation=$("#demoChecklistRecommendation")?.value.trim()||"";
  if(!name){toast("Vui lòng nhập tên checklist");$("#demoChecklistName")?.focus();return}
  if(!item){toast("Vui lòng nhập nội dung kiểm tra");$("#demoChecklistItem")?.focus();return}
- const code="KT-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
+ const code="KT-"+String(buildingId||"DA").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/Đ/g,"D").replace(/đ/g,"d").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
  const btn=$("#demoChecklistSaveBtn");if(btn){btn.disabled=true;btn.textContent="Đang lưu..."}
  try{
   await demoPost("inspections",{
-   building_id:currentBuilding.id,
+   building_id:buildingId,
    inspection_code:code,
    template_name:name,
    inspection_date,
@@ -1384,14 +1407,19 @@ window.demoSubmitChecklist=async e=>{
    }],
    related_task_ids:[]
   });
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoCloseChecklistModal();
-  await demoLoad(true);
+  demoCache.loaded=false;await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoSelectedInspection="";
   demoRenderInspections();
   demoRenderHomeOps();
   toast("Đã tạo "+code);
- }catch(err){toast(err.message||"Không thể lưu checklist")}
- finally{if(btn){btn.disabled=false;btn.textContent="Lưu checklist"}}
+ }catch(err){
+  if(String(currentBuilding?.id||"")===buildingId)toast(err.message||"Không thể lưu checklist");
+ }finally{
+  if(btn&&String(currentBuilding?.id||"")===buildingId){btn.disabled=false;btn.textContent="Lưu checklist"}
+ }
 };
 
 document.addEventListener("keydown",e=>{
@@ -1549,6 +1577,7 @@ $("#technicalDocumentModal")?.addEventListener("click",e=>{if(e.target===$("#tec
 $("#technicalDocumentForm")?.addEventListener("submit",async e=>{
  e.preventDefault();
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const file=$("#technicalDocumentFile")?.files?.[0],title=String($("#technicalDocumentTitle")?.value||"").trim();
  const err=$("#technicalDocumentError"),btn=$("#technicalDocumentSubmit"),progress=$("#technicalDocumentProgress");
  if(!title){if(err)err.textContent="Vui lòng nhập tên tài liệu.";return}
@@ -1557,9 +1586,9 @@ $("#technicalDocumentForm")?.addEventListener("submit",async e=>{
  btn.disabled=true;progress?.classList.remove("hide");if(err)err.textContent="";
  let fileRef="";
  try{
-  fileRef=await demoUploadTechnicalDocument(file,currentBuilding.id);
+  fileRef=await demoUploadTechnicalDocument(file,buildingId);
   await demoPost("technical_documents",{
-   building_id:currentBuilding.id,
+   building_id:buildingId,
    title,
    category:$("#technicalDocumentCategory")?.value||"Khác",
    system_type:$("#technicalDocumentSystem")?.value||"Khác",
@@ -1572,13 +1601,18 @@ $("#technicalDocumentForm")?.addEventListener("submit",async e=>{
    note:String($("#technicalDocumentNote")?.value||"").trim(),
    uploaded_by:currentAccount?.id||null
   });
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoCloseDocumentModal();
-  await demoLoad(true);await demoRenderDocuments();
+  demoCache.loaded=false;await demoLoad(true);
+  if(String(currentBuilding?.id||"")!==buildingId)return;
+  await demoRenderDocuments();
   toast("Đã tải tài liệu lên kho dự án");
  }catch(ex){
   if(fileRef)await demoDeleteUploadedDocument(fileRef);
-  if(err)err.textContent=ex.message||"Không thể tải tài liệu.";
- }finally{btn.disabled=false;progress?.classList.add("hide")}
+  if(err&&String(currentBuilding?.id||"")===buildingId)err.textContent=ex.message||"Không thể tải tài liệu.";
+ }finally{
+  if(String(currentBuilding?.id||"")===buildingId){btn.disabled=false;progress?.classList.add("hide")}
+ }
 });
 $("#demoIncidentAdd")&&($("#demoIncidentAdd").onclick=window.demoAddIncident);
 $("#demoInspectionAdd")&&($("#demoInspectionAdd").onclick=window.demoAddChecklist);
