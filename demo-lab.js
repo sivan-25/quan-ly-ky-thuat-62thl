@@ -604,14 +604,30 @@ async function demoFinalizeLinks(obj,old,buildingId=currentBuilding?.id){
  const linkJobs=[];
  if(obj.incidentCode)linkJobs.push(demoPatch("incidents","building_id=eq."+demoQs(buildingId)+"&incident_code=eq."+demoQs(obj.incidentCode),{related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
  if(obj.inspectionCode){
-  const ins=demoCache.inspections.find(x=>String(x.inspection_code)===String(obj.inspectionCode));
+  let ins=(demoCache.buildingId===String(buildingId))?demoCache.inspections.find(x=>String(x.inspection_code)===String(obj.inspectionCode)):null;
+  if(!ins){
+   try{
+    const rows=await demoRest("inspections","building_id=eq."+demoQs(buildingId)+"&inspection_code=eq."+demoQs(obj.inspectionCode)+"&select=id,related_task_ids");
+    ins=rows?.[0]||null;
+   }catch(e){console.warn("Inspection link lookup skipped",e)}
+  }
   if(ins)linkJobs.push(demoPatch("inspections","building_id=eq."+demoQs(buildingId)+"&inspection_code=eq."+demoQs(obj.inspectionCode),{related_task_ids:[...new Set([...(Array.isArray(ins.related_task_ids)?ins.related_task_ids:[]),String(obj.id)])],updated_at:new Date().toISOString()}));
  }
  if(linkJobs.length)await Promise.allSettled(linkJobs);
- if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành"){demoCache.loaded=false;await demoLoad(true);return}
+ if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành"){
+  if(String(currentBuilding?.id||"")===String(buildingId)){demoCache.loaded=false;await demoLoad(true)}
+  return;
+ }
  const jobs=[];
  if(obj.assetId&&obj.t==="Bảo trì"){
-  const asset=demoAsset(obj.assetId),next=new Date(obj.d+"T00:00:00");next.setDate(next.getDate()+Number(asset?.frequency_days||30));
+  let asset=(demoCache.buildingId===String(buildingId))?demoAsset(obj.assetId):null;
+  if(!asset){
+   try{
+    const rows=await demoRest("maintenance_assets","building_id=eq."+demoQs(buildingId)+"&id=eq."+demoQs(obj.assetId)+"&select=id,frequency_days");
+    asset=rows?.[0]||null;
+   }catch(e){console.warn("Maintenance asset lookup skipped",e)}
+  }
+  const next=new Date(obj.d+"T00:00:00");next.setDate(next.getDate()+Number(asset?.frequency_days||30));
   jobs.push(demoPost("maintenance_records",{building_id:buildingId,asset_id:obj.assetId,service_date:obj.d,maintenance_type:"Định kỳ",performer:obj.a||"",result_status:"Hoàn thành",work_done:obj.result||obj.c,note:obj.n||"",next_due_date:next.toLocaleDateString("en-CA"),cost:0}));
  }
  if(obj.incidentCode){
