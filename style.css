@@ -10235,3 +10235,77 @@ body.workEditOpen{overflow:hidden!important}
   border-color:#eccfd4!important;
   color:#b34a57!important;
 }
+
+
+/* Projects live only on the dedicated Dự án page */
+.homeAdminProjects{display:none!important}
+
+.adminProjectGrid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.adminProjectCard{
+  padding:0!important;
+  overflow:hidden;
+  border:1px solid #dfe6e8!important;
+  border-radius:13px!important;
+  background:#fbfcfc!important;
+  box-shadow:none!important;
+}
+.adminProjectCard:hover{
+  transform:translateY(-1px)!important;
+  border-color:#bfd2d9!important;
+  background:#f8fbfb!important;
+  box-shadow:0 7px 20px rgba(30,61,77,.06)!important;
+}
+.adminProjectOpen{
+  min-height:82px!important;
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr) 18px!important;
+  gap:10px!important;
+  padding:11px!important;
+}
+.adminProjectMonogram{
+  width:42px!important;
+  height:42px!important;
+  border-radius:11px!important;
+  background:linear-gradient(145deg,#f2e9e3,#e7d8ce)!important;
+  color:#80604e!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  letter-spacing:.4px!important;
+}
+.adminProjectCopy{min-width:0}
+.adminProjectCopy small{
+  display:block!important;
+  color:#9a806f!important;
+  font-size:7px!important;
+  font-weight:750!important;
+  letter-spacing:.9px!important;
+}
+.adminProjectCopy h3{
+  margin:2px 0 3px!important;
+  color:#21455e!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.adminProjectCopy p{
+  margin:0!important;
+  color:#8d9da5!important;
+  font-size:8px!important;
+}
+.adminProjectArrow{
+  align-self:center;
+  color:#879ca5!important;
+  font-size:16px!important;
+}
+@media(max-width:1100px){
+  .adminProjectGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  .adminProjectGrid{grid-template-columns:1fr!important;gap:8px!important}
+  .adminProjectOpen{min-height:74px!important}
+}
