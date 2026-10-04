@@ -890,23 +890,53 @@ function demoCauseValue(v){
 window.demoOpenLinkedTask=id=>{showModule("work");const n=Number(id);setTimeout(()=>{if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)},90)};
 window.demoSelectIncident=id=>{demoSelectedIncident=id;demoRenderIncidents()};
 window.demoIncidentRowAction=id=>{
- const inc=demoCache.incidents.find(x=>String(x.id)===String(id));
- if(!inc)return;
- if(String(currentBuilding?.id||"")==="UPDATE"){
-  const linked=demoFindIncidentLinkedTask(inc);
-  if(linked){demoOpenIncidentLinkedTask(linked.id);return}
- }
- demoSelectIncident(id);
+ const inc=demoCache.incidents.find(x=>String(x.id)===String(id));if(!inc)return;
+ demoSelectedIncident=id;
+ demoRenderIncidents();
+ if(String(currentBuilding?.id||"")==="UPDATE")demoEditIncident(id);
 };
-let demoIncidentBeforeFiles=[],demoIncidentAfterFiles=[];
+let demoIncidentBeforeFiles=[],demoIncidentAfterFiles=[],demoEditingIncidentId="",demoIncidentExistingBeforeRefs=[],demoIncidentExistingAfterRefs=[];
+
+function demoEnsureIncidentEditFields(){
+ if(String(currentBuilding?.id||"")!=="UPDATE")return;
+ const grid=$("#demoIncidentForm .demoIncidentFormGrid");if(!grid)return;
+ if(!$("#demoIncidentContractor")){
+  const symptom=$("#demoIncidentSymptom")?.closest("label");
+  const wrap=document.createElement("div");
+  wrap.className="demoIncidentUpdateFields";
+  wrap.innerHTML=
+   '<label><span>Nhà thầu</span><select id="demoIncidentContractor"><option value="">Không liên kết</option></select></label>'+
+   '<label><span>Chi phí (đ)</span><input id="demoIncidentCost" type="number" min="0" step="1000" value="0"></label>';
+  if(symptom)grid.insertBefore(wrap,symptom); else grid.appendChild(wrap);
+ }
+ const contractor=$("#demoIncidentContractor");
+ if(contractor){
+  const v=contractor.value;
+  contractor.innerHTML='<option value="">Không liên kết</option>'+demoCache.contractors.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("");
+  contractor.value=[...contractor.options].some(o=>String(o.value)===String(v))?v:"";
+ }
+ const status=$("#demoIncidentStatus");
+ if(status&&!Array.from(status.options).some(o=>o.value==="Đã đóng"))status.insertAdjacentHTML("beforeend",'<option value="Đã đóng">Đã đóng</option>');
+}
+function demoIncidentDateValue(raw){
+ if(!raw)return today();
+ const d=new Date(raw);if(Number.isNaN(d.getTime()))return today();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
 function demoIncidentFilePreview(kind){
  const files=kind==="before"?demoIncidentBeforeFiles:demoIncidentAfterFiles;
+ const refs=kind==="before"?demoIncidentExistingBeforeRefs:demoIncidentExistingAfterRefs;
  const box=$("#"+(kind==="before"?"demoIncidentBeforePreview":"demoIncidentAfterPreview"));
  if(!box)return;
- box.innerHTML=files.map((f,i)=>'<div class="demoIncidentImageChip"><span>'+esc(f.name||("Ảnh "+(i+1)))+'</span><button type="button" data-demo-incident-remove="'+kind+'" data-index="'+i+'" aria-label="Bỏ ảnh">×</button></div>').join("");
+ const existing=refs.map((ref,i)=>'<div class="demoIncidentImageChip demoIncidentExistingImage">'+mediaImgHtml(ref,"")+'<span>Ảnh hiện có '+(i+1)+'</span><button type="button" data-demo-incident-existing-remove="'+kind+'" data-index="'+i+'" aria-label="Bỏ ảnh">×</button></div>').join("");
+ const pending=files.map((f,i)=>'<div class="demoIncidentImageChip"><span>'+esc(f.name||("Ảnh mới "+(i+1)))+'</span><button type="button" data-demo-incident-remove="'+kind+'" data-index="'+i+'" aria-label="Bỏ ảnh">×</button></div>').join("");
+ box.innerHTML=existing+pending;
+ if(typeof hydrateMediaImages==="function")hydrateMediaImages(box);
 }
-function resetDemoIncidentFiles(){
+function resetDemoIncidentFiles(clearExisting=true){
  demoIncidentBeforeFiles=[];demoIncidentAfterFiles=[];
+ if(clearExisting){demoIncidentExistingBeforeRefs=[];demoIncidentExistingAfterRefs=[];}
  const before=$("#demoIncidentBeforeImages"),after=$("#demoIncidentAfterImages");
  if(before)before.value="";if(after)after.value="";
  demoIncidentFilePreview("before");demoIncidentFilePreview("after");
@@ -922,6 +952,15 @@ document.addEventListener("change",e=>{
  }
 });
 document.addEventListener("click",e=>{
+ const existingBtn=e.target.closest?.("[data-demo-incident-existing-remove]");
+ if(existingBtn){
+  e.preventDefault();
+  const kind=existingBtn.dataset.demoIncidentExistingRemove;
+  const list=kind==="before"?demoIncidentExistingBeforeRefs:demoIncidentExistingAfterRefs;
+  list.splice(Number(existingBtn.dataset.index),1);
+  demoIncidentFilePreview(kind);
+  return;
+ }
  const btn=e.target.closest?.("[data-demo-incident-remove]");if(!btn)return;
  e.preventDefault();
  const list=btn.dataset.demoIncidentRemove==="before"?demoIncidentBeforeFiles:demoIncidentAfterFiles;
@@ -990,7 +1029,7 @@ async function demoRenderIncidents(){
  $("#demoIncidentBody").innerHTML=list.map(x=>{
   const start=demoIncidentStartParts(x);
   const first=useStartDate?('<td class="demoIncidentStartCell"><b>'+esc(start.date)+'</b><small>'+esc(start.time||"")+'</small></td>'):('<td><b>'+esc(x.incident_code)+'</b><small>'+esc(new Date(x.detected_at).toLocaleDateString("vi-VN"))+'</small></td>');
-  return '<tr onclick="demoIncidentRowAction(\''+x.id+'\')" title="'+(demoFindIncidentLinkedTask(x)?'Mở chỉnh sửa công việc liên kết':'Xem chi tiết sự cố')+'">'+first+'<td>'+esc(x.area||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.name||"—")+'</td><td>'+esc(x.symptom||"—")+'</td><td><span class="demoPill '+demoSeverityClass(x.severity)+'">'+esc(x.severity)+'</span></td><td><span class="demoPill '+demoStatusClass(x.status)+'">'+esc(x.status)+'</span></td></tr>';
+  return '<tr onclick="demoIncidentRowAction(\''+x.id+'\')" title="Chỉnh sửa sự cố / Defect">'+first+'<td>'+esc(x.area||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.name||"—")+'</td><td>'+esc(x.symptom||"—")+'</td><td><span class="demoPill '+demoSeverityClass(x.severity)+'">'+esc(x.severity)+'</span></td><td><span class="demoPill '+demoStatusClass(x.status)+'">'+esc(x.status)+'</span></td></tr>';
  }).join("");
  const box=$("#demoIncidentDetail");
  if(!selected){box.innerHTML='<div class="demoPanelBody">Chưa có sự cố.</div>';return}
@@ -1086,6 +1125,10 @@ window.demoCreateTaskFromIncident=async id=>{
 window.demoAddIncident=async()=>{
  await demoLoad();
  const modal=$("#demoIncidentModal");if(!modal)return;
+ demoEditingIncidentId="";
+ demoIncidentExistingBeforeRefs=[];demoIncidentExistingAfterRefs=[];
+ demoEnsureIncidentEditFields();
+ $("#demoIncidentModalTitle").textContent="Thêm sự cố / Defect";
  $("#demoIncidentDetectedDate").value=today();
  $("#demoIncidentArea").value="";
  $("#demoIncidentSeverity").value="Trung bình";
@@ -1093,15 +1136,48 @@ window.demoAddIncident=async()=>{
  $("#demoIncidentSymptom").value="";
  $("#demoIncidentCause").value="";
  $("#demoIncidentSolution").value="";
- resetDemoIncidentFiles();
+ $("#demoIncidentContractor")&&($("#demoIncidentContractor").value="");
+ $("#demoIncidentCost")&&($("#demoIncidentCost").value=0);
+ resetDemoIncidentFiles(false);
  const assetSelect=$("#demoIncidentAsset");
  if(assetSelect){
   assetSelect.innerHTML='<option value="">Không gắn thiết bị</option>'+demoCache.assets.map(a=>'<option value="'+esc(a.id)+'">'+esc((a.code?a.code+" · ":"")+a.name)+'</option>').join("");
   assetSelect.value="";
  }
+ const btn=$("#demoIncidentSaveBtn");if(btn)btn.textContent="Lưu sự cố";
  modal.classList.remove("hide");
  document.body.classList.add("demoModalOpen");
  setTimeout(()=>$("#demoIncidentArea")?.focus(),60);
+};
+window.demoEditIncident=async id=>{
+ await demoLoad();
+ const inc=demoCache.incidents.find(x=>String(x.id)===String(id));if(!inc)return;
+ const modal=$("#demoIncidentModal");if(!modal)return;
+ demoEditingIncidentId=String(id);
+ demoEnsureIncidentEditFields();
+ $("#demoIncidentModalTitle").textContent="Chỉnh sửa sự cố / Defect";
+ $("#demoIncidentDetectedDate").value=demoIncidentDateValue(inc.created_at||inc.detected_at);
+ $("#demoIncidentArea").value=inc.area||"";
+ $("#demoIncidentSeverity").value=inc.severity||"Trung bình";
+ $("#demoIncidentStatus").value=inc.status||"Mới";
+ $("#demoIncidentSymptom").value=inc.symptom||"";
+ $("#demoIncidentCause").value=demoCauseValue(inc.cause)||"";
+ $("#demoIncidentSolution").value=inc.solution||"";
+ $("#demoIncidentContractor")&&($("#demoIncidentContractor").value=inc.contractor_id||"");
+ $("#demoIncidentCost")&&($("#demoIncidentCost").value=Number(inc.cost||0));
+ demoIncidentBeforeFiles=[];demoIncidentAfterFiles=[];
+ demoIncidentExistingBeforeRefs=[...(Array.isArray(inc.before_images)?inc.before_images:[])];
+ demoIncidentExistingAfterRefs=[...(Array.isArray(inc.after_images)?inc.after_images:[])];
+ demoIncidentFilePreview("before");demoIncidentFilePreview("after");
+ const assetSelect=$("#demoIncidentAsset");
+ if(assetSelect){
+  assetSelect.innerHTML='<option value="">Không gắn thiết bị</option>'+demoCache.assets.map(a=>'<option value="'+esc(a.id)+'">'+esc((a.code?a.code+" · ":"")+a.name)+'</option>').join("");
+  assetSelect.value=inc.asset_id||"";
+ }
+ const btn=$("#demoIncidentSaveBtn");if(btn)btn.textContent="Lưu thay đổi";
+ modal.classList.remove("hide");
+ document.body.classList.add("demoModalOpen");
+ setTimeout(()=>$("#demoIncidentSymptom")?.focus(),60);
 };
 window.demoCloseIncidentModal=()=>{
  $("#demoIncidentModal")?.classList.add("hide");
@@ -1109,6 +1185,8 @@ window.demoCloseIncidentModal=()=>{
 };
 window.demoSubmitIncident=async e=>{
  e?.preventDefault();
+ const editing=!!demoEditingIncidentId;
+ const existing=editing?demoCache.incidents.find(x=>String(x.id)===String(demoEditingIncidentId)):null;
  const date=$("#demoIncidentDetectedDate")?.value||today();
  const area=$("#demoIncidentArea")?.value.trim()||"";
  const symptom=$("#demoIncidentSymptom")?.value.trim()||"";
@@ -1117,48 +1195,66 @@ window.demoSubmitIncident=async e=>{
  const asset_id=$("#demoIncidentAsset")?.value||null;
  const cause=$("#demoIncidentCause")?.value.trim()||"";
  const solution=$("#demoIncidentSolution")?.value.trim()||"";
+ const contractor_id=$("#demoIncidentContractor")?.value||null;
+ const cost=Math.max(0,Number($("#demoIncidentCost")?.value||0));
+ const originalBeforeRefs=Array.isArray(existing?.before_images)?existing.before_images:[];
+ const originalAfterRefs=Array.isArray(existing?.after_images)?existing.after_images:[];
  if(!area){toast("Vui lòng nhập khu vực / vị trí");$("#demoIncidentArea")?.focus();return}
  if(!symptom){toast("Vui lòng nhập hiện tượng sự cố");$("#demoIncidentSymptom")?.focus();return}
- const code="SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4);
- const incidentId=crypto.randomUUID?crypto.randomUUID():String(Date.now());
+ const code=existing?.incident_code||("SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4));
+ const incidentId=existing?.id||(crypto.randomUUID?crypto.randomUUID():String(Date.now()));
  const beforeFiles=[...demoIncidentBeforeFiles],afterFiles=[...demoIncidentAfterFiles];
  const btn=$("#demoIncidentSaveBtn");if(btn){btn.disabled=true;btn.textContent=(beforeFiles.length||afterFiles.length)?"Đang tải ảnh...":"Đang lưu..."}
- let beforeRefs=[],afterRefs=[],saved=false;
+ let newBeforeRefs=[],newAfterRefs=[],saved=false;
  try{
-  if(beforeFiles.length)beforeRefs=await uploadMediaFiles(beforeFiles,"incident-before",incidentId,(done,total)=>{
+  if(beforeFiles.length)newBeforeRefs=await uploadMediaFiles(beforeFiles,"incident-before",incidentId,(done,total)=>{
     if(btn)btn.textContent="Ảnh trước "+done+"/"+total+"...";
   },currentBuilding.id);
-  if(afterFiles.length)afterRefs=await uploadMediaFiles(afterFiles,"incident-after",incidentId,(done,total)=>{
+  if(afterFiles.length)newAfterRefs=await uploadMediaFiles(afterFiles,"incident-after",incidentId,(done,total)=>{
     if(btn)btn.textContent="Ảnh sau "+done+"/"+total+"...";
   },currentBuilding.id);
-  await demoPost("incidents",{
-   id:incidentId,
-   building_id:currentBuilding.id,
-   incident_code:code,
-   detected_at:new Date(date+"T12:00:00").toISOString(),
-   area,
-   asset_id,
+  const payload={
+   area,asset_id,contractor_id,
    severity:["Thấp","Trung bình","Cao","Khẩn cấp"].includes(severity)?severity:"Trung bình",
-   status:["Mới","Theo dõi","Đang xử lý"].includes(status)?status:"Mới",
-   symptom,
-   cause,
-   solution,
-   cost:0,
-   before_images:beforeRefs,
-   after_images:afterRefs
-  });
+   status:["Mới","Theo dõi","Đang xử lý","Đã đóng"].includes(status)?status:"Mới",
+   symptom,cause,solution,cost,
+   before_images:[...demoIncidentExistingBeforeRefs,...newBeforeRefs],
+   after_images:[...demoIncidentExistingAfterRefs,...newAfterRefs],
+   updated_at:new Date().toISOString()
+  };
+  if(editing){
+   // created_at remains the original creation timestamp; detected_at is editable as the operational start date.
+   payload.detected_at=new Date(date+"T12:00:00").toISOString();
+   await demoPatch("incidents","id=eq."+demoQs(incidentId)+"&building_id=eq."+demoQs(currentBuilding.id),payload);
+  }else{
+   await demoPost("incidents",{
+    id:incidentId,building_id:currentBuilding.id,incident_code:code,
+    detected_at:new Date(date+"T12:00:00").toISOString(),
+    ...payload
+   });
+  }
   saved=true;
+  if(editing){
+   const removedRefs=[
+    ...originalBeforeRefs.filter(ref=>!demoIncidentExistingBeforeRefs.includes(ref)),
+    ...originalAfterRefs.filter(ref=>!demoIncidentExistingAfterRefs.includes(ref))
+   ];
+   if(removedRefs.length)deleteStoredMediaRefs(removedRefs).catch(()=>{});
+  }
   demoCloseIncidentModal();
   resetDemoIncidentFiles();
+  demoEditingIncidentId="";
   await demoLoad(true);
-  demoSelectedIncident="";
+  demoSelectedIncident=String(incidentId);
   demoRenderIncidents();
   demoRenderHomeOps();
-  toast((demoUseIncidentStartDate()?"Đã ghi nhận defect":"Đã thêm "+code)+(beforeRefs.length||afterRefs.length?" · kèm hình ảnh":""));
+  toast(editing?"Đã cập nhật Sự cố / Defect":((demoUseIncidentStartDate()?"Đã ghi nhận defect":"Đã thêm "+code)+(newBeforeRefs.length||newAfterRefs.length?" · kèm hình ảnh":"")));
  }catch(err){
-  if(!saved&&(beforeRefs.length||afterRefs.length))await deleteStoredMediaRefs([...beforeRefs,...afterRefs]);
+  if(!saved&&(newBeforeRefs.length||newAfterRefs.length))await deleteStoredMediaRefs([...newBeforeRefs,...newAfterRefs]);
   toast(err.message||"Không thể lưu sự cố");
- }finally{if(btn){btn.disabled=false;btn.textContent="Lưu sự cố"}}
+ }finally{
+  if(btn){btn.disabled=false;btn.textContent=editing?"Lưu thay đổi":"Lưu sự cố"}
+ }
 }
 document.addEventListener("keydown",e=>{
  if(e.key==="Escape"&&!$("#demoIncidentModal")?.classList.contains("hide"))demoCloseIncidentModal();

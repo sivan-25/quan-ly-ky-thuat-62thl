@@ -2968,3 +2968,47 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     padding-left:0!important;
   }
 }
+
+
+/* UPDATE incident edit mode */
+#demoIncidentModal .demoIncidentUpdateFields{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+#demoIncidentModal .demoIncidentUpdateFields label{
+  min-width:0;
+}
+#demoIncidentModal .demoIncidentExistingImage{
+  position:relative;
+  min-width:150px;
+  max-width:220px;
+  padding:5px 28px 5px 5px;
+}
+#demoIncidentModal .demoIncidentExistingImage img{
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  object-fit:cover;
+  border-radius:6px;
+  background:#eef3f5;
+}
+#demoIncidentModal .demoIncidentImageChip button{
+  margin-left:auto;
+  border:0;
+  background:transparent;
+  color:#9b4450;
+  font-size:16px;
+  line-height:1;
+  cursor:pointer;
+}
+@media(max-width:700px){
+  #demoIncidentModal .demoIncidentUpdateFields{
+    grid-template-columns:1fr;
+    gap:13px;
+  }
+  #demoIncidentModal .demoIncidentExistingImage{
+    max-width:100%;
+  }
+}
