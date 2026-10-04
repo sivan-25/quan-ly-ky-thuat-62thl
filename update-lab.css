@@ -864,3 +864,155 @@
   .updateAssetContext span{display:block;margin-bottom:3px}
   .updateAssetContext b{display:block;white-space:normal}
 }
+
+
+/* Compact Work Order form · UPDATE only */
+#app.updateProjectMode #demoWorkLinks summary{
+  padding:10px 12px!important;
+  font-size:11px!important;
+  font-weight:760!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid{
+  gap:8px!important;
+  padding:0 12px 12px!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid textarea{
+  min-height:56px!important;
+  max-height:120px!important;
+  padding:8px 10px!important;
+  line-height:1.35!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField{
+  padding:8px 10px!important;
+  border-color:#d7e2e4!important;
+  background:#f1f4f3!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead{
+  margin-bottom:0!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField:has(.demoTaskMaterialRow) .demoTaskMaterialsHead{
+  margin-bottom:7px!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead>span{
+  color:#3e7180!important;
+  font-size:10px!important;
+}
+#app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial{
+  min-height:28px!important;
+  padding:0 9px!important;
+  border-color:#bfd1d6!important;
+  background:#173b56!important;
+  color:#fff!important;
+  font-size:9px!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsRows:empty{
+  display:none!important;
+}
+
+#app.updateProjectMode .updateWorkExtras{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+#app.updateProjectMode .updateWorkContextLine{
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:7px 9px;
+  border:1px solid #d8e3e4;
+  border-radius:10px;
+  background:#f4f2ec;
+}
+#app.updateProjectMode .updateAssetContext{
+  min-width:0;
+  flex:1 1 auto;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+#app.updateProjectMode .updateAssetContext>span{
+  flex:0 0 auto;
+  color:#507683;
+  font-size:11px;
+}
+#app.updateProjectMode .updateAssetContext>b{
+  min-width:0;
+  color:#315361;
+  font-size:10px;
+  font-weight:750;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#app.updateProjectMode .updateWorkSlaPreview{
+  flex:0 0 auto;
+  color:#74848c;
+  font-size:9px;
+  white-space:nowrap;
+}
+#app.updateProjectMode .updateWorkExtrasGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin-top:8px;
+}
+#app.updateProjectMode .updateWorkExtrasGrid.hide{display:none!important}
+#app.updateProjectMode .updateWorkExtrasGrid label{
+  font-size:9px!important;
+}
+#app.updateProjectMode .updateWorkExtrasGrid input,
+#app.updateProjectMode .updateWorkExtrasGrid select{
+  height:38px!important;
+  font-size:11px!important;
+}
+
+/* Cost inputs stay in data for backward compatibility but are intentionally hidden from the current UPDATE UI. */
+#app.updateProjectMode #updateTaskLaborCost,
+#app.updateProjectMode #updateTaskVendorCost,
+#app.updateProjectMode #updateTaskOtherCost{
+  display:none!important;
+}
+
+@media(max-width:760px){
+  #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid{
+    gap:8px!important;
+  }
+  #app.updateProjectMode.demoMobilePilot #demoWorkLinks textarea{
+    min-height:64px!important;
+    max-height:96px!important;
+    font-size:16px!important;
+  }
+  #app.updateProjectMode .updateWorkContextLine{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:4px;
+    min-height:0;
+    padding:8px;
+  }
+  #app.updateProjectMode .updateAssetContext{
+    width:100%;
+  }
+  #app.updateProjectMode .updateAssetContext>b{
+    white-space:normal;
+    font-size:10.5px;
+  }
+  #app.updateProjectMode .updateWorkSlaPreview{
+    width:100%;
+    font-size:9.5px;
+    white-space:normal;
+  }
+  #app.updateProjectMode .updateWorkExtrasGrid{
+    grid-template-columns:1fr!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField{
+    padding:8px!important;
+  }
+}

@@ -397,7 +397,7 @@ function demoBindTaskMaterialRows(){
   });
   row.querySelector(".demoTaskMaterialRemove")?.addEventListener("click",()=>{
    row.remove();
-   if(!box.querySelector("[data-material-row]")&&(demoCache.materials||[]).length)box.insertAdjacentHTML("beforeend",demoTaskMaterialRowHtml());
+   if(String(currentBuilding?.id||"")!=="UPDATE"&&!box.querySelector("[data-material-row]")&&(demoCache.materials||[]).length)box.insertAdjacentHTML("beforeend",demoTaskMaterialRowHtml());
    demoBindTaskMaterialRows();
   });
  });
@@ -407,7 +407,7 @@ function demoRenderTaskMaterials(items=[]){
  const materials=demoCache.materials||[];
  empty?.classList.toggle("hide",materials.length>0);
  if(!materials.length){box.innerHTML="";return}
- const clean=Array.isArray(items)&&items.length?items:[{}];
+ const clean=Array.isArray(items)&&items.length?items:(String(currentBuilding?.id||"")==="UPDATE"?[]:[{}]);
  box.innerHTML=clean.map((x,i)=>demoTaskMaterialRowHtml(x,i)).join("");
  demoBindTaskMaterialRows();
 }
