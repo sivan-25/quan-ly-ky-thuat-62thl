@@ -1536,3 +1536,116 @@
     box-sizing:border-box!important;
   }
 }
+
+
+/* UPDATE Work page · compact KPIs inside table header */
+#app.updateProjectMode #workPage .premiumTableCard .tableTop.workTableMeta{
+  min-height:54px!important;
+  padding:7px 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin:0!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats article{
+  min-width:0!important;
+  min-height:38px!important;
+  height:38px!important;
+  padding:5px 8px!important;
+  border:1px solid #e2e9ed!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats article:hover{
+  transform:none!important;
+  border-color:#c7d8e0!important;
+  background:#fbfdfe!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats i{
+  width:26px!important;
+  height:26px!important;
+  flex:0 0 26px!important;
+  border-radius:7px!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats i svg{
+  width:14px!important;
+  height:14px!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats article>div{
+  min-width:0!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:6px!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats small{
+  margin:0!important;
+  color:#7d909d!important;
+  font-size:7.5px!important;
+  line-height:1!important;
+  letter-spacing:.35px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#app.updateProjectMode #workPage .stats.updateCompactWorkStats strong{
+  margin:0!important;
+  color:#193e58!important;
+  font-size:16px!important;
+  line-height:1!important;
+  font-weight:780!important;
+  white-space:nowrap!important;
+}
+#app.updateProjectMode #workPage .premiumTableCard .tableTop.workTableMeta #count{
+  flex:0 0 auto!important;
+  min-height:26px!important;
+  padding:0 9px!important;
+}
+#app.updateProjectMode #workPage .premiumTableCard{
+  margin-top:0!important;
+}
+
+/* Mobile: keep the same information readable, but compact it to 2 columns. */
+@media(max-width:760px){
+  #app.updateProjectMode #workPage .premiumTableCard .tableTop.workTableMeta{
+    display:block!important;
+    min-height:0!important;
+    padding:8px!important;
+  }
+  #app.updateProjectMode #workPage .stats.updateCompactWorkStats{
+    grid-template-columns:1fr 1fr!important;
+    gap:6px!important;
+    margin:0 0 7px!important;
+  }
+  #app.updateProjectMode #workPage .stats.updateCompactWorkStats article{
+    min-height:44px!important;
+    height:44px!important;
+    padding:7px 8px!important;
+  }
+  #app.updateProjectMode #workPage .stats.updateCompactWorkStats i{
+    width:28px!important;
+    height:28px!important;
+    flex-basis:28px!important;
+  }
+  #app.updateProjectMode #workPage .stats.updateCompactWorkStats small{
+    font-size:8px!important;
+  }
+  #app.updateProjectMode #workPage .stats.updateCompactWorkStats strong{
+    font-size:17px!important;
+  }
+  #app.updateProjectMode #workPage .premiumTableCard .tableTop.workTableMeta #count{
+    margin-left:auto!important;
+    width:max-content!important;
+  }
+}
