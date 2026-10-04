@@ -493,6 +493,11 @@ function demoReadWorkLinks(){
 }
 function demoFillWorkLinks(x){
  demoEnsureWorkPanel();demoPopulateWorkOptions();
+ const linkedIncident=x.incidentCode?demoCache.incidents.find(i=>String(i.incident_code)===String(x.incidentCode)):null;
+ const workCause=String(x.cause||"").trim();
+ const workResult=String(x.result||"").trim();
+ const inheritedCause=linkedIncident?demoCauseValue(linkedIncident.cause):"";
+ const inheritedResult=String(linkedIncident?.solution||"").trim();
  $("#demoTaskPriority")&&($("#demoTaskPriority").value=x.priority||"Trung bình");
  $("#demoTaskDue")&&($("#demoTaskDue").value=(x.dueDateExplicit||x.dueDate&&x.dueDate!==x.d)?x.dueDate:"");
  $("#demoTaskAsset")&&($("#demoTaskAsset").value=x.assetId||"");
@@ -500,8 +505,8 @@ function demoFillWorkLinks(x){
  $("#demoTaskInspection")&&($("#demoTaskInspection").value=x.inspectionCode||"");
  $("#demoTaskContractor")&&($("#demoTaskContractor").value=x.contractorId||"");
  demoRenderTaskMaterials(Array.isArray(x.materials)?x.materials:[]);
- $("#demoTaskCause")&&($("#demoTaskCause").value=x.cause||"");
- $("#demoTaskResult")&&($("#demoTaskResult").value=x.result||"");
+ $("#demoTaskCause")&&($("#demoTaskCause").value=workCause||inheritedCause||"");
+ $("#demoTaskResult")&&($("#demoTaskResult").value=workResult||inheritedResult||"");
  demoUpdateLinkSummary();
  $("#demoWorkLinks")?.setAttribute("open","");
 }
@@ -944,7 +949,9 @@ async function demoRenderIncidents(){
  if(!selected){box.innerHTML='<div class="demoPanelBody">Chưa có sự cố.</div>';return}
  const asset=demoAsset(selected.asset_id),con=demoContractor(selected.contractor_id),start=demoIncidentStartParts(selected);
  const detailTitle=useStartDate?("Bắt đầu "+start.date+(start.time?" · "+start.time:"")):selected.incident_code;
- box.innerHTML='<div class="demoPanelHead demoIncidentDetailHead"><div class="demoIncidentHeadCopy"><h2 class="demoDetailTitle">'+esc(detailTitle)+'</h2><p>'+esc(selected.area||"")+' · '+esc(asset?.name||"Không gắn thiết bị")+'</p></div><div class="demoIncidentHeadActions"><button class="demoBtn primary" onclick="demoCreateTaskFromIncident(\''+selected.id+'\')">+ Tạo công việc</button>'+(selected.status!=="Đã đóng"?'<button class="demoBtn good" onclick="demoSetIncidentStatus(\''+selected.id+'\',\'Đã đóng\')">Đóng sự cố</button>':"")+'</div></div><div class="demoPanelBody"><div class="demoDetailMeta"><span class="demoPill '+demoSeverityClass(selected.severity)+'">'+esc(selected.severity)+'</span><span class="demoPill '+demoStatusClass(selected.status)+'">'+esc(selected.status)+'</span></div>'+
+ const linkedTask=demoFindIncidentLinkedTask(selected);
+ const workButtonLabel=linkedTask?"Mở công việc":"+ Tạo công việc";
+ box.innerHTML='<div class="demoPanelHead demoIncidentDetailHead"><div class="demoIncidentHeadCopy"><h2 class="demoDetailTitle">'+esc(detailTitle)+'</h2><p>'+esc(selected.area||"")+' · '+esc(asset?.name||"Không gắn thiết bị")+'</p></div><div class="demoIncidentHeadActions"><button class="demoBtn primary" onclick="demoCreateTaskFromIncident(\''+selected.id+'\')">'+workButtonLabel+'</button>'+(selected.status!=="Đã đóng"?'<button class="demoBtn good" onclick="demoSetIncidentStatus(\''+selected.id+'\',\'Đã đóng\')">Đóng sự cố</button>':"")+'</div></div><div class="demoPanelBody"><div class="demoDetailMeta"><span class="demoPill '+demoSeverityClass(selected.severity)+'">'+esc(selected.severity)+'</span><span class="demoPill '+demoStatusClass(selected.status)+'">'+esc(selected.status)+'</span></div>'+
  '<div class="demoDetailSection"><span>HIỆN TƯỢNG</span><p>'+esc(selected.symptom)+'</p></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(demoCauseValue(selected.cause)||"—")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ</span><p>'+esc(selected.solution||"[Chưa cập nhật]")+'</p></div>'+
  '<div class="demoDetailSection"><span>NHÀ THẦU / CHI PHÍ</span><p><strong>'+esc(con?.name||"—")+'</strong> · '+Number(selected.cost||0).toLocaleString("vi-VN")+'đ</p></div>'+
  '<div class="demoDetailSection"><span>HÌNH ẢNH TRƯỚC / SAU</span><div class="demoThumbPair">'+demoIncidentThumbHtml(selected.before_images,"TRƯỚC XỬ LÝ")+demoIncidentThumbHtml(selected.after_images,"SAU XỬ LÝ")+'</div></div></div>';
@@ -953,13 +960,80 @@ async function demoRenderIncidents(){
 window.demoSetIncidentStatus=async(id,status)=>{
  try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(currentBuilding.id),{status,updated_at:new Date().toISOString()});await demoLoad(true);demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố")}catch(e){toast(e.message)}
 };
+function demoIncidentTaskPriority(severity){
+ if(String(currentBuilding?.id||"")!=="UPDATE")return severity||"Trung bình";
+ const raw=String(severity||"").trim();
+ if(raw==="Khẩn cấp"||raw==="Critical")return "Critical";
+ if(raw==="Cao"||raw==="High")return "High";
+ if(raw==="Thấp"||raw==="Low")return "Low";
+ return "Medium";
+}
+function demoIncidentTaskDue(priority){
+ if(String(currentBuilding?.id||"")!=="UPDATE"){
+  const d=new Date();d.setDate(d.getDate()+2);return d.toLocaleDateString("en-CA");
+ }
+ const mins=({Critical:30,High:120,Medium:480,Low:1440})[priority]||480;
+ const d=new Date(Date.now()+mins*60000);
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function demoFindIncidentLinkedTask(inc){
+ if(!inc)return null;
+ const tasks=load();
+ if(inc.related_task_id){
+  const byId=tasks.find(t=>String(t.id)===String(inc.related_task_id));
+  if(byId)return byId;
+ }
+ return tasks.find(t=>String(t.incidentCode||"")===String(inc.incident_code||""))||null;
+}
+function demoOpenIncidentLinkedTask(taskId){
+ showModule("work");
+ render();
+ requestAnimationFrame(()=>requestAnimationFrame(()=>window.editTask?.(Number(taskId))));
+}
 window.demoCreateTaskFromIncident=async id=>{
  const inc=demoCache.incidents.find(x=>String(x.id)===String(id));if(!inc)return;
- const assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án",taskId=Date.now(),due=new Date();due.setDate(due.getDate()+2);
- const obj={id:taskId,d:today(),c:"Khắc phục "+(inc.area||inc.incident_code),t:"Sự cố",s:"Đang thực hiện",n:inc.symptom,a:assignee,performers:[assignee],imgs:[],i:0,priority:inc.severity,dueDate:due.toLocaleDateString("en-CA"),assetId:inc.asset_id||"",incidentCode:inc.incident_code,inspectionCode:"",contractorId:inc.contractor_id||"",materials:[],result:""};
- save([obj,...load()]);await syncTaskRecord("upsert_task",obj,currentBuilding.id);
- await demoPatch("incidents","id=eq."+demoQs(id),{related_task_id:String(taskId),status:"Đang xử lý",updated_at:new Date().toISOString()});
- await demoLoad(true);render();showModule("work");toast("Đã tạo công việc và liên kết với "+inc.incident_code);
+ const existing=demoFindIncidentLinkedTask(inc);
+ if(existing){
+  if(String(inc.related_task_id||"")!==String(existing.id)){
+   try{await demoPatch("incidents","id=eq."+demoQs(id),{related_task_id:String(existing.id),updated_at:new Date().toISOString()})}catch(e){}
+  }
+  demoOpenIncidentLinkedTask(existing.id);
+  toast("Sự cố đã có công việc liên kết · đang mở chỉnh sửa");
+  return;
+ }
+ const assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án";
+ const taskId=Date.now();
+ const priority=demoIncidentTaskPriority(inc.severity);
+ const linkedAsset=demoAsset(inc.asset_id);
+ const dueDate=demoIncidentTaskDue(priority);
+ const title=[String(inc.symptom||"").trim(),String(inc.area||"").trim()].filter(Boolean).join(" - ")||"Xử lý sự cố";
+ let obj={
+  id:taskId,d:today(),c:title,t:"Sự cố",s:"Đang thực hiện",n:"",
+  a:assignee,performers:[assignee],imgs:[],i:0,
+  priority,dueDate,dueDateExplicit:true,
+  assetId:inc.asset_id||"",incidentCode:inc.incident_code,inspectionCode:"",
+  contractorId:inc.contractor_id||"",materials:[],
+  systemCode:linkedAsset?.system_code||"",areaCode:linkedAsset?.area_code||"",
+  cause:demoCauseValue(inc.cause)||"",result:String(inc.solution||"").trim()
+ };
+ try{
+  const syncResult=await syncTaskRecord("upsert_task",obj,currentBuilding.id);
+  if(syncResult?.item)obj={...obj,...syncResult.item};
+  save([obj,...load().filter(t=>String(t.id)!==String(taskId))]);
+  await demoPatch("incidents","id=eq."+demoQs(id),{
+   related_task_id:String(taskId),status:"Đang xử lý",updated_at:new Date().toISOString()
+  });
+  if(obj.contractorId){
+   try{await demoSyncContractorTask(obj)}catch(e){console.warn("Incident contractor sync skipped",e)}
+  }
+  demoCache.loaded=false;
+  await demoLoad(true);
+  render();
+  demoOpenIncidentLinkedTask(taskId);
+  toast("Đã tạo công việc · mở chỉnh sửa");
+ }catch(e){
+  toast(e.message||"Không thể tạo công việc từ sự cố");
+ }
 };
 window.demoAddIncident=async()=>{
  await demoLoad();

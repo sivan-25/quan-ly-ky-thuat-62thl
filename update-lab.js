@@ -1117,8 +1117,10 @@ const updateOriginalSyncTaskRecord=syncTaskRecord;
 syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
  if(action==="upsert_task"&&String(buildingId)===UPDATE_ID&&itemOrId&&typeof itemOrId==="object"){
   const previous=load().find(x=>String(x.id)===String(itemOrId.id))||{};
-  let obj={...previous,...itemOrId},extra=updateIs()?updateReadWorkExtras():{};
-  obj={...obj,...extra};obj.priority=uPriority(obj.priority);
+  const formSaveActive=updateIs()&&!$("#workPage")?.classList.contains("hide")&&$("#saveBtn")?.disabled===true;
+  const extra=formSaveActive?updateReadWorkExtras():{};
+  let obj={...previous,...extra,...itemOrId};
+  obj.priority=uPriority(obj.priority);
   const previousPriority=uPriority(previous.priority||obj.priority);
   const priorityChanged=!!previous.id&&previousPriority!==obj.priority;
   const r=SLA_RULES[obj.priority],created=obj.createdAt||previous.createdAt||new Date().toISOString(),createdDate=new Date(created);
