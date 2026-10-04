@@ -1649,3 +1649,87 @@
     width:max-content!important;
   }
 }
+
+
+/* UPDATE linked-work reflow · hide SLA strip and improve material readability */
+#app.updateProjectMode #demoWorkLinks #updateWorkExtras{
+  display:none!important;
+}
+#app.updateProjectMode #demoWorkLinks #updateWorkHiddenMeta{
+  display:none!important;
+}
+
+/* Keep Vật tư at the same height/visual style, but make text easier to scan. */
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+  min-height:58px!important;
+  height:58px!important;
+  padding:6px 9px!important;
+  border:1px solid #c7e3f5!important;
+  border-radius:8px!important;
+  background:#fbfdff!important;
+  box-shadow:none!important;
+  align-self:start!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField:has(.demoTaskMaterialRow){
+  min-height:58px!important;
+  height:auto!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead{
+  min-height:28px!important;
+  margin:0!important;
+  align-items:center!important;
+}
+#app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead>span{
+  color:#173b56!important;
+  font-size:11px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+}
+#app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial{
+  height:28px!important;
+  min-height:28px!important;
+  padding:0 9px!important;
+  border:1px solid #173b56!important;
+  border-radius:8px!important;
+  background:#173b56!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+#app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial:hover{
+  background:#214f6e!important;
+  border-color:#214f6e!important;
+}
+
+/* Final desktop placement: materials replaces the old SLA strip; result replaces old materials slot. */
+@media(min-width:761px){
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+    grid-column:3 / 5!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .updateResultField{
+    grid-column:1 / 3!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .updateCauseField{
+    grid-column:3 / 5!important;
+  }
+}
+
+/* Mobile stays one-column and readable without increasing the material box unnecessarily. */
+@media(max-width:760px){
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
+    min-height:62px!important;
+    height:62px!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField:has(.demoTaskMaterialRow){
+    height:auto!important;
+  }
+  #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsHead>span{
+    font-size:12px!important;
+  }
+  #app.updateProjectMode #demoWorkLinks #demoAddTaskMaterial{
+    min-height:32px!important;
+    height:32px!important;
+    font-size:11px!important;
+  }
+}
