@@ -416,3 +416,142 @@
   .updateWorkExtrasHead b{font-size:12px}.updateWorkExtrasHead span{font-size:10px}
   .updateKeyboardOpen .updateMobileNav{display:none!important}
 }
+
+
+/* Notification Center · technician focus */
+#app.updateProjectMode .headerBell.updateNotificationBell{
+  color:#173b56!important;border-color:#cbd9dd!important;background:#fffdf9!important;cursor:pointer!important;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease
+}
+#app.updateProjectMode .headerBell.updateNotificationBell:hover{
+  transform:translateY(-1px);border-color:#9eb8c0!important;box-shadow:0 7px 18px rgba(28,58,75,.09)!important
+}
+#app.updateProjectMode .headerBell.updateNotificationBell i{
+  right:-5px!important;top:-6px!important;width:auto!important;min-width:18px!important;height:18px!important;padding:0 5px!important;
+  display:grid!important;place-items:center!important;border:2px solid #faf8f4!important;border-radius:999px!important;
+  background:#a64c4c!important;color:#fff!important;font:800 9px/1 Inter,sans-serif!important;font-style:normal!important;
+  box-shadow:0 4px 9px rgba(105,44,44,.2)
+}
+#app.updateProjectMode .headerBell.updateNotificationBell i.hide{display:none!important}
+
+.updateFocusNow{
+  margin-top:12px;padding:13px 14px;border:1px solid #d8e2e3;border-radius:17px;background:rgba(255,253,249,.95);
+  box-shadow:0 7px 23px rgba(34,59,72,.05)
+}
+.updateFocusNow.hide{display:none!important}
+.updateFocusHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:9px}
+.updateFocusHead>div>span{display:block;color:#976e52;font-size:9px;font-weight:850;letter-spacing:1.05px}
+.updateFocusHead h2{margin:2px 0 0;color:#173b56;font-size:16px;font-weight:740}
+.updateFocusHead p{margin:3px 0 0;color:#7c8d95;font-size:10px}
+.updateFocusHead>button{
+  min-height:32px;padding:0 10px;border:1px solid #d1dcdf;border-radius:9px;background:#fff;color:#3f6978;
+  font:750 10px/1 Inter,sans-serif;cursor:pointer
+}
+.updateFocusHead>button b{
+  display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:3px;padding:0 4px;border-radius:999px;background:#a64c4c;color:#fff;font-size:8px
+}
+.updateFocusList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.updateFocusRow{
+  min-width:0;display:grid;grid-template-columns:24px 28px minmax(0,1fr) auto 14px;gap:6px;align-items:center;
+  min-height:60px;padding:8px;border:1px solid #e1e7e8;border-radius:11px;background:#fff;color:#344b56;text-align:left;cursor:pointer;
+  transition:border-color .15s ease,transform .15s ease,background .15s ease
+}
+.updateFocusRow:hover{transform:translateY(-1px);border-color:#b9cdd2;background:#fdfbf7}
+.updateFocusRow>span{font-size:8px;font-weight:800;color:#8a989e}
+.updateFocusRow>i{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#eef3f3;color:#426b78;font-size:11px;font-style:normal;font-weight:850}
+.updateFocusRow.danger>i{background:#f8e7e7;color:#9e4646}
+.updateFocusRow.warn>i{background:#f9eedf;color:#96672e}
+.updateFocusRow.info>i{background:#eaf2f3;color:#3f7280}
+.updateFocusRow>div{min-width:0}
+.updateFocusRow>div b{display:block;color:#2e4854;font-size:10.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.updateFocusRow>div small{display:block;margin-top:2px;color:#7e8e95;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.updateFocusRow>em{max-width:110px;font-style:normal;color:#7c6c60;font-size:8.5px;text-align:right;line-height:1.25}
+.updateFocusRow>strong{font-size:12px;color:#8aa0a8}
+
+.updateNotificationCenter{position:fixed;inset:0;z-index:2700;display:grid;grid-template-columns:1fr minmax(390px,455px)}
+.updateNotificationCenter.hide{display:none!important}
+.updateNotifBackdrop{border:0;background:rgba(17,30,38,.37);backdrop-filter:blur(3px);cursor:pointer}
+.updateNotificationCenter>aside{
+  height:100%;overflow:auto;transform:translateX(22px);opacity:.4;background:#f7f4ee;
+  box-shadow:-18px 0 45px rgba(25,45,57,.2);transition:transform .16s ease,opacity .16s ease
+}
+.updateNotificationCenter.show>aside{transform:translateX(0);opacity:1}
+.updateNotificationCenter>aside>header{
+  position:sticky;top:0;z-index:4;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  min-height:83px;padding:16px 17px 13px;border-bottom:1px solid #dbe3e4;background:rgba(255,253,249,.96);backdrop-filter:blur(12px)
+}
+.updateNotificationCenter>aside>header span{display:block;color:#94705a;font-size:9px;font-weight:850;letter-spacing:1.1px}
+.updateNotificationCenter>aside>header h2{margin:3px 0 0;color:#173b56;font-size:18px;font-weight:750}
+.updateNotificationCenter>aside>header p{margin:4px 0 0;color:#74868e;font-size:10px}
+.updateNotificationCenter>aside>header button{
+  width:34px;height:34px;border:1px solid #d7e0e2;border-radius:10px;background:#fff;color:#526974;font-size:20px;cursor:pointer
+}
+.updateNotifToolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border-bottom:1px solid #e2e8e9;background:#f3efe8
+}
+.updateNotifToolbar b{color:#47616d;font-size:10px}
+.updateNotifToolbar button{border:0;background:transparent;color:#4a7583;font:750 9.5px/1 Inter,sans-serif;cursor:pointer}
+.updateNotificationBody{padding:10px 11px;display:flex;flex-direction:column;gap:7px}
+.updateNotifRow{
+  width:100%;display:grid;grid-template-columns:24px 31px minmax(0,1fr) 44px 15px;gap:7px;align-items:center;
+  min-height:73px;padding:9px;border:1px solid #dfe6e7;border-radius:12px;background:#fffdf9;color:#344b56;text-align:left;cursor:pointer
+}
+.updateNotifRow.unread{border-color:#b9cdd3;background:#fff}
+.updateNotifRow.read{opacity:.72}
+.updateNotifRank{font-size:8px;font-weight:850;color:#89989e}
+.updateNotifRow>i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#edf3f3;color:#426b78;font-style:normal;font-size:12px;font-weight:850}
+.updateNotifRow.danger>i{background:#f8e6e6;color:#9f4646}
+.updateNotifRow.warn>i{background:#faefdf;color:#95662d}
+.updateNotifRow.info>i{background:#e9f2f3;color:#3d7280}
+.updateNotifRow>div{min-width:0}
+.updateNotifRow>div b{display:block;color:#294550;font-size:11px;line-height:1.3}
+.updateNotifRow>div small{display:block;margin-top:2px;color:#778a92;font-size:9.5px;line-height:1.35}
+.updateNotifRow>div em{display:block;margin-top:4px;color:#8a6b55;font-size:9px;font-style:normal;font-weight:700}
+.updateNotifRow>strong{
+  justify-self:end;min-width:37px;padding:4px 5px;border-radius:7px;background:#edf2f1;color:#58717a;font-size:7.5px;text-align:center
+}
+.updateNotifRow.unread>strong{background:#f6e2dd;color:#934b42}
+.updateNotifArrow{color:#8da1a8;font-size:12px}
+.updateNotifEmpty{min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;color:#74868e}
+.updateNotifEmpty>span{display:grid;place-items:center;width:44px;height:44px;margin-bottom:9px;border-radius:14px;background:#e8f2ec;color:#43765e;font-size:20px}
+.updateNotifEmpty b{color:#34505c;font-size:12px}.updateNotifEmpty p{max-width:250px;margin:5px 0 0;font-size:9.5px;line-height:1.45}
+.updateNotificationCenter>aside>footer{padding:12px 14px 20px;color:#7c8c93;font-size:8.5px;line-height:1.5;text-align:center}
+.updateMobileHome{position:relative!important}
+.updateMobileNotifBadge{
+  position:absolute;right:8px;top:2px;display:grid!important;place-items:center;min-width:16px;height:16px;padding:0 4px;
+  border:2px solid #fffdf9;border-radius:999px;background:#a64c4c;color:#fff;font:800 8px/1 Inter,sans-serif;font-style:normal
+}
+.updateMobileNotifBadge.hide{display:none!important}
+
+@media(max-width:1180px){
+  .updateFocusList{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  #app.updateProjectMode .headerBell.updateNotificationBell i{right:-4px!important;top:-5px!important}
+  .updateFocusNow{margin-top:8px;padding:10px;border-radius:14px}
+  .updateFocusHead{align-items:center}
+  .updateFocusHead h2{font-size:14px}.updateFocusHead p{font-size:9px}
+  .updateFocusHead>button{min-width:0;padding:0 8px;font-size:9px}
+  .updateFocusList{grid-template-columns:1fr;gap:6px}
+  .updateFocusRow{grid-template-columns:23px 28px minmax(0,1fr) 13px;min-height:57px;padding:7px}
+  .updateFocusRow>em{grid-column:3;max-width:none;text-align:left;font-size:8.5px}
+  .updateFocusRow>strong{grid-column:4;grid-row:1/3}
+  .updateFocusRow>div b{font-size:11px;white-space:normal}
+  .updateFocusRow>div small{font-size:9.5px;white-space:normal}
+  .updateNotificationCenter{display:block}
+  .updateNotifBackdrop{position:absolute;inset:0;width:100%;height:100%}
+  .updateNotificationCenter>aside{
+    position:absolute;left:6px;right:6px;bottom:6px;width:auto;height:min(82vh,690px);border-radius:19px;
+    transform:translateY(28px);box-shadow:0 -14px 40px rgba(25,45,57,.21)
+  }
+  .updateNotificationCenter.show>aside{transform:translateY(0)}
+  .updateNotificationCenter>aside>header{min-height:73px;padding:13px 14px 10px;border-radius:19px 19px 0 0}
+  .updateNotificationCenter>aside>header h2{font-size:16px}
+  .updateNotificationBody{padding:8px}
+  .updateNotifRow{grid-template-columns:22px 30px minmax(0,1fr) 13px;min-height:70px;padding:8px}
+  .updateNotifRow>strong{display:none}
+  .updateNotifArrow{grid-column:4;grid-row:1}
+  .updateNotifRow>div b{font-size:11.5px}
+  .updateNotifRow>div small{font-size:10px}
+  .updateNotifRow>div em{font-size:9px}
+}
