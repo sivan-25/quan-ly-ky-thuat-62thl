@@ -734,17 +734,50 @@ function updateResetWorkExtras(){
  if($("#demoTaskPriority"))$("#demoTaskPriority").value="Medium";updateWorkSlaPreview();
 }
 
+async function updateSyncTaskCosts(obj){
+ if(!obj||!obj.id)return;
+ const workOrderId=obj.woCode||String(obj.id);
+ const materialCost=(Array.isArray(obj.materials)?obj.materials:[]).reduce((sum,row)=>{
+   const m=updateState.materials.find(x=>String(x.id)===String(row.materialId));
+   return sum+Number(row.qty||0)*Number(m?.unit_price||0);
+ },0);
+ const items=[
+  {type:"Nhân công",amount:Number(obj.laborCost||0)},
+  {type:"Nhà thầu",amount:Number(obj.vendorCost||0)},
+  {type:"Vật tư",amount:materialCost},
+  {type:"Khác",amount:Number(obj.otherCost||0)}
+ ];
+ for(const item of items){
+  try{
+   const q="building_id=eq.UPDATE&work_order_id=eq."+uq(workOrderId)+"&cost_type=eq."+uq(item.type)+"&select=id";
+   const existing=await updateRest("ops_cost_entries",q);
+   const body={building_id:UPDATE_ID,entry_date:obj.d||new Date().toLocaleDateString("en-CA"),work_order_id:workOrderId,
+     asset_id:obj.assetId||null,system_code:obj.systemCode||"",contractor_id:item.type==="Nhà thầu"?(obj.contractorId||null):null,
+     cost_type:item.type,amount:Math.max(0,item.amount),description:(obj.c||"Work Order")+" · "+item.type};
+   if(existing?.[0]?.id)await updatePatch("ops_cost_entries","id=eq."+uq(existing[0].id)+"&building_id=eq.UPDATE",body);
+   else if(item.amount>0)await updatePost("ops_cost_entries",body);
+  }catch(e){console.warn("Task cost sync skipped",item.type,e)}
+ }
+ updateState.loaded=false;
+}
+
 const updateOriginalSyncTaskRecord=syncTaskRecord;
 syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
  if(action==="upsert_task"&&String(buildingId)===UPDATE_ID&&itemOrId&&typeof itemOrId==="object"){
-  let obj={...itemOrId},extra=updateIs()?updateReadWorkExtras():{};
+  const previous=load().find(x=>String(x.id)===String(itemOrId.id))||{};
+  let obj={...previous,...itemOrId},extra=updateIs()?updateReadWorkExtras():{};
   obj={...obj,...extra};obj.priority=uPriority(obj.priority);
-  const r=SLA_RULES[obj.priority],created=obj.createdAt||new Date().toISOString(),createdDate=new Date(created);
-  obj.createdAt=created;obj.slaResponseMinutes=Number(obj.slaResponseMinutes||r.response);obj.slaTargetMinutes=Number(obj.slaTargetMinutes||r.target);
-  if(!obj.responseDueAt)obj.responseDueAt=new Date(createdDate.getTime()+obj.slaResponseMinutes*60000).toISOString();
-  if(!obj.resolveDueAt)obj.resolveDueAt=new Date(createdDate.getTime()+obj.slaTargetMinutes*60000).toISOString();
-  if(!obj.woCode)obj.woCode="WO-UPD-"+String(obj.id||Date.now()).slice(-5);
-  return updateOriginalSyncTaskRecord(action,obj,buildingId);
+  const previousPriority=uPriority(previous.priority||obj.priority);
+  const priorityChanged=!!previous.id&&previousPriority!==obj.priority;
+  const r=SLA_RULES[obj.priority],created=obj.createdAt||previous.createdAt||new Date().toISOString(),createdDate=new Date(created);
+  obj.createdAt=created;obj.slaResponseMinutes=Number(r.response);obj.slaTargetMinutes=Number(r.target);
+  if(priorityChanged||!obj.responseDueAt)obj.responseDueAt=new Date(createdDate.getTime()+obj.slaResponseMinutes*60000).toISOString();
+  if(priorityChanged||!obj.resolveDueAt)obj.resolveDueAt=new Date(createdDate.getTime()+obj.slaTargetMinutes*60000).toISOString();
+  if(!obj.woCode)obj.woCode=previous.woCode||"WO-UPD-"+String(obj.id||Date.now()).slice(-5);
+  const result=await updateOriginalSyncTaskRecord(action,obj,buildingId);
+  const saved=result?.item?{...obj,...result.item}:obj;
+  updateSyncTaskCosts(saved);
+  return result?.item?{...result,item:saved}:result;
  }
  return updateOriginalSyncTaskRecord(action,itemOrId,buildingId);
 };
