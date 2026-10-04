@@ -555,3 +555,144 @@
   .updateNotifRow>div small{font-size:10px}
   .updateNotifRow>div em{font-size:9px}
 }
+
+
+/* Compact UPDATE environment chip · right side of topbar */
+.updateTrialRibbon{
+  position:static!important;
+  left:auto!important;right:auto!important;top:auto!important;
+  transform:none!important;
+  z-index:auto!important;
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  height:38px!important;
+  max-width:none!important;
+  padding:3px 4px 3px 6px!important;
+  margin:0 2px 0 0!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  border:1px solid #dcc9a8!important;
+  border-radius:11px!important;
+  background:#fff9ee!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  color:#765326!important;
+  pointer-events:auto!important;
+  letter-spacing:0!important;
+}
+.updateTrialRibbon.hide{display:none!important}
+.updateTrialEnvIcon{
+  display:grid!important;
+  place-items:center!important;
+  width:28px!important;height:28px!important;
+  flex:0 0 28px!important;
+  border-radius:8px!important;
+  background:#f3e9d7!important;
+  color:#805b2e!important;
+}
+.updateTrialEnvIcon svg{
+  width:16px!important;height:16px!important;
+  fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+.updateTrialMeta{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:1px!important;
+  min-width:47px!important;
+  line-height:1!important;
+}
+.updateTrialMeta b{
+  display:block!important;
+  color:#173b56!important;
+  font:800 10px/1 Inter,sans-serif!important;
+  letter-spacing:.45px!important;
+}
+.updateTrialMeta small{
+  display:block!important;
+  color:#9b7040!important;
+  font:800 6.5px/1 Inter,sans-serif!important;
+  letter-spacing:.75px!important;
+}
+#updateRolePreviewBtn{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  height:30px!important;
+  min-width:67px!important;
+  padding:0 8px!important;
+  border:1px solid #dfd1b9!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#66533c!important;
+  font:750 9px/1 Inter,sans-serif!important;
+  cursor:pointer!important;
+  transition:border-color .15s ease,background .15s ease,color .15s ease!important;
+}
+#updateRolePreviewBtn:hover{
+  border-color:#bca987!important;
+  background:#fdf8ef!important;
+  color:#173b56!important;
+}
+#updateRolePreviewBtn.hide{display:none!important}
+.updateRoleSwitchIcon{
+  width:14px!important;height:14px!important;
+  flex:0 0 14px!important;
+  fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+.updateRoleLabel{display:inline!important}
+.updateTrialRibbon.isTechnician{
+  border-color:#bfd3d8!important;
+  background:#f2f8f8!important;
+}
+.updateTrialRibbon.isTechnician .updateTrialEnvIcon{
+  background:#e4f0f1!important;color:#326a78!important;
+}
+.updateTrialRibbon.isTechnician #updateRolePreviewBtn{
+  border-color:#c9dce0!important;color:#326474!important;
+}
+
+@media(max-width:1050px){
+  .updateTrialMeta small{display:none!important}
+  .updateTrialMeta{min-width:44px!important}
+  #updateRolePreviewBtn{min-width:61px!important;padding:0 6px!important}
+}
+@media(max-width:760px){
+  #app.updateProjectMode .estaTopbar{gap:6px!important}
+  .updateTrialRibbon{
+    height:34px!important;
+    gap:3px!important;
+    padding:3px!important;
+    margin-right:0!important;
+    border-radius:10px!important;
+  }
+  .updateTrialEnvIcon{
+    display:grid!important;
+    width:27px!important;height:27px!important;
+    flex-basis:27px!important;
+  }
+  .updateTrialMeta{
+    display:flex!important;
+    min-width:42px!important;
+    padding-right:2px!important;
+  }
+  .updateTrialMeta b{font-size:9px!important}
+  .updateTrialMeta small{display:none!important}
+  #updateRolePreviewBtn{
+    width:29px!important;min-width:29px!important;height:27px!important;
+    padding:0!important;border-radius:8px!important;
+  }
+  .updateRoleSwitchIcon{width:14px!important;height:14px!important}
+  .updateRoleLabel{display:none!important}
+}
+@media(max-width:420px){
+  .updateTrialMeta{min-width:0!important}
+  .updateTrialMeta b{font-size:8px!important;letter-spacing:.2px!important}
+  .updateTrialEnvIcon{width:25px!important;height:25px!important;flex-basis:25px!important}
+}
