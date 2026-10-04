@@ -509,9 +509,21 @@ function updateRefreshRoleChip(){
  ribbon?.classList.toggle("isTechnician",tech);
 }
 
+function updateArrangeSidebar(on){
+ const reports=$("#navReports"),assets=$("#navUpdateAssets"),inspection=$("#navInspection"),incident=$("#navIncident"),work=$("#navWork");
+ if(on){
+  if(reports&&assets)reports.insertAdjacentElement("afterend",assets);
+  if(assets&&inspection)assets.insertAdjacentElement("afterend",inspection);
+ }else{
+  if(incident&&inspection)incident.insertAdjacentElement("afterend",inspection);
+  if(work&&assets)work.insertAdjacentElement("afterend",assets);
+ }
+}
+
 function updateApplyMode(){
  updateInjectShell();
  const on=updateIs()&&($("#adminPage")?.classList.contains("hide")??true);
+ updateArrangeSidebar(on);
  $("#app")?.classList.toggle("updateProjectMode",on);
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on);
