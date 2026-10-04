@@ -16,7 +16,7 @@ let updateState={
  technicians:[],skills:[],shifts:[],handovers:[],materials:[],materialTx:[],
  contractors:[],vendorScores:[],baselines:[],anomalies:[],costs:[],plans:[],meters:[]
 };
-let updatePmGenerating=false,updateScannerStream=null,updateScannerTimer=null;
+let updatePmGenerating=false,updateScannerStream=null,updateScannerTimer=null,updateNotifTimer=null;
 let updateRolePreview=sessionStorage.getItem("esta_update_role_preview")||"leader";
 const updateRealAdmin=()=>!!currentAccount?.is_admin;
 const updateTechView=()=>!updateRealAdmin()||updateRolePreview==="technician";
@@ -190,6 +190,205 @@ function updateHealth(){
 function updateHealthTone(score){return score>=90?"good":score>=75?"watch":score>=60?"risk":"danger"}
 function updateWorkloadTone(v){return v>=80?"danger":v>=65?"warn":"good"}
 
+function updateNotificationOwner(){
+ const id=currentAccount?.id||currentAccount?.username||currentAccount?.email||me||"user";
+ return String(id).replace(/[^a-zA-Z0-9_-]/g,"_");
+}
+function updateNotificationReadKey(){
+ return "esta_update_notif_read_"+updateNotificationOwner()+"_"+(updateTechView()?"technician":"leader");
+}
+function updateNotificationReadSet(){
+ try{
+  const rows=JSON.parse(localStorage.getItem(updateNotificationReadKey())||"[]");
+  return new Set(Array.isArray(rows)?rows:[]);
+ }catch(e){return new Set()}
+}
+function updateNotificationWriteSet(set){
+ try{
+  const rows=[...set].slice(-120);
+  localStorage.setItem(updateNotificationReadKey(),JSON.stringify(rows));
+ }catch(e){}
+}
+function updateCurrentTechnician(){
+ const accountId=String(currentAccount?.id||"");
+ if(!accountId)return null;
+ return updateState.technicians.find(t=>String(t.profile_id||"")===accountId)||null;
+}
+function updateTaskAssignedToCurrentTech(task,tech){
+ if(!tech)return true;
+ const names=Array.isArray(task.performers)?task.performers:[task.a].filter(Boolean);
+ return names.some(n=>String(n).trim()===String(tech.name).trim());
+}
+function updateNotificationItemKey(item){
+ return [
+  item.kind||item.action||"item",
+  item.id||item.title||"",
+  item.state||"",
+  item.cycle||""
+ ].join(":");
+}
+function updateBuildNotifications(limit=5){
+ const tech=updateTechView()?updateCurrentTechnician():null;
+ const now=Date.now(),items=[],criticalTaskIds=new Set();
+
+ updateOpenIncidents().forEach(i=>{
+  if(i.severity!=="Khẩn cấp")return;
+  if(i.related_task_id)criticalTaskIds.add(String(i.related_task_id));
+  const ext=updateIncidentExt(i.id);
+  items.push({
+   kind:"incident",id:i.id,action:"incident",score:1000,tone:"danger",icon:"!",
+   state:"critical",cycle:String(i.detected_at||""),
+   title:i.symptom||i.incident_code||"Sự cố Critical",
+   meta:(i.incident_code||"Sự cố")+" · "+(i.area||"Không rõ vị trí"),
+   reason:"Critical · cần xử lý ngay"
+  });
+ });
+
+ load().forEach(task=>{
+  if(task.s==="Đã hoàn thành"||criticalTaskIds.has(String(task.id)))return;
+  if(updateTechView()&&!updateTaskAssignedToCurrentTech(task,tech))return;
+  const sla=updateSlaState(task);
+  const due=task.dueDate||task.d;
+  const dueMs=due?new Date(due+"T23:59:59").getTime():NaN;
+  let candidate=null;
+  if(sla&&sla.remaining<=0){
+   candidate={kind:"task",id:task.id,action:"task",score:950,tone:"danger",icon:"⏱",state:"sla-breached",cycle:String(task.resolveDueAt||due||""),title:task.c||"Work Order",meta:(task.woCode||"WO")+" · "+sla.text,reason:"SLA đã quá hạn"};
+  }else if(sla&&sla.tone==="danger"){
+   candidate={kind:"task",id:task.id,action:"task",score:900,tone:"danger",icon:"⏱",state:"sla-danger",cycle:String(task.resolveDueAt||due||""),title:task.c||"Work Order",meta:(task.woCode||"WO")+" · "+sla.text,reason:"SLA sắp hết"};
+  }else if(Number.isFinite(dueMs)&&dueMs<now){
+   candidate={kind:"task",id:task.id,action:"task",score:850,tone:"warn",icon:"↗",state:"overdue",cycle:String(due),title:task.c||"Work Order quá hạn",meta:(task.woCode||"WO")+" · Hạn "+uDate(due),reason:"Công việc quá hạn"};
+  }else if(sla&&sla.tone==="warn"){
+   candidate={kind:"task",id:task.id,action:"task",score:700,tone:"warn",icon:"⏱",state:"sla-warn",cycle:String(task.resolveDueAt||due||""),title:task.c||"Work Order",meta:(task.woCode||"WO")+" · "+sla.text,reason:"Cần ưu tiên theo SLA"};
+  }
+  if(candidate)items.push(candidate);
+ });
+
+ updateState.plans.forEach(p=>{
+  const asset=updateAsset(p.asset_id);if(!asset)return;
+  if(updateTechView()&&tech&&asset.assigned_to&&String(asset.assigned_to)!==String(tech.name))return;
+  if(p.trigger_type==="calendar"&&p.next_due_date){
+   const dueMs=new Date(p.next_due_date+"T23:59:59").getTime();
+   const days=(dueMs-now)/86400000;
+   if(days<0){
+    items.push({kind:"pm",id:p.asset_id,action:"asset",score:800,tone:"warn",icon:"⚙",state:"pm-overdue",cycle:p.next_due_date,title:p.title,meta:(asset.code||"")+" · quá hạn "+uDate(p.next_due_date),reason:"PM quá hạn"});
+   }else if(days<=7){
+    items.push({kind:"pm",id:p.asset_id,action:"asset",score:650,tone:"info",icon:"⚙",state:"pm-due",cycle:p.next_due_date,title:p.title,meta:(asset.code||"")+" · đến hạn "+uDate(p.next_due_date),reason:"PM sắp đến hạn"});
+   }
+  }else if(p.trigger_type==="meter"){
+   const current=Number(asset.meter_value||0),threshold=Number(p.next_meter_due||Infinity);
+   if(current>=threshold){
+    items.push({kind:"pm",id:p.asset_id,action:"asset",score:810,tone:"warn",icon:"⚙",state:"pm-meter-due",cycle:String(threshold),title:p.title,meta:(asset.code||"")+" · "+uNum(current)+" / "+uNum(threshold)+" "+(p.meter_unit||""),reason:"PM theo meter đã đến hạn"});
+   }else if(Number.isFinite(threshold)&&threshold>0&&current>=threshold-Number(p.meter_interval||0)*.1){
+    items.push({kind:"pm",id:p.asset_id,action:"asset",score:640,tone:"info",icon:"⚙",state:"pm-meter-near",cycle:String(threshold),title:p.title,meta:(asset.code||"")+" · còn "+uNum(threshold-current)+" "+(p.meter_unit||""),reason:"PM theo meter sắp đến hạn"});
+   }
+  }
+ });
+
+ const handover=updateState.handovers.find(x=>x.status==="Chờ nhận"&&(!tech||!x.receiver_name||String(x.receiver_name)===String(tech.name)));
+ if(handover){
+  items.push({
+   kind:"handover",id:handover.id,action:"shift",score:760,tone:"info",icon:"⇄",
+   state:"handover-pending",cycle:String(handover.handover_date||""),
+   title:"Bàn giao ca đang chờ nhận",
+   meta:handover.giver_name+" → "+handover.receiver_name,
+   reason:"Cần xác nhận bàn giao"
+  });
+ }
+
+ if(updateLeaderView()){
+  updateLowStock().forEach(m=>items.push({
+   kind:"stock",id:m.id,action:"inventory",score:520,tone:"info",icon:"□",state:"low-stock",
+   cycle:String(m._stock)+"-"+String(m.min_qty),title:m.name,
+   meta:"Tồn "+uNum(m._stock)+" "+m.unit+" · Min "+uNum(m.min_qty),
+   reason:"Vật tư dưới tồn tối thiểu"
+  }));
+  updateState.anomalies.filter(a=>a.status!=="Đã đóng"&&Math.abs(Number(a.variance_pct||0))>=15).forEach(a=>items.push({
+   kind:"energy",id:a.id,action:"energy",score:500,tone:"info",icon:"⌁",state:"energy-anomaly",
+   cycle:String(a.detected_at||a.period_label||""),title:"Bất thường "+(a.meter_type==="water"?"nước":a.meter_type==="electric"?"điện":a.meter_type),
+   meta:(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+"% so baseline",
+   reason:"Cần kiểm tra mức tiêu thụ"
+  }));
+ }
+
+ const dedup=new Map();
+ items.forEach(item=>{
+  const entity=(item.kind==="task"?"task:"+item.id:item.kind+":"+item.id);
+  const prev=dedup.get(entity);
+  if(!prev||item.score>prev.score)dedup.set(entity,item);
+ });
+ const read=updateNotificationReadSet();
+ return [...dedup.values()]
+  .sort((a,b)=>b.score-a.score||String(a.title).localeCompare(String(b.title),"vi"))
+  .slice(0,Math.max(1,limit))
+  .map(item=>({...item,key:updateNotificationItemKey(item),read:read.has(updateNotificationItemKey(item))}));
+}
+function updateNotificationScopeLabel(){
+ const tech=updateTechView()?updateCurrentTechnician():null;
+ return tech?"Ưu tiên của "+tech.name:(updateTechView()?"Ưu tiên kỹ thuật · toàn dự án":"Ưu tiên điều hành · UPDATE");
+}
+function updateRefreshNotifications(){
+ if(!updateIs())return;
+ const rows=updateBuildNotifications(5),unread=rows.filter(x=>!x.read).length;
+ const bell=document.querySelector(".headerBell");
+ if(bell){
+  bell.classList.add("updateNotificationBell");
+  bell.setAttribute("aria-label","Thông báo · "+unread+" chưa xem");
+  bell.dataset.count=String(unread);
+  const dot=bell.querySelector("i");
+  if(dot){dot.textContent=unread>9?"9+":String(unread);dot.classList.toggle("hide",unread===0)}
+ }
+ const mobile=$("#updateMobileNotifBadge");
+ if(mobile){mobile.textContent=unread>9?"9+":String(unread);mobile.classList.toggle("hide",unread===0)}
+ if(!$("#updateNotificationCenter")?.classList.contains("hide"))updateRenderNotificationCenter();
+}
+function updateMarkNotificationRead(key){
+ if(!key)return;
+ const set=updateNotificationReadSet();set.add(key);updateNotificationWriteSet(set);updateRefreshNotifications();
+}
+function updateMarkAllNotificationsRead(){
+ const set=updateNotificationReadSet();
+ updateBuildNotifications(5).forEach(x=>set.add(x.key));
+ updateNotificationWriteSet(set);updateRefreshNotifications();
+}
+function updateRenderNotificationCenter(){
+ const body=$("#updateNotificationBody");if(!body)return;
+ const rows=updateBuildNotifications(5),unread=rows.filter(x=>!x.read).length;
+ $("#updateNotificationScope")&&($("#updateNotificationScope").textContent=updateNotificationScopeLabel());
+ $("#updateNotificationUnread")&&($("#updateNotificationUnread").textContent=unread?unread+" chưa xem":"Đã xem hết");
+ body.innerHTML=rows.length?rows.map((x,i)=>
+  '<button class="updateNotifRow '+x.tone+(x.read?' read':' unread')+'" data-notif-key="'+uEsc(x.key)+'" data-notif-action="'+uEsc(x.action)+'" data-notif-id="'+uEsc(x.id||"")+'">'+
+   '<span class="updateNotifRank">'+String(i+1).padStart(2,"0")+'</span>'+
+   '<i>'+uEsc(x.icon)+'</i>'+
+   '<div><b>'+uEsc(x.title)+'</b><small>'+uEsc(x.meta)+'</small><em>'+uEsc(x.reason)+'</em></div>'+
+   '<strong>'+(x.read?'Đã xem':'Mới')+'</strong><span class="updateNotifArrow">→</span>'+
+  '</button>'
+ ).join(""):'<div class="updateNotifEmpty"><span>✓</span><b>Không có việc khẩn cần xử lý</b><p>Notification Center chỉ hiển thị tối đa 5 việc ưu tiên nhất.</p></div>';
+ body.querySelectorAll("[data-notif-action]").forEach(b=>b.onclick=()=>{
+  updateMarkNotificationRead(b.dataset.notifKey);
+  updateCloseNotificationCenter();
+  updateAttentionAction(b.dataset.notifAction,b.dataset.notifId);
+ });
+}
+function updateOpenNotificationCenter(){
+ if(!updateIs())return;
+ updateRenderNotificationCenter();
+ $("#updateNotificationCenter")?.classList.remove("hide");
+ requestAnimationFrame(()=>$("#updateNotificationCenter")?.classList.add("show"));
+}
+function updateCloseNotificationCenter(){
+ const el=$("#updateNotificationCenter");if(!el)return;
+ el.classList.remove("show");
+ setTimeout(()=>el.classList.add("hide"),160);
+}
+function updateStartNotificationTimer(){
+ if(updateNotifTimer)clearInterval(updateNotifTimer);
+ updateNotifTimer=setInterval(()=>{if(updateIs())updateRefreshNotifications()},30000);
+}
+function updateStopNotificationTimer(){
+ if(updateNotifTimer){clearInterval(updateNotifTimer);updateNotifTimer=null}
+}
+
+
 function updateInjectShell(){
  if($("#navUpdateAssets"))return;
  const navWork=$("#navWork");
@@ -224,7 +423,7 @@ function updateInjectShell(){
  if(!$("#updateMobileNav")){
   const n=document.createElement("nav");n.id="updateMobileNav";n.className="updateMobileNav hide";
   n.innerHTML=
-   '<button data-update-mobile="home"><span>⌂</span><b>Hôm nay</b></button>'+
+   '<button data-update-mobile="home" class="updateMobileHome"><span>⌂</span><b>Hôm nay</b><i id="updateMobileNotifBadge" class="updateMobileNotifBadge hide"></i></button>'+
    '<button data-update-mobile="work"><span>☑</span><b>Công việc</b></button>'+
    '<button class="scan" data-update-mobile="scan"><span>⌗</span><b>SCAN QR</b></button>'+
    '<button data-update-mobile="incident"><span>!</span><b>Sự cố</b></button>'+
@@ -251,7 +450,13 @@ function updateInjectModals(){
   '<div id="updateAiModal" class="modal hide"><div class="modalCard updateModalCard updateAiCard"><button class="modalClose" data-update-close-modal="updateAiModal">×</button><span class="updateEyebrow">ESTA AI · PILOT</span><h3>Trợ lý điều hành kỹ thuật</h3><p class="updateMuted">Phân tích dữ liệu UPDATE hiện tại. AI chỉ gợi ý, không tự đóng công việc hay ra quyết định thay Leader.</p><div class="updateAiPrompts"><button data-ai="attention">Hôm nay cần quan tâm gì?</button><button data-ai="risk">Thiết bị nào rủi ro?</button><button data-ai="shift">Tóm tắt bàn giao ca</button><button data-ai="report">Soạn tóm tắt báo cáo tuần</button></div><div id="updateAiAnswer" class="updateAiAnswer">Chọn một câu hỏi nhanh để bắt đầu.</div></div></div>'+
   '<button id="updateAiButton" class="updateAiButton hide" type="button"><span>✦</span> ESTA AI</button>'+
   '<div id="updateScannerModal" class="modal hide"><div class="modalCard updateModalCard updateScannerCard"><button class="modalClose" data-update-close-modal="updateScannerModal">×</button><span class="updateEyebrow">QUICK SCAN</span><h3>Quét QR thiết bị</h3><p class="updateMuted">Đưa camera vào QR ESTA trên thiết bị hoặc nhập mã thiết bị.</p><video id="updateScannerVideo" playsinline muted></video><p id="updateScannerStatus" class="updateScannerStatus"></p><div class="updateScannerManual"><input id="updateScannerCode" placeholder="VD: FWP-01"><button id="updateScannerOpen" type="button">Mở thiết bị</button></div></div></div>'+
-  '<div id="updateQuickModal" class="modal hide"><div class="modalCard updateModalCard"><button class="modalClose" data-update-close-modal="updateQuickModal">×</button><div id="updateQuickModalBody"></div></div></div>'
+  '<div id="updateQuickModal" class="modal hide"><div class="modalCard updateModalCard"><button class="modalClose" data-update-close-modal="updateQuickModal">×</button><div id="updateQuickModalBody"></div></div></div>'+
+  '<div id="updateNotificationCenter" class="updateNotificationCenter hide"><button class="updateNotifBackdrop" id="updateNotificationBackdrop" aria-label="Đóng thông báo"></button><aside>'+
+   '<header><div><span>NOTIFICATION CENTER</span><h2>5 việc cần làm ngay</h2><p id="updateNotificationScope">Ưu tiên kỹ thuật</p></div><button id="updateNotificationClose" aria-label="Đóng">×</button></header>'+
+   '<div class="updateNotifToolbar"><b id="updateNotificationUnread">0 chưa xem</b><button id="updateNotificationReadAll" type="button">Đánh dấu đã xem</button></div>'+
+   '<div id="updateNotificationBody" class="updateNotificationBody"></div>'+
+   '<footer><span>Chỉ hiển thị việc đang cần hành động · không thay thế trạng thái Work Order/Sự cố</span></footer>'+
+  '</aside></div>'
  );
  document.querySelectorAll("[data-update-close-drawer]").forEach(b=>b.onclick=updateCloseAssetDrawer);
  document.querySelectorAll("[data-update-close-modal]").forEach(b=>b.onclick=()=>updateCloseModal(b.dataset.updateCloseModal));
@@ -259,6 +464,14 @@ function updateInjectModals(){
  document.querySelectorAll("[data-ai]").forEach(b=>b.onclick=()=>updateAiAnswer(b.dataset.ai));
  $("#updateScannerOpen").onclick=()=>updateOpenAssetByCode($("#updateScannerCode").value);
  $("#updateScannerModal").addEventListener("click",e=>{if(e.target===$("#updateScannerModal"))updateCloseModal("updateScannerModal")});
+ const bell=document.querySelector(".headerBell");
+ if(bell&&!bell.dataset.updateNotifBound){
+  bell.dataset.updateNotifBound="1";
+  bell.onclick=()=>{if(updateIs())updateOpenNotificationCenter()};
+ }
+ $("#updateNotificationBackdrop").onclick=updateCloseNotificationCenter;
+ $("#updateNotificationClose").onclick=updateCloseNotificationCenter;
+ $("#updateNotificationReadAll").onclick=updateMarkAllNotificationsRead;
 }
 function updateBindNav(){
  const map={navUpdateAssets:"assets",navUpdateTeam:"team",navUpdateShift:"shift",navUpdateCost:"cost"};
@@ -292,10 +505,19 @@ function updateApplyMode(){
   }
   document.querySelectorAll(".buildingNameText").forEach(x=>x.textContent="ESTA UPDATE · Sandbox thử nghiệm");
   updateEnhanceWorkForm();
-  updateLoad().then(()=>{updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage()});
+  updateLoad().then(()=>{updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
+  updateStartNotificationTimer();
  }else{
   $(".updateIntelligencePanel")?.remove();
   updateStopScanner();
+  updateStopNotificationTimer();
+  updateCloseNotificationCenter();
+  const bell=document.querySelector(".headerBell");
+  if(bell){
+   bell.classList.remove("updateNotificationBell");
+   delete bell.dataset.count;
+   const dot=bell.querySelector("i");if(dot){dot.textContent="";dot.classList.remove("hide")}
+  }
  }
 }
 function updateSetTop(title,subtitle){
@@ -373,6 +595,7 @@ async function updateRenderCommandCenter(){
    '<div class="updateHeroActions"><button data-update-action="work-new">＋ Tạo Work Order</button><button data-update-action="scan">⌗ Scan QR</button><button data-update-action="ai">✦ Hỏi ESTA AI</button></div></div>'+
    '<button class="updateHealthScore '+updateHealthTone(h.score)+'" data-update-action="health"><span>TECHNICAL HEALTH</span><strong>'+h.score+'</strong><small>/100 · bấm để xem lý do</small></button>'+
   '</div>'+
+  '<section id="updateFocusNow" class="updateFocusNow"></section>'+
   '<div class="updateKpiGrid">'+
    updateKpi("Critical",h.critical,"Sự cố cần xử lý","danger","incident")+
    updateKpi("Quá hạn",h.overdue,"Work Order","warn","work")+
@@ -394,8 +617,28 @@ async function updateRenderCommandCenter(){
     (anoms.length?anoms.slice(0,3).map(a=>'<div class="updateEnergyBriefRow"><span>'+(a.meter_type==="water"?"💧":a.meter_type==="electric"?"⚡":"⌁")+'</span><div><b>'+uEsc(a.period_label||a.meter_type)+'</b><small>'+uEsc(a.recommendation||"Theo dõi")+'</small></div><strong class="'+(Math.abs(Number(a.variance_pct))>=15?"danger":"warn")+'">'+(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+'%</strong></div>').join(""):'<div class="updateEmpty">Không có bất thường.</div>')+
    '</section>'+
   '</div>';
+ updateRenderFocusNow();
  updateBindDashboard(root);
+ updateRefreshNotifications();
 }
+
+function updateRenderFocusNow(){
+ const root=$("#updateFocusNow");if(!root)return;
+ const rows=updateBuildNotifications(updateTechView()?5:3);
+ if(!rows.length){root.classList.add("hide");root.innerHTML="";return}
+ root.classList.remove("hide");
+ root.innerHTML='<div class="updateFocusHead"><div><span>MY FOCUS</span><h2>'+(updateTechView()?'Việc cần làm ngay':'Ưu tiên nổi bật')+'</h2><p>'+uEsc(updateNotificationScopeLabel())+'</p></div><button id="updateFocusOpenNotif" type="button">Mở Notification Center <b>'+rows.filter(x=>!x.read).length+'</b> →</button></div>'+
+ '<div class="updateFocusList">'+rows.map((x,i)=>
+  '<button class="updateFocusRow '+x.tone+'" data-focus-key="'+uEsc(x.key)+'" data-focus-action="'+uEsc(x.action)+'" data-focus-id="'+uEsc(x.id||"")+'">'+
+   '<span>'+String(i+1).padStart(2,"0")+'</span><i>'+uEsc(x.icon)+'</i><div><b>'+uEsc(x.title)+'</b><small>'+uEsc(x.meta)+'</small></div><em>'+uEsc(x.reason)+'</em><strong>→</strong>'+
+  '</button>').join("")+'</div>';
+ $("#updateFocusOpenNotif").onclick=updateOpenNotificationCenter;
+ root.querySelectorAll("[data-focus-action]").forEach(b=>b.onclick=()=>{
+  updateMarkNotificationRead(b.dataset.focusKey);
+  updateAttentionAction(b.dataset.focusAction,b.dataset.focusId);
+ });
+}
+
 function updateKpi(label,value,meta,tone,action){
  return '<button class="updateKpi '+tone+'" data-update-action="'+action+'"><span>'+uEsc(label)+'</span><strong>'+uEsc(value)+'</strong><small>'+uEsc(meta)+'</small></button>';
 }
@@ -590,7 +833,7 @@ function updateHandoverDetails(h){
 async function updateAcknowledgeHandover(id){
  try{
   await updatePatch("ops_shift_handovers","id=eq."+uq(id)+"&building_id=eq.UPDATE",{status:"Đã nhận",acknowledged_at:new Date().toISOString(),updated_at:new Date().toISOString()});
-  updateState.loaded=false;await updateLoad(true);updateRenderShift();updateRenderCommandCenter();toast("Đã xác nhận nhận bàn giao");
+  updateState.loaded=false;await updateLoad(true);updateRenderShift();updateRenderCommandCenter();updateRefreshNotifications();toast("Đã xác nhận nhận bàn giao");
  }catch(e){toast(e.message||"Không thể xác nhận bàn giao")}
 }
 function updateOpenHandoverForm(){
@@ -777,6 +1020,7 @@ syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
   const result=await updateOriginalSyncTaskRecord(action,obj,buildingId);
   const saved=result?.item?{...obj,...result.item}:obj;
   if(updateTok())updateSyncTaskCosts(saved);
+  setTimeout(()=>{if(updateIs()){updateRefreshNotifications();if(!$("#homePage")?.classList.contains("hide"))updateRenderFocusNow()}},80);
   return result?{...result,item:saved}:{item:saved,offline:true};
  }
  return updateOriginalSyncTaskRecord(action,itemOrId,buildingId);
@@ -841,7 +1085,7 @@ async function updateEnsurePmOrders(){
     }catch(e){console.warn("Could not advance PM plan",p.plan_code,e)}
    }
   }
-  if(changed){save(arr);render?.();updateRenderCommandCenter();toast("UPDATE đã tự tạo Work Order cho PM đến hạn")}
+  if(changed){save(arr);render?.();updateRenderCommandCenter();updateRefreshNotifications();toast("UPDATE đã tự tạo Work Order cho PM đến hạn")}
  }catch(e){console.warn("Auto PM generation skipped",e)}
  finally{updatePmGenerating=false}
 }
@@ -975,7 +1219,7 @@ window.addEventListener("resize",()=>{if(updateIs())updateApplyMode();updateSync
 window.visualViewport?.addEventListener("resize",updateSyncKeyboard,{passive:true});
 document.addEventListener("focusin",()=>setTimeout(updateSyncKeyboard,80));
 document.addEventListener("focusout",()=>setTimeout(updateSyncKeyboard,120));
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){updateCloseAssetDrawer();["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){updateCloseAssetDrawer();["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal);updateCloseNotificationCenter()}});
 document.addEventListener("DOMContentLoaded",()=>{
  updateInjectShell();updateApplyMode();
  const params=new URLSearchParams(location.search);
