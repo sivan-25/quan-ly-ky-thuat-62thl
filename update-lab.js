@@ -284,16 +284,7 @@ function updateBuildNotifications(limit=5){
   }
  });
 
- const handover=updateState.handovers.find(x=>x.status==="Chờ nhận"&&(!tech||!x.receiver_name||String(x.receiver_name)===String(tech.name)));
- if(handover){
-  items.push({
-   kind:"handover",id:handover.id,action:"shift",score:760,tone:"info",icon:"⇄",
-   state:"handover-pending",cycle:String(handover.handover_date||""),
-   title:"Bàn giao ca đang chờ nhận",
-   meta:handover.giver_name+" → "+handover.receiver_name,
-   reason:"Cần xác nhận bàn giao"
-  });
- }
+
 
  if(updateLeaderView()){
   updateLowStock().forEach(m=>items.push({
@@ -395,10 +386,7 @@ function updateInjectShell(){
  const navWork=$("#navWork");
  if(navWork){
   navWork.insertAdjacentHTML("afterend",
-   '<button id="navUpdateAssets" class="updateOnlyNav hide"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 16V8h12v8M9 8V5h6v3M9 12h2M13 12h2"/></svg><span>Tài sản & Thiết bị</span></button>'+
-   '<button id="navUpdateTeam" class="updateOnlyNav hide"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3.5 19c.6-3.8 2.6-5.8 5.5-5.8s4.9 2 5.5 5.8M14 18c.4-2.7 1.8-4.1 4-4.1 1.4 0 2.5.6 3.2 1.9"/></svg><span>Nhân sự kỹ thuật</span></button>'+
-   '<button id="navUpdateShift" class="updateOnlyNav hide"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2M4 4l2 2M18 18l2 2"/></svg><span>Ca trực & Bàn giao</span></button>'+
-   '<button id="navUpdateCost" class="updateOnlyNav hide"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/><path d="M4 6l5-3 5 4 6-4"/></svg><span>Chi phí & KPI</span></button>'
+   '<button id="navUpdateAssets" class="updateOnlyNav hide"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 16V8h12v8M9 8V5h6v3M9 12h2M13 12h2"/></svg><span>Tài sản & Thiết bị</span></button>'
   );
  }
  const topbar=document.querySelector(".estaTopbar");
@@ -451,7 +439,7 @@ function updateInjectShell(){
    sessionStorage.setItem("esta_update_role_preview",updateRolePreview);
    updateApplyMode();
    if($("#homePage")&&!$("#homePage").classList.contains("hide"))updateRenderCommandCenter();
-   else if(!$("#updateTeamPage")?.classList.contains("hide")||!$("#updateCostPage")?.classList.contains("hide"))showHome();
+   else if(["updateTeamPage","updateShiftPage","updateCostPage"].some(id=>!$("#"+id)?.classList.contains("hide")))showHome();
  });
 
 }
@@ -460,7 +448,7 @@ function updateInjectModals(){
  document.body.insertAdjacentHTML("beforeend",
   '<div id="updateAssetDrawer" class="updateDrawer hide"><button class="updateDrawerBackdrop" data-update-close-drawer></button><aside><header><div><span>ASSET PASSPORT</span><h2 id="updateAssetDrawerTitle">Thiết bị</h2></div><button data-update-close-drawer>×</button></header><div id="updateAssetDrawerBody"></div></aside></div>'+
   '<div id="updateHealthModal" class="modal hide"><div class="modalCard updateModalCard"><button class="modalClose" data-update-close-modal="updateHealthModal">×</button><div id="updateHealthModalBody"></div></div></div>'+
-  '<div id="updateAiModal" class="modal hide"><div class="modalCard updateModalCard updateAiCard"><button class="modalClose" data-update-close-modal="updateAiModal">×</button><span class="updateEyebrow">ESTA AI · PILOT</span><h3>Trợ lý điều hành kỹ thuật</h3><p class="updateMuted">Phân tích dữ liệu UPDATE hiện tại. AI chỉ gợi ý, không tự đóng công việc hay ra quyết định thay Leader.</p><div class="updateAiPrompts"><button data-ai="attention">Hôm nay cần quan tâm gì?</button><button data-ai="risk">Thiết bị nào rủi ro?</button><button data-ai="shift">Tóm tắt bàn giao ca</button><button data-ai="report">Soạn tóm tắt báo cáo tuần</button></div><div id="updateAiAnswer" class="updateAiAnswer">Chọn một câu hỏi nhanh để bắt đầu.</div></div></div>'+
+  '<div id="updateAiModal" class="modal hide"><div class="modalCard updateModalCard updateAiCard"><button class="modalClose" data-update-close-modal="updateAiModal">×</button><span class="updateEyebrow">ESTA AI · PILOT</span><h3>Trợ lý điều hành kỹ thuật</h3><p class="updateMuted">Phân tích dữ liệu UPDATE hiện tại. AI chỉ gợi ý, không tự đóng công việc hay ra quyết định thay Leader.</p><div class="updateAiPrompts"><button data-ai="attention">Hôm nay cần quan tâm gì?</button><button data-ai="risk">Thiết bị nào rủi ro?</button><button data-ai="report">Soạn tóm tắt báo cáo tuần</button></div><div id="updateAiAnswer" class="updateAiAnswer">Chọn một câu hỏi nhanh để bắt đầu.</div></div></div>'+
   '<button id="updateAiButton" class="updateAiButton hide" type="button"><span>✦</span> ESTA AI</button>'+
   '<div id="updateScannerModal" class="modal hide"><div class="modalCard updateModalCard updateScannerCard"><button class="modalClose" data-update-close-modal="updateScannerModal">×</button><span class="updateEyebrow">QUICK SCAN</span><h3>Quét QR thiết bị</h3><p class="updateMuted">Đưa camera vào QR ESTA trên thiết bị hoặc nhập mã thiết bị.</p><video id="updateScannerVideo" playsinline muted></video><p id="updateScannerStatus" class="updateScannerStatus"></p><div class="updateScannerManual"><input id="updateScannerCode" placeholder="VD: FWP-01"><button id="updateScannerOpen" type="button">Mở thiết bị</button></div></div></div>'+
   '<div id="updateQuickModal" class="modal hide"><div class="modalCard updateModalCard"><button class="modalClose" data-update-close-modal="updateQuickModal">×</button><div id="updateQuickModalBody"></div></div></div>'+
@@ -522,8 +510,7 @@ function updateApplyMode(){
  $("#updateAiButton")?.classList.toggle("hide",!on);
  $("#app")?.classList.toggle("updateTechnicianView",on&&updateTechView());
  if(on){
-  $("#navUpdateTeam")?.classList.toggle("hide",updateTechView());
-  $("#navUpdateCost")?.classList.toggle("hide",updateTechView());
+  ["navUpdateTeam","navUpdateShift","navUpdateCost"].forEach(id=>$("#"+id)?.classList.add("hide"));
   const roleBtn=$("#updateRolePreviewBtn");
   if(roleBtn){
     roleBtn.classList.toggle("hide",!updateRealAdmin());
@@ -599,7 +586,7 @@ function updateSetTop(title,subtitle){
 }
 function updateShowStandalone(name){
  if(!updateIs())return;
- if(updateTechView()&&(name==="team"||name==="cost")){toast("Hạng mục này dành cho Leader / Admin");showHome();return}
+ if(["team","shift","cost"].includes(name)){showHome();return}
  const route="standalone:"+name;
  const id={assets:"Assets",team:"Team",shift:"Shift",cost:"Cost"}[name];
  const page=$("#update"+id+"Page");
@@ -641,23 +628,18 @@ async function updateRenderCommandCenter(){
  await updateLoad();
  const h=updateHealth(),tasks=load(),critical=updateOpenIncidents().filter(i=>i.severity==="Khẩn cấp");
  const overdue=updateOverdueTasks(),plans=updateDuePlans(),low=updateLowStock(),anoms=updateState.anomalies.filter(x=>x.status!=="Đã đóng");
- const handover=updateState.handovers.find(x=>x.status==="Chờ nhận");
-
-
  const systemCards=updateState.systems.map(s=>{
   const aa=updateState.assets.filter(a=>a.system_code===s.code);if(!aa.length)return "";
   const avg=Math.round(aa.reduce((z,a)=>z+Number(a.health_score||100),0)/aa.length);
   return '<button class="updateSystemHealth" data-update-system="'+uEsc(s.code)+'"><span>'+uEsc(s.icon||"•")+'</span><div><b>'+uEsc(s.name)+'</b><small>'+aa.length+' thiết bị</small></div><strong class="'+updateHealthTone(avg)+'">'+avg+'</strong></button>';
  }).filter(Boolean).join("");
 
- const team=updateState.technicians.slice(0,4).map(t=>
-  '<button class="updateTeamMini" data-update-action="team"><span class="updateAvatar">'+uEsc(t.avatar_text||uInitials(t.name))+'</span><div><b>'+uEsc(t.name)+'</b><small>'+uEsc(t.status)+' · '+uNum(t.workload)+'% tải</small><i><em style="width:'+uClamp(Number(t.workload),0,100)+'%"></em></i></div><strong class="'+updateWorkloadTone(Number(t.workload))+'">'+uNum(t.workload)+'%</strong></button>'
- ).join("");
+
 
  root.innerHTML=
   '<div class="updateHero">'+
    '<div class="updateHeroCopy"><div class="updateHeroTags"><span>ESTA OPERATIONS</span><b>THỬ NGHIỆM</b><i class="'+(updateState.offline?"offline":"online")+'">'+(updateState.offline?"OFFLINE CACHE":"LIVE DATA")+'</i></div>'+
-   '<h1>Technical Command Center</h1><p>Một màn hình để Leader biết ngay hệ thống nào rủi ro, việc nào quá hạn và ai đang chịu trách nhiệm.</p>'+
+   '<h1>Technical Command Center</h1><p>Một màn hình để thấy ngay hệ thống rủi ro, việc quá hạn và hạng mục cần ưu tiên.</p>'+
    '<div class="updateHeroActions"><button data-update-action="work-new">＋ Tạo Work Order</button><button data-update-action="scan">⌗ Scan QR</button><button data-update-action="ai">✦ Hỏi ESTA AI</button></div></div>'+
    '<button class="updateHealthScore '+updateHealthTone(h.score)+'" data-update-action="health"><span>TECHNICAL HEALTH</span><strong>'+h.score+'</strong><small>/100 · bấm để xem lý do</small></button>'+
   '</div>'+
@@ -672,10 +654,8 @@ async function updateRenderCommandCenter(){
   '</div>'+
   '<div class="updateDashboardGrid updateDashboardCompact">'+
    '<section class="updatePanel"><header><div><span>ASSET HEALTH</span><h2>Sức khỏe hệ thống</h2></div><button data-update-action="assets">Xem tài sản →</button></header><div class="updateSystemGrid">'+systemCards+'</div></section>'+
-   '<section class="updatePanel updateLeaderPanel"><header><div><span>TEAM</span><h2>Nhân sự & tải công việc</h2></div><button data-update-action="team">Skill Matrix →</button></header><div class="updateTeamMiniList">'+team+'</div></section>'+
-   '<section class="updatePanel updateTechShiftPanel"><header><div><span>SHIFT</span><h2>Bàn giao & ca trực</h2></div><button data-update-action="shift">Mở bàn giao →</button></header><div class="updateHandoverCompact">'+
-    (handover?'<div><b>'+uEsc(handover.giver_name)+' → '+uEsc(handover.receiver_name)+'</b><small>'+uDate(handover.handover_date)+' · '+uEsc(handover.shift_from)+' → '+uEsc(handover.shift_to)+'</small><p>'+uEsc(handover.notes||"Không có ghi chú")+'</p></div>':'<div class="updateEmpty small">Không có bàn giao đang chờ nhận.</div>')+
-   '</div></section>'+
+
+
    '<section class="updatePanel updateEnergyBrief"><header><div><span>ENERGY INTELLIGENCE</span><h2>Bất thường năng lượng</h2></div><button data-update-action="energy">Chi tiết →</button></header>'+
     (anoms.length?anoms.slice(0,3).map(a=>'<div class="updateEnergyBriefRow"><span>'+(a.meter_type==="water"?"💧":a.meter_type==="electric"?"⚡":"⌁")+'</span><div><b>'+uEsc(a.period_label||a.meter_type)+'</b><small>'+uEsc(a.recommendation||"Theo dõi")+'</small></div><strong class="'+(Math.abs(Number(a.variance_pct))>=15?"danger":"warn")+'">'+(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+'%</strong></div>').join(""):'<div class="updateEmpty">Không có bất thường.</div>')+
    '</section>'+
@@ -713,9 +693,7 @@ function updateBindDashboard(root){
 function updateDoAction(a){
  if(a==="health")return updateOpenHealth();
  if(a==="assets")return updateShowStandalone("assets");
- if(a==="team")return updateShowStandalone("team");
- if(a==="shift")return updateShowStandalone("shift");
- if(a==="cost")return updateShowStandalone("cost");
+ if(["team","shift","cost"].includes(a)){showHome();return}
  if(a==="work"||a==="work-new"){showModule("work");if(a==="work-new")setTimeout(()=>document.querySelector("#workEntryHomeAnchor")?.scrollIntoView({behavior:"smooth"}),80);return}
  if(a==="maintenance")return showModule("maintenance");
  if(a==="inventory")return showModule("inventory");
