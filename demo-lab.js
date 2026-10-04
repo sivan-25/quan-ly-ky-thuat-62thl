@@ -1004,6 +1004,7 @@ window.demoCreateTaskFromIncident=async id=>{
  const assignee=projectPeople?.[0]?.name||"Kỹ thuật dự án";
  const taskId=Date.now();
  const priority=demoIncidentTaskPriority(inc.severity);
+ const linkedAsset=demoAsset(inc.asset_id);
  const dueDate=demoIncidentTaskDue(priority);
  const title=[String(inc.symptom||"").trim(),String(inc.area||"").trim()].filter(Boolean).join(" - ")||"Xử lý sự cố";
  let obj={
@@ -1012,6 +1013,7 @@ window.demoCreateTaskFromIncident=async id=>{
   priority,dueDate,dueDateExplicit:true,
   assetId:inc.asset_id||"",incidentCode:inc.incident_code,inspectionCode:"",
   contractorId:inc.contractor_id||"",materials:[],
+  systemCode:linkedAsset?.system_code||"",areaCode:linkedAsset?.area_code||"",
   cause:demoCauseValue(inc.cause)||"",result:String(inc.solution||"").trim()
  };
  try{
