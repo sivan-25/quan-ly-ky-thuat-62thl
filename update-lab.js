@@ -711,17 +711,22 @@ async function updateRenderCommandCenter(){
  await updateLoad();
  const h=updateHealth(),tasks=load(),critical=updateOpenIncidents().filter(i=>i.severity==="Khẩn cấp");
  const overdue=updateOverdueTasks(),plans=updateDuePlans(),low=updateLowStock(),anoms=updateState.anomalies.filter(x=>x.status!=="Đã đóng");
- const systemCards=updateState.systems.map(s=>{
+ let systemCards=updateState.systems.map(s=>{
   const aa=updateState.assets.filter(a=>a.system_code===s.code);if(!aa.length)return "";
   const avg=Math.round(aa.reduce((z,a)=>z+Number(a.health_score||100),0)/aa.length);
   return '<button class="updateSystemHealth" data-update-system="'+uEsc(s.code)+'"><span>'+uEsc(s.icon||"•")+'</span><div><b>'+uEsc(s.name)+'</b><small>'+aa.length+' thiết bị</small></div><strong class="'+updateHealthTone(avg)+'">'+avg+'</strong></button>';
  }).filter(Boolean).join("");
+ if(!systemCards&&updateState.assets.length){
+  const avg=Math.round(updateState.assets.reduce((z,a)=>z+Number(a.health_score||100),0)/updateState.assets.length);
+  systemCards='<button class="updateSystemHealth" data-update-action="assets"><span>⚙</span><div><b>Tài sản kỹ thuật</b><small>'+updateState.assets.length+' thiết bị</small></div><strong class="'+updateHealthTone(avg)+'">'+avg+'</strong></button>';
+ }
+ if(!systemCards)systemCards='<div class="updateEmpty">Chưa có dữ liệu tài sản / hệ thống.</div>';
 
 
 
  root.innerHTML=
   '<div class="updateHero">'+
-   '<div class="updateHeroCopy"><div class="updateHeroTags"><span>ESTA OPERATIONS</span><b>THỬ NGHIỆM</b><i class="'+(updateState.offline?"offline":"online")+'">'+(updateState.offline?"OFFLINE CACHE":"LIVE DATA")+'</i></div>'+
+   '<div class="updateHeroCopy"><div class="updateHeroTags"><span>ESTA OPERATIONS</span><b>'+(updateIsSandbox()?"THỬ NGHIỆM":"VẬN HÀNH")+'</b><i class="'+(updateState.offline?"offline":"online")+'">'+(updateState.offline?"OFFLINE CACHE":"LIVE DATA")+'</i></div>'+
    '<h1>Technical Command Center</h1><p>Một màn hình để thấy ngay hệ thống rủi ro, việc quá hạn và hạng mục cần ưu tiên.</p>'+
    '<div class="updateHeroActions"><button data-update-action="work-new">＋ Tạo Work Order</button><button data-update-action="scan">⌗ Scan QR</button><button data-update-action="ai">✦ Hỏi ESTA AI</button></div></div>'+
    '<button class="updateHealthScore '+updateHealthTone(h.score)+'" data-update-action="health"><span>TECHNICAL HEALTH</span><strong>'+h.score+'</strong><small>/100 · bấm để xem lý do</small></button>'+
