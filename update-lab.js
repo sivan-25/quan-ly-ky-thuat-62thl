@@ -42,6 +42,15 @@ const uTime=v=>{
  if(!v)return "—";
  try{return new Date(v).toLocaleString("vi-VN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"})}catch(e){return "—"}
 };
+const uIncidentStart=i=>{
+ const raw=i?.created_at||i?.detected_at||"";
+ if(!raw)return "—";
+ try{
+  const d=new Date(raw);
+  return d.toLocaleDateString("vi-VN")+" · "+d.toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
+ }catch(e){return "—"}
+};
+
 const uClamp=(v,min,max)=>Math.min(max,Math.max(min,v));
 const uPriority=v=>{
  const x=String(v||"").trim();
@@ -239,7 +248,7 @@ function updateBuildNotifications(limit=5){
    kind:"incident",id:i.id,action:"incident",score:1000,tone:"danger",icon:"!",
    state:"critical",cycle:String(i.detected_at||""),
    title:i.symptom||i.incident_code||"Sự cố Critical",
-   meta:(i.incident_code||"Sự cố")+" · "+(i.area||"Không rõ vị trí"),
+   meta:"Bắt đầu "+uIncidentStart(i)+" · "+(i.area||"Không rõ vị trí"),
    reason:"Critical · cần xử lý ngay"
   });
  });
@@ -760,7 +769,7 @@ function updateOpenAsset(id){
   '<div class="updateAssetActions"><button data-asset-action="work">＋ Work Order</button><button data-asset-action="incident">! Báo sự cố</button><button data-asset-action="qr">⌗ QR</button></div>'+
   '<div class="updateAssetTabs">'+
    '<section><header><span>PM / METER</span><b>'+uEsc(plan?.title||"Chưa có kế hoạch")+'</b></header><div class="updateInfoGrid"><div><span>Chu kỳ</span><b>'+uEsc(plan?.trigger_type==="meter"?(uNum(plan.meter_interval)+" "+(plan.meter_unit||"")):(uNum(plan?.frequency_days)+" ngày"))+'</b></div><div><span>Tiếp theo</span><b>'+uEsc(plan?.trigger_type==="meter"?(uNum(a.meter_value)+" / "+uNum(plan.next_meter_due)+" "+plan.meter_unit):uDate(plan?.next_due_date))+'</b></div></div></section>'+
-   '<section><header><span>LỊCH SỬ</span><b>'+tasks.length+' WO · '+inc.length+' sự cố</b></header><div class="updateMiniTimeline">'+inc.slice(0,4).map(x=>'<div><i class="'+(x.status==="Đã đóng"?"good":"warn")+'"></i><span><b>'+uEsc(x.incident_code)+'</b><small>'+uDate(x.detected_at)+' · '+uEsc(x.symptom)+'</small></span></div>').join("")+'</div></section>'+
+   '<section><header><span>LỊCH SỬ</span><b>'+tasks.length+' WO · '+inc.length+' sự cố</b></header><div class="updateMiniTimeline">'+inc.slice(0,4).map(x=>'<div><i class="'+(x.status==="Đã đóng"?"good":"warn")+'"></i><span><b>'+uEsc(uIncidentStart(x))+'</b><small>'+uEsc(x.symptom)+'</small></span></div>').join("")+'</div></section>'+
    '<section><header><span>TREND</span><b>'+meters.length+' readings</b></header>'+updateSparkline(meters)+'<div class="updateTrendLegend">'+(meters.length?'<span>'+uEsc(meters[meters.length-1].metric_name)+' · '+uNum(meters[meters.length-1].value,1)+' '+uEsc(meters[meters.length-1].unit)+'</span>':'<span>Chưa có dữ liệu meter</span>')+'</div></section>'+
    '<section><header><span>CHI PHÍ</span><b>'+uMoney(costs.reduce((s,x)=>s+Number(x.amount||0),0))+'</b></header><p class="updateMuted">Tổng chi phí thử nghiệm liên kết trực tiếp với thiết bị.</p></section>'+
   '</div>'+
