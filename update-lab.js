@@ -521,6 +521,16 @@ function updateArrangeWorkStats(on){
  }
 }
 
+function updateArrangeWorkLinkFields(on){
+ const grid=$("#demoWorkLinks .demoWorkLinkGrid"),cause=$("#demoTaskCause")?.closest("label"),result=$("#demoTaskResult")?.closest("label");
+ if(!grid||!cause||!result)return;
+ if(on){
+  if(result.nextElementSibling!==cause)grid.insertBefore(result,cause);
+ }else{
+  if(cause.nextElementSibling!==result)grid.insertBefore(cause,result);
+ }
+}
+
 function updateArrangeSidebar(on){
  const reports=$("#navReports"),assets=$("#navUpdateAssets"),inspection=$("#navInspection"),incident=$("#navIncident"),work=$("#navWork");
  if(on){
@@ -537,6 +547,7 @@ function updateApplyMode(){
  const on=updateIs()&&($("#adminPage")?.classList.contains("hide")??true);
  updateArrangeSidebar(on);
  updateArrangeWorkStats(on);
+ updateArrangeWorkLinkFields(on);
  $("#app")?.classList.toggle("updateProjectMode",on);
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on);
@@ -1019,26 +1030,35 @@ function updateEnhanceWorkForm(){
   priority.addEventListener("change",updateWorkSlaPreview);
  }
 
- if(!$("#updateWorkExtras")){
-  grid.insertAdjacentHTML("beforeend",
-   '<div id="updateWorkExtras" class="span2 updateWorkExtras updateWorkExtrasCompact">'+
-    '<div class="updateWorkContextLine">'+
-     '<div id="updateAssetContext" class="updateAssetContext hide"></div>'+
-     '<span id="updateWorkSlaPreview" class="updateWorkSlaPreview"></span>'+
-    '</div>'+
-    '<input id="updateTaskSystem" type="hidden" value="">'+
-    '<input id="updateTaskArea" type="hidden" value="">'+
-    '<input id="updateTaskLaborCost" type="hidden" value="0">'+
-    '<input id="updateTaskVendorCost" type="hidden" value="0">'+
-    '<input id="updateTaskOtherCost" type="hidden" value="0">'+
-   '</div>'
-  );
-  const extras=$("#updateWorkExtras"),materials=grid.querySelector(".demoTaskMaterialsField");
-  if(extras&&materials)grid.insertBefore(extras,materials);
+ // Hide the visible SLA/System strip completely. Metadata stays hidden for reports and asset linkage.
+ $("#updateWorkExtras")?.remove();
+ let hidden=$("#updateWorkHiddenMeta");
+ if(!hidden){
+  hidden=document.createElement("div");
+  hidden.id="updateWorkHiddenMeta";
+  hidden.className="hide";
+  hidden.innerHTML=
+   '<input id="updateTaskSystem" type="hidden" value="">'+
+   '<input id="updateTaskArea" type="hidden" value="">'+
+   '<input id="updateTaskLaborCost" type="hidden" value="0">'+
+   '<input id="updateTaskVendorCost" type="hidden" value="0">'+
+   '<input id="updateTaskOtherCost" type="hidden" value="0">';
+  links.appendChild(hidden);
   $("#demoTaskAsset")?.addEventListener("change",updateAutofillAssetExtras);
  }
+
+ // UPDATE compact layout:
+ // Row 2: Checklist | Nhà thầu | Vật tư sử dụng (span 2)
+ // Row 3: Hướng xử lý / Kết quả (span 2) | Nguyên nhân (span 2)
+ const materials=grid.querySelector(".demoTaskMaterialsField");
+ const causeLabel=cause?.closest("label");
+ const resultLabel=result?.closest("label");
+ materials?.classList.add("updateUniformMaterialField");
+ resultLabel?.classList.add("updateResultField");
+ causeLabel?.classList.add("updateCauseField");
+ if(resultLabel&&causeLabel&&resultLabel.nextElementSibling!==causeLabel)grid.insertBefore(resultLabel,causeLabel);
+
  ["demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.closest("label")?.classList.add("updateUniformLinkField"));
- grid.querySelector(".demoTaskMaterialsField")?.classList.add("updateUniformMaterialField");
  updatePopulateWorkExtras();
  updateWorkSlaPreview();
  updateSyncWorkContextUI();
