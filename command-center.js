@@ -16,7 +16,7 @@ function ensureRoot(){
  let root=$c("#"+ROOT_ID);
  if(!root){
   root=document.createElement("section");root.id=ROOT_ID;root.className="ccRoot hide";
-  root.innerHTML='<div class="ccHero"><div><span>ESTA · CENTRAL OPERATIONS</span><h2>Trung tâm điều hành đa dự án</h2><p>Theo dõi toàn bộ công việc, cảnh báo và trạng thái vận hành trong một màn hình.</p></div><div class="ccHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary"></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel"><div class="ccPanelHead"><div><span>CÔNG VIỆC TOÀN HỆ THỐNG</span><h3>Tất cả dự án</h3><p id="ccTaskMeta">Đang tải dữ liệu...</p></div></div><div class="ccFilters"><select id="ccProjectFilter"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter"><option value="">Tất cả trạng thái</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option></select><select id="ccPriorityFilter"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th>Dự án</th><th>Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div></section><aside class="ccPanel ccAlertsPanel"><div class="ccPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div></aside></div><section class="ccPanel ccActivityPanel"><div class="ccPanelHead"><div><span>NHẬT KÝ VẬN HÀNH</span><h3>Hoạt động gần đây</h3><p>Lịch sử cập nhật snapshot theo dự án và tài khoản thực hiện.</p></div></div><div id="ccActivityList" class="ccActivityList"></div></section>';
+  root.innerHTML='<div class="ccHero"><div class="ccHeroCopy"><div class="ccHeroTags"><span>ESTA OPERATIONS</span><b>ĐA DỰ ÁN</b><i>LIVE DATA</i></div><h2>Technical Command Center</h2><p>Điều hành toàn bộ dự án, công việc, cảnh báo và sự cố trong một màn hình thống nhất.</p></div><div class="ccHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary"></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel"><div class="ccPanelHead"><div><span>CÔNG VIỆC TOÀN HỆ THỐNG</span><h3>Tất cả dự án</h3><p id="ccTaskMeta">Đang tải dữ liệu...</p></div></div><div class="ccFilters"><select id="ccProjectFilter"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter"><option value="">Tất cả trạng thái</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option></select><select id="ccPriorityFilter"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th>Dự án</th><th>Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div></section><aside class="ccPanel ccAlertsPanel"><div class="ccPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div></aside></div><section class="ccPanel ccActivityPanel"><div class="ccPanelHead"><div><span>NHẬT KÝ VẬN HÀNH</span><h3>Hoạt động gần đây</h3><p>Lịch sử cập nhật theo dự án và tài khoản thực hiện.</p></div></div><div id="ccActivityList" class="ccActivityList"></div></section>';
   const anchor=home.querySelector(".homeKpis");if(anchor)anchor.insertAdjacentElement("afterend",root);else home.prepend(root);
   root.querySelector("#ccRefresh").addEventListener("click",()=>loadCenter(true));
   root.querySelector("#ccDispatch").addEventListener("click",openDispatch);
@@ -31,10 +31,18 @@ function ensureRoot(){
  const hero=root.querySelector(".ccHero");
  if(admin){
   welcome?.classList.add("ccAdminWelcomeHidden");
-  if(kpis&&hero&&kpis.parentElement!==root)hero.insertAdjacentElement("afterend",kpis);
-  const top=$c("#topHomeTitle h1");if(top)top.textContent="Trung tâm điều hành";
+  // Do not reuse the legacy 4 KPI row on Admin home. Command Center has its own compact KPI grid.
+  if(kpis){
+   kpis.classList.add("ccLegacyKpisHidden");
+   if(kpis.parentElement===root){
+    if(welcome)welcome.insertAdjacentElement("afterend",kpis);
+    else home.prepend(kpis);
+   }
+  }
+  const top=$c("#topHomeTitle h1");if(top)top.textContent="Technical Command Center";
  }else{
   welcome?.classList.remove("ccAdminWelcomeHidden");
+  kpis?.classList.remove("ccLegacyKpisHidden");
   if(kpis&&kpis.parentElement===root){
    if(welcome)welcome.insertAdjacentElement("afterend",kpis);
    else home.prepend(kpis);
@@ -60,7 +68,20 @@ function alerts(){
 function statusClass(s){return s==="Đã hoàn thành"?"done":s==="Chờ xử lý"?"waiting":"doing"}
 function warningHtml(t){const due=String(t.dueDate||""),td=todayC();if(!isDone(t)&&due&&due<td)return '<span class="ccWarn critical">Quá hạn</span>';if(!isDone(t)&&due===td)return '<span class="ccWarn high">Hôm nay</span>';if(!isDone(t)&&priorityRank(t.priority)>=3)return '<span class="ccWarn high">'+escC(t.priority)+'</span>';return '<span class="ccWarn ok">Bình thường</span>'}
 function renderFilters(){const sel=$c("#ccProjectFilter");if(!sel)return;const old=sel.value;sel.innerHTML='<option value="">Tất cả dự án</option>'+activeProjects().map(b=>'<option value="'+escC(b.id)+'">'+escC(b.name||b.id)+'</option>').join("");if([...sel.options].some(o=>o.value===old))sel.value=old}
-function renderSummary(a,t){const box=$c("#ccSummary");if(!box)return;const red=a.filter(x=>x.sev===3).length,overdue=a.filter(x=>x.title.toLowerCase().includes("quá hạn")).length,openInc=activeRows().reduce((n,r)=>n+(r.ops?.incidents||[]).filter(x=>x.status!=="Đã đóng").length,0);box.innerHTML='<article><span>DỰ ÁN</span><b>'+activeRows().length+'</b><small>Đang theo dõi</small></article><article><span>VIỆC CHƯA XONG</span><b>'+t.filter(x=>!isDone(x)).length+'</b><small>Toàn hệ thống</small></article><article class="warn"><span>CẢNH BÁO ĐỎ</span><b>'+red+'</b><small>Cần ưu tiên</small></article><article class="danger"><span>QUÁ HẠN</span><b>'+overdue+'</b><small>Công việc / bảo trì</small></article><article><span>SỰ CỐ ĐANG MỞ</span><b>'+openInc+'</b><small>Chưa đóng hồ sơ</small></article>'}
+function renderSummary(a,t){
+ const box=$c("#ccSummary");if(!box)return;
+ const red=a.filter(x=>x.sev===3).length;
+ const overdue=a.filter(x=>x.title.toLowerCase().includes("quá hạn")).length;
+ const openInc=activeRows().reduce((n,r)=>n+(r.ops?.incidents||[]).filter(x=>x.status!=="Đã đóng").length,0);
+ const today=todayC(),todayCount=t.filter(x=>String(x.d||"")===today).length;
+ box.innerHTML=
+  '<article class="info"><span>DỰ ÁN</span><b>'+activeRows().length+'</b><small>Đang theo dõi</small></article>'+
+  '<article class="info"><span>HÔM NAY</span><b>'+todayCount+'</b><small>Công việc trong ngày</small></article>'+
+  '<article><span>VIỆC CHƯA XONG</span><b>'+t.filter(x=>!isDone(x)).length+'</b><small>Toàn hệ thống</small></article>'+
+  '<article class="warn"><span>CẢNH BÁO ĐỎ</span><b>'+red+'</b><small>Cần ưu tiên</small></article>'+
+  '<article class="danger"><span>QUÁ HẠN</span><b>'+overdue+'</b><small>Công việc / bảo trì</small></article>'+
+  '<article><span>SỰ CỐ ĐANG MỞ</span><b>'+openInc+'</b><small>Chưa đóng hồ sơ</small></article>';
+}
 function renderProjects(a){const box=$c("#ccProjectCards");if(!box)return;box.innerHTML=activeRows().map(r=>{const b=r.building||{},tasks=r.snapshot?.tasks||[],open=tasks.filter(x=>!isDone(x)).length,aa=a.filter(x=>x.bid===String(b.id)),red=aa.filter(x=>x.sev===3).length;return '<button class="ccProjectCard" type="button" data-cc-project="'+escC(b.id)+'"><div><span>'+escC(b.id)+'</span><h3>'+escC(b.name||b.id)+'</h3><div class="ccProjectStats"><span><b>'+open+'</b> việc mở</span><span><b>'+aa.length+'</b> cảnh báo</span><span class="'+(red?"hot":"")+'"><b>'+red+'</b> khẩn</span></div></div><i>→</i></button>'}).join("")||'<div class="ccEmpty">Chưa có dự án đang hoạt động.</div>'}
 function renderLists(){
  const project=$c("#ccProjectFilter")?.value||"",status=$c("#ccStatusFilter")?.value||"",priority=$c("#ccPriorityFilter")?.value||"",q=($c("#ccSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
