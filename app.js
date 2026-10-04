@@ -2478,7 +2478,7 @@ async function loadInventoryData(buildingId=currentBuilding?.id,force=false){
    inventoryTransactions=Array.isArray(result[1])?result[1]:[];
    inventoryTools=Array.isArray(result[2])?result[2]:[];
    inventoryLoadedBuilding=buildingId;inventoryShowAlertsOnly=false;inventoryFillPeople();renderInventory();
- }catch(e){console.warn("Load inventory failed",e);toast("Không tải được dữ liệu vật tư")}
+ }catch(e){if(String(currentBuilding?.id||"")!==String(buildingId))return;console.warn("Load inventory failed",e);toast("Không tải được dữ liệu vật tư")}
 }
 function renderInventory(){
  inventorySetYears();
@@ -2833,7 +2833,7 @@ async function loadMaintenanceData(buildingId=currentBuilding?.id,force=false){
    maintenanceAssets=Array.isArray(result[0])?result[0]:[];
    maintenanceRecords=Array.isArray(result[1])?result[1]:[];
    maintenanceLoadedBuilding=buildingId;inventoryFillPeople();renderMaintenance();
- }catch(e){console.warn("Load maintenance failed",e);toast("Không tải được dữ liệu bảo trì")}
+ }catch(e){if(String(currentBuilding?.id||"")!==String(buildingId))return;console.warn("Load maintenance failed",e);toast("Không tải được dữ liệu bảo trì")}
 }
 function renderMaintenance(){
  const q=($("#maintenanceSearch")?.value||"").trim().toLocaleLowerCase("vi-VN"),sys=$("#maintenanceSystemFilter")?.value||"",due=$("#maintenanceDueFilter")?.value||"";
