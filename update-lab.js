@@ -17,6 +17,10 @@ let updateState={
  contractors:[],vendorScores:[],baselines:[],anomalies:[],costs:[],plans:[],meters:[]
 };
 let updatePmGenerating=false,updateScannerStream=null,updateScannerTimer=null;
+let updateRolePreview=sessionStorage.getItem("esta_update_role_preview")||"leader";
+const updateRealAdmin=()=>!!currentAccount?.is_admin;
+const updateTechView=()=>!updateRealAdmin()||updateRolePreview==="technician";
+const updateLeaderView=()=>updateRealAdmin()&&!updateTechView();
 
 const updateIs=()=>String(currentBuilding?.id||"")===UPDATE_ID&&!$("#navWork")?.classList.contains("hide");
 const updateTok=()=>centralSession?.access_token||"";
@@ -214,7 +218,7 @@ function updateInjectShell(){
  }
  if(!$("#updateTrialRibbon")){
   const r=document.createElement("div");r.id="updateTrialRibbon";r.className="updateTrialRibbon hide";
-  r.innerHTML='<b>UPDATE</b><span>THỬ NGHIỆM · Không ảnh hưởng dự án thật</span>';
+  r.innerHTML='<b>UPDATE</b><span>THỬ NGHIỆM · Không ảnh hưởng dự án thật</span><button id="updateRolePreviewBtn" type="button">Xem như Kỹ thuật viên</button>';
   document.body.appendChild(r);
  }
  if(!$("#updateMobileNav")){
@@ -229,6 +233,15 @@ function updateInjectShell(){
  }
  updateInjectModals();
  updateBindNav();
+ $("#updateRolePreviewBtn")?.addEventListener("click",()=>{
+   if(!updateRealAdmin())return;
+   updateRolePreview=updateTechView()?"leader":"technician";
+   sessionStorage.setItem("esta_update_role_preview",updateRolePreview);
+   updateApplyMode();
+   if($("#homePage")&&!$("#homePage").classList.contains("hide"))updateRenderCommandCenter();
+   else if(!$("#updateTeamPage")?.classList.contains("hide")||!$("#updateCostPage")?.classList.contains("hide"))showHome();
+ });
+
 }
 function updateInjectModals(){
  if($("#updateAssetDrawer"))return;
@@ -268,7 +281,15 @@ function updateApplyMode(){
  $("#updateTrialRibbon")?.classList.toggle("hide",!on);
  $("#updateMobileNav")?.classList.toggle("hide",!on);
  $("#updateAiButton")?.classList.toggle("hide",!on);
+ $("#app")?.classList.toggle("updateTechnicianView",on&&updateTechView());
  if(on){
+  $("#navUpdateTeam")?.classList.toggle("hide",updateTechView());
+  $("#navUpdateCost")?.classList.toggle("hide",updateTechView());
+  const roleBtn=$("#updateRolePreviewBtn");
+  if(roleBtn){
+    roleBtn.classList.toggle("hide",!updateRealAdmin());
+    roleBtn.textContent=updateTechView()?"Trở về Leader":"Xem như Kỹ thuật viên";
+  }
   document.querySelectorAll(".buildingNameText").forEach(x=>x.textContent="ESTA UPDATE · Sandbox thử nghiệm");
   updateEnhanceWorkForm();
   updateLoad().then(()=>{updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage()});
@@ -286,6 +307,7 @@ function updateSetTop(title,subtitle){
 }
 function updateShowStandalone(name){
  if(!updateIs())return;
+ if(updateTechView()&&(name==="team"||name==="cost")){toast("Hạng mục này dành cho Leader / Admin");showHome();return}
  closeWorkFilter?.();
  document.querySelectorAll(".page.modulePage").forEach(x=>x.classList.add("hide"));
  $("#workHero")?.classList.add("hide");$("#energyHero")?.classList.add("hide");
@@ -327,6 +349,12 @@ async function updateRenderCommandCenter(){
  low.forEach(m=>attention.push({tone:"warn",icon:"□",title:m.name,meta:"Tồn "+uNum(m._stock)+" "+m.unit+" · Min "+uNum(m.min_qty),action:"inventory"}));
  anoms.filter(a=>Math.abs(Number(a.variance_pct))>=15).forEach(a=>attention.push({tone:"warn",icon:"⌁",title:"Bất thường "+(a.meter_type==="water"?"nước":a.meter_type==="electric"?"điện":a.meter_type),meta:(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+"% so baseline",action:"energy"}));
  if(handover)attention.push({tone:"info",icon:"⇄",title:"Bàn giao ca đang chờ nhận",meta:handover.giver_name+" → "+handover.receiver_name,action:"shift"});
+ const attentionSeen=new Set(),attentionUnique=[];
+ attention.forEach(x=>{
+   const key=(x.action||"")+"::"+String(x.id||x.title||x.meta||"");
+   if(attentionSeen.has(key))return;
+   attentionSeen.add(key);attentionUnique.push(x);
+ });
 
  const systemCards=updateState.systems.map(s=>{
   const aa=updateState.assets.filter(a=>a.system_code===s.code);if(!aa.length)return "";
@@ -354,11 +382,14 @@ async function updateRenderCommandCenter(){
    updateKpi("Energy",h.anomaly,"Bất thường","info","energy")+
   '</div>'+
   '<div class="updateDashboardGrid">'+
-   '<section class="updatePanel updateAttention"><header><div><span>CẦN XỬ LÝ</span><h2>Ưu tiên hôm nay</h2></div><b>'+attention.length+'</b></header><div class="updateAttentionList">'+
-    (attention.length?attention.slice(0,8).map((x,i)=>'<button class="updateAttentionRow '+x.tone+'" data-update-att-action="'+x.action+'" data-update-id="'+uEsc(x.id||"")+'"><span class="updateAttentionNo">'+String(i+1).padStart(2,"0")+'</span><i>'+x.icon+'</i><div><b>'+uEsc(x.title)+'</b><small>'+uEsc(x.meta)+'</small></div><em>→</em></button>').join(""):'<div class="updateEmpty">Không có cảnh báo cần xử lý.</div>')+
+   '<section class="updatePanel updateAttention"><header><div><span>CẦN XỬ LÝ</span><h2>Ưu tiên hôm nay</h2></div><b>'+attentionUnique.length+'</b></header><div class="updateAttentionList">'+
+    (attentionUnique.length?attentionUnique.slice(0,8).map((x,i)=>'<button class="updateAttentionRow '+x.tone+'" data-update-att-action="'+x.action+'" data-update-id="'+uEsc(x.id||"")+'"><span class="updateAttentionNo">'+String(i+1).padStart(2,"0")+'</span><i>'+x.icon+'</i><div><b>'+uEsc(x.title)+'</b><small>'+uEsc(x.meta)+'</small></div><em>→</em></button>').join(""):'<div class="updateEmpty">Không có cảnh báo cần xử lý.</div>')+
    '</div></section>'+
    '<section class="updatePanel"><header><div><span>ASSET HEALTH</span><h2>Sức khỏe hệ thống</h2></div><button data-update-action="assets">Xem tài sản →</button></header><div class="updateSystemGrid">'+systemCards+'</div></section>'+
-   '<section class="updatePanel"><header><div><span>TEAM</span><h2>Nhân sự & tải công việc</h2></div><button data-update-action="team">Skill Matrix →</button></header><div class="updateTeamMiniList">'+team+'</div></section>'+
+   '<section class="updatePanel updateLeaderPanel"><header><div><span>TEAM</span><h2>Nhân sự & tải công việc</h2></div><button data-update-action="team">Skill Matrix →</button></header><div class="updateTeamMiniList">'+team+'</div></section>'+
+   '<section class="updatePanel updateTechShiftPanel"><header><div><span>SHIFT</span><h2>Bàn giao & ca trực</h2></div><button data-update-action="shift">Mở bàn giao →</button></header><div class="updateHandoverCompact">'+
+    (handover?'<div><b>'+uEsc(handover.giver_name)+' → '+uEsc(handover.receiver_name)+'</b><small>'+uDate(handover.handover_date)+' · '+uEsc(handover.shift_from)+' → '+uEsc(handover.shift_to)+'</small><p>'+uEsc(handover.notes||"Không có ghi chú")+'</p></div>':'<div class="updateEmpty small">Không có bàn giao đang chờ nhận.</div>')+
+   '</div></section>'+
    '<section class="updatePanel updateEnergyBrief"><header><div><span>ENERGY INTELLIGENCE</span><h2>Bất thường năng lượng</h2></div><button data-update-action="energy">Chi tiết →</button></header>'+
     (anoms.length?anoms.slice(0,3).map(a=>'<div class="updateEnergyBriefRow"><span>'+(a.meter_type==="water"?"💧":a.meter_type==="electric"?"⚡":"⌁")+'</span><div><b>'+uEsc(a.period_label||a.meter_type)+'</b><small>'+uEsc(a.recommendation||"Theo dõi")+'</small></div><strong class="'+(Math.abs(Number(a.variance_pct))>=15?"danger":"warn")+'">'+(Number(a.variance_pct)>0?"+":"")+uNum(a.variance_pct,1)+'%</strong></div>').join(""):'<div class="updateEmpty">Không có bất thường.</div>')+
    '</section>'+
@@ -484,7 +515,7 @@ function updateRenderTeam(){
  const page=$("#updateTeamPage");if(!page)return;
  const systems=updateState.systems.filter(s=>updateState.skills.some(k=>k.system_code===s.code));
  page.innerHTML=
-  '<section class="updateModuleHero"><div><span>PEOPLE OPERATIONS</span><h1>Nhân sự kỹ thuật</h1><p>Skill Matrix + workload + KPI để giao đúng người, không chấm bằng số lượng công việc đơn thuần.</p></div><div class="updateModuleHeroActions"><button id="updateSuggestAssignment">✦ Gợi ý giao việc</button><button id="updateAddTechnician">＋ Nhân sự</button></div></section>'+
+  '<section class="updateModuleHero"><div><span>PEOPLE OPERATIONS</span><h1>Nhân sự kỹ thuật</h1><p>Skill Matrix + workload + KPI để giao đúng người, không chấm bằng số lượng công việc đơn thuần.</p></div>'+(updateLeaderView()?'<div class="updateModuleHeroActions"><button id="updateSuggestAssignment">✦ Gợi ý giao việc</button><button id="updateAddTechnician">＋ Nhân sự</button></div>':'')+'</section>'+
   '<section class="updatePanel"><header><div><span>WORKLOAD</span><h2>Tải công việc hiện tại</h2></div></header><div class="updatePeopleCards">'+
   updateState.technicians.map(t=>{
    const skills=updateState.skills.filter(s=>String(s.technician_id)===String(t.id)).sort((a,b)=>b.skill_level-a.skill_level);
@@ -493,10 +524,11 @@ function updateRenderTeam(){
   }).join("")+'</div></section>'+
   '<section class="updatePanel"><header><div><span>SKILL MATRIX</span><h2>Ma trận năng lực</h2></div></header><div class="updateSkillMatrix"><div class="head"><b>Nhân sự</b>'+systems.map(s=>'<span>'+uEsc(s.name)+'</span>').join("")+'</div>'+updateState.technicians.map(t=>'<div><b>'+uEsc(t.name)+'</b>'+systems.map(s=>{const k=updateState.skills.find(k=>String(k.technician_id)===String(t.id)&&k.system_code===s.code);return '<span>'+(k?updateSkillStars(k.skill_level):'<em>—</em>')+'</span>'}).join("")+'</div>').join("")+'</div></section>'+
   '<section id="updateAssignmentSuggest" class="updatePanel hide"></section>';
- $("#updateSuggestAssignment").onclick=updateOpenAssignmentSuggest;
- $("#updateAddTechnician").onclick=updateOpenTechnicianForm;
+ if($("#updateSuggestAssignment"))$("#updateSuggestAssignment").onclick=updateOpenAssignmentSuggest;
+ if($("#updateAddTechnician"))$("#updateAddTechnician").onclick=updateOpenTechnicianForm;
 }
 function updateOpenAssignmentSuggest(){
+ if(!updateLeaderView()){toast("Chức năng gợi ý phân công dành cho Leader / Admin");return}
  const box=$("#updateAssignmentSuggest");if(!box)return;
  box.classList.remove("hide");
  const opts=updateState.systems.filter(s=>updateState.skills.some(k=>k.system_code===s.code));
@@ -514,6 +546,7 @@ function updateOpenAssignmentSuggest(){
  $("#updateSuggestGo").onclick=run;run();box.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function updateOpenTechnicianForm(){
+ if(!updateLeaderView()){toast("Chỉ Leader / Admin được thêm nhân sự");return}
  const body=$("#updateQuickModalBody");if(!body)return;
  body.innerHTML='<span class="updateEyebrow">NHÂN SỰ KỸ THUẬT</span><h3>Thêm nhân sự thử nghiệm</h3><form id="updateTechForm" class="updateQuickForm"><label>Mã nhân sự<input id="uTechCode" required placeholder="KT-03"></label><label>Họ và tên<input id="uTechName" required placeholder="Nguyễn Văn..."></label><label>Ca<select id="uTechShift"><option value="DAY">Ca ngày</option><option value="NIGHT">Ca đêm</option></select></label><label>Tải hiện tại (%)<input id="uTechLoad" type="number" min="0" max="100" value="0"></label><button type="submit">Lưu nhân sự</button></form>';
  $("#updateQuickModal").classList.remove("hide");
@@ -575,6 +608,7 @@ function updateOpenHandoverForm(){
 }
 
 function updateRenderCost(){
+ if(updateTechView()){toast("Chi phí & KPI chỉ hiển thị cho Leader / Admin");showHome();return}
  const page=$("#updateCostPage");if(!page)return;
  const total=updateState.costs.reduce((s,x)=>s+Number(x.amount||0),0);
  const bySystem={};updateState.costs.forEach(x=>bySystem[x.system_code]=(bySystem[x.system_code]||0)+Number(x.amount||0));
@@ -700,17 +734,50 @@ function updateResetWorkExtras(){
  if($("#demoTaskPriority"))$("#demoTaskPriority").value="Medium";updateWorkSlaPreview();
 }
 
+async function updateSyncTaskCosts(obj){
+ if(!obj||!obj.id||!updateTok())return;
+ const workOrderId=obj.woCode||String(obj.id);
+ const materialCost=(Array.isArray(obj.materials)?obj.materials:[]).reduce((sum,row)=>{
+   const m=updateState.materials.find(x=>String(x.id)===String(row.materialId));
+   return sum+Number(row.qty||0)*Number(m?.unit_price||0);
+ },0);
+ const items=[
+  {type:"Nhân công",amount:Number(obj.laborCost||0)},
+  {type:"Nhà thầu",amount:Number(obj.vendorCost||0)},
+  {type:"Vật tư",amount:materialCost},
+  {type:"Khác",amount:Number(obj.otherCost||0)}
+ ];
+ for(const item of items){
+  try{
+   const q="building_id=eq.UPDATE&work_order_id=eq."+uq(workOrderId)+"&cost_type=eq."+uq(item.type)+"&select=id";
+   const existing=await updateRest("ops_cost_entries",q);
+   const body={building_id:UPDATE_ID,entry_date:obj.d||new Date().toLocaleDateString("en-CA"),work_order_id:workOrderId,
+     asset_id:obj.assetId||null,system_code:obj.systemCode||"",contractor_id:item.type==="Nhà thầu"?(obj.contractorId||null):null,
+     cost_type:item.type,amount:Math.max(0,item.amount),description:(obj.c||"Work Order")+" · "+item.type};
+   if(existing?.[0]?.id)await updatePatch("ops_cost_entries","id=eq."+uq(existing[0].id)+"&building_id=eq.UPDATE",body);
+   else if(item.amount>0)await updatePost("ops_cost_entries",body);
+  }catch(e){console.warn("Task cost sync skipped",item.type,e)}
+ }
+ updateState.loaded=false;
+}
+
 const updateOriginalSyncTaskRecord=syncTaskRecord;
 syncTaskRecord=async function(action,itemOrId,buildingId=currentBuilding?.id){
  if(action==="upsert_task"&&String(buildingId)===UPDATE_ID&&itemOrId&&typeof itemOrId==="object"){
-  let obj={...itemOrId},extra=updateIs()?updateReadWorkExtras():{};
+  const previous=load().find(x=>String(x.id)===String(itemOrId.id))||{};
+  let obj={...previous,...itemOrId},extra=updateIs()?updateReadWorkExtras():{};
   obj={...obj,...extra};obj.priority=uPriority(obj.priority);
-  const r=SLA_RULES[obj.priority],created=obj.createdAt||new Date().toISOString(),createdDate=new Date(created);
-  obj.createdAt=created;obj.slaResponseMinutes=Number(obj.slaResponseMinutes||r.response);obj.slaTargetMinutes=Number(obj.slaTargetMinutes||r.target);
-  if(!obj.responseDueAt)obj.responseDueAt=new Date(createdDate.getTime()+obj.slaResponseMinutes*60000).toISOString();
-  if(!obj.resolveDueAt)obj.resolveDueAt=new Date(createdDate.getTime()+obj.slaTargetMinutes*60000).toISOString();
-  if(!obj.woCode)obj.woCode="WO-UPD-"+String(obj.id||Date.now()).slice(-5);
-  return updateOriginalSyncTaskRecord(action,obj,buildingId);
+  const previousPriority=uPriority(previous.priority||obj.priority);
+  const priorityChanged=!!previous.id&&previousPriority!==obj.priority;
+  const r=SLA_RULES[obj.priority],created=obj.createdAt||previous.createdAt||new Date().toISOString(),createdDate=new Date(created);
+  obj.createdAt=created;obj.slaResponseMinutes=Number(r.response);obj.slaTargetMinutes=Number(r.target);
+  if(priorityChanged||!obj.responseDueAt)obj.responseDueAt=new Date(createdDate.getTime()+obj.slaResponseMinutes*60000).toISOString();
+  if(priorityChanged||!obj.resolveDueAt)obj.resolveDueAt=new Date(createdDate.getTime()+obj.slaTargetMinutes*60000).toISOString();
+  if(!obj.woCode)obj.woCode=previous.woCode||"WO-UPD-"+String(obj.id||Date.now()).slice(-5);
+  const result=await updateOriginalSyncTaskRecord(action,obj,buildingId);
+  const saved=result?.item?{...obj,...result.item}:obj;
+  if(updateTok())updateSyncTaskCosts(saved);
+  return result?{...result,item:saved}:{item:saved,offline:true};
  }
  return updateOriginalSyncTaskRecord(action,itemOrId,buildingId);
 };
@@ -734,14 +801,45 @@ async function updateEnsurePmOrders(){
   let arr=load(),changed=false;
   for(const p of updateState.plans){
    const asset=updateAsset(p.asset_id);if(!asset)continue;
-   let due=false;
-   if(p.trigger_type==="calendar")due=!!p.next_due_date&&new Date(p.next_due_date+"T23:59:59")<=today;
-   if(p.trigger_type==="meter")due=Number(asset.meter_value||0)>=Number(p.next_meter_due||Infinity);
-   if(!due||arr.some(x=>String(x.maintenancePlanId||"")===String(p.id)))continue;
-   const id=Date.now()+Math.floor(Math.random()*9000),priority=uPriority(p.priority),rule=SLA_RULES[priority],created=new Date().toISOString();
-   let obj={id,woCode:"WO-UPD-PM-"+String(id).slice(-4),d:new Date().toLocaleDateString("en-CA"),c:p.title,t:"Bảo trì",s:"Đang thực hiện",n:"Tự động sinh từ kế hoạch "+p.plan_code,a:asset.assigned_to||"",performers:asset.assigned_to?[asset.assigned_to]:[],imgs:[],i:0,priority,assetId:asset.id,systemCode:asset.system_code,areaCode:asset.area_code,maintenancePlanId:p.id,materials:[],cause:"",result:"",createdAt:created,slaResponseMinutes:rule.response,slaTargetMinutes:rule.target,responseDueAt:new Date(Date.now()+rule.response*60000).toISOString(),resolveDueAt:new Date(Date.now()+rule.target*60000).toISOString(),dueDate:p.next_due_date||new Date().toLocaleDateString("en-CA"),dueDateExplicit:true};
-   const res=await updateOriginalSyncTaskRecord("upsert_task",obj,UPDATE_ID);if(res?.item)obj={...obj,...res.item};
-   arr.push(obj);changed=true;
+   let due=false,cycleKey="",advancePatch=null;
+   if(p.trigger_type==="calendar"){
+    if(!p.next_due_date)continue;
+    const dueDate=new Date(p.next_due_date+"T00:00:00");
+    due=dueDate<=today;
+    cycleKey="calendar:"+p.next_due_date;
+    if(due){
+      const step=Math.max(1,Number(p.frequency_days||30));
+      let next=new Date(dueDate);
+      do{next.setDate(next.getDate()+step)}while(next<=today);
+      advancePatch={next_due_date:next.toLocaleDateString("en-CA"),last_generated_at:new Date().toISOString()};
+    }
+   }else if(p.trigger_type==="meter"){
+    const threshold=Number(p.next_meter_due);
+    const current=Number(asset.meter_value||0);
+    const step=Math.max(1,Number(p.meter_interval||0));
+    if(!Number.isFinite(threshold)||!step)continue;
+    due=current>=threshold;
+    cycleKey="meter:"+threshold;
+    if(due){
+      let next=threshold+step;
+      while(next<=current)next+=step;
+      advancePatch={next_meter_due:next,last_generated_at:new Date().toISOString()};
+    }
+   }
+   if(!due)continue;
+   const already=arr.some(x=>String(x.maintenancePlanId||"")===String(p.id)&&String(x.maintenanceCycleKey||"")===cycleKey);
+   if(!already){
+    const id=Date.now()+Math.floor(Math.random()*9000),priority=uPriority(p.priority),rule=SLA_RULES[priority],created=new Date().toISOString();
+    let obj={id,woCode:"WO-UPD-PM-"+String(id).slice(-4),d:new Date().toLocaleDateString("en-CA"),c:p.title,t:"Bảo trì",s:"Đang thực hiện",n:"Tự động sinh từ kế hoạch "+p.plan_code,a:asset.assigned_to||"",performers:asset.assigned_to?[asset.assigned_to]:[],imgs:[],i:0,priority,assetId:asset.id,systemCode:asset.system_code,areaCode:asset.area_code,maintenancePlanId:p.id,maintenanceCycleKey:cycleKey,materials:[],cause:"",result:"",createdAt:created,slaResponseMinutes:rule.response,slaTargetMinutes:rule.target,responseDueAt:new Date(Date.now()+rule.response*60000).toISOString(),resolveDueAt:new Date(Date.now()+rule.target*60000).toISOString(),dueDate:p.next_due_date||new Date().toLocaleDateString("en-CA"),dueDateExplicit:true};
+    const res=await updateOriginalSyncTaskRecord("upsert_task",obj,UPDATE_ID);if(res?.item)obj={...obj,...res.item};
+    arr.push(obj);changed=true;
+   }
+   if(advancePatch){
+    try{
+      await updatePatch("ops_maintenance_plans","id=eq."+uq(p.id)+"&building_id=eq.UPDATE",advancePatch);
+      Object.assign(p,advancePatch);
+    }catch(e){console.warn("Could not advance PM plan",p.plan_code,e)}
+   }
   }
   if(changed){save(arr);render?.();updateRenderCommandCenter();toast("UPDATE đã tự tạo Work Order cho PM đến hạn")}
  }catch(e){console.warn("Auto PM generation skipped",e)}
@@ -817,6 +915,12 @@ function updateOpenAssetByCode(raw){
 function updateCloseModal(id){
  $("#"+id)?.classList.add("hide");if(id==="updateScannerModal")updateStopScanner();
 }
+function updateSyncKeyboard(){
+ if(!updateIs()){document.body.classList.remove("updateKeyboardOpen");return}
+ const vv=window.visualViewport;
+ const keyboardOpen=!!vv&&(window.innerHeight-vv.height>140);
+ document.body.classList.toggle("updateKeyboardOpen",keyboardOpen);
+}
 
 const updatePrevAdminCard=typeof adminProjectCard==="function"?adminProjectCard:null;
 if(updatePrevAdminCard){
@@ -867,7 +971,10 @@ if(typeof window.enterAccount==="function"){
  };
 }
 
-window.addEventListener("resize",()=>{if(updateIs())updateApplyMode()});
+window.addEventListener("resize",()=>{if(updateIs())updateApplyMode();updateSyncKeyboard()});
+window.visualViewport?.addEventListener("resize",updateSyncKeyboard,{passive:true});
+document.addEventListener("focusin",()=>setTimeout(updateSyncKeyboard,80));
+document.addEventListener("focusout",()=>setTimeout(updateSyncKeyboard,120));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){updateCloseAssetDrawer();["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal)}});
 document.addEventListener("DOMContentLoaded",()=>{
  updateInjectShell();updateApplyMode();
