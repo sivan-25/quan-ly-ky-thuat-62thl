@@ -600,7 +600,8 @@ function updateApplyMode(){
   }
   document.querySelectorAll(".buildingNameText").forEach(x=>x.textContent=updateProjectName());
   updateEnhanceWorkForm();
-  updateLoad().then(()=>{if(!updateIs())return;updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
+  const buildingId=updateScopeId();
+  updateLoad().then(()=>{if(!updateIs()||updateScopeId()!==buildingId)return;updateEnsurePmOrders();updateDecorateEnergyPage();updateDecorateIncidentPage();updateDecorateInventoryPage();updateDecorateContractorPage();updateRefreshNotifications()});
   updateStartNotificationTimer();
  }else{
   updateRestoreDemoWorkForm();
@@ -706,9 +707,11 @@ function updateEnsureCommandCenter(){
 }
 async function updateRenderCommandCenter(){
  if(!updateIs())return;
+ const buildingId=updateScopeId();
  const root=updateEnsureCommandCenter();if(!root)return;
  root.innerHTML='<div class="updateLoading">Đang tổng hợp Trung tâm điều hành...</div>';
  await updateLoad();
+ if(!updateIs()||updateScopeId()!==buildingId)return;
  const h=updateHealth(),tasks=load(),critical=updateOpenIncidents().filter(i=>i.severity==="Khẩn cấp");
  const overdue=updateOverdueTasks(),plans=updateDuePlans(),low=updateLowStock(),anoms=updateState.anomalies.filter(x=>x.status!=="Đã đóng");
  let systemCards=updateState.systems.map(s=>{
