@@ -87,9 +87,10 @@ function updateCacheRead(buildingId=updateScopeId()){
 async function updateLoad(force=false){
  if(!updateIs())return updateState;
  const buildingId=updateEnsureStateScope();
- if(updateState.loading)return updateState.loading;
- if(!force&&updateState.loaded&&Date.now()-updateState.loadedAt<15000)return updateState;
- updateState.loading=(async()=>{
+ const state=updateState;
+ if(state.loading)return state.loading;
+ if(!force&&state.loaded&&Date.now()-state.loadedAt<15000)return state;
+ state.loading=(async()=>{
   const b="building_id=eq."+uq(buildingId);
   try{
    const r=await Promise.all([
@@ -114,23 +115,23 @@ async function updateLoad(force=false){
     updateRest("ops_maintenance_plans",b+"&active=eq.true&select=*&order=next_due_date.asc"),
     updateRest("ops_asset_meter_readings",b+"&select=*&order=reading_at.asc")
    ]);
-   if(updateScopeId()!==buildingId)return updateState;
+   if(updateState!==state||!updateIs()||updateScopeId()!==buildingId)return state;
    const keys=["systems","areas","assets","records","incidents","incidentExt","inspections","technicians","skills","shifts","handovers","materials","materialTx","contractors","vendorScores","baselines","anomalies","costs","plans","meters"];
-   keys.forEach((k,i)=>updateState[k]=Array.isArray(r[i])?r[i]:[]);
-   updateState.buildingId=buildingId;updateState.loaded=true;updateState.offline=false;updateState.loadedAt=Date.now();updateCacheSave(buildingId);
+   keys.forEach((k,i)=>state[k]=Array.isArray(r[i])?r[i]:[]);
+   state.buildingId=buildingId;state.loaded=true;state.offline=false;state.loadedAt=Date.now();updateCacheSave(buildingId);
   }catch(e){
    console.warn("Operations load failed",buildingId,e);
-   if(updateScopeId()!==buildingId)return updateState;
+   if(updateState!==state||!updateIs()||updateScopeId()!==buildingId)return state;
    const cached=updateCacheRead(buildingId);
    if(cached){
-    Object.assign(updateState,cached,{buildingId,loaded:true,offline:true,loadedAt:Date.now(),loading:null});
+    Object.assign(state,cached,{buildingId,loaded:true,offline:true,loadedAt:Date.now(),loading:null});
    }else{
-    updateState.buildingId=buildingId;updateState.loaded=true;updateState.offline=true;updateState.loadedAt=Date.now();
+    state.buildingId=buildingId;state.loaded=true;state.offline=true;state.loadedAt=Date.now();
    }
-  }finally{if(updateState.buildingId===buildingId)updateState.loading=null}
-  return updateState;
+  }finally{if(state.buildingId===buildingId)state.loading=null}
+  return state;
  })();
- return updateState.loading;
+ return state.loading;
 }
 
 function updateAsset(id){return updateState.assets.find(x=>String(x.id)===String(id))}
@@ -708,16 +709,19 @@ function updateEnsureCommandCenter(){
  const page=$("#homePage");if(!page)return null;
  let el=$("#updateCommandCenter");
  if(!el){el=document.createElement("section");el.id="updateCommandCenter";el.className="updateCommandCenter opsOverview";page.prepend(el)}
+ const scopeBar=$("#overviewScopeBar");if(scopeBar&&scopeBar.nextElementSibling!==el)scopeBar.insertAdjacentElement("afterend",el);
  el.classList.remove("hide");
  return el;
 }
+let updateOverviewSeq=0;
 async function updateRenderCommandCenter(){
- if(!updateIs())return;
+ if(!updateIs()||$("#homePage")?.classList.contains("hide"))return;
+ const renderSeq=++updateOverviewSeq;
  const buildingId=updateScopeId();
  const root=updateEnsureCommandCenter();if(!root)return;
- root.innerHTML='<div class="updateLoading">Đang tổng hợp Trung tâm điều hành...</div>';
+ if(root.dataset.buildingId!==buildingId){root.dataset.buildingId=buildingId;root.innerHTML='<div class="updateLoading">Đang tổng hợp Trung tâm điều hành...</div>'}
  await updateLoad();
- if(!updateIs()||updateScopeId()!==buildingId)return;
+ if(renderSeq!==updateOverviewSeq||!updateIs()||updateScopeId()!==buildingId||$("#homePage")?.classList.contains("hide"))return;
  const h=updateHealth(),tasks=load(),critical=updateOpenIncidents().filter(i=>i.severity==="Khẩn cấp");
  const overdue=updateOverdueTasks(),plans=updateDuePlans(),low=updateLowStock(),anoms=updateState.anomalies.filter(x=>x.status!=="Đã đóng");
  let systemCards=updateState.systems.map(s=>{
@@ -1385,6 +1389,16 @@ if(updatePrevAdminCard){
   return b?.id===UPDATE_ID?html.replace("</h3>"," <span class=\"updateProjectBadge\">THỬ NGHIỆM</span></h3>"):html;
  };
 }
+window.estaCloseProjectOverlays=()=>{
+ updateCloseAssetDrawer();updateCloseNotificationCenter();updateStopScanner();
+ ["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal);
+};
+const updatePrevRenderOverview=renderHomeDashboard;
+renderHomeDashboard=function(){
+ const result=updatePrevRenderOverview.apply(this,arguments);
+ if(updateIs()&&!$("#homePage")?.classList.contains("hide"))updateRenderCommandCenter();
+ return result;
+};
 const updatePrevShowHome=showHome;
 showHome=function(){
  const isUpdateBefore=updateIs();
@@ -1395,7 +1409,6 @@ showHome=function(){
  if(updateIs()){
   updateCurrentRoute="home";
   updateSetTop("Tổng quan",(updateIsSandbox()?"UPDATE":updateProjectName())+" · "+(updateTechView()?"Kỹ thuật":"Leader"));
-  if(!$("#homePage")?.classList.contains("hide"))updateRenderCommandCenter();
   if(seq&&seq!==updateNavSeq)return;
  }
 };
@@ -1434,6 +1447,7 @@ applyBuildingUI=function(){updatePrevApplyBuildingUI();updateApplyMode()};
 const updatePrevOpenAdminPortal=openAdminPortal;
 openAdminPortal=function(){
  updateCurrentRoute="admin";updateNavSeq+=1;
+ updateHideStandalonePages();
  $("#app")?.classList.remove("updateProjectMode","updateStandaloneMode");
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.add("hide"));
  $("#updateTrialRibbon")?.classList.add("hide");$("#updateMobileNav")?.classList.add("hide");$("#updateAiButton")?.classList.add("hide");

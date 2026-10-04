@@ -329,13 +329,15 @@ async function fetchProjectPeople(buildingId=currentBuilding?.id){
  return Array.isArray(rows)?rows:[];
 }
 async function loadProjectPeople(buildingId=currentBuilding?.id){
- if(!buildingId)return;
+ if(!buildingId||!projectOverviewActive)return;
+ const requestSeq=projectOpenSeq;
  let cached=[];try{cached=JSON.parse(localStorage.getItem(peopleLocalKey(buildingId))||"[]")}catch(e){}
  projectPeople=Array.isArray(cached)?cached:[];
  renderAllPeopleSelectors();
  if(!centralSession?.access_token)return;
  try{
    let rows=await fetchProjectPeople(buildingId);
+   if(requestSeq!==projectOpenSeq||!projectOverviewActive||buildingId!==currentBuilding?.id)return;
    if(!rows.length&&buildingId===currentBuilding?.id){
      const legacy=existingProjectPeople();
      if(legacy.length&&canProjectEdit()){
@@ -347,7 +349,7 @@ async function loadProjectPeople(buildingId=currentBuilding?.id){
        rows=legacy.map((name,i)=>({id:"legacy-"+i,name}));
      }
    }
-   if(buildingId!==currentBuilding?.id)return;
+   if(requestSeq!==projectOpenSeq||!projectOverviewActive||buildingId!==currentBuilding?.id)return;
    projectPeople=rows;
    cacheProjectPeople();renderAllPeopleSelectors();renderPeopleManager();
  }catch(e){console.warn("Load project people failed",e)}
@@ -434,8 +436,7 @@ async function syncEnergyRecord(action,itemOrId){
 }
 async function loadProjectSnapshot(building){
  if(!centralSession?.access_token||!building?.id)return false;
- const buildingId=building.id;
- currentBuilding={...building};
+ const buildingId=building.id,requestSeq=projectOpenSeq;
  const taskKey=taskStorageKeyFor(buildingId);
  const energyKey=buildingId==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+buildingId;
 
@@ -447,6 +448,7 @@ async function loadProjectSnapshot(building){
 
  try{
    const r=await projectSync("get",{},buildingId);
+   if(requestSeq!==projectOpenSeq||!projectOverviewActive||currentBuilding?.id!==buildingId)return false;
    const row=r?.snapshot||{building_id:buildingId,tasks:[],energy:[],updated_at:null};
    const cloudTasks=Array.isArray(row.tasks)?row.tasks:[];
    const cloudEnergy=Array.isArray(row.energy)?row.energy:[];
@@ -493,6 +495,7 @@ async function loadProjectSnapshot(building){
    return true;
  }catch(e){
    console.warn("Project snapshot load failed",buildingId,e);
+   if(requestSeq!==projectOpenSeq||!projectOverviewActive||currentBuilding?.id!==buildingId)return false;
    // Keep any valid cache available instead of leaving the page blank.
    if(!Array.isArray(previousLocalTasks))previousLocalTasks=[];
    if(!Array.isArray(previousLocalEnergy))previousLocalEnergy=[];
@@ -683,10 +686,11 @@ window.homeOpenTask=id=>{
  const n=Number(id);if(Number.isFinite(n)&&load().some(x=>Number(x.id)===n))setTimeout(()=>editTask(n),80);
 };
 function applyBuildingUI(){
+ if(!projectOverviewActive)return;
  const name=currentBuilding?.name||"Dự án";
  document.querySelectorAll(".buildingNameText").forEach(el=>el.textContent=name);
  const ht=$("#topHomeTitle p"),wt=$("#topWorkTitle p"),et=$("#topEnergyTitle p"),it=$("#topInventoryTitle p"),mt=$("#topMaintenanceTitle p"),ct=$("#topContractorTitle p"),cmt=$("#topConstructionTitle p");
- if(ht)ht.textContent=currentAccount?.is_admin?"":name;
+ if(ht)ht.textContent=isAdminOverview()?"Toàn bộ dự án":name;
  if(wt)wt.textContent=name;
  if(et)et.textContent=name+" · Điện / Nước / Điện mặt trời";
  if(it)it.textContent=name+" · Kho kỹ thuật";
@@ -703,13 +707,21 @@ function applyBuildingUI(){
  resetForm(false);render();renderEnergy();renderHomeDashboard();
 }
 let projectOpenSeq=0;
-function prepareProjectContext(building){
- projectOverviewActive=true;
- // Close project-scoped overlays before changing context so a modal/drawer from
- // the previous building never remains interactive on the next building.
+function closeProjectOverlays(){
  try{restoreWorkEntryCard()}catch(e){}
- ["demoIncidentModal","demoChecklistModal","technicalDocumentModal","demoTaskDrawer"].forEach(id=>$("#"+id)?.classList.add("hide"));
+ ["demoIncidentModal","demoChecklistModal","technicalDocumentModal","demoTaskDrawer","ccDispatchModal","viewer","peopleManagerModal"].forEach(id=>$("#"+id)?.classList.add("hide"));
+ closePeopleMenus();
+ window.estaCloseProjectOverlays?.();
  document.body.classList.remove("workEditOpen","demoModalOpen","demoChecklistModalOpen");
+}
+function openAdminOverview(){
+ if(!currentAccount?.is_admin)return;
+ openAdminPortal();
+ showHome();
+}
+function prepareProjectContext(building){
+ closeProjectOverlays();
+ projectOverviewActive=true;
  const checklistBtn=$("#demoChecklistSaveBtn");if(checklistBtn){checklistBtn.disabled=false;checklistBtn.textContent="Lưu checklist"}
  const incidentBtn=$("#demoIncidentSaveBtn");if(incidentBtn){incidentBtn.disabled=false;incidentBtn.textContent="Lưu sự cố"}
  const documentBtn=$("#technicalDocumentSubmit");if(documentBtn)documentBtn.disabled=false;
@@ -736,17 +748,21 @@ async function enterProject(building,{target="home"}={}){
 
  const buildingId=building.id;
  if(centralSession?.access_token)await loadProjectSnapshot({...building});
- if(openSeq!==projectOpenSeq||currentBuilding?.id!==buildingId)return;
+ if(openSeq!==projectOpenSeq||!projectOverviewActive||currentBuilding?.id!==buildingId)return false;
  try{await loadProjectPeople(buildingId)}catch(e){console.warn("Project people load skipped",e)}
- if(openSeq!==projectOpenSeq||currentBuilding?.id!==buildingId)return;
+ if(openSeq!==projectOpenSeq||!projectOverviewActive||currentBuilding?.id!==buildingId)return false;
 
  // Only refresh content. Never change the page after the user has entered the project.
  try{applyBuildingUI()}catch(e){console.warn("Final project UI refresh skipped",e)}
+ return true;
 }
 function openAdminPortal(){
  closeWorkFilter();
  if(!currentAccount?.is_admin)return;
+ projectOpenSeq+=1;
  projectOverviewActive=false;
+ closeProjectOverlays();
+ ["navWork","navEnergy","navInventory","navMaintenance","navContractor","navConstruction"].forEach(id=>$("#"+id)?.classList.add("hide"));
  $("#homePage").classList.add("hide");$("#adminPage").classList.remove("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");$("#inventoryPage").classList.add("hide");$("#maintenancePage").classList.add("hide");$("#contractorPage").classList.add("hide");$("#constructionMaterialPage").classList.add("hide");
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
  $("#topHomeTitle").classList.add("hide");$("#topAdminTitle").classList.remove("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");$("#topInventoryTitle").classList.add("hide");$("#topMaintenanceTitle").classList.add("hide");$("#topContractorTitle").classList.add("hide");$("#topConstructionTitle").classList.add("hide");
@@ -772,6 +788,7 @@ window.adminOpenBuilding=async(id,event)=>{
  }
 };
 window.enterAccount=function(account,session=null){
+ projectOpenSeq+=1;
  projectOverviewActive=false;
  currentAccount=account;centralSession=session;me=account.username||account.email||"user";
  $("#login").classList.add("hide");$("#app").classList.remove("hide");

@@ -13,9 +13,31 @@ const activeIds=()=>new Set(activeProjects().map(x=>String(x.id)));
 const activeRows=()=>{const ids=activeIds();return rows.filter(r=>ids.has(String(r?.building?.id||"")))};
 const isDone=t=>["Đã hoàn thành","Hoàn thành"].includes(String(t?.s||""));
 const priorityRank=p=>p==="Khẩn cấp"?4:p==="Cao"?3:p==="Trung bình"?2:1;
+function ensureScopeBar(home){
+ let bar=$c("#overviewScopeBar");
+ if(!bar){
+  bar=document.createElement("div");bar.id="overviewScopeBar";bar.className="opsScopeBar hide";
+  bar.innerHTML='<label for="overviewScopeSelect">Phạm vi Tổng quan</label><select id="overviewScopeSelect" aria-label="Chuyển Tổng quan"></select>';
+  home.prepend(bar);
+  bar.querySelector("select").addEventListener("change",e=>{
+   const id=e.target.value;
+   if(!id&&currentAccount?.is_admin){openAdminOverview();return}
+   const building=(currentAccount?.buildings||[]).find(b=>String(b.id)===id);
+   if(building)enterProject(building,{target:"home"}).catch(err=>{if(projectOverviewActive&&currentBuilding?.id===building.id)toast(err.message)});
+  });
+ }
+ const admin=globalScope(),on=admin||(projectOverviewActive&&currentBuilding?.id!=="DEMO");
+ bar.classList.toggle("hide",!on);
+ const select=bar.querySelector("select"),list=activeProjects().filter(b=>b.id!=="DEMO");
+ const options=(currentAccount?.is_admin?'<option value="">Tất cả dự án · Admin</option>':'')+list.map(b=>'<option value="'+escC(b.id)+'">'+escC(b.name||b.id)+'</option>').join("");
+ if(select.innerHTML!==options)select.innerHTML=options;
+ select.value=admin?"":String(currentBuilding?.id||"");
+ return bar;
+}
 function ensureRoot(){
  if(dataAccount&&dataAccount!==currentAccount){rows=[];activity=[];lastUpdated="";dataAccount=null;taskPage=alertPage=activityPage=1}
  const home=$c("#homePage");if(!home)return null;
+ ensureScopeBar(home);
  let root=$c("#"+ROOT_ID);
  if(!root){
   root=document.createElement("section");root.id=ROOT_ID;root.className="ccRoot opsOverview hide";
@@ -163,10 +185,10 @@ async function loadCenter(force=false){
    if(currentAccount!==account&&globalScope())loadCenter(false);
  }
 }
-async function openEnergy(id){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(id));if(!b)return;await enterProject(b,{target:"work"});showModule("energy")}
-async function openProject(id){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(id));if(b)await enterProject(b,{target:"work"})}
-async function openTask(buildingId,taskId){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;await enterProject(b,{target:"work"});const n=Number(taskId);setTimeout(()=>{if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)},120)}
-async function openAlert(buildingId,module,refId,taskId){if(module==="work")return openTask(buildingId,taskId);const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;await enterProject(b,{target:"work"});if(typeof showModule==="function")showModule(module);setTimeout(()=>{if(module==="incident"&&refId&&typeof window.demoSelectIncident==="function")window.demoSelectIncident(refId);if(module==="inspection"&&refId&&typeof window.demoSelectInspection==="function")window.demoSelectInspection(refId)},120)}
+async function openEnergy(id){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(id));if(!b)return;const opening=enterProject(b,{target:"work"});showModule("energy");await opening}
+async function openProject(id){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(id));if(b)await enterProject(b,{target:"home"})}
+async function openTask(buildingId,taskId){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;const opening=enterProject(b,{target:"work"}),seq=projectOpenSeq;const opened=await opening;if(!opened||seq!==projectOpenSeq||!projectOverviewActive||currentBuilding?.id!==b.id||$c("#workPage")?.classList.contains("hide"))return;const n=Number(taskId);if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)}
+async function openAlert(buildingId,module,refId,taskId){if(module==="work")return openTask(buildingId,taskId);const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(buildingId));if(!b)return;const opening=enterProject(b,{target:"work"}),seq=projectOpenSeq;if(typeof showModule==="function")showModule(module);const opened=await opening;if(!opened)return;setTimeout(()=>{if(seq!==projectOpenSeq||!projectOverviewActive||currentBuilding?.id!==b.id||$c("#"+module+"Page")?.classList.contains("hide"))return;if(module==="incident"&&refId&&typeof window.demoSelectIncident==="function")window.demoSelectIncident(refId);if(module==="inspection"&&refId&&typeof window.demoSelectInspection==="function")window.demoSelectInspection(refId)},120)}
 function ensureDispatch(){
  let m=$c("#ccDispatchModal");if(m)return m;m=document.createElement("div");m.id="ccDispatchModal";m.className="ccModal hide";
  m.innerHTML='<button class="ccModalBackdrop" type="button" data-cc-close aria-label="Đóng"></button><div class="ccModalCard" role="dialog" aria-modal="true"><div class="ccModalHead"><div><span>ESTA · ADMIN DISPATCH</span><h3>Giao công việc xuống dự án</h3><p>Một nội dung có thể giao đồng thời cho nhiều dự án.</p></div><button class="ccClose" type="button" data-cc-close>×</button></div><form id="ccDispatchForm" class="ccDispatchForm"><div class="ccDispatchProjectsHead"><b>Dự án nhận việc *</b><label><input id="ccDispatchAll" type="checkbox"> Chọn tất cả</label></div><div id="ccDispatchProjects" class="ccDispatchProjects"></div><label class="wide"><span>Nội dung công việc *</span><input id="ccDispatchTitle" maxlength="500" required placeholder="Nhập nội dung công việc..."></label><label><span>Loại</span><select id="ccDispatchType"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label><label><span>Mức độ</span><select id="ccDispatchPriority"><option>Thấp</option><option selected>Trung bình</option><option>Cao</option><option>Khẩn cấp</option></select></label><label><span>Ngày bắt đầu *</span><input id="ccDispatchStart" type="date" required></label><label><span>Hạn hoàn thành *</span><input id="ccDispatchDue" type="date" required></label><label class="wide"><span>Người thực hiện *</span><input id="ccDispatchAssignee" list="ccPeople" maxlength="200" required value="Kỹ thuật dự án"><datalist id="ccPeople"></datalist></label><label class="wide"><span>Ghi chú</span><textarea id="ccDispatchNote" rows="3" maxlength="2000"></textarea></label><div class="ccDispatchActions"><button class="ccBtn cancel" type="button" data-cc-close>Hủy</button><button id="ccDispatchSave" class="ccBtn primary" type="submit">Giao công việc</button></div></form></div>';

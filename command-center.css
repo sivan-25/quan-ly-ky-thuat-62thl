@@ -1,16 +1,16 @@
 /* ESTA overview: one shared visual system for account and project scopes. */
-#app.opsOverviewMode,#ccDispatchModal{--ov-surface:#e3edf1;--ov-panel:#e9f0f3;--ov-control:#dce8ee;--ov-soft:#d4e2e8;--ov-line:#b8cbd5;--ov-hover:#d1e2e9;--ov-muted:#4d6370}
-#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode){background:var(--upd-cream,#f2ede5)!important}
+#app.opsOverviewMode,#ccDispatchModal,body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal,#updateNotificationCenter){--ov-surface:#111b2e;--ov-panel:#11182b;--ov-control:#141e33;--ov-soft:#0f1728;--ov-line:#26334d;--ov-hover:#131e32;--ov-muted:#9aa8c1;--ov-text:#eef4ff;--ov-accent:#18d9f3;color-scheme:dark}
+#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode){background:var(--ov-panel)!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) main{background:transparent!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .homeDashboard{width:100%!important;max-width:none!important;margin:0!important;padding:12px 16px 24px!important;background:transparent!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .estaSidebar{background:linear-gradient(180deg,#173b56,#1d465e)!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .estaTopbar{height:62px!important;min-height:62px!important;padding:0 18px!important;background:#173b56!important;border-bottom:1px solid #31546c!important;box-shadow:none!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .topModuleTitle h1,#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .account b{color:#fff!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .topModuleTitle p,#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .account span{color:#cfdee6!important}
-#app.homeMode.adminCommandHome #homePage>:not(#estaCommandCenter),#app.homeMode.updateProjectMode #homePage>:not(#updateCommandCenter){display:none!important}
-#app.homeMode .opsOverview{width:100%!important;max-width:none!important;display:grid!important;gap:10px!important;margin:0!important;padding:0!important;color:#20323d;font-family:Inter,sans-serif}
+#app.homeMode.adminCommandHome #homePage>:not(#estaCommandCenter):not(#overviewScopeBar),#app.homeMode.updateProjectMode #homePage>:not(#updateCommandCenter):not(#overviewScopeBar){display:none!important}
+#app.homeMode .opsOverview{width:100%!important;max-width:none!important;display:grid!important;gap:10px!important;margin:0!important;padding:0!important;color:var(--ov-text);font-family:Inter,sans-serif}
 #app .opsOverview.hide{display:none!important}
-#app.homeMode .opsHero{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;min-height:0!important;padding:16px 20px!important;border:1px solid #31566d!important;border-radius:16px!important;background:linear-gradient(125deg,#173b56,#204d67 60%,#2e6573)!important;box-shadow:0 6px 18px #1f384814!important;overflow:hidden!important;color:#fff!important}
+#app.homeMode .opsHero{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;min-height:0!important;padding:16px 20px!important;border:1px solid var(--ov-line)!important;border-radius:16px!important;background:linear-gradient(125deg,#111b30,#102236 60%,#0d2d38)!important;box-shadow:0 6px 18px #1f384814!important;overflow:hidden!important;color:#fff!important}
 #app.homeMode .opsHero:after{display:none!important}
 #app.homeMode .opsHeroCopy{min-width:0;flex:1;order:0!important}
 #app.homeMode .opsHeroTags{display:flex!important;align-items:center!important;gap:6px!important;margin:0 0 8px!important;flex-wrap:wrap}
@@ -22,32 +22,32 @@
 #app.homeMode .opsHero p{max-width:none!important;margin:6px 0 0!important;color:#d9e5e8!important;font-size:13px!important;line-height:1.45!important}
 #app.homeMode .opsHeroActions{display:flex!important;align-items:center!important;align-self:center!important;gap:7px!important;flex-wrap:wrap;margin-top:10px}
 #app.homeMode .opsHeroActions :is(button,.ccBtn){min-height:38px!important;padding:7px 12px!important;border:1px solid #ffffff40!important;border-radius:8px!important;background:#ffffff17!important;color:#fff!important;font-size:12px!important;font-weight:500!important;cursor:pointer}
-#app.homeMode .opsHeroActions :is(button:first-child,.primary){background:var(--ov-control)!important;color:#173b56!important;border-color:var(--ov-line)!important}
+#app.homeMode .opsHeroActions :is(button:first-child,.primary){background:#0f2837!important;color:var(--ov-accent)!important;border-color:#1d5368!important}
 #app.homeMode .opsHeroMetric{display:flex!important;flex-direction:column!important;align-items:center!important;order:1!important;min-width:120px!important;padding:10px 14px!important;border-radius:12px!important;flex:0 0 150px!important}
 #app.homeMode .opsHeroMetric strong{font-size:36px!important;margin:4px 0!important;letter-spacing:-1px!important}
 #app.homeMode .opsHeroMetric span,#app.homeMode .opsHeroMetric small{font-size:10px!important}
 #app.homeMode .opsKpiGrid{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:8px!important;margin:0!important}
-#app.homeMode .opsKpi{position:relative!important;min-width:0!important;min-height:88px!important;padding:11px 12px!important;border:1px solid var(--ov-line)!important;border-radius:12px!important;background:var(--ov-surface)!important;text-align:left;box-shadow:0 3px 12px #243a4608!important;color:#20323d!important}
-#app.homeMode .opsKpi:before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:#9ab0b8}
+#app.homeMode .opsKpi{position:relative!important;min-width:0!important;min-height:88px!important;padding:11px 12px!important;border:1px solid var(--ov-line)!important;border-radius:12px!important;background:var(--ov-surface)!important;text-align:left;box-shadow:0 3px 12px #243a4608!important;color:var(--ov-text)!important}
+#app.homeMode .opsKpi:before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:#71809e}
 #app.homeMode .opsKpi.danger:before{background:#a64c4c}
 #app.homeMode .opsKpi.warn:before{background:#a86f2d}
-#app.homeMode .opsKpi.info:before{background:#2f7182}
+#app.homeMode .opsKpi.info:before{background:#18d9f3}
 #app.homeMode .opsKpi.good:before{background:#3c7b61}
 #app.homeMode .opsKpi>span{display:block!important;color:var(--ov-muted)!important;font-size:11px!important;font-weight:500!important;letter-spacing:.2px!important;margin:0 0 5px!important;line-height:1.3!important}
-#app.homeMode .opsKpi>:is(b,strong){display:block!important;color:#173b56!important;font-size:25px!important;line-height:1.1!important;font-weight:600!important;margin:0!important;overflow-wrap:anywhere}
+#app.homeMode .opsKpi>:is(b,strong){display:block!important;color:var(--ov-text)!important;font-size:25px!important;line-height:1.1!important;font-weight:600!important;margin:0!important;overflow-wrap:anywhere}
 #app.homeMode .opsKpi>small{display:block!important;color:var(--ov-muted)!important;font-size:11px!important;line-height:1.35!important;margin:4px 0 0!important}
 #app.homeMode .opsDashboardGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:0!important;align-items:start!important}
 #app.homeMode .opsPanel{min-width:0!important;padding:0!important;border:1px solid var(--ov-line)!important;border-radius:12px!important;background:var(--ov-panel)!important;box-shadow:0 3px 12px #243a4608!important;overflow:hidden}
 #app.homeMode .opsPanelHead{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:12px 14px!important;margin:0!important;border-bottom:1px solid var(--ov-line)!important;background:var(--ov-surface)!important}
-#app.homeMode .opsPanelHead span{display:block!important;color:#765641!important;font-size:10px!important;font-weight:500!important;letter-spacing:.6px!important;margin:0 0 3px!important}
-#app.homeMode .opsPanelHead :is(h2,h3){margin:0!important;font-size:17px!important;line-height:1.25!important;font-weight:600!important;color:#173b56!important}
+#app.homeMode .opsPanelHead span{display:block!important;color:var(--ov-accent)!important;font-size:10px!important;font-weight:500!important;letter-spacing:.6px!important;margin:0 0 3px!important}
+#app.homeMode .opsPanelHead :is(h2,h3){margin:0!important;font-size:17px!important;line-height:1.25!important;font-weight:600!important;color:var(--ov-text)!important}
 #app.homeMode .opsPanelHead p{margin:4px 0 0!important;font-size:12px!important;line-height:1.4!important;color:var(--ov-muted)!important}
-#app.homeMode .opsPanelHead>button{flex:none;border:0;background:transparent;color:#2f7182;font-size:12px;padding:8px;cursor:pointer}
+#app.homeMode .opsPanelHead>button{flex:none;border:0;background:transparent;color:var(--ov-accent);font-size:12px;padding:8px;cursor:pointer}
 #app.homeMode .ccRoot.loading{opacity:1;pointer-events:auto}
 #app.homeMode .ccProjects{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
-#app.homeMode .ccProjectCard{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;padding:11px 12px;border:1px solid var(--ov-line);border-radius:12px;background:var(--ov-surface);text-align:left;color:#173b56;cursor:pointer}
+#app.homeMode .ccProjectCard{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;padding:11px 12px;border:1px solid var(--ov-line);border-radius:12px;background:var(--ov-surface);text-align:left;color:var(--ov-text);cursor:pointer}
 #app.homeMode .ccProjectCard>div{min-width:0}
-#app.homeMode .ccProjectCard>div>span{color:#765641;font-size:10px}
+#app.homeMode .ccProjectCard>div>span{color:var(--ov-accent);font-size:10px}
 #app.homeMode .ccProjectCard h3{margin:2px 0 7px;font-size:15px;font-weight:600;overflow-wrap:anywhere}
 #app.homeMode .ccProjectCard>i{font-style:normal;color:var(--ov-muted)}
 #app.homeMode .ccProjectStats{display:flex;flex-wrap:wrap;gap:4px;font-size:11px;color:var(--ov-muted)}
@@ -55,17 +55,17 @@
 #app.homeMode .ccProjectStats .hot{color:#a64c4c;background:#f8e7e7}
 #app.homeMode .ccWorkspace{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(290px,.85fr);gap:10px;align-items:start}
 #app.homeMode .ccFilters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(160px,1.3fr);gap:7px;padding:10px 12px;background:var(--ov-soft);border-bottom:1px solid var(--ov-line)}
-#app.homeMode .ccFilters :is(input,select){width:100%;min-width:0;height:38px;border:1px solid var(--ov-line);border-radius:8px;padding:0 9px;background:var(--ov-control);color:#355663;font-size:12px;box-sizing:border-box}
+#app.homeMode .ccFilters :is(input,select){width:100%;min-width:0;height:38px;border:1px solid var(--ov-line);border-radius:8px;padding:0 9px;background:var(--ov-control);color:#c9d5e8;font-size:12px;box-sizing:border-box}
 #app.homeMode .ccTableWrap{max-height:490px;overflow-y:auto;overflow-x:hidden}
 #app.homeMode .ccTable{width:100%;table-layout:fixed;border-collapse:collapse;min-width:0}
 #app.homeMode .ccTable th{position:sticky;top:0;z-index:1;padding:10px 8px;background:var(--ov-soft);border-bottom:1px solid var(--ov-line);color:var(--ov-muted);font-size:11px;font-weight:500;text-align:left}
-#app.homeMode .ccTable td{padding:10px 8px;border-bottom:1px solid var(--ov-line);color:#48636f;font-size:12px;line-height:1.4;vertical-align:middle;overflow-wrap:anywhere}
+#app.homeMode .ccTable td{padding:10px 8px;border-bottom:1px solid var(--ov-line);color:#c9d5e8;font-size:12px;line-height:1.4;vertical-align:middle;overflow-wrap:anywhere}
 #app.homeMode .ccTable :is(th,td):nth-child(2){width:27%}
-#app.homeMode .ccTable td b{font-weight:500;color:#203f50}
+#app.homeMode .ccTable td b{font-weight:500;color:var(--ov-text)}
 #app.homeMode .ccTable td small{display:block;margin-top:3px;font-size:11px;color:var(--ov-muted)}
 #app.homeMode .ccTable tr[data-cc-task]{cursor:pointer}
 #app.homeMode .ccTable tr[data-cc-task]:hover td{background:var(--ov-hover)}
-#app.homeMode :is(.ccStatus,.ccPriority,.ccWarn,.ccProjectTag){display:inline-block;padding:4px 6px;border-radius:6px;font-size:11px;line-height:1.3;background:var(--ov-soft);color:#365d6a}
+#app.homeMode :is(.ccStatus,.ccPriority,.ccWarn,.ccProjectTag){display:inline-block;padding:4px 6px;border-radius:6px;font-size:11px;line-height:1.3;background:var(--ov-soft);color:#aab6cc}
 #app.homeMode :is(.ccStatus.done,.ccWarn.ok){background:#e8f2eb;color:#3c7b61}
 #app.homeMode :is(.ccStatus.waiting,.ccPriority.p3,.ccWarn.high){background:#f9eedf;color:#96672e}
 #app.homeMode :is(.ccPriority.p4,.ccWarn.critical){background:#f8e7e7;color:#a64c4c}
@@ -76,35 +76,35 @@
 #app.homeMode .ccAlert.sev3>i{background:#a64c4c}
 #app.homeMode .ccAlert.sev2>i{background:#a86f2d}
 #app.homeMode .ccAlert :is(span,b,small){display:block;font-size:11px;line-height:1.4;color:var(--ov-muted);overflow-wrap:anywhere}
-#app.homeMode .ccAlert b{font-size:13px;font-weight:500;color:#203f50;margin:2px 0}
+#app.homeMode .ccAlert b{font-size:13px;font-weight:500;color:var(--ov-text);margin:2px 0}
 #app.homeMode .ccAlert strong{font-size:12px;font-weight:500;color:var(--ov-muted)}
 #app.homeMode .ccActivityList{display:grid;grid-template-columns:1fr}
 #app.homeMode .ccActivity{width:100%;display:grid;grid-template-columns:7px minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 14px;background:transparent;border:0;border-bottom:1px solid var(--ov-line);text-align:left;cursor:pointer}
-#app.homeMode .ccActivityDot{width:7px;height:7px;border-radius:50%;background:#2f7182}
-#app.homeMode .ccActivity b{display:block;color:#203f50;font-size:13px;font-weight:500;line-height:1.35}
+#app.homeMode .ccActivityDot{width:7px;height:7px;border-radius:50%;background:#18d9f3}
+#app.homeMode .ccActivity b{display:block;color:var(--ov-text);font-size:13px;font-weight:500;line-height:1.35}
 #app.homeMode .ccActivity small{display:block;margin-top:3px;color:var(--ov-muted);font-size:11px;line-height:1.4;overflow-wrap:anywhere}
-#app.homeMode .ccActivity em{font-style:normal;font-size:11px;color:#2f7182}
+#app.homeMode .ccActivity em{font-style:normal;font-size:11px;color:var(--ov-accent)}
 #app.homeMode .opsPager{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;color:var(--ov-muted);font-size:11px;background:var(--ov-soft)}
 #app.homeMode .opsPager:empty{display:none}
 #app.homeMode .opsPager>div{display:flex;align-items:center;gap:8px}
-#app.homeMode .opsPager button{width:34px;height:34px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-surface);color:#173b56;font-size:20px;cursor:pointer}
+#app.homeMode .opsPager button{width:34px;height:34px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-surface);color:var(--ov-text);font-size:20px;cursor:pointer}
 #app.homeMode .opsPager button:disabled{opacity:.4;cursor:default}
 #app.homeMode .opsEnergyList{display:grid;padding:2px 12px}
-#app.homeMode .opsEnergyProject{display:grid;grid-template-columns:110px minmax(0,1fr) 12px;gap:10px;align-items:center;width:100%;padding:10px 0;border:0;border-bottom:1px solid var(--ov-line);background:transparent;text-align:left;color:#203f50;cursor:pointer}
+#app.homeMode .opsEnergyProject{display:grid;grid-template-columns:110px minmax(0,1fr) 12px;gap:10px;align-items:center;width:100%;padding:10px 0;border:0;border-bottom:1px solid var(--ov-line);background:transparent;text-align:left;color:var(--ov-text);cursor:pointer}
 #app.homeMode .opsEnergyProject>b{font-size:13px;font-weight:500;overflow-wrap:anywhere}
 #app.homeMode .opsEnergyProject>i{font-style:normal;font-size:12px;color:var(--ov-muted)}
 #app.homeMode .opsEnergyMeters{display:flex;gap:8px 14px;flex-wrap:wrap}
 #app.homeMode .opsEnergyMeters>span{display:grid;grid-template-columns:auto auto;align-items:baseline;column-gap:4px}
 #app.homeMode .opsEnergyMeters small{grid-column:1/-1;color:var(--ov-muted);font-size:10px;line-height:1.3}
-#app.homeMode .opsEnergyMeters strong{font-size:15px;font-weight:600;color:#173b56}
+#app.homeMode .opsEnergyMeters strong{font-size:15px;font-weight:600;color:var(--ov-text)}
 #app.homeMode .opsEnergyMeters em{font-size:10px;font-style:normal;color:var(--ov-muted)}
 #app.homeMode .opsQuickActions{display:flex;gap:8px;flex-wrap:wrap}
-#app.homeMode .opsQuickActions button{min-height:38px;padding:8px 13px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-surface);color:#2f7182;font-size:12px;cursor:pointer}
+#app.homeMode .opsQuickActions button{min-height:38px;padding:8px 13px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-surface);color:var(--ov-accent);font-size:12px;cursor:pointer}
 #app.homeMode #homePage .opsProjectActivity .activityRow{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--ov-line);background:transparent!important}
 #app.homeMode #homePage .opsProjectActivity .activityRow>div:nth-child(2){flex:1;min-width:0}
-#app.homeMode #homePage .opsProjectActivity :is(b,span,time){font-size:12px!important;line-height:1.4;color:#48636f!important;font-weight:400!important}
+#app.homeMode #homePage .opsProjectActivity :is(b,span,time){font-size:12px!important;line-height:1.4;color:#c9d5e8!important;font-weight:400!important}
 #app.homeMode #homePage .opsProjectActivity :is(b,span){display:block}
-#app.homeMode .opsLoadMessage{margin:0;padding:0 3px;color:#a86f2d;font-size:12px;line-height:1.45}
+#app.homeMode .opsLoadMessage{margin:0;padding:0 3px;color:#f2d69b;font-size:12px;line-height:1.45}
 #app.homeMode .opsLoadMessage:empty{display:none}
 #app.homeMode :is(.ccEmpty,.ccEmptyCell,.opsEmpty){padding:20px 12px;text-align:center;color:var(--ov-muted);font-size:12px}
 #app.homeMode .updateSystemGrid,#app.homeMode .updateEnergyBriefRow{margin:10px 14px}
@@ -117,13 +117,39 @@
 #app.homeMode .updateSystemHealth small,#app.homeMode .updateEnergyBriefRow small{font-size:11px}
 #app.homeMode .opsOverview :is(.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini,.updateEmpty,.updateLoading){background:var(--ov-surface);border-color:var(--ov-line)}
 #app.homeMode .opsOverview .updateFocusHead>button{background:var(--ov-control);border-color:var(--ov-line)}
-#app.homeMode .opsOverview :is(.updateFocusRow,.updateAttentionRow,.updateSystemHealth,.updateTeamMini):hover{background:var(--ov-hover);border-color:#94b2c1}
+#app.homeMode .opsOverview :is(.updateFocusRow,.updateAttentionRow,.updateSystemHealth,.updateTeamMini):hover{background:var(--ov-hover);border-color:#33435f}
 #app.homeMode .opsOverview :is(.updateSystemHealth>span,.updateEnergyBriefRow>span){background:var(--ov-soft)}
 #app.homeMode .opsOverview :is(.updateFocusHead p,.updateFocusRow>span,.updateFocusRow>div small,.updateSystemHealth small,.updateEnergyBriefRow small,.updateAttentionRow small,.updateTeamMini small){color:var(--ov-muted)}
-#app.homeMode .ccFilters :is(input,select):focus{background:var(--ov-surface);border-color:#2f7182}
+#app.homeMode .ccFilters :is(input,select):focus{background:var(--ov-surface);border-color:var(--ov-accent)}
 #app.homeMode .ccFilters input::placeholder{color:var(--ov-muted);opacity:1}
-#app.homeMode .ccFilters option,#ccDispatchModal option{background:var(--ov-control);color:#173b56}
-#app.homeMode .opsOverview :is(button,input,select,tr):focus-visible{outline:2px solid #2f7182;outline-offset:2px}
+#app.homeMode .ccFilters option,#ccDispatchModal option{background:var(--ov-control);color:var(--ov-text)}
+#app.homeMode .opsOverview :is(.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini){color:var(--ov-text)}
+#app.homeMode .opsOverview :is(.updateFocusHead h2,.updateFocusRow>div b,.updateSystemHealth div b,.updateEnergyBriefRow b,.updateTeamMini div b,.updateAttentionRow div b){color:var(--ov-text)}
+#app.homeMode .opsOverview .updateFocusHead>div>span{color:var(--ov-accent)}
+#app.homeMode .opsOverview .updateFocusHead>button{color:var(--ov-accent)}
+#app.homeMode .opsOverview :is(.updateFocusRow>em,.updateFocusRow>strong,.updateEmpty,.updateLoading){color:var(--ov-muted)}
+#app.homeMode .opsOverview .updateEnergyBriefRow{border-bottom-color:var(--ov-line)}
+#app.homeMode .opsOverview .updateEnergyBriefRow strong.danger{color:#e58a97}
+#app.homeMode .opsOverview .updateEnergyBriefRow strong.warn{color:#e4ae27}
+#app.homeMode.opsOverviewMode .opsScopeBar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:10px 14px;border:1px solid var(--ov-line);border-radius:12px;background:var(--ov-surface);color:var(--ov-muted);margin-bottom:10px}
+#app .opsScopeBar.hide{display:none!important}
+#app.homeMode.opsOverviewMode .opsScopeBar label{font-size:12px;white-space:nowrap}
+#app.homeMode.opsOverviewMode .opsScopeBar select{width:min(390px,65%);min-width:0;min-height:40px;padding:7px 10px;border:1px solid #2f3c57;border-radius:8px;background:var(--ov-control);color:var(--ov-text);font-size:14px;color-scheme:dark;cursor:pointer}
+#app.homeMode.opsOverviewMode .opsScopeBar select:focus-visible{outline:2px solid var(--ov-accent);outline-offset:2px}
+#app.homeMode .opsOverview :is(button,input,select,tr):focus-visible{outline:2px solid #18d9f3;outline-offset:2px}
+body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal) .updateModalCard{background:var(--ov-surface)!important;border-color:var(--ov-line)!important;color:var(--ov-text)}
+body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal) :is(h3,.updateHealthModalScore strong,.updateAiAnswer>b){color:var(--ov-text)}
+body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal) :is(.updateMuted,.updateHealthModalScore span,.updateHealthBreakdown span){color:var(--ov-muted)!important}
+body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal) .updateEyebrow{color:var(--ov-accent)}
+body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal) :is(.updateHealthBreakdown,.updateHealthBreakdown>div){border-color:var(--ov-line)}
+body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal) :is(.updateAiPrompts button,.modalClose){background:var(--ov-control);border-color:var(--ov-line);color:var(--ov-text)}
+body:has(#app.homeMode.opsOverviewMode) #updateAiModal .updateAiAnswer{background:var(--ov-soft);color:var(--ov-text)}
+body:has(#app.homeMode.opsOverviewMode) #updateHealthModal .updateHealthBreakdown b,#updateAiModal .updateAiAnswer em{color:#e58a97}
+body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside,aside>header,.updateNotifRow){background:var(--ov-surface);border-color:var(--ov-line);color:var(--ov-text)}
+body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(.updateNotifToolbar,.updateNotifRow.unread,aside>header button){background:var(--ov-control);border-color:var(--ov-line);color:var(--ov-text)}
+body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(h2,.updateNotifRow>div b,.updateNotifEmpty b,.updateNotifToolbar b){color:var(--ov-text)}
+body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>header p,.updateNotifRow>div small,.updateNotifRow>div em,.updateNotifRank,aside>footer,.updateNotifEmpty){color:var(--ov-muted)}
+body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>header span,.updateNotifToolbar button){color:var(--ov-accent)}
 @media(max-width:1200px){
  #app.homeMode .ccWorkspace{grid-template-columns:minmax(0,1fr) 300px}
  #app.homeMode .ccFilters{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -141,6 +167,9 @@
  #app.homeMode .ccAlertList{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
 }
 @media(max-width:640px){
+ #app.homeMode.opsOverviewMode .opsScopeBar{padding:8px 10px;gap:8px}
+ #app.homeMode.opsOverviewMode .opsScopeBar label{font-size:11px}
+ #app.homeMode.opsOverviewMode .opsScopeBar select{min-height:44px;width:70%;font-size:16px}
  #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .homeDashboard{padding:8px 8px 78px!important}
  #app.homeMode .opsOverview{gap:8px!important}
  #app.homeMode .opsHero{padding:12px!important;flex-wrap:wrap!important;gap:10px!important;border-radius:12px!important}
@@ -175,12 +204,12 @@
  .ccModal{padding:8px}.ccModalCard{width:100%;max-height:96vh}.ccModalHead,.ccDispatchForm{padding-left:14px;padding-right:14px}
  .ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{font-size:16px}
 }
-.ccModal{position:fixed;inset:0;z-index:2200;display:grid;place-items:center;padding:18px}.ccModal.hide{display:none!important}.ccModalBackdrop{position:absolute;inset:0;border:0;background:rgba(5,22,34,.58);backdrop-filter:blur(2px)}.ccModalCard{position:relative;z-index:1;width:min(760px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--ov-line);border-radius:18px;background:var(--ov-panel);box-shadow:0 28px 90px rgba(0,22,38,.28)}.ccModalHead{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:18px 20px;border-bottom:1px solid var(--ov-line);background:var(--ov-surface)}.ccModalHead span{color:#2f7182;font-size:8.5px;font-weight:800;letter-spacing:1px}.ccModalHead h3{margin:4px 0;color:#173f59;font-size:19px}.ccModalHead p{margin:0;color:var(--ov-muted);font-size:10px}.ccClose{width:36px;height:36px;border:1px solid var(--ov-line);border-radius:10px;background:var(--ov-control);color:var(--ov-muted);font-size:22px}
-.ccDispatchForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:18px 20px 20px}.ccDispatchForm label{display:grid;gap:5px;color:var(--ov-muted);font-size:9px;font-weight:720}.ccDispatchForm label.wide{grid-column:1/-1}.ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{width:100%;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);color:#274d64;padding:0 10px;font-size:11px;outline:none}.ccDispatchForm input,.ccDispatchForm select{height:40px}.ccDispatchForm textarea{padding:10px;resize:vertical}.ccDispatchForm input:focus,.ccDispatchForm select:focus,.ccDispatchForm textarea:focus{border-color:#66bdcd;background:var(--ov-control);box-shadow:0 0 0 3px rgba(66,170,193,.09)}
-.ccDispatchProjectsHead{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;color:#365d73;font-size:10px}.ccDispatchProjectsHead label{display:flex;align-items:center;gap:6px}.ccDispatchProjectsHead input{width:15px;height:15px}.ccDispatchProjects{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ccDispatchProjects label{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-surface);cursor:pointer}.ccDispatchProjects input{width:16px;height:16px;flex:0 0 16px}.ccDispatchProjects span{display:block;color:#536f80;font-size:9px;font-weight:560}.ccDispatchProjects b{display:block;color:#24516a;font-size:9px}.ccDispatchActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:5px}
-#ccDispatchModal .ccBtn{min-height:38px;padding:8px 14px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-control);color:#173b56;font-size:12px;cursor:pointer}
-#ccDispatchModal .ccBtn.primary{background:#173b56;border-color:#173b56;color:#fff}
-#ccDispatchModal .ccBtn:focus-visible{outline:2px solid #2f7182;outline-offset:2px}
+.ccModal{position:fixed;inset:0;z-index:2200;display:grid;place-items:center;padding:18px}.ccModal.hide{display:none!important}.ccModalBackdrop{position:absolute;inset:0;border:0;background:rgba(5,22,34,.58);backdrop-filter:blur(2px)}.ccModalCard{position:relative;z-index:1;width:min(760px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--ov-line);border-radius:18px;background:var(--ov-panel);box-shadow:0 28px 90px rgba(0,22,38,.28)}.ccModalHead{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:18px 20px;border-bottom:1px solid var(--ov-line);background:var(--ov-surface)}.ccModalHead span{color:var(--ov-accent);font-size:8.5px;font-weight:800;letter-spacing:1px}.ccModalHead h3{margin:4px 0;color:var(--ov-text);font-size:19px}.ccModalHead p{margin:0;color:var(--ov-muted);font-size:10px}.ccClose{width:36px;height:36px;border:1px solid var(--ov-line);border-radius:10px;background:var(--ov-control);color:var(--ov-muted);font-size:22px}
+.ccDispatchForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:18px 20px 20px}.ccDispatchForm label{display:grid;gap:5px;color:var(--ov-muted);font-size:9px;font-weight:720}.ccDispatchForm label.wide{grid-column:1/-1}.ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{width:100%;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);color:var(--ov-text);padding:0 10px;font-size:11px;outline:none}.ccDispatchForm input,.ccDispatchForm select{height:40px}.ccDispatchForm textarea{padding:10px;resize:vertical}.ccDispatchForm input:focus,.ccDispatchForm select:focus,.ccDispatchForm textarea:focus{border-color:#66bdcd;background:var(--ov-control);box-shadow:0 0 0 3px rgba(66,170,193,.09)}
+.ccDispatchProjectsHead{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;color:var(--ov-muted);font-size:10px}.ccDispatchProjectsHead label{display:flex;align-items:center;gap:6px}.ccDispatchProjectsHead input{width:15px;height:15px}.ccDispatchProjects{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ccDispatchProjects label{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-surface);cursor:pointer}.ccDispatchProjects input{width:16px;height:16px;flex:0 0 16px}.ccDispatchProjects span{display:block;color:var(--ov-muted);font-size:9px;font-weight:560}.ccDispatchProjects b{display:block;color:var(--ov-text);font-size:9px}.ccDispatchActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:5px}
+#ccDispatchModal .ccBtn{min-height:38px;padding:8px 14px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-control);color:var(--ov-text);font-size:12px;cursor:pointer}
+#ccDispatchModal .ccBtn.primary{background:#0f2837;border-color:#1d5368;color:var(--ov-accent)}
+#ccDispatchModal .ccBtn:focus-visible{outline:2px solid #18d9f3;outline-offset:2px}
 
 .estaNav button .ccNavBadge{margin-left:auto;min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#e8f3f6;color:#34798a;font-size:8px;font-weight:800;line-height:1;box-shadow:inset 0 0 0 1px rgba(52,121,138,.12)}
 .estaNav button .ccNavBadge.high{background:#fff1dd;color:#a7681e}.estaNav button .ccNavBadge.critical{background:#ffe9e7;color:#bd4b48}
