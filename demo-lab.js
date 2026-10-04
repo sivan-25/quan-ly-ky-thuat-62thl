@@ -6,6 +6,7 @@ const DEMO_MODULES=["incident","inspection","documents","reports"];
 let demoCache={loaded:false,buildingId:"",incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};
 let demoSelectedIncident="",demoSelectedInspection="",demoSelectedDocument="",demoIncidentFilter="";
 const demoIs=()=>!!currentBuilding?.id&&!$("#navWork")?.classList.contains("hide");
+const demoUsesUpdatedOpsUI=()=>demoIs()&&String(currentBuilding?.id||"")!==DEMO_ID;
 const originalAdminProjectCard=adminProjectCard;
 adminProjectCard=function(b,index=0){
  const html=originalAdminProjectCard(b,index);
@@ -397,7 +398,7 @@ function demoBindTaskMaterialRows(){
   });
   row.querySelector(".demoTaskMaterialRemove")?.addEventListener("click",()=>{
    row.remove();
-   if(String(currentBuilding?.id||"")!=="UPDATE"&&!box.querySelector("[data-material-row]")&&(demoCache.materials||[]).length)box.insertAdjacentHTML("beforeend",demoTaskMaterialRowHtml());
+   if(!demoUsesUpdatedOpsUI()&&!box.querySelector("[data-material-row]")&&(demoCache.materials||[]).length)box.insertAdjacentHTML("beforeend",demoTaskMaterialRowHtml());
    demoBindTaskMaterialRows();
   });
  });
@@ -407,7 +408,7 @@ function demoRenderTaskMaterials(items=[]){
  const materials=demoCache.materials||[];
  empty?.classList.toggle("hide",materials.length>0);
  if(!materials.length){box.innerHTML="";return}
- const clean=Array.isArray(items)&&items.length?items:(String(currentBuilding?.id||"")==="UPDATE"?[]:[{}]);
+ const clean=Array.isArray(items)&&items.length?items:(demoUsesUpdatedOpsUI()?[]:[{}]);
  box.innerHTML=clean.map((x,i)=>demoTaskMaterialRowHtml(x,i)).join("");
  demoBindTaskMaterialRows();
 }
@@ -866,7 +867,7 @@ function demoSeverityClass(v){return v==="Khẩn cấp"||v==="Cao"?"red":v==="Tr
 function demoStatusClass(v){return v==="Đã đóng"||v==="Đạt"?"green":v==="Đang xử lý"?"blue":v==="Theo dõi"||v==="Cần chú ý"?"amber":"red"}
 
 function demoUseIncidentStartDate(){
- return String(currentBuilding?.id||"")==="UPDATE";
+ return demoUsesUpdatedOpsUI();
 }
 function demoIncidentStartParts(x){
  const raw=x?.created_at||x?.detected_at||"";
@@ -893,12 +894,12 @@ window.demoIncidentRowAction=id=>{
  const inc=demoCache.incidents.find(x=>String(x.id)===String(id));if(!inc)return;
  demoSelectedIncident=id;
  demoRenderIncidents();
- if(String(currentBuilding?.id||"")==="UPDATE")demoEditIncident(id);
+ if(demoUsesUpdatedOpsUI())demoEditIncident(id);
 };
 let demoIncidentBeforeFiles=[],demoIncidentAfterFiles=[],demoEditingIncidentId="",demoIncidentExistingBeforeRefs=[],demoIncidentExistingAfterRefs=[];
 
 function demoEnsureIncidentEditFields(){
- if(String(currentBuilding?.id||"")!=="UPDATE")return;
+ if(!demoUsesUpdatedOpsUI())return;
  const grid=$("#demoIncidentForm .demoIncidentFormGrid");if(!grid)return;
  if(!$("#demoIncidentContractor")){
   const symptom=$("#demoIncidentSymptom")?.closest("label");
@@ -1048,7 +1049,7 @@ window.demoSetIncidentStatus=async(id,status)=>{
  try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(currentBuilding.id),{status,updated_at:new Date().toISOString()});await demoLoad(true);demoRenderIncidents();demoRenderHomeOps();toast("Đã cập nhật sự cố")}catch(e){toast(e.message)}
 };
 function demoIncidentTaskPriority(severity){
- if(String(currentBuilding?.id||"")!=="UPDATE")return severity||"Trung bình";
+ if(!demoUsesUpdatedOpsUI())return severity||"Trung bình";
  const raw=String(severity||"").trim();
  if(raw==="Khẩn cấp"||raw==="Critical")return "Critical";
  if(raw==="Cao"||raw==="High")return "High";
@@ -1056,7 +1057,7 @@ function demoIncidentTaskPriority(severity){
  return "Medium";
 }
 function demoIncidentTaskDue(priority){
- if(String(currentBuilding?.id||"")!=="UPDATE"){
+ if(!demoUsesUpdatedOpsUI()){
   const d=new Date();d.setDate(d.getDate()+2);return d.toLocaleDateString("en-CA");
  }
  const mins=({Critical:30,High:120,Medium:480,Low:1440})[priority]||480;
