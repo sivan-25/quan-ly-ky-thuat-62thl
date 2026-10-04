@@ -1120,8 +1120,9 @@ window.demoCreateTaskFromIncident=async id=>{
  const existing=demoFindIncidentLinkedTask(inc);
  if(existing){
   if(String(inc.related_task_id||"")!==String(existing.id)){
-   try{await demoPatch("incidents","id=eq."+demoQs(id),{related_task_id:String(existing.id),updated_at:new Date().toISOString()})}catch(e){}
+   try{await demoPatch("incidents","id=eq."+demoQs(id)+"&building_id=eq."+demoQs(buildingId),{related_task_id:String(existing.id),updated_at:new Date().toISOString()})}catch(e){}
   }
+  if(String(currentBuilding?.id||"")!==buildingId)return;
   demoOpenIncidentLinkedTask(existing.id);
   toast("Sự cố đã có công việc liên kết · đang mở chỉnh sửa");
   return;
