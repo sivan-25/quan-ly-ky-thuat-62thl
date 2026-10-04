@@ -1197,6 +1197,8 @@ window.demoSubmitIncident=async e=>{
  const solution=$("#demoIncidentSolution")?.value.trim()||"";
  const contractor_id=$("#demoIncidentContractor")?.value||null;
  const cost=Math.max(0,Number($("#demoIncidentCost")?.value||0));
+ const originalBeforeRefs=Array.isArray(existing?.before_images)?existing.before_images:[];
+ const originalAfterRefs=Array.isArray(existing?.after_images)?existing.after_images:[];
  if(!area){toast("Vui lòng nhập khu vực / vị trí");$("#demoIncidentArea")?.focus();return}
  if(!symptom){toast("Vui lòng nhập hiện tượng sự cố");$("#demoIncidentSymptom")?.focus();return}
  const code=existing?.incident_code||("SC-"+String(currentBuilding.id||"DA").replace(/[^A-Za-z0-9]/g,"")+"-"+String(Date.now()).slice(-4));
@@ -1232,6 +1234,13 @@ window.demoSubmitIncident=async e=>{
    });
   }
   saved=true;
+  if(editing){
+   const removedRefs=[
+    ...originalBeforeRefs.filter(ref=>!demoIncidentExistingBeforeRefs.includes(ref)),
+    ...originalAfterRefs.filter(ref=>!demoIncidentExistingAfterRefs.includes(ref))
+   ];
+   if(removedRefs.length)deleteStoredMediaRefs(removedRefs).catch(()=>{});
+  }
   demoCloseIncidentModal();
   resetDemoIncidentFiles();
   demoEditingIncidentId="";
