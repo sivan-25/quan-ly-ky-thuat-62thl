@@ -889,6 +889,15 @@ function demoCauseValue(v){
 }
 window.demoOpenLinkedTask=id=>{showModule("work");const n=Number(id);setTimeout(()=>{if(Number.isFinite(n)&&typeof editTask==="function"&&load().some(x=>Number(x.id)===n))editTask(n)},90)};
 window.demoSelectIncident=id=>{demoSelectedIncident=id;demoRenderIncidents()};
+window.demoIncidentRowAction=id=>{
+ const inc=demoCache.incidents.find(x=>String(x.id)===String(id));
+ if(!inc)return;
+ if(String(currentBuilding?.id||"")==="UPDATE"){
+  const linked=demoFindIncidentLinkedTask(inc);
+  if(linked){demoOpenIncidentLinkedTask(linked.id);return}
+ }
+ demoSelectIncident(id);
+};
 let demoIncidentBeforeFiles=[],demoIncidentAfterFiles=[];
 function demoIncidentFilePreview(kind){
  const files=kind==="before"?demoIncidentBeforeFiles:demoIncidentAfterFiles;
@@ -981,7 +990,7 @@ async function demoRenderIncidents(){
  $("#demoIncidentBody").innerHTML=list.map(x=>{
   const start=demoIncidentStartParts(x);
   const first=useStartDate?('<td class="demoIncidentStartCell"><b>'+esc(start.date)+'</b><small>'+esc(start.time||"")+'</small></td>'):('<td><b>'+esc(x.incident_code)+'</b><small>'+esc(new Date(x.detected_at).toLocaleDateString("vi-VN"))+'</small></td>');
-  return '<tr onclick="demoSelectIncident(\''+x.id+'\')">'+first+'<td>'+esc(x.area||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.name||"—")+'</td><td>'+esc(x.symptom||"—")+'</td><td><span class="demoPill '+demoSeverityClass(x.severity)+'">'+esc(x.severity)+'</span></td><td><span class="demoPill '+demoStatusClass(x.status)+'">'+esc(x.status)+'</span></td></tr>';
+  return '<tr onclick="demoIncidentRowAction(\''+x.id+'\')" title="'+(demoFindIncidentLinkedTask(x)?'Mở chỉnh sửa công việc liên kết':'Xem chi tiết sự cố')+'">'+first+'<td>'+esc(x.area||"—")+'</td><td>'+esc(demoAsset(x.asset_id)?.name||"—")+'</td><td>'+esc(x.symptom||"—")+'</td><td><span class="demoPill '+demoSeverityClass(x.severity)+'">'+esc(x.severity)+'</span></td><td><span class="demoPill '+demoStatusClass(x.status)+'">'+esc(x.status)+'</span></td></tr>';
  }).join("");
  const box=$("#demoIncidentDetail");
  if(!selected){box.innerHTML='<div class="demoPanelBody">Chưa có sự cố.</div>';return}
