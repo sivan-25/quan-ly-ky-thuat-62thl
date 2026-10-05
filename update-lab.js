@@ -454,11 +454,11 @@ function updateInjectShell(){
  if(!$("#updateMobileNav")){
   const n=document.createElement("nav");n.id="updateMobileNav";n.className="updateMobileNav hide";
   n.innerHTML=
+   '<button data-update-mobile="energy"><span>⚡</span><b>Năng lượng</b></button>'+
    '<button data-update-mobile="home" class="updateMobileHome"><span>⌂</span><b>Hôm nay</b><i id="updateMobileNotifBadge" class="updateMobileNotifBadge hide"></i></button>'+
    '<button data-update-mobile="work"><span>☑</span><b>Công việc</b></button>'+
-   '<button class="scan" data-update-mobile="scan"><span>⌗</span><b>SCAN QR</b></button>'+
-   '<button data-update-mobile="incident"><span>!</span><b>Sự cố</b></button>'+
-   '<button data-update-mobile="more"><span>•••</span><b>Thêm</b></button>';
+   '<button data-update-mobile="scan"><span>⌗</span><b>Scan QR</b></button>'+
+   '<button data-update-mobile="incident"><span>!</span><b>Sự cố</b></button>';
   document.body.appendChild(n);
  }
  updateInjectModals();
@@ -509,11 +509,11 @@ function updateBindNav(){
  Object.entries(map).forEach(([id,name])=>{const b=$("#"+id);if(b)b.onclick=()=>updateShowStandalone(name)});
  $("#updateMobileNav")?.querySelectorAll("[data-update-mobile]").forEach(b=>b.onclick=()=>{
   const a=b.dataset.updateMobile;
+  if(a==="energy")showModule("energy");
   if(a==="home")showHome();
   if(a==="work")showModule("work");
   if(a==="incident")showModule("incident");
   if(a==="scan")updateOpenScanner();
-  if(a==="more")setMobileMenuOpen(true);
  });
 }
 
