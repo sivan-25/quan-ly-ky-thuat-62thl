@@ -8,7 +8,8 @@ const $c=s=>document.querySelector(s);
 const escC=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const todayC=()=>typeof today==="function"?today():new Date().toLocaleDateString("en-CA");
 const fmtC=d=>{if(!d)return "—";const x=String(d).slice(0,10);try{return new Date(x+"T00:00:00").toLocaleDateString("vi-VN")}catch(_){return x}};
-const activeProjects=()=>{const list=Array.isArray(currentAccount?.buildings)?currentAccount.buildings:[];const real=list.filter(x=>x?.id&&x.id!=="DEMO");return real.length?real:list.filter(x=>x?.id)};
+const accountProjects=()=>{const list=Array.isArray(currentAccount?.buildings)?currentAccount.buildings:[];const real=list.filter(x=>x?.id&&x.id!=="DEMO");return real.length?real:list.filter(x=>x?.id)};
+const activeProjects=()=>accountProjects().filter(x=>String(x?.id||"").trim().toUpperCase()!=="UPDATE");
 const activeIds=()=>new Set(activeProjects().map(x=>String(x.id)));
 const activeRows=()=>{const ids=activeIds();return rows.filter(r=>ids.has(String(r?.building?.id||"")))};
 const isDone=t=>["Đã hoàn thành","Hoàn thành"].includes(String(t?.s||""));
@@ -28,7 +29,7 @@ function ensureScopeBar(home){
  }
  const admin=globalScope(),on=admin||(projectOverviewActive&&currentBuilding?.id!=="DEMO");
  bar.classList.toggle("hide",!on);
- const select=bar.querySelector("select"),list=activeProjects().filter(b=>b.id!=="DEMO");
+ const select=bar.querySelector("select"),list=accountProjects().filter(b=>b.id!=="DEMO");
  const options=(currentAccount?.is_admin?'<option value="">Tất cả dự án · Admin</option>':'')+list.map(b=>'<option value="'+escC(b.id)+'">'+escC(b.name||b.id)+'</option>').join("");
  if(select.innerHTML!==options)select.innerHTML=options;
  select.value=admin?"":String(currentBuilding?.id||"");
