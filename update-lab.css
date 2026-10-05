@@ -337,7 +337,9 @@
   .updateMobileNav:not(.hide){display:grid}
   .updateMobileNav button{height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:transparent;color:#607681;font-family:Inter,sans-serif;cursor:pointer}
   .updateMobileNav button span{font-size:15px;line-height:1}.updateMobileNav button b{font-size:6.4px;font-weight:750;white-space:nowrap}
-  .updateMobileNav button.scan{align-self:center;height:53px;margin-top:-13px;border-radius:16px;background:#173b56;color:#fff;box-shadow:0 7px 17px rgba(23,59,86,.25)}.updateMobileNav button.scan span{font-size:19px}.updateMobileNav button.scan b{font-size:6px}
+  /* Mobile bottom navigation: all 5 actions use one visual standard. */
+  .updateMobileNav button.scan{align-self:stretch;height:46px;margin:0;border-radius:0;background:transparent;color:#607681;box-shadow:none}
+  .updateMobileNav button.scan span,.updateMobileNav button.scan b{font-size:inherit}
   .updateModalCard{padding:17px 14px!important}.updateAiPrompts{grid-template-columns:1fr}.updateQuickForm{grid-template-columns:1fr}.updateQuickForm label.span2{grid-column:auto}.updateQuickForm>button{grid-column:auto;width:100%}
 }
 @media(max-width:390px){
@@ -1758,5 +1760,40 @@
     min-width:0!important;
     max-width:100%!important;
     box-sizing:border-box!important;
+  }
+}
+
+
+/* 2026-10-05: uniform mobile operations dock */
+@media(max-width:760px){
+  .updateMobileNav{
+    align-items:center!important;
+    overflow:hidden!important;
+  }
+  .updateMobileNav button,
+  .updateMobileNav button.scan{
+    width:100%!important;
+    min-width:0!important;
+    height:46px!important;
+    margin:0!important;
+    padding:3px 2px!important;
+    align-self:center!important;
+    border:0!important;
+    border-radius:10px!important;
+    background:transparent!important;
+    color:#607681!important;
+    box-shadow:none!important;
+    transform:none!important;
+  }
+  .updateMobileNav button span,
+  .updateMobileNav button.scan span{
+    font-size:15px!important;
+    line-height:1!important;
+  }
+  .updateMobileNav button b,
+  .updateMobileNav button.scan b{
+    font-size:6.4px!important;
+    font-weight:750!important;
+    line-height:1.1!important;
   }
 }
