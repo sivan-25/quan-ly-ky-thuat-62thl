@@ -657,7 +657,7 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
   const files=[...pendingTaskFiles],removedRefs=[...removedTaskImageRefs];
   const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
-  let obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length,...links};
+  let obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length,...links};
   if(obj.s==="Đã hoàn thành")obj.completedAt=old?.completedAt||new Date().toISOString();
 
   // Inventory reconciliation is blocking: insufficient stock means the work order is not saved.
@@ -1629,3 +1629,4 @@ window.demoRefresh=async()=>{
 
 setTimeout(()=>{demoEnsureWorkPanel();demoSetProjectMode()},400);
 })();
+

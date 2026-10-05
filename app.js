@@ -410,6 +410,11 @@ async function syncProjectSnapshot(){
    if(r?.updated_at)cloudVersionByBuilding[currentBuilding.id]=r.updated_at;
  }catch(e){console.warn("Snapshot merge failed",e)}
 }
+function taskDispatchMetadata(task){
+ const metadata={};
+ for(const key of ["dispatchGroupId","dispatchedByAdmin","dispatchedAt"]){if(task&&Object.prototype.hasOwnProperty.call(task,key))metadata[key]=task[key]}
+ return metadata;
+}
 async function syncTaskRecord(action,itemOrId,buildingId=currentBuilding?.id){
  if(!centralSession?.access_token||!buildingId)return;
  try{
@@ -1035,7 +1040,7 @@ $("#taskForm").onsubmit=async e=>{
    const files=[...pendingTaskFiles];
    const removedRefs=[...removedTaskImageRefs];
    const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
-   const obj={id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
+   const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
    resetForm();render();renderHomeDashboard();
@@ -3415,3 +3420,4 @@ applyBuildingUI=function(){
  const restored=await restoreCentral();
  if(restored)window.enterAccount(restored.account,restored.session);
 })();
+

@@ -1,4 +1,10 @@
 /* ESTA overview: one shared visual system for account and project scopes. */
+#app.homeMode .ccTaskScopes{display:flex;gap:8px;padding:10px 12px;background:var(--ov-panel);border-bottom:1px solid var(--ov-line)}
+#app.homeMode .ccTaskScopes button{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:44px;padding:8px 12px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-control);color:var(--ov-muted);font:inherit;font-size:13px;cursor:pointer}
+#app.homeMode .ccTaskScopes button[aria-pressed="true"]{background:#0f2837;border-color:#1d7185;color:var(--ov-accent)}
+#app.homeMode .ccTaskScopes b{min-width:22px;padding:2px 5px;border-radius:5px;background:var(--ov-soft);font-size:12px;font-weight:500;text-align:center}
+#app.homeMode .ccTaskScopes button:focus-visible,#app.homeMode .ccTable tr[data-cc-task]:focus-visible{outline:2px solid var(--ov-accent);outline-offset:-2px}
+@media(max-width:700px){#app.homeMode .ccTaskScopes{gap:6px;padding:8px}#app.homeMode .ccTaskScopes button{flex:1;padding:8px 6px;font-size:12px;flex-wrap:wrap}}
 #app.opsOverviewMode,#ccDispatchModal,body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal,#updateNotificationCenter){--ov-surface:#111b2e;--ov-panel:#11182b;--ov-control:#141e33;--ov-soft:#0f1728;--ov-line:#26334d;--ov-hover:#131e32;--ov-muted:#9aa8c1;--ov-text:#eef4ff;--ov-accent:#18d9f3;color-scheme:dark}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode){background:var(--ov-panel)!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) main{background:transparent!important}

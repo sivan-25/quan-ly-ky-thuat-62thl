@@ -1,0 +1,24 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>Kiểm thử Admin đã giao</title></head><body><script>
+(async()=>{
+ const source=new DOMParser().parseFromString(await(await fetch('index.html')).text(),'text/html');
+ for(const node of source.head.querySelectorAll('style,link[rel="stylesheet"]'))document.head.appendChild(node.cloneNode(true));
+ const shell=source.getElementById('app');shell.className='homeMode adminCommandHome opsOverviewMode';
+ shell.querySelectorAll('.page').forEach(p=>p.classList.toggle('hide',p.id!=='homePage'));
+ shell.querySelectorAll('.topModuleTitle').forEach(p=>p.classList.toggle('hide',p.id!=='topHomeTitle'));
+ shell.querySelectorAll('[onclick],[onchange],[onsubmit]').forEach(el=>['onclick','onchange','onsubmit'].forEach(k=>el.removeAttribute(k)));
+ shell.querySelectorAll('.buildingNameText').forEach(el=>el.textContent='ESTA · KIỂM THỬ');
+ document.body.replaceChildren(shell);
+ window.currentAccount={is_admin:true,buildings:['62THL','68PĐL','127HH','130HH','UPDATE','DEMO'].map(id=>({id,name:({'62THL':'62 Trần Huy Liệu','68PĐL':'68 Phan Đăng Lưu','127HH':'127 Hồng Hà','130HH':'130 Hồng Hà'})[id]||id}))};
+ window.currentBuilding={id:''};window.projectOverviewActive=false;window.centralSession={access_token:'ISOLATED-TEST'};window.projectOpenSeq=0;
+ window.today=()=> '2026-10-05';window.isAdminOverview=()=>!projectOverviewActive;
+ window.showModule=window.applyBuildingUI=window.render=window.renderHomeDashboard=window.openAdminPortal=window.openAdminOverview=()=>{};
+ window.toast=message=>{let el=document.getElementById('fixtureNotice');if(!el){el=document.createElement('p');el.id='fixtureNotice';document.body.appendChild(el)}el.textContent=message};
+ window.load=()=>[];window.editTask=()=>{};window.enterProject=async b=>{toast('Mở chi tiết dự án '+b.id+' · Dữ liệu giả lập');return false};
+ const tasks=[['Kiểm tra hệ thống PCCC và cập nhật kết quả','Đang thực hiện','2026-10-07'],['Bảo trì hệ thống điều hòa khu vực văn phòng','Đã hoàn thành','2026-10-04'],['Kiểm tra máy bơm nước và ghi nhận tình trạng','Đang thực hiện','2026-10-04'],['Vệ sinh tủ điện tổng và kiểm tra đầu nối','Bắt đầu','2026-10-08'],['Kiểm tra chiếu sáng hành lang','Chờ xử lý','2026-10-09'],['Rà soát thiết bị và vật tư dự phòng','Đã hoàn thành','2026-10-03'],['Kiểm tra cửa thoát hiểm','Đang thực hiện','2026-10-06'],['Kiểm tra hệ thống thoát nước','Đang thực hiện','2026-10-05']];
+ const rows=currentAccount.buildings.map((building,index)=>({building,snapshot:{tasks:index<4?tasks.slice(index*2,index*2+2).map((t,n)=>({id:index*2+n+1,c:t[0],s:t[1],d:'2026-10-05',dueDate:t[2],a:'Kỹ thuật dự án',priority:n?'Trung bình':'Cao',dispatchedByAdmin:true,dispatchedAt:'2026-10-05T08:00:00Z',dispatchGroupId:'DG-TEST'})):[],energy:[]},ops:{}}));
+ window.sbFetch=async()=>({rows,activity:[],generated_at:new Date().toISOString()});
+ window.syncTaskRecord=async(action,item,id)=>{rows.find(r=>r.building.id===id).snapshot.tasks.push(item);return {item}};
+ for(const src of ['overview-ui.js','command-center.js'])await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s)});
+ await estaCommandCenterRefresh();
+})().catch(e=>{document.body.textContent=e.stack});
+</script></body></html>
