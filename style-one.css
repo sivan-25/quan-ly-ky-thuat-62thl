@@ -985,3 +985,88 @@
     margin-bottom:8px!important;
   }
 }
+
+
+/* STYLE_ONE_MOBILE_BOTTOM_NAV_AND_SIDEBAR_V5 */
+@media(max-width:760px){
+  /* Bottom navigation is a true app dock: edge-to-edge and flush with the viewport bottom. */
+  #app.styleOnePilot #updateMobileNav.updateMobileNav,
+  body.estaMobileScrollShell #app.styleOnePilot #updateMobileNav.updateMobileNav{
+    box-sizing:border-box!important;
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    height:calc(72px + env(safe-area-inset-bottom, 0px))!important;
+    min-height:72px!important;
+    padding:5px 8px calc(5px + env(safe-area-inset-bottom, 0px))!important;
+    gap:3px!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-radius:18px 18px 0 0!important;
+    background:#fffdf8!important;
+    box-shadow:0 -5px 22px rgba(23,59,86,.14)!important;
+    transform:none!important;
+  }
+  #app.styleOnePilot #updateMobileNav.updateMobileNav button{
+    height:56px!important;
+    min-height:56px!important;
+  }
+
+  /* Page content always clears the dock. */
+  #app.styleOnePilot main,
+  body.estaMobileScrollShell #app.styleOnePilot>main{
+    padding-bottom:calc(88px + env(safe-area-inset-bottom, 0px))!important;
+    scroll-padding-bottom:calc(92px + env(safe-area-inset-bottom, 0px))!important;
+  }
+
+  /* Opening the blue sidebar temporarily removes the bottom dock.
+     Logout / account controls stay fixed inside the sidebar and never sit under the dock. */
+  body.mobileNavOpen #app.styleOnePilot #updateMobileNav,
+  #app.styleOnePilot.menuOpen #updateMobileNav{
+    display:none!important;
+  }
+  #app.styleOnePilot .estaSidebar{
+    display:flex!important;
+    flex-direction:column!important;
+    box-sizing:border-box!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
+    padding-bottom:max(10px,env(safe-area-inset-bottom, 0px))!important;
+  }
+  #app.styleOnePilot .mobileSidebarHeader,
+  #app.styleOnePilot .estaSidebarBrand,
+  #app.styleOnePilot .technicalProjectSwitcher,
+  #app.styleOnePilot .sideBackup,
+  #app.styleOnePilot .sideBottom{
+    flex:0 0 auto!important;
+  }
+  #app.styleOnePilot .estaNav{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    margin-bottom:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding-bottom:12px!important;
+  }
+  #app.styleOnePilot .sideBackup{
+    margin-top:0!important;
+  }
+  #app.styleOnePilot .sideBottom{
+    margin-top:8px!important;
+    padding-bottom:max(2px,env(safe-area-inset-bottom, 0px))!important;
+  }
+
+  /* Energy's fixed Save bar sits immediately above the dock's new edge-to-edge footprint. */
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyActions{
+    bottom:calc(80px + env(safe-area-inset-bottom, 0px))!important;
+  }
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage{
+    padding-bottom:calc(174px + env(safe-area-inset-bottom, 0px))!important;
+  }
+}
