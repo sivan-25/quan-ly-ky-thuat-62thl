@@ -491,3 +491,408 @@
     transition-duration:.01ms!important;
   }
 }
+
+
+/* STYLE_ONE_FULL_MODULE_PASS_V2 */
+/* Final module pass: keeps all business logic intact and normalizes the full 127HH/DEMO experience. */
+#app.styleOnePilot{
+  --s1-card:#fff;
+  --s1-card-soft:#f8fafc;
+  --s1-border:#e2e8f0;
+  --s1-text:#0f172a;
+  --s1-text-2:#475569;
+  --s1-text-3:#94a3b8;
+  --s1-brand:#4f46e5;
+  --s1-cyan:#0891b2;
+  --s1-green:#059669;
+  --s1-amber:#d97706;
+  --s1-red:#dc2626;
+}
+#app.styleOnePilot .modulePage,
+#app.styleOnePilot .inventoryPage,
+#app.styleOnePilot .maintenancePage,
+#app.styleOnePilot .contractorPage,
+#app.styleOnePilot .constructionMaterialPage{
+  max-width:1600px!important;
+  margin:0 auto!important;
+  padding:16px 18px 30px!important;
+}
+#app.styleOnePilot .hide{display:none!important}
+#app.styleOnePilot svg{stroke-linecap:round;stroke-linejoin:round}
+
+/* Work */
+#app.styleOnePilot #workPage .workEntryCard{
+  border:1px solid var(--s1-border)!important;
+  background:#fff!important;
+  box-shadow:0 10px 28px rgba(15,23,42,.055)!important;
+}
+#app.styleOnePilot #workPage .workEntryHeader{
+  min-height:76px!important;
+  padding:15px 17px!important;
+  border-bottom:1px solid #eef2f7!important;
+  background:linear-gradient(180deg,#fff,#fbfdff)!important;
+}
+#app.styleOnePilot #workPage .workEntryHeader>div:first-child>span{color:var(--s1-brand)!important;font-size:8px!important}
+#app.styleOnePilot #workPage .workEntryHeader h2{color:var(--s1-text)!important;font-size:18px!important}
+#app.styleOnePilot #workPage .workEntryHeader p{color:var(--s1-text-2)!important;font-size:10px!important}
+#app.styleOnePilot #workPage .workEntryHeaderIcon{
+  border-color:#dfe6ef!important;background:#eef2ff!important;color:var(--s1-brand)!important;
+}
+#app.styleOnePilot #workPage .workEntryForm{padding:14px 16px 15px!important;gap:10px!important}
+#app.styleOnePilot #workPage .workField>span{color:#475569!important;font-size:9px!important;font-weight:720!important}
+#app.styleOnePilot #workPage .workSave{
+  background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border:0!important;color:#fff!important;
+  box-shadow:0 7px 16px rgba(79,70,229,.18)!important;
+}
+#app.styleOnePilot #workPage .workCancel{background:#fff!important;color:#475569!important;border-color:#dbe4ee!important}
+#app.styleOnePilot #workPage .stats{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;margin:12px 0!important;
+}
+#app.styleOnePilot #workPage .stats article{
+  min-height:82px!important;padding:12px!important;border:1px solid var(--s1-border)!important;border-radius:14px!important;
+  background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #workPage .stats article small{color:#64748b!important}
+#app.styleOnePilot #workPage .stats article strong{color:var(--s1-text)!important;font-size:22px!important}
+#app.styleOnePilot #workPage .premiumTableCard{
+  border:1px solid var(--s1-border)!important;background:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.045)!important;
+}
+#app.styleOnePilot #workPage .premiumTableCard .tableTop{background:#fbfcfe!important;border-bottom:1px solid #edf2f7!important}
+#app.styleOnePilot #workPage .taskTitle{color:var(--s1-text)!important}
+#app.styleOnePilot #workPage .peopleSelectBtn{
+  border-color:#cbd5e1!important;background:#fff!important;color:#334155!important;
+}
+#app.styleOnePilot #workPage .peopleSelectMenu{
+  border-color:#dbe4ee!important;background:#fff!important;color:#334155!important;box-shadow:0 18px 50px rgba(15,23,42,.16)!important;
+}
+#app.styleOnePilot #workPage .peopleMenuHead{border-color:#edf2f7!important;background:#f8fafc!important}
+#app.styleOnePilot #workPage .peopleOption{color:#475569!important}
+#app.styleOnePilot #workPage .peopleOption:hover,
+#app.styleOnePilot #workPage .peopleOption.selected{background:#eef2ff!important;color:#3730a3!important}
+#app.styleOnePilot .workEditDrawer{background:rgba(15,23,42,.56)!important;backdrop-filter:blur(6px)!important}
+#app.styleOnePilot .workEditDrawerCard{
+  width:min(760px,94vw)!important;height:min(94dvh,920px)!important;margin:auto!important;border:1px solid #dbe4ee!important;
+  border-radius:20px!important;background:#fff!important;box-shadow:0 30px 90px rgba(15,23,42,.28)!important;
+}
+#app.styleOnePilot .workEditDrawerHead{
+  padding:17px 19px!important;border-bottom:1px solid #e5eaf0!important;background:linear-gradient(180deg,#fff,#f8fafc)!important;color:var(--s1-text)!important;
+}
+#app.styleOnePilot .workEditDrawerHead span{color:var(--s1-brand)!important}
+#app.styleOnePilot .workEditDrawerHead h2{color:var(--s1-text)!important}
+#app.styleOnePilot .workEditDrawerHead p{color:#64748b!important}
+#app.styleOnePilot #closeWorkEditDrawer{border-color:#dbe4ee!important;background:#fff!important;color:#334155!important}
+#app.styleOnePilot .workEditDrawerMount{background:#f8fafc!important}
+
+/* Energy */
+#app.styleOnePilot #energyPage .energyHead{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(125deg,#fff,#f8fbff)!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.04)!important;padding:14px 16px!important;
+}
+#app.styleOnePilot #energyPage .energyHead h1{color:var(--s1-text)!important}
+#app.styleOnePilot #energyPage .pageEyebrow{color:var(--s1-brand)!important}
+#app.styleOnePilot #energyPage .energyHead p,
+#app.styleOnePilot #energyPage .headMeta{color:#64748b!important}
+#app.styleOnePilot #energyPage .energyTabs{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin:10px 0!important;
+  padding:5px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#eef2f7!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button{
+  min-height:40px!important;border:0!important;border-radius:9px!important;background:transparent!important;color:#64748b!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button.active{
+  background:#fff!important;color:#3730a3!important;box-shadow:0 4px 12px rgba(15,23,42,.07)!important;
+}
+#app.styleOnePilot #energyPage .energySummaryCards{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #energyPage .energySummaryCards article{
+  min-height:83px!important;border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;
+  box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #energyPage .energySummaryCards strong{color:var(--s1-text)!important}
+#app.styleOnePilot #energyPage .energyCard,
+#app.styleOnePilot #energyPage .energyTableCard{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.045)!important;
+}
+#app.styleOnePilot #energyPage .energyCardTitle,
+#app.styleOnePilot #energyPage .energyTableTop{border-color:#edf2f7!important;background:linear-gradient(180deg,#fff,#fbfcfe)!important}
+#app.styleOnePilot #energyPage .energyCardTitle span,
+#app.styleOnePilot #energyPage .energySectionKicker{color:var(--s1-brand)!important}
+#app.styleOnePilot #energyPage .energyCardTitle h2,
+#app.styleOnePilot #energyPage .energyTableTop h2{color:var(--s1-text)!important}
+#app.styleOnePilot #energyPage .energyCardTitle p,
+#app.styleOnePilot #energyPage .energyTableTop p{color:#64748b!important}
+#app.styleOnePilot #energyPage .energyUploadPrompt{
+  border-color:#dbe4ee!important;background:#f8fafc!important;color:#475569!important;
+}
+#app.styleOnePilot #energyPage .energySearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #energyPage .energyLegend{color:#94a3b8!important}
+#app.styleOnePilot #energyPage .proEnergyCard{border-color:var(--s1-border)!important;background:#fff!important}
+
+/* Inventory */
+#app.styleOnePilot #inventoryPage .inventoryCommand{
+  border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs{
+  padding:4px!important;border-radius:10px!important;background:#eef2f7!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button{border:0!important;border-radius:8px!important;color:#64748b!important;background:transparent!important}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button.active{background:#fff!important;color:#3730a3!important;box-shadow:0 4px 11px rgba(15,23,42,.07)!important}
+#app.styleOnePilot #inventoryPage .inventoryWorkspace{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.045)!important;
+}
+#app.styleOnePilot #inventoryPage .inventorySectionBar,
+#app.styleOnePilot #inventoryPage .inventoryCardTitle{
+  border-color:#edf2f7!important;background:linear-gradient(180deg,#fff,#fbfcfe)!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryKicker{color:var(--s1-brand)!important}
+#app.styleOnePilot #inventoryPage .inventorySectionBar h2,
+#app.styleOnePilot #inventoryPage .inventoryCardTitle h3{color:var(--s1-text)!important}
+#app.styleOnePilot #inventoryPage .inventoryMonthRail{
+  margin:11px 13px!important;padding:10px!important;border:1px solid #e5eaf0!important;border-radius:12px!important;background:#f8fafc!important;
+}
+#app.styleOnePilot #inventoryPage #materialMonthTabs{
+  display:grid!important;grid-template-columns:repeat(13,minmax(0,1fr))!important;gap:5px!important;margin:7px 0 0!important;padding:0!important;border:0!important;background:transparent!important;
+}
+#app.styleOnePilot #inventoryPage #materialMonthTabs button{
+  min-height:34px!important;border:1px solid #e2e8f0!important;border-radius:8px!important;background:#fff!important;color:#64748b!important;
+}
+#app.styleOnePilot #inventoryPage #materialMonthTabs button.active{
+  background:#4f46e5!important;border-color:#4f46e5!important;color:#fff!important;box-shadow:0 5px 12px rgba(79,70,229,.16)!important;
+}
+#app.styleOnePilot #inventoryPage .monthlyStats,
+#app.styleOnePilot #inventoryPage .toolsStats{gap:8px!important}
+#app.styleOnePilot #inventoryPage .monthlyStats article,
+#app.styleOnePilot #inventoryPage .toolsStats article{
+  border:1px solid var(--s1-border)!important;border-radius:12px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryTableCard,
+#app.styleOnePilot #inventoryPage .stockAlertPanel{
+  border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage .inventorySearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #inventoryPage .inventoryPrimary{background:linear-gradient(135deg,#4f46e5,#2563eb)!important}
+#app.styleOnePilot #inventoryPage .inventorySecondary{border-color:#dbe4ee!important;background:#fff!important;color:#475569!important}
+
+/* Maintenance */
+#app.styleOnePilot #maintenancePage .maintenanceHero{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(125deg,#fff,#f8fbff)!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceCommandIcon{background:#eef2ff!important;color:var(--s1-brand)!important}
+#app.styleOnePilot #maintenancePage .maintenanceCommandBrand>div>span{color:var(--s1-brand)!important}
+#app.styleOnePilot #maintenancePage .maintenanceCommandBrand h1{color:var(--s1-text)!important}
+#app.styleOnePilot #maintenancePage .maintenanceCommandBrand p{color:#64748b!important}
+#app.styleOnePilot #maintenancePage .maintenanceProjectMeta{border-color:#e2e8f0!important;background:#f8fafc!important}
+#app.styleOnePilot #maintenancePage .maintenanceStats{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceStats article{
+  min-height:82px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceStats b{color:var(--s1-text)!important}
+#app.styleOnePilot #maintenancePage .maintenanceSchedule,
+#app.styleOnePilot #maintenancePage .maintenanceBoard,
+#app.styleOnePilot #maintenancePage .maintenanceHistoryCard{
+  border:1px solid var(--s1-border)!important;border-radius:15px!important;background:#fff!important;box-shadow:0 8px 24px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceScheduleHead,
+#app.styleOnePilot #maintenancePage .maintenanceToolbar{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot #maintenancePage .maintenanceAssetCard{
+  border-color:#e2e8f0!important;border-radius:13px!important;background:#fff!important;box-shadow:0 5px 14px rgba(15,23,42,.025)!important;
+}
+#app.styleOnePilot #maintenancePage .maintDates{background:#f8fafc!important}
+#app.styleOnePilot #maintenancePage .maintCardActions button{border-color:#dbe4ee!important;background:#fff!important;color:#475569!important}
+#app.styleOnePilot #maintenancePage .maintCardActions button.primary{background:#eef2ff!important;color:#4338ca!important}
+
+/* Contractor */
+#app.styleOnePilot #contractorPage .contractorIntro{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(135deg,#111827,#172554 58%,#164e63)!important;
+  box-shadow:0 12px 30px rgba(15,23,42,.12)!important;
+}
+#app.styleOnePilot #contractorPage .contractorIntroCopy>span{color:#67e8f9!important}
+#app.styleOnePilot #contractorPage .contractorIntroCopy h1{color:#fff!important}
+#app.styleOnePilot #contractorPage .contractorIntroCopy p{color:#cbd5e1!important}
+#app.styleOnePilot #contractorPage .contractorStats{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #contractorPage .contractorStats article{
+  min-height:82px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorStats b{color:var(--s1-text)!important}
+#app.styleOnePilot #contractorPage .contractorDirectory,
+#app.styleOnePilot #contractorPage .contractorJobsPanel,
+#app.styleOnePilot #contractorPage .contractorProfile,
+#app.styleOnePilot #contractorPage .contractorContactGrid article{
+  border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorToolbar,
+#app.styleOnePilot #contractorPage .contractorJobsHead{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot #contractorPage .contractorSearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #contractorPage .contractorSpecialtyFilters button{
+  border-color:#dbe4ee!important;background:#fff!important;color:#64748b!important;
+}
+#app.styleOnePilot #contractorPage .contractorSpecialtyFilters button.active{background:#eef2ff!important;border-color:#c7d2fe!important;color:#4338ca!important}
+#app.styleOnePilot #contractorPage .contractorRowCard,
+#app.styleOnePilot #contractorPage .contractorJobCard{
+  border-color:#e5eaf0!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorBtn.primary{background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border-color:#4f46e5!important}
+#app.styleOnePilot #contractorPage .contractorBtn.ghost{background:#fff!important;color:#475569!important;border-color:#dbe4ee!important}
+
+/* Construction materials */
+#app.styleOnePilot #constructionMaterialPage .constructionCommand{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(125deg,#fff,#f8fbff)!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandIcon{background:#eef2ff!important;color:var(--s1-brand)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandBrand>div>span{color:var(--s1-brand)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandBrand h1{color:var(--s1-text)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandBrand p{color:#64748b!important}
+#app.styleOnePilot #constructionMaterialPage .constructionMonthPanel,
+#app.styleOnePilot #constructionMaterialPage .constructionWorkspace,
+#app.styleOnePilot #constructionMaterialPage .constructionHistoryPanel{
+  border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionMonthTabs button{
+  border:1px solid #e2e8f0!important;background:#fff!important;color:#64748b!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionMonthTabs button.active{
+  background:#4f46e5!important;border-color:#4f46e5!important;color:#fff!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionStatsV2{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionStatsV2 article{
+  min-height:82px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionStatsV2 b{color:var(--s1-text)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionToolbar,
+#app.styleOnePilot #constructionMaterialPage .constructionHistoryHead{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot #constructionMaterialPage .constructionSearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #constructionMaterialPage .constructionPrimaryBtn{background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border-color:#4f46e5!important;color:#fff!important}
+#app.styleOnePilot #constructionMaterialPage .constructionGhostBtn{background:#fff!important;border-color:#dbe4ee!important;color:#475569!important}
+
+/* Special operational modules */
+#app.styleOnePilot .demoFeaturePage .demoKpis{gap:9px!important}
+#app.styleOnePilot .demoFeaturePage .demoKpi{
+  min-height:84px!important;border-color:var(--s1-border)!important;background:#fff!important;color:var(--s1-text)!important;box-shadow:none!important;
+}
+#app.styleOnePilot .demoFeaturePage .demoKpi b{color:var(--s1-text)!important}
+#app.styleOnePilot .demoFeaturePage .demoKpi span{color:#475569!important}
+#app.styleOnePilot .demoFeaturePage .demoKpi small{color:#94a3b8!important}
+#app.styleOnePilot .demoFeaturePage .demoPanel{
+  border-color:var(--s1-border)!important;background:#fff!important;color:var(--s1-text)!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot .demoFeaturePage .demoPanelHead{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot .demoFeaturePage .demoDetailSection{border-color:#edf2f7!important}
+#app.styleOnePilot .demoFeaturePage .demoDetailSection>span{color:var(--s1-brand)!important}
+#app.styleOnePilot .demoFeaturePage .demoDetailSection p,
+#app.styleOnePilot .demoFeaturePage .demoDetailSection strong{color:#334155!important}
+#app.styleOnePilot .demoFeaturePage .demoOpsAlert,
+#app.styleOnePilot .demoFeaturePage .demoDocCat{
+  border-color:#e2e8f0!important;background:#fff!important;color:#334155!important;
+}
+
+/* Reports */
+#app.styleOnePilot #reportsPage .rc-heading,
+#app.styleOnePilot #reportsPage .rc-period,
+#app.styleOnePilot #reportsPage .rc-controls,
+#app.styleOnePilot #reportsPage .rc-preview,
+#app.styleOnePilot #reportsPage .rc-history{
+  border:1px solid var(--s1-border)!important;border-radius:15px!important;background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #reportsPage .rc-eyebrow{color:var(--s1-brand)!important}
+#app.styleOnePilot #reportsPage .rc-heading h2,
+#app.styleOnePilot #reportsPage .rc-card-heading h3{color:var(--s1-text)!important}
+#app.styleOnePilot #reportsPage .rc-heading p,
+#app.styleOnePilot #reportsPage .rc-card-heading p{color:#64748b!important}
+#app.styleOnePilot #reportsPage .rc-segments{background:#eef2f7!important}
+#app.styleOnePilot #reportsPage .rc-segments button{color:#64748b!important}
+#app.styleOnePilot #reportsPage .rc-segments button.active{background:#fff!important;color:#4338ca!important;box-shadow:0 3px 10px rgba(15,23,42,.06)!important}
+#app.styleOnePilot #reportsPage .rc-module{border-color:#e2e8f0!important;background:#fff!important}
+#app.styleOnePilot #reportsPage .rc-module:has(input:checked){border-color:#c7d2fe!important;background:#f5f3ff!important}
+#app.styleOnePilot #reportsPage .rc-primary{background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border-color:#4f46e5!important;color:#fff!important}
+
+/* Modal consistency */
+#app.styleOnePilot .contractorModalCard,
+#app.styleOnePilot .inventoryModalCard,
+#app.styleOnePilot .technicalDocumentModalCard{
+  border:1px solid var(--s1-border)!important;border-radius:18px!important;background:#fff!important;color:var(--s1-text)!important;
+  box-shadow:0 28px 80px rgba(15,23,42,.25)!important;
+}
+#app.styleOnePilot .contractorModalHead,
+#app.styleOnePilot .inventoryModalHead,
+#app.styleOnePilot .technicalDocumentModalHead{
+  border-color:#edf2f7!important;background:linear-gradient(180deg,#fff,#f8fafc)!important;
+}
+
+/* Accessibility and overflow guarantees */
+#app.styleOnePilot :focus-visible{
+  outline:3px solid rgba(99,102,241,.28)!important;outline-offset:2px!important;
+}
+#app.styleOnePilot .page,
+#app.styleOnePilot main,
+#app.styleOnePilot .modulePage{min-width:0!important}
+#app.styleOnePilot .tableCard,
+#app.styleOnePilot .inventoryTableCard,
+#app.styleOnePilot .constructionTableCard,
+#app.styleOnePilot .rc-table-wrap{max-width:100%!important}
+#app.styleOnePilot .desktopTable,
+#app.styleOnePilot .inventoryTableScroll,
+#app.styleOnePilot .constructionTableScroll,
+#app.styleOnePilot .demoTableWrap,
+#app.styleOnePilot .rc-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+
+/* Tablet */
+@media(max-width:1100px){
+  #app.styleOnePilot #workPage .stats,
+  #app.styleOnePilot #maintenancePage .maintenanceStats,
+  #app.styleOnePilot #contractorPage .contractorStats,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+  #app.styleOnePilot #energyPage .energyTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+/* Mobile */
+@media(max-width:760px){
+  #app.styleOnePilot .modulePage,
+  #app.styleOnePilot .inventoryPage,
+  #app.styleOnePilot .maintenancePage,
+  #app.styleOnePilot .contractorPage,
+  #app.styleOnePilot .constructionMaterialPage{padding:9px 8px 24px!important}
+  #app.styleOnePilot #workPage .stats,
+  #app.styleOnePilot #maintenancePage .maintenanceStats,
+  #app.styleOnePilot #contractorPage .contractorStats,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  #app.styleOnePilot #workPage .stats article,
+  #app.styleOnePilot #maintenancePage .maintenanceStats article,
+  #app.styleOnePilot #contractorPage .contractorStats article,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2 article{min-height:72px!important;padding:9px!important}
+  #app.styleOnePilot #energyPage .energySummaryCards{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  #app.styleOnePilot #energyPage .energySummaryCards article{min-height:70px!important;padding:8px!important}
+  #app.styleOnePilot #energyPage .energyTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs{display:flex!important;overflow-x:auto!important;gap:5px!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs button{min-width:58px!important;flex:0 0 58px!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs .yearOverviewBtn{min-width:82px!important;flex-basis:82px!important}
+  #app.styleOnePilot .workEditDrawer{align-items:flex-end!important}
+  #app.styleOnePilot .workEditDrawerCard{
+    width:100vw!important;height:min(92dvh,860px)!important;margin:0!important;border-radius:20px 20px 0 0!important;border-bottom:0!important;
+  }
+  #app.styleOnePilot .workEditDrawerMount{padding:10px!important}
+  #app.styleOnePilot .contractorIntroActions,
+  #app.styleOnePilot .maintenanceHeroActions,
+  #app.styleOnePilot .constructionCommandRight{gap:6px!important}
+  #app.styleOnePilot .demoHeroActions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important}
+  #app.styleOnePilot .demoHeroActions .demoBtn{width:100%!important}
+  #app.styleOnePilot #reportsPage .rc-workspace{grid-template-columns:1fr!important}
+  #app.styleOnePilot #reportsPage .rc-period{gap:8px!important}
+}
+@media(max-width:390px){
+  #app.styleOnePilot #workPage .stats{grid-template-columns:1fr 1fr!important}
+  #app.styleOnePilot #energyPage .energySummaryCards{grid-template-columns:1fr 1fr!important}
+  #app.styleOnePilot #energyPage .energySummaryCards article:last-child{grid-column:1/-1!important}
+  #app.styleOnePilot #maintenancePage .maintenanceStats,
+  #app.styleOnePilot #contractorPage .contractorStats,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2{grid-template-columns:1fr 1fr!important}
+}
