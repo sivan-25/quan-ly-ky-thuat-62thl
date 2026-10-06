@@ -462,9 +462,12 @@ function setupMobilePeopleSheets(){
   }
  });
  function arrange(){
-  const inline=media.matches&&currentBuilding?.id==="62THL";
-  document.getElementById("taskForm")?.classList.toggle("peopleCompact62",inline);
+  const compact62=media.matches&&currentBuilding?.id==="62THL";
+  document.getElementById("taskForm")?.classList.toggle("peopleCompact62",compact62);
   menus.forEach(menu=>{
+   // 62THL Work keeps the approved inline picker. Energy must use a full-width
+   // mobile sheet because its performer field shares a half-width row with Date.
+   const inline=compact62&&menu.id==="taskPeopleMenu";
    const wasInline=menu.classList.contains("inlinePeoplePicker");
    if(media.matches&&!inline){if(menu.parentNode!==document.body)document.body.appendChild(menu);menu.classList.add("mobilePeopleSheet")}
    else{if(menu.previousSibling!==anchors.get(menu))anchors.get(menu).after(menu);menu.classList.remove("mobilePeopleSheet")}
