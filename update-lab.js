@@ -1452,15 +1452,19 @@ function updateResetMobileScroll(route){
  updateMobileScrollRoute=key;
 }
 
+function updateTextKeyboardOpen(){
+ const focused=document.activeElement,vv=window.visualViewport;
+ const editing=!!focused&&(focused.matches('textarea,input:not([type=hidden]):not([type=file]):not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]):not([type=reset]):not([type=range]):not([type=color])')||focused.isContentEditable);
+ return editing&&!!vv&&vv.scale<=1.05&&window.innerHeight-vv.height>140;
+}
+
 function updateSyncMobileScrollShell(){
  const app=document.getElementById("app");
  const active=!!app&&!app.classList.contains("hide")&&window.matchMedia("(max-width:760px)").matches;
  document.body.classList.toggle("estaMobileScrollShell",active);
  if(!active){document.body.classList.remove("estaMobileKeyboard");document.documentElement.style.removeProperty("--esta-mobile-keyboard-inset");return}
  const vv=window.visualViewport;
- const focused=document.activeElement;
- const editing=!!focused&&(focused.matches("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),textarea,select")||focused.isContentEditable);
- const keyboard=editing&&!!vv&&window.innerHeight-vv.height>140;
+ const keyboard=updateTextKeyboardOpen();
  document.body.classList.toggle("estaMobileKeyboard",keyboard);
  if(keyboard)document.documentElement.style.setProperty("--esta-mobile-keyboard-inset",Math.max(0,Math.round(window.innerHeight-vv.height))+"px");
  else document.documentElement.style.removeProperty("--esta-mobile-keyboard-inset");
@@ -1469,9 +1473,22 @@ function updateSyncMobileScrollShell(){
 function updateSyncKeyboard(){
  updateSyncMobileScrollShell();
  if(!updateIs()){document.body.classList.remove("updateKeyboardOpen");return}
- const vv=window.visualViewport;
- const keyboardOpen=!!vv&&(window.innerHeight-vv.height>140);
+ const keyboardOpen=updateTextKeyboardOpen();
  document.body.classList.toggle("updateKeyboardOpen",keyboardOpen);
+}
+
+let updateViewportRecoveryTimers=[];
+function updateRecoverNativeViewport(){
+ updateViewportRecoveryTimers.forEach(clearTimeout);
+ const recover=()=>{
+  if(document.activeElement?.matches('input[type=file]'))document.activeElement.blur();
+  updateSyncKeyboard();
+  // Safari may restore document scroll outside the contained app after a native picker.
+  // Preserve main.scrollTop and the draft, including the newly selected photos.
+  if(document.body.classList.contains("estaMobileScrollShell")&&window.scrollY)window.scrollTo(0,0);
+ };
+ recover();
+ updateViewportRecoveryTimers=[100,300,700,1200].map(delay=>setTimeout(recover,delay));
 }
 
 const updatePrevAdminCard=typeof adminProjectCard==="function"?adminProjectCard:null;
@@ -1564,6 +1581,11 @@ if(typeof window.enterAccount==="function"){
 
 window.addEventListener("resize",()=>{if(updateIs())updateApplyMode();updateSyncKeyboard()});
 window.visualViewport?.addEventListener("resize",updateSyncKeyboard,{passive:true});
+window.addEventListener("focus",updateRecoverNativeViewport);
+window.addEventListener("pageshow",updateRecoverNativeViewport);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)updateRecoverNativeViewport()});
+document.addEventListener("change",e=>{if(e.target.matches?.('input[type=file]'))updateRecoverNativeViewport()});
+document.addEventListener("cancel",e=>{if(e.target.matches?.('input[type=file]'))updateRecoverNativeViewport()},true);
 document.addEventListener("focusin",()=>setTimeout(updateSyncKeyboard,80));
 document.addEventListener("focusout",()=>setTimeout(updateSyncKeyboard,120));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){updateCloseAssetDrawer();["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal);updateCloseNotificationCenter()}});
