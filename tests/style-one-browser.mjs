@@ -65,8 +65,14 @@ async function exerciseWork(page){
   await switchModule(page,"work","#workPage");
   await page.fill("#content","QA Style 1 - kiểm tra thao tác người dùng");
   await page.fill("#date","2026-10-06");
-  await page.selectOption("#type","Hằng ngày");
-  await page.selectOption("#status","Đang thực hiện");
+  const mobileChoices=await page.locator("#workChoices-type").isVisible().catch(()=>false);
+  if(mobileChoices){
+    await page.locator('#workChoices-type [data-value="Hằng ngày"]').click();
+    await page.locator('#workChoices-status [data-value="Đang thực hiện"]').click();
+  }else{
+    await page.selectOption("#type","Hằng ngày");
+    await page.selectOption("#status","Đang thực hiện");
+  }
   await page.evaluate(()=>setPeopleSelected("task",["Kỹ thuật QA"]));
   await page.click("#saveBtn");
   await page.waitForTimeout(180);
@@ -80,7 +86,8 @@ async function exerciseEnergy(page){
   await page.fill("#energyDate","2026-10-06");
   await page.fill("#energyValue","12345");
   await page.evaluate(()=>setPeopleSelected("energy",["Kỹ thuật QA"]));
-  await page.click("#energyNoteToggle");
+  const noteToggle=page.locator("#energyNoteToggle");
+  if(await noteToggle.isVisible().catch(()=>false))await noteToggle.click();
   await page.fill("#energyNote","QA nhập chỉ số điện");
   await page.click("#energySaveBtn");
   await page.waitForTimeout(160);
