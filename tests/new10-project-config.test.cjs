@@ -44,10 +44,12 @@ function loadProjectConfig() {
 (function testConfigLoadsBeforeApp() {
   const html = read("index.html");
   const configIndex = html.indexOf("project-config.js");
+  const storeIndex = html.indexOf("project-store.js");
   const appIndex = html.indexOf("app.js");
   const pilotIndex = html.indexOf("new10-pilot.js");
   assert.ok(configIndex >= 0, "project-config.js must be loaded");
-  assert.ok(appIndex > configIndex, "project-config.js must load before app.js");
+  assert.ok(storeIndex > configIndex, "project-store.js must load after project-config.js");
+  assert.ok(appIndex > storeIndex, "project-store.js must load before app.js");
   assert.ok(pilotIndex > appIndex, "new10-pilot.js must load after app.js");
 })();
 
@@ -70,3 +72,19 @@ function loadProjectConfig() {
 })();
 
 console.log("NEW10 project config regression: OK");
+
+
+(function testProjectStoreIsPilotScoped() {
+  const store = read("project-store.js");
+  assert.ok(store.includes('const PILOT_ID = "NEW10"'));
+  assert.ok(store.includes('esta:new10:task-draft:v1'));
+  assert.ok(store.includes("writeTasks"));
+  assert.ok(store.includes("writeEnergy"));
+  assert.ok(store.includes("setStatus"));
+})();
+
+(function testAdminOverviewExcludesSandbox() {
+  const source = read("supabase/functions/admin-overview/index.ts");
+  assert.ok(source.includes('new Set(["NEW10"])'));
+  assert.ok(source.includes("liveBuildings"));
+})();
