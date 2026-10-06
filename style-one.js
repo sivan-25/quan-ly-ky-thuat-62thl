@@ -213,7 +213,7 @@ function bindRuntime(){
     observer=new MutationObserver(mutations=>{
       let shouldSync=false;
       mutations.forEach(m=>{
-        if(m.type==="childList"){
+        if(m.type==="childList"&&pilotActive()){
           m.addedNodes.forEach(node=>{
             if(node.nodeType===1)enhanceImages(node);
           });
