@@ -1734,3 +1734,20 @@ body:has(#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode)) :is(#update
     border-color:#c7d5dc!important;
   }
 }
+
+
+/* STYLE_ONE_HOME_CANVAS_NEUTRAL_V11 */
+/* Remove the remaining legacy beige canvas from the project overview. */
+#app.styleOnePilot:not(.workMode) #homePage,
+#app.styleOnePilot:not(.workMode) #homePage.page,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage.page,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .homeDashboard,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #updateCommandCenter{
+  background:#f3f5f6!important;
+}
+#app.styleOnePilot:not(.workMode) #overviewScopeBar{
+  background:#fff!important;
+  border-color:#dbe1e4!important;
+  box-shadow:0 1px 5px rgba(24,44,58,.035)!important;
+}
