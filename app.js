@@ -16,8 +16,15 @@ function isAdminOverview(){return !!currentAccount?.is_admin&&!projectOverviewAc
 
 const taskStorageKeyFor=id=>id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+id;
 const taskStorageKey=()=>taskStorageKeyFor(currentBuilding.id);
-const load=()=>{try{let v=JSON.parse(localStorage.getItem(taskStorageKey())||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}};
-const save=a=>localStorage.setItem(taskStorageKey(),JSON.stringify(a));
+const load=()=>{
+ if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.readTasks();
+ try{let v=JSON.parse(localStorage.getItem(taskStorageKey())||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}
+};
+const save=a=>{
+ if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.writeTasks(a);
+ localStorage.setItem(taskStorageKey(),JSON.stringify(a));
+ return a;
+};
 const today=()=>new Date().toLocaleDateString("en-CA");
 const fmt=d=>new Date(d+"T00:00").toLocaleDateString("vi-VN");
 const esc=(s="")=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -251,7 +258,16 @@ window.downloadViewerMedia=async index=>{
 
 async function projectSync(action,payload={},buildingId=currentBuilding?.id){
  if(!centralSession?.access_token||!buildingId)return null;
- return sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:buildingId,...payload}});
+ const pilot=window.ESTA_PROJECT_STORE?.isPilot?.(buildingId);
+ if(pilot&&action!=="get")window.ESTA_PROJECT_STORE.setStatus("syncing",action);
+ try{
+   const result=await sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:buildingId,...payload}});
+   if(pilot)window.ESTA_PROJECT_STORE.setStatus("synced",action);
+   return result;
+ }catch(err){
+   if(pilot)window.ESTA_PROJECT_STORE.setStatus("error",err?.message||action);
+   throw err;
+ }
 }
 const cloudVersionByBuilding={};
 let projectPeople=[],taskSelectedPeople=[],energySelectedPeople=[];
@@ -1050,11 +1066,13 @@ function setWorkSaveLabel(label){
 const DRAFT="qlkt62_draft";
 function saveDraft(){
  if($("#editId").value)return;
- localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))
+ const value={d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value};
+ if(window.ESTA_PROJECT_STORE?.isPilot?.())window.ESTA_PROJECT_STORE.writeDraft(value);
+ else localStorage.setItem(DRAFT,JSON.stringify(value));
 }
 function restoreDraft(){
  try{
-  let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;
+  let d=window.ESTA_PROJECT_STORE?.isPilot?.()?window.ESTA_PROJECT_STORE.readDraft():JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;
   $("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";
   setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||"";
   requestAnimationFrame(syncWorkContentHeight);
@@ -1129,7 +1147,10 @@ function resetForm(clearDraft=true){
  clearPendingTaskFiles();clearExistingTaskImages();$("#imageInfo").textContent="";setWorkSaveLabel("Lưu");$("#cancelEdit").classList.add("hide");
  requestAnimationFrame(syncWorkContentHeight);
  restoreWorkEntryCard();
- if(clearDraft)localStorage.removeItem(DRAFT)
+ if(clearDraft){
+   if(window.ESTA_PROJECT_STORE?.isPilot?.())window.ESTA_PROJECT_STORE.clearDraft();
+   else localStorage.removeItem(DRAFT);
+ }
 }
 $("#cancelEdit").onclick=()=>resetForm();
 $("#closeWorkEditDrawer")?.addEventListener("click",()=>resetForm());
@@ -2125,8 +2146,15 @@ function sync68EnergyTabs(){
  if((!supportsXlntEnergy()&&energyType==="xlnt")||(!supportsSolarEnergy()&&energyType==="solar"))energyType="electric";
  syncEnergyTabSelection();
 }
-function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
-function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
+function energyLoad(){
+ if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.readEnergy();
+ try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}
+}
+function energySaveAll(a){
+ if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.writeEnergy(a);
+ localStorage.setItem(energyStorageKey(),JSON.stringify(a));
+ return a;
+}
 function showModule(name){
  closeWorkFilter();
  const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
