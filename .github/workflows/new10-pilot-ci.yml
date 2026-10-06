@@ -35,6 +35,9 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Install Python report dependencies
+        run: python3 -m pip install -r requirements.txt
+
       - name: Start ESTA local server
         run: |
           ESTA_DEV_PORT=8080 python3 tools/dev_server.py > /tmp/esta-new10-server.log 2>&1 &
