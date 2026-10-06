@@ -281,8 +281,6 @@ function renderPeopleSelector(kind){
  if(!box||!btn)return;
  const inline=box.closest(".inlinePeoplePicker")!==null;
  const selected=peopleSelected(kind);
- const count=box.closest(".inlinePeoplePicker")?.querySelector(".peopleInlineCount");
- if(count)count.textContent="Đã chọn "+selected.length+" người";
  const names=[...new Set([...projectPeople.map(x=>x.name),...selected])].filter(Boolean);
  if(!names.length){
    box.innerHTML='<div class="peopleEmpty"><b>Chưa có người thực hiện</b><span>Chọn “'+(inline?'Quản lý':'Chỉnh sửa danh sách')+'” để thêm nhân sự cho dự án.</span></div>';
@@ -465,6 +463,7 @@ function setupMobilePeopleSheets(){
  });
  function arrange(){
   const inline=media.matches&&currentBuilding?.id==="62THL";
+  document.getElementById("taskForm")?.classList.toggle("peopleCompact62",inline);
   menus.forEach(menu=>{
    const wasInline=menu.classList.contains("inlinePeoplePicker");
    if(media.matches&&!inline){if(menu.parentNode!==document.body)document.body.appendChild(menu);menu.classList.add("mobilePeopleSheet")}
@@ -476,13 +475,6 @@ function setupMobilePeopleSheets(){
     if(!edit.dataset.originalLabel)edit.dataset.originalLabel=edit.textContent;
     let actions=menu.querySelector(".peopleInlineActions");
     if(inline){
-     let head=menu.querySelector(".peopleInlineHead");
-     if(!head){
-      head=document.createElement("div");head.className="peopleInlineHead";
-      const count=document.createElement("span");count.className="peopleInlineCount";count.setAttribute("aria-live","polite");head.append(count);
-      menu.prepend(head);
-     }
-     if(edit.parentNode!==head)head.append(edit);
      if(!actions){
       actions=document.createElement("div");actions.className="peopleInlineActions";menu.append(actions);
       const confirm=document.createElement("button");confirm.type="button";confirm.className="peopleInlineConfirm";
@@ -494,6 +486,7 @@ function setupMobilePeopleSheets(){
       };
       actions.append(confirm);
      }
+     if(edit.parentNode!==actions)actions.prepend(edit);
      edit.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12-6 1 1-6L16 3Zm-2 2 5 5M4 15l5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Quản lý</span>';edit.title="Quản lý danh sách";edit.setAttribute("aria-label","Quản lý danh sách");
     }else{
      if(actions){menu.append(edit);actions.remove()}
