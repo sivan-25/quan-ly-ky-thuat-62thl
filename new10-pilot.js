@@ -24,6 +24,7 @@
     const state = status?.state || "idle";
     if (state === "syncing") return { text: "Đang đồng bộ…", state };
     if (state === "error") return { text: "Chưa đồng bộ", state };
+    if (state === "queued") return { text: status?.detail ? "Chờ đồng bộ · " + status.detail : "Chờ đồng bộ", state };
     if (state === "synced") return { text: "Đã đồng bộ", state };
     return { text: "Cloud sẵn sàng", state: "idle" };
   }
