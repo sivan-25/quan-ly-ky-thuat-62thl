@@ -1277,6 +1277,10 @@ window.demoSubmitIncident=async e=>{
  const date=$("#demoIncidentDetectedDate")?.value||today();
  const area=$("#demoIncidentArea")?.value.trim()||"";
  const symptom=$("#demoIncidentSymptom")?.value.trim()||"";
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+  const vr=window.ESTA_VALIDATION.validate("incident",{date,area,symptom});
+  if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  const severity=$("#demoIncidentSeverity")?.value||"Trung bình";
  const status=$("#demoIncidentStatus")?.value||"Mới";
  const asset_id=$("#demoIncidentAsset")?.value||null;
@@ -1427,6 +1431,10 @@ window.demoSubmitChecklist=async e=>{
  const asset_id=$("#demoChecklistAsset")?.value||null;
  const result_status=$("#demoChecklistOverall")?.value||"Cần chú ý";
  const item=$("#demoChecklistItem")?.value.trim()||"";
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+  const vr=window.ESTA_VALIDATION.validate("checklist",{name,date:inspection_date,item});
+  if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  const standard=$("#demoChecklistStandard")?.value.trim()||"";
  const itemResult=$("#demoChecklistItemResult")?.value||"Cần chú ý";
  const note=$("#demoChecklistItemNote")?.value.trim()||"";
@@ -1626,6 +1634,10 @@ $("#technicalDocumentForm")?.addEventListener("submit",async e=>{
  const buildingId=String(currentBuilding?.id||"");if(!buildingId)return;
  const file=$("#technicalDocumentFile")?.files?.[0],title=String($("#technicalDocumentTitle")?.value||"").trim();
  const err=$("#technicalDocumentError"),btn=$("#technicalDocumentSubmit"),progress=$("#technicalDocumentProgress");
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+  const vr=window.ESTA_VALIDATION.validate("document",{title,file});
+  if(!vr.ok){if(err)err.textContent=vr.first?.message||"Dữ liệu chưa hợp lệ";window.ESTA_VALIDATION.notify(vr);return}
+ }
  if(!title){if(err)err.textContent="Vui lòng nhập tên tài liệu.";return}
  if(!file){if(err)err.textContent="Vui lòng chọn file cần tải lên.";return}
  if(file.size>50*1024*1024){if(err)err.textContent="File vượt quá giới hạn 50 MB.";return}
