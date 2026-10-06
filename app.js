@@ -497,6 +497,16 @@ function setupMobilePeopleSheets(){
   });
  }
  syncMobilePeopleLayout=arrange;
+ function syncCompactPeopleSize(){
+  if(!media.matches||currentBuilding?.id!=="62THL")return;
+  const tile=document.querySelector("#workChoices-type .workChoiceTile");
+  const width=tile?.getBoundingClientRect().width||0;
+  if(width>0)menus.forEach(menu=>menu.style.setProperty("--esta-person-choice-width",width+"px"));
+ }
+ const form=document.getElementById("taskForm");
+ if(form&&typeof ResizeObserver!=="undefined")new ResizeObserver(syncCompactPeopleSize).observe(form);
+ window.addEventListener("resize",syncCompactPeopleSize,{passive:true});
+ document.addEventListener("DOMContentLoaded",()=>requestAnimationFrame(syncCompactPeopleSize));
  const refresh=()=>{arrange();renderAllPeopleSelectors()};
  if(media.addEventListener)media.addEventListener("change",refresh);else media.addListener(refresh);
  arrange();
