@@ -182,6 +182,7 @@
 .new10SyncStatus[data-state="syncing"] { color: #1f6479; }
 .new10SyncStatus[data-state="synced"] { color: #28704f; }
 .new10SyncStatus[data-state="error"] { color: #a84747; }
+.new10SyncStatus[data-state="queued"] { color: #8b6531; }
 .new10SyncStatus[data-state="offline"] { color: #8b6531; }
 
 @media (max-width: 760px) {
