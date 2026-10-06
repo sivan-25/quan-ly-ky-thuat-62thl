@@ -1251,6 +1251,17 @@ $("#images").onchange=e=>{
 $("#taskForm").onsubmit=async e=>{
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+   const vr=window.ESTA_VALIDATION.validate("task",{
+     date:$("#date").value,
+     content:$("#content").value,
+     status:$("#status").value,
+     performers:[...taskSelectedPeople],
+     note:$("#note").value,
+     requiresCompletionNote:$("#status").value==="Đã hoàn thành"&&!usesSingleTaskResult()
+   });
+   if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  if(!taskSelectedPeople.length){toast("Vui lòng chọn ít nhất 1 người thực hiện");$("#taskPeopleButton").focus();return}
  if(!syncCompletionNoteRequirement(true)){
    toast("Cần nhập ghi chú trước khi hoàn thành công việc");
@@ -2286,8 +2297,18 @@ bindEnergyImagePreview("energyImage2","energyImage2Preview",1);
 $("#energyForm").onsubmit=async e=>{
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
- if(!energySelectedPeople.length){toast("Vui lòng chọn ít nhất 1 người thực hiện");$("#energyPeopleButton").focus();return}
  const dual=is68DualElectric();
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+   const vr=window.ESTA_VALIDATION.validate("energy",{
+     date:$("#energyDate").value,
+     value:$("#energyValue").value,
+     value2:$("#energyValue2").value,
+     dual,
+     performers:[...energySelectedPeople]
+   });
+   if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
+ if(!energySelectedPeople.length){toast("Vui lòng chọn ít nhất 1 người thực hiện");$("#energyPeopleButton").focus();return}
  if(dual&&!$("#energyValue2").value){toast("Vui lòng nhập chỉ số EVN2");$("#energyValue2").focus();return}
  const btn=$("#energySaveBtn");btn.disabled=true;
  try{
@@ -3297,6 +3318,17 @@ $("#closeToolModal").onclick=$("#cancelToolModal").onclick=()=>$("#toolItemModal
 $("#materialItemForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  const id=$("#materialId").value,trackingStart=$("#materialTrackingStart").value||today();
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+   const vr=window.ESTA_VALIDATION.validate("material",{
+     name:$("#materialName").value,
+     unit:$("#materialUnit").value,
+     trackingStart,
+     openingQty:$("#materialOpeningQty").value,
+     minQty:$("#materialMinQty").value,
+     today:today()
+   });
+   if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  if(trackingStart>today())return toast("Ngày bắt đầu quản lý không thể ở tương lai");
  const existingFirstTx=id?inventoryTransactions.filter(x=>String(x.material_id)===String(id)).map(x=>x.tx_date).sort()[0]:null;
  if(existingFirstTx&&trackingStart>existingFirstTx)return toast("Ngày bắt đầu quản lý không thể sau giao dịch đầu tiên "+fmt(existingFirstTx));
@@ -3316,6 +3348,10 @@ $("#stockTxnMaterial").onchange=()=>{
 $("#stockTxnForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  const materialId=$("#stockTxnMaterial").value,qty=inventoryNum($("#stockTxnQty").value),txType=$("#stockTxnType").value,date=$("#stockTxnDate").value;
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+   const vr=window.ESTA_VALIDATION.validate("stock",{materialId,qty,date});
+   if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  if(!materialId||qty<=0)return toast("Vui lòng chọn vật tư và số lượng");
  const m=inventoryActiveMaterials().find(x=>x.id===materialId);
  if(!m)return toast("Không tìm thấy vật tư");
@@ -3332,6 +3368,10 @@ $("#stockTxnForm").onsubmit=async e=>{
 $("#toolItemForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  const id=$("#toolId").value,body={building_id:currentBuilding.id,code:$("#toolCode").value.trim(),name:$("#toolName").value.trim(),brand:$("#toolBrand").value.trim(),qty:inventoryNum($("#toolQty").value),unit:$("#toolUnit").value.trim()||"Cái",location:$("#toolLocation").value.trim(),condition_status:$("#toolCondition").value,keeper:$("#toolKeeper").value,acquired_date:$("#toolAcquiredDate").value||null,note:$("#toolNote").value.trim(),updated_at:new Date().toISOString()};
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+   const vr=window.ESTA_VALIDATION.validate("tool",{name:body.name,qty:body.qty});
+   if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  try{
    if(id)await sbFetch("/rest/v1/inventory_tools?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(currentBuilding.id),{method:"PATCH",token:centralSession.access_token,body});
    else await sbFetch("/rest/v1/inventory_tools",{method:"POST",token:centralSession.access_token,body});
@@ -3375,6 +3415,10 @@ $("#maintenanceRecordDate").onchange=()=>{
 $("#maintenanceAssetForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  const id=$("#maintenanceAssetId").value,freq=Math.max(1,Number($("#maintenanceFrequency").value)||30),last=$("#maintenanceLastDate").value||null,next=maintenanceAutoNext(last,freq);
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+   const vr=window.ESTA_VALIDATION.validate("maintenanceAsset",{name:$("#maintenanceName").value,frequency:freq,lastDate:last});
+   if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  const existing=id?maintenanceAssets.find(x=>String(x.id)===String(id)):null;
  const body={building_id:currentBuilding.id,code:existing?.code||maintenanceAutoCode(),name:$("#maintenanceName").value.trim(),system_type:$("#maintenanceSystem").value,location:$("#maintenanceLocation").value.trim(),manufacturer:$("#maintenanceManufacturer").value.trim(),model:$("#maintenanceModel").value.trim(),frequency_days:freq,last_service_date:last,next_due_date:next,assigned_to:$("#maintenanceAssigned").value,status:$("#maintenanceStatus").value,note:$("#maintenanceNote").value.trim(),updated_at:new Date().toISOString()};
  try{
@@ -3387,6 +3431,10 @@ $("#maintenanceRecordForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  const assetId=$("#maintenanceRecordAssetId").value,a=maintenanceAssets.find(x=>String(x.id)===String(assetId));if(!a)return toast("Không tìm thấy thiết bị");
  const serviceDate=$("#maintenanceRecordDate").value,next=maintenanceNextFromSchedule(a);
+ if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+   const vr=window.ESTA_VALIDATION.validate("maintenanceRecord",{assetId,serviceDate});
+   if(!window.ESTA_VALIDATION.notify(vr))return;
+ }
  $("#maintenanceRecordNextDate").value=next;
  const body={building_id:currentBuilding.id,asset_id:assetId,service_date:serviceDate,maintenance_type:$("#maintenanceRecordType").value,performer:$("#maintenanceRecordPerformer").value,result_status:$("#maintenanceRecordResult").value,work_done:$("#maintenanceWorkDone").value.trim(),note:$("#maintenanceRecordNote").value.trim(),next_due_date:next,cost:Math.max(0,inventoryNum($("#maintenanceCost").value))};
  try{
