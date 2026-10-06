@@ -371,3 +371,11 @@ test("NEW10 notification center opens from the bell", async ({ page }) => {
   await page.locator("[data-new10-close-notice]").click();
   await expect(page.locator("#new10NotificationCenter")).toBeHidden();
 });
+
+
+test("NEW10 realtime layer keeps polling fallback", async ({ page }) => {
+  await activateNew10(page);
+  const state=await page.evaluate(()=>window.ESTA_REALTIME?.status?.());
+  expect(state).toBeTruthy();
+  expect(state.fallbackPollingMs).toBe(5000);
+});
