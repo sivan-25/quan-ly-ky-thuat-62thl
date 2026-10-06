@@ -1,0 +1,102 @@
+/* ESTA Core V2 — NEW10 only. Consolidated tokens/components inspired by mature
+   admin UI systems without importing a framework into the legacy application. */
+#app.new10Pilot.estaCoreV2{
+  --esta-bg:#f4f0e8;
+  --esta-surface:#fffdf9;
+  --esta-surface-2:#f8f4ec;
+  --esta-navy:#173b56;
+  --esta-navy-2:#244f6a;
+  --esta-text:#2d4653;
+  --esta-muted:#71838c;
+  --esta-line:#dbe3e4;
+  --esta-focus:#3d7f9a;
+  --esta-danger:#a34c55;
+  --esta-success:#3f765d;
+  --esta-radius:12px;
+  --esta-shadow:0 8px 26px rgba(25,54,70,.055);
+  color:var(--esta-text);
+}
+#app.new10Pilot.estaCoreV2 :is(input,select,textarea,button){
+  font-family:inherit;
+}
+#app.new10Pilot.estaCoreV2 :is(input,select,textarea):focus-visible,
+#app.new10Pilot.estaCoreV2 button:focus-visible,
+#app.new10Pilot.estaCoreV2 [tabindex]:focus-visible{
+  outline:2px solid var(--esta-focus)!important;
+  outline-offset:2px!important;
+}
+#app.new10Pilot.estaCoreV2 [data-esta-invalid="1"]{
+  border-color:var(--esta-danger)!important;
+  box-shadow:0 0 0 3px rgba(163,76,85,.11)!important;
+}
+#app.new10Pilot.estaCoreV2 .estaFormCore{
+  min-width:0;
+}
+#app.new10Pilot.estaCoreV2 .estaFormCore :is(input,select,textarea){
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+}
+#app.new10Pilot.estaCoreV2 .estaToolbarCore{
+  min-width:0;
+  align-items:center;
+  gap:8px;
+}
+#app.new10Pilot.estaCoreV2 .estaTableViewport{
+  max-width:100%;
+  overflow-x:auto;
+  overscroll-behavior-inline:contain;
+  scrollbar-width:thin;
+}
+#app.new10Pilot.estaCoreV2 .estaDataTableCore{
+  border-collapse:separate;
+  border-spacing:0;
+}
+#app.new10Pilot.estaCoreV2 .estaDataTableCore thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:var(--esta-surface-2);
+}
+#app.new10Pilot.estaCoreV2 .estaDataTableCore tbody tr{
+  transition:background .12s ease;
+}
+#app.new10Pilot.estaCoreV2 .estaDataTableCore tbody tr:hover{
+  background:rgba(23,59,86,.028);
+}
+#app.new10Pilot.estaCoreV2 .estaOverlayCore:not(.hide){
+  isolation:isolate;
+}
+#app.new10Pilot.estaCoreV2 :is(.energyCard,.energyTableCard,.inventoryCard,.maintenanceCard,.contractorCard,.demoPanel){
+  border-color:var(--esta-line)!important;
+  box-shadow:var(--esta-shadow)!important;
+}
+#app.new10Pilot.estaCoreV2 .empty,
+#app.new10Pilot.estaCoreV2 .homeEmpty,
+#app.new10Pilot.estaCoreV2 .demoTaskEmpty{
+  color:var(--esta-muted);
+}
+@media(max-width:760px){
+  #app.new10Pilot.estaCoreV2{
+    --esta-radius:10px;
+  }
+  #app.new10Pilot.estaCoreV2 .estaToolbarCore{
+    flex-wrap:nowrap!important;
+  }
+  #app.new10Pilot.estaCoreV2 .estaFormCore :is(input,select,textarea){
+    font-size:max(16px,1em);
+  }
+  #app.new10Pilot.estaCoreV2 .estaDataTableCore{
+    font-size:12px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #app.new10Pilot.estaCoreV2 *,
+  #app.new10Pilot.estaCoreV2 *::before,
+  #app.new10Pilot.estaCoreV2 *::after{
+    scroll-behavior:auto!important;
+    transition-duration:.001ms!important;
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+  }
+}
