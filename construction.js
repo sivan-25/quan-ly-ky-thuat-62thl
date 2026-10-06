@@ -460,6 +460,14 @@ $("#constructionStockTxnModal").onclick=e=>{if(e.target===$("#constructionStockT
 $("#constructionMaterialForm").onsubmit=async e=>{
   e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
   const id=$("#constructionMaterialId").value;
+  if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+    const vr=window.ESTA_VALIDATION.validate("constructionMaterial",{
+      name:$("#constructionMaterialName").value,
+      unit:$("#constructionMaterialUnit").value||"Cái",
+      openingQty:$("#constructionMaterialOpeningQty")?.value||0
+    });
+    if(!window.ESTA_VALIDATION.notify(vr))return;
+  }
   const body={
     building_id:currentBuilding.id,
     name:$("#constructionMaterialName").value.trim(),
@@ -487,6 +495,10 @@ $("#constructionMaterialForm").onsubmit=async e=>{
 $("#constructionStockTxnForm").onsubmit=async e=>{
   e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
   const materialId=$("#constructionStockMaterial").value,qty=constructionNum($("#constructionStockQty").value),type=$("#constructionStockType").value,date=$("#constructionStockDate").value;
+  if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+    const vr=window.ESTA_VALIDATION.validate("constructionStock",{materialId,qty,date});
+    if(!window.ESTA_VALIDATION.notify(vr))return;
+  }
   if(!materialId||qty<=0||!date)return toast("Vui lòng chọn vật tư, ngày và số lượng");
   const material=constructionMaterials.find(x=>String(x.id)===String(materialId));
   if(type==="out"&&material&&qty>constructionSnapshot(material,new Date().getFullYear()).current)return toast("Số lượng xuất vượt quá tồn kho hiện tại");
@@ -513,6 +525,15 @@ $("#constructionStockTxnForm").onsubmit=async e=>{
 $("#constructionLogForm").onsubmit=async e=>{
   e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
   const id=$("#constructionLogId").value;
+  if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+    const vr=window.ESTA_VALIDATION.validate("constructionLog",{
+      materialId:$("#constructionLogMaterialId").value,
+      date:$("#constructionLogDate").value,
+      qty:$("#constructionLogQty").value,
+      content:$("#constructionLogContent").value
+    });
+    if(!window.ESTA_VALIDATION.notify(vr))return;
+  }
   const body={
     building_id:currentBuilding.id,
     material_id:$("#constructionLogMaterialId").value,
