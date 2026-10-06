@@ -1137,7 +1137,7 @@ $("#workEditDrawer")?.addEventListener("click",e=>{if(e.target.closest("[data-cl
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#workEditDrawer")?.classList.contains("hide"))resetForm()});
 function usesSingleTaskResult(){
  const fallback=["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""));
- return !!projectFeature("singleTaskResult",fallback);
+ return typeof projectFeature==="function"?!!projectFeature("singleTaskResult",fallback):fallback;
 }
 function syncCompletionNoteRequirement(focusNote=false){
  const status=$("#status")?.value||"",note=$("#note"),field=$("#workNoteField"),hint=$("#completionNoteHint");
