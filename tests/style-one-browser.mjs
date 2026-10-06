@@ -160,7 +160,7 @@ async function exerciseMobileMenu(page,label){
       activeBackgroundColor:acs?.backgroundColor||""
     };
   });
-  const parseRgb=value=>{const nums=String(value||"").match(/\\d+/g);return nums&&nums.length>=3?nums.slice(0,3).map(Number):null};
+  const parseRgb=value=>{const nums=String(value||"").match(/[0-9]+/g);return nums&&nums.length>=3?nums.slice(0,3).map(Number):null};
   const dockRgb=parseRgb(dockVisual.backgroundColor);
   const dockIsDark=!!dockRgb&&((dockRgb[0]+dockRgb[1]+dockRgb[2])/3)<130;
   if(!dockIsDark&&!/linear-gradient/i.test(dockVisual.backgroundImage))throw new Error("Mobile bottom navigation lacks distinct dark enterprise contrast: "+JSON.stringify(dockVisual));
