@@ -292,7 +292,14 @@ async function projectSync(action,payload={},buildingId=currentBuilding?.id){
    throw err;
  }
 }
-window.ESTA_SYNC_QUEUE?.configure?.(item=>projectSyncDirect(item.action,item.payload,item.buildingId));
+window.ESTA_SYNC_QUEUE?.configure?.(item=>{
+ if(!centralSession?.access_token){
+   const err=new Error("Đang chờ đăng nhập để đồng bộ");
+   err.status=0;
+   throw err;
+ }
+ return projectSyncDirect(item.action,item.payload,item.buildingId);
+});
 const cloudVersionByBuilding={};
 let projectPeople=[],taskSelectedPeople=[],energySelectedPeople=[];
 const peopleLocalKey=id=>"esta_people_"+id;
