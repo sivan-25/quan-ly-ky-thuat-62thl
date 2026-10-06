@@ -132,7 +132,22 @@
     });
   }
 
+  function decorateAdminProjectCard() {
+    if (typeof adminProjectCard !== "function" || adminProjectCard.__new10Wrapped) return;
+    const original = adminProjectCard;
+    const wrapped = function(building, index = 0) {
+      let html = original(building, index);
+      if (String(building?.id || "") === PILOT_ID && !html.includes("new10ProjectBadge")) {
+        html = html.replace("</h3>", ' <span class="new10ProjectBadge">PILOT 1.0</span></h3>');
+      }
+      return html;
+    };
+    wrapped.__new10Wrapped = true;
+    adminProjectCard = wrapped;
+  }
+
   function boot() {
+    decorateAdminProjectCard();
     bindFilters();
     syncPilotScope();
 
