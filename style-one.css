@@ -1585,3 +1585,152 @@ body:has(#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode)) :is(#update
   --ov-accent:#245c78;
   color-scheme:light!important;
 }
+
+
+/* STYLE_ONE_NEUTRAL_ENTERPRISE_V10 */
+/* Neutral enterprise palette: calmer than the previous beige-heavy version.
+   The approved Work page is intentionally excluded. */
+#app.styleOnePilot:not(.workMode){
+  --s1-bg:#f3f5f6!important;
+  --s1-surface:#ffffff!important;
+  --s1-surface-2:#f7f8f9!important;
+  --s1-ink:#20313d!important;
+  --s1-muted:#687985!important;
+  --s1-line:#dbe1e4!important;
+  --s1-line-strong:#c8d1d6!important;
+  --s1-accent:#1f5673!important;
+  --s1-accent-2:#557d86!important;
+  background:#f3f5f6!important;
+}
+
+#app.styleOnePilot:not(.workMode) main,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) main,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .homeDashboard{
+  background:#f3f5f6!important;
+}
+
+/* Standardize panels to white for maximum readability. */
+#app.styleOnePilot:not(.workMode) :is(
+  .homePanel,.kpiCard,.styleOneInsights,
+  .energyCard,.energyTableCard,.energySummaryCards article,
+  .inventoryCommand,.inventoryWorkspace,.inventoryCard,.inventoryTableCard,.stockAlertPanel,
+  .maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,.maintenanceStats article,.maintenanceAssetCard,
+  .contractorDirectory,.contractorJobsPanel,.contractorProfile,.contractorContactGrid article,.contractorStats article,
+  .demoPanel,.demoKpi,
+  #reportsPage .rc-heading,#reportsPage .rc-period,#reportsPage .rc-controls,#reportsPage .rc-preview,#reportsPage .rc-history
+){
+  background:#fff!important;
+  border-color:#dbe1e4!important;
+  box-shadow:0 2px 8px rgba(24,44,58,.045)!important;
+}
+
+/* Overview / command center: only hero stays navy, all data surfaces become neutral white. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode){
+  --ov-surface:#ffffff!important;
+  --ov-panel:#f5f7f8!important;
+  --ov-control:#ffffff!important;
+  --ov-soft:#f7f8f9!important;
+  --ov-line:#dbe1e4!important;
+  --ov-hover:#f4f7f8!important;
+  --ov-muted:#687985!important;
+  --ov-text:#243946!important;
+  --ov-accent:#1f5673!important;
+  background:#f3f5f6!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) :is(.opsKpi,.opsPanel,.opsScopeBar,.opsOverview .updateFocusNow){
+  background:#fff!important;
+  border-color:#dbe1e4!important;
+  color:#243946!important;
+  box-shadow:0 2px 8px rgba(24,44,58,.04)!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead{
+  background:#f7f8f9!important;
+  border-bottom-color:#e1e6e8!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button{
+  background:#fff!important;
+  border-color:#cfd8dc!important;
+  color:#1f5673!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button:hover{
+  background:#eef3f5!important;
+  border-color:#bfcdd3!important;
+}
+
+/* Selected navigation stays distinct without a large cream block. */
+#app.styleOnePilot:not(.workMode) .estaNav button.active{
+  color:#17384e!important;
+  background:#e8eef1!important;
+  border-color:#c7d5dc!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button.active svg{color:#1f5673!important}
+
+/* Subtle tabs instead of yellow-tinted rails. */
+#app.styleOnePilot:not(.workMode) :is(.energyTabs,.inventoryLocalTabs,#reportsPage .rc-segments){
+  background:#e9eef1!important;
+  border-color:#d5dde1!important;
+}
+#app.styleOnePilot:not(.workMode) :is(.energyTabs button.active,.inventoryLocalTabs button.active,#reportsPage .rc-segments button.active){
+  background:#fff!important;
+  color:#173d59!important;
+  box-shadow:0 1px 4px rgba(31,86,115,.08)!important;
+}
+
+/* Cleaner tables and row hover states. */
+#app.styleOnePilot:not(.workMode) table thead th,
+#app.styleOnePilot:not(.workMode) .demoTable th{
+  background:#f1f4f5!important;
+  color:#405663!important;
+  border-color:#dde3e6!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody td,
+#app.styleOnePilot:not(.workMode) .demoTable td{
+  background:#fff!important;
+  color:#334956!important;
+  border-color:#e7ecee!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody tr:hover td{background:#f7f9fa!important}
+
+/* Forms use conventional business-software surfaces. */
+#app.styleOnePilot:not(.workMode) input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot:not(.workMode) select,
+#app.styleOnePilot:not(.workMode) textarea{
+  background:#fff!important;
+  border-color:#cbd4d9!important;
+  color:#263a47!important;
+}
+#app.styleOnePilot:not(.workMode) input:focus,
+#app.styleOnePilot:not(.workMode) select:focus,
+#app.styleOnePilot:not(.workMode) textarea:focus{
+  border-color:#5e8193!important;
+  box-shadow:0 0 0 2px rgba(31,86,115,.10)!important;
+}
+
+/* Keep visual depth restrained on desktop. */
+@media(min-width:761px){
+  #app.styleOnePilot:not(.workMode) :is(
+    .homePanel,.kpiCard,.styleOneInsights,.energyCard,.energyTableCard,
+    .inventoryCommand,.inventoryWorkspace,.maintenanceHero,.maintenanceSchedule,.maintenanceBoard,
+    .contractorIntro,.contractorDirectory,.contractorJobsPanel,.demoPanel
+  ){
+    box-shadow:0 1px 6px rgba(24,44,58,.04)!important;
+  }
+  #app.styleOnePilot:not(.workMode) :is(
+    .homePanel,.kpiCard,.styleOneInsights,.energyCard,.energyTableCard,
+    .inventoryCommand,.inventoryWorkspace,.maintenanceHero,.maintenanceSchedule,.maintenanceBoard,
+    .contractorIntro,.contractorDirectory,.contractorJobsPanel,.demoPanel
+  ):hover{
+    transform:none!important;
+  }
+}
+
+/* Mobile inherits the neutral palette while the approved Work page keeps its current colors. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot:not(.workMode)){
+    background:#f3f5f6!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active{
+    background:#e8eef1!important;
+    border-color:#c7d5dc!important;
+  }
+}
