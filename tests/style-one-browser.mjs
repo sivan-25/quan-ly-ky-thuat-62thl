@@ -155,6 +155,8 @@ async function exerciseMobileMenu(page){
 for(const viewport of viewports){
   const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},reducedMotion:"reduce"});
   const page=await context.newPage();
+  page.setDefaultTimeout(6000);
+  page.setDefaultNavigationTimeout(12000);
   const browserErrors=[];
   page.on("pageerror",err=>browserErrors.push("pageerror: "+err.message));
   page.on("console",msg=>{
