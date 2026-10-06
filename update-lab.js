@@ -514,6 +514,59 @@ function updateSyncMobileNav(){
  });
 }
 
+
+/* Fast mobile choice tiles; retain select values used by storage and reports. */
+function updateInitWorkChoices(){
+ const specs=[
+  {id:"type",name:"Loại công việc",options:[["Hằng ngày","Hằng ngày"],["Sự cố","Sự cố"],["Bảo trì","Bảo trì"]]},
+  {id:"status",name:"Trạng thái",options:[["Chờ xử lý","Bắt đầu"],["Đang thực hiện","Đang thực hiện"],["Đã hoàn thành","Hoàn thành"]]}
+ ];
+ specs.forEach(spec=>{
+  const select=document.getElementById(spec.id);
+  if(!select||document.getElementById("workChoices-"+spec.id))return;
+  const group=document.createElement("div");
+  group.id="workChoices-"+spec.id;group.className="workChoiceTiles";
+  group.setAttribute("role","radiogroup");group.setAttribute("aria-label",spec.name);
+  let lastValue=select.value;
+  const buttons=spec.options.map(([value,label])=>{
+   const button=document.createElement("button");button.type="button";button.className="workChoiceTile";
+   button.setAttribute("role","radio");button.dataset.value=value;
+   const circle=document.createElement("i");circle.className="workChoiceCircle";circle.setAttribute("aria-hidden","true");
+   const text=document.createElement("b");text.textContent=label;
+   button.append(circle,text);group.append(button);
+   button.addEventListener("click",event=>{
+    event.preventDefault();event.stopPropagation();
+    select.value=value;select.dispatchEvent(new Event("change",{bubbles:true}));sync();
+   });
+   return button;
+  });
+  function sync(){
+   lastValue=select.value;
+   buttons.forEach(button=>{
+    const checked=select.value===button.dataset.value;
+    button.setAttribute("aria-checked",String(checked));button.tabIndex=checked?0:-1;
+   });
+  }
+  group.addEventListener("keydown",event=>{
+   const index=buttons.indexOf(document.activeElement);
+   if(index<0||!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"].includes(event.key))return;
+   event.preventDefault();
+   const next=event.key==="Home"?0:event.key==="End"?2:(index+(["ArrowLeft","ArrowUp"].includes(event.key)?-1:1)+3)%3;
+   buttons[next].click();buttons[next].focus();
+  });
+  select.insertAdjacentElement("afterend",group);select.classList.add("workChoiceSelect");
+  select.addEventListener("change",sync);
+  // Legacy edit actions assign select values without emitting a change event.
+  // Check only while this mobile form is visible; clicks sync immediately above.
+  setInterval(()=>{
+   if(document.hidden||!window.matchMedia("(max-width:760px)").matches||select.closest("#workPage")?.classList.contains("hide"))return;
+   if(lastValue!==select.value){lastValue=select.value;sync()}
+  },150);
+  select.closest("form")?.addEventListener("reset",()=>setTimeout(sync,0));
+  sync();
+ });
+}
+
 function updateBindNav(){
  const map={navUpdateAssets:"assets",navUpdateTeam:"team",navUpdateShift:"shift",navUpdateCost:"cost"};
  Object.entries(map).forEach(([id,name])=>{const b=$("#"+id);if(b)b.onclick=()=>updateShowStandalone(name)});
@@ -1084,6 +1137,7 @@ function updateDecorateContractorPage(){
 }
 
 function updateEnhanceWorkForm(){
+ updateInitWorkChoices();
  if(!updateIs())return;
  const links=$("#demoWorkLinks"),grid=links?.querySelector(".demoWorkLinkGrid");if(!grid)return;
 
@@ -1485,7 +1539,7 @@ document.addEventListener("focusin",()=>setTimeout(updateSyncKeyboard,80));
 document.addEventListener("focusout",()=>setTimeout(updateSyncKeyboard,120));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){updateCloseAssetDrawer();["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal);updateCloseNotificationCenter()}});
 document.addEventListener("DOMContentLoaded",()=>{
- updateInjectShell();updateApplyMode();
+ updateInjectShell();updateApplyMode();updateInitWorkChoices();
  const params=new URLSearchParams(location.search);
  if(params.get("asset"))$("#updateScannerCode")&&($("#updateScannerCode").value=params.get("asset"));
 });

@@ -1826,3 +1826,26 @@
  #app.updateProjectMode main{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
 }
 @media(max-width:359px){#updateMobileNav.updateMobileNav button>b{font-size:11px!important}}
+
+/* Approved equal-height mobile Loại / Trạng thái selectors. */
+.workChoiceTiles{display:none}
+@media(max-width:760px){
+ #app #workPage #taskForm .workType,#app #workPage #taskForm .workStatus{grid-column:1/-1!important}
+ #app #workPage #taskForm select.workChoiceSelect{display:none!important}
+ #app #workPage #taskForm .workChoiceTiles{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;width:100%!important;min-width:0!important}
+ #app #workPage #taskForm .workChoiceTile{
+  box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;gap:6px!important;
+  width:100%!important;min-width:0!important;height:62px!important;min-height:62px!important;max-height:62px!important;
+  margin:0!important;padding:6px 2px!important;border:1px solid #bdddf5!important;
+  border-radius:10px!important;background:#f7fcff!important;color:#102d64!important;box-shadow:none!important;cursor:pointer!important;
+ }
+ #app #workPage #taskForm .workChoiceTile[aria-checked="true"]{border-color:#0874ff!important;background:#e1f1ff!important}
+ #app #workPage #taskForm .workChoiceTile>b{display:block!important;font-size:12px!important;font-weight:500!important;line-height:16px!important;white-space:nowrap!important;color:inherit!important}
+ #app #workPage #taskForm .workChoiceTile[aria-checked="true"]>b{font-weight:600!important}
+ #app #workPage #taskForm .workChoiceCircle{position:relative!important;display:block!important;box-sizing:border-box!important;width:20px!important;height:20px!important;flex:0 0 20px!important;border:1.5px solid #102d64!important;border-radius:50%!important;background:transparent!important}
+ #app #workPage #taskForm .workChoiceTile[aria-checked="true"] .workChoiceCircle{background:#102d64!important}
+ #app #workPage #taskForm .workChoiceTile[aria-checked="true"] .workChoiceCircle:after{content:""!important;position:absolute!important;left:5px!important;top:3px!important;width:5px!important;height:9px!important;border:solid #fff!important;border-width:0 2px 2px 0!important;transform:rotate(45deg)!important}
+ #app #workPage #taskForm .workChoiceTile:focus-visible{outline:2px solid #102d64!important;outline-offset:2px!important}
+}
+@media(max-width:359px){#app #workPage #taskForm .workChoiceTile>b{font-size:11px!important}}
