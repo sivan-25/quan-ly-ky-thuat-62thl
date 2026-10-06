@@ -1898,8 +1898,8 @@
  html:has(body.estaMobileScrollShell){height:100%!important;overflow:hidden!important;overscroll-behavior:none!important}
  body.estaMobileScrollShell{height:100%!important;min-height:0!important;overflow:hidden!important;overscroll-behavior:none!important}
  body.estaMobileScrollShell #app:not(.hide){
-  position:fixed!important;inset:0!important;width:100%!important;max-width:100%!important;
-  height:100%!important;height:var(--esta-mobile-keyboard-height,100dvh)!important;
+  position:relative!important;inset:auto!important;width:100%!important;max-width:100%!important;
+  height:100vh!important;height:100dvh!important;
   min-height:0!important;max-height:none!important;overflow:hidden!important;
  }
  body.estaMobileScrollShell #app:not(.hide)>main{
@@ -1922,5 +1922,12 @@
  }
  body.estaMobileScrollShell #updateMobileNav:before{display:none!important}
  body.estaMobileKeyboard #updateMobileNav{display:none!important}
- body.estaMobileKeyboard #app:not(.hide)>main{padding-bottom:20px!important;scroll-padding-bottom:20px!important}
+ body.estaMobileKeyboard #app:not(.hide)>main{padding-bottom:calc(86px + var(--esta-mobile-keyboard-inset,0px))!important;scroll-padding-bottom:calc(20px + var(--esta-mobile-keyboard-inset,0px))!important}
 }
+
+/* Avoid delayed double-tap handling and preserve explicit control hit areas. */
+@media(max-width:760px){
+ #app button,#app input,#app select,#app textarea,.mobilePeopleSheet button{touch-action:manipulation}
+}
+
+@media(max-width:359px){#app #workPage #taskForm .workChoiceTile>b{font-size:10px!important;letter-spacing:0!important}}

@@ -1456,14 +1456,14 @@ function updateSyncMobileScrollShell(){
  const app=document.getElementById("app");
  const active=!!app&&!app.classList.contains("hide")&&window.matchMedia("(max-width:760px)").matches;
  document.body.classList.toggle("estaMobileScrollShell",active);
- if(!active){document.body.classList.remove("estaMobileKeyboard");document.documentElement.style.removeProperty("--esta-mobile-keyboard-height");return}
+ if(!active){document.body.classList.remove("estaMobileKeyboard");document.documentElement.style.removeProperty("--esta-mobile-keyboard-inset");return}
  const vv=window.visualViewport;
  const focused=document.activeElement;
  const editing=!!focused&&(focused.matches("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),textarea,select")||focused.isContentEditable);
  const keyboard=editing&&!!vv&&window.innerHeight-vv.height>140;
  document.body.classList.toggle("estaMobileKeyboard",keyboard);
- if(keyboard)document.documentElement.style.setProperty("--esta-mobile-keyboard-height",Math.round(vv.height)+"px");
- else document.documentElement.style.removeProperty("--esta-mobile-keyboard-height");
+ if(keyboard)document.documentElement.style.setProperty("--esta-mobile-keyboard-inset",Math.max(0,Math.round(window.innerHeight-vv.height))+"px");
+ else document.documentElement.style.removeProperty("--esta-mobile-keyboard-inset");
 }
 
 function updateSyncKeyboard(){
