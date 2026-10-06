@@ -467,6 +467,10 @@ function contractorInitEvents(){
     e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
     const id=$("#contractorId").value;
     const contractStart=$("#contractorContractStart").value||null,contractEnd=$("#contractorContractEnd").value||null;
+    if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+      const vr=window.ESTA_VALIDATION.validate("contractor",{name:$("#contractorName").value,start:contractStart,end:contractEnd});
+      if(!window.ESTA_VALIDATION.notify(vr))return;
+    }
     if(contractStart&&contractEnd&&contractEnd<contractStart)return toast("Ngày kết thúc hợp đồng phải sau ngày bắt đầu");
     const body={building_id:currentBuilding.id,name:$("#contractorName").value.trim(),phone:$("#contractorPhone").value.trim(),contact_name:$("#contractorContactName").value.trim(),specialty:$("#contractorSpecialty").value.trim(),contract_start_date:contractStart,contract_end_date:contractEnd,status:$("#contractorStatus").value,note:$("#contractorNote").value.trim(),updated_at:new Date().toISOString()};
     try{
@@ -481,8 +485,12 @@ function contractorInitEvents(){
     const recordId=originalId||(crypto.randomUUID?crypto.randomUUID():String(Date.now()));
     let completed=$("#contractorJobCompletedDate").value||null;if(status==="Hoàn thành"&&!completed)completed=today();
     const workDate=$("#contractorJobDate").value;
-    if(completed&&workDate&&completed<workDate)return toast("Ngày hoàn thành không được trước ngày thực hiện");
     const content=$("#contractorJobContent").value.trim();
+    if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_VALIDATION){
+      const vr=window.ESTA_VALIDATION.validate("contractorJob",{workDate,completed,content});
+      if(!window.ESTA_VALIDATION.notify(vr))return;
+    }
+    if(completed&&workDate&&completed<workDate)return toast("Ngày hoàn thành không được trước ngày thực hiện");
     if(!content)return toast("Vui lòng nhập nội dung công việc");
     const sourceTaskId=$("#contractorJobSourceTaskId")?.value||"";
     const pending=[...contractorJobPendingFiles],removed=[...contractorJobRemovedImages];
