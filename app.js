@@ -282,10 +282,22 @@ function renderPeopleSelector(kind){
  if(!names.length){
    box.innerHTML='<div class="peopleEmpty"><b>Chưa có người thực hiện</b><span>Chọn “Chỉnh sửa danh sách” để thêm nhân sự cho dự án.</span></div>';
  }else{
-   box.innerHTML=names.map(name=>{
+   const scrollTop=box.scrollTop;
+   const existing=Array.from(box.querySelectorAll("[data-person]"));
+   const sameNames=existing.length===names.length&&existing.every((el,i)=>el.dataset.person===encodeURIComponent(names[i]));
+   if(!sameNames){
+    box.innerHTML=names.map(name=>{
      const on=selected.includes(name);
-     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'">'+((kind==="task"||kind==="energy")?'<span class="peopleAvatar">'+esc(personInitials(name))+'</span>':'')+'<span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
-   }).join("");
+     return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'" aria-pressed="'+on+'">'+((kind==="task"||kind==="energy")?'<span class="peopleAvatar">'+esc(personInitials(name))+'</span>':'')+'<span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
+    }).join("");
+   }else{
+    existing.forEach(el=>{
+     const on=selected.includes(decodeURIComponent(el.dataset.person));
+     el.classList.toggle("selected",on);el.setAttribute("aria-pressed",String(on));
+     const check=el.querySelector(".peopleCheck");if(check)check.textContent=on?"✓":"";
+    });
+   }
+   box.scrollTop=scrollTop;
    box.querySelectorAll("[data-person]").forEach(el=>el.onclick=e=>{
      e.preventDefault();e.stopPropagation();
      const name=decodeURIComponent(el.dataset.person),next=[...peopleSelected(kind)];
@@ -304,7 +316,9 @@ function renderPeopleSelector(kind){
  btn.classList.toggle("hasValue",selected.length>0);
 }
 function renderAllPeopleSelectors(){renderPeopleSelector("task");renderPeopleSelector("energy")}
+let peopleMenuOpenSeq=0;
 function closePeopleMenus(){
+ peopleMenuOpenSeq+=1;
  $("#taskPeopleMenu")?.classList.add("hide");
  $("#energyPeopleMenu")?.classList.add("hide");
 }
@@ -380,8 +394,30 @@ async function deleteProjectPerson(id){
  }catch(e){toast(e.message)}
 }
 
-$("#taskPeopleButton").onclick=e=>{e.stopPropagation();const m=$("#taskPeopleMenu"),open=m.classList.contains("hide");closePeopleMenus();if(open)m.classList.remove("hide")};
-$("#energyPeopleButton").onclick=e=>{e.stopPropagation();const m=$("#energyPeopleMenu"),open=m.classList.contains("hide");closePeopleMenus();if(open)m.classList.remove("hide")};
+function togglePeopleMenu(kind,event){
+ event.preventDefault();event.stopPropagation();
+ const menu=document.getElementById(kind==="energy"?"energyPeopleMenu":"taskPeopleMenu");
+ const open=menu.classList.contains("hide");
+ closePeopleMenus();if(!open)return;
+ const seq=peopleMenuOpenSeq;
+ const focused=document.activeElement;
+ const vv=window.visualViewport;
+ const mobile=window.matchMedia("(max-width:760px)").matches;
+ const keyboard=mobile&&!!vv&&window.innerHeight-vv.height>140;
+ if(mobile&&focused?.matches("input,textarea,[contenteditable=true]"))focused.blur();
+ const started=Date.now();
+ function reveal(){
+  if(seq!==peopleMenuOpenSeq)return;
+  // Do not move the picker under the finger while the iOS keyboard is closing.
+  if(keyboard&&vv&&window.innerHeight-vv.height>140&&Date.now()-started<900){
+   setTimeout(reveal,50);return;
+  }
+  menu.classList.remove("hide");
+ }
+ reveal();
+}
+$("#taskPeopleButton").onclick=e=>togglePeopleMenu("task",e);
+$("#energyPeopleButton").onclick=e=>togglePeopleMenu("energy",e);
 $("#taskPeopleMenu").onclick=e=>e.stopPropagation();
 $("#energyPeopleMenu").onclick=e=>e.stopPropagation();
 document.querySelectorAll("[data-people-edit]").forEach(btn=>btn.onclick=e=>{e.preventDefault();e.stopPropagation();openPeopleManager()});
