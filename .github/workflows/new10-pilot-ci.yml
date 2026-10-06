@@ -28,3 +28,25 @@ jobs:
 
       - name: Run ESTA regression suite
         run: npm test
+
+      - name: Install pinned Playwright for CI only
+        run: npm install --no-save --package-lock=false @playwright/test@1.63.0
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start ESTA local server
+        run: |
+          ESTA_DEV_PORT=8080 python3 tools/dev_server.py > /tmp/esta-new10-server.log 2>&1 &
+          echo $! > /tmp/esta-new10-server.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8080/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/esta-new10-server.log
+          exit 1
+
+      - name: Run NEW10 browser pilot checks
+        run: npx playwright test tests/e2e/new10-pilot.spec.mjs
