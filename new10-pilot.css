@@ -198,8 +198,8 @@
 /* NEW10 capability visibility guard.
    Some legacy energy selectors use display rules with !important, so .hide
    needs a pilot-scoped final authority for unsupported meters. */
-#app.new10Pilot [data-energy-type].hide,
-#app.new10Pilot .energy68Only.hide,
+#app.new10Pilot #energyPage .energyTabs button[data-energy-type].hide,
+#app.new10Pilot #energyPage .energyTabs button.energy68Only.hide,
 #app.new10Pilot #energyValue2Field.hide,
 #app.new10Pilot #energyImage2Field.hide,
 #app.new10Pilot #energyImage2Preview.hide {
