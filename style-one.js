@@ -4,6 +4,7 @@
 const PILOT_PROJECTS=new Set(["DEMO","127HH"]);
 let styleOneChart=null;
 let observer=null;
+let syncQueued=false;
 
 function byId(id){return document.getElementById(id)}
 function currentProjectId(){
@@ -123,6 +124,8 @@ function fallbackBars(stats){
 function renderChart(stats){
   const canvas=byId("styleOneWorkChart"),fallback=byId("styleOneChartFallback");
   if(!canvas)return;
+  const home=byId("homePage");
+  if(home?.classList.contains("hide")){destroyChart();return;}
   if(typeof window.Chart!=="function"){
     destroyChart();
     fallbackBars(stats);
@@ -152,7 +155,7 @@ function renderChart(stats){
       responsive:true,
       maintainAspectRatio:false,
       cutout:"72%",
-      animation:{duration:420},
+      animation:false,
       plugins:{
         legend:{
           position:"bottom",
@@ -184,14 +187,19 @@ function syncPilot(){
   if(active){
     enhanceA11y();
     ensureInsights();
-    updateInsights();
+    if(byId("homePage")?.classList.contains("hide"))destroyChart();
   }else{
     byId("styleOneInsights")?.remove();
     destroyChart();
   }
 }
 function scheduleSync(){
-  window.requestAnimationFrame(()=>window.requestAnimationFrame(syncPilot));
+  if(syncQueued)return;
+  syncQueued=true;
+  window.requestAnimationFrame(()=>{
+    syncQueued=false;
+    syncPilot();
+  });
 }
 function wrapGlobal(name){
   const original=window[name];
@@ -206,23 +214,17 @@ function wrapGlobal(name){
 }
 function bindRuntime(){
   ["applyBuildingUI","showHome","showModule","openAdminPortal","renderHomeDashboard"].forEach(wrapGlobal);
-  byId("app")?.addEventListener("click",()=>setTimeout(syncPilot,0),true);
-  window.addEventListener("focus",syncPilot,{passive:true});
-  document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncPilot()});
-  if(!observer&&byId("app")){
-    observer=new MutationObserver(mutations=>{
-      let shouldSync=false;
-      mutations.forEach(m=>{
-        if(m.type==="childList"&&pilotActive()){
-          m.addedNodes.forEach(node=>{
-            if(node.nodeType===1)enhanceImages(node);
-          });
-        }
-        if(m.type==="attributes"&&m.attributeName==="class")shouldSync=true;
-      });
-      if(shouldSync)scheduleSync();
-    });
-    observer.observe(byId("app"),{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+  window.addEventListener("focus",scheduleSync,{passive:true});
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)scheduleSync()});
+
+  // Desktop performance: observe only route-shell classes. The previous subtree-wide
+  // observer reacted to every table/card class mutation and could trigger hundreds
+  // of redundant syncs during a render.
+  if(!observer){
+    observer=new MutationObserver(()=>scheduleSync());
+    const app=byId("app"),navWork=byId("navWork");
+    if(app)observer.observe(app,{attributes:true,attributeFilter:["class"]});
+    if(navWork)observer.observe(navWork,{attributes:true,attributeFilter:["class"]});
   }
 }
 function start(){
