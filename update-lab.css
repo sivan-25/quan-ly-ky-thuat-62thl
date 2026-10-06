@@ -2150,3 +2150,115 @@
     justify-content:center!important;
   }
 }
+
+
+/* MOBILE_WORK_EDITOR_DATE_ALIGNMENT_20261006 */
+@media(max-width:760px){
+  /* Main work date: same compact height as other fields. */
+  #workEditDrawer #taskForm .workDate,
+  #workEditDrawer #taskForm .workDate input{
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+  #workEditDrawer #taskForm #date{
+    display:block!important;
+    width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    block-size:44px!important;
+    min-block-size:44px!important;
+    max-block-size:44px!important;
+    margin:0!important;
+    padding:0 10px!important;
+    overflow:hidden!important;
+    font-size:15px!important;
+    line-height:44px!important;
+    text-align:center!important;
+    vertical-align:middle!important;
+    -webkit-appearance:none!important;
+    appearance:none!important;
+  }
+  #workEditDrawer #taskForm #date::-webkit-date-and-time-value,
+  #workEditDrawer #taskForm #date::-webkit-datetime-edit{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    height:44px!important;
+    margin:0!important;
+    padding:0!important;
+    line-height:44px!important;
+    text-align:center!important;
+  }
+  #workEditDrawer #taskForm #date::-webkit-calendar-picker-indicator{
+    position:absolute!important;
+    opacity:0!important;
+    width:100%!important;
+    height:100%!important;
+    inset:0!important;
+    cursor:pointer!important;
+  }
+
+  /* Due date: prevent iOS intrinsic date width/height from spilling outside its grid cell. */
+  #workEditDrawer #demoWorkLinks .demoDueField{
+    position:relative!important;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  #workEditDrawer #demoWorkLinks #demoTaskDue{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    block-size:44px!important;
+    min-block-size:44px!important;
+    max-block-size:44px!important;
+    margin:0!important;
+    padding:0 8px!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+    font-size:14px!important;
+    line-height:44px!important;
+    text-align:center!important;
+    vertical-align:middle!important;
+    white-space:nowrap!important;
+    -webkit-appearance:none!important;
+    appearance:none!important;
+  }
+  #workEditDrawer #demoWorkLinks #demoTaskDue::-webkit-date-and-time-value,
+  #workEditDrawer #demoWorkLinks #demoTaskDue::-webkit-datetime-edit{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:44px!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+    font-size:14px!important;
+    line-height:44px!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+  }
+  #workEditDrawer #demoWorkLinks #demoTaskDue::-webkit-calendar-picker-indicator{
+    position:absolute!important;
+    opacity:0!important;
+    width:100%!important;
+    height:100%!important;
+    inset:0!important;
+    cursor:pointer!important;
+  }
+}
