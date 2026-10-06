@@ -32,7 +32,7 @@ test("NEW10 uses 127HH pilot configuration", async ({ page }) => {
 });
 
 test("NEW10 mobile filter stays inside viewport and persists", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile-chromium", "Mobile-only pilot assertion");
+  test.skip(!testInfo.project.name.startsWith("mobile-"), "Mobile-only pilot assertion");
   await activateNew10(page);
 
   await page.evaluate(() => {
@@ -86,7 +86,7 @@ test("NEW10 mobile filter stays inside viewport and persists", async ({ page }, 
 });
 
 test("NEW10 mobile editor keeps Save and Cancel on one sticky row", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile-chromium", "Mobile-only pilot assertion");
+  test.skip(!testInfo.project.name.startsWith("mobile-"), "Mobile-only pilot assertion");
   await activateNew10(page);
 
   await page.evaluate(() => {
@@ -121,4 +121,82 @@ test("NEW10 mobile editor keeps Save and Cancel on one sticky row", async ({ pag
   expect(c).not.toBeNull();
   expect(s).not.toBeNull();
   expect(Math.abs(c.y - s.y)).toBeLessThan(4);
+});
+
+
+test("NEW10 store isolates draft and exposes sync status", async ({ page }) => {
+  await activateNew10(page);
+
+  await page.evaluate(() => {
+    window.ESTA_PROJECT_STORE.writeDraft({
+      d: "2026-10-06",
+      c: "NEW10 draft only",
+      t: "Hằng ngày",
+      s: "Đang thực hiện",
+      a: "",
+      n: ""
+    });
+    window.ESTA_PROJECT_STORE.setStatus("syncing", "e2e");
+  });
+
+  const draft = await page.evaluate(() => window.ESTA_PROJECT_STORE.readDraft());
+  expect(draft.c).toBe("NEW10 draft only");
+  expect(await page.evaluate(() => localStorage.getItem("qlkt62_draft"))).toBeNull();
+
+  const badge = page.locator("#new10SyncStatus");
+  await expect(badge).toBeVisible();
+  await expect(badge).toContainText("Đang đồng bộ");
+
+  await page.evaluate(() => window.ESTA_PROJECT_STORE.setStatus("synced", "e2e"));
+  await expect(badge).toContainText("Đã đồng bộ");
+});
+
+test("NEW10 energy capabilities match 127HH", async ({ page }) => {
+  await activateNew10(page);
+
+  await page.evaluate(() => {
+    if (typeof showModule === "function") showModule("energy");
+    if (typeof sync68EnergyTabs === "function") sync68EnergyTabs();
+  });
+
+  const config = await page.evaluate(() => window.estaProjectConfig("NEW10"));
+  expect(config.electricMeters).toBe(1);
+  expect(config.supportsSolar).toBe(false);
+  expect(config.supportsXlnt).toBe(false);
+
+  await expect(page.locator('[data-energy-type="solar"]')).toBeHidden();
+  await expect(page.locator('[data-energy-type="xlnt"]')).toBeHidden();
+  await expect(page.locator("#energyValue2Field")).toBeHidden();
+});
+
+test("NEW10 primary modules have no page-level horizontal overflow on mobile", async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.startsWith("mobile-"), "Mobile-only pilot assertion");
+  await activateNew10(page);
+
+  for (const name of ["work", "energy", "inventory", "maintenance", "contractor", "construction"]) {
+    await page.evaluate((moduleName) => {
+      if (typeof showModule === "function") showModule(moduleName);
+    }, name);
+    await page.waitForTimeout(80);
+
+    const metrics = await page.evaluate(() => ({
+      innerWidth: window.innerWidth,
+      bodyScrollWidth: document.body.scrollWidth,
+      docScrollWidth: document.documentElement.scrollWidth
+    }));
+    expect(metrics.bodyScrollWidth, name + " body overflow").toBeLessThanOrEqual(metrics.innerWidth + 2);
+    expect(metrics.docScrollWidth, name + " document overflow").toBeLessThanOrEqual(metrics.innerWidth + 2);
+  }
+});
+
+test("NEW10 work toolbar keeps Filter and PDF available", async ({ page }) => {
+  await activateNew10(page);
+  await page.evaluate(() => {
+    if (typeof showModule === "function") showModule("work");
+  });
+
+  await expect(page.locator("#toggleFilter")).toBeVisible();
+  await expect(page.locator("#exportBtn")).toBeVisible();
+  await expect(page.locator("#toggleFilter")).toBeEnabled();
+  await expect(page.locator("#exportBtn")).toBeEnabled();
 });
