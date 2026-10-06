@@ -191,6 +191,33 @@ async function exerciseMobileMenu(page,label){
   if(!closed)throw new Error("Mobile sidebar did not close");
 }
 
+async function exerciseDesktopPerformance(page,label){
+  if((await page.viewportSize()).width<1200)return;
+  const perf=await page.evaluate(async()=>{
+    const routes=["energy","inventory","maintenance","contractor"];
+    const samples=[];
+    for(let round=0;round<3;round++){
+      for(const route of routes){
+        const t0=performance.now();
+        showModule(route);
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        samples.push(performance.now()-t0);
+      }
+      const t0=performance.now();
+      showHome();
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      samples.push(performance.now()-t0);
+    }
+    return {
+      max:Math.max(...samples),
+      avg:samples.reduce((a,b)=>a+b,0)/samples.length,
+      samples
+    };
+  });
+  if(perf.max>1200||perf.avg>500)throw new Error("Desktop route performance regression: "+JSON.stringify(perf));
+  console.log("PASS",label,"desktop-route-performance",JSON.stringify({max:Math.round(perf.max),avg:Math.round(perf.avg)}));
+}
+
 for(const viewport of viewports){
   const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},reducedMotion:"reduce"});
   const page=await context.newPage();
@@ -221,6 +248,7 @@ for(const viewport of viewports){
     await exerciseMaintenance(page);
     await exerciseContractor(page);
     await exerciseSpecial(page);
+    await exerciseDesktopPerformance(page,viewport.name);
     await page.evaluate(()=>showHome());
     await page.waitForTimeout(100);
     await assertNoOverflow(page,viewport.name+" final-home");
