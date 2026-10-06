@@ -412,6 +412,11 @@ async function deleteProjectPerson(id){
 function togglePeopleMenu(kind,event){
  event.preventDefault();event.stopPropagation();
  const menu=document.getElementById(kind==="energy"?"energyPeopleMenu":"taskPeopleMenu");
+ if(menu.classList.contains("inlinePeoplePicker")){
+  menu.classList.toggle("hide");
+  document.getElementById(kind==="energy"?"energyPeopleButton":"taskPeopleButton")?.setAttribute("aria-expanded",String(!menu.classList.contains("hide")));
+  return;
+ }
  const open=menu.classList.contains("hide");
  closePeopleMenus();if(!open)return;
  const seq=peopleMenuOpenSeq;
@@ -463,9 +468,29 @@ function setupMobilePeopleSheets(){
    if(media.matches&&!inline){if(menu.parentNode!==document.body)document.body.appendChild(menu);menu.classList.add("mobilePeopleSheet")}
    else{if(menu.previousSibling!==anchors.get(menu))anchors.get(menu).after(menu);menu.classList.remove("mobilePeopleSheet")}
    menu.classList.toggle("inlinePeoplePicker",inline);
-   if(inline)menu.classList.remove("hide");else if(wasInline)menu.classList.add("hide");
+   if(inline&&!wasInline)menu.classList.remove("hide");else if(!inline&&wasInline)menu.classList.add("hide");
    const edit=menu.querySelector("[data-people-edit]");
-   if(edit){if(!edit.dataset.originalLabel)edit.dataset.originalLabel=edit.textContent;edit.textContent=inline?"Quản lý danh sách":edit.dataset.originalLabel}
+   if(edit){
+    if(!edit.dataset.originalLabel)edit.dataset.originalLabel=edit.textContent;
+    let actions=menu.querySelector(".peopleInlineActions");
+    if(inline){
+     if(!actions){
+      actions=document.createElement("div");actions.className="peopleInlineActions";menu.append(actions);
+      actions.append(edit);
+      const confirm=document.createElement("button");confirm.type="button";confirm.className="peopleInlineConfirm";confirm.textContent="Xác nhận";
+      confirm.onclick=e=>{
+       e.preventDefault();e.stopPropagation();menu.classList.add("hide");
+       const trigger=document.getElementById(menu.id==="energyPeopleMenu"?"energyPeopleButton":"taskPeopleButton");
+       trigger?.setAttribute("aria-expanded","false");trigger?.focus({preventScroll:true});
+      };
+      actions.append(confirm);
+     }
+     edit.textContent="✎";edit.title="Quản lý danh sách";edit.setAttribute("aria-label","Quản lý danh sách");
+    }else{
+     if(actions){menu.append(edit);actions.remove()}
+     edit.textContent=edit.dataset.originalLabel;edit.removeAttribute("title");edit.removeAttribute("aria-label");
+    }
+   }
   });
  }
  syncMobilePeopleLayout=arrange;
