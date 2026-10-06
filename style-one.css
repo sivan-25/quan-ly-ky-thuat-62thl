@@ -1143,3 +1143,302 @@
     color:#fff!important;
   }
 }
+
+
+/* STYLE_ONE_PROFESSIONAL_ENTERPRISE_V8 */
+/* Professional enterprise palette for every Style 1 module except the approved Work page. */
+#app.styleOnePilot:not(.workMode){
+  --s1-bg:#f2efe8;
+  --s1-surface:#fffdf8;
+  --s1-surface-2:#f8f6f1;
+  --s1-sidebar:#15384f;
+  --s1-sidebar-2:#102d40;
+  --s1-ink:#203442;
+  --s1-muted:#667782;
+  --s1-line:#d9dee1;
+  --s1-line-strong:#c6cfd4;
+  --s1-accent:#245c78;
+  --s1-accent-2:#4d7b82;
+  --s1-success:#337257;
+  --s1-warning:#9a6a2f;
+  --s1-danger:#a94747;
+  --s1-radius:14px;
+  --s1-shadow:0 3px 12px rgba(27,47,61,.055);
+  color:var(--s1-ink)!important;
+  background:var(--s1-bg)!important;
+}
+
+/* Flat surfaces and high-contrast hierarchy. */
+#app.styleOnePilot:not(.workMode) main{
+  background:#f2efe8!important;
+}
+#app.styleOnePilot:not(.workMode) .estaSidebar{
+  background:#15384f!important;
+  border-right:1px solid #294b60!important;
+  box-shadow:4px 0 16px rgba(18,43,58,.08)!important;
+}
+#app.styleOnePilot:not(.workMode) .estaSidebarBrand b{color:#fff!important}
+#app.styleOnePilot:not(.workMode) .estaSidebarBrand small{color:#b9c8d1!important}
+#app.styleOnePilot:not(.workMode) .estaPetalLogo span{
+  background:#d7e8ee!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button{
+  color:#d1dde4!important;
+  border-radius:9px!important;
+  transition:background-color .12s ease,color .12s ease!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button:hover{
+  color:#fff!important;
+  background:#20475f!important;
+  border-color:#31576c!important;
+  transform:none!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button.active{
+  color:#17384e!important;
+  background:#eee6d6!important;
+  border-color:#d8ccb4!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button.active svg{color:#245c78!important}
+
+#app.styleOnePilot:not(.workMode) .estaTopbar{
+  background:#173d59!important;
+  border-bottom:1px solid #2a5069!important;
+  box-shadow:0 2px 10px rgba(18,45,63,.12)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+#app.styleOnePilot:not(.workMode) .topModuleTitle h1{color:#fff!important}
+#app.styleOnePilot:not(.workMode) .topModuleTitle p{color:#c5d3db!important}
+#app.styleOnePilot:not(.workMode) .topModuleIcon{
+  border-color:#45687d!important;
+  background:#244d67!important;
+  color:#eaf3f7!important;
+}
+#app.styleOnePilot:not(.workMode) .headerSearch{
+  border-color:#45667a!important;
+  background:#204861!important;
+}
+#app.styleOnePilot:not(.workMode) .headerSearch input,
+#app.styleOnePilot:not(.workMode) .headerSearch input::placeholder{color:#e4edf2!important}
+#app.styleOnePilot:not(.workMode) .headerBell,
+#app.styleOnePilot:not(.workMode) .iconAction,
+#app.styleOnePilot:not(.workMode) .pdfAction,
+#app.styleOnePilot:not(.workMode) .mobileMenuBtn{
+  border-color:#527187!important;
+  background:#204861!important;
+  color:#eef5f8!important;
+  box-shadow:none!important;
+}
+
+/* Cards: solid, calm, readable. */
+#app.styleOnePilot:not(.workMode) .homeWelcome,
+#app.styleOnePilot:not(.workMode) .unifiedCommand,
+#app.styleOnePilot:not(.workMode) .homePanel,
+#app.styleOnePilot:not(.workMode) .kpiCard,
+#app.styleOnePilot:not(.workMode) .energyCard,
+#app.styleOnePilot:not(.workMode) .energyTableCard,
+#app.styleOnePilot:not(.workMode) .inventoryCommand,
+#app.styleOnePilot:not(.workMode) .inventoryWorkspace,
+#app.styleOnePilot:not(.workMode) .inventoryCard,
+#app.styleOnePilot:not(.workMode) .maintenanceHero,
+#app.styleOnePilot:not(.workMode) .maintenanceSchedule,
+#app.styleOnePilot:not(.workMode) .maintenanceBoard,
+#app.styleOnePilot:not(.workMode) .maintenanceHistoryCard,
+#app.styleOnePilot:not(.workMode) .contractorDirectory,
+#app.styleOnePilot:not(.workMode) .contractorJobsPanel,
+#app.styleOnePilot:not(.workMode) .contractorProfile,
+#app.styleOnePilot:not(.workMode) .demoPanel,
+#app.styleOnePilot:not(.workMode) .demoKpi,
+#app.styleOnePilot:not(.workMode) .styleOneInsights,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-heading,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-period,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-controls,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-preview,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-history{
+  border-color:#d8ddd9!important;
+  background:#fffdf8!important;
+  color:#203442!important;
+  box-shadow:0 3px 12px rgba(27,47,61,.05)!important;
+}
+#app.styleOnePilot:not(.workMode) .homeWelcome,
+#app.styleOnePilot:not(.workMode) .unifiedCommand,
+#app.styleOnePilot:not(.workMode) .demoHero,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntro{
+  background:#173d59!important;
+  border-color:#294e67!important;
+  box-shadow:0 4px 14px rgba(18,45,63,.12)!important;
+}
+#app.styleOnePilot:not(.workMode) .homeWelcome h1,
+#app.styleOnePilot:not(.workMode) .homeWelcome p,
+#app.styleOnePilot:not(.workMode) .homeWelcome .homeEyebrow,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy h1,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy p,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy span,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntroCopy h1,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntroCopy p{
+  color:#fff!important;
+}
+#app.styleOnePilot:not(.workMode) .homeWelcome p,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy p,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntroCopy p{color:#d0dbe2!important}
+
+/* Typography. */
+#app.styleOnePilot:not(.workMode) .homePanel h2,
+#app.styleOnePilot:not(.workMode) .demoPanel h2,
+#app.styleOnePilot:not(.workMode) .demoPanel h3,
+#app.styleOnePilot:not(.workMode) .energyCardTitle h2,
+#app.styleOnePilot:not(.workMode) .energyTableTop h2,
+#app.styleOnePilot:not(.workMode) .inventorySectionBar h2,
+#app.styleOnePilot:not(.workMode) .inventoryCardTitle h3,
+#app.styleOnePilot:not(.workMode) .maintenanceCommandBrand h1,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-heading h2,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-card-heading h3{
+  color:#203442!important;
+}
+#app.styleOnePilot:not(.workMode) .homePanelHead p,
+#app.styleOnePilot:not(.workMode) .demoPanelHead p,
+#app.styleOnePilot:not(.workMode) .energyCardTitle p,
+#app.styleOnePilot:not(.workMode) .energyTableTop p,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-heading p,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-card-heading p{
+  color:#667782!important;
+}
+#app.styleOnePilot:not(.workMode) .homeEyebrow,
+#app.styleOnePilot:not(.workMode) .panelKicker,
+#app.styleOnePilot:not(.workMode) .energySectionKicker,
+#app.styleOnePilot:not(.workMode) .inventoryKicker,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-eyebrow{
+  color:#245c78!important;
+}
+
+/* Controls. */
+#app.styleOnePilot:not(.workMode) input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot:not(.workMode) select,
+#app.styleOnePilot:not(.workMode) textarea{
+  border-color:#cbd3d7!important;
+  background:#fff!important;
+  color:#263b49!important;
+}
+#app.styleOnePilot:not(.workMode) input:focus,
+#app.styleOnePilot:not(.workMode) select:focus,
+#app.styleOnePilot:not(.workMode) textarea:focus{
+  border-color:#527b90!important;
+  box-shadow:0 0 0 2px rgba(36,92,120,.10)!important;
+}
+#app.styleOnePilot:not(.workMode) button.primary,
+#app.styleOnePilot:not(.workMode) .primary,
+#app.styleOnePilot:not(.workMode) .inventoryPrimary,
+#app.styleOnePilot:not(.workMode) .contractorBtn.primary,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-primary{
+  border-color:#245c78!important;
+  background:#245c78!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot:not(.workMode) button.secondary,
+#app.styleOnePilot:not(.workMode) .secondary,
+#app.styleOnePilot:not(.workMode) .inventorySecondary{
+  border-color:#cbd3d7!important;
+  background:#fffdf8!important;
+  color:#334b5a!important;
+}
+
+/* Tabs and tables. */
+#app.styleOnePilot:not(.workMode) .energyTabs,
+#app.styleOnePilot:not(.workMode) .inventoryLocalTabs,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-segments{
+  background:#e9e5dc!important;
+  border-color:#d4cec0!important;
+}
+#app.styleOnePilot:not(.workMode) .energyTabs button.active,
+#app.styleOnePilot:not(.workMode) .inventoryLocalTabs button.active,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-segments button.active{
+  background:#fffdf8!important;
+  color:#173d59!important;
+  box-shadow:0 1px 4px rgba(32,52,66,.07)!important;
+}
+#app.styleOnePilot:not(.workMode) table thead th,
+#app.styleOnePilot:not(.workMode) .demoTable th{
+  background:#ece8de!important;
+  color:#405664!important;
+  border-color:#d9d4c9!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody td,
+#app.styleOnePilot:not(.workMode) .demoTable td{
+  background:#fffdf8!important;
+  color:#334b59!important;
+  border-color:#ebe7de!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody tr:hover td{background:#f8f5ef!important}
+
+/* KPI status colors remain semantic but subdued. */
+#app.styleOnePilot:not(.workMode) .kpiCard strong,
+#app.styleOnePilot:not(.workMode) .styleOneMetric strong{color:#203442!important}
+#app.styleOnePilot:not(.workMode) .styleOneInsightIcon{
+  background:#e8eef0!important;
+  color:#245c78!important;
+}
+#app.styleOnePilot:not(.workMode) .styleOneFallbackTrack{background:#e5e1d8!important}
+#app.styleOnePilot:not(.workMode) .styleOneFallbackTrack i{background:#4d7b82!important}
+
+/* Desktop performance pass: no expensive live blur or decorative motion outside Work. */
+@media(min-width:761px){
+  #app.styleOnePilot:not(.workMode),
+  #app.styleOnePilot:not(.workMode) *,
+  #app.styleOnePilot:not(.workMode) *::before,
+  #app.styleOnePilot:not(.workMode) *::after{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  #app.styleOnePilot:not(.workMode) main{
+    background:#f2efe8!important;
+  }
+  #app.styleOnePilot:not(.workMode) .homeWelcome,
+  #app.styleOnePilot:not(.workMode) .unifiedCommand,
+  #app.styleOnePilot:not(.workMode) .demoHero,
+  #app.styleOnePilot:not(.workMode) .kpiCard,
+  #app.styleOnePilot:not(.workMode) .homePanel,
+  #app.styleOnePilot:not(.workMode) .demoPanel,
+  #app.styleOnePilot:not(.workMode) .energyCard,
+  #app.styleOnePilot:not(.workMode) .inventoryWorkspace,
+  #app.styleOnePilot:not(.workMode) .maintenanceHero,
+  #app.styleOnePilot:not(.workMode) .contractorIntro{
+    filter:none!important;
+    animation:none!important;
+  }
+  #app.styleOnePilot:not(.workMode) button,
+  #app.styleOnePilot:not(.workMode) a{
+    transition:background-color .12s ease,color .12s ease,border-color .12s ease!important;
+  }
+  #app.styleOnePilot:not(.workMode) .kpiCard::after,
+  #app.styleOnePilot:not(.workMode) .homeBlueprint,
+  #app.styleOnePilot:not(.workMode) .contractorSkyline{
+    display:none!important;
+  }
+}
+
+/* Mobile keeps the fast layout but inherits the calmer professional palette. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav{
+    background:#173d59!important;
+    border-top-color:#315a74!important;
+    box-shadow:0 -4px 16px rgba(18,45,63,.18)!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button{
+    color:#d6e2e8!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button>span,
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button>b{
+    color:#d6e2e8!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active{
+    background:#eee6d6!important;
+    border-color:#d8ccb4!important;
+    box-shadow:none!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active>span,
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active>b{
+    color:#173d59!important;
+  }
+}
