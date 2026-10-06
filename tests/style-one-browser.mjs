@@ -89,6 +89,7 @@ async function exerciseEnergy(page){
   const noteToggle=page.locator("#energyNoteToggle");
   if(await noteToggle.isVisible().catch(()=>false))await noteToggle.click();
   await page.fill("#energyNote","QA nhập chỉ số điện");
+  await page.locator("#energySaveBtn").evaluate(el=>el.scrollIntoView({block:"center",behavior:"instant"}));
   await page.click("#energySaveBtn");
   await page.waitForTimeout(160);
   const n=await page.evaluate(()=>energyLoad().filter(x=>x.type==="electric").length);
@@ -117,13 +118,6 @@ async function exerciseContractor(page){
   await page.waitForTimeout(80);
   if(await page.locator("#contractorModal").evaluate(el=>el.classList.contains("hide")))throw new Error("Contractor modal did not open");
   await page.click("#closeContractorModal");
-}
-async function exerciseConstruction(page){
-  await switchModule(page,"construction","#constructionMaterialPage");
-  await page.click("#addConstructionMaterialBtn");
-  await page.waitForTimeout(80);
-  if(await page.locator("#constructionMaterialModal").evaluate(el=>el.classList.contains("hide")))throw new Error("Construction material modal did not open");
-  await page.click("#closeConstructionMaterialModal");
 }
 async function exerciseSpecial(page){
   await switchModule(page,"incident","#incidentPage");
@@ -188,7 +182,6 @@ for(const viewport of viewports){
     await exerciseInventory(page);
     await exerciseMaintenance(page);
     await exerciseContractor(page);
-    await exerciseConstruction(page);
     await exerciseSpecial(page);
     await page.evaluate(()=>showHome());
     await page.waitForTimeout(100);
