@@ -452,13 +452,13 @@ function updateInjectShell(){
   else document.body.appendChild(r);
  }
  if(!$("#updateMobileNav")){
-  const n=document.createElement("nav");n.id="updateMobileNav";n.className="updateMobileNav hide";
+  const n=document.createElement("nav");n.id="updateMobileNav";n.className="updateMobileNav hide";n.setAttribute("aria-label","Điều hướng vận hành");
   n.innerHTML=
-   '<button data-update-mobile="energy"><span>⚡</span><b>Năng lượng</b></button>'+
-   '<button data-update-mobile="home" class="updateMobileHome"><span>⌂</span><b>Hôm nay</b><i id="updateMobileNotifBadge" class="updateMobileNotifBadge hide"></i></button>'+
-   '<button data-update-mobile="work"><span>☑</span><b>Công việc</b></button>'+
-   '<button data-update-mobile="scan"><span>⌗</span><b>Scan QR</b></button>'+
-   '<button data-update-mobile="incident"><span>!</span><b>Sự cố</b></button>';
+   '<button data-update-mobile="energy"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-12h-7l1-8Z"/></svg></span><b>Năng lượng</b></button>'+
+   '<button data-update-mobile="home" class="updateMobileHome"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4m8-4v4M4 11h16"/></svg></span><b>Hôm nay</b><i id="updateMobileNotifBadge" class="updateMobileNotifBadge hide"></i></button>'+
+   '<button data-update-mobile="work"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="18" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="m8 13 3 3 5-6"/></svg></span><b>Công việc</b></button>'+
+   '<button data-update-mobile="scan"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3M3 12h18"/><path d="M9 9h2v2H9zm4 4h2v2h-2z"/></svg></span><b>Quét QR</b></button>'+
+   '<button data-update-mobile="incident"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.3 4-8 14a2 2 0 0 0 1.7 3h16a2 2 0 0 0 1.7-3l-8-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/></svg></span><b>Sự cố</b></button>';
   document.body.appendChild(n);
  }
  updateInjectModals();
@@ -504,6 +504,16 @@ function updateInjectModals(){
  $("#updateNotificationClose").onclick=updateCloseNotificationCenter;
  $("#updateNotificationReadAll").onclick=updateMarkAllNotificationsRead;
 }
+
+function updateSyncMobileNav(){
+ const active=[["home","homePage"],["work","workPage"],["energy","energyPage"],["incident","incidentPage"]].find(([,id])=>{const p=document.getElementById(id);return p&&!p.classList.contains("hide")})?.[0];
+ document.querySelectorAll("#updateMobileNav [data-update-mobile]").forEach(b=>{
+  const selected=b.dataset.updateMobile===active;
+  b.classList.toggle("active",selected);
+  if(selected)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");
+ });
+}
+
 function updateBindNav(){
  const map={navUpdateAssets:"assets",navUpdateTeam:"team",navUpdateShift:"shift",navUpdateCost:"cost"};
  Object.entries(map).forEach(([id,name])=>{const b=$("#"+id);if(b)b.onclick=()=>updateShowStandalone(name)});
@@ -595,6 +605,7 @@ function updateApplyMode(){
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on||!updateIsSandbox());
  $("#updateMobileNav")?.classList.toggle("hide",!on);
+ updateSyncMobileNav();
  $("#updateAiButton")?.classList.toggle("hide",!on);
  $("#app")?.classList.toggle("updateTechnicianView",on&&updateTechView());
  if(on){

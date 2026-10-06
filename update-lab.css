@@ -1797,3 +1797,32 @@
     line-height:1.1!important;
   }
 }
+
+/* Approved ESTA mobile navigation, 2026-10-06. */
+@media(max-width:760px){
+ #updateMobileNav.updateMobileNav{
+  box-sizing:border-box!important;left:8px!important;right:8px!important;
+  bottom:max(8px,env(safe-area-inset-bottom))!important;
+  height:68px!important;padding:5px!important;gap:3px!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  align-items:center!important;border:1px solid #ded6c7!important;
+  border-radius:20px!important;background:#fffdf8!important;
+  box-shadow:0 6px 22px rgba(23,59,86,.16)!important;backdrop-filter:none!important;
+ }
+ #updateMobileNav.updateMobileNav button{
+  position:relative!important;box-sizing:border-box!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:4px!important;width:100%!important;min-width:0!important;
+  height:56px!important;margin:0!important;padding:5px 1px!important;
+  border:0!important;border-radius:15px!important;background:transparent!important;
+  color:#536e80!important;box-shadow:none!important;transform:none!important;
+ }
+ #updateMobileNav.updateMobileNav button.active{background:#e2f2ff!important;color:#102d64!important}
+ #updateMobileNav.updateMobileNav button:focus-visible{outline:2px solid #102d64!important;outline-offset:-2px!important}
+ #updateMobileNav.updateMobileNav button>span{display:grid!important;place-items:center!important;width:25px!important;height:25px!important;color:#102d64!important;line-height:1!important}
+ #updateMobileNav.updateMobileNav button svg{display:block!important;width:24px!important;height:24px!important}
+ #updateMobileNav.updateMobileNav button>b{font-size:12px!important;font-weight:600!important;line-height:16px!important;white-space:nowrap!important;letter-spacing:0!important}
+ #updateMobileNav .updateMobileNotifBadge{top:2px!important;right:calc(50% - 25px)!important;min-width:16px!important;height:16px!important;padding:0 3px!important;font-size:10px!important;line-height:16px!important;border:2px solid #fffdf8!important;border-radius:50%!important;background:#b74448!important;color:#fff!important}
+ #app.updateProjectMode main{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:359px){#updateMobileNav.updateMobileNav button>b{font-size:11px!important}}
