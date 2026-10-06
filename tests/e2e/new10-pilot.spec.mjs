@@ -5,10 +5,16 @@ async function activateNew10(page) {
   await page.waitForFunction(() => !!window.ESTA_NEW10_PILOT && !!window.estaProjectConfig);
 
   await page.evaluate(() => {
-    currentBuilding = { id: "NEW10", name: "new 1.0", role: "admin" };
+    currentAccount = {
+      is_admin: true,
+      display_name: "NEW10 QA Admin",
+      buildings: [{ id: "NEW10", name: "new 1.0", role: "editor" }]
+    };
+    currentBuilding = { id: "NEW10", name: "new 1.0", role: "editor" };
     projectOverviewActive = true;
     document.querySelector("#login")?.classList.add("hide");
     document.querySelector("#app")?.classList.remove("hide");
+    if (typeof applyBuildingUI === "function") applyBuildingUI();
     window.ESTA_NEW10_PILOT.verify.syncScope();
   });
 
@@ -25,7 +31,9 @@ test("NEW10 uses 127HH pilot configuration", async ({ page }) => {
     compactPeople: true,
     electricMeters: 1,
     supportsSolar: false,
-    supportsXlnt: false
+    supportsXlnt: false,
+    sandbox: true,
+    adminOnly: true
   });
 
   await expect(page.locator("html")).toHaveClass(/new10PilotPage/);
@@ -173,7 +181,7 @@ test("NEW10 primary modules have no page-level horizontal overflow on mobile", a
   test.skip(!testInfo.project.name.startsWith("mobile-"), "Mobile-only pilot assertion");
   await activateNew10(page);
 
-  for (const name of ["work", "energy", "inventory", "maintenance", "contractor", "construction"]) {
+  for (const name of ["work", "energy", "inventory", "maintenance", "contractor", "construction", "incident", "inspection", "documents", "reports"]) {
     await page.evaluate((moduleName) => {
       if (typeof showModule === "function") showModule(moduleName);
     }, name);
@@ -199,4 +207,34 @@ test("NEW10 work toolbar keeps Filter and PDF available", async ({ page }) => {
   await expect(page.locator("#exportBtn")).toBeVisible();
   await expect(page.locator("#toggleFilter")).toBeEnabled();
   await expect(page.locator("#exportBtn")).toBeEnabled();
+});
+
+
+test("NEW10 advanced operation modules are enabled", async ({ page }) => {
+  await activateNew10(page);
+
+  for (const pair of [
+    ["incident", "#incidentPage", "#navIncident"],
+    ["inspection", "#inspectionPage", "#navInspection"],
+    ["documents", "#documentsPage", "#navDocuments"],
+    ["reports", "#reportsPage", "#navReports"]
+  ]) {
+    const [moduleName, pageSelector, navSelector] = pair;
+    await page.evaluate((name) => showModule(name), moduleName);
+    await expect(page.locator(pageSelector)).toBeVisible();
+    await expect(page.locator(navSelector)).toBeVisible();
+  }
+});
+
+test("NEW10 module navigation has no uncaught page errors", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(String(error?.message || error)));
+  await activateNew10(page);
+
+  for (const name of ["work", "energy", "inventory", "maintenance", "contractor", "construction", "incident", "inspection", "documents", "reports"]) {
+    await page.evaluate((moduleName) => showModule(moduleName), name);
+    await page.waitForTimeout(50);
+  }
+
+  expect(errors).toEqual([]);
 });
