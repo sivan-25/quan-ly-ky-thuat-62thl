@@ -20,8 +20,8 @@
   }
 
   function syncBadgeLabel(status) {
-    if (!navigator.onLine) return { text: "Ngoại tuyến", state: "offline" };
     const state = status?.state || "idle";
+    if (!navigator.onLine) return { text: state==="queued" ? "Ngoại tuyến · Chờ đồng bộ" : "Ngoại tuyến", state: "offline" };
     if (state === "syncing") return { text: "Đang đồng bộ…", state };
     if (state === "error") return { text: "Chưa đồng bộ", state };
     if (state === "queued") return { text: status?.detail ? "Chờ đồng bộ · " + status.detail : "Chờ đồng bộ", state };
