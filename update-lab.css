@@ -2070,3 +2070,83 @@
 @media(min-width:761px){
  #taskForm #content.workContentInput{height:46px!important;min-height:46px!important;overflow-y:auto!important;resize:none!important}
 }
+
+
+/* MOBILE_WORK_EDITOR_DATE_AND_FOOTER_20261006 */
+@media(max-width:760px){
+  /* Keep "Hạn hoàn thành" the same compact height as the neighboring priority field. */
+  .workEditDrawer #demoWorkLinks .demoDueField{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+  .workEditDrawer #demoWorkLinks #demoTaskDue{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    block-size:42px!important;
+    min-block-size:42px!important;
+    max-block-size:42px!important;
+    margin:0!important;
+    padding:0 9px!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+    font-size:14px!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+  }
+  .workEditDrawer #demoWorkLinks #demoTaskDue::-webkit-date-and-time-value,
+  .workEditDrawer #demoWorkLinks #demoTaskDue::-webkit-datetime-edit{
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:14px!important;
+    line-height:1.2!important;
+    text-align:left!important;
+    white-space:nowrap!important;
+  }
+  .workEditDrawer #demoWorkLinks #demoTaskDue::-webkit-calendar-picker-indicator{
+    margin:0!important;
+    padding:2px!important;
+    flex:0 0 20px!important;
+  }
+
+  /* Hủy + Lưu thay đổi must always share one row on phones. */
+  .workEditDrawer .workFormActions,
+  .workEditDrawer .workFormActions.demoEditFooter{
+    display:grid!important;
+    grid-template-columns:96px minmax(0,1fr)!important;
+    grid-template-rows:48px!important;
+    align-items:stretch!important;
+    gap:8px!important;
+  }
+  .workEditDrawer .workFormActions #cancelEdit,
+  .workEditDrawer .workFormActions #saveBtn{
+    grid-row:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:48px!important;
+    min-height:48px!important;
+    max-height:48px!important;
+    margin:0!important;
+    align-self:stretch!important;
+  }
+  .workEditDrawer .workFormActions #cancelEdit{
+    grid-column:1!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .workEditDrawer .workFormActions #saveBtn{
+    grid-column:2!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+}
