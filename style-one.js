@@ -40,10 +40,17 @@ function taskStats(){
   return {total,done,doing,waiting,rate};
 }
 function enhanceImages(root=document){
-  root.querySelectorAll?.("#app img").forEach(img=>{
+  const app=byId("app");
+  if(!app)return;
+  const images=[];
+  if(root===document)images.push(...app.querySelectorAll("img"));
+  else if(root?.nodeType===1&&app.contains(root)){
+    if(root.matches?.("img"))images.push(root);
+    images.push(...root.querySelectorAll?.("img")||[]);
+  }
+  images.forEach(img=>{
     if(!img.hasAttribute("loading"))img.loading="lazy";
     if(!img.hasAttribute("decoding"))img.decoding="async";
-    if(!img.hasAttribute("alt"))img.alt="";
   });
 }
 function enhanceA11y(){
@@ -58,13 +65,12 @@ function enhanceA11y(){
     const el=byId(id);
     if(el&&!el.getAttribute("aria-label"))el.setAttribute("aria-label",label);
   });
-  document.querySelectorAll("#app button:not([type])").forEach(btn=>btn.type="button");
   enhanceImages(document);
 }
 function insightMarkup(){
   return '<section id="styleOneInsights" class="styleOneInsights" aria-labelledby="styleOneInsightTitle">'+
     '<div class="styleOneInsightHead"><div><span>LIVE OVERVIEW</span><h2 id="styleOneInsightTitle">Nhịp độ công việc</h2><p>Phân bổ trạng thái và tỷ lệ hoàn thành hiện tại.</p></div>'+
-    '<div class="styleOneInsightIcon" aria-hidden="true"><i data-lucide="activity"></i></div></div>'+
+    '<div class="styleOneInsightIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div></div>'+
     '<div class="styleOneInsightBody">'+
       '<div class="styleOneChartWrap"><canvas id="styleOneWorkChart" role="img" aria-label="Biểu đồ phân bổ trạng thái công việc"></canvas><div id="styleOneChartFallback" class="styleOneChartFallback hide"></div></div>'+
       '<div class="styleOneMetricGrid">'+
@@ -90,7 +96,6 @@ function ensureInsights(){
     if(anchor)anchor.insertAdjacentHTML("afterend",insightMarkup());
     else home.insertAdjacentHTML("afterbegin",insightMarkup());
     panel=byId("styleOneInsights");
-    refreshLucide();
   }
   updateInsights();
 }
@@ -170,11 +175,6 @@ function updateInsights(){
   Object.entries(values).forEach(([id,value])=>{const el=byId(id);if(el)el.textContent=value});
   renderChart(stats);
 }
-function refreshLucide(){
-  try{
-    if(window.lucide?.createIcons)window.lucide.createIcons({attrs:{"stroke-width":1.8}});
-  }catch(err){console.warn("Style 1 icon enhancement skipped",err)}
-}
 function syncPilot(){
   const app=byId("app");
   if(!app)return;
@@ -185,7 +185,6 @@ function syncPilot(){
     enhanceA11y();
     ensureInsights();
     updateInsights();
-    refreshLucide();
   }else{
     byId("styleOneInsights")?.remove();
     destroyChart();
