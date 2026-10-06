@@ -1,6 +1,7 @@
 (() => {
   "use strict";
-  let client=null,channel=null,reconnectTimer=null,lastToken="",lastEventAt="",status="idle";
+  const SUPABASE_JS_URL="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2";
+  let client=null,channel=null,reconnectTimer=null,lastToken="",lastEventAt="",status="idle",libraryPromise=null;
   const PILOT_ID="NEW10";
   const tables=[
     "project_snapshots","building_people","incidents","inspections","technical_documents","report_registry",
@@ -50,10 +51,34 @@
     clearTimeout(reconnectTimer);
     reconnectTimer=setTimeout(()=>{if(active())connect(true)},8000);
   }
+  function ensureLibrary(){
+    if(window.supabase?.createClient)return Promise.resolve(true);
+    if(libraryPromise)return libraryPromise;
+    libraryPromise=new Promise(resolve=>{
+      const existing=document.querySelector('script[data-esta-supabase-realtime]');
+      if(existing){
+        const finish=()=>resolve(!!window.supabase?.createClient);
+        existing.addEventListener("load",finish,{once:true});
+        existing.addEventListener("error",()=>resolve(false),{once:true});
+        setTimeout(finish,4000);
+        return;
+      }
+      const script=document.createElement("script");
+      script.src=SUPABASE_JS_URL;
+      script.async=true;
+      script.dataset.estaSupabaseRealtime="1";
+      script.onload=()=>resolve(!!window.supabase?.createClient);
+      script.onerror=()=>resolve(false);
+      document.head.appendChild(script);
+      setTimeout(()=>resolve(!!window.supabase?.createClient),4000);
+    });
+    return libraryPromise;
+  }
   async function connect(force=false){
     if(!active())return stop();
     const jwt=token();if(!jwt)return;
-    if(!window.supabase?.createClient){setStatus("fallback","Supabase Realtime library unavailable");return}
+    const ready=await ensureLibrary();
+    if(!ready){setStatus("fallback","Realtime CDN unavailable · dùng polling");scheduleReconnect();return}
     if(channel&&!force&&lastToken===jwt)return;
     stop();
     try{
@@ -85,6 +110,6 @@
   setTimeout(lifecycle,600);
 
   window.ESTA_REALTIME=Object.freeze({
-    connect:()=>connect(true),stop,status:()=>({status,lastEventAt,fallbackPollingMs:5000}),version:"1.0"
+    connect:()=>connect(true),stop,status:()=>({status,lastEventAt,fallbackPollingMs:5000,libraryUrl:SUPABASE_JS_URL}),version:"1.1"
   });
 })();
