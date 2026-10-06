@@ -1015,11 +1015,20 @@ function workEntryCard(){return document.querySelector("#workPage .workEntryCard
 function openWorkEditDrawer(){
  const drawer=$("#workEditDrawer"),mount=$("#workEditDrawerMount"),card=workEntryCard();
  if(!drawer||!mount||!card)return;
+ const mobile=mobileNavQuery.matches;
+ if(mobile){
+   const active=document.activeElement;
+   if(active&&typeof active.blur==="function")active.blur();
+   if(drawer.parentElement!==document.body)document.body.appendChild(drawer);
+   document.body.classList.remove("estaMobileKeyboard");
+   document.documentElement.style.removeProperty("--esta-mobile-keyboard-inset");
+ }
  mount.appendChild(card);
+ mount.scrollTop=0;
  drawer.classList.remove("hide");drawer.setAttribute("aria-hidden","false");
  document.body.classList.add("workEditOpen");
  $("#workEntryTitle")&&($("#workEntryTitle").textContent="Chỉnh sửa công việc");
- setTimeout(()=>$("#content")?.focus({preventScroll:true}),60);
+ if(!mobile)setTimeout(()=>$("#content")?.focus({preventScroll:true}),60);
 }
 function restoreWorkEntryCard(){
  const drawer=$("#workEditDrawer"),anchor=$("#workEntryHomeAnchor"),card=workEntryCard();
