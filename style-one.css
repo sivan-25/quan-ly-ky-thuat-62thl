@@ -1100,3 +1100,46 @@
     display:none!important;
   }
 }
+
+
+/* STYLE_ONE_MOBILE_DOCK_COLOR_V7 */
+@media(max-width:760px){
+  /* Strong visual separation from the light content area. */
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav,
+  body.estaMobileScrollShell:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:linear-gradient(180deg,#153d73 0%,#102d5a 100%)!important;
+    border-top:1px solid rgba(103,232,249,.36)!important;
+    box-shadow:0 -7px 24px rgba(8,31,63,.26)!important;
+  }
+
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button{
+    color:#d9e8f7!important;
+    border:1px solid transparent!important;
+    background:transparent!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>span{
+    color:#cfe6ff!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>b{
+    color:#d9e8f7!important;
+    font-weight:600!important;
+  }
+
+  /* Current destination reads as a selected tab, not just another white card. */
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active{
+    background:linear-gradient(180deg,#dff6ff 0%,#cdeaff 100%)!important;
+    border-color:#8edff0!important;
+    color:#102d64!important;
+    box-shadow:0 5px 14px rgba(5,22,52,.22)!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>span,
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>b{
+    color:#102d64!important;
+  }
+
+  body:has(#app.styleOnePilot) #updateMobileNav .updateMobileNotifBadge{
+    border-color:#153d73!important;
+    background:#ef5d63!important;
+    color:#fff!important;
+  }
+}
