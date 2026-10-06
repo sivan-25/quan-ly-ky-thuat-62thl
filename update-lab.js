@@ -1440,7 +1440,34 @@ function updateOpenAssetByCode(raw){
 function updateCloseModal(id){
  $("#"+id)?.classList.add("hide");if(id==="updateScannerModal")updateStopScanner();
 }
+
+/* Keep Safari's document stationary; only the application main area scrolls. */
+
+let updateMobileScrollRoute="";
+function updateResetMobileScroll(route){
+ const key=String(currentBuilding?.id||"")+":"+route;
+ if(window.matchMedia("(max-width:760px)").matches&&key!==updateMobileScrollRoute){
+  const main=document.querySelector("#app>main");if(main)main.scrollTop=0;
+ }
+ updateMobileScrollRoute=key;
+}
+
+function updateSyncMobileScrollShell(){
+ const app=document.getElementById("app");
+ const active=!!app&&!app.classList.contains("hide")&&window.matchMedia("(max-width:760px)").matches;
+ document.body.classList.toggle("estaMobileScrollShell",active);
+ if(!active){document.body.classList.remove("estaMobileKeyboard");document.documentElement.style.removeProperty("--esta-mobile-keyboard-height");return}
+ const vv=window.visualViewport;
+ const focused=document.activeElement;
+ const editing=!!focused&&(focused.matches("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),textarea,select")||focused.isContentEditable);
+ const keyboard=editing&&!!vv&&window.innerHeight-vv.height>140;
+ document.body.classList.toggle("estaMobileKeyboard",keyboard);
+ if(keyboard)document.documentElement.style.setProperty("--esta-mobile-keyboard-height",Math.round(vv.height)+"px");
+ else document.documentElement.style.removeProperty("--esta-mobile-keyboard-height");
+}
+
 function updateSyncKeyboard(){
+ updateSyncMobileScrollShell();
  if(!updateIs()){document.body.classList.remove("updateKeyboardOpen");return}
  const vv=window.visualViewport;
  const keyboardOpen=!!vv&&(window.innerHeight-vv.height>140);
@@ -1470,6 +1497,7 @@ showHome=function(){
  const seq=isUpdateBefore?updateBeginRoute("home"):0;
  if(isUpdateBefore)updateHideStandalonePages();
  updatePrevShowHome();
+ updateResetMobileScroll("home");
  updateApplyMode();
  if(updateIs()){
   updateCurrentRoute="home";
@@ -1484,6 +1512,7 @@ showModule=function(name){
  const seq=isUpdateBefore?updateBeginRoute(route):0;
  if(isUpdateBefore)updateHideStandalonePages();
  updatePrevShowModule(name);
+ updateResetMobileScroll("module:"+name);
  updateApplyMode();
  if(updateIs()){
   updateCurrentRoute=route;
@@ -1540,6 +1569,9 @@ document.addEventListener("focusout",()=>setTimeout(updateSyncKeyboard,120));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){updateCloseAssetDrawer();["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal);updateCloseNotificationCenter()}});
 document.addEventListener("DOMContentLoaded",()=>{
  updateInjectShell();updateApplyMode();updateInitWorkChoices();
+ updateSyncMobileScrollShell();
+ const shell=document.getElementById("app");
+ if(shell)new MutationObserver(updateSyncMobileScrollShell).observe(shell,{attributes:true,attributeFilter:["class"]});
  const params=new URLSearchParams(location.search);
  if(params.get("asset"))$("#updateScannerCode")&&($("#updateScannerCode").value=params.get("asset"));
 });

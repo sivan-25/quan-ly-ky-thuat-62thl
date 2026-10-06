@@ -1892,3 +1892,35 @@
  #peopleManagerModal .modalClose{width:36px!important;height:36px!important;font-size:24px!important}
 }
 @media(min-width:761px){.peopleSheetClose{display:none!important}}
+
+/* Mobile scroll shell: fixed viewport, stationary header and bottom navigation. */
+@media(max-width:760px){
+ html:has(body.estaMobileScrollShell){height:100%!important;overflow:hidden!important;overscroll-behavior:none!important}
+ body.estaMobileScrollShell{height:100%!important;min-height:0!important;overflow:hidden!important;overscroll-behavior:none!important}
+ body.estaMobileScrollShell #app:not(.hide){
+  position:fixed!important;inset:0!important;width:100%!important;max-width:100%!important;
+  height:100%!important;height:var(--esta-mobile-keyboard-height,100dvh)!important;
+  min-height:0!important;max-height:none!important;overflow:hidden!important;
+ }
+ body.estaMobileScrollShell #app:not(.hide)>main{
+  position:relative!important;box-sizing:border-box!important;
+  width:100%!important;height:100%!important;min-height:0!important;max-height:100%!important;
+  margin:0!important;padding-top:0!important;
+  padding-bottom:calc(86px + env(safe-area-inset-bottom))!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch;
+  scroll-padding-top:76px!important;scroll-padding-bottom:90px!important;
+ }
+ body.estaMobileScrollShell #app:not(.hide)>main>.estaTopbar{
+  position:sticky!important;top:0!important;left:auto!important;right:auto!important;
+  z-index:900!important;margin-top:0!important;transform:none!important;
+  transition:none!important;flex-shrink:0!important;
+ }
+ body.estaMobileScrollShell #updateMobileNav{
+  position:fixed!important;bottom:max(8px,env(safe-area-inset-bottom))!important;
+  transform:none!important;transition:none!important;
+ }
+ body.estaMobileScrollShell #updateMobileNav:before{display:none!important}
+ body.estaMobileKeyboard #updateMobileNav{display:none!important}
+ body.estaMobileKeyboard #app:not(.hide)>main{padding-bottom:20px!important;scroll-padding-bottom:20px!important}
+}
