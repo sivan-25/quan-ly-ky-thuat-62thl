@@ -1142,7 +1142,9 @@ function updateEnhanceWorkForm(){
  const links=$("#demoWorkLinks"),grid=links?.querySelector(".demoWorkLinkGrid");if(!grid)return;
 
  const summary=links.querySelector("summary");
- if(summary)summary.textContent="+ Liên kết công việc";
+ const mobileEdit=window.matchMedia("(max-width:760px)").matches&&!$("#workEditDrawer")?.classList.contains("hide");
+ if(summary)summary.textContent=mobileEdit?"Thông tin bổ sung":"+ Liên kết công việc";
+ if(mobileEdit)links.removeAttribute("open");
 
  const cause=$("#demoTaskCause"),result=$("#demoTaskResult");
  if(cause){cause.rows=2;cause.placeholder="Nguyên nhân / chẩn đoán";}
