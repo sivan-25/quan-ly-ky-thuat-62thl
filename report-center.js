@@ -210,7 +210,7 @@
             record = { ...record, created_at: new Date().toISOString() };
           }
           if (state.buildingId === buildingId && state.data) { state.data.reports.unshift(record); history(); }
-        } catch (e) { result += " Chưa lưu được bản PDF trên hệ thống; file đã tải về thành công."; }
+        } catch (e) { result += " Chưa lưu được lịch sử xuất; bản PDF trên hệ thống chưa được lưu, nhưng file đã tải về thành công."; }
       }
       message(result, missing > 0);
     } catch (e) { message("Xuất PDF chưa thành công: " + e.message + ". Bạn có thể dùng In báo cáo hoặc thử lại.", true); }
