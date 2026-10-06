@@ -60,3 +60,17 @@ const read=(p)=>fs.readFileSync(path.join(root,p),"utf8");
 })();
 
 console.log("NEW10 generation core regression: OK");
+
+
+(function productivityAndRealtime(){
+  const h=read("index.html"),p=read("productivity-core.js"),r=read("realtime-core.js"),a=read("app.js");
+  assert.ok(h.includes("@supabase/supabase-js@2.117.2"),"Supabase JS must be pinned");
+  assert.ok(h.includes("realtime-core.js"));
+  assert.ok(h.includes("productivity-core.js"));
+  assert.ok(p.includes("new10CommandPalette"));
+  assert.ok(p.includes("saved-work-view"));
+  assert.ok(p.includes("new10NotificationCenter"));
+  assert.ok(r.includes("postgres_changes"));
+  assert.ok(r.includes("fallbackPollingMs:5000"));
+  assert.ok(a.includes("Đang chờ đăng nhập để đồng bộ"),"offline queue must wait for auth");
+})();
