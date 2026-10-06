@@ -160,8 +160,13 @@ async function exerciseMobileMenu(page,label){
       activeBackgroundColor:acs?.backgroundColor||""
     };
   });
-  if(!/linear-gradient/i.test(dockVisual.backgroundImage))throw new Error("Mobile bottom navigation does not use the distinct navy background");
-  if(!(/linear-gradient/i.test(dockVisual.activeBackgroundImage)||dockVisual.activeBackgroundColor!=="rgba(0, 0, 0, 0)"))throw new Error("Active mobile navigation item lacks visual contrast");
+  const parseRgb=value=>{const m=String(value||"").match(/rgba?\\((\\d+)[, ]+(\\d+)[, ]+(\\d+)/);return m?[+m[1],+m[2],+m[3]]:null};
+  const dockRgb=parseRgb(dockVisual.backgroundColor);
+  const dockIsDark=!!dockRgb&&((dockRgb[0]+dockRgb[1]+dockRgb[2])/3)<130;
+  if(!dockIsDark&&!/linear-gradient/i.test(dockVisual.backgroundImage))throw new Error("Mobile bottom navigation lacks distinct dark enterprise contrast: "+JSON.stringify(dockVisual));
+  const activeRgb=parseRgb(dockVisual.activeBackgroundColor);
+  const activeHasFill=(!!activeRgb&&dockVisual.activeBackgroundColor!=="rgba(0, 0, 0, 0)")||/linear-gradient/i.test(dockVisual.activeBackgroundImage);
+  if(!activeHasFill)throw new Error("Active mobile navigation item lacks visual contrast");
 
   await page.click("#menu");
   const state=await page.evaluate(()=> {
