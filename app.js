@@ -462,12 +462,15 @@ function setupMobilePeopleSheets(){
   }
  });
  function arrange(){
-  const compact62=media.matches&&currentBuilding?.id==="62THL";
-  document.getElementById("taskForm")?.classList.toggle("peopleCompact62",compact62);
+  const sharedCompactProjects=new Set(["62THL","68PĐL","127HH","130HH"]);
+  const compactProject=media.matches&&sharedCompactProjects.has(String(currentBuilding?.id||""));
+  // Keep the existing class name for CSS compatibility; the approved 62THL
+  // compact Work layout is now the shared standard for all four live projects.
+  document.getElementById("taskForm")?.classList.toggle("peopleCompact62",compactProject);
   menus.forEach(menu=>{
-   // 62THL Work keeps the approved inline picker. Energy must use a full-width
-   // mobile sheet because its performer field shares a half-width row with Date.
-   const inline=compact62&&menu.id==="taskPeopleMenu";
+   // Work uses the approved inline picker on all live projects. Energy stays a
+   // full-width mobile sheet because its performer field shares a half-width row with Date.
+   const inline=compactProject&&menu.id==="taskPeopleMenu";
    const wasInline=menu.classList.contains("inlinePeoplePicker");
    if(media.matches&&!inline){if(menu.parentNode!==document.body)document.body.appendChild(menu);menu.classList.add("mobilePeopleSheet")}
    else{if(menu.previousSibling!==anchors.get(menu))anchors.get(menu).after(menu);menu.classList.remove("mobilePeopleSheet")}
@@ -501,7 +504,8 @@ function setupMobilePeopleSheets(){
  }
  syncMobilePeopleLayout=arrange;
  function syncCompactPeopleSize(){
-  if(!media.matches||currentBuilding?.id!=="62THL")return;
+  const sharedCompactProjects=new Set(["62THL","68PĐL","127HH","130HH"]);
+  if(!media.matches||!sharedCompactProjects.has(String(currentBuilding?.id||"")))return;
   const tile=document.querySelector("#workChoices-type .workChoiceTile");
   const width=tile?.getBoundingClientRect().width||0;
   if(width>0)menus.forEach(menu=>menu.style.setProperty("--esta-person-choice-width",width+"px"));
