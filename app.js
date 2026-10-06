@@ -411,6 +411,9 @@ async function deleteProjectPerson(id){
 
 function togglePeopleMenu(kind,event){
  event.preventDefault();event.stopPropagation();
+ // Re-apply responsive placement at interaction time. This prevents a project
+ // switch from leaving the Work picker in the previous project's sheet mode.
+ syncMobilePeopleLayout();
  const menu=document.getElementById(kind==="energy"?"energyPeopleMenu":"taskPeopleMenu");
  if(menu.classList.contains("inlinePeoplePicker")){
   menu.classList.toggle("hide");
@@ -462,8 +465,10 @@ function setupMobilePeopleSheets(){
   }
  });
  function arrange(){
-  const sharedCompactProjects=new Set(["62THL","68PĐL","127HH","130HH"]);
-  const compactProject=media.matches&&sharedCompactProjects.has(String(currentBuilding?.id||""));
+  const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
+  const projectId=String(currentBuilding?.id||"").trim().toUpperCase();
+  const compactProject=media.matches&&projectOverviewActive&&
+    (sharedCompactProjects.has(projectId)||(!["DEMO","UPDATE"].includes(projectId)&&!!projectId));
   // Keep the existing class name for CSS compatibility; the approved 62THL
   // compact Work layout is now the shared standard for all four live projects.
   document.getElementById("taskForm")?.classList.toggle("peopleCompact62",compactProject);
@@ -504,8 +509,9 @@ function setupMobilePeopleSheets(){
  }
  syncMobilePeopleLayout=arrange;
  function syncCompactPeopleSize(){
-  const sharedCompactProjects=new Set(["62THL","68PĐL","127HH","130HH"]);
-  if(!media.matches||!sharedCompactProjects.has(String(currentBuilding?.id||"")))return;
+  const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
+  const projectId=String(currentBuilding?.id||"").trim().toUpperCase();
+  if(!media.matches||!projectOverviewActive||["DEMO","UPDATE"].includes(projectId)||!projectId)return;
   const tile=document.querySelector("#workChoices-type .workChoiceTile");
   const width=tile?.getBoundingClientRect().width||0;
   if(width>0)menus.forEach(menu=>menu.style.setProperty("--esta-person-choice-width",width+"px"));
