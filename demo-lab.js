@@ -1683,5 +1683,19 @@ window.demoRefresh=async()=>{
  toast("Đã làm mới dữ liệu dự án");
 };
 
+window.addEventListener("esta:new10:realtime-refresh",e=>{
+ const table=String(e.detail?.table||"");
+ if(!demoIs()||String(currentBuilding?.id||"")!=="NEW10")return;
+ if(!["incidents","inspections","technical_documents","report_registry"].includes(table))return;
+ demoCache.loaded=false;
+ demoLoad(true).then(()=>{
+  demoPopulateWorkOptions();demoRenderHomeOps();
+  const visible=DEMO_MODULES.find(n=>!$("#"+n+"Page")?.classList.contains("hide"));
+  if(visible==="incident")demoRenderIncidents();
+  if(visible==="inspection")demoRenderInspections();
+  if(visible==="documents")demoRenderDocuments();
+  if(visible==="reports")window.ESTAReports?.open?.(true);
+ });
+});
 setTimeout(()=>{demoEnsureWorkPanel();demoSetProjectMode()},400);
 })();
