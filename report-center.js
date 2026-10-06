@@ -60,7 +60,13 @@
     const search = (document.getElementById("globalSearch")?.value || "").trim().toLocaleLowerCase("vi-VN");
     const reports = (state.data?.reports || []).filter(x => [x.report_code, x.report_type, x.period_label, x.file_name].some(v => String(v || "").toLocaleLowerCase("vi-VN").includes(search))).sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
     q("#rcHistoryCount").textContent = reports.length + " báo cáo";
-    q("#demoReportBody").innerHTML = reports.length ? reports.map(x => '<tr>' + [x.report_code, x.report_type, x.period_label, M.date(x.created_at), x.file_name || "—"].map(v => '<td>' + escape(v) + '</td>').join("") + '</tr>').join("") : '<tr><td colspan="5">' + (search ? "Không tìm thấy báo cáo phù hợp." : "Chưa có báo cáo đã phát hành.") + '</td></tr>';
+    q("#demoReportBody").innerHTML = reports.length ? reports.map(x => {
+      const cells=[x.report_code,x.report_type,x.period_label,M.date(x.created_at),x.file_name||"—"].map(v=>'<td>'+escape(v)+'</td>').join("");
+      const archive=x.file_ref
+        ?'<td><button type="button" class="rcStoredReport" data-report-ref="'+escape(x.file_ref)+'" data-report-name="'+escape(x.file_name||"ESTA-report.pdf")+'">v'+escape(x.version||1)+' · Tải lại</button></td>'
+        :'<td><span class="rcNoStoredReport">Chỉ có lịch sử</span></td>';
+      return '<tr>'+cells+archive+'</tr>';
+    }).join("") : '<tr><td colspan="6">' + (search ? "Không tìm thấy báo cáo phù hợp." : "Chưa có báo cáo đã phát hành.") + '</td></tr>';
   }
   function render() {
     if (!state.data) { moduleList(); buttons(); return; }
@@ -237,6 +243,16 @@
   q("#demoReportCombinedExport").addEventListener("click", exportPdf);
   q("#rcPrint").addEventListener("click", printReport);
   q("#rcLatestPeriod").addEventListener("click", showLatestPeriod);
+  q("#demoReportBody").addEventListener("click", async e => {
+    const btn=e.target.closest(".rcStoredReport"); if(!btn)return;
+    if(!window.ESTA_REPORT_ARCHIVE)return message("Bản lưu PDF chưa sẵn sàng.",true);
+    btn.disabled=true;
+    try{
+      await window.ESTA_REPORT_ARCHIVE.download(btn.dataset.reportRef,btn.dataset.reportName||"ESTA-report.pdf");
+      message("Đã tải lại bản PDF lưu trữ.");
+    }catch(err){message("Không thể tải bản lưu: "+(err.message||err),true)}
+    finally{btn.disabled=false}
+  });
   window.ESTAReports = { open, renderHistory: history };
   window.demoReportSelectAll = selectAll;
   window.demoExportSelectedReports = exportPdf;
