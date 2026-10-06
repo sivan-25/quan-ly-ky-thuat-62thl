@@ -19,6 +19,36 @@
     return document.getElementById("app");
   }
 
+  function syncBadgeLabel(status) {
+    if (!navigator.onLine) return { text: "Ngoại tuyến", state: "offline" };
+    const state = status?.state || "idle";
+    if (state === "syncing") return { text: "Đang đồng bộ…", state };
+    if (state === "error") return { text: "Chưa đồng bộ", state };
+    if (state === "synced") return { text: "Đã đồng bộ", state };
+    return { text: "Cloud sẵn sàng", state: "idle" };
+  }
+
+  function ensureSyncBadge() {
+    let badge = document.getElementById("new10SyncStatus");
+    if (!badge) {
+      badge = document.createElement("div");
+      badge.id = "new10SyncStatus";
+      badge.className = "new10SyncStatus";
+      badge.setAttribute("role", "status");
+      badge.setAttribute("aria-live", "polite");
+      document.body.appendChild(badge);
+    }
+    const on = isPilot();
+    badge.classList.toggle("hide", !on);
+    if (!on) return badge;
+    const status = window.ESTA_PROJECT_STORE?.getStatus?.() || { state: "idle" };
+    const view = syncBadgeLabel(status);
+    badge.dataset.state = view.state;
+    badge.textContent = view.text;
+    badge.title = status?.detail ? view.text + " · " + status.detail : view.text;
+    return badge;
+  }
+
   function readFilterState() {
     const state = {};
     for (const id of FILTER_IDS) {
@@ -71,6 +101,7 @@
     const on = isPilot();
     appNode()?.classList.toggle("new10Pilot", on);
     document.documentElement.classList.toggle("new10PilotPage", on);
+    ensureSyncBadge();
 
     if (on && !wasPilot) {
       setTimeout(restoreFilterState, 0);
@@ -127,9 +158,13 @@
     }, true);
 
     window.addEventListener("focus", syncPilotScope);
+    window.addEventListener("online", ensureSyncBadge);
+    window.addEventListener("offline", ensureSyncBadge);
+    window.addEventListener("esta:new10:sync-status", ensureSyncBadge);
     window.addEventListener("pageshow", () => {
       bindFilters();
       syncPilotScope();
+      ensureSyncBadge();
     });
   }
 
