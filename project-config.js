@@ -7,7 +7,9 @@
     compactPeople: false,
     electricMeters: 1,
     supportsSolar: true,
-    supportsXlnt: false
+    supportsXlnt: false,
+    sandbox: false,
+    adminOnly: false
   });
 
   const PROJECTS = Object.freeze({
@@ -17,7 +19,9 @@
       compactPeople: true,
       electricMeters: 1,
       supportsSolar: false,
-      supportsXlnt: false
+      supportsXlnt: false,
+      sandbox: true,
+      adminOnly: true
     })
   });
 
