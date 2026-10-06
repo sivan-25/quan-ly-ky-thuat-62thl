@@ -281,9 +281,11 @@ function renderPeopleSelector(kind){
  if(!box||!btn)return;
  const inline=box.closest(".inlinePeoplePicker")!==null;
  const selected=peopleSelected(kind);
+ const count=box.closest(".inlinePeoplePicker")?.querySelector(".peopleInlineCount");
+ if(count)count.textContent="Đã chọn "+selected.length+" người";
  const names=[...new Set([...projectPeople.map(x=>x.name),...selected])].filter(Boolean);
  if(!names.length){
-   box.innerHTML='<div class="peopleEmpty"><b>Chưa có người thực hiện</b><span>Chọn “Chỉnh sửa danh sách” để thêm nhân sự cho dự án.</span></div>';
+   box.innerHTML='<div class="peopleEmpty"><b>Chưa có người thực hiện</b><span>Chọn “'+(inline?'Quản lý':'Chỉnh sửa danh sách')+'” để thêm nhân sự cho dự án.</span></div>';
  }else{
    const scrollTop=box.scrollTop;
    const existing=Array.from(box.querySelectorAll("[data-person]"));
@@ -474,10 +476,17 @@ function setupMobilePeopleSheets(){
     if(!edit.dataset.originalLabel)edit.dataset.originalLabel=edit.textContent;
     let actions=menu.querySelector(".peopleInlineActions");
     if(inline){
+     let head=menu.querySelector(".peopleInlineHead");
+     if(!head){
+      head=document.createElement("div");head.className="peopleInlineHead";
+      const count=document.createElement("span");count.className="peopleInlineCount";count.setAttribute("aria-live","polite");head.append(count);
+      menu.prepend(head);
+     }
+     if(edit.parentNode!==head)head.append(edit);
      if(!actions){
       actions=document.createElement("div");actions.className="peopleInlineActions";menu.append(actions);
-      actions.append(edit);
-      const confirm=document.createElement("button");confirm.type="button";confirm.className="peopleInlineConfirm";confirm.textContent="Xác nhận";
+      const confirm=document.createElement("button");confirm.type="button";confirm.className="peopleInlineConfirm";
+      confirm.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Xác nhận</span>';
       confirm.onclick=e=>{
        e.preventDefault();e.stopPropagation();menu.classList.add("hide");
        const trigger=document.getElementById(menu.id==="energyPeopleMenu"?"energyPeopleButton":"taskPeopleButton");
@@ -485,9 +494,10 @@ function setupMobilePeopleSheets(){
       };
       actions.append(confirm);
      }
-     edit.textContent="✎";edit.title="Quản lý danh sách";edit.setAttribute("aria-label","Quản lý danh sách");
+     edit.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12-6 1 1-6L16 3Zm-2 2 5 5M4 15l5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Quản lý</span>';edit.title="Quản lý danh sách";edit.setAttribute("aria-label","Quản lý danh sách");
     }else{
      if(actions){menu.append(edit);actions.remove()}
+     menu.querySelector(".peopleInlineHead")?.remove();
      edit.textContent=edit.dataset.originalLabel;edit.removeAttribute("title");edit.removeAttribute("aria-label");
     }
    }
