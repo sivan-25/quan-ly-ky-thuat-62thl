@@ -238,3 +238,106 @@ test("NEW10 module navigation has no uncaught page errors", async ({ page }) => 
 
   expect(errors).toEqual([]);
 });
+
+
+test("NEW10 shared validation covers core forms", async ({ page }) => {
+  await activateNew10(page);
+  const out=await page.evaluate(()=>{
+    const invalid=window.ESTA_VALIDATION.validate("task",{date:"bad",content:"",performers:[],note:"",requiresCompletionNote:false});
+    const valid=window.ESTA_VALIDATION.validate("task",{date:"2026-10-06",content:"Kiểm tra máy lạnh",performers:["QA"],note:"",requiresCompletionNote:false});
+    const material=window.ESTA_VALIDATION.validate("material",{name:"Lọc gió",unit:"Cái",trackingStart:"2026-10-06",openingQty:2,minQty:1,today:"2026-10-06"});
+    return {invalid:invalid.ok,valid:valid.ok,material:material.ok,count:invalid.issues.length};
+  });
+  expect(out.invalid).toBe(false);
+  expect(out.valid).toBe(true);
+  expect(out.material).toBe(true);
+  expect(out.count).toBeGreaterThan(0);
+});
+
+test("NEW10 UI Core decorates forms and tables", async ({ page }) => {
+  await activateNew10(page);
+  await page.evaluate(()=>window.ESTA_UI_CORE?.decorate?.());
+  await page.waitForTimeout(100);
+  await expect(page.locator("#app")).toHaveClass(/estaCoreV2/);
+  await expect(page.locator("#taskForm")).toHaveClass(/estaFormCore/);
+  await page.evaluate(()=>showModule("work"));
+  const table=page.locator("#workPage table").first();
+  if(await table.count()) await expect(table).toHaveClass(/estaDataTableCore/);
+});
+
+test("NEW10 offline project sync queues and flushes safely", async ({ page }) => {
+  await activateNew10(page);
+  await page.evaluate(()=>{
+    centralSession={access_token:"qa-token",expires_at:4102444800};
+    localStorage.removeItem("esta:new10:sync-queue:v2");
+  });
+  await page.context().setOffline(true);
+  const queued=await page.evaluate(async()=>{
+    const r=await projectSync("upsert_task",{item:{id:987654,c:"Offline QA"}},"NEW10");
+    return {r,count:window.ESTA_SYNC_QUEUE.count()};
+  });
+  expect(queued.r.queued).toBe(true);
+  expect(queued.count).toBe(1);
+  await expect(page.locator("#new10SyncStatus")).toContainText("Chờ đồng bộ");
+
+  await page.context().setOffline(false);
+  const flushed=await page.evaluate(async()=>{
+    window.ESTA_SYNC_QUEUE.configure(async()=>({updated_at:new Date().toISOString()}));
+    const r=await window.ESTA_SYNC_QUEUE.flush();
+    return {r,count:window.ESTA_SYNC_QUEUE.count()};
+  });
+  expect(flushed.count).toBe(0);
+});
+
+test("NEW10 media manager persists image while offline", async ({ page }) => {
+  await activateNew10(page);
+  await page.evaluate(()=>{centralSession={access_token:"qa-token",expires_at:4102444800}});
+  await page.context().setOffline(true);
+  const count=await page.evaluate(async()=>{
+    const canvas=document.createElement("canvas");canvas.width=8;canvas.height=8;
+    const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",.7));
+    const file=new File([blob],"camera-qa.jpg",{type:"image/jpeg"});
+    const out=await window.ESTA_MEDIA_MANAGER.energyFile(file,"991",0,"NEW10");
+    return {queued:out.queued,count:await window.ESTA_MEDIA_MANAGER.count()};
+  });
+  expect(count.queued).toBe(true);
+  expect(count.count).toBeGreaterThan(0);
+  await page.context().setOffline(false);
+});
+
+test("NEW10 versioned PDF archive builds storage metadata without production write", async ({ page }) => {
+  await activateNew10(page);
+  const result=await page.evaluate(async()=>{
+    centralSession={access_token:"qa-token",expires_at:4102444800};
+    const originalSb=window.sbFetch,originalAuth=window.centralAuthFetch;
+    window.sbFetch=async(path,options={})=>{
+      if(path.includes("select=version"))return [{version:2}];
+      if(path.includes("/rest/v1/report_registry")&&String(options.method||"GET").toUpperCase()==="POST")return [];
+      return [];
+    };
+    window.centralAuthFetch=async()=>new Response("{}",{status:200,headers:{"Content-Type":"application/json"}});
+    try{
+      const blob=new Blob(["%PDF-1.4\n% QA"],{type:"application/pdf"});
+      const r=await window.ESTA_REPORT_ARCHIVE.archivePdf({
+        blob,buildingId:"NEW10",filename:"qa-report.pdf",reportType:"Vận hành kỹ thuật",
+        periodLabel:"QA",periodFrom:"2026-10-01",periodTo:"2026-10-31",createdBy:null
+      });
+      return {version:r.version,fileRef:r.fileRef,checksum:r.record.checksum,size:r.record.file_size};
+    }finally{
+      window.sbFetch=originalSb;window.centralAuthFetch=originalAuth;
+    }
+  });
+  expect(result.version).toBe(3);
+  expect(result.fileRef).toContain("storage:report-files:");
+  expect(result.checksum.length).toBe(64);
+  expect(result.size).toBeGreaterThan(0);
+});
+
+test("NEW10 report capability config hides unsupported solar", async ({ page }) => {
+  await activateNew10(page);
+  const cfg=await page.evaluate(()=>window.estaProjectConfig("NEW10"));
+  expect(cfg.supportsSolar).toBe(false);
+  expect(cfg.supportsXlnt).toBe(false);
+  await page.evaluate(()=>showModule("reports"));
+  await expect(page.locator("#reportsPage")).toBeVisible();
+});
