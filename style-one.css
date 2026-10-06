@@ -966,3 +966,22 @@
     max-width:100%!important;
   }
 }
+
+
+/* STYLE_ONE_ENERGY_DOCK_STACK_V4 */
+@media(max-width:760px){
+  /* The legacy compact Energy action bar and the new bottom navigation are both fixed.
+     Stack Save above the 68px navigation dock instead of letting them overlap. */
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyActions{
+    left:8px!important;
+    right:8px!important;
+    bottom:calc(84px + env(safe-area-inset-bottom))!important;
+    z-index:940!important;
+  }
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage{
+    padding-bottom:calc(172px + env(safe-area-inset-bottom))!important;
+  }
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyTableCard{
+    margin-bottom:8px!important;
+  }
+}
