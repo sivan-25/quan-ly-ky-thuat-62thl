@@ -100,3 +100,16 @@
     animation-iteration-count:1!important;
   }
 }
+#app.new10Pilot.estaCoreV2 .rcStoredReport{
+  min-height:30px;
+  padding:0 9px;
+  border:1px solid #cbdadd;
+  border-radius:8px;
+  background:#fff;
+  color:var(--esta-navy);
+  font-size:10px;
+  font-weight:700;
+  white-space:nowrap;
+}
+#app.new10Pilot.estaCoreV2 .rcStoredReport:hover{background:var(--esta-surface-2)}
+#app.new10Pilot.estaCoreV2 .rcNoStoredReport{font-size:9px;color:var(--esta-muted);white-space:nowrap}
