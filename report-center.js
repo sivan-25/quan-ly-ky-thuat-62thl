@@ -181,10 +181,27 @@
       let result = missing ? "Đã tải PDF. Có " + missing + " ảnh chưa tải được; vị trí ảnh được ghi rõ trong PDF." : "Đã tải PDF · " + model.count + " bản ghi · " + payload.photos.length + " ảnh.";
       if (editable) {
         try {
-          const record = { building_id: buildingId, report_code: "BC-" + buildingId + "-" + Date.now().toString(36).toUpperCase(), report_type: "Vận hành kỹ thuật", period_label: model.period, period_from: model.range.from, period_to: model.range.to, file_name: filename, created_by: createdBy };
-          await sbFetch("/rest/v1/report_registry", { method: "POST", token: centralSession?.access_token, body: record });
-          if (state.buildingId === buildingId && state.data) { state.data.reports.unshift({ ...record, created_at: new Date().toISOString() }); history(); }
-        } catch (e) { result += " Chưa lưu được lịch sử xuất; file PDF đã tải thành công."; }
+          let record;
+          if (window.ESTA_PROJECT_STORE?.isPilot?.(buildingId) && window.ESTA_REPORT_ARCHIVE) {
+            const archived = await window.ESTA_REPORT_ARCHIVE.archivePdf({
+              blob,
+              buildingId,
+              filename,
+              reportType: "Vận hành kỹ thuật",
+              periodLabel: model.period,
+              periodFrom: model.range.from,
+              periodTo: model.range.to,
+              createdBy
+            });
+            record = { ...archived.record, created_at: archived.record?.created_at || new Date().toISOString() };
+            result += " · Đã lưu bản v" + archived.version + " trên hệ thống.";
+          } else {
+            record = { building_id: buildingId, report_code: "BC-" + buildingId + "-" + Date.now().toString(36).toUpperCase(), report_type: "Vận hành kỹ thuật", period_label: model.period, period_from: model.range.from, period_to: model.range.to, file_name: filename, created_by: createdBy };
+            await sbFetch("/rest/v1/report_registry", { method: "POST", token: centralSession?.access_token, body: record });
+            record = { ...record, created_at: new Date().toISOString() };
+          }
+          if (state.buildingId === buildingId && state.data) { state.data.reports.unshift(record); history(); }
+        } catch (e) { result += " Chưa lưu được bản PDF trên hệ thống; file đã tải về thành công."; }
       }
       message(result, missing > 0);
     } catch (e) { message("Xuất PDF chưa thành công: " + e.message + ". Bạn có thể dùng In báo cáo hoặc thử lại.", true); }
