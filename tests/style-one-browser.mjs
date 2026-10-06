@@ -139,15 +139,40 @@ async function exerciseSpecial(page){
   await page.locator('[data-demo-report-range="week"]').click();
   await page.waitForTimeout(80);
 }
-async function exerciseMobileMenu(page){
+async function exerciseMobileMenu(page,label){
   if((await page.viewportSize()).width>760)return;
+
+  const dock=await page.locator("#updateMobileNav").evaluate(el=>{
+    const r=el.getBoundingClientRect();
+    return {bottom:r.bottom,left:r.left,right:r.right,width:r.width,innerHeight:innerHeight,innerWidth:innerWidth,display:getComputedStyle(el).display};
+  });
+  if(dock.display==="none")throw new Error("Mobile bottom navigation is unexpectedly hidden");
+  if(Math.abs(dock.innerHeight-dock.bottom)>1)throw new Error("Mobile bottom navigation is not flush with viewport bottom: "+JSON.stringify(dock));
+  if(dock.left>1||Math.abs(dock.innerWidth-dock.right)>1)throw new Error("Mobile bottom navigation is not edge-to-edge: "+JSON.stringify(dock));
+
   await page.click("#menu");
-  const state=await page.evaluate(()=>({
-    expanded:document.querySelector("#menu")?.getAttribute("aria-expanded"),
-    open:document.querySelector("#mobileSidebar")?.classList.contains("open"),
-    hidden:document.querySelector("#menuBackdrop")?.hidden
-  }));
+  const state=await page.evaluate(()=> {
+    const sidebar=document.querySelector("#mobileSidebar");
+    const logout=document.querySelector("#logout");
+    const dock=document.querySelector("#updateMobileNav");
+    const r=logout?.getBoundingClientRect();
+    return {
+      expanded:document.querySelector("#menu")?.getAttribute("aria-expanded"),
+      open:sidebar?.classList.contains("open"),
+      hidden:document.querySelector("#menuBackdrop")?.hidden,
+      dockDisplay:dock?getComputedStyle(dock).display:"",
+      logoutDisplay:logout?getComputedStyle(logout).display:"",
+      logoutRect:r?{top:r.top,bottom:r.bottom,left:r.left,right:r.right,width:r.width,height:r.height}:null,
+      innerHeight:innerHeight,
+      innerWidth:innerWidth
+    };
+  });
   if(state.expanded!=="true"||!state.open||state.hidden)throw new Error("Mobile sidebar did not open correctly");
+  if(state.dockDisplay!=="none")throw new Error("Bottom navigation must hide while mobile sidebar is open");
+  if(!state.logoutRect||state.logoutDisplay==="none"||state.logoutRect.height<30)throw new Error("Logout control is not visible in mobile sidebar");
+  if(state.logoutRect.top<0||state.logoutRect.bottom>state.innerHeight+1)throw new Error("Logout control is outside the mobile viewport: "+JSON.stringify(state.logoutRect));
+  await page.screenshot({path:`${outDir}/${label}-sidebar.png`,fullPage:false});
+
   await page.click("#sidebarClose");
   const closed=await page.locator("#mobileSidebar").evaluate(el=>!el.classList.contains("open"));
   if(!closed)throw new Error("Mobile sidebar did not close");
@@ -176,7 +201,7 @@ for(const viewport of viewports){
   try{
     await setupProject(page);
     await assertNoOverflow(page,viewport.name+" home");
-    await exerciseMobileMenu(page);
+    await exerciseMobileMenu(page,viewport.name);
     await exerciseWork(page);
     await exerciseEnergy(page);
     await exerciseInventory(page);
