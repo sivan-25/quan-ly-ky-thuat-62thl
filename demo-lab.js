@@ -355,10 +355,24 @@ function demoEnsureWorkPanel(){
    '<label class="demoAdvancedInspection demoMobileHalf">Checklist<select id="demoTaskInspection"><option value="">Không liên kết</option></select></label>'+
    '<label class="demoMobileHalf demoContractorField">Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
    '<div class="span2 demoTaskMaterialsField"><div class="demoTaskMaterialsHead"><span>Vật tư sử dụng</span><button id="demoAddTaskMaterial" type="button">+ Thêm vật tư</button></div><div id="demoTaskMaterialsRows" class="demoTaskMaterialsRows"></div><small id="demoTaskMaterialsEmpty" class="demoTaskMaterialsEmpty hide">Chưa có vật tư trong kho dự án.</small></div>'+
-   '<label class="span2">Nguyên nhân<textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
-   '<label class="span2">Hướng xử lý / Kết quả<textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
+   '<label class="span2"><span>Nguyên nhân</span><textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
+   '<label class="span2"><span id="demoTaskResultLabel">Hướng xử lý / Kết quả</span><textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
+   '<button id="demoUseNoteAsResult" class="secondary hide" type="button">Dùng ghi chú làm kết quả</button>'+
    '</div>';
   card.appendChild(box);
+  $("#demoUseNoteAsResult")?.addEventListener("click",()=>{
+   const result=$("#demoTaskResult"),note=$("#note");
+   if(!usesSingleTaskResult()||!result||result.value.trim()||!note?.value.trim())return;
+   result.value=note.value.trim();
+   box.setAttribute("open","");
+   demoSyncCompletionFields();
+   result.focus();
+  });
+  ["status","type","demoTaskIncident"].forEach(id=>$("#"+id)?.addEventListener("change",()=>{
+   demoSyncCompletionFields();
+   if(id==="status"&&usesSingleTaskResult()&&$("#status").value==="Đã hoàn thành")box.setAttribute("open","");
+  }));
+  ["note","demoTaskResult"].forEach(id=>$("#"+id)?.addEventListener("input",demoSyncCompletionFields));
   ["demoTaskAsset","demoTaskIncident","demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.addEventListener("change",demoUpdateLinkSummary));
   $("#demoAddTaskMaterial")?.addEventListener("click",()=>{
     const box=$("#demoTaskMaterialsRows");
@@ -370,10 +384,27 @@ function demoEnsureWorkPanel(){
     const inc=demoCache.incidents.find(x=>String(x.incident_code)===String($("#demoTaskIncident").value||""));
     if(inc&&$("#demoTaskCause")&&!$("#demoTaskCause").value.trim())$("#demoTaskCause").value=inc.cause||"";
     if(inc&&$("#demoTaskResult")&&!$("#demoTaskResult").value.trim())$("#demoTaskResult").value=inc.solution||"";
+    demoSyncCompletionFields();
   });
  }
  box.classList.toggle("hide",!demoIs());
+ demoSyncCompletionFields();
  if(demoIs()){demoLoad().then(()=>{demoPopulateWorkOptions();demoResetWorkLinks(false)})}
+}
+function demoSyncCompletionFields(){
+ const single=usesSingleTaskResult(),result=$("#demoTaskResult"),done=$("#status")?.value==="Đã hoàn thành";
+ const label=$("#demoTaskResultLabel"),cause=$("#demoTaskCause"),note=$("#note");
+ if(label)label.textContent=single?"Kết quả thực hiện"+(done?" *":""):"Hướng xử lý / Kết quả";
+ if(result){
+  result.placeholder=single?"Nhập kết quả thực hiện; bắt buộc khi hoàn thành":"Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành...";
+  result.setAttribute("aria-required",String(done));
+  result.setAttribute("aria-invalid",String(single&&done&&!result.value.trim()));
+ }
+ cause?.closest("label")?.classList.toggle("hide",single&&$("#type")?.value!=="Sự cố"&&!$("#demoTaskIncident")?.value);
+ if(cause)cause.required=false;
+ $("#demoUseNoteAsResult")?.classList.toggle("hide",!single||!note?.value.trim()||!!result?.value.trim());
+ if(note)note.placeholder=single?"Ghi chú bổ sung (không bắt buộc)":"Nhập ghi chú...";
+ syncCompletionNoteRequirement(false);
 }
 function demoTaskMaterialOptions(selected=""){
  const materials=demoCache.materials||[];
@@ -480,6 +511,7 @@ function demoResetWorkLinks(clear=true){
  }
  if(clear&&$("#demoTaskDue"))$("#demoTaskDue").value="";
  demoUpdateLinkSummary();
+ demoSyncCompletionFields();
 }
 function demoReadWorkLinks(){
  return {
@@ -512,6 +544,7 @@ function demoFillWorkLinks(x){
  $("#demoTaskCause")&&($("#demoTaskCause").value=workCause||inheritedCause||"");
  $("#demoTaskResult")&&($("#demoTaskResult").value=workResult||inheritedResult||"");
  demoUpdateLinkSummary();
+ demoSyncCompletionFields();
  const workLinks=$("#demoWorkLinks");
  if(workLinks){
   if(window.matchMedia("(max-width:760px)").matches)workLinks.removeAttribute("open");
@@ -656,7 +689,12 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   $("#demoWorkLinks")?.setAttribute("open","");
   return;
  }
- if($("#status").value==="Đã hoàn thành"&&!links.result){toast("Vui lòng nhập Kết quả xử lý trước khi hoàn thành");$("#demoTaskResult")?.focus();$("#demoWorkLinks")?.setAttribute("open","");return}
+ if($("#status").value==="Đã hoàn thành"&&!links.result){
+  toast(usesSingleTaskResult()?"Vui lòng nhập Kết quả thực hiện trước khi hoàn thành":"Vui lòng nhập Kết quả xử lý trước khi hoàn thành");
+  $("#demoWorkLinks")?.setAttribute("open","");
+  $("#demoTaskResult")?.focus();
+  return;
+ }
  const btn=$("#saveBtn");btn.disabled=true;
  try{
   const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
@@ -1635,4 +1673,3 @@ window.demoRefresh=async()=>{
 
 setTimeout(()=>{demoEnsureWorkPanel();demoSetProjectMode()},400);
 })();
-

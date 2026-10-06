@@ -2,9 +2,10 @@
   "name": "esta-property-management",
   "private": true,
   "scripts": {
-    "test": "node tests/admin-dispatch.test.cjs && node tests/report-model.test.cjs && node tests/report-controller.test.cjs && node tests/admin-project-access.test.cjs && node tests/admin-users-edge.test.cjs",
+    "test": "node tests/admin-dispatch.test.cjs && node tests/report-model.test.cjs && node tests/report-controller.test.cjs && node tests/admin-project-access.test.cjs && node tests/admin-users-edge.test.cjs && node tests/task-completion.test.cjs",
     "dev": "python3 tools/dev_server.py"
   },
   "devDependencies": { "jsdom": "26.1.0" }
 }
+
 

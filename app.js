@@ -1127,10 +1127,13 @@ $("#cancelEdit").onclick=()=>resetForm();
 $("#closeWorkEditDrawer")?.addEventListener("click",()=>resetForm());
 $("#workEditDrawer")?.addEventListener("click",e=>{if(e.target.closest("[data-close-work-editor]"))resetForm()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#workEditDrawer")?.classList.contains("hide"))resetForm()});
+function usesSingleTaskResult(){
+ return ["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""));
+}
 function syncCompletionNoteRequirement(focusNote=false){
  const status=$("#status")?.value||"",note=$("#note"),field=$("#workNoteField"),hint=$("#completionNoteHint");
  if(!note)return true;
- const completed=status==="Đã hoàn thành";
+ const completed=status==="Đã hoàn thành"&&!usesSingleTaskResult();
  const missing=completed&&!note.value.trim();
  note.required=completed;
  note.setAttribute("aria-invalid",String(missing));

@@ -1148,7 +1148,7 @@ function updateEnhanceWorkForm(){
 
  const cause=$("#demoTaskCause"),result=$("#demoTaskResult");
  if(cause){cause.rows=2;cause.placeholder="Nguyên nhân / chẩn đoán";}
- if(result){result.rows=2;result.placeholder="Hướng xử lý / kết quả";}
+ if(result){result.rows=2;result.placeholder=usesSingleTaskResult()?"Nhập kết quả thực hiện; bắt buộc khi hoàn thành":"Hướng xử lý / kết quả";}
 
  const priority=$("#demoTaskPriority");
  if(priority&&!priority.dataset.updateOptions){
