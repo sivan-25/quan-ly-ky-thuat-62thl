@@ -2,6 +2,14 @@ const $=s=>document.querySelector(s);
 const SB_URL="https://upcjcrycahdfroxggsdz.supabase.co";
 const SB_KEY="sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
 let me=null,centralSession=null,currentAccount=null,currentBuilding={id:"62THL",name:"62 Trần Huy Liệu",role:"editor"};
+function projectConfigFor(id=currentBuilding?.id){
+ try{return typeof window.estaProjectConfig==="function"?window.estaProjectConfig(id):{}}
+ catch(e){return{}}
+}
+function projectFeature(name,fallback){
+ const cfg=projectConfigFor();
+ return Object.prototype.hasOwnProperty.call(cfg,name)?cfg[name]:fallback;
+}
 // Account role and the selected overview scope are separate concerns.
 let projectOverviewActive=false;
 function isAdminOverview(){return !!currentAccount?.is_admin&&!projectOverviewActive}
@@ -468,7 +476,7 @@ function setupMobilePeopleSheets(){
   const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
   const projectId=String(currentBuilding?.id||"").trim().toUpperCase();
   const compactProject=media.matches&&projectOverviewActive&&
-    (sharedCompactProjects.has(projectId)||(!["DEMO","UPDATE"].includes(projectId)&&!!projectId));
+    projectFeature("compactPeople",(sharedCompactProjects.has(projectId)||(!["DEMO","UPDATE"].includes(projectId)&&!!projectId)));
   // Keep the existing class name for CSS compatibility; the approved 62THL
   // compact Work layout is now the shared standard for all four live projects.
   document.getElementById("taskForm")?.classList.toggle("peopleCompact62",compactProject);
@@ -511,7 +519,7 @@ function setupMobilePeopleSheets(){
  function syncCompactPeopleSize(){
   const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
   const projectId=String(currentBuilding?.id||"").trim().toUpperCase();
-  if(!media.matches||!projectOverviewActive||["DEMO","UPDATE"].includes(projectId)||!projectId)return;
+  if(!media.matches||!projectOverviewActive||!projectFeature("compactPeople",(!["DEMO","UPDATE"].includes(projectId)&&!!projectId)))return;
   const tile=document.querySelector("#workChoices-type .workChoiceTile");
   const width=tile?.getBoundingClientRect().width||0;
   if(width>0)menus.forEach(menu=>menu.style.setProperty("--esta-person-choice-width",width+"px"));
@@ -1128,7 +1136,8 @@ $("#closeWorkEditDrawer")?.addEventListener("click",()=>resetForm());
 $("#workEditDrawer")?.addEventListener("click",e=>{if(e.target.closest("[data-close-work-editor]"))resetForm()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#workEditDrawer")?.classList.contains("hide"))resetForm()});
 function usesSingleTaskResult(){
- return ["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""));
+ const fallback=["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""));
+ return !!projectFeature("singleTaskResult",fallback);
 }
 function syncCompletionNoteRequirement(focusNote=false){
  const status=$("#status")?.value||"",note=$("#note"),field=$("#workNoteField"),hint=$("#completionNoteHint");
@@ -2100,9 +2109,9 @@ const ENERGY_META={
 };
 const currentBuildingId=()=>String(currentBuilding?.id||"");
 const is68Pdl=()=>currentBuildingId()==="68PĐL";
-const supportsXlntEnergy=()=>is68Pdl()||currentBuildingId()==="DEMO";
-const supportsSolarEnergy=()=>!["127HH","130HH"].includes(currentBuildingId());
-const is68DualElectric=()=>is68Pdl()&&energyType==="electric";
+const supportsXlntEnergy=()=>!!projectFeature("supportsXlnt",is68Pdl()||currentBuildingId()==="DEMO");
+const supportsSolarEnergy=()=>!!projectFeature("supportsSolar",!["127HH","130HH"].includes(currentBuildingId()));
+const is68DualElectric=()=>Number(projectFeature("electricMeters",is68Pdl()?2:1))>=2&&energyType==="electric";
 function syncEnergyTabSelection(){
  document.querySelectorAll("[data-energy-type]").forEach(b=>{
   const selected=b.dataset.energyType===energyType;
