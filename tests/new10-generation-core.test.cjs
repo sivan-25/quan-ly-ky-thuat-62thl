@@ -55,8 +55,10 @@ const read=(p)=>fs.readFileSync(path.join(root,p),"utf8");
 })();
 
 (function migrationsTracked(){
-  assert.ok(fs.existsSync(path.join(root,"supabase/migrations/20261006162000_report_pdf_versioned_storage.sql")));
+  assert.ok(fs.existsSync(path.join(root,"supabase/migrations/20261006163441_report_pdf_versioned_storage.sql")));
   assert.ok(fs.existsSync(path.join(root,"supabase/migrations/20261006161102_restrict_inventory_archive_trigger_execute.sql")));
+  assert.ok(fs.existsSync(path.join(root,"supabase/migrations/20261006231823_optimize_rls_auth_uid_initplan.sql")));
+  assert.ok(fs.existsSync(path.join(root,"supabase/migrations/20261006232046_enable_new10_realtime_tables.sql")));
 })();
 
 console.log("NEW10 generation core regression: OK");
