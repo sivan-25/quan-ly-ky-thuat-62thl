@@ -1,0 +1,118 @@
+/* NEW10 / new 1.0 isolated pilot layer.
+   Every selector is scoped to #app.new10Pilot so production projects keep their current UI. */
+
+#app.new10Pilot .topModuleTitle h1::after {
+  content: "PILOT 1.0";
+  display: inline-flex;
+  align-items: center;
+  margin-left: 9px;
+  padding: 3px 7px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+  opacity: .68;
+}
+
+@media (max-width: 760px) {
+  html.new10PilotPage,
+  html.new10PilotPage body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  html.new10PilotPage body.workEditOpen {
+    overflow: hidden !important;
+    touch-action: none;
+  }
+
+  #app.new10Pilot .modal:not(.hide),
+  #app.new10Pilot .workEditDrawer:not(.hide) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: rgba(6, 18, 33, .48) !important;
+  }
+
+  #app.new10Pilot .workEditDrawer {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  #app.new10Pilot .workEditDrawerCard {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: min(94dvh, 900px) !important;
+    max-height: 94dvh !important;
+    margin: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+    overflow: hidden !important;
+  }
+
+  #app.new10Pilot .workEditDrawerHead {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+  }
+
+  #app.new10Pilot .workEditDrawerMount {
+    height: calc(94dvh - 64px) !important;
+    max-height: calc(94dvh - 64px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  }
+
+  #app.new10Pilot #filterBar:not(.hide) {
+    position: fixed !important;
+    z-index: 1200 !important;
+    top: calc(env(safe-area-inset-top) + 58px) !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100dvh - env(safe-area-inset-top) - 76px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 9px !important;
+    margin: 0 !important;
+  }
+
+  #app.new10Pilot #filterBar .workFilterHeading,
+  #app.new10Pilot #filterBar .clearFilter {
+    grid-column: 1 / -1 !important;
+  }
+
+  #app.new10Pilot #filterBar .workFilterField,
+  #app.new10Pilot #filterBar input,
+  #app.new10Pilot #filterBar select {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #app.new10Pilot #filterBar input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    font-size: 16px !important;
+  }
+
+  #app.new10Pilot .workEntryForm textarea,
+  #app.new10Pilot .workEntryForm input,
+  #app.new10Pilot .workEntryForm select {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #app.new10Pilot .workEntryForm textarea {
+    resize: vertical !important;
+    overflow-wrap: anywhere;
+  }
+}
