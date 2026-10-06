@@ -157,3 +157,39 @@
     word-break: break-word !important;
   }
 }
+
+
+.new10SyncStatus {
+  position: fixed;
+  right: 14px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 1600;
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid #d7e3e8;
+  border-radius: 999px;
+  background: rgba(255,255,255,.96);
+  color: #456477;
+  box-shadow: 0 8px 24px rgba(20,55,80,.12);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+.new10SyncStatus.hide { display: none !important; }
+.new10SyncStatus[data-state="syncing"] { color: #1f6479; }
+.new10SyncStatus[data-state="synced"] { color: #28704f; }
+.new10SyncStatus[data-state="error"] { color: #a84747; }
+.new10SyncStatus[data-state="offline"] { color: #8b6531; }
+
+@media (max-width: 760px) {
+  .new10SyncStatus {
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    min-height: 28px;
+    padding: 5px 9px;
+    font-size: 9px;
+  }
+}
