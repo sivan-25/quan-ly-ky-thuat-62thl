@@ -348,12 +348,12 @@ function demoEnsureWorkPanel(){
   box=document.createElement("details");
   box.id="demoWorkLinks";box.className="demoWorkLinks hide";
   box.innerHTML='<summary>⌁ Liên kết nâng cao · Thiết bị / Sự cố / Nhà thầu / Vật tư</summary><div class="demoWorkLinkGrid">'+
-   '<label>Ưu tiên<select id="demoTaskPriority"><option>Thấp</option><option selected>Trung bình</option><option>Cao</option><option>Khẩn cấp</option></select></label>'+
-   '<label>Hạn hoàn thành<input id="demoTaskDue" type="date"></label>'+
-   '<label class="demoAdvancedAsset">Thiết bị<select id="demoTaskAsset"><option value="">Không liên kết</option></select></label>'+
-   '<label>Sự cố / Defect<select id="demoTaskIncident"><option value="">Không liên kết</option></select></label>'+
-   '<label class="demoAdvancedInspection">Checklist<select id="demoTaskInspection"><option value="">Không liên kết</option></select></label>'+
-   '<label>Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
+   '<label class="demoMobileHalf demoPriorityField">Ưu tiên<select id="demoTaskPriority"><option>Thấp</option><option selected>Trung bình</option><option>Cao</option><option>Khẩn cấp</option></select></label>'+
+   '<label class="demoMobileHalf demoDueField">Hạn hoàn thành<input id="demoTaskDue" type="date"></label>'+
+   '<label class="demoAdvancedAsset demoMobileHalf">Thiết bị<select id="demoTaskAsset"><option value="">Không liên kết</option></select></label>'+
+   '<label class="demoMobileHalf demoIncidentField">Sự cố / Defect<select id="demoTaskIncident"><option value="">Không liên kết</option></select></label>'+
+   '<label class="demoAdvancedInspection demoMobileHalf">Checklist<select id="demoTaskInspection"><option value="">Không liên kết</option></select></label>'+
+   '<label class="demoMobileHalf demoContractorField">Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
    '<div class="span2 demoTaskMaterialsField"><div class="demoTaskMaterialsHead"><span>Vật tư sử dụng</span><button id="demoAddTaskMaterial" type="button">+ Thêm vật tư</button></div><div id="demoTaskMaterialsRows" class="demoTaskMaterialsRows"></div><small id="demoTaskMaterialsEmpty" class="demoTaskMaterialsEmpty hide">Chưa có vật tư trong kho dự án.</small></div>'+
    '<label class="span2">Nguyên nhân<textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
    '<label class="span2">Hướng xử lý / Kết quả<textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
@@ -512,20 +512,26 @@ function demoFillWorkLinks(x){
  $("#demoTaskCause")&&($("#demoTaskCause").value=workCause||inheritedCause||"");
  $("#demoTaskResult")&&($("#demoTaskResult").value=workResult||inheritedResult||"");
  demoUpdateLinkSummary();
- $("#demoWorkLinks")?.setAttribute("open","");
+ const workLinks=$("#demoWorkLinks");
+ if(workLinks){
+  if(window.matchMedia("(max-width:760px)").matches)workLinks.removeAttribute("open");
+  else workLinks.setAttribute("open","");
+ }
 }
 function demoArrangeWorkEditDrawer(){
  if(!demoIs())return;
  const drawer=$("#workEditDrawer"),card=drawer?.querySelector(".workEntryCard"),links=$("#demoWorkLinks"),actions=card?.querySelector(".workFormActions");
  if(!drawer||drawer.classList.contains("hide")||!card)return;
+ const mobile=window.matchMedia("(max-width:760px)").matches;
  drawer.classList.add("demoWorkEditDrawer");
+ drawer.classList.toggle("demoWorkEditMobile",mobile);
  if(links){
   const summary=links.querySelector("summary");
   if(summary){
    if(!summary.dataset.fullText)summary.dataset.fullText=summary.textContent;
-   summary.textContent="⌁ Liên kết nâng cao · Sự cố / Nhà thầu / Vật tư";
+   summary.textContent=mobile?"Thông tin bổ sung":"⌁ Liên kết nâng cao · Sự cố / Nhà thầu / Vật tư";
   }
-  links.setAttribute("open","");
+  if(mobile)links.removeAttribute("open");else links.setAttribute("open","");
  }
  if(actions&&links){
   actions.classList.add("demoEditFooter");
@@ -536,7 +542,7 @@ function demoArrangeWorkEditDrawer(){
 }
 function demoRestoreWorkEditLayout(){
  const drawer=$("#workEditDrawer"),form=$("#taskForm"),actions=document.querySelector(".workFormActions"),links=$("#demoWorkLinks");
- drawer?.classList.remove("demoWorkEditDrawer");
+ drawer?.classList.remove("demoWorkEditDrawer","demoWorkEditMobile");
  if(links){
   const summary=links.querySelector("summary");
   if(summary?.dataset.fullText){summary.textContent=summary.dataset.fullText;delete summary.dataset.fullText}

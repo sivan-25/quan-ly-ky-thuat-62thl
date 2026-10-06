@@ -1010,7 +1010,36 @@ document.addEventListener("keydown",e=>{
 if(mobileNavQuery.addEventListener)mobileNavQuery.addEventListener("change",()=>setMobileMenuOpen(false));
 else mobileNavQuery.addListener(()=>setMobileMenuOpen(false));
 setMobileMenuOpen(false);
-const DRAFT="qlkt62_draft";function saveDraft(){if($("#editId").value)return;localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))}function restoreDraft(){try{let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;$("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||""}catch(e){}}let existingTaskImages=[],removedTaskImageRefs=[],pendingTaskFiles=[],pendingPreviewUrls=[];
+function syncWorkContentHeight(){
+ const el=$("#content");if(!el)return;
+ if(!mobileNavQuery.matches){el.style.removeProperty("height");el.style.removeProperty("overflow-y");return}
+ el.style.height="auto";
+ el.style.height=Math.max(76,el.scrollHeight)+"px";
+ el.style.overflowY="hidden";
+}
+function setWorkSaveLabel(label){
+ const btn=$("#saveBtn");if(!btn)return;
+ let span=btn.querySelector("span");
+ if(!span){
+  btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span></span>';
+  span=btn.querySelector("span");
+ }
+ span.textContent=label;
+}
+const DRAFT="qlkt62_draft";
+function saveDraft(){
+ if($("#editId").value)return;
+ localStorage.setItem(DRAFT,JSON.stringify({d:$("#date").value,c:$("#content").value,t:$("#type").value,s:$("#status").value,a:$("#performer").value,n:$("#note").value}))
+}
+function restoreDraft(){
+ try{
+  let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;
+  $("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";
+  setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||"";
+  requestAnimationFrame(syncWorkContentHeight);
+ }catch(e){}
+}
+let existingTaskImages=[],removedTaskImageRefs=[],pendingTaskFiles=[],pendingPreviewUrls=[];
 function workEntryCard(){return document.querySelector("#workPage .workEntryCard")||document.querySelector("#workEditDrawer .workEntryCard")}
 function openWorkEditDrawer(){
  const drawer=$("#workEditDrawer"),mount=$("#workEditDrawerMount"),card=workEntryCard();
@@ -1076,7 +1105,8 @@ async function deleteStoredMediaRefs(refs){
 function resetForm(clearDraft=true){
  $("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";setPeopleSelected("task",[]);$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";
  syncCompletionNoteRequirement(false);
- clearPendingTaskFiles();clearExistingTaskImages();$("#imageInfo").textContent="";$("#saveBtn").textContent="Lưu";$("#cancelEdit").classList.add("hide");
+ clearPendingTaskFiles();clearExistingTaskImages();$("#imageInfo").textContent="";setWorkSaveLabel("Lưu");$("#cancelEdit").classList.add("hide");
+ requestAnimationFrame(syncWorkContentHeight);
  restoreWorkEntryCard();
  if(clearDraft)localStorage.removeItem(DRAFT)
 }
@@ -1108,6 +1138,7 @@ $("#note")?.addEventListener("input",()=>{
  saveDraft();
 });
 ["date","content","type","performer"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));
+$("#content")?.addEventListener("input",syncWorkContentHeight);
 function clearPendingTaskFiles(){
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
  pendingPreviewUrls=[];pendingTaskFiles=[];
@@ -1127,12 +1158,14 @@ window.removePendingTaskFile=i=>{
  renderPendingTaskFiles();updateTaskImageInfo();
 };
 function updateTaskImageInfo(){
- const added=pendingTaskFiles.length,existing=existingTaskImages.length,editing=!!$("#editId")?.value;
+ const added=pendingTaskFiles.length,existing=existingTaskImages.length,editing=!!$("#editId")?.value,info=$("#imageInfo");
+ if(!info)return;
  if(editing){
-   $("#imageInfo").textContent=(existing?existing+" hình hiện tại":"Không còn hình hiện tại")+(added?" · "+added+" hình mới sẽ thêm":"");
- }else{
-   $("#imageInfo").textContent=added?"Đã chọn "+added+" hình · Có thể chọn thêm nhiều ảnh từ Thư viện hoặc chụp thêm 1 ảnh":"";
- }
+  const parts=[];
+  if(existing)parts.push(existing+" ảnh hiện tại");
+  if(added)parts.push("+"+added+" ảnh mới");
+  info.textContent=parts.join(" · ");
+ }else info.textContent=added?"Đã chọn "+added+" hình":"";
 }
 function addPendingTaskFiles(fileList){
  const incoming=Array.from(fileList||[]).filter(f=>f&&f.type?.startsWith("image/"));
@@ -1246,8 +1279,8 @@ window.editTask=id=>{
  existingTaskImages=Array.isArray(x.imgs)?[...x.imgs]:[];removedTaskImageRefs=[];
  $("#editId").value=x.id;$("#date").value=x.d;$("#content").value=x.c;$("#type").value=x.t||"Hằng ngày";$("#status").value=x.s;setPeopleSelected("task",performerArray(x));$("#note").value=x.n||"";
  syncCompletionNoteRequirement(false);
- $("#saveBtn").textContent="Lưu thay đổi";$("#cancelEdit").classList.remove("hide");
- openWorkEditDrawer();renderExistingTaskImages();updateTaskImageInfo();
+ setWorkSaveLabel("Lưu thay đổi");$("#cancelEdit").classList.remove("hide");
+ openWorkEditDrawer();renderExistingTaskImages();updateTaskImageInfo();requestAnimationFrame(syncWorkContentHeight);
 };window.delTask=async id=>{if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}if(confirm("Xóa công việc này?")){save(load().filter(x=>x.id!==id));await syncTaskRecord("delete_task",id);render();renderHomeDashboard();toast("Đã xóa")}};window.viewImages=async id=>{
  let x=load().find(y=>String(y.id)===String(id));if(!x?.imgs?.length)return;
  // Image preview must be a clean, image-only layer. Close any task/detail drawer first.

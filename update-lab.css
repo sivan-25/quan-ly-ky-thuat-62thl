@@ -2012,3 +2012,61 @@
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleOption{flex:1 1 calc((100% - 12px)/3)!important;width:auto!important;min-width:0!important;max-width:none!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleEmpty{flex:1 1 100%!important}
 }
+
+
+/* MOBILE_WORK_EDITOR_COMPACT_20261006 */
+@media(max-width:760px){
+ body.workEditOpen #updateMobileNav{display:none!important}
+ .workEditDrawer{align-items:stretch!important;justify-content:stretch!important;padding:0!important;background:#0d1627!important;backdrop-filter:none!important;overflow:hidden!important}
+ .workEditDrawerBackdrop{display:none!important}
+ .workEditDrawerCard{width:100vw!important;max-width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;border:0!important;border-radius:0!important;background:#0d1627!important;box-shadow:none!important}
+ .workEditDrawerHead{position:sticky!important;top:0!important;z-index:60!important;min-height:0!important;align-items:center!important;padding:calc(8px + env(safe-area-inset-top)) 12px 9px!important;border-bottom:1px solid #26354d!important;background:#101a2d!important}
+ .workEditDrawerHead>div{min-width:0!important}
+ .workEditDrawerHead span{margin:0 0 2px!important;font-size:8px!important;line-height:1.2!important;letter-spacing:1.2px!important}
+ .workEditDrawerHead h2{margin:0!important;font-size:20px!important;line-height:1.2!important}
+ .workEditDrawerHead p{display:none!important}
+ #closeWorkEditDrawer{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;flex:0 0 40px!important;border-radius:11px!important;font-size:24px!important}
+ .workEditDrawerMount{min-height:0!important;padding:0 0 calc(8px + env(safe-area-inset-bottom))!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important}
+ .workEditDrawer .workEntryCard{width:100%!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+ .workEditDrawer .workEntryHeader{display:none!important}
+ .workEditDrawer #taskForm.workEntryForm{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;width:100%!important;padding:12px 14px 8px!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm .workField,.workEditDrawer #taskForm .workContent,.workEditDrawer #taskForm .workPerformer,.workEditDrawer #taskForm .workNote,.workEditDrawer #taskForm .workImage{grid-column:1/-1!important;min-width:0!important}
+ .workEditDrawer #taskForm .workField>span{margin-bottom:5px!important;font-size:12px!important;line-height:1.2!important}
+ .workEditDrawer #taskForm input:not([type="hidden"]),.workEditDrawer #taskForm select,.workEditDrawer #taskForm .peopleSelectBtn{width:100%!important;min-width:0!important;min-height:44px!important;height:44px!important;padding:8px 11px!important;border-radius:10px!important;font-size:16px!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm #content.workContentInput{display:block!important;width:100%!important;min-width:0!important;min-height:76px!important;height:auto;padding:11px 12px!important;overflow-y:hidden!important;resize:none!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;word-break:break-word!important;line-height:1.45!important;font-size:16px!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm #note{min-height:44px!important;height:44px!important}
+ .workEditDrawer #taskForm .workImage .imageNativeActions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%!important}
+ .workEditDrawer #taskForm .workImage .imageActionBtn{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:100%!important;min-width:0!important;height:48px!important;min-height:48px!important;max-height:48px!important;padding:0 10px!important;overflow:hidden!important;border-radius:10px!important;font-size:14px!important;line-height:1!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm .workImage .imageActionBtn svg{display:block!important;width:22px!important;min-width:22px!important;max-width:22px!important;height:22px!important;min-height:22px!important;max-height:22px!important;flex:0 0 22px!important}
+ .workEditDrawer #taskForm .workImage .imageActionBtn span{display:inline!important;margin:0!important;font-size:14px!important;line-height:1!important;white-space:nowrap!important}
+ .workEditDrawer .workImageInfo{min-height:0!important;margin:0 14px!important;padding:0 0 6px!important;font-size:11px!important;line-height:1.3!important}
+ .workEditDrawer .workImageInfo:empty{display:none!important}
+ .workEditDrawer .existingImageSection{margin:2px 14px 10px!important;padding:10px!important}
+ .workEditDrawer .existingImageHead small{font-size:10px!important}
+ .workEditDrawer .existingImagePreview{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .workEditDrawer #demoWorkLinks{width:auto!important;max-width:none!important;margin:2px 14px 10px!important;padding:0!important;border:1px solid #30415d!important;border-radius:12px!important;background:#111a2c!important;color:#eaf2ff!important;box-shadow:none!important}
+ .workEditDrawer #demoWorkLinks>summary{position:relative!important;display:flex!important;align-items:center!important;width:100%!important;min-height:44px!important;padding:0 38px 0 12px!important;box-sizing:border-box!important;list-style:none!important;cursor:pointer!important;color:#72dfea!important;font-size:13px!important;font-weight:600!important}
+ .workEditDrawer #demoWorkLinks>summary::-webkit-details-marker{display:none!important}
+ .workEditDrawer #demoWorkLinks>summary::after{content:"⌄"!important;position:absolute!important;right:13px!important;top:50%!important;transform:translateY(-50%)!important;color:#91a6bd!important;font-size:18px!important;line-height:1!important;transition:transform .16s ease!important}
+ .workEditDrawer #demoWorkLinks[open]>summary::after{transform:translateY(-50%) rotate(180deg)!important}
+ .workEditDrawer #demoWorkLinks .demoWorkLinkGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:4px 10px 11px!important}
+ .workEditDrawer #demoWorkLinks .demoWorkLinkGrid .span2{grid-column:1/-1!important}
+ .workEditDrawer #demoWorkLinks .demoAdvancedAsset,.workEditDrawer #demoWorkLinks .demoAdvancedInspection{display:none!important}
+ .workEditDrawer #demoWorkLinks .demoWorkLinkGrid label{min-width:0!important;gap:5px!important;color:#79d9e6!important;font-size:11px!important;line-height:1.2!important}
+ .workEditDrawer #demoWorkLinks input,.workEditDrawer #demoWorkLinks select{width:100%!important;min-width:0!important;min-height:44px!important;height:44px!important;padding:7px 9px!important;border:1px solid #42536d!important;border-radius:9px!important;background:#172238!important;color:#eef3fb!important;font-size:16px!important;box-sizing:border-box!important}
+ .workEditDrawer #demoWorkLinks textarea{width:100%!important;min-width:0!important;min-height:72px!important;padding:9px 10px!important;border:1px solid #42536d!important;border-radius:9px!important;background:#172238!important;color:#eef3fb!important;font-size:16px!important;line-height:1.4!important;box-sizing:border-box!important;resize:vertical!important}
+ .workEditDrawer #demoWorkLinks .demoTaskMaterialsField{grid-column:1/-1!important;min-width:0!important;padding:9px!important;border:1px solid #33445f!important;border-radius:10px!important}
+ .workEditDrawer #demoWorkLinks .demoTaskMaterialsHead{gap:8px!important;margin-bottom:6px!important}
+ .workEditDrawer #demoWorkLinks #demoAddTaskMaterial{min-height:36px!important;height:36px!important;padding:0 10px!important;font-size:12px!important}
+ .workEditDrawer .workFormActions,.workEditDrawer .workFormActions.demoEditFooter{position:sticky!important;bottom:0!important;z-index:45!important;display:grid!important;grid-template-columns:minmax(88px,.36fr) minmax(0,1fr)!important;gap:8px!important;width:auto!important;margin:0!important;padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;background:linear-gradient(180deg,rgba(13,22,39,.05) 0%,#0d1627 22%)!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm .workCancel,.workEditDrawer .workFormActions .workCancel,.workEditDrawer #taskForm .workSave,.workEditDrawer .workFormActions .workSave{width:100%!important;min-width:0!important;height:48px!important;min-height:48px!important;padding:0 12px!important;border-radius:11px!important;font-size:14px!important;box-sizing:border-box!important}
+ .workEditDrawer .workFormActions .workSave{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important}
+ .workEditDrawer .workFormActions .workSave svg{width:18px!important;height:18px!important;flex:0 0 18px!important}
+}
+@media(max-width:359px){
+ .workEditDrawer #demoWorkLinks .demoWorkLinkGrid{grid-template-columns:1fr!important}
+ .workEditDrawer #demoWorkLinks .demoWorkLinkGrid .span2{grid-column:1!important}
+}
+@media(min-width:761px){
+ #taskForm #content.workContentInput{height:46px!important;min-height:46px!important;overflow-y:auto!important;resize:none!important}
+}
