@@ -205,3 +205,20 @@
 #app.new10Pilot #energyImage2Preview.hide {
   display: none !important;
 }
+
+
+.new10ProjectBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 3px 7px;
+  border: 1px solid #d7b985;
+  border-radius: 999px;
+  background: #fff7e7;
+  color: #825f28;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .35px;
+  vertical-align: middle;
+}
