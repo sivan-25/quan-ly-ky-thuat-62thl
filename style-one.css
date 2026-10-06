@@ -1442,3 +1442,146 @@
     color:#173d59!important;
   }
 }
+
+
+/* STYLE_ONE_LIGHT_COMMAND_CENTER_V9 */
+/* Command Center uses its own dark --ov-* token system. Override those tokens for Style 1.
+   Keep only the hero / navigation dark; operational data surfaces stay light and readable. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode){
+  --ov-surface:#fffdf8;
+  --ov-panel:#f2efe8;
+  --ov-control:#ffffff;
+  --ov-soft:#f5f2eb;
+  --ov-line:#d7dde0;
+  --ov-hover:#f8f5ef;
+  --ov-muted:#687a85;
+  --ov-text:#243b49;
+  --ov-accent:#245c78;
+  color-scheme:light!important;
+  background:#f2efe8!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) main,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .homeDashboard{
+  background:#f2efe8!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview{
+  color:#243b49!important;
+}
+
+/* One dark anchor instead of an all-dark dashboard. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsHero{
+  background:#173d59!important;
+  border-color:#31566c!important;
+  box-shadow:0 3px 12px rgba(18,45,63,.10)!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsHeroActions :is(button:first-child,.primary){
+  background:#eee6d6!important;
+  border-color:#d8ccb4!important;
+  color:#173d59!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsHeroMetric{
+  background:rgba(255,255,255,.08)!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+}
+
+/* White/cream operational cards. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanel,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsScopeBar,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview .updateFocusNow{
+  background:#fffdf8!important;
+  border-color:#d7dde0!important;
+  color:#243b49!important;
+  box-shadow:0 2px 8px rgba(27,47,61,.045)!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead{
+  background:#f8f5ef!important;
+  border-bottom-color:#dfe3e4!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi>:is(b,strong),
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead :is(h2,h3),
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyProject,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyMeters strong{
+  color:#243b49!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi>span,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi>small,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead p,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyMeters :is(small,em),
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyProject>i{
+  color:#687a85!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead span,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead>button{
+  color:#245c78!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.info:before{background:#4d7b82!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.good:before{background:#337257!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.warn:before{background:#9a6a2f!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.danger:before{background:#a94747!important}
+
+/* Inputs/selects must look like standard business software, not dark-console controls. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsScopeBar select,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .ccFilters :is(input,select){
+  background:#fff!important;
+  border-color:#c8d0d4!important;
+  color:#243b49!important;
+  color-scheme:light!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .ccFilters input::placeholder{color:#89979f!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .ccFilters option{background:#fff!important;color:#243b49!important}
+
+/* Rows and empty states. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage .opsProjectActivity :is(b,span,time){
+  color:#405764!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage .opsProjectActivity .activityRow{
+  border-bottom-color:#e2e5e5!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini,.updateEmpty,.updateLoading){
+  background:#fff!important;
+  border-color:#dfe3e4!important;
+  color:#314a58!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusRow,.updateAttentionRow,.updateSystemHealth,.updateTeamMini):hover{
+  background:#f8f5ef!important;
+  border-color:#bdc9ce!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateSystemHealth>span,.updateEnergyBriefRow>span){
+  background:#edf1f1!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusHead h2,.updateFocusRow>div b,.updateSystemHealth div b,.updateEnergyBriefRow b,.updateTeamMini div b,.updateAttentionRow div b){
+  color:#294451!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusHead p,.updateFocusRow>span,.updateFocusRow>div small,.updateSystemHealth small,.updateEnergyBriefRow small,.updateAttentionRow small,.updateTeamMini small,.updateFocusRow>em,.updateFocusRow>strong,.updateEmpty,.updateLoading){
+  color:#71828b!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .updateEnergyBriefRow{border-bottom-color:#e2e5e5!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .updateEnergyBriefRow strong.danger{color:#a94747!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .updateEnergyBriefRow strong.warn{color:#9a6a2f!important}
+
+/* Footer quick actions read as controls, not another dark card row. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button{
+  background:#fffdf8!important;
+  border-color:#ccd4d7!important;
+  color:#245c78!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button:hover{
+  background:#eee6d6!important;
+  border-color:#d8ccb4!important;
+}
+
+/* Lighter modal surfaces in the project overview as well. */
+body:has(#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode)) :is(#updateHealthModal,#updateAiModal,#updateNotificationCenter){
+  --ov-surface:#fffdf8;
+  --ov-panel:#f2efe8;
+  --ov-control:#ffffff;
+  --ov-soft:#f5f2eb;
+  --ov-line:#d7dde0;
+  --ov-hover:#f8f5ef;
+  --ov-muted:#687a85;
+  --ov-text:#243b49;
+  --ov-accent:#245c78;
+  color-scheme:light!important;
+}
