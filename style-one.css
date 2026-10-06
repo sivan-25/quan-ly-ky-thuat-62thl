@@ -1,0 +1,493 @@
+/* ESTA Style 1 — pilot theme for DEMO + 127HH only.
+   Non-functional visual layer: no data, auth or business logic is changed. */
+
+#app.styleOnePilot{
+  --s1-bg:#f4f7fb;
+  --s1-surface:#ffffff;
+  --s1-surface-2:#f8fafc;
+  --s1-sidebar:#0b1220;
+  --s1-sidebar-2:#111c31;
+  --s1-ink:#0f172a;
+  --s1-muted:#64748b;
+  --s1-line:#e2e8f0;
+  --s1-line-strong:#cbd5e1;
+  --s1-accent:#4f46e5;
+  --s1-accent-2:#06b6d4;
+  --s1-success:#059669;
+  --s1-warning:#d97706;
+  --s1-danger:#dc2626;
+  --s1-radius:16px;
+  --s1-shadow:0 12px 35px rgba(15,23,42,.07);
+  color:var(--s1-ink);
+  background:var(--s1-bg);
+}
+
+#app.styleOnePilot,
+#app.styleOnePilot *{
+  box-sizing:border-box;
+}
+
+#app.styleOnePilot main{
+  background:
+    radial-gradient(circle at 88% 0,rgba(79,70,229,.07),transparent 24rem),
+    radial-gradient(circle at 18% 100%,rgba(6,182,212,.06),transparent 28rem),
+    var(--s1-bg)!important;
+}
+
+#app.styleOnePilot .estaSidebar{
+  background:linear-gradient(180deg,var(--s1-sidebar) 0%,#101b2e 55%,#0b1220 100%)!important;
+  border-right:1px solid rgba(255,255,255,.07)!important;
+  box-shadow:8px 0 32px rgba(15,23,42,.12);
+}
+
+#app.styleOnePilot .estaSidebarBrand{
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+}
+#app.styleOnePilot .estaSidebarBrand b{color:#fff!important;letter-spacing:.04em}
+#app.styleOnePilot .estaSidebarBrand small{color:#8fa2bb!important}
+#app.styleOnePilot .estaPetalLogo span{background:linear-gradient(145deg,#67e8f9,#818cf8)!important}
+
+#app.styleOnePilot .estaNav{
+  padding:10px!important;
+  gap:5px!important;
+}
+#app.styleOnePilot .estaNav button{
+  min-height:44px!important;
+  border:1px solid transparent!important;
+  border-radius:12px!important;
+  color:#9fb0c7!important;
+  background:transparent!important;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  color:#eff6ff!important;
+  background:rgba(255,255,255,.055)!important;
+  border-color:rgba(255,255,255,.06)!important;
+  transform:translateX(1px);
+}
+#app.styleOnePilot .estaNav button.active{
+  color:#fff!important;
+  background:linear-gradient(135deg,rgba(79,70,229,.92),rgba(37,99,235,.88))!important;
+  border-color:rgba(165,180,252,.34)!important;
+  box-shadow:0 8px 24px rgba(79,70,229,.23)!important;
+}
+#app.styleOnePilot .estaNav button svg{
+  width:18px!important;height:18px!important;
+  stroke:currentColor!important;
+}
+#app.styleOnePilot .sideBackup{
+  border-top:1px solid rgba(255,255,255,.07)!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+}
+#app.styleOnePilot .sideBackup button,
+#app.styleOnePilot .sideBottom button{color:#9fb0c7!important}
+#app.styleOnePilot .sideUserCard{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.07)!important}
+#app.styleOnePilot .sideAvatar,
+#app.styleOnePilot .headerAvatar{
+  background:linear-gradient(135deg,#6366f1,#06b6d4)!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px rgba(79,70,229,.22);
+}
+
+#app.styleOnePilot .estaTopbar{
+  min-height:68px!important;
+  background:rgba(255,255,255,.88)!important;
+  border-bottom:1px solid rgba(203,213,225,.78)!important;
+  box-shadow:0 5px 24px rgba(15,23,42,.045)!important;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+#app.styleOnePilot .topModuleIcon{
+  border:1px solid #dbe3ee!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#eef2ff,#ecfeff)!important;
+  color:var(--s1-accent)!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .topModuleTitle h1{
+  color:var(--s1-ink)!important;
+  font-size:17px!important;
+  font-weight:760!important;
+  letter-spacing:-.02em!important;
+}
+#app.styleOnePilot .topModuleTitle p{
+  color:var(--s1-muted)!important;
+  font-size:10px!important;
+}
+#app.styleOnePilot .headerSearch{
+  border:1px solid var(--s1-line)!important;
+  background:#f8fafc!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .headerSearch:focus-within{
+  border-color:#a5b4fc!important;
+  box-shadow:0 0 0 3px rgba(99,102,241,.1)!important;
+}
+#app.styleOnePilot .headerSearch input{color:var(--s1-ink)!important}
+#app.styleOnePilot .headerBell{
+  border:1px solid var(--s1-line)!important;
+  background:#fff!important;
+  color:#475569!important;
+}
+#app.styleOnePilot .mobileMenuBtn{
+  border:1px solid var(--s1-line)!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+}
+
+#app.styleOnePilot .page,
+#app.styleOnePilot .demoFeaturePage{
+  background:transparent!important;
+  color:var(--s1-ink)!important;
+}
+
+#app.styleOnePilot .homeWelcome,
+#app.styleOnePilot .unifiedCommand,
+#app.styleOnePilot .homePanel,
+#app.styleOnePilot .kpiCard,
+#app.styleOnePilot .workEntryCard,
+#app.styleOnePilot .premiumTableCard,
+#app.styleOnePilot .energyTableCard,
+#app.styleOnePilot .inventoryCard,
+#app.styleOnePilot .maintenanceCard,
+#app.styleOnePilot .contractorCard,
+#app.styleOnePilot .constructionCard,
+#app.styleOnePilot .demoPanel,
+#app.styleOnePilot .demoKpi{
+  border:1px solid var(--s1-line)!important;
+  background:rgba(255,255,255,.96)!important;
+  color:var(--s1-ink)!important;
+  border-radius:var(--s1-radius)!important;
+  box-shadow:var(--s1-shadow)!important;
+}
+
+#app.styleOnePilot .homeWelcome,
+#app.styleOnePilot .unifiedCommand{
+  background:
+    linear-gradient(120deg,rgba(79,70,229,.075),rgba(6,182,212,.045) 62%,rgba(255,255,255,.94))!important;
+  overflow:hidden;
+}
+#app.styleOnePilot .homeEyebrow,
+#app.styleOnePilot .panelKicker,
+#app.styleOnePilot .demoHeroCopy span{
+  color:var(--s1-accent)!important;
+  font-weight:800!important;
+  letter-spacing:.11em!important;
+}
+#app.styleOnePilot .homeWelcome h1,
+#app.styleOnePilot .homePanel h2,
+#app.styleOnePilot .demoPanel h2,
+#app.styleOnePilot .demoPanel h3{
+  color:var(--s1-ink)!important;
+  letter-spacing:-.02em!important;
+}
+#app.styleOnePilot .homeWelcome p,
+#app.styleOnePilot .homePanelHead p,
+#app.styleOnePilot .demoPanelHead p{
+  color:var(--s1-muted)!important;
+}
+
+#app.styleOnePilot .homeKpis{
+  gap:12px!important;
+}
+#app.styleOnePilot .kpiCard{
+  min-height:108px!important;
+  position:relative;
+  overflow:hidden;
+}
+#app.styleOnePilot .kpiCard:after{
+  content:"";
+  position:absolute;
+  width:90px;height:90px;
+  right:-34px;top:-38px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.045;
+}
+#app.styleOnePilot .kpiCard strong{color:var(--s1-ink)!important;font-size:25px!important}
+#app.styleOnePilot .kpiCard small{color:#64748b!important}
+#app.styleOnePilot .kpiCard span{color:#94a3b8!important}
+#app.styleOnePilot .kpiIcon{
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+
+#app.styleOnePilot .homePanelHead{
+  border-bottom:1px solid #edf2f7!important;
+}
+#app.styleOnePilot .homePanelHead button,
+#app.styleOnePilot .quickActions button{
+  color:var(--s1-accent)!important;
+}
+#app.styleOnePilot .homeTaskRow,
+#app.styleOnePilot .homeActivity .activityRow{
+  border-color:#edf2f7!important;
+}
+#app.styleOnePilot .homeTaskRow:hover,
+#app.styleOnePilot .quickActions button:hover{
+  background:#f8fafc!important;
+}
+
+#app.styleOnePilot .demoHero{
+  border:1px solid #dfe6f0!important;
+  background:
+    linear-gradient(135deg,#111827 0%,#172554 54%,#164e63 100%)!important;
+  box-shadow:0 14px 32px rgba(15,23,42,.14)!important;
+}
+#app.styleOnePilot .demoHeroCopy h1{color:#fff!important}
+#app.styleOnePilot .demoHeroCopy p{color:#cbd5e1!important}
+#app.styleOnePilot .demoBtn{
+  min-height:42px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+}
+#app.styleOnePilot .demoBtn.primary{
+  border-color:var(--s1-accent)!important;
+  background:var(--s1-accent)!important;
+  color:#fff!important;
+}
+
+#app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot select,
+#app.styleOnePilot textarea{
+  min-height:42px;
+  border:1px solid var(--s1-line-strong)!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot textarea{min-height:72px}
+#app.styleOnePilot input:focus,
+#app.styleOnePilot select:focus,
+#app.styleOnePilot textarea:focus{
+  outline:none!important;
+  border-color:#818cf8!important;
+  box-shadow:0 0 0 3px rgba(99,102,241,.11)!important;
+}
+#app.styleOnePilot input::placeholder,
+#app.styleOnePilot textarea::placeholder{color:#94a3b8!important}
+
+#app.styleOnePilot button.primary,
+#app.styleOnePilot .primary,
+#app.styleOnePilot .estaReportPdfBtn{
+  border-color:var(--s1-accent)!important;
+  background:linear-gradient(135deg,#4f46e5,#2563eb)!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px rgba(79,70,229,.18)!important;
+}
+#app.styleOnePilot button.secondary,
+#app.styleOnePilot .secondary{
+  border-color:var(--s1-line)!important;
+  background:#fff!important;
+  color:#334155!important;
+}
+#app.styleOnePilot button{transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+#app.styleOnePilot button:not(:disabled):active{transform:translateY(1px)}
+
+#app.styleOnePilot table{
+  color:var(--s1-ink)!important;
+}
+#app.styleOnePilot table thead th,
+#app.styleOnePilot .demoTable th{
+  background:#f8fafc!important;
+  color:#475569!important;
+  border-color:#e2e8f0!important;
+  font-weight:720!important;
+}
+#app.styleOnePilot table tbody td,
+#app.styleOnePilot .demoTable td{
+  background:#fff!important;
+  color:#334155!important;
+  border-color:#edf2f7!important;
+}
+#app.styleOnePilot table tbody tr:hover td{background:#fafbff!important}
+
+#app.styleOnePilot .modal,
+#app.styleOnePilot .viewer,
+#app.styleOnePilot .demoDrawer,
+#app.styleOnePilot .demoIncidentModal,
+#app.styleOnePilot .demoChecklistModal{
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+#app.styleOnePilot .modalCard,
+#app.styleOnePilot .demoIncidentModalCard,
+#app.styleOnePilot .demoChecklistModalCard,
+#app.styleOnePilot .demoDrawerCard{
+  border:1px solid var(--s1-line)!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+  box-shadow:0 24px 70px rgba(15,23,42,.22)!important;
+}
+
+/* Pilot analytics panel powered by Chart.js. */
+#app.styleOnePilot .styleOneInsights{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  margin:14px 0;
+  padding:16px;
+  border:1px solid var(--s1-line);
+  border-radius:18px;
+  background:linear-gradient(145deg,#fff,#fafbff);
+  box-shadow:var(--s1-shadow);
+}
+#app.styleOnePilot .styleOneInsightHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px;
+}
+#app.styleOnePilot .styleOneInsightHead span{
+  display:block;
+  color:var(--s1-accent);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.12em;
+}
+#app.styleOnePilot .styleOneInsightHead h2{
+  margin:3px 0;
+  color:var(--s1-ink);
+  font-size:17px;
+  letter-spacing:-.02em;
+}
+#app.styleOnePilot .styleOneInsightHead p{
+  margin:0;color:var(--s1-muted);font-size:10px;
+}
+#app.styleOnePilot .styleOneInsightIcon{
+  display:grid;place-items:center;
+  width:40px;height:40px;
+  flex:0 0 40px;
+  border-radius:12px;
+  background:#eef2ff;
+  color:var(--s1-accent);
+}
+#app.styleOnePilot .styleOneInsightIcon svg{width:20px;height:20px}
+#app.styleOnePilot .styleOneInsightBody{
+  display:grid;
+  grid-template-columns:minmax(220px,.85fr) minmax(0,1.15fr);
+  align-items:center;
+  gap:20px;
+}
+#app.styleOnePilot .styleOneChartWrap{
+  position:relative;
+  min-height:190px;
+  display:grid;
+  place-items:center;
+}
+#app.styleOnePilot .styleOneChartWrap canvas{
+  width:100%!important;
+  max-width:270px!important;
+  height:190px!important;
+}
+#app.styleOnePilot .styleOneMetricGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+#app.styleOnePilot .styleOneMetric{
+  padding:12px 13px;
+  border:1px solid #e7eaf2;
+  border-radius:13px;
+  background:#fff;
+}
+#app.styleOnePilot .styleOneMetric span{
+  display:block;color:#64748b;font-size:9px;
+}
+#app.styleOnePilot .styleOneMetric strong{
+  display:block;margin-top:4px;color:var(--s1-ink);font-size:19px;
+}
+#app.styleOnePilot .styleOneMetric small{
+  display:block;margin-top:3px;color:#94a3b8;font-size:8.5px;
+}
+#app.styleOnePilot .styleOneChartFallback{
+  width:100%;
+  display:grid;
+  gap:8px;
+}
+#app.styleOnePilot .styleOneFallbackRow{
+  display:grid;
+  grid-template-columns:95px 1fr 28px;
+  gap:8px;
+  align-items:center;
+  font-size:10px;
+  color:#64748b;
+}
+#app.styleOnePilot .styleOneFallbackTrack{
+  height:8px;border-radius:999px;background:#eef2f7;overflow:hidden;
+}
+#app.styleOnePilot .styleOneFallbackTrack i{
+  display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6366f1,#06b6d4);
+}
+
+@media (max-width:1100px){
+  #app.styleOnePilot .homeKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #app.styleOnePilot .styleOneInsightBody{grid-template-columns:1fr 1fr}
+}
+
+@media (max-width:700px){
+  #app.styleOnePilot main{background:var(--s1-bg)!important}
+  #app.styleOnePilot .estaTopbar{
+    min-height:58px!important;
+    padding-left:max(10px,env(safe-area-inset-left))!important;
+    padding-right:max(10px,env(safe-area-inset-right))!important;
+  }
+  #app.styleOnePilot .estaSidebar{
+    width:min(86vw,320px)!important;
+    padding-bottom:max(10px,env(safe-area-inset-bottom))!important;
+  }
+  #app.styleOnePilot .page,
+  #app.styleOnePilot .demoFeaturePage{
+    padding:10px!important;
+  }
+  #app.styleOnePilot .topModuleTitle h1{font-size:15px!important}
+  #app.styleOnePilot .topModuleTitle p{font-size:9px!important;max-width:46vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #app.styleOnePilot .homeKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  #app.styleOnePilot .kpiCard{
+    min-height:94px!important;
+    padding:11px!important;
+    border-radius:14px!important;
+  }
+  #app.styleOnePilot .kpiCard strong{font-size:21px!important}
+  #app.styleOnePilot .homeMainGrid,
+  #app.styleOnePilot .homeBottomGrid{grid-template-columns:1fr!important;gap:10px!important}
+  #app.styleOnePilot .homePanel,
+  #app.styleOnePilot .workEntryCard,
+  #app.styleOnePilot .premiumTableCard,
+  #app.styleOnePilot .demoPanel{border-radius:14px!important}
+  #app.styleOnePilot button,
+  #app.styleOnePilot .demoBtn{min-height:44px}
+  #app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  #app.styleOnePilot select{min-height:44px!important}
+  #app.styleOnePilot .styleOneInsights{
+    margin:10px 0;padding:13px;border-radius:14px;
+  }
+  #app.styleOnePilot .styleOneInsightBody{grid-template-columns:1fr;gap:12px}
+  #app.styleOnePilot .styleOneChartWrap{min-height:155px}
+  #app.styleOnePilot .styleOneChartWrap canvas{height:155px!important;max-width:230px!important}
+  #app.styleOnePilot .styleOneMetricGrid{gap:7px}
+  #app.styleOnePilot .styleOneMetric{padding:10px}
+  #app.styleOnePilot .styleOneMetric strong{font-size:17px}
+}
+
+@media (max-width:380px){
+  #app.styleOnePilot .homeKpis{grid-template-columns:1fr!important}
+  #app.styleOnePilot .styleOneMetricGrid{grid-template-columns:1fr 1fr}
+  #app.styleOnePilot .topModuleTitle p{display:none!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  #app.styleOnePilot *,
+  #app.styleOnePilot *::before,
+  #app.styleOnePilot *::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
