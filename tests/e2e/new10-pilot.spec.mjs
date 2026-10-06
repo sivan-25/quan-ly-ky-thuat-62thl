@@ -294,8 +294,7 @@ test("NEW10 media manager persists image while offline", async ({ page }) => {
   await page.evaluate(()=>{centralSession={access_token:"qa-token",expires_at:4102444800}});
   await page.context().setOffline(true);
   const count=await page.evaluate(async()=>{
-    const canvas=document.createElement("canvas");canvas.width=8;canvas.height=8;
-    const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",.7));
+    const blob=new Blob([new Uint8Array([255,216,255,217])],{type:"image/jpeg"});
     const file=new File([blob],"camera-qa.jpg",{type:"image/jpeg"});
     const out=await window.ESTA_MEDIA_MANAGER.energyFile(file,"991",0,"NEW10");
     return {queued:out.queued,count:await window.ESTA_MEDIA_MANAGER.count()};
@@ -340,4 +339,35 @@ test("NEW10 report capability config hides unsupported solar", async ({ page }) 
   expect(cfg.supportsXlnt).toBe(false);
   await page.evaluate(()=>showModule("reports"));
   await expect(page.locator("#reportsPage")).toBeVisible();
+});
+
+
+test("NEW10 command palette and saved filter view work", async ({ page }) => {
+  await activateNew10(page);
+  await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+  await expect(page.locator("#new10CommandPalette")).toBeVisible();
+  await expect(page.locator("#new10CommandSearch")).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#new10CommandPalette")).toBeHidden();
+
+  await page.evaluate(()=>{
+    document.getElementById("filterType").value="Sự cố";
+    document.getElementById("filterStatus").value="Đang thực hiện";
+    window.ESTA_PRODUCTIVITY.saveView();
+    document.getElementById("filterType").value="";
+    document.getElementById("filterStatus").value="";
+    window.ESTA_PRODUCTIVITY.loadView();
+  });
+  await expect(page.locator("#filterType")).toHaveValue("Sự cố");
+  await expect(page.locator("#filterStatus")).toHaveValue("Đang thực hiện");
+});
+
+test("NEW10 notification center opens from the bell", async ({ page }) => {
+  await activateNew10(page);
+  await page.evaluate(()=>window.ESTA_PRODUCTIVITY.refreshNotices());
+  await page.locator(".headerBell").click();
+  await expect(page.locator("#new10NotificationCenter")).toBeVisible();
+  await expect(page.locator("#new10NoticeList")).toBeVisible();
+  await page.locator("[data-new10-close-notice]").click();
+  await expect(page.locator("#new10NotificationCenter")).toBeHidden();
 });
