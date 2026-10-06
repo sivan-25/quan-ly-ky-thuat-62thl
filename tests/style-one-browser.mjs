@@ -149,6 +149,19 @@ async function exerciseMobileMenu(page,label){
   if(dock.display==="none")throw new Error("Mobile bottom navigation is unexpectedly hidden");
   if(Math.abs(dock.innerHeight-dock.bottom)>1)throw new Error("Mobile bottom navigation is not flush with viewport bottom: "+JSON.stringify(dock));
   if(dock.left>1||Math.abs(dock.innerWidth-dock.right)>1)throw new Error("Mobile bottom navigation is not edge-to-edge: "+JSON.stringify(dock));
+  const dockVisual=await page.locator("#updateMobileNav").evaluate(el=>{
+    const cs=getComputedStyle(el);
+    const active=el.querySelector("button.active");
+    const acs=active?getComputedStyle(active):null;
+    return {
+      backgroundImage:cs.backgroundImage,
+      backgroundColor:cs.backgroundColor,
+      activeBackgroundImage:acs?.backgroundImage||"",
+      activeBackgroundColor:acs?.backgroundColor||""
+    };
+  });
+  if(!/linear-gradient/i.test(dockVisual.backgroundImage))throw new Error("Mobile bottom navigation does not use the distinct navy background");
+  if(!(/linear-gradient/i.test(dockVisual.activeBackgroundImage)||dockVisual.activeBackgroundColor!=="rgba(0, 0, 0, 0)"))throw new Error("Active mobile navigation item lacks visual contrast");
 
   await page.click("#menu");
   const state=await page.evaluate(()=> {
