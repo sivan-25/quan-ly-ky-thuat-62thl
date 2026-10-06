@@ -147,6 +147,11 @@
       isolatedResponsiveLayer: true,
       persistentWorkFilters: true,
       sharedProductionProjectsUntouched: true
+    }),
+    verify: Object.freeze({
+      syncScope: syncPilotScope,
+      saveFilters: saveFilterState,
+      restoreFilters: restoreFilterState
     })
   });
 })();
