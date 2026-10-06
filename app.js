@@ -268,19 +268,31 @@ window.downloadViewerMedia=async index=>{
  }catch(e){toast(e.message||"Không thể tải hình")}
 };
 
+async function projectSyncDirect(action,payload={},buildingId=currentBuilding?.id){
+ if(!centralSession?.access_token||!buildingId)return null;
+ return sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:buildingId,...payload}});
+}
 async function projectSync(action,payload={},buildingId=currentBuilding?.id){
  if(!centralSession?.access_token||!buildingId)return null;
  const pilot=window.ESTA_PROJECT_STORE?.isPilot?.(buildingId);
- if(pilot&&action!=="get")window.ESTA_PROJECT_STORE.setStatus("syncing",action);
+ const mutation=action!=="get";
+ if(pilot&&mutation)window.ESTA_PROJECT_STORE.setStatus("syncing",action);
+ if(pilot&&mutation&&window.ESTA_SYNC_QUEUE&&!navigator.onLine){
+   return window.ESTA_SYNC_QUEUE.enqueue(action,payload,buildingId,"offline");
+ }
  try{
-   const result=await sbFetch("/functions/v1/project-sync",{method:"POST",token:centralSession.access_token,body:{action,building_id:buildingId,...payload}});
+   const result=await projectSyncDirect(action,payload,buildingId);
    if(pilot)window.ESTA_PROJECT_STORE.setStatus("synced",action);
    return result;
  }catch(err){
+   if(pilot&&mutation&&window.ESTA_SYNC_QUEUE?.transient?.(err)){
+     return window.ESTA_SYNC_QUEUE.enqueue(action,payload,buildingId,err?.message||action);
+   }
    if(pilot)window.ESTA_PROJECT_STORE.setStatus("error",err?.message||action);
    throw err;
  }
 }
+window.ESTA_SYNC_QUEUE?.configure?.(item=>projectSyncDirect(item.action,item.payload,item.buildingId));
 const cloudVersionByBuilding={};
 let projectPeople=[],taskSelectedPeople=[],energySelectedPeople=[];
 const peopleLocalKey=id=>"esta_people_"+id;
@@ -1283,8 +1295,14 @@ $("#taskForm").onsubmit=async e=>{
    (async()=>{
      try{
        const taskSync=syncTaskRecord("upsert_task",obj,buildingId);
-       const imageUpload=files.length?uploadMediaFiles(files,"tasks",id,null,buildingId):Promise.resolve([]);
-       const [,uploaded]=await Promise.all([taskSync,imageUpload]);
+       const imageUpload=files.length
+         ?(window.ESTA_PROJECT_STORE?.isPilot?.(buildingId)&&window.ESTA_MEDIA_MANAGER
+           ?window.ESTA_MEDIA_MANAGER.taskFiles(files,id,buildingId)
+           :uploadMediaFiles(files,"tasks",id,null,buildingId).then(refs=>({refs,queued:0})))
+         :Promise.resolve({refs:[],queued:0});
+       const [,imageResult]=await Promise.all([taskSync,imageUpload]);
+       const uploaded=Array.isArray(imageResult)?imageResult:(imageResult?.refs||[]);
+       const queuedImages=Number(imageResult?.queued||0);
        if(removedRefs.length)await deleteStoredMediaRefs(removedRefs);
        if(uploaded.length){
          let latest=readTaskCacheFor(buildingId);
@@ -1298,6 +1316,7 @@ $("#taskForm").onsubmit=async e=>{
          if(currentBuilding.id===buildingId){render();hydrateMediaImages($("#tbody"))}
          toast("Đã tải xong "+uploaded.length+" hình");
        }
+       if(queuedImages)toast("Đã lưu công việc · "+queuedImages+" ảnh sẽ tự tải khi có mạng");
      }catch(err){
        console.warn(err);
        toast("Công việc đã lưu, nhưng có hình chưa đồng bộ. Hãy thử lại khi mạng ổn định.");
@@ -2314,10 +2333,20 @@ $("#energyForm").onsubmit=async e=>{
  try{
   const editId=$("#energyEditId").value,id=editId||Date.now();
   const all=energyLoad(),old=editId?all.find(x=>String(x.id)===String(editId)):null;
-  let image=old?.image||"",image2=old?.image2||"";
+  let image=old?.image||"",image2=old?.image2||"",queuedImages=0;
   const f=$("#energyImage").files[0],f2=$("#energyImage2").files[0];
-  if(f){const blob=await imageFileToBlob(f);image=await uploadMediaBlob(blob,"energy",id,0)}
-  if(dual&&f2){const blob=await imageFileToBlob(f2);image2=await uploadMediaBlob(blob,"energy",id,1)}
+  if(f){
+    if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_MEDIA_MANAGER){
+      const out=await window.ESTA_MEDIA_MANAGER.energyFile(f,id,0,currentBuilding.id);
+      if(out.ref)image=out.ref;if(out.queued)queuedImages++;
+    }else{const blob=await imageFileToBlob(f);image=await uploadMediaBlob(blob,"energy",id,0)}
+  }
+  if(dual&&f2){
+    if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_MEDIA_MANAGER){
+      const out=await window.ESTA_MEDIA_MANAGER.energyFile(f2,id,1,currentBuilding.id);
+      if(out.ref)image2=out.ref;if(out.queued)queuedImages++;
+    }else{const blob=await imageFileToBlob(f2);image2=await uploadMediaBlob(blob,"energy",id,1)}
+  }
   const obj={
     id,
     type:energyType,
@@ -2334,7 +2363,8 @@ $("#energyForm").onsubmit=async e=>{
   const next=editId?all.map(x=>String(x.id)===String(editId)?obj:x):[obj,...all];
   energySaveAll(next);
   await syncEnergyRecord("upsert_energy",obj);
-  resetEnergyForm();renderEnergy();renderHomeDashboard();toast(editId?"Đã cập nhật chỉ số":"Đã lưu chỉ số");
+  resetEnergyForm();renderEnergy();renderHomeDashboard();
+  toast(queuedImages?(editId?"Đã cập nhật · ảnh sẽ tự tải khi có mạng":"Đã lưu chỉ số · ảnh sẽ tự tải khi có mạng"):(editId?"Đã cập nhật chỉ số":"Đã lưu chỉ số"));
  }catch(err){toast(err.message||"Không thể lưu dữ liệu")}
  finally{btn.disabled=false}
 };
