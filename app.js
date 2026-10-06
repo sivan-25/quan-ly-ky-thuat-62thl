@@ -287,7 +287,7 @@ function renderPeopleSelector(kind){
      return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'">'+((kind==="task"||kind==="energy")?'<span class="peopleAvatar">'+esc(personInitials(name))+'</span>':'')+'<span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
    }).join("");
    box.querySelectorAll("[data-person]").forEach(el=>el.onclick=e=>{
-     e.stopPropagation();
+     e.preventDefault();e.stopPropagation();
      const name=decodeURIComponent(el.dataset.person),next=[...peopleSelected(kind)];
      const idx=next.indexOf(name);if(idx>=0)next.splice(idx,1);else next.push(name);
      setPeopleSelected(kind,next);
@@ -384,11 +384,37 @@ $("#taskPeopleButton").onclick=e=>{e.stopPropagation();const m=$("#taskPeopleMen
 $("#energyPeopleButton").onclick=e=>{e.stopPropagation();const m=$("#energyPeopleMenu"),open=m.classList.contains("hide");closePeopleMenus();if(open)m.classList.remove("hide")};
 $("#taskPeopleMenu").onclick=e=>e.stopPropagation();
 $("#energyPeopleMenu").onclick=e=>e.stopPropagation();
-document.querySelectorAll("[data-people-edit]").forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPeopleManager()});
+document.querySelectorAll("[data-people-edit]").forEach(btn=>btn.onclick=e=>{e.preventDefault();e.stopPropagation();openPeopleManager()});
 document.addEventListener("click",e=>{if(!e.target.closest(".peopleSelect"))closePeopleMenus()});
 $("#closePeopleManager").onclick=()=>$("#peopleManagerModal").classList.add("hide");
 $("#peopleManagerModal").onclick=e=>{if(e.target===$("#peopleManagerModal"))$("#peopleManagerModal").classList.add("hide")};
 $("#peopleAddForm").onsubmit=async e=>{e.preventDefault();const input=$("#newPersonName"),name=input.value.trim();if(!name)return;input.value="";await addProjectPerson(name);input.focus()};
+
+/* Mobile people picker is a top-level sheet, outside form stacking contexts. */
+function setupMobilePeopleSheets(){
+ const media=window.matchMedia("(max-width:760px)");
+ const menus=["taskPeopleMenu","energyPeopleMenu"].map(id=>document.getElementById(id)).filter(Boolean);
+ const anchors=new Map();
+ menus.forEach(menu=>{
+  const anchor=document.createComment("people-picker-position");menu.before(anchor);anchors.set(menu,anchor);
+  const head=menu.querySelector(".peopleMenuHead");
+  if(head&&!head.querySelector(".peopleSheetClose")){
+   const close=document.createElement("button");close.type="button";close.className="peopleSheetClose";
+   close.textContent="×";close.setAttribute("aria-label","Đóng chọn người thực hiện");
+   close.onclick=e=>{e.preventDefault();e.stopPropagation();closePeopleMenus()};
+   head.append(close);
+  }
+ });
+ function arrange(){
+  menus.forEach(menu=>{
+   if(media.matches){document.body.appendChild(menu);menu.classList.add("mobilePeopleSheet")}
+   else{anchors.get(menu).after(menu);menu.classList.remove("mobilePeopleSheet")}
+  });
+ }
+ if(media.addEventListener)media.addEventListener("change",arrange);else media.addListener(arrange);
+ arrange();
+}
+setupMobilePeopleSheets();
 
 function applyCloudSnapshot(building,row){
  if(!row)return;

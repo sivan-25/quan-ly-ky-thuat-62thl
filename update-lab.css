@@ -1849,3 +1849,46 @@
  #app #workPage #taskForm .workChoiceTile:focus-visible{outline:2px solid #102d64!important;outline-offset:2px!important}
 }
 @media(max-width:359px){#app #workPage #taskForm .workChoiceTile>b{font-size:11px!important}}
+
+/* Mobile performer management: keep the edit action reachable above navigation. */
+@media(max-width:760px){
+ body:has(.mobilePeopleSheet:not(.hide)) #updateMobileNav,
+ body:has(#peopleManagerModal:not(.hide)) #updateMobileNav{display:none!important}
+ #taskPeopleMenu.mobilePeopleSheet:not(.hide),
+ #energyPeopleMenu.mobilePeopleSheet:not(.hide){
+  position:fixed!important;display:flex!important;flex-direction:column!important;
+  left:8px!important;right:8px!important;top:auto!important;
+  bottom:max(8px,env(safe-area-inset-bottom))!important;
+  width:auto!important;min-width:0!important;max-width:none!important;
+  height:auto!important;max-height:72vh!important;max-height:72dvh!important;
+  z-index:4600!important;overflow:hidden!important;border:1px solid #33435f!important;
+  border-radius:16px!important;background:#0f1728!important;box-shadow:0 20px 60px rgba(0,0,0,.35)!important;
+ }
+ .mobilePeopleSheet .peopleMenuHead{display:flex!important;align-items:center!important;gap:8px!important;flex:0 0 auto!important;padding:12px!important;border-bottom:1px solid #33435f!important}
+ .mobilePeopleSheet .peopleMenuHead b{font-size:15px!important;color:#f4f7ff!important;font-weight:600!important}
+ .mobilePeopleSheet .peopleMenuHead>span{display:none!important}
+ .mobilePeopleSheet .peopleSheetClose{display:grid!important;place-items:center!important;width:36px!important;height:36px!important;flex:0 0 36px!important;margin-left:auto!important;padding:0!important;border:1px solid #4d607e!important;border-radius:9px!important;background:#1c2940!important;color:#fff!important;font-size:25px!important;line-height:1!important}
+ .mobilePeopleSheet .peopleOptions{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch;padding:8px!important}
+ .mobilePeopleSheet .peopleOption{display:grid!important;grid-template-columns:32px minmax(0,1fr) 24px!important;gap:10px!important;align-items:center!important;width:100%!important;min-height:52px!important;margin-bottom:5px!important;padding:8px!important;border:1px solid #33435f!important;border-radius:10px!important;background:#151f34!important;color:#f4f7ff!important}
+ .mobilePeopleSheet .peopleOption.selected{background:#123f48!important;border-color:#1aa6b9!important}
+ .mobilePeopleSheet .peopleName{font-size:15px!important;line-height:20px!important;color:inherit!important}
+ .mobilePeopleSheet .peopleAvatar{width:32px!important;height:32px!important;border-radius:9px!important;background:#1c2940!important;border:1px solid #39516c!important;color:#75d5e5!important;font-size:12px!important}
+ .mobilePeopleSheet .peopleCheck{width:24px!important;height:24px!important;border:1px solid #60708c!important;border-radius:6px!important;font-size:16px!important}
+ .mobilePeopleSheet .peopleEditBtn{display:block!important;flex:0 0 48px!important;width:100%!important;height:48px!important;min-height:48px!important;margin:0!important;padding:8px!important;border:0!important;border-top:1px solid #33435f!important;border-radius:0!important;background:#1c2940!important;color:#fff!important;font-size:15px!important;font-weight:600!important}
+ body:has(#peopleManagerModal:not(.hide)) #toast{z-index:4800!important}
+ #peopleManagerModal{z-index:4700!important;padding:8px!important;overflow:auto!important}
+ #peopleManagerModal .peopleManagerCard{display:flex!important;flex-direction:column!important;width:100%!important;max-width:520px!important;max-height:calc(100vh - 32px)!important;max-height:calc(100dvh - 32px)!important;min-height:0!important;overflow:hidden!important}
+ #peopleManagerModal .peopleManagerHead{flex:0 0 auto!important;padding:18px 50px 12px 14px!important}
+ #peopleManagerModal .peopleManagerHead p{font-size:13px!important}
+ #peopleManagerModal .peopleAddForm{display:grid!important;grid-template-columns:minmax(0,1fr) 80px!important;flex:0 0 auto!important;gap:8px!important;margin:12px!important}
+ #peopleManagerModal .peopleAddForm input{min-width:0!important;width:100%!important;height:44px!important;font-size:16px!important}
+ #peopleManagerModal .peopleAddForm button{height:44px!important;font-size:14px!important}
+ #peopleManagerModal .peopleManagerList{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow:auto!important;overscroll-behavior:contain!important;margin:0 12px!important}
+ #peopleManagerModal .peopleManagerRow{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;min-height:52px!important}
+ #peopleManagerModal .peopleManagerRow>div{min-width:0!important}
+ #peopleManagerModal .peopleManagerRow b{font-size:15px!important;overflow-wrap:anywhere!important}
+ #peopleManagerModal .peopleManagerRow button{min-width:52px!important;min-height:44px!important;font-size:14px!important}
+ #peopleManagerModal .peopleManagerFoot{flex:0 0 auto!important;font-size:12px!important;padding:10px 12px!important}
+ #peopleManagerModal .modalClose{width:36px!important;height:36px!important;font-size:24px!important}
+}
+@media(min-width:761px){.peopleSheetClose{display:none!important}}
