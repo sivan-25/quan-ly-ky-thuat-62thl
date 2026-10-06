@@ -273,10 +273,13 @@ function setPeopleSelected(kind,names){
 function personInitials(name){
  return String(name||"").trim().split(/\s+/).slice(-2).map(x=>x[0]||"").join("").toUpperCase()||"•";
 }
+let syncMobilePeopleLayout=()=>{};
 function renderPeopleSelector(kind){
+ syncMobilePeopleLayout();
  const box=kind==="energy"?$("#energyPeopleOptions"):$("#taskPeopleOptions");
  const btn=kind==="energy"?$("#energyPeopleButton"):$("#taskPeopleButton");
  if(!box||!btn)return;
+ const inline=box.closest(".inlinePeoplePicker")!==null;
  const selected=peopleSelected(kind);
  const names=[...new Set([...projectPeople.map(x=>x.name),...selected])].filter(Boolean);
  if(!names.length){
@@ -284,26 +287,36 @@ function renderPeopleSelector(kind){
  }else{
    const scrollTop=box.scrollTop;
    const existing=Array.from(box.querySelectorAll("[data-person]"));
-   const sameNames=existing.length===names.length&&existing.every((el,i)=>el.dataset.person===encodeURIComponent(names[i]));
+   const sameNames=existing.length===names.length&&existing.every((el,i)=>el.dataset.person===encodeURIComponent(names[i])&&(el.tagName==="LABEL")===inline);
    if(!sameNames){
     box.innerHTML=names.map(name=>{
      const on=selected.includes(name);
+     if(inline)return '<label class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'"><input type="checkbox" class="peopleNativeCheck" '+(on?'checked':'')+'><span class="peopleName">'+esc(name)+'</span></label>';
      return '<button type="button" class="peopleOption '+(on?"selected":"")+'" data-person="'+encodeURIComponent(name)+'" aria-pressed="'+on+'">'+((kind==="task"||kind==="energy")?'<span class="peopleAvatar">'+esc(personInitials(name))+'</span>':'')+'<span class="peopleName">'+esc(name)+'</span><span class="peopleCheck">'+(on?"✓":"")+'</span></button>';
     }).join("");
    }else{
     existing.forEach(el=>{
      const on=selected.includes(decodeURIComponent(el.dataset.person));
      el.classList.toggle("selected",on);el.setAttribute("aria-pressed",String(on));
+     const native=el.querySelector(".peopleNativeCheck");if(native)native.checked=on;
      const check=el.querySelector(".peopleCheck");if(check)check.textContent=on?"✓":"";
     });
    }
    box.scrollTop=scrollTop;
    box.querySelectorAll("[data-person]").forEach(el=>el.onclick=e=>{
+     if(inline)return;
      e.preventDefault();e.stopPropagation();
      const name=decodeURIComponent(el.dataset.person),next=[...peopleSelected(kind)];
      const idx=next.indexOf(name);if(idx>=0)next.splice(idx,1);else next.push(name);
      setPeopleSelected(kind,next);
      if(kind==="task")saveDraft();
+   });
+   if(inline)box.querySelectorAll(".peopleNativeCheck").forEach(input=>input.onchange=()=>{
+    const name=decodeURIComponent(input.closest("[data-person]").dataset.person);
+    const next=peopleSelected(kind).filter(n=>n!==name);
+    if(input.checked)next.push(name);
+    setPeopleSelected(kind,next);
+    if(kind==="task")saveDraft();
    });
  }
  const label=btn.querySelector("span");
@@ -319,8 +332,10 @@ function renderAllPeopleSelectors(){renderPeopleSelector("task");renderPeopleSel
 let peopleMenuOpenSeq=0;
 function closePeopleMenus(){
  peopleMenuOpenSeq+=1;
- $("#taskPeopleMenu")?.classList.add("hide");
- $("#energyPeopleMenu")?.classList.add("hide");
+ ["taskPeopleMenu","energyPeopleMenu"].forEach(id=>{
+  const menu=document.getElementById(id);
+  if(menu&&!menu.classList.contains("inlinePeoplePicker"))menu.classList.add("hide");
+ });
 }
 function openPeopleManager(){
  closePeopleMenus();
@@ -442,12 +457,20 @@ function setupMobilePeopleSheets(){
   }
  });
  function arrange(){
+  const inline=media.matches&&currentBuilding?.id==="62THL";
   menus.forEach(menu=>{
-   if(media.matches){document.body.appendChild(menu);menu.classList.add("mobilePeopleSheet")}
-   else{anchors.get(menu).after(menu);menu.classList.remove("mobilePeopleSheet")}
+   const wasInline=menu.classList.contains("inlinePeoplePicker");
+   if(media.matches&&!inline){if(menu.parentNode!==document.body)document.body.appendChild(menu);menu.classList.add("mobilePeopleSheet")}
+   else{if(menu.previousSibling!==anchors.get(menu))anchors.get(menu).after(menu);menu.classList.remove("mobilePeopleSheet")}
+   menu.classList.toggle("inlinePeoplePicker",inline);
+   if(inline)menu.classList.remove("hide");else if(wasInline)menu.classList.add("hide");
+   const edit=menu.querySelector("[data-people-edit]");
+   if(edit){if(!edit.dataset.originalLabel)edit.dataset.originalLabel=edit.textContent;edit.textContent=inline?"Quản lý danh sách":edit.dataset.originalLabel}
   });
  }
- if(media.addEventListener)media.addEventListener("change",arrange);else media.addListener(arrange);
+ syncMobilePeopleLayout=arrange;
+ const refresh=()=>{arrange();renderAllPeopleSelectors()};
+ if(media.addEventListener)media.addEventListener("change",refresh);else media.addListener(refresh);
  arrange();
 }
 setupMobilePeopleSheets();
@@ -754,6 +777,7 @@ window.homeOpenTask=id=>{
 };
 function applyBuildingUI(){
  if(!projectOverviewActive)return;
+ renderAllPeopleSelectors();
  const name=currentBuilding?.name||"Dự án";
  document.querySelectorAll(".buildingNameText").forEach(el=>el.textContent=name);
  const ht=$("#topHomeTitle p"),wt=$("#topWorkTitle p"),et=$("#topEnergyTitle p"),it=$("#topInventoryTitle p"),mt=$("#topMaintenanceTitle p"),ct=$("#topContractorTitle p"),cmt=$("#topConstructionTitle p");

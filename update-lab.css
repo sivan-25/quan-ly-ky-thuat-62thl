@@ -1850,6 +1850,28 @@
 }
 @media(max-width:359px){#app #workPage #taskForm .workChoiceTile>b{font-size:11px!important}}
 
+/* 62 THL mobile trial: native checkboxes in the form, with one page scroll. */
+@media(max-width:760px){
+ #app #workPage #taskForm .peopleSelect:has(>.inlinePeoplePicker)>#taskPeopleButton,
+ .workEditDrawer #taskForm .peopleSelect:has(>.inlinePeoplePicker)>#taskPeopleButton,
+ #app #energyPage .peopleSelect:has(>.inlinePeoplePicker)>#energyPeopleButton{display:none!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker{
+  display:block!important;position:static!important;inset:auto!important;
+  width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;
+  max-height:none!important;overflow:visible!important;transform:none!important;
+  margin:0!important;padding:8px!important;border:1px solid #bdd8eb!important;
+  border-radius:12px!important;background:#f5fbff!important;box-shadow:none!important;
+ }
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleMenuHead{display:none!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleOption,:is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleEditBtn{scroll-margin-top:80px!important;scroll-margin-bottom:120px!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleOptions{display:grid!important;gap:6px!important;padding:0!important;max-height:none!important;height:auto!important;overflow:visible!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleOption{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:48px!important;margin:0!important;padding:10px 12px!important;border:1px solid #c7dfed!important;border-radius:9px!important;background:#fff!important;color:#183263!important;cursor:pointer;touch-action:manipulation}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleOption.selected{background:#e3f0ff!important;border-color:#317dff!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleNativeCheck{display:block!important;position:static!important;appearance:auto!important;-webkit-appearance:checkbox!important;width:22px!important;height:22px!important;min-height:22px!important;flex:0 0 22px!important;margin:0!important;padding:0!important;opacity:1!important;accent-color:#183263}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleName{font-size:16px!important;line-height:22px!important;font-weight:500!important;color:inherit!important;overflow-wrap:anywhere}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleEditBtn{display:block!important;width:100%!important;min-height:44px!important;margin:8px 0 0!important;padding:8px!important;border:1px solid #bdd8eb!important;border-radius:9px!important;background:#eaf5fc!important;color:#183263!important;font-size:15px!important}
+}
+
 /* Mobile performer management: keep the edit action reachable above navigation. */
 @media(max-width:760px){
  body:has(.mobilePeopleSheet:not(.hide)) #updateMobileNav,
