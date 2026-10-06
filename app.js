@@ -16,15 +16,27 @@ function isAdminOverview(){return !!currentAccount?.is_admin&&!projectOverviewAc
 
 const taskStorageKeyFor=id=>id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+id;
 const taskStorageKey=()=>taskStorageKeyFor(currentBuilding.id);
-const load=()=>{
- if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.readTasks();
- try{let v=JSON.parse(localStorage.getItem(taskStorageKey())||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}
-};
-const save=a=>{
- if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.writeTasks(a);
- localStorage.setItem(taskStorageKey(),JSON.stringify(a));
- return a;
-};
+function energyStorageKeyFor(id){return id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+id}
+function readTaskCacheFor(id){
+ if(window.ESTA_PROJECT_STORE?.isPilot?.(id))return window.ESTA_PROJECT_STORE.readTasks(id);
+ try{const v=JSON.parse(localStorage.getItem(taskStorageKeyFor(id))||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}
+}
+function writeTaskCacheFor(id,value){
+ if(window.ESTA_PROJECT_STORE?.isPilot?.(id))return window.ESTA_PROJECT_STORE.writeTasks(value,id);
+ localStorage.setItem(taskStorageKeyFor(id),JSON.stringify(Array.isArray(value)?value:[]));
+ return value;
+}
+function readEnergyCacheFor(id){
+ if(window.ESTA_PROJECT_STORE?.isPilot?.(id))return window.ESTA_PROJECT_STORE.readEnergy(id);
+ try{const v=JSON.parse(localStorage.getItem(energyStorageKeyFor(id))||"[]");return Array.isArray(v)?v:[]}catch(e){return[]}
+}
+function writeEnergyCacheFor(id,value){
+ if(window.ESTA_PROJECT_STORE?.isPilot?.(id))return window.ESTA_PROJECT_STORE.writeEnergy(value,id);
+ localStorage.setItem(energyStorageKeyFor(id),JSON.stringify(Array.isArray(value)?value:[]));
+ return value;
+}
+const load=()=>readTaskCacheFor(currentBuilding.id);
+const save=a=>writeTaskCacheFor(currentBuilding.id,a);
 const today=()=>new Date().toLocaleDateString("en-CA");
 const fmt=d=>new Date(d+"T00:00").toLocaleDateString("vi-VN");
 const esc=(s="")=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -552,8 +564,8 @@ setupMobilePeopleSheets();
 
 function applyCloudSnapshot(building,row){
  if(!row)return;
- localStorage.setItem(building.id==="62THL"?"qlkt62_v1":"qlkt_tasks_"+building.id,JSON.stringify(Array.isArray(row.tasks)?row.tasks:[]));
- localStorage.setItem(building.id==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+building.id,JSON.stringify(Array.isArray(row.energy)?row.energy:[]));
+ writeTaskCacheFor(building.id,Array.isArray(row.tasks)?row.tasks:[]);
+ writeEnergyCacheFor(building.id,Array.isArray(row.energy)?row.energy:[]);
  cloudVersionByBuilding[building.id]=row.updated_at||"";
  if(currentBuilding?.id===building.id){render();renderEnergy();if(!$("#homePage").classList.contains("hide"))renderHomeDashboard()}
 }
@@ -603,13 +615,12 @@ async function loadProjectSnapshot(building){
  if(!centralSession?.access_token||!building?.id)return false;
  const buildingId=building.id,requestSeq=projectOpenSeq;
  const taskKey=taskStorageKeyFor(buildingId);
- const energyKey=buildingId==="62THL"?"qlkt62_energy_v1":"qlkt_energy_"+buildingId;
+ const energyKey=energyStorageKeyFor(buildingId);
 
- // Local storage is only a cache. Preserve any previous browser-only data
+ // Browser storage is only a cache. Preserve any previous browser-only data
  // before replacing the cache with the server snapshot.
- let previousLocalTasks=[],previousLocalEnergy=[];
- try{previousLocalTasks=JSON.parse(localStorage.getItem(taskKey)||"[]")}catch(e){}
- try{previousLocalEnergy=JSON.parse(localStorage.getItem(energyKey)||"[]")}catch(e){}
+ let previousLocalTasks=readTaskCacheFor(buildingId);
+ let previousLocalEnergy=readEnergyCacheFor(buildingId);
 
  try{
    const r=await projectSync("get",{},buildingId);
@@ -632,8 +643,8 @@ async function loadProjectSnapshot(building){
      }
    }catch(e){console.warn("Local backup skipped",e)}
 
-   localStorage.setItem(taskKey,JSON.stringify(cloudTasks));
-   localStorage.setItem(energyKey,JSON.stringify(cloudEnergy));
+   writeTaskCacheFor(buildingId,cloudTasks);
+   writeEnergyCacheFor(buildingId,cloudEnergy);
    cloudVersionByBuilding[buildingId]=row.updated_at||"";
 
    // Best-effort legacy base64 migration. It must never prevent the project
@@ -649,8 +660,8 @@ async function loadProjectSnapshot(building){
            JSON.parse(JSON.stringify(cloudEnergy))
          );
          if(!migrated.changed)return;
-         localStorage.setItem(taskKey,JSON.stringify(migrated.tasks));
-         localStorage.setItem(energyKey,JSON.stringify(migrated.energy));
+         writeTaskCacheFor(buildingId,migrated.tasks);
+         writeEnergyCacheFor(buildingId,migrated.energy);
          const merged=await projectSync("merge_snapshot",{tasks:migrated.tasks,energy:migrated.energy},buildingId);
          if(merged?.updated_at)cloudVersionByBuilding[buildingId]=merged.updated_at;
          if(currentBuilding?.id===buildingId){render();renderEnergy()}
@@ -665,8 +676,8 @@ async function loadProjectSnapshot(building){
    if(!Array.isArray(previousLocalTasks))previousLocalTasks=[];
    if(!Array.isArray(previousLocalEnergy))previousLocalEnergy=[];
    try{
-     localStorage.setItem(taskKey,JSON.stringify(previousLocalTasks));
-     localStorage.setItem(energyKey,JSON.stringify(previousLocalEnergy));
+     writeTaskCacheFor(buildingId,previousLocalTasks);
+     writeEnergyCacheFor(buildingId,previousLocalEnergy);
    }catch(_e){}
    toast("Không thể đồng bộ máy chủ · đang dùng dữ liệu đã lưu trên máy");
    return false;
@@ -1254,7 +1265,7 @@ $("#taskForm").onsubmit=async e=>{
    const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
    const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
-   localStorage.setItem(storageKey,JSON.stringify(a));
+   writeTaskCacheFor(buildingId,a);
    resetForm();render();renderHomeDashboard();
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc");
 
@@ -1265,13 +1276,13 @@ $("#taskForm").onsubmit=async e=>{
        const [,uploaded]=await Promise.all([taskSync,imageUpload]);
        if(removedRefs.length)await deleteStoredMediaRefs(removedRefs);
        if(uploaded.length){
-         let latest=[];try{latest=JSON.parse(localStorage.getItem(storageKey)||"[]")}catch(e){}
+         let latest=readTaskCacheFor(buildingId);
          latest=latest.map(x=>{
            if(String(x.id)!==String(id))return x;
            const merged=[...new Set([...(Array.isArray(x.imgs)?x.imgs:[]),...uploaded])];
            return {...x,imgs:merged,i:merged.length};
          });
-         localStorage.setItem(storageKey,JSON.stringify(latest));
+         writeTaskCacheFor(buildingId,latest);
          await appendTaskImages(id,uploaded,buildingId);
          if(currentBuilding.id===buildingId){render();hydrateMediaImages($("#tbody"))}
          toast("Đã tải xong "+uploaded.length+" hình");
@@ -2146,15 +2157,8 @@ function sync68EnergyTabs(){
  if((!supportsXlntEnergy()&&energyType==="xlnt")||(!supportsSolarEnergy()&&energyType==="solar"))energyType="electric";
  syncEnergyTabSelection();
 }
-function energyLoad(){
- if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.readEnergy();
- try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}
-}
-function energySaveAll(a){
- if(window.ESTA_PROJECT_STORE?.isPilot?.())return window.ESTA_PROJECT_STORE.writeEnergy(a);
- localStorage.setItem(energyStorageKey(),JSON.stringify(a));
- return a;
-}
+function energyLoad(){return readEnergyCacheFor(currentBuilding.id)}
+function energySaveAll(a){return writeEnergyCacheFor(currentBuilding.id,a)}
 function showModule(name){
  closeWorkFilter();
  const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
