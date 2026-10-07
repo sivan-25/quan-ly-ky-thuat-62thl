@@ -1060,9 +1060,9 @@ function restoreDraft(){
  }catch(e){}
 }
 let existingTaskImages=[],removedTaskImageRefs=[],pendingTaskFiles=[],pendingPreviewUrls=[],pendingTaskPhotoMeta=[];
-const PHOTO_ANNOTATOR_PROJECT_ID="130HH";
+const PHOTO_ANNOTATOR_PROJECT_IDS=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
 function photoAnnotator130Enabled(buildingId=currentBuilding?.id){
- return String(buildingId||"").trim().toUpperCase()===PHOTO_ANNOTATOR_PROJECT_ID&&!!window.PhotoAnnotator?.open;
+ return PHOTO_ANNOTATOR_PROJECT_IDS.has(String(buildingId||"").trim().toUpperCase())&&!!window.PhotoAnnotator?.open;
 }
 function photoResultFile(result,sourceFile,prefix="annotated"){
  const safe=(sourceFile?.name||"photo.jpg").replace(/\.[^.]+$/,"").replace(/[^A-Za-z0-9_-]+/g,"-").slice(0,60)||"photo";
@@ -1252,7 +1252,8 @@ function captureVideoFrameToFile(video){
   ctx.drawImage(video,0,0,width,height);
   canvas.toBlob(blob=>{
    if(!blob)return reject(new Error("Không thể tạo ảnh từ camera."));
-   resolve(new File([blob],"camera-130-"+Date.now()+".jpg",{type:"image/jpeg",lastModified:Date.now()}));
+   const code=String(currentBuilding?.id||"project").replace(/[^A-Za-z0-9_-]+/g,"-");
+   resolve(new File([blob],"camera-"+code+"-"+Date.now()+".jpg",{type:"image/jpeg",lastModified:Date.now()}));
   },"image/jpeg",.92);
  });
 }
@@ -1264,8 +1265,10 @@ async function openDirectCamera130(){
  const root=document.createElement("div");
  root.className="directCamera130";
  root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");
- root.innerHTML='<div class="directCamera130Stage"><video autoplay playsinline muted></video><div class="directCamera130Loading">Đang mở camera…</div><div class="directCamera130Top"><span>130 HỒNG HÀ · CAMERA</span><button type="button" aria-label="Đóng camera">×</button></div><div class="directCamera130Bottom"><button type="button" class="directCamera130Shot" aria-label="Chụp ảnh" disabled><i></i></button><small>Chụp</small></div></div>';
+ root.innerHTML='<div class="directCamera130Stage"><video autoplay playsinline muted></video><div class="directCamera130Loading">Đang mở camera…</div><div class="directCamera130Top"><span></span><button type="button" aria-label="Đóng camera">×</button></div><div class="directCamera130Bottom"><button type="button" class="directCamera130Shot" aria-label="Chụp ảnh" disabled><i></i></button><small>Chụp</small></div></div>';
  const video=root.querySelector("video"),shot=root.querySelector(".directCamera130Shot"),closeBtn=root.querySelector(".directCamera130Top button"),loading=root.querySelector(".directCamera130Loading");
+ const cameraTitle=root.querySelector(".directCamera130Top span");
+ if(cameraTitle)cameraTitle.textContent=String(currentBuilding?.name||currentBuilding?.id||"Dự án").toUpperCase()+" · CAMERA";
  const oldOverflow=document.body.style.overflow,oldOverscroll=document.body.style.overscrollBehavior;
  const cleanup=()=>{
   if(closed)return;closed=true;
