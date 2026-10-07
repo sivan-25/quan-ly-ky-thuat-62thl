@@ -2714,6 +2714,12 @@ function setInventoryTab(tab){
  $("#inventoryMaterialsPane").classList.toggle("hide",tab!=="materials");
  $("#inventoryToolsPane").classList.toggle("hide",tab!=="tools");
 }
+/* STYLE1_130HH_INVENTORY_TAB_RESTORE */
+document.querySelectorAll("[data-inventory-tab]").forEach(b=>{
+ b.addEventListener("click",()=>{
+   if(typeof styleOne130Active==="function"&&styleOne130Active())setInventoryTab(b.dataset.inventoryTab);
+ });
+});
 function resetMaterialForm(sampleName="",sampleUnit="Cái"){
  $("#materialId").value="";$("#materialCode").value="";$("#materialName").value=sampleName;$("#materialUnit").value=sampleUnit||"Cái";
  $("#materialTrackingStart").value=today();$("#materialTrackingStart").max=today();$("#materialOpeningQty").value="0";$("#materialMinQty").value="0";$("#materialNote").value="";
