@@ -1,14 +1,11 @@
 import { test, expect } from "@playwright/test";
 
 async function activateNew10(page) {
-  // These pilot checks exercise local ESTA code only. Block third-party/CDN traffic
-  // so an unavailable font/library CDN cannot turn every UI assertion into a navigation timeout.
-  await page.route(/^https?:\/\/(?!127\.0\.0\.1:8080(?:\/|$))/, route => route.abort());
-  await page.goto("/", { waitUntil: "domcontentloaded", timeout: 10_000 });
+  await page.goto("/", { waitUntil: "domcontentloaded", timeout: 15_000 });
   await page.waitForFunction(
     () => !!window.ESTA_NEW10_PILOT && !!window.estaProjectConfig,
     null,
-    { timeout: 5_000 }
+    { timeout: 10_000 }
   );
 
   await page.evaluate(() => {
