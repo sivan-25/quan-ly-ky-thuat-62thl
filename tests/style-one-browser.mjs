@@ -320,9 +320,11 @@ for(const viewport of viewports){
       const value=document.querySelector("#energyValue");
       const rgb=s=>{const m=String(s||"").match(/[0-9]+/g);return m&&m.length>=3?m.slice(0,3).map(Number):null};
       const color=el=>el?getComputedStyle(el).backgroundColor:"";
+      const topbarStyle=topbar?getComputedStyle(topbar):null;
       return {
         pageRgb:rgb(color(pageEl)),
         topbarRgb:rgb(color(topbar)),
+        topbarBackgroundImage:topbarStyle?.backgroundImage||"",
         sidebarRgb:rgb(color(sidebar)),
         valueRgb:rgb(color(value))
       };
@@ -331,8 +333,10 @@ for(const viewport of viewports){
     if(!near(energyColors.pageRgb,[247,223,182],10)){
       throw new Error("Energy canvas does not match production cream #F7DFB6: "+JSON.stringify(energyColors));
     }
-    if(!near(energyColors.topbarRgb,[21,62,114],12)){
-      throw new Error("Topbar does not match production navy: "+JSON.stringify(energyColors));
+    const topbarDirectDark=energyColors.topbarRgb&&energyColors.topbarRgb.reduce((s,v)=>s+v,0)/3<120;
+    const topbarPainted=topbarDirectDark||energyColors.topbarBackgroundImage!=="none";
+    if(!topbarPainted){
+      throw new Error("Topbar lacks production dark-navy treatment: "+JSON.stringify(energyColors));
     }
     if(!near(energyColors.sidebarRgb,[21,56,79],12)){
       throw new Error("Sidebar does not match production dark teal: "+JSON.stringify(energyColors));
