@@ -354,7 +354,7 @@ async function contractorExportDirectoryEstaPdf(){
     columns:[
       {label:"STT",weight:.5},{label:"Nhà thầu",weight:2.1},{label:"Lĩnh vực",weight:1.4},{label:"SĐT",weight:1.2},
       {label:"Người liên hệ",weight:1.5},{label:"Thời hạn HĐ",weight:1.7},{label:"CV",weight:.7},{label:"Gần nhất",weight:1.1},{label:"Trạng thái",weight:1.1}
-    ],rows,
+    ],rows,photos,
     summaries:[
       {value:contractors.length,label:"NHÀ THẦU"},
       {value:active,label:"ĐANG HOẠT ĐỘNG"},
@@ -373,6 +373,11 @@ async function contractorExportDetailEstaPdf(){
     x.work_content||"—",contractorCauseValue(x.cause)||"—",x.solution||"—",x.status||"—",x.note||"—"
   ]);
   const done=jobs.filter(x=>x.status==="Hoàn thành").length;
+  let photoNo=0;
+  const photos=jobs.flatMap(x=>(Array.isArray(x.images)?x.images:[]).filter(Boolean).map(ref=>({
+    ref,
+    caption:"Hình "+(++photoNo)+" · "+(x.work_date?fmt(x.work_date):"Không rõ ngày")+" · "+String(x.work_content||"Công việc nhà thầu").slice(0,80)
+  })));
   return window.exportGenericEstaPdf({
     title:"HỒ SƠ NHÀ THẦU · "+String(c.name||"").toUpperCase(),sectionLabel:"QUẢN LÝ NHÀ THẦU",
     tableLabel:"LỊCH SỬ CÔNG VIỆC",periodLabel:"TOÀN BỘ LỊCH SỬ",
