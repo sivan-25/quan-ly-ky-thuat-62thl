@@ -158,3 +158,125 @@
   backdrop-filter:blur(8px)!important;
 }
 .directCamera130Loading.hide{display:none!important}
+
+
+/* TASK_PHOTO_VIEWER_20261007 */
+.pendingImg .pendingImgPhoto{
+  cursor:zoom-in!important;
+  touch-action:manipulation!important;
+}
+.pendingPhotoViewer{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483100!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:14px!important;
+  background:rgba(0,0,0,.9)!important;
+  -webkit-backdrop-filter:blur(8px)!important;
+  backdrop-filter:blur(8px)!important;
+}
+.pendingPhotoViewerCard{
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr) auto!important;
+  width:min(960px,100%)!important;
+  height:min(92vh,900px)!important;
+  max-height:92dvh!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:18px!important;
+  background:#07111d!important;
+  box-shadow:0 26px 80px rgba(0,0,0,.45)!important;
+}
+.pendingPhotoViewerCard header{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  min-height:58px!important;
+  padding:8px 10px 8px 16px!important;
+  border-bottom:1px solid rgba(255,255,255,.1)!important;
+  background:#102947!important;
+  color:#fff!important;
+}
+.pendingPhotoViewerCard header b{
+  font-size:14px!important;
+  font-weight:800!important;
+}
+.pendingPhotoViewerClose{
+  width:42px!important;
+  min-width:42px!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.2)!important;
+  border-radius:12px!important;
+  background:#173454!important;
+  color:#fff!important;
+  font-size:25px!important;
+  line-height:1!important;
+}
+.pendingPhotoViewerCard main{
+  min-height:0!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:8px!important;
+  overflow:auto!important;
+  background:#000!important;
+}
+.pendingPhotoViewerCard main img{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+}
+.pendingPhotoViewerCard footer{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:9px!important;
+  padding:10px calc(10px + env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) calc(10px + env(safe-area-inset-left,0px))!important;
+  border-top:1px solid rgba(255,255,255,.1)!important;
+  background:#102947!important;
+}
+.pendingPhotoViewerCard footer button{
+  min-height:48px!important;
+  padding:0 12px!important;
+  border-radius:12px!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.pendingPhotoViewerEdit{
+  border:0!important;
+  background:linear-gradient(135deg,#0877ff,#17b9d8)!important;
+  color:#fff!important;
+}
+.pendingPhotoViewerDone{
+  border:1px solid #365372!important;
+  background:#132a47!important;
+  color:#e4edf8!important;
+}
+@media(max-width:760px){
+  .pendingPhotoViewer{
+    padding:0!important;
+    align-items:stretch!important;
+  }
+  .pendingPhotoViewerCard{
+    width:100vw!important;
+    max-width:none!important;
+    height:100vh!important;
+    height:100dvh!important;
+    max-height:none!important;
+    border:0!important;
+    border-radius:0!important;
+  }
+  .pendingPhotoViewerCard header{
+    min-height:calc(58px + env(safe-area-inset-top,0px))!important;
+    padding-top:calc(8px + env(safe-area-inset-top,0px))!important;
+  }
+  .pendingPhotoViewerCard main{padding:0!important}
+  .pendingPhotoViewerCard footer{grid-template-columns:1.3fr .7fr!important}
+}
