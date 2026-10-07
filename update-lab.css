@@ -2441,3 +2441,13 @@
 @media(max-width:359px){
  #updateMobileNav.updateMobileNav.liveProjectMobileNav button>b{font-size:11px!important}
 }
+
+
+/* LIVE_PROJECT_MOBILE_DOCK_FLUSH_BOTTOM_20261007 */
+@media(max-width:760px){
+  body.estaMobileScrollShell #updateMobileNav.updateMobileNav.liveProjectMobileNav{
+    bottom:0!important;
+    height:calc(78px + env(safe-area-inset-bottom,0px))!important;
+    padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))!important;
+  }
+}
