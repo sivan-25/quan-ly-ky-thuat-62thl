@@ -307,8 +307,7 @@ test("NEW10 media manager persists image while offline", async ({ page }) => {
   await page.evaluate(()=>{centralSession={access_token:"qa-token",expires_at:4102444800}});
   await page.context().setOffline(true);
   const count=await page.evaluate(async()=>{
-    const blob=new Blob([new Uint8Array([255,216,255,217])],{type:"image/jpeg"});
-    const file=new File([blob],"camera-qa.jpg",{type:"image/jpeg"});
+    const file=new File([new Uint8Array([255,216,255,217])],"camera-qa.jpg",{type:"image/jpeg"});
     const out=await window.ESTA_MEDIA_MANAGER.energyFile(file,"991",0,"NEW10");
     return {queued:out.queued,count:await window.ESTA_MEDIA_MANAGER.count()};
   });
