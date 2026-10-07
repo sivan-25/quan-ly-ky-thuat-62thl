@@ -2371,3 +2371,177 @@ body:has(#app.styleOnePilot) #app.styleOnePilot #reportsPage{
     border-top-color:#2a5987!important;
   }
 }
+
+
+/* STYLE_ONE_EXACT_MAIN_REFERENCE_V17 */
+/* Exact color reference taken from the user's production screenshots.
+   IMPORTANT: color-only override. Style 1 layout and behavior are unchanged. */
+#app.styleOnePilot{
+  --esta-ref-sidebar:#15384f;
+  --esta-ref-topbar:#153e72;
+  --esta-ref-work-bg:#f6f8fa;
+  --esta-ref-energy-bg:#f7dfb6;
+  --esta-ref-card:#ffffff;
+  --esta-ref-energy-input:#18223b;
+  --esta-ref-text:#183b56;
+  --esta-ref-muted:#718595;
+  --esta-ref-cyan:#19b8d4;
+}
+
+/* Shared application chrome from the real production screenshots. */
+#app.styleOnePilot .estaSidebar{
+  background:#15384f!important;
+  background-image:none!important;
+  border-right-color:rgba(255,255,255,.08)!important;
+}
+#app.styleOnePilot .estaTopbar{
+  background:#153e72!important;
+  background-image:none!important;
+  border-bottom-color:#254f7e!important;
+}
+#app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+#app.styleOnePilot .topModuleTitle p{color:#bdd0df!important}
+#app.styleOnePilot .topModuleIcon{
+  background:#214f7e!important;
+  color:#4dd8e7!important;
+  border-color:#37658f!important;
+}
+#app.styleOnePilot .headerSearch,
+#app.styleOnePilot .iconAction,
+#app.styleOnePilot .pdfAction,
+#app.styleOnePilot .headerBell,
+#app.styleOnePilot .mobileMenuBtn{
+  background:#173f70!important;
+  border-color:#355f87!important;
+  color:#d7e5ef!important;
+}
+#app.styleOnePilot .headerSearch input,
+#app.styleOnePilot .headerSearch input::placeholder{color:#dce8f3!important}
+
+/* WORK: production uses a cool light-gray canvas, not cream. */
+html:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage.page{
+  background:#f6f8fa!important;
+  background-color:#f6f8fa!important;
+  background-image:none!important;
+}
+#app.styleOnePilot.workMode :is(
+  .workEntryCard,.premiumTableCard,.stats article
+){
+  background:#fff!important;
+  border-color:#e2e9ee!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard th{
+  background:#eef3f6!important;
+  color:#385a73!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard td{
+  background:#fff!important;
+  color:#27445b!important;
+}
+#app.styleOnePilot.workMode #workPage .typeBadge{
+  background:#eef5f9!important;
+  color:#4d7085!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.doing{
+  background:#fff4e3!important;
+  color:#9f6a20!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.done{
+  background:#eaf8f1!important;
+  color:#277c57!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.wait,
+#app.styleOnePilot.workMode #workPage .badge.waiting{
+  background:#fff0f0!important;
+  color:#ac555a!important;
+}
+#app.styleOnePilot.workMode #workPage .performerChips.pro>span{
+  background:#f3f9f5!important;
+  color:#3a6550!important;
+  border-color:#dfe9e3!important;
+}
+
+/* ENERGY: production intentionally uses the cream canvas shown in the reference. */
+body:has(#app.styleOnePilot.energyMode),
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode,
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode>main,
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode main,
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode #energyPage{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+#app.styleOnePilot.energyMode :is(
+  .energyCard,.energyTableCard,.energySummaryCards article
+){
+  background:#fff!important;
+  border-color:#dce3e6!important;
+  box-shadow:0 3px 12px rgba(21,56,79,.05)!important;
+}
+
+/* Production Energy tabs: cool-gray rail, white active tab, cyan accent. */
+#app.styleOnePilot.energyMode .energyTabs{
+  background:#e9eef1!important;
+  border-color:#d7dfe3!important;
+}
+#app.styleOnePilot.energyMode .energyTabs button{
+  background:transparent!important;
+  color:#405c73!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot.energyMode .energyTabs button.active{
+  background:#fff!important;
+  color:#153e72!important;
+  border-color:#385e80!important;
+  box-shadow:inset 0 -3px #19b8d4!important;
+}
+
+/* Production Energy form uses dark navy fields against white cards. */
+#app.styleOnePilot.energyMode #energyPage .energyForm input:not([type="file"]),
+#app.styleOnePilot.energyMode #energyPage .energyForm select,
+#app.styleOnePilot.energyMode #energyPage .energyForm textarea,
+#app.styleOnePilot.energyMode #energyPage .energyForm .peopleSelectBtn,
+#app.styleOnePilot.energyMode #energyPage .energyForm .peopleButton{
+  background:#18223b!important;
+  background-color:#18223b!important;
+  border-color:#24314f!important;
+  color:#f4f7fb!important;
+}
+#app.styleOnePilot.energyMode #energyPage .energyForm input::placeholder,
+#app.styleOnePilot.energyMode #energyPage .energyForm textarea::placeholder{
+  color:#8fa1be!important;
+}
+#app.styleOnePilot.energyMode #energyPage .energyForm label>span{
+  color:#8ea0bd!important;
+}
+#app.styleOnePilot.energyMode #energyPage .energyImageField,
+#app.styleOnePilot.energyMode #energyPage .energyImageField input[type="file"]{
+  background:#fff!important;
+  color:#607994!important;
+}
+
+/* Production Energy primary action uses the visible violet-to-cyan gradient. */
+#app.styleOnePilot.energyMode #energyPage .energyActions .primary,
+#app.styleOnePilot.energyMode #energyPage .energySaveBtn,
+#app.styleOnePilot.energyMode #energyPage button[data-energy-save]{
+  background:linear-gradient(90deg,#6966fe 0%,#29c1e0 100%)!important;
+  border-color:transparent!important;
+  color:#101827!important;
+  box-shadow:0 9px 22px rgba(74,112,222,.16)!important;
+}
+
+/* Mobile follows the same per-module canvas logic. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot.workMode){background:#f6f8fa!important}
+  body:has(#app.styleOnePilot.energyMode){background:#f7dfb6!important}
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#315c87!important;
+  }
+}
