@@ -1617,10 +1617,21 @@ async function demoExportIncidentsEstaPdf(){
    r.push(x.severity||"—",x.status||"—");
    return r;
  });
+ let photoNo=0;
+ const photos=rows.flatMap(x=>{
+   const code=useStartDate?demoIncidentVisibleRef(x):(x.incident_code||"Sự cố");
+   const before=(Array.isArray(x.before_images)?x.before_images:[]).filter(Boolean).map(ref=>({
+     ref,caption:"Hình "+(++photoNo)+" · "+code+" · Trước xử lý"
+   }));
+   const after=(Array.isArray(x.after_images)?x.after_images:[]).filter(Boolean).map(ref=>({
+     ref,caption:"Hình "+(++photoNo)+" · "+code+" · Sau xử lý"
+   }));
+   return [...before,...after];
+ });
  return window.exportGenericEstaPdf({
    title:"BÁO CÁO SỰ CỐ & DEFECT",sectionLabel:"SỰ CỐ / DEFECT",tableLabel:"DANH SÁCH SỰ CỐ",
    periodLabel:workReportPeriod("week").label,filename:"BaoCao_SuCo_"+workReportPeriod("week").suffix+".pdf",
-   columns,rows:data,
+   columns,rows:data,photos,
    summaries:[
      {value:rows.length,label:"TỔNG SỰ CỐ"},
      {value:rows.filter(x=>x.status==="Đã đóng").length,label:"ĐÃ ĐÓNG"},
