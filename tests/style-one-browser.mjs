@@ -251,21 +251,31 @@ for(const viewport of viewports){
     await page.screenshot({path:`${outDir}/${viewport.name}-work.png`,fullPage:true});
     const workColors=await page.evaluate(()=>{
       const pageEl=document.querySelector("#workPage");
+      const app=document.querySelector("#app");
+      const main=document.querySelector("#app>main")||document.querySelector("#app main");
       const type=document.querySelector("#workPage .typeBadge");
       const doing=document.querySelector("#workPage .badge.doing");
       const performer=document.querySelector("#workPage .performerChips.pro>span");
       const rgb=s=>{const m=String(s||"").match(/[0-9]+/g);return m&&m.length>=3?m.slice(0,3).map(Number):null};
+      const color=el=>el?getComputedStyle(el).backgroundColor:"";
       return {
-        pageBg:getComputedStyle(pageEl).backgroundColor,
-        typeBg:type?getComputedStyle(type).backgroundColor:"",
-        doingBg:doing?getComputedStyle(doing).backgroundColor:"",
-        performerBg:performer?getComputedStyle(performer).backgroundColor:"",
-        pageRgb:rgb(getComputedStyle(pageEl).backgroundColor),
-        typeRgb:type?rgb(getComputedStyle(type).backgroundColor):null,
-        doingRgb:doing?rgb(getComputedStyle(doing).backgroundColor):null
+        bodyBg:color(document.body),
+        appBg:color(app),
+        mainBg:color(main),
+        pageBg:color(pageEl),
+        typeBg:type?color(type):"",
+        doingBg:doing?color(doing):"",
+        performerBg:performer?color(performer):"",
+        bodyRgb:rgb(color(document.body)),
+        appRgb:rgb(color(app)),
+        mainRgb:rgb(color(main)),
+        pageRgb:rgb(color(pageEl)),
+        typeRgb:type?rgb(color(type)):null,
+        doingRgb:doing?rgb(color(doing)):null
       };
     });
-    if(workColors.pageRgb&&workColors.pageRgb[0]>245&&workColors.pageRgb[1]>210&&workColors.pageRgb[2]<190){
+    const yellowish=v=>v&&v[0]>240&&v[1]>205&&v[2]<195;
+    if([workColors.bodyRgb,workColors.appRgb,workColors.mainRgb,workColors.pageRgb].some(yellowish)){
       const workBgDiagnostics=await page.evaluate(()=>{
         const el=document.querySelector("#workPage");
         const rows=[];
