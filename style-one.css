@@ -1,0 +1,3212 @@
+/* ESTA Style 1 — pilot theme for DEMO + 127HH only.
+   Non-functional visual layer: no data, auth or business logic is changed. */
+
+#app.styleOnePilot{
+  --s1-bg:#f4f7fb;
+  --s1-surface:#ffffff;
+  --s1-surface-2:#f8fafc;
+  --s1-sidebar:#0b1220;
+  --s1-sidebar-2:#111c31;
+  --s1-ink:#0f172a;
+  --s1-muted:#64748b;
+  --s1-line:#e2e8f0;
+  --s1-line-strong:#cbd5e1;
+  --s1-accent:#4f46e5;
+  --s1-accent-2:#06b6d4;
+  --s1-success:#059669;
+  --s1-warning:#d97706;
+  --s1-danger:#dc2626;
+  --s1-radius:16px;
+  --s1-shadow:0 12px 35px rgba(15,23,42,.07);
+  color:var(--s1-ink);
+  background:var(--s1-bg);
+}
+
+#app.styleOnePilot,
+#app.styleOnePilot *{
+  box-sizing:border-box;
+}
+
+#app.styleOnePilot main{
+  background:
+    radial-gradient(circle at 88% 0,rgba(79,70,229,.07),transparent 24rem),
+    radial-gradient(circle at 18% 100%,rgba(6,182,212,.06),transparent 28rem),
+    var(--s1-bg)!important;
+}
+
+#app.styleOnePilot .estaSidebar{
+  background:linear-gradient(180deg,var(--s1-sidebar) 0%,#101b2e 55%,#0b1220 100%)!important;
+  border-right:1px solid rgba(255,255,255,.07)!important;
+  box-shadow:8px 0 32px rgba(15,23,42,.12);
+}
+
+#app.styleOnePilot .estaSidebarBrand{
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+}
+#app.styleOnePilot .estaSidebarBrand b{color:#fff!important;letter-spacing:.04em}
+#app.styleOnePilot .estaSidebarBrand small{color:#8fa2bb!important}
+#app.styleOnePilot .estaPetalLogo span{background:linear-gradient(145deg,#67e8f9,#818cf8)!important}
+
+#app.styleOnePilot .estaNav{
+  padding:10px!important;
+  gap:5px!important;
+}
+#app.styleOnePilot .estaNav button{
+  min-height:44px!important;
+  border:1px solid transparent!important;
+  border-radius:12px!important;
+  color:#9fb0c7!important;
+  background:transparent!important;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  color:#eff6ff!important;
+  background:rgba(255,255,255,.055)!important;
+  border-color:rgba(255,255,255,.06)!important;
+  transform:translateX(1px);
+}
+#app.styleOnePilot .estaNav button.active{
+  color:#fff!important;
+  background:linear-gradient(135deg,rgba(79,70,229,.92),rgba(37,99,235,.88))!important;
+  border-color:rgba(165,180,252,.34)!important;
+  box-shadow:0 8px 24px rgba(79,70,229,.23)!important;
+}
+#app.styleOnePilot .estaNav button svg{
+  width:18px!important;height:18px!important;
+  stroke:currentColor!important;
+}
+#app.styleOnePilot .sideBackup{
+  border-top:1px solid rgba(255,255,255,.07)!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+}
+#app.styleOnePilot .sideBackup button,
+#app.styleOnePilot .sideBottom button{color:#9fb0c7!important}
+#app.styleOnePilot .sideUserCard{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.07)!important}
+#app.styleOnePilot .sideAvatar,
+#app.styleOnePilot .headerAvatar{
+  background:linear-gradient(135deg,#6366f1,#06b6d4)!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px rgba(79,70,229,.22);
+}
+
+#app.styleOnePilot .estaTopbar{
+  min-height:68px!important;
+  background:rgba(255,255,255,.88)!important;
+  border-bottom:1px solid rgba(203,213,225,.78)!important;
+  box-shadow:0 5px 24px rgba(15,23,42,.045)!important;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+#app.styleOnePilot .topModuleIcon{
+  border:1px solid #dbe3ee!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#eef2ff,#ecfeff)!important;
+  color:var(--s1-accent)!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .topModuleTitle h1{
+  color:var(--s1-ink)!important;
+  font-size:17px!important;
+  font-weight:760!important;
+  letter-spacing:-.02em!important;
+}
+#app.styleOnePilot .topModuleTitle p{
+  color:var(--s1-muted)!important;
+  font-size:10px!important;
+}
+#app.styleOnePilot .headerSearch{
+  border:1px solid var(--s1-line)!important;
+  background:#f8fafc!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .headerSearch:focus-within{
+  border-color:#a5b4fc!important;
+  box-shadow:0 0 0 3px rgba(99,102,241,.1)!important;
+}
+#app.styleOnePilot .headerSearch input{color:var(--s1-ink)!important}
+#app.styleOnePilot .headerBell{
+  border:1px solid var(--s1-line)!important;
+  background:#fff!important;
+  color:#475569!important;
+}
+#app.styleOnePilot .mobileMenuBtn{
+  border:1px solid var(--s1-line)!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+}
+
+#app.styleOnePilot .page,
+#app.styleOnePilot .demoFeaturePage{
+  background:transparent!important;
+  color:var(--s1-ink)!important;
+}
+
+#app.styleOnePilot .homeWelcome,
+#app.styleOnePilot .unifiedCommand,
+#app.styleOnePilot .homePanel,
+#app.styleOnePilot .kpiCard,
+#app.styleOnePilot .workEntryCard,
+#app.styleOnePilot .premiumTableCard,
+#app.styleOnePilot .energyTableCard,
+#app.styleOnePilot .inventoryCard,
+#app.styleOnePilot .maintenanceCard,
+#app.styleOnePilot .contractorCard,
+#app.styleOnePilot .constructionCard,
+#app.styleOnePilot .demoPanel,
+#app.styleOnePilot .demoKpi{
+  border:1px solid var(--s1-line)!important;
+  background:rgba(255,255,255,.96)!important;
+  color:var(--s1-ink)!important;
+  border-radius:var(--s1-radius)!important;
+  box-shadow:var(--s1-shadow)!important;
+}
+
+#app.styleOnePilot .homeWelcome,
+#app.styleOnePilot .unifiedCommand{
+  background:
+    linear-gradient(120deg,rgba(79,70,229,.075),rgba(6,182,212,.045) 62%,rgba(255,255,255,.94))!important;
+  overflow:hidden;
+}
+#app.styleOnePilot .homeEyebrow,
+#app.styleOnePilot .panelKicker,
+#app.styleOnePilot .demoHeroCopy span{
+  color:var(--s1-accent)!important;
+  font-weight:800!important;
+  letter-spacing:.11em!important;
+}
+#app.styleOnePilot .homeWelcome h1,
+#app.styleOnePilot .homePanel h2,
+#app.styleOnePilot .demoPanel h2,
+#app.styleOnePilot .demoPanel h3{
+  color:var(--s1-ink)!important;
+  letter-spacing:-.02em!important;
+}
+#app.styleOnePilot .homeWelcome p,
+#app.styleOnePilot .homePanelHead p,
+#app.styleOnePilot .demoPanelHead p{
+  color:var(--s1-muted)!important;
+}
+
+#app.styleOnePilot .homeKpis{
+  gap:12px!important;
+}
+#app.styleOnePilot .kpiCard{
+  min-height:108px!important;
+  position:relative;
+  overflow:hidden;
+}
+#app.styleOnePilot .kpiCard:after{
+  content:"";
+  position:absolute;
+  width:90px;height:90px;
+  right:-34px;top:-38px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.045;
+}
+#app.styleOnePilot .kpiCard strong{color:var(--s1-ink)!important;font-size:25px!important}
+#app.styleOnePilot .kpiCard small{color:#64748b!important}
+#app.styleOnePilot .kpiCard span{color:#94a3b8!important}
+#app.styleOnePilot .kpiIcon{
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+
+#app.styleOnePilot .homePanelHead{
+  border-bottom:1px solid #edf2f7!important;
+}
+#app.styleOnePilot .homePanelHead button,
+#app.styleOnePilot .quickActions button{
+  color:var(--s1-accent)!important;
+}
+#app.styleOnePilot .homeTaskRow,
+#app.styleOnePilot .homeActivity .activityRow{
+  border-color:#edf2f7!important;
+}
+#app.styleOnePilot .homeTaskRow:hover,
+#app.styleOnePilot .quickActions button:hover{
+  background:#f8fafc!important;
+}
+
+#app.styleOnePilot .demoHero{
+  border:1px solid #dfe6f0!important;
+  background:
+    linear-gradient(135deg,#111827 0%,#172554 54%,#164e63 100%)!important;
+  box-shadow:0 14px 32px rgba(15,23,42,.14)!important;
+}
+#app.styleOnePilot .demoHeroCopy h1{color:#fff!important}
+#app.styleOnePilot .demoHeroCopy p{color:#cbd5e1!important}
+#app.styleOnePilot .demoBtn{
+  min-height:42px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+}
+#app.styleOnePilot .demoBtn.primary{
+  border-color:var(--s1-accent)!important;
+  background:var(--s1-accent)!important;
+  color:#fff!important;
+}
+
+#app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot select,
+#app.styleOnePilot textarea{
+  min-height:42px;
+  border:1px solid var(--s1-line-strong)!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot textarea{min-height:72px}
+#app.styleOnePilot input:focus,
+#app.styleOnePilot select:focus,
+#app.styleOnePilot textarea:focus{
+  outline:none!important;
+  border-color:#818cf8!important;
+  box-shadow:0 0 0 3px rgba(99,102,241,.11)!important;
+}
+#app.styleOnePilot input::placeholder,
+#app.styleOnePilot textarea::placeholder{color:#94a3b8!important}
+
+#app.styleOnePilot button.primary,
+#app.styleOnePilot .primary,
+#app.styleOnePilot .estaReportPdfBtn{
+  border-color:var(--s1-accent)!important;
+  background:linear-gradient(135deg,#4f46e5,#2563eb)!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px rgba(79,70,229,.18)!important;
+}
+#app.styleOnePilot button.secondary,
+#app.styleOnePilot .secondary{
+  border-color:var(--s1-line)!important;
+  background:#fff!important;
+  color:#334155!important;
+}
+#app.styleOnePilot button{transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+#app.styleOnePilot button:not(:disabled):active{transform:translateY(1px)}
+
+#app.styleOnePilot table{
+  color:var(--s1-ink)!important;
+}
+#app.styleOnePilot table thead th,
+#app.styleOnePilot .demoTable th{
+  background:#f8fafc!important;
+  color:#475569!important;
+  border-color:#e2e8f0!important;
+  font-weight:720!important;
+}
+#app.styleOnePilot table tbody td,
+#app.styleOnePilot .demoTable td{
+  background:#fff!important;
+  color:#334155!important;
+  border-color:#edf2f7!important;
+}
+#app.styleOnePilot table tbody tr:hover td{background:#fafbff!important}
+
+#app.styleOnePilot .modal,
+#app.styleOnePilot .viewer,
+#app.styleOnePilot .demoDrawer,
+#app.styleOnePilot .demoIncidentModal,
+#app.styleOnePilot .demoChecklistModal{
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+#app.styleOnePilot .modalCard,
+#app.styleOnePilot .demoIncidentModalCard,
+#app.styleOnePilot .demoChecklistModalCard,
+#app.styleOnePilot .demoDrawerCard{
+  border:1px solid var(--s1-line)!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  color:var(--s1-ink)!important;
+  box-shadow:0 24px 70px rgba(15,23,42,.22)!important;
+}
+
+/* Pilot analytics panel powered by Chart.js. */
+#app.styleOnePilot .styleOneInsights{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  margin:14px 0;
+  padding:16px;
+  border:1px solid var(--s1-line);
+  border-radius:18px;
+  background:linear-gradient(145deg,#fff,#fafbff);
+  box-shadow:var(--s1-shadow);
+}
+#app.styleOnePilot .styleOneInsightHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px;
+}
+#app.styleOnePilot .styleOneInsightHead span{
+  display:block;
+  color:var(--s1-accent);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.12em;
+}
+#app.styleOnePilot .styleOneInsightHead h2{
+  margin:3px 0;
+  color:var(--s1-ink);
+  font-size:17px;
+  letter-spacing:-.02em;
+}
+#app.styleOnePilot .styleOneInsightHead p{
+  margin:0;color:var(--s1-muted);font-size:10px;
+}
+#app.styleOnePilot .styleOneInsightIcon{
+  display:grid;place-items:center;
+  width:40px;height:40px;
+  flex:0 0 40px;
+  border-radius:12px;
+  background:#eef2ff;
+  color:var(--s1-accent);
+}
+#app.styleOnePilot .styleOneInsightIcon svg{width:20px;height:20px}
+#app.styleOnePilot .styleOneInsightBody{
+  display:grid;
+  grid-template-columns:minmax(220px,.85fr) minmax(0,1.15fr);
+  align-items:center;
+  gap:20px;
+}
+#app.styleOnePilot .styleOneChartWrap{
+  position:relative;
+  min-height:190px;
+  display:grid;
+  place-items:center;
+}
+#app.styleOnePilot .styleOneChartWrap canvas{
+  width:100%!important;
+  max-width:270px!important;
+  height:190px!important;
+}
+#app.styleOnePilot .styleOneMetricGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+#app.styleOnePilot .styleOneMetric{
+  padding:12px 13px;
+  border:1px solid #e7eaf2;
+  border-radius:13px;
+  background:#fff;
+}
+#app.styleOnePilot .styleOneMetric span{
+  display:block;color:#64748b;font-size:9px;
+}
+#app.styleOnePilot .styleOneMetric strong{
+  display:block;margin-top:4px;color:var(--s1-ink);font-size:19px;
+}
+#app.styleOnePilot .styleOneMetric small{
+  display:block;margin-top:3px;color:#94a3b8;font-size:8.5px;
+}
+#app.styleOnePilot .styleOneChartFallback{
+  width:100%;
+  display:grid;
+  gap:8px;
+}
+#app.styleOnePilot .styleOneFallbackRow{
+  display:grid;
+  grid-template-columns:95px 1fr 28px;
+  gap:8px;
+  align-items:center;
+  font-size:10px;
+  color:#64748b;
+}
+#app.styleOnePilot .styleOneFallbackTrack{
+  height:8px;border-radius:999px;background:#eef2f7;overflow:hidden;
+}
+#app.styleOnePilot .styleOneFallbackTrack i{
+  display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6366f1,#06b6d4);
+}
+
+@media (max-width:1100px){
+  #app.styleOnePilot .homeKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #app.styleOnePilot .styleOneInsightBody{grid-template-columns:1fr 1fr}
+}
+
+@media (max-width:700px){
+  #app.styleOnePilot main{background:var(--s1-bg)!important}
+  #app.styleOnePilot .estaTopbar{
+    min-height:58px!important;
+    padding-left:max(10px,env(safe-area-inset-left))!important;
+    padding-right:max(10px,env(safe-area-inset-right))!important;
+  }
+  #app.styleOnePilot .estaSidebar{
+    width:min(86vw,320px)!important;
+    padding-bottom:max(10px,env(safe-area-inset-bottom))!important;
+  }
+  #app.styleOnePilot .page,
+  #app.styleOnePilot .demoFeaturePage{
+    padding:10px!important;
+  }
+  #app.styleOnePilot .topModuleTitle h1{font-size:15px!important}
+  #app.styleOnePilot .topModuleTitle p{font-size:9px!important;max-width:46vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #app.styleOnePilot .homeKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  #app.styleOnePilot .kpiCard{
+    min-height:94px!important;
+    padding:11px!important;
+    border-radius:14px!important;
+  }
+  #app.styleOnePilot .kpiCard strong{font-size:21px!important}
+  #app.styleOnePilot .homeMainGrid,
+  #app.styleOnePilot .homeBottomGrid{grid-template-columns:1fr!important;gap:10px!important}
+  #app.styleOnePilot .homePanel,
+  #app.styleOnePilot .workEntryCard,
+  #app.styleOnePilot .premiumTableCard,
+  #app.styleOnePilot .demoPanel{border-radius:14px!important}
+  #app.styleOnePilot button,
+  #app.styleOnePilot .demoBtn{min-height:44px}
+  #app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  #app.styleOnePilot select{min-height:44px!important}
+  #app.styleOnePilot .styleOneInsights{
+    margin:10px 0;padding:13px;border-radius:14px;
+  }
+  #app.styleOnePilot .styleOneInsightBody{grid-template-columns:1fr;gap:12px}
+  #app.styleOnePilot .styleOneChartWrap{min-height:155px}
+  #app.styleOnePilot .styleOneChartWrap canvas{height:155px!important;max-width:230px!important}
+  #app.styleOnePilot .styleOneMetricGrid{gap:7px}
+  #app.styleOnePilot .styleOneMetric{padding:10px}
+  #app.styleOnePilot .styleOneMetric strong{font-size:17px}
+}
+
+@media (max-width:380px){
+  #app.styleOnePilot .homeKpis{grid-template-columns:1fr!important}
+  #app.styleOnePilot .styleOneMetricGrid{grid-template-columns:1fr 1fr}
+  #app.styleOnePilot .topModuleTitle p{display:none!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  #app.styleOnePilot *,
+  #app.styleOnePilot *::before,
+  #app.styleOnePilot *::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+
+
+/* STYLE_ONE_FULL_MODULE_PASS_V2 */
+/* Final module pass: keeps all business logic intact and normalizes the full 127HH/DEMO experience. */
+#app.styleOnePilot{
+  --s1-card:#fff;
+  --s1-card-soft:#f8fafc;
+  --s1-border:#e2e8f0;
+  --s1-text:#0f172a;
+  --s1-text-2:#475569;
+  --s1-text-3:#94a3b8;
+  --s1-brand:#4f46e5;
+  --s1-cyan:#0891b2;
+  --s1-green:#059669;
+  --s1-amber:#d97706;
+  --s1-red:#dc2626;
+}
+#app.styleOnePilot .modulePage,
+#app.styleOnePilot .inventoryPage,
+#app.styleOnePilot .maintenancePage,
+#app.styleOnePilot .contractorPage,
+#app.styleOnePilot .constructionMaterialPage{
+  max-width:1600px!important;
+  margin:0 auto!important;
+  padding:16px 18px 30px!important;
+}
+#app.styleOnePilot .hide{display:none!important}
+#app.styleOnePilot svg{stroke-linecap:round;stroke-linejoin:round}
+
+/* Work */
+#app.styleOnePilot #workPage .workEntryCard{
+  border:1px solid var(--s1-border)!important;
+  background:#fff!important;
+  box-shadow:0 10px 28px rgba(15,23,42,.055)!important;
+}
+#app.styleOnePilot #workPage .workEntryHeader{
+  min-height:76px!important;
+  padding:15px 17px!important;
+  border-bottom:1px solid #eef2f7!important;
+  background:linear-gradient(180deg,#fff,#fbfdff)!important;
+}
+#app.styleOnePilot #workPage .workEntryHeader>div:first-child>span{color:var(--s1-brand)!important;font-size:8px!important}
+#app.styleOnePilot #workPage .workEntryHeader h2{color:var(--s1-text)!important;font-size:18px!important}
+#app.styleOnePilot #workPage .workEntryHeader p{color:var(--s1-text-2)!important;font-size:10px!important}
+#app.styleOnePilot #workPage .workEntryHeaderIcon{
+  border-color:#dfe6ef!important;background:#eef2ff!important;color:var(--s1-brand)!important;
+}
+#app.styleOnePilot #workPage .workEntryForm{padding:14px 16px 15px!important;gap:10px!important}
+#app.styleOnePilot #workPage .workField>span{color:#475569!important;font-size:9px!important;font-weight:720!important}
+#app.styleOnePilot #workPage .workSave{
+  background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border:0!important;color:#fff!important;
+  box-shadow:0 7px 16px rgba(79,70,229,.18)!important;
+}
+#app.styleOnePilot #workPage .workCancel{background:#fff!important;color:#475569!important;border-color:#dbe4ee!important}
+#app.styleOnePilot #workPage .stats{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;margin:12px 0!important;
+}
+#app.styleOnePilot #workPage .stats article{
+  min-height:82px!important;padding:12px!important;border:1px solid var(--s1-border)!important;border-radius:14px!important;
+  background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #workPage .stats article small{color:#64748b!important}
+#app.styleOnePilot #workPage .stats article strong{color:var(--s1-text)!important;font-size:22px!important}
+#app.styleOnePilot #workPage .premiumTableCard{
+  border:1px solid var(--s1-border)!important;background:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.045)!important;
+}
+#app.styleOnePilot #workPage .premiumTableCard .tableTop{background:#fbfcfe!important;border-bottom:1px solid #edf2f7!important}
+#app.styleOnePilot #workPage .taskTitle{color:var(--s1-text)!important}
+#app.styleOnePilot #workPage .peopleSelectBtn{
+  border-color:#cbd5e1!important;background:#fff!important;color:#334155!important;
+}
+#app.styleOnePilot #workPage .peopleSelectMenu{
+  border-color:#dbe4ee!important;background:#fff!important;color:#334155!important;box-shadow:0 18px 50px rgba(15,23,42,.16)!important;
+}
+#app.styleOnePilot #workPage .peopleMenuHead{border-color:#edf2f7!important;background:#f8fafc!important}
+#app.styleOnePilot #workPage .peopleOption{color:#475569!important}
+#app.styleOnePilot #workPage .peopleOption:hover,
+#app.styleOnePilot #workPage .peopleOption.selected{background:#eef2ff!important;color:#3730a3!important}
+#app.styleOnePilot .workEditDrawer{background:rgba(15,23,42,.56)!important;backdrop-filter:blur(6px)!important}
+#app.styleOnePilot .workEditDrawerCard{
+  width:min(760px,94vw)!important;height:min(94dvh,920px)!important;margin:auto!important;border:1px solid #dbe4ee!important;
+  border-radius:20px!important;background:#fff!important;box-shadow:0 30px 90px rgba(15,23,42,.28)!important;
+}
+#app.styleOnePilot .workEditDrawerHead{
+  padding:17px 19px!important;border-bottom:1px solid #e5eaf0!important;background:linear-gradient(180deg,#fff,#f8fafc)!important;color:var(--s1-text)!important;
+}
+#app.styleOnePilot .workEditDrawerHead span{color:var(--s1-brand)!important}
+#app.styleOnePilot .workEditDrawerHead h2{color:var(--s1-text)!important}
+#app.styleOnePilot .workEditDrawerHead p{color:#64748b!important}
+#app.styleOnePilot #closeWorkEditDrawer{border-color:#dbe4ee!important;background:#fff!important;color:#334155!important}
+#app.styleOnePilot .workEditDrawerMount{background:#f8fafc!important}
+
+/* Energy */
+#app.styleOnePilot #energyPage .energyHead{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(125deg,#fff,#f8fbff)!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.04)!important;padding:14px 16px!important;
+}
+#app.styleOnePilot #energyPage .energyHead h1{color:var(--s1-text)!important}
+#app.styleOnePilot #energyPage .pageEyebrow{color:var(--s1-brand)!important}
+#app.styleOnePilot #energyPage .energyHead p,
+#app.styleOnePilot #energyPage .headMeta{color:#64748b!important}
+#app.styleOnePilot #energyPage .energyTabs{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin:10px 0!important;
+  padding:5px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#eef2f7!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button{
+  min-height:40px!important;border:0!important;border-radius:9px!important;background:transparent!important;color:#64748b!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button.active{
+  background:#fff!important;color:#3730a3!important;box-shadow:0 4px 12px rgba(15,23,42,.07)!important;
+}
+#app.styleOnePilot #energyPage .energySummaryCards{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #energyPage .energySummaryCards article{
+  min-height:83px!important;border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;
+  box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #energyPage .energySummaryCards strong{color:var(--s1-text)!important}
+#app.styleOnePilot #energyPage .energyCard,
+#app.styleOnePilot #energyPage .energyTableCard{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.045)!important;
+}
+#app.styleOnePilot #energyPage .energyCardTitle,
+#app.styleOnePilot #energyPage .energyTableTop{border-color:#edf2f7!important;background:linear-gradient(180deg,#fff,#fbfcfe)!important}
+#app.styleOnePilot #energyPage .energyCardTitle span,
+#app.styleOnePilot #energyPage .energySectionKicker{color:var(--s1-brand)!important}
+#app.styleOnePilot #energyPage .energyCardTitle h2,
+#app.styleOnePilot #energyPage .energyTableTop h2{color:var(--s1-text)!important}
+#app.styleOnePilot #energyPage .energyCardTitle p,
+#app.styleOnePilot #energyPage .energyTableTop p{color:#64748b!important}
+#app.styleOnePilot #energyPage .energyUploadPrompt{
+  border-color:#dbe4ee!important;background:#f8fafc!important;color:#475569!important;
+}
+#app.styleOnePilot #energyPage .energySearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #energyPage .energyLegend{color:#94a3b8!important}
+#app.styleOnePilot #energyPage .proEnergyCard{border-color:var(--s1-border)!important;background:#fff!important}
+
+/* Inventory */
+#app.styleOnePilot #inventoryPage .inventoryCommand{
+  border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs{
+  padding:4px!important;border-radius:10px!important;background:#eef2f7!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button{border:0!important;border-radius:8px!important;color:#64748b!important;background:transparent!important}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button.active{background:#fff!important;color:#3730a3!important;box-shadow:0 4px 11px rgba(15,23,42,.07)!important}
+#app.styleOnePilot #inventoryPage .inventoryWorkspace{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.045)!important;
+}
+#app.styleOnePilot #inventoryPage .inventorySectionBar,
+#app.styleOnePilot #inventoryPage .inventoryCardTitle{
+  border-color:#edf2f7!important;background:linear-gradient(180deg,#fff,#fbfcfe)!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryKicker{color:var(--s1-brand)!important}
+#app.styleOnePilot #inventoryPage .inventorySectionBar h2,
+#app.styleOnePilot #inventoryPage .inventoryCardTitle h3{color:var(--s1-text)!important}
+#app.styleOnePilot #inventoryPage .inventoryMonthRail{
+  margin:11px 13px!important;padding:10px!important;border:1px solid #e5eaf0!important;border-radius:12px!important;background:#f8fafc!important;
+}
+#app.styleOnePilot #inventoryPage #materialMonthTabs{
+  display:grid!important;grid-template-columns:repeat(13,minmax(0,1fr))!important;gap:5px!important;margin:7px 0 0!important;padding:0!important;border:0!important;background:transparent!important;
+}
+#app.styleOnePilot #inventoryPage #materialMonthTabs button{
+  min-height:34px!important;border:1px solid #e2e8f0!important;border-radius:8px!important;background:#fff!important;color:#64748b!important;
+}
+#app.styleOnePilot #inventoryPage #materialMonthTabs button.active{
+  background:#4f46e5!important;border-color:#4f46e5!important;color:#fff!important;box-shadow:0 5px 12px rgba(79,70,229,.16)!important;
+}
+#app.styleOnePilot #inventoryPage .monthlyStats,
+#app.styleOnePilot #inventoryPage .toolsStats{gap:8px!important}
+#app.styleOnePilot #inventoryPage .monthlyStats article,
+#app.styleOnePilot #inventoryPage .toolsStats article{
+  border:1px solid var(--s1-border)!important;border-radius:12px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryTableCard,
+#app.styleOnePilot #inventoryPage .stockAlertPanel{
+  border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage .inventorySearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #inventoryPage .inventoryPrimary{background:linear-gradient(135deg,#4f46e5,#2563eb)!important}
+#app.styleOnePilot #inventoryPage .inventorySecondary{border-color:#dbe4ee!important;background:#fff!important;color:#475569!important}
+
+/* Maintenance */
+#app.styleOnePilot #maintenancePage .maintenanceHero{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(125deg,#fff,#f8fbff)!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceCommandIcon{background:#eef2ff!important;color:var(--s1-brand)!important}
+#app.styleOnePilot #maintenancePage .maintenanceCommandBrand>div>span{color:var(--s1-brand)!important}
+#app.styleOnePilot #maintenancePage .maintenanceCommandBrand h1{color:var(--s1-text)!important}
+#app.styleOnePilot #maintenancePage .maintenanceCommandBrand p{color:#64748b!important}
+#app.styleOnePilot #maintenancePage .maintenanceProjectMeta{border-color:#e2e8f0!important;background:#f8fafc!important}
+#app.styleOnePilot #maintenancePage .maintenanceStats{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceStats article{
+  min-height:82px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceStats b{color:var(--s1-text)!important}
+#app.styleOnePilot #maintenancePage .maintenanceSchedule,
+#app.styleOnePilot #maintenancePage .maintenanceBoard,
+#app.styleOnePilot #maintenancePage .maintenanceHistoryCard{
+  border:1px solid var(--s1-border)!important;border-radius:15px!important;background:#fff!important;box-shadow:0 8px 24px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceScheduleHead,
+#app.styleOnePilot #maintenancePage .maintenanceToolbar{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot #maintenancePage .maintenanceAssetCard{
+  border-color:#e2e8f0!important;border-radius:13px!important;background:#fff!important;box-shadow:0 5px 14px rgba(15,23,42,.025)!important;
+}
+#app.styleOnePilot #maintenancePage .maintDates{background:#f8fafc!important}
+#app.styleOnePilot #maintenancePage .maintCardActions button{border-color:#dbe4ee!important;background:#fff!important;color:#475569!important}
+#app.styleOnePilot #maintenancePage .maintCardActions button.primary{background:#eef2ff!important;color:#4338ca!important}
+
+/* Contractor */
+#app.styleOnePilot #contractorPage .contractorIntro{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(135deg,#111827,#172554 58%,#164e63)!important;
+  box-shadow:0 12px 30px rgba(15,23,42,.12)!important;
+}
+#app.styleOnePilot #contractorPage .contractorIntroCopy>span{color:#67e8f9!important}
+#app.styleOnePilot #contractorPage .contractorIntroCopy h1{color:#fff!important}
+#app.styleOnePilot #contractorPage .contractorIntroCopy p{color:#cbd5e1!important}
+#app.styleOnePilot #contractorPage .contractorStats{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #contractorPage .contractorStats article{
+  min-height:82px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorStats b{color:var(--s1-text)!important}
+#app.styleOnePilot #contractorPage .contractorDirectory,
+#app.styleOnePilot #contractorPage .contractorJobsPanel,
+#app.styleOnePilot #contractorPage .contractorProfile,
+#app.styleOnePilot #contractorPage .contractorContactGrid article{
+  border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorToolbar,
+#app.styleOnePilot #contractorPage .contractorJobsHead{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot #contractorPage .contractorSearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #contractorPage .contractorSpecialtyFilters button{
+  border-color:#dbe4ee!important;background:#fff!important;color:#64748b!important;
+}
+#app.styleOnePilot #contractorPage .contractorSpecialtyFilters button.active{background:#eef2ff!important;border-color:#c7d2fe!important;color:#4338ca!important}
+#app.styleOnePilot #contractorPage .contractorRowCard,
+#app.styleOnePilot #contractorPage .contractorJobCard{
+  border-color:#e5eaf0!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorBtn.primary{background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border-color:#4f46e5!important}
+#app.styleOnePilot #contractorPage .contractorBtn.ghost{background:#fff!important;color:#475569!important;border-color:#dbe4ee!important}
+
+/* Construction materials */
+#app.styleOnePilot #constructionMaterialPage .constructionCommand{
+  border:1px solid var(--s1-border)!important;border-radius:16px!important;background:linear-gradient(125deg,#fff,#f8fbff)!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.04)!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandIcon{background:#eef2ff!important;color:var(--s1-brand)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandBrand>div>span{color:var(--s1-brand)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandBrand h1{color:var(--s1-text)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionCommandBrand p{color:#64748b!important}
+#app.styleOnePilot #constructionMaterialPage .constructionMonthPanel,
+#app.styleOnePilot #constructionMaterialPage .constructionWorkspace,
+#app.styleOnePilot #constructionMaterialPage .constructionHistoryPanel{
+  border:1px solid var(--s1-border)!important;border-radius:14px!important;background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionMonthTabs button{
+  border:1px solid #e2e8f0!important;background:#fff!important;color:#64748b!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionMonthTabs button.active{
+  background:#4f46e5!important;border-color:#4f46e5!important;color:#fff!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionStatsV2{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin:10px 0!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionStatsV2 article{
+  min-height:82px!important;border:1px solid var(--s1-border)!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;
+}
+#app.styleOnePilot #constructionMaterialPage .constructionStatsV2 b{color:var(--s1-text)!important}
+#app.styleOnePilot #constructionMaterialPage .constructionToolbar,
+#app.styleOnePilot #constructionMaterialPage .constructionHistoryHead{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot #constructionMaterialPage .constructionSearch{border-color:#dbe4ee!important;background:#f8fafc!important}
+#app.styleOnePilot #constructionMaterialPage .constructionPrimaryBtn{background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border-color:#4f46e5!important;color:#fff!important}
+#app.styleOnePilot #constructionMaterialPage .constructionGhostBtn{background:#fff!important;border-color:#dbe4ee!important;color:#475569!important}
+
+/* Special operational modules */
+#app.styleOnePilot .demoFeaturePage .demoKpis{gap:9px!important}
+#app.styleOnePilot .demoFeaturePage .demoKpi{
+  min-height:84px!important;border-color:var(--s1-border)!important;background:#fff!important;color:var(--s1-text)!important;box-shadow:none!important;
+}
+#app.styleOnePilot .demoFeaturePage .demoKpi b{color:var(--s1-text)!important}
+#app.styleOnePilot .demoFeaturePage .demoKpi span{color:#475569!important}
+#app.styleOnePilot .demoFeaturePage .demoKpi small{color:#94a3b8!important}
+#app.styleOnePilot .demoFeaturePage .demoPanel{
+  border-color:var(--s1-border)!important;background:#fff!important;color:var(--s1-text)!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot .demoFeaturePage .demoPanelHead{border-color:#edf2f7!important;background:#fbfcfe!important}
+#app.styleOnePilot .demoFeaturePage .demoDetailSection{border-color:#edf2f7!important}
+#app.styleOnePilot .demoFeaturePage .demoDetailSection>span{color:var(--s1-brand)!important}
+#app.styleOnePilot .demoFeaturePage .demoDetailSection p,
+#app.styleOnePilot .demoFeaturePage .demoDetailSection strong{color:#334155!important}
+#app.styleOnePilot .demoFeaturePage .demoOpsAlert,
+#app.styleOnePilot .demoFeaturePage .demoDocCat{
+  border-color:#e2e8f0!important;background:#fff!important;color:#334155!important;
+}
+
+/* Reports */
+#app.styleOnePilot #reportsPage .rc-heading,
+#app.styleOnePilot #reportsPage .rc-period,
+#app.styleOnePilot #reportsPage .rc-controls,
+#app.styleOnePilot #reportsPage .rc-preview,
+#app.styleOnePilot #reportsPage .rc-history{
+  border:1px solid var(--s1-border)!important;border-radius:15px!important;background:#fff!important;box-shadow:0 7px 20px rgba(15,23,42,.035)!important;
+}
+#app.styleOnePilot #reportsPage .rc-eyebrow{color:var(--s1-brand)!important}
+#app.styleOnePilot #reportsPage .rc-heading h2,
+#app.styleOnePilot #reportsPage .rc-card-heading h3{color:var(--s1-text)!important}
+#app.styleOnePilot #reportsPage .rc-heading p,
+#app.styleOnePilot #reportsPage .rc-card-heading p{color:#64748b!important}
+#app.styleOnePilot #reportsPage .rc-segments{background:#eef2f7!important}
+#app.styleOnePilot #reportsPage .rc-segments button{color:#64748b!important}
+#app.styleOnePilot #reportsPage .rc-segments button.active{background:#fff!important;color:#4338ca!important;box-shadow:0 3px 10px rgba(15,23,42,.06)!important}
+#app.styleOnePilot #reportsPage .rc-module{border-color:#e2e8f0!important;background:#fff!important}
+#app.styleOnePilot #reportsPage .rc-module:has(input:checked){border-color:#c7d2fe!important;background:#f5f3ff!important}
+#app.styleOnePilot #reportsPage .rc-primary{background:linear-gradient(135deg,#4f46e5,#2563eb)!important;border-color:#4f46e5!important;color:#fff!important}
+
+/* Modal consistency */
+#app.styleOnePilot .contractorModalCard,
+#app.styleOnePilot .inventoryModalCard,
+#app.styleOnePilot .technicalDocumentModalCard{
+  border:1px solid var(--s1-border)!important;border-radius:18px!important;background:#fff!important;color:var(--s1-text)!important;
+  box-shadow:0 28px 80px rgba(15,23,42,.25)!important;
+}
+#app.styleOnePilot .contractorModalHead,
+#app.styleOnePilot .inventoryModalHead,
+#app.styleOnePilot .technicalDocumentModalHead{
+  border-color:#edf2f7!important;background:linear-gradient(180deg,#fff,#f8fafc)!important;
+}
+
+/* Accessibility and overflow guarantees */
+#app.styleOnePilot :focus-visible{
+  outline:3px solid rgba(99,102,241,.28)!important;outline-offset:2px!important;
+}
+#app.styleOnePilot .page,
+#app.styleOnePilot main,
+#app.styleOnePilot .modulePage{min-width:0!important}
+#app.styleOnePilot .tableCard,
+#app.styleOnePilot .inventoryTableCard,
+#app.styleOnePilot .constructionTableCard,
+#app.styleOnePilot .rc-table-wrap{max-width:100%!important}
+#app.styleOnePilot .desktopTable,
+#app.styleOnePilot .inventoryTableScroll,
+#app.styleOnePilot .constructionTableScroll,
+#app.styleOnePilot .demoTableWrap,
+#app.styleOnePilot .rc-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+
+/* Tablet */
+@media(max-width:1100px){
+  #app.styleOnePilot #workPage .stats,
+  #app.styleOnePilot #maintenancePage .maintenanceStats,
+  #app.styleOnePilot #contractorPage .contractorStats,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+  #app.styleOnePilot #energyPage .energyTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+/* Mobile */
+@media(max-width:760px){
+  #app.styleOnePilot .modulePage,
+  #app.styleOnePilot .inventoryPage,
+  #app.styleOnePilot .maintenancePage,
+  #app.styleOnePilot .contractorPage,
+  #app.styleOnePilot .constructionMaterialPage{padding:9px 8px 24px!important}
+  #app.styleOnePilot #workPage .stats,
+  #app.styleOnePilot #maintenancePage .maintenanceStats,
+  #app.styleOnePilot #contractorPage .contractorStats,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  #app.styleOnePilot #workPage .stats article,
+  #app.styleOnePilot #maintenancePage .maintenanceStats article,
+  #app.styleOnePilot #contractorPage .contractorStats article,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2 article{min-height:72px!important;padding:9px!important}
+  #app.styleOnePilot #energyPage .energySummaryCards{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  #app.styleOnePilot #energyPage .energySummaryCards article{min-height:70px!important;padding:8px!important}
+  #app.styleOnePilot #energyPage .energyTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs{display:flex!important;overflow-x:auto!important;gap:5px!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs button{min-width:58px!important;flex:0 0 58px!important}
+  #app.styleOnePilot #inventoryPage #materialMonthTabs .yearOverviewBtn{min-width:82px!important;flex-basis:82px!important}
+  #app.styleOnePilot .workEditDrawer{align-items:flex-end!important}
+  #app.styleOnePilot .workEditDrawerCard{
+    width:100vw!important;height:min(92dvh,860px)!important;margin:0!important;border-radius:20px 20px 0 0!important;border-bottom:0!important;
+  }
+  #app.styleOnePilot .workEditDrawerMount{padding:10px!important}
+  #app.styleOnePilot .contractorIntroActions,
+  #app.styleOnePilot .maintenanceHeroActions,
+  #app.styleOnePilot .constructionCommandRight{gap:6px!important}
+  #app.styleOnePilot .demoHeroActions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important}
+  #app.styleOnePilot .demoHeroActions .demoBtn{width:100%!important}
+  #app.styleOnePilot #reportsPage .rc-workspace{grid-template-columns:1fr!important}
+  #app.styleOnePilot #reportsPage .rc-period{gap:8px!important}
+}
+@media(max-width:390px){
+  #app.styleOnePilot #workPage .stats{grid-template-columns:1fr 1fr!important}
+  #app.styleOnePilot #energyPage .energySummaryCards{grid-template-columns:1fr 1fr!important}
+  #app.styleOnePilot #energyPage .energySummaryCards article:last-child{grid-column:1/-1!important}
+  #app.styleOnePilot #maintenancePage .maintenanceStats,
+  #app.styleOnePilot #contractorPage .contractorStats,
+  #app.styleOnePilot #constructionMaterialPage .constructionStatsV2{grid-template-columns:1fr 1fr!important}
+}
+
+
+/* STYLE_ONE_QA_FIXES_V3 */
+/* Browser QA fixes: fixed mobile dock must never cover actions; tablet shell must never leak page-width overflow. */
+#app.styleOnePilot{
+  max-width:100%!important;
+  overflow-x:hidden!important;
+}
+#app.styleOnePilot main{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+}
+#app.styleOnePilot #inventoryPage,
+#app.styleOnePilot #maintenancePage,
+#app.styleOnePilot #contractorPage,
+#app.styleOnePilot #workPage,
+#app.styleOnePilot #energyPage,
+#app.styleOnePilot .demoFeaturePage{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryCommand,
+#app.styleOnePilot #inventoryPage .inventoryWorkspace,
+#app.styleOnePilot #inventoryPage .inventoryMonthRail,
+#app.styleOnePilot #inventoryPage .inventoryTableCard,
+#app.styleOnePilot #inventoryPage .stockAlertPanel{
+  min-width:0!important;
+  max-width:100%!important;
+}
+
+@media(max-width:760px){
+  html:has(#app.styleOnePilot){
+    scroll-padding-bottom:112px!important;
+  }
+  #app.styleOnePilot main{
+    padding-bottom:calc(112px + env(safe-area-inset-bottom))!important;
+    scroll-padding-bottom:112px!important;
+  }
+  #app.styleOnePilot #workPage,
+  #app.styleOnePilot #energyPage,
+  #app.styleOnePilot #inventoryPage,
+  #app.styleOnePilot #maintenancePage,
+  #app.styleOnePilot #contractorPage,
+  #app.styleOnePilot .demoFeaturePage{
+    padding-bottom:calc(112px + env(safe-area-inset-bottom))!important;
+  }
+  #app.styleOnePilot #energyPage .energyActions,
+  #app.styleOnePilot #workPage .workFormActions,
+  #app.styleOnePilot #inventoryPage .inventoryFormActions,
+  #app.styleOnePilot #maintenancePage form [type="submit"],
+  #app.styleOnePilot #contractorPage form [type="submit"]{
+    scroll-margin-bottom:112px!important;
+  }
+}
+@media(min-width:761px) and (max-width:1100px){
+  #app.styleOnePilot main,
+  #app.styleOnePilot .page,
+  #app.styleOnePilot .modulePage,
+  #app.styleOnePilot #inventoryPage{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+  #app.styleOnePilot #inventoryPage .inventoryWorkspace{
+    width:100%!important;
+    max-width:100%!important;
+  }
+}
+
+
+/* STYLE_ONE_ENERGY_DOCK_STACK_V4 */
+@media(max-width:760px){
+  /* The legacy compact Energy action bar and the new bottom navigation are both fixed.
+     Stack Save above the 68px navigation dock instead of letting them overlap. */
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyActions{
+    left:8px!important;
+    right:8px!important;
+    bottom:calc(84px + env(safe-area-inset-bottom))!important;
+    z-index:940!important;
+  }
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage{
+    padding-bottom:calc(172px + env(safe-area-inset-bottom))!important;
+  }
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyTableCard{
+    margin-bottom:8px!important;
+  }
+}
+
+
+/* STYLE_ONE_MOBILE_BOTTOM_NAV_AND_SIDEBAR_V5 */
+@media(max-width:760px){
+  /* Bottom navigation is a true app dock: edge-to-edge and flush with the viewport bottom. */
+  #app.styleOnePilot #updateMobileNav.updateMobileNav,
+  body.estaMobileScrollShell #app.styleOnePilot #updateMobileNav.updateMobileNav{
+    box-sizing:border-box!important;
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    height:calc(72px + env(safe-area-inset-bottom, 0px))!important;
+    min-height:72px!important;
+    padding:5px 8px calc(5px + env(safe-area-inset-bottom, 0px))!important;
+    gap:3px!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-radius:18px 18px 0 0!important;
+    background:#fffdf8!important;
+    box-shadow:0 -5px 22px rgba(23,59,86,.14)!important;
+    transform:none!important;
+  }
+  #app.styleOnePilot #updateMobileNav.updateMobileNav button{
+    height:56px!important;
+    min-height:56px!important;
+  }
+
+  /* Page content always clears the dock. */
+  #app.styleOnePilot main,
+  body.estaMobileScrollShell #app.styleOnePilot>main{
+    padding-bottom:calc(88px + env(safe-area-inset-bottom, 0px))!important;
+    scroll-padding-bottom:calc(92px + env(safe-area-inset-bottom, 0px))!important;
+  }
+
+  /* Opening the blue sidebar temporarily removes the bottom dock.
+     Logout / account controls stay fixed inside the sidebar and never sit under the dock. */
+  body.mobileNavOpen #app.styleOnePilot #updateMobileNav,
+  #app.styleOnePilot.menuOpen #updateMobileNav{
+    display:none!important;
+  }
+  #app.styleOnePilot .estaSidebar{
+    display:flex!important;
+    flex-direction:column!important;
+    box-sizing:border-box!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    overflow:hidden!important;
+    padding-bottom:max(10px,env(safe-area-inset-bottom, 0px))!important;
+  }
+  #app.styleOnePilot .mobileSidebarHeader,
+  #app.styleOnePilot .estaSidebarBrand,
+  #app.styleOnePilot .technicalProjectSwitcher,
+  #app.styleOnePilot .sideBackup,
+  #app.styleOnePilot .sideBottom{
+    flex:0 0 auto!important;
+  }
+  #app.styleOnePilot .estaNav{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    margin-bottom:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding-bottom:12px!important;
+  }
+  #app.styleOnePilot .sideBackup{
+    margin-top:0!important;
+  }
+  #app.styleOnePilot .sideBottom{
+    margin-top:8px!important;
+    padding-bottom:max(2px,env(safe-area-inset-bottom, 0px))!important;
+  }
+
+  /* Energy's fixed Save bar sits immediately above the dock's new edge-to-edge footprint. */
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage .energyActions{
+    bottom:calc(80px + env(safe-area-inset-bottom, 0px))!important;
+  }
+  #app.styleOnePilot.demoMobilePilot.demoEnergyCompactPilot #energyPage{
+    padding-bottom:calc(174px + env(safe-area-inset-bottom, 0px))!important;
+  }
+}
+
+
+/* STYLE_ONE_BODY_PORTAL_DOCK_FIX_V6 */
+@media(max-width:760px){
+  /* updateMobileNav is injected under <body>, not inside #app. Scope through :has(#app.styleOnePilot). */
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav,
+  body.estaMobileScrollShell:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    box-sizing:border-box!important;
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    max-width:none!important;
+    height:calc(72px + env(safe-area-inset-bottom, 0px))!important;
+    min-height:72px!important;
+    margin:0!important;
+    padding:5px 8px calc(5px + env(safe-area-inset-bottom, 0px))!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-radius:18px 18px 0 0!important;
+    box-shadow:0 -5px 22px rgba(23,59,86,.14)!important;
+    transform:none!important;
+  }
+  body.mobileNavOpen:has(#app.styleOnePilot) #updateMobileNav,
+  body:has(#app.styleOnePilot.menuOpen) #updateMobileNav{
+    display:none!important;
+  }
+}
+
+
+/* STYLE_ONE_MOBILE_DOCK_COLOR_V7 */
+@media(max-width:760px){
+  /* Strong visual separation from the light content area. */
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav,
+  body.estaMobileScrollShell:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:linear-gradient(180deg,#153d73 0%,#102d5a 100%)!important;
+    border-top:1px solid rgba(103,232,249,.36)!important;
+    box-shadow:0 -7px 24px rgba(8,31,63,.26)!important;
+  }
+
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button{
+    color:#d9e8f7!important;
+    border:1px solid transparent!important;
+    background:transparent!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>span{
+    color:#cfe6ff!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>b{
+    color:#d9e8f7!important;
+    font-weight:600!important;
+  }
+
+  /* Current destination reads as a selected tab, not just another white card. */
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active{
+    background:linear-gradient(180deg,#dff6ff 0%,#cdeaff 100%)!important;
+    border-color:#8edff0!important;
+    color:#102d64!important;
+    box-shadow:0 5px 14px rgba(5,22,52,.22)!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>span,
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>b{
+    color:#102d64!important;
+  }
+
+  body:has(#app.styleOnePilot) #updateMobileNav .updateMobileNotifBadge{
+    border-color:#153d73!important;
+    background:#ef5d63!important;
+    color:#fff!important;
+  }
+}
+
+
+/* STYLE_ONE_PROFESSIONAL_ENTERPRISE_V8 */
+/* Professional enterprise palette for every Style 1 module except the approved Work page. */
+#app.styleOnePilot:not(.workMode){
+  --s1-bg:#f2efe8;
+  --s1-surface:#fffdf8;
+  --s1-surface-2:#f8f6f1;
+  --s1-sidebar:#15384f;
+  --s1-sidebar-2:#102d40;
+  --s1-ink:#203442;
+  --s1-muted:#667782;
+  --s1-line:#d9dee1;
+  --s1-line-strong:#c6cfd4;
+  --s1-accent:#245c78;
+  --s1-accent-2:#4d7b82;
+  --s1-success:#337257;
+  --s1-warning:#9a6a2f;
+  --s1-danger:#a94747;
+  --s1-radius:14px;
+  --s1-shadow:0 3px 12px rgba(27,47,61,.055);
+  color:var(--s1-ink)!important;
+  background:var(--s1-bg)!important;
+}
+
+/* Flat surfaces and high-contrast hierarchy. */
+#app.styleOnePilot:not(.workMode) main{
+  background:#f2efe8!important;
+}
+#app.styleOnePilot:not(.workMode) .estaSidebar{
+  background:#15384f!important;
+  border-right:1px solid #294b60!important;
+  box-shadow:4px 0 16px rgba(18,43,58,.08)!important;
+}
+#app.styleOnePilot:not(.workMode) .estaSidebarBrand b{color:#fff!important}
+#app.styleOnePilot:not(.workMode) .estaSidebarBrand small{color:#b9c8d1!important}
+#app.styleOnePilot:not(.workMode) .estaPetalLogo span{
+  background:#d7e8ee!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button{
+  color:#d1dde4!important;
+  border-radius:9px!important;
+  transition:background-color .12s ease,color .12s ease!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button:hover{
+  color:#fff!important;
+  background:#20475f!important;
+  border-color:#31576c!important;
+  transform:none!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button.active{
+  color:#17384e!important;
+  background:#eee6d6!important;
+  border-color:#d8ccb4!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button.active svg{color:#245c78!important}
+
+#app.styleOnePilot:not(.workMode) .estaTopbar{
+  background:#173d59!important;
+  border-bottom:1px solid #2a5069!important;
+  box-shadow:0 2px 10px rgba(18,45,63,.12)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+#app.styleOnePilot:not(.workMode) .topModuleTitle h1{color:#fff!important}
+#app.styleOnePilot:not(.workMode) .topModuleTitle p{color:#c5d3db!important}
+#app.styleOnePilot:not(.workMode) .topModuleIcon{
+  border-color:#45687d!important;
+  background:#244d67!important;
+  color:#eaf3f7!important;
+}
+#app.styleOnePilot:not(.workMode) .headerSearch{
+  border-color:#45667a!important;
+  background:#204861!important;
+}
+#app.styleOnePilot:not(.workMode) .headerSearch input,
+#app.styleOnePilot:not(.workMode) .headerSearch input::placeholder{color:#e4edf2!important}
+#app.styleOnePilot:not(.workMode) .headerBell,
+#app.styleOnePilot:not(.workMode) .iconAction,
+#app.styleOnePilot:not(.workMode) .pdfAction,
+#app.styleOnePilot:not(.workMode) .mobileMenuBtn{
+  border-color:#527187!important;
+  background:#204861!important;
+  color:#eef5f8!important;
+  box-shadow:none!important;
+}
+
+/* Cards: solid, calm, readable. */
+#app.styleOnePilot:not(.workMode) .homeWelcome,
+#app.styleOnePilot:not(.workMode) .unifiedCommand,
+#app.styleOnePilot:not(.workMode) .homePanel,
+#app.styleOnePilot:not(.workMode) .kpiCard,
+#app.styleOnePilot:not(.workMode) .energyCard,
+#app.styleOnePilot:not(.workMode) .energyTableCard,
+#app.styleOnePilot:not(.workMode) .inventoryCommand,
+#app.styleOnePilot:not(.workMode) .inventoryWorkspace,
+#app.styleOnePilot:not(.workMode) .inventoryCard,
+#app.styleOnePilot:not(.workMode) .maintenanceHero,
+#app.styleOnePilot:not(.workMode) .maintenanceSchedule,
+#app.styleOnePilot:not(.workMode) .maintenanceBoard,
+#app.styleOnePilot:not(.workMode) .maintenanceHistoryCard,
+#app.styleOnePilot:not(.workMode) .contractorDirectory,
+#app.styleOnePilot:not(.workMode) .contractorJobsPanel,
+#app.styleOnePilot:not(.workMode) .contractorProfile,
+#app.styleOnePilot:not(.workMode) .demoPanel,
+#app.styleOnePilot:not(.workMode) .demoKpi,
+#app.styleOnePilot:not(.workMode) .styleOneInsights,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-heading,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-period,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-controls,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-preview,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-history{
+  border-color:#d8ddd9!important;
+  background:#fffdf8!important;
+  color:#203442!important;
+  box-shadow:0 3px 12px rgba(27,47,61,.05)!important;
+}
+#app.styleOnePilot:not(.workMode) .homeWelcome,
+#app.styleOnePilot:not(.workMode) .unifiedCommand,
+#app.styleOnePilot:not(.workMode) .demoHero,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntro{
+  background:#173d59!important;
+  border-color:#294e67!important;
+  box-shadow:0 4px 14px rgba(18,45,63,.12)!important;
+}
+#app.styleOnePilot:not(.workMode) .homeWelcome h1,
+#app.styleOnePilot:not(.workMode) .homeWelcome p,
+#app.styleOnePilot:not(.workMode) .homeWelcome .homeEyebrow,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy h1,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy p,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy span,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntroCopy h1,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntroCopy p{
+  color:#fff!important;
+}
+#app.styleOnePilot:not(.workMode) .homeWelcome p,
+#app.styleOnePilot:not(.workMode) .demoHeroCopy p,
+#app.styleOnePilot:not(.workMode) #contractorPage .contractorIntroCopy p{color:#d0dbe2!important}
+
+/* Typography. */
+#app.styleOnePilot:not(.workMode) .homePanel h2,
+#app.styleOnePilot:not(.workMode) .demoPanel h2,
+#app.styleOnePilot:not(.workMode) .demoPanel h3,
+#app.styleOnePilot:not(.workMode) .energyCardTitle h2,
+#app.styleOnePilot:not(.workMode) .energyTableTop h2,
+#app.styleOnePilot:not(.workMode) .inventorySectionBar h2,
+#app.styleOnePilot:not(.workMode) .inventoryCardTitle h3,
+#app.styleOnePilot:not(.workMode) .maintenanceCommandBrand h1,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-heading h2,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-card-heading h3{
+  color:#203442!important;
+}
+#app.styleOnePilot:not(.workMode) .homePanelHead p,
+#app.styleOnePilot:not(.workMode) .demoPanelHead p,
+#app.styleOnePilot:not(.workMode) .energyCardTitle p,
+#app.styleOnePilot:not(.workMode) .energyTableTop p,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-heading p,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-card-heading p{
+  color:#667782!important;
+}
+#app.styleOnePilot:not(.workMode) .homeEyebrow,
+#app.styleOnePilot:not(.workMode) .panelKicker,
+#app.styleOnePilot:not(.workMode) .energySectionKicker,
+#app.styleOnePilot:not(.workMode) .inventoryKicker,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-eyebrow{
+  color:#245c78!important;
+}
+
+/* Controls. */
+#app.styleOnePilot:not(.workMode) input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot:not(.workMode) select,
+#app.styleOnePilot:not(.workMode) textarea{
+  border-color:#cbd3d7!important;
+  background:#fff!important;
+  color:#263b49!important;
+}
+#app.styleOnePilot:not(.workMode) input:focus,
+#app.styleOnePilot:not(.workMode) select:focus,
+#app.styleOnePilot:not(.workMode) textarea:focus{
+  border-color:#527b90!important;
+  box-shadow:0 0 0 2px rgba(36,92,120,.10)!important;
+}
+#app.styleOnePilot:not(.workMode) button.primary,
+#app.styleOnePilot:not(.workMode) .primary,
+#app.styleOnePilot:not(.workMode) .inventoryPrimary,
+#app.styleOnePilot:not(.workMode) .contractorBtn.primary,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-primary{
+  border-color:#245c78!important;
+  background:#245c78!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot:not(.workMode) button.secondary,
+#app.styleOnePilot:not(.workMode) .secondary,
+#app.styleOnePilot:not(.workMode) .inventorySecondary{
+  border-color:#cbd3d7!important;
+  background:#fffdf8!important;
+  color:#334b5a!important;
+}
+
+/* Tabs and tables. */
+#app.styleOnePilot:not(.workMode) .energyTabs,
+#app.styleOnePilot:not(.workMode) .inventoryLocalTabs,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-segments{
+  background:#e9e5dc!important;
+  border-color:#d4cec0!important;
+}
+#app.styleOnePilot:not(.workMode) .energyTabs button.active,
+#app.styleOnePilot:not(.workMode) .inventoryLocalTabs button.active,
+#app.styleOnePilot:not(.workMode) #reportsPage .rc-segments button.active{
+  background:#fffdf8!important;
+  color:#173d59!important;
+  box-shadow:0 1px 4px rgba(32,52,66,.07)!important;
+}
+#app.styleOnePilot:not(.workMode) table thead th,
+#app.styleOnePilot:not(.workMode) .demoTable th{
+  background:#ece8de!important;
+  color:#405664!important;
+  border-color:#d9d4c9!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody td,
+#app.styleOnePilot:not(.workMode) .demoTable td{
+  background:#fffdf8!important;
+  color:#334b59!important;
+  border-color:#ebe7de!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody tr:hover td{background:#f8f5ef!important}
+
+/* KPI status colors remain semantic but subdued. */
+#app.styleOnePilot:not(.workMode) .kpiCard strong,
+#app.styleOnePilot:not(.workMode) .styleOneMetric strong{color:#203442!important}
+#app.styleOnePilot:not(.workMode) .styleOneInsightIcon{
+  background:#e8eef0!important;
+  color:#245c78!important;
+}
+#app.styleOnePilot:not(.workMode) .styleOneFallbackTrack{background:#e5e1d8!important}
+#app.styleOnePilot:not(.workMode) .styleOneFallbackTrack i{background:#4d7b82!important}
+
+/* Desktop performance pass: no expensive live blur or decorative motion outside Work. */
+@media(min-width:761px){
+  #app.styleOnePilot:not(.workMode),
+  #app.styleOnePilot:not(.workMode) *,
+  #app.styleOnePilot:not(.workMode) *::before,
+  #app.styleOnePilot:not(.workMode) *::after{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  #app.styleOnePilot:not(.workMode) main{
+    background:#f2efe8!important;
+  }
+  #app.styleOnePilot:not(.workMode) .homeWelcome,
+  #app.styleOnePilot:not(.workMode) .unifiedCommand,
+  #app.styleOnePilot:not(.workMode) .demoHero,
+  #app.styleOnePilot:not(.workMode) .kpiCard,
+  #app.styleOnePilot:not(.workMode) .homePanel,
+  #app.styleOnePilot:not(.workMode) .demoPanel,
+  #app.styleOnePilot:not(.workMode) .energyCard,
+  #app.styleOnePilot:not(.workMode) .inventoryWorkspace,
+  #app.styleOnePilot:not(.workMode) .maintenanceHero,
+  #app.styleOnePilot:not(.workMode) .contractorIntro{
+    filter:none!important;
+    animation:none!important;
+  }
+  #app.styleOnePilot:not(.workMode) button,
+  #app.styleOnePilot:not(.workMode) a{
+    transition:background-color .12s ease,color .12s ease,border-color .12s ease!important;
+  }
+  #app.styleOnePilot:not(.workMode) .kpiCard::after,
+  #app.styleOnePilot:not(.workMode) .homeBlueprint,
+  #app.styleOnePilot:not(.workMode) .contractorSkyline{
+    display:none!important;
+  }
+}
+
+/* Mobile keeps the fast layout but inherits the calmer professional palette. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav{
+    background:#173d59!important;
+    border-top-color:#315a74!important;
+    box-shadow:0 -4px 16px rgba(18,45,63,.18)!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button{
+    color:#d6e2e8!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button>span,
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button>b{
+    color:#d6e2e8!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active{
+    background:#eee6d6!important;
+    border-color:#d8ccb4!important;
+    box-shadow:none!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active>span,
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active>b{
+    color:#173d59!important;
+  }
+}
+
+
+/* STYLE_ONE_LIGHT_COMMAND_CENTER_V9 */
+/* Command Center uses its own dark --ov-* token system. Override those tokens for Style 1.
+   Keep only the hero / navigation dark; operational data surfaces stay light and readable. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode){
+  --ov-surface:#fffdf8;
+  --ov-panel:#f2efe8;
+  --ov-control:#ffffff;
+  --ov-soft:#f5f2eb;
+  --ov-line:#d7dde0;
+  --ov-hover:#f8f5ef;
+  --ov-muted:#687a85;
+  --ov-text:#243b49;
+  --ov-accent:#245c78;
+  color-scheme:light!important;
+  background:#f2efe8!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) main,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .homeDashboard{
+  background:#f2efe8!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview{
+  color:#243b49!important;
+}
+
+/* One dark anchor instead of an all-dark dashboard. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsHero{
+  background:#173d59!important;
+  border-color:#31566c!important;
+  box-shadow:0 3px 12px rgba(18,45,63,.10)!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsHeroActions :is(button:first-child,.primary){
+  background:#eee6d6!important;
+  border-color:#d8ccb4!important;
+  color:#173d59!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsHeroMetric{
+  background:rgba(255,255,255,.08)!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+}
+
+/* White/cream operational cards. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanel,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsScopeBar,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview .updateFocusNow{
+  background:#fffdf8!important;
+  border-color:#d7dde0!important;
+  color:#243b49!important;
+  box-shadow:0 2px 8px rgba(27,47,61,.045)!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead{
+  background:#f8f5ef!important;
+  border-bottom-color:#dfe3e4!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi>:is(b,strong),
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead :is(h2,h3),
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyProject,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyMeters strong{
+  color:#243b49!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi>span,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi>small,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead p,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyMeters :is(small,em),
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsEnergyProject>i{
+  color:#687a85!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead span,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead>button{
+  color:#245c78!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.info:before{background:#4d7b82!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.good:before{background:#337257!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.warn:before{background:#9a6a2f!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsKpi.danger:before{background:#a94747!important}
+
+/* Inputs/selects must look like standard business software, not dark-console controls. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsScopeBar select,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .ccFilters :is(input,select){
+  background:#fff!important;
+  border-color:#c8d0d4!important;
+  color:#243b49!important;
+  color-scheme:light!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .ccFilters input::placeholder{color:#89979f!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .ccFilters option{background:#fff!important;color:#243b49!important}
+
+/* Rows and empty states. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage .opsProjectActivity :is(b,span,time){
+  color:#405764!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage .opsProjectActivity .activityRow{
+  border-bottom-color:#e2e5e5!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini,.updateEmpty,.updateLoading){
+  background:#fff!important;
+  border-color:#dfe3e4!important;
+  color:#314a58!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusRow,.updateAttentionRow,.updateSystemHealth,.updateTeamMini):hover{
+  background:#f8f5ef!important;
+  border-color:#bdc9ce!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateSystemHealth>span,.updateEnergyBriefRow>span){
+  background:#edf1f1!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusHead h2,.updateFocusRow>div b,.updateSystemHealth div b,.updateEnergyBriefRow b,.updateTeamMini div b,.updateAttentionRow div b){
+  color:#294451!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsOverview :is(.updateFocusHead p,.updateFocusRow>span,.updateFocusRow>div small,.updateSystemHealth small,.updateEnergyBriefRow small,.updateAttentionRow small,.updateTeamMini small,.updateFocusRow>em,.updateFocusRow>strong,.updateEmpty,.updateLoading){
+  color:#71828b!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .updateEnergyBriefRow{border-bottom-color:#e2e5e5!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .updateEnergyBriefRow strong.danger{color:#a94747!important}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .updateEnergyBriefRow strong.warn{color:#9a6a2f!important}
+
+/* Footer quick actions read as controls, not another dark card row. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button{
+  background:#fffdf8!important;
+  border-color:#ccd4d7!important;
+  color:#245c78!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button:hover{
+  background:#eee6d6!important;
+  border-color:#d8ccb4!important;
+}
+
+/* Lighter modal surfaces in the project overview as well. */
+body:has(#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode)) :is(#updateHealthModal,#updateAiModal,#updateNotificationCenter){
+  --ov-surface:#fffdf8;
+  --ov-panel:#f2efe8;
+  --ov-control:#ffffff;
+  --ov-soft:#f5f2eb;
+  --ov-line:#d7dde0;
+  --ov-hover:#f8f5ef;
+  --ov-muted:#687a85;
+  --ov-text:#243b49;
+  --ov-accent:#245c78;
+  color-scheme:light!important;
+}
+
+
+/* STYLE_ONE_NEUTRAL_ENTERPRISE_V10 */
+/* Neutral enterprise palette: calmer than the previous beige-heavy version.
+   The approved Work page is intentionally excluded. */
+#app.styleOnePilot:not(.workMode){
+  --s1-bg:#f3f5f6!important;
+  --s1-surface:#ffffff!important;
+  --s1-surface-2:#f7f8f9!important;
+  --s1-ink:#20313d!important;
+  --s1-muted:#687985!important;
+  --s1-line:#dbe1e4!important;
+  --s1-line-strong:#c8d1d6!important;
+  --s1-accent:#1f5673!important;
+  --s1-accent-2:#557d86!important;
+  background:#f3f5f6!important;
+}
+
+#app.styleOnePilot:not(.workMode) main,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) main,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .homeDashboard{
+  background:#f3f5f6!important;
+}
+
+/* Standardize panels to white for maximum readability. */
+#app.styleOnePilot:not(.workMode) :is(
+  .homePanel,.kpiCard,.styleOneInsights,
+  .energyCard,.energyTableCard,.energySummaryCards article,
+  .inventoryCommand,.inventoryWorkspace,.inventoryCard,.inventoryTableCard,.stockAlertPanel,
+  .maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,.maintenanceStats article,.maintenanceAssetCard,
+  .contractorDirectory,.contractorJobsPanel,.contractorProfile,.contractorContactGrid article,.contractorStats article,
+  .demoPanel,.demoKpi,
+  #reportsPage .rc-heading,#reportsPage .rc-period,#reportsPage .rc-controls,#reportsPage .rc-preview,#reportsPage .rc-history
+){
+  background:#fff!important;
+  border-color:#dbe1e4!important;
+  box-shadow:0 2px 8px rgba(24,44,58,.045)!important;
+}
+
+/* Overview / command center: only hero stays navy, all data surfaces become neutral white. */
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode){
+  --ov-surface:#ffffff!important;
+  --ov-panel:#f5f7f8!important;
+  --ov-control:#ffffff!important;
+  --ov-soft:#f7f8f9!important;
+  --ov-line:#dbe1e4!important;
+  --ov-hover:#f4f7f8!important;
+  --ov-muted:#687985!important;
+  --ov-text:#243946!important;
+  --ov-accent:#1f5673!important;
+  background:#f3f5f6!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) :is(.opsKpi,.opsPanel,.opsScopeBar,.opsOverview .updateFocusNow){
+  background:#fff!important;
+  border-color:#dbe1e4!important;
+  color:#243946!important;
+  box-shadow:0 2px 8px rgba(24,44,58,.04)!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsPanelHead{
+  background:#f7f8f9!important;
+  border-bottom-color:#e1e6e8!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button{
+  background:#fff!important;
+  border-color:#cfd8dc!important;
+  color:#1f5673!important;
+}
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .opsQuickActions button:hover{
+  background:#eef3f5!important;
+  border-color:#bfcdd3!important;
+}
+
+/* Selected navigation stays distinct without a large cream block. */
+#app.styleOnePilot:not(.workMode) .estaNav button.active{
+  color:#17384e!important;
+  background:#e8eef1!important;
+  border-color:#c7d5dc!important;
+}
+#app.styleOnePilot:not(.workMode) .estaNav button.active svg{color:#1f5673!important}
+
+/* Subtle tabs instead of yellow-tinted rails. */
+#app.styleOnePilot:not(.workMode) :is(.energyTabs,.inventoryLocalTabs,#reportsPage .rc-segments){
+  background:#e9eef1!important;
+  border-color:#d5dde1!important;
+}
+#app.styleOnePilot:not(.workMode) :is(.energyTabs button.active,.inventoryLocalTabs button.active,#reportsPage .rc-segments button.active){
+  background:#fff!important;
+  color:#173d59!important;
+  box-shadow:0 1px 4px rgba(31,86,115,.08)!important;
+}
+
+/* Cleaner tables and row hover states. */
+#app.styleOnePilot:not(.workMode) table thead th,
+#app.styleOnePilot:not(.workMode) .demoTable th{
+  background:#f1f4f5!important;
+  color:#405663!important;
+  border-color:#dde3e6!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody td,
+#app.styleOnePilot:not(.workMode) .demoTable td{
+  background:#fff!important;
+  color:#334956!important;
+  border-color:#e7ecee!important;
+}
+#app.styleOnePilot:not(.workMode) table tbody tr:hover td{background:#f7f9fa!important}
+
+/* Forms use conventional business-software surfaces. */
+#app.styleOnePilot:not(.workMode) input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot:not(.workMode) select,
+#app.styleOnePilot:not(.workMode) textarea{
+  background:#fff!important;
+  border-color:#cbd4d9!important;
+  color:#263a47!important;
+}
+#app.styleOnePilot:not(.workMode) input:focus,
+#app.styleOnePilot:not(.workMode) select:focus,
+#app.styleOnePilot:not(.workMode) textarea:focus{
+  border-color:#5e8193!important;
+  box-shadow:0 0 0 2px rgba(31,86,115,.10)!important;
+}
+
+/* Keep visual depth restrained on desktop. */
+@media(min-width:761px){
+  #app.styleOnePilot:not(.workMode) :is(
+    .homePanel,.kpiCard,.styleOneInsights,.energyCard,.energyTableCard,
+    .inventoryCommand,.inventoryWorkspace,.maintenanceHero,.maintenanceSchedule,.maintenanceBoard,
+    .contractorIntro,.contractorDirectory,.contractorJobsPanel,.demoPanel
+  ){
+    box-shadow:0 1px 6px rgba(24,44,58,.04)!important;
+  }
+  #app.styleOnePilot:not(.workMode) :is(
+    .homePanel,.kpiCard,.styleOneInsights,.energyCard,.energyTableCard,
+    .inventoryCommand,.inventoryWorkspace,.maintenanceHero,.maintenanceSchedule,.maintenanceBoard,
+    .contractorIntro,.contractorDirectory,.contractorJobsPanel,.demoPanel
+  ):hover{
+    transform:none!important;
+  }
+}
+
+/* Mobile inherits the neutral palette while the approved Work page keeps its current colors. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot:not(.workMode)){
+    background:#f3f5f6!important;
+  }
+  body:has(#app.styleOnePilot:not(.workMode)) #updateMobileNav.updateMobileNav button.active{
+    background:#e8eef1!important;
+    border-color:#c7d5dc!important;
+  }
+}
+
+
+/* STYLE_ONE_HOME_CANVAS_NEUTRAL_V11 */
+/* Remove the remaining legacy beige canvas from the project overview. */
+#app.styleOnePilot:not(.workMode) #homePage,
+#app.styleOnePilot:not(.workMode) #homePage.page,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #homePage.page,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) .homeDashboard,
+#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode) #updateCommandCenter{
+  background:#f3f5f6!important;
+}
+#app.styleOnePilot:not(.workMode) #overviewScopeBar{
+  background:#fff!important;
+  border-color:#dbe1e4!important;
+  box-shadow:0 1px 5px rgba(24,44,58,.035)!important;
+}
+
+
+/* STYLE_ONE_WORK_COLOR_SYSTEM_V12 */
+/* Work layout/functionality is approved. This block changes COLORS ONLY. */
+#app.styleOnePilot.workMode{
+  --work-bg:#f3f5f7;
+  --work-surface:#ffffff;
+  --work-line:#dbe2e7;
+  --work-head:#eef2f5;
+  --work-text:#223744;
+  --work-muted:#687b87;
+  --work-navy:#173d59;
+  background:var(--work-bg)!important;
+}
+#app.styleOnePilot.workMode main,
+#app.styleOnePilot.workMode #workPage{
+  background:var(--work-bg)!important;
+  color:var(--work-text)!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryCard,
+#app.styleOnePilot.workMode #workPage .stats article,
+#app.styleOnePilot.workMode #workPage .premiumTableCard{
+  background:var(--work-surface)!important;
+  border-color:var(--work-line)!important;
+  box-shadow:0 2px 8px rgba(24,44,58,.045)!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryHeader,
+#app.styleOnePilot.workMode #workPage .premiumTableCard .tableTop{
+  background:#fff!important;
+  border-color:#e2e7ea!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryHeader h2,
+#app.styleOnePilot.workMode #workPage .taskContentCell>b,
+#app.styleOnePilot.workMode #workPage .taskTitle{
+  color:#223744!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryHeader p,
+#app.styleOnePilot.workMode #workPage .noteCell,
+#app.styleOnePilot.workMode #workPage .mutedDash{
+  color:#71828d!important;
+}
+
+/* Table: neutral header, dark readable content. */
+#app.styleOnePilot.workMode #workPage .premiumTableCard th{
+  background:var(--work-head)!important;
+  color:#3e5869!important;
+  border-bottom-color:#d9e1e5!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard td{
+  background:#fff!important;
+  color:#334b59!important;
+  border-bottom-color:#e8edef!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard tbody tr:hover td{
+  background:#f7f9fa!important;
+}
+#app.styleOnePilot.workMode #workPage .dateCell{
+  color:#355a70!important;
+}
+#app.styleOnePilot.workMode #workPage .taskContentCell>b{
+  font-weight:560!important;
+}
+
+/* Pills become soft semantic indicators instead of dark competing blocks. */
+#app.styleOnePilot.workMode #workPage .typeBadge{
+  background:#edf2f6!important;
+  color:#38566c!important;
+  border:1px solid #d6e0e7!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.doing{
+  background:#fff4dc!important;
+  color:#87590b!important;
+  border:1px solid #efd7a2!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.done{
+  background:#eaf6ef!important;
+  color:#2f6b50!important;
+  border:1px solid #cbe4d6!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.wait,
+#app.styleOnePilot.workMode #workPage .badge.waiting{
+  background:#fcecee!important;
+  color:#99484f!important;
+  border:1px solid #efc9cd!important;
+}
+#app.styleOnePilot.workMode #workPage .performerChips.pro>span{
+  background:#edf4f4!important;
+  color:#315e60!important;
+  border-color:#d3e3e3!important;
+}
+#app.styleOnePilot.workMode #workPage .performerChips.pro>span i{
+  background:#dcebea!important;
+  color:#315e60!important;
+}
+
+/* KPI cards use one calm base; status meaning lives in the small icon only. */
+#app.styleOnePilot.workMode #workPage .stats article{
+  background:#fff!important;
+}
+#app.styleOnePilot.workMode #workPage .stats article small{
+  color:#6d7e89!important;
+}
+#app.styleOnePilot.workMode #workPage .stats article strong{
+  color:#203744!important;
+}
+
+/* Action menu trigger: visible, but no solid navy square competing with data. */
+#app.styleOnePilot.workMode #workPage .rowActionMenu summary{
+  background:#f4f7f8!important;
+  color:#3d5a6d!important;
+  border-color:#d5dfe4!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot.workMode #workPage .rowActionMenu[open] summary{
+  background:#e9eff2!important;
+  color:#173d59!important;
+  border-color:#bccdd6!important;
+}
+
+/* Form colors follow the same neutral system without changing dimensions. */
+#app.styleOnePilot.workMode #workPage #taskForm input:not([type="hidden"]),
+#app.styleOnePilot.workMode #workPage #taskForm select,
+#app.styleOnePilot.workMode #workPage #taskForm textarea,
+#app.styleOnePilot.workMode #workPage #taskForm .peopleSelectBtn{
+  background:#fff!important;
+  border-color:#cbd5db!important;
+  color:#293f4c!important;
+}
+#app.styleOnePilot.workMode #workPage #taskForm input:focus,
+#app.styleOnePilot.workMode #workPage #taskForm select:focus,
+#app.styleOnePilot.workMode #workPage #taskForm textarea:focus{
+  border-color:#5d8295!important;
+  box-shadow:0 0 0 2px rgba(31,86,115,.10)!important;
+}
+
+/* Remove the old yellow canvas at every viewport. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot.workMode),
+  #app.styleOnePilot.workMode main,
+  #app.styleOnePilot.workMode #workPage{
+    background:#f3f5f7!important;
+  }
+}
+
+
+/* STYLE_ONE_WORK_CANVAS_HARD_RESET_V13 */
+/* Hard reset the legacy Work canvas color. High specificity + no transition prevents
+   old theme rules from painting the yellow report-style background during route changes. */
+html body #app.styleOnePilot.workMode #workPage.page.modulePage.proModulePage{
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+  transition:none!important;
+  animation:none!important;
+}
+html body #app.styleOnePilot.workMode>main{
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+}
+html body:has(#app.styleOnePilot.workMode){
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+}
+
+
+/* STYLE_ONE_DESKTOP_CANVAS_AND_NAVY_V14 */
+/* Final desktop canvas reset: no beige/yellow may remain behind short pages. */
+html:has(#app.styleOnePilot.workMode),
+html:has(#app.styleOnePilot.workMode) body,
+body:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode main{
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+  transition:none!important;
+  animation:none!important;
+}
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main{
+  min-height:100vh!important;
+}
+
+/* One professional navy family instead of teal sidebar + blue header. */
+#app.styleOnePilot .estaSidebar{
+  background:#143b52!important;
+  border-right-color:#254c63!important;
+  box-shadow:3px 0 12px rgba(16,42,58,.08)!important;
+}
+#app.styleOnePilot .estaTopbar{
+  background:#173f73!important;
+  border-bottom-color:#2c5685!important;
+}
+#app.styleOnePilot .estaNav button{
+  color:#c7d7e0!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  background:#1d4b65!important;
+  color:#fff!important;
+}
+#app.styleOnePilot .estaNav button.active{
+  background:#e8eef2!important;
+  border-color:#c7d5dc!important;
+  color:#173d59!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .estaNav button.active svg{
+  color:#1f617b!important;
+}
+
+/* Keep mobile dock in the same navy family. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#173f73!important;
+    border-top-color:#2c5685!important;
+  }
+}
+
+
+/* STYLE_ONE_MAIN_SITE_PALETTE_V15 */
+/* Color-only synchronization with production main.
+   Layout, spacing, responsive behavior and business logic remain Style 1. */
+#app.styleOnePilot{
+  --s1-bg:#f4f7fa!important;
+  --s1-surface:#ffffff!important;
+  --s1-surface-2:#f7f9fb!important;
+  --s1-sidebar:#102b46!important;
+  --s1-sidebar-2:#0a2036!important;
+  --s1-ink:#183b56!important;
+  --s1-muted:#718595!important;
+  --s1-line:#e2e9ee!important;
+  --s1-line-strong:#cbd8e1!important;
+  --s1-accent:#19b8d4!important;
+  --s1-accent-2:#285b7c!important;
+  --s1-success:#2e956b!important;
+  --s1-warning:#bf812e!important;
+  --s1-danger:#c45f65!important;
+  --s1-shadow:0 8px 28px rgba(20,55,80,.055)!important;
+  color:#183b56!important;
+  background:#f4f7fa!important;
+}
+
+html:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot),
+#app.styleOnePilot,
+#app.styleOnePilot>main,
+#app.styleOnePilot main,
+#app.styleOnePilot .page,
+#app.styleOnePilot .modulePage,
+#app.styleOnePilot .demoFeaturePage{
+  background-color:#f4f7fa!important;
+  background-image:none!important;
+  color:#183b56!important;
+}
+
+/* Production sidebar colors. */
+#app.styleOnePilot .estaSidebar{
+  background:
+    radial-gradient(circle at 24% 8%,rgba(43,132,177,.16),transparent 22%),
+    linear-gradient(180deg,#102b46 0%,#0d263f 58%,#0a2036 100%)!important;
+  border-right-color:rgba(255,255,255,.05)!important;
+  box-shadow:12px 0 34px rgba(11,35,57,.07)!important;
+}
+#app.styleOnePilot .estaSidebarBrand{
+  border-bottom-color:rgba(255,255,255,.09)!important;
+}
+#app.styleOnePilot .estaSidebarBrand b{
+  color:#d2b9a8!important;
+}
+#app.styleOnePilot .estaSidebarBrand small{
+  color:#91adbf!important;
+}
+#app.styleOnePilot .estaPetalLogo span{
+  background:#19b8d4!important;
+}
+#app.styleOnePilot .estaNav button{
+  color:#91adbf!important;
+  background:transparent!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  color:#e9f6fb!important;
+  background:rgba(255,255,255,.045)!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .estaNav button.active{
+  color:#fff!important;
+  border-color:rgba(63,190,225,.16)!important;
+  background:linear-gradient(90deg,rgba(24,151,191,.23),rgba(22,87,124,.16))!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .estaNav button.active:before{
+  background:#27c3df!important;
+  box-shadow:0 0 12px rgba(39,195,223,.38)!important;
+}
+#app.styleOnePilot .estaNav button.active svg{
+  color:#49d1e7!important;
+}
+#app.styleOnePilot .sideBackup button,
+#app.styleOnePilot .sideBottom button{
+  color:#91adbf!important;
+  background:rgba(255,255,255,.035)!important;
+  border-color:rgba(255,255,255,.09)!important;
+}
+#app.styleOnePilot .sideAvatar{
+  border-color:rgba(216,185,165,.34)!important;
+  background:rgba(183,154,135,.14)!important;
+  color:#ddc6b7!important;
+}
+#app.styleOnePilot .sideUserCard #sideUser{
+  color:#88a4b8!important;
+}
+#app.styleOnePilot .sideUserCard #sideUser b{
+  color:#e8f1f5!important;
+}
+
+/* Production topbar colors: white, light border, muted blue controls. */
+#app.styleOnePilot .estaTopbar{
+  background:rgba(255,255,255,.96)!important;
+  border-bottom-color:#e2e9ef!important;
+  box-shadow:0 4px 18px rgba(23,55,82,.035)!important;
+}
+#app.styleOnePilot .topModuleTitle h1{
+  color:#183b56!important;
+}
+#app.styleOnePilot .topModuleTitle p{
+  color:#8497a5!important;
+}
+#app.styleOnePilot .topModuleIcon{
+  background:#eef5f9!important;
+  color:#285b7c!important;
+  border-color:#dde6ec!important;
+}
+#app.styleOnePilot .headerSearch{
+  background:#fff!important;
+  border-color:#dde6ec!important;
+}
+#app.styleOnePilot .headerSearch input{
+  color:#3f5c70!important;
+}
+#app.styleOnePilot .iconAction,
+#app.styleOnePilot .pdfAction,
+#app.styleOnePilot .headerBell,
+#app.styleOnePilot .mobileMenuBtn{
+  background:#fff!important;
+  color:#6e899b!important;
+  border-color:#dde6ec!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .headerBell i{
+  background:#20bad6!important;
+  border-color:#fff!important;
+}
+#app.styleOnePilot .headerAvatar{
+  background:#f1e9e4!important;
+  color:#80604e!important;
+  border-color:#e3d4ca!important;
+}
+
+/* Production surfaces and text. */
+#app.styleOnePilot :is(
+  .homePanel,.kpiCard,.styleOneInsights,.workEntryCard,.premiumTableCard,
+  .energyCard,.energyTableCard,.inventoryCommand,.inventoryWorkspace,.inventoryCard,
+  .maintenanceHero,.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,
+  .contractorIntro,.contractorDirectory,.contractorJobsPanel,.contractorProfile,
+  .demoPanel,.demoKpi
+){
+  background:#fff!important;
+  border-color:#e2e9ee!important;
+  color:#183b56!important;
+  box-shadow:0 8px 28px rgba(20,55,80,.055)!important;
+}
+
+/* Production table palette. */
+#app.styleOnePilot table thead th,
+#app.styleOnePilot .premiumTableCard th,
+#app.styleOnePilot .demoTable th{
+  background:#f7f9fb!important;
+  color:#6c8291!important;
+  border-color:#e5ebef!important;
+}
+#app.styleOnePilot table tbody td,
+#app.styleOnePilot .premiumTableCard td,
+#app.styleOnePilot .demoTable td{
+  background:#fff!important;
+  color:#405f72!important;
+  border-color:#eef2f4!important;
+}
+#app.styleOnePilot table tbody tr:hover td{
+  background:#fafcfd!important;
+}
+
+/* Exact production semantic pills. */
+#app.styleOnePilot .badge.done{
+  background:#eaf8f1!important;
+  color:#277c57!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .badge.doing{
+  background:#fff4e3!important;
+  color:#9f6a20!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .badge.waiting,
+#app.styleOnePilot .badge.wait{
+  background:#fff0f0!important;
+  color:#ac555a!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .typeBadge{
+  background:#eef5f9!important;
+  color:#4d7085!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .performerChips.pro>span{
+  background:#f3f9f5!important;
+  color:#3a6550!important;
+  border-color:#dfe9e3!important;
+}
+#app.styleOnePilot .performerChips.pro>span i{
+  background:#dcefe3!important;
+  color:#32664b!important;
+}
+
+/* Production input/control palette. */
+#app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot select,
+#app.styleOnePilot textarea{
+  background:#fff!important;
+  color:#183b56!important;
+  border-color:#d8e5ef!important;
+}
+#app.styleOnePilot input:focus,
+#app.styleOnePilot select:focus,
+#app.styleOnePilot textarea:focus{
+  border-color:#4daee8!important;
+  box-shadow:0 0 0 3px rgba(54,161,224,.09)!important;
+}
+#app.styleOnePilot button.primary,
+#app.styleOnePilot .primary,
+#app.styleOnePilot .inventoryPrimary,
+#app.styleOnePilot .contractorBtn.primary,
+#app.styleOnePilot #reportsPage .rc-primary{
+  background:#12324f!important;
+  color:#fff!important;
+  border-color:#12324f!important;
+  box-shadow:none!important;
+}
+
+/* Production mobile dock colors, preserving the branch dock layout. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:linear-gradient(180deg,#102b46 0%,#0a2036 100%)!important;
+    border-top-color:rgba(39,195,223,.34)!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button{
+    color:#b8cbd6!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>span,
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>b{
+    color:#b8cbd6!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active{
+    background:linear-gradient(180deg,rgba(24,151,191,.25),rgba(22,87,124,.20))!important;
+    border-color:rgba(63,190,225,.24)!important;
+    box-shadow:none!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>span,
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>b{
+    color:#fff!important;
+  }
+}
+
+/* VERCEL_REBUILD_TRIGGER_20261007_0854 */
+
+
+/* STYLE_ONE_MATCH_RENDERED_MAIN_COLORS_V16 */
+/* Match the ACTUAL rendered production colors sampled from the user's current main-site screenshot.
+   Color only: do not alter Style 1 layout, spacing, components, data or business logic. */
+#app.styleOnePilot{
+  --main-rendered-cream:#f7dfb6;
+  --main-rendered-sidebar:#15384f;
+  --main-rendered-topbar:#153e72;
+  --main-rendered-card:#ffffff;
+  --main-rendered-text:#183b56;
+  --main-rendered-muted:#718595;
+  --main-rendered-line:#e2e9ee;
+  --main-rendered-cyan:#19b8d4;
+}
+
+/* Main-site canvas is cream, not white/gray. */
+html:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot) #app.styleOnePilot,
+body:has(#app.styleOnePilot) #app.styleOnePilot>main,
+body:has(#app.styleOnePilot) #app.styleOnePilot main,
+body:has(#app.styleOnePilot) #app.styleOnePilot .page,
+body:has(#app.styleOnePilot) #app.styleOnePilot .modulePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot .demoFeaturePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #homePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #workPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #energyPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #inventoryPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #maintenancePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #contractorPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #incidentPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #inspectionPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #documentsPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #reportsPage{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+
+/* Actual main-site chrome colors from screenshot. */
+#app.styleOnePilot .estaSidebar{
+  background:#15384f!important;
+  background-color:#15384f!important;
+  background-image:none!important;
+  border-right-color:rgba(255,255,255,.08)!important;
+}
+#app.styleOnePilot .estaTopbar{
+  background:#153e72!important;
+  background-color:#153e72!important;
+  background-image:none!important;
+  border-bottom-color:#234d7d!important;
+}
+#app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+#app.styleOnePilot .topModuleTitle p{color:#bfd0df!important}
+#app.styleOnePilot .topModuleIcon{
+  background:#214f7e!important;
+  color:#62d8e7!important;
+  border-color:#37658f!important;
+}
+#app.styleOnePilot .headerSearch{
+  background:#1d4778!important;
+  border-color:#315d87!important;
+}
+#app.styleOnePilot .headerSearch input,
+#app.styleOnePilot .headerSearch input::placeholder{
+  color:#dce8f3!important;
+}
+#app.styleOnePilot .iconAction,
+#app.styleOnePilot .pdfAction,
+#app.styleOnePilot .headerBell,
+#app.styleOnePilot .mobileMenuBtn{
+  background:#173f70!important;
+  border-color:#355f87!important;
+  color:#d7e5ef!important;
+}
+#app.styleOnePilot .headerBell i{
+  background:#c45f65!important;
+  border-color:#fff!important;
+}
+#app.styleOnePilot .account b{color:#fff!important}
+#app.styleOnePilot .account span{color:#a8bfd0!important}
+
+/* Cards remain white on the cream canvas, exactly like production. */
+#app.styleOnePilot :is(
+  .homePanel,.kpiCard,.styleOneInsights,.workEntryCard,.premiumTableCard,
+  .energyCard,.energyTableCard,.inventoryCommand,.inventoryWorkspace,.inventoryCard,
+  .maintenanceHero,.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,
+  .contractorIntro,.contractorDirectory,.contractorJobsPanel,.contractorProfile,
+  .demoPanel,.demoKpi,.opsKpi,.opsPanel,.opsScopeBar
+){
+  background:#fff!important;
+  background-color:#fff!important;
+  color:#183b56!important;
+  border-color:#e2e9ee!important;
+}
+
+/* Sidebar uses production-main active treatment rather than the pale branch treatment. */
+#app.styleOnePilot .estaNav button{
+  color:#c6d8e2!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  color:#fff!important;
+  background:rgba(255,255,255,.055)!important;
+}
+#app.styleOnePilot .estaNav button.active{
+  color:#fff!important;
+  border-color:rgba(63,190,225,.18)!important;
+  background:linear-gradient(90deg,rgba(24,151,191,.23),rgba(22,87,124,.16))!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .estaNav button.active:before{
+  background:#27c3df!important;
+  box-shadow:0 0 12px rgba(39,195,223,.38)!important;
+}
+#app.styleOnePilot .estaNav button.active svg{color:#49d1e7!important}
+
+/* Keep table/form surfaces white so the cream remains only the page canvas. */
+#app.styleOnePilot .premiumTableCard,
+#app.styleOnePilot .premiumTableCard .tableTop,
+#app.styleOnePilot .premiumTableCard .energyTableTop,
+#app.styleOnePilot table tbody td{
+  background:#fff!important;
+}
+#app.styleOnePilot table thead th{
+  background:#f7f9fb!important;
+}
+#app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot select,
+#app.styleOnePilot textarea{
+  background:#fff!important;
+  color:#183b56!important;
+}
+
+/* Mobile dock follows the same topbar navy; page canvas keeps the main cream. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot){
+    background:#f7dfb6!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#2a5987!important;
+  }
+}
+
+
+/* STYLE_ONE_EXACT_MAIN_REFERENCE_V17 */
+/* Exact color reference taken from the user's production screenshots.
+   IMPORTANT: color-only override. Style 1 layout and behavior are unchanged. */
+#app.styleOnePilot{
+  --esta-ref-sidebar:#15384f;
+  --esta-ref-topbar:#153e72;
+  --esta-ref-work-bg:#f6f8fa;
+  --esta-ref-energy-bg:#f7dfb6;
+  --esta-ref-card:#ffffff;
+  --esta-ref-energy-input:#18223b;
+  --esta-ref-text:#183b56;
+  --esta-ref-muted:#718595;
+  --esta-ref-cyan:#19b8d4;
+}
+
+/* Shared application chrome from the real production screenshots. */
+#app.styleOnePilot .estaSidebar{
+  background:#15384f!important;
+  background-image:none!important;
+  border-right-color:rgba(255,255,255,.08)!important;
+}
+#app.styleOnePilot .estaTopbar{
+  background:#153e72!important;
+  background-image:none!important;
+  border-bottom-color:#254f7e!important;
+}
+#app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+#app.styleOnePilot .topModuleTitle p{color:#bdd0df!important}
+#app.styleOnePilot .topModuleIcon{
+  background:#214f7e!important;
+  color:#4dd8e7!important;
+  border-color:#37658f!important;
+}
+#app.styleOnePilot .headerSearch,
+#app.styleOnePilot .iconAction,
+#app.styleOnePilot .pdfAction,
+#app.styleOnePilot .headerBell,
+#app.styleOnePilot .mobileMenuBtn{
+  background:#173f70!important;
+  border-color:#355f87!important;
+  color:#d7e5ef!important;
+}
+#app.styleOnePilot .headerSearch input,
+#app.styleOnePilot .headerSearch input::placeholder{color:#dce8f3!important}
+
+/* WORK: production uses a cool light-gray canvas, not cream. */
+html:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage.page{
+  background:#f6f8fa!important;
+  background-color:#f6f8fa!important;
+  background-image:none!important;
+}
+#app.styleOnePilot.workMode :is(
+  .workEntryCard,.premiumTableCard,.stats article
+){
+  background:#fff!important;
+  border-color:#e2e9ee!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard th{
+  background:#eef3f6!important;
+  color:#385a73!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard td{
+  background:#fff!important;
+  color:#27445b!important;
+}
+#app.styleOnePilot.workMode #workPage .typeBadge{
+  background:#eef5f9!important;
+  color:#4d7085!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.doing{
+  background:#fff4e3!important;
+  color:#9f6a20!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.done{
+  background:#eaf8f1!important;
+  color:#277c57!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.wait,
+#app.styleOnePilot.workMode #workPage .badge.waiting{
+  background:#fff0f0!important;
+  color:#ac555a!important;
+}
+#app.styleOnePilot.workMode #workPage .performerChips.pro>span{
+  background:#f3f9f5!important;
+  color:#3a6550!important;
+  border-color:#dfe9e3!important;
+}
+
+/* ENERGY: production intentionally uses the cream canvas shown in the reference. */
+body:has(#app.styleOnePilot.energyMode),
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode,
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode>main,
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode main,
+body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode #energyPage{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+#app.styleOnePilot.energyMode :is(
+  .energyCard,.energyTableCard,.energySummaryCards article
+){
+  background:#fff!important;
+  border-color:#dce3e6!important;
+  box-shadow:0 3px 12px rgba(21,56,79,.05)!important;
+}
+
+/* Production Energy tabs: cool-gray rail, white active tab, cyan accent. */
+#app.styleOnePilot.energyMode .energyTabs{
+  background:#e9eef1!important;
+  border-color:#d7dfe3!important;
+}
+#app.styleOnePilot.energyMode .energyTabs button{
+  background:transparent!important;
+  color:#405c73!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot.energyMode .energyTabs button.active{
+  background:#fff!important;
+  color:#153e72!important;
+  border-color:#385e80!important;
+  box-shadow:inset 0 -3px #19b8d4!important;
+}
+
+/* Production Energy form uses dark navy fields against white cards. */
+#app.styleOnePilot.energyMode #energyPage .energyForm input:not([type="file"]),
+#app.styleOnePilot.energyMode #energyPage .energyForm select,
+#app.styleOnePilot.energyMode #energyPage .energyForm textarea,
+#app.styleOnePilot.energyMode #energyPage .energyForm .peopleSelectBtn,
+#app.styleOnePilot.energyMode #energyPage .energyForm .peopleButton{
+  background:#18223b!important;
+  background-color:#18223b!important;
+  border-color:#24314f!important;
+  color:#f4f7fb!important;
+}
+#app.styleOnePilot.energyMode #energyPage .energyForm input::placeholder,
+#app.styleOnePilot.energyMode #energyPage .energyForm textarea::placeholder{
+  color:#8fa1be!important;
+}
+#app.styleOnePilot.energyMode #energyPage .energyForm label>span{
+  color:#8ea0bd!important;
+}
+#app.styleOnePilot.energyMode #energyPage .energyImageField,
+#app.styleOnePilot.energyMode #energyPage .energyImageField input[type="file"]{
+  background:#fff!important;
+  color:#607994!important;
+}
+
+/* Production Energy primary action uses the visible violet-to-cyan gradient. */
+#app.styleOnePilot.energyMode #energyPage .energyActions .primary,
+#app.styleOnePilot.energyMode #energyPage .energySaveBtn,
+#app.styleOnePilot.energyMode #energyPage button[data-energy-save]{
+  background:linear-gradient(90deg,#6966fe 0%,#29c1e0 100%)!important;
+  border-color:transparent!important;
+  color:#101827!important;
+  box-shadow:0 9px 22px rgba(74,112,222,.16)!important;
+}
+
+/* Mobile follows the same per-module canvas logic. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot.workMode){background:#f6f8fa!important}
+  body:has(#app.styleOnePilot.energyMode){background:#f7dfb6!important}
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#315c87!important;
+  }
+}
+
+
+/* STYLE_ONE_EXACT_PRODUCTION_WORK_V18 */
+/* Exact color-only match to the user's PRODUCTION Work screenshot.
+   Layout, sizing, behavior and data are unchanged. */
+html:has(#app.styleOnePilot.workMode),
+html:has(#app.styleOnePilot.workMode) body,
+body:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage.page{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+
+/* Production sidebar + active navigation. */
+html body #app.styleOnePilot .estaSidebar{
+  background:#0f5c78!important;
+  background-color:#0f5c78!important;
+  background-image:none!important;
+  border-right-color:rgba(255,255,255,.08)!important;
+}
+html body #app.styleOnePilot .estaPetalLogo span{
+  background:#d0a17f!important;
+}
+html body #app.styleOnePilot .estaSidebarBrand b{
+  color:#e1b69a!important;
+}
+html body #app.styleOnePilot .estaSidebarBrand small{
+  color:#b8d3de!important;
+}
+html body #app.styleOnePilot .estaNav button{
+  color:#d0e4ec!important;
+}
+html body #app.styleOnePilot .estaNav button:hover{
+  background:rgba(255,255,255,.06)!important;
+  color:#fff!important;
+}
+html body #app.styleOnePilot .estaNav button.active{
+  background:#2e7189!important;
+  color:#fff!important;
+  border-color:#4b8ea4!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot .estaNav button.active:before{
+  background:#43d8e7!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot .estaNav button.active svg{
+  color:#55d9e8!important;
+}
+
+/* Production topbar. */
+html body #app.styleOnePilot .estaTopbar{
+  background:linear-gradient(90deg,#153e72 0%,#143d70 60%,#133a69 100%)!important;
+  border-bottom-color:#254f7e!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+html body #app.styleOnePilot .topModuleTitle p{color:#bdd0df!important}
+html body #app.styleOnePilot .topModuleIcon{
+  background:#214f7e!important;
+  color:#45d7e8!important;
+  border-color:#37658f!important;
+}
+html body #app.styleOnePilot .headerSearch,
+html body #app.styleOnePilot .iconAction,
+html body #app.styleOnePilot .pdfAction,
+html body #app.styleOnePilot .headerBell,
+html body #app.styleOnePilot .mobileMenuBtn{
+  background:#173f70!important;
+  border-color:#355f87!important;
+  color:#d7e5ef!important;
+}
+html body #app.styleOnePilot .headerSearch input,
+html body #app.styleOnePilot .headerSearch input::placeholder{
+  color:#dce8f3!important;
+}
+
+/* Production Work entry card = pale blue, not white. */
+html body #app.styleOnePilot.workMode #workPage .workEntryCard{
+  background:linear-gradient(90deg,#ecf8ff 0%,#e4f3fe 100%)!important;
+  border-color:#8ecff7!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryHeader{
+  background:transparent!important;
+  border-bottom-color:#c8e5f7!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryHeader h2{
+  color:#173e61!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryHeader p{
+  color:#6f8798!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryCard input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+html body #app.styleOnePilot.workMode #workPage .workEntryCard select,
+html body #app.styleOnePilot.workMode #workPage .workEntryCard textarea,
+html body #app.styleOnePilot.workMode #workPage .workEntryCard .peopleSelectBtn{
+  background:#fff!important;
+  color:#28475e!important;
+  border-color:#bed6e6!important;
+}
+html body #app.styleOnePilot.workMode #workPage .linkedTaskBox,
+html body #app.styleOnePilot.workMode #workPage .workLinkRow,
+html body #app.styleOnePilot.workMode #workPage .taskLinkPanel{
+  background:#e3f4ff!important;
+  border-color:#7fc9f7!important;
+}
+
+/* KPI strip stays light, like production. */
+html body #app.styleOnePilot.workMode #workPage .stats,
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard{
+  background:#f7fbfe!important;
+  border-color:#dceaf3!important;
+}
+html body #app.styleOnePilot.workMode #workPage .stats article{
+  background:#fff!important;
+  border-color:#dde6eb!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot.workMode #workPage .stats article small{
+  color:#657c8d!important;
+}
+html body #app.styleOnePilot.workMode #workPage .stats article strong{
+  color:#153e61!important;
+}
+
+/* Table header is pale blue, body rows are production navy. */
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard .tableTop{
+  background:#f7fbfe!important;
+  border-color:#dceaf3!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard thead th,
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+  border-color:#dcebf5!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard tbody td,
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard td{
+  background:#11182b!important;
+  color:#f6f9fc!important;
+  border-bottom-color:#d4e0ea!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard tbody tr:nth-child(even) td{
+  background:#101729!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard tbody tr:hover td{
+  background:#17243a!important;
+}
+html body #app.styleOnePilot.workMode #workPage .taskContentCell>b,
+html body #app.styleOnePilot.workMode #workPage .taskTitle{
+  color:#fff!important;
+}
+html body #app.styleOnePilot.workMode #workPage .dateCell{
+  color:#315c82!important;
+}
+html body #app.styleOnePilot.workMode #workPage .noteCell,
+html body #app.styleOnePilot.workMode #workPage .mutedDash{
+  color:#d9e7f2!important;
+}
+
+/* Production dark pills inside navy rows. */
+html body #app.styleOnePilot.workMode #workPage .typeBadge{
+  background:#17243a!important;
+  color:#d9e9f4!important;
+  border:1px solid #304764!important;
+}
+html body #app.styleOnePilot.workMode #workPage .badge.doing{
+  background:#362813!important;
+  color:#ffc85a!important;
+  border:1px solid #765017!important;
+}
+html body #app.styleOnePilot.workMode #workPage .badge.done{
+  background:#102f2f!important;
+  color:#7ae1bc!important;
+  border:1px solid #285a55!important;
+}
+html body #app.styleOnePilot.workMode #workPage .badge.wait,
+html body #app.styleOnePilot.workMode #workPage .badge.waiting{
+  background:#321a23!important;
+  color:#ff9eaa!important;
+  border:1px solid #67323e!important;
+}
+html body #app.styleOnePilot.workMode #workPage .performerChips.pro>span{
+  background:#102b31!important;
+  color:#d8fff0!important;
+  border-color:#28545a!important;
+}
+html body #app.styleOnePilot.workMode #workPage .performerChips.pro>span i{
+  background:#183d42!important;
+  color:#7be3c7!important;
+}
+html body #app.styleOnePilot.workMode #workPage .rowActionMenu summary{
+  background:#17243a!important;
+  color:#cfe1ef!important;
+  border-color:#304764!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot.workMode #workPage .rowActionMenu[open] summary{
+  background:#20324f!important;
+  color:#fff!important;
+  border-color:#426382!important;
+}
+
+/* Mobile keeps same production palette while retaining the approved mobile layout. */
+@media(max-width:760px){
+  html body:has(#app.styleOnePilot.workMode){
+    background:#f7dfb6!important;
+  }
+  body:has(#app.styleOnePilot.workMode) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#315c87!important;
+  }
+}
+
+
+/* STYLE_ONE_ALL_MODULES_PRODUCTION_PALETTE_V19 */
+/* Full-branch color sync to the current ESTA production look.
+   COLOR ONLY: no layout, spacing, visibility, data, or behavior changes. */
+#app.styleOnePilot{
+  --prod-cream:#f7dfb6;
+  --prod-sidebar:#0f5c78;
+  --prod-sidebar-active:#2e7189;
+  --prod-topbar:#153e72;
+  --prod-navy:#11182b;
+  --prod-navy-2:#18223b;
+  --prod-pale-blue:#eaf6fe;
+  --prod-pale-head:#eef7fd;
+  --prod-cyan:#19b8d4;
+  --prod-text:#183b56;
+  --prod-light:#f7fbfe;
+  --prod-line:#d8e5ee;
+}
+
+/* Every user-facing project module sits on the same production cream canvas. */
+body:has(#app.styleOnePilot) #app.styleOnePilot :is(
+  #homePage,#adminPage,#workPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,
+  #energyPage,#inventoryPage,#maintenancePage,#contractorPage,#constructionMaterialPage
+){
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+html:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot) #app.styleOnePilot,
+body:has(#app.styleOnePilot) #app.styleOnePilot>main,
+body:has(#app.styleOnePilot) #app.styleOnePilot main{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+}
+
+/* Shared production navigation chrome. */
+html body #app.styleOnePilot .estaSidebar{
+  background:#0f5c78!important;
+  background-image:none!important;
+}
+html body #app.styleOnePilot .estaNav button.active{
+  background:#2e7189!important;
+  border-color:#4b8ea4!important;
+  color:#fff!important;
+}
+html body #app.styleOnePilot .estaTopbar{
+  background:linear-gradient(90deg,#153e72 0%,#143d70 60%,#133a69 100%)!important;
+  border-bottom-color:#254f7e!important;
+}
+html body #app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+html body #app.styleOnePilot .topModuleTitle p{color:#bdd0df!important}
+
+/* Dashboard / Overview. */
+#app.styleOnePilot #homePage .homeWelcome,
+#app.styleOnePilot #homePage .unifiedCommand,
+#app.styleOnePilot #homePage .opsHero{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #homePage :is(.homeWelcome h1,.homeWelcome p,.homeEyebrow,.opsHero h1,.opsHero h2,.opsHero p){
+  color:#fff!important;
+}
+#app.styleOnePilot #homePage :is(.kpiCard,.homePanel,.opsKpi,.opsPanel,.opsScopeBar){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#f3f7fb!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #homePage :is(.kpiCard strong,.homePanel h2,.homePanel h3,.opsKpi b,.opsKpi strong,.opsPanel h2,.opsPanel h3){
+  color:#fff!important;
+}
+#app.styleOnePilot #homePage :is(.kpiCard small,.kpiCard span,.homePanel p,.homePanel small,.opsKpi span,.opsKpi small,.opsPanel p,.opsPanel small){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot #homePage :is(.homeRecentTasks button,.quickActions button,.homeEnergyList article,.ccProjectCard,.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini){
+  background:#18223b!important;
+  border-color:#2d3b57!important;
+  color:#eaf2f8!important;
+}
+#app.styleOnePilot #homePage :is(.homeRecentTasks b,.quickActions b,.homeEnergyList strong,.ccProjectCard h3,.updateFocusRow b,.updateSystemHealth b,.updateAttentionRow b,.updateTeamMini b){
+  color:#fff!important;
+}
+#app.styleOnePilot #homePage :is(.homeRecentTasks span,.homeRecentTasks small,.quickActions small,.homeEnergyList span,.homeEnergyList small){
+  color:#9fb0c5!important;
+}
+
+/* Admin / Projects. */
+#app.styleOnePilot #adminPage .adminHero{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #adminPage .adminHero :is(h1,p,.adminEyebrow){color:#fff!important}
+#app.styleOnePilot #adminPage .adminSection{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #adminPage .adminSectionHead :is(h2,p){color:#fff!important}
+#app.styleOnePilot #adminPage :is(.adminProjectCard,.adminAccountCard,.adminSettingsCard){
+  background:#18223b!important;
+  border-color:#2d3b57!important;
+  color:#eef5fa!important;
+}
+
+/* ENERGY: mirror current production screenshot. */
+#app.styleOnePilot #energyPage .energyTabs{
+  background:#ead19f!important;
+  border-color:#d7ba7b!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button{
+  color:#3f5774!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button.active{
+  background:#11182b!important;
+  color:#fff!important;
+  border-color:#263957!important;
+  box-shadow:inset 0 -3px #19b8d4!important;
+}
+#app.styleOnePilot #energyPage :is(.energySummaryCards article,.energyCard,.energyTableCard){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#f3f7fb!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #energyPage :is(.energySummaryCards small,.energyCard p,.energyTableTop p,.energyForm label>span){
+  color:#8fa1be!important;
+}
+#app.styleOnePilot #energyPage :is(.energySummaryCards strong,.energyCard h2,.energyTableTop h2){
+  color:#fff!important;
+}
+#app.styleOnePilot #energyPage :is(
+  .energyForm input:not([type="file"]),.energyForm select,.energyForm textarea,.energyForm .peopleSelectBtn
+){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#f5f8fb!important;
+}
+#app.styleOnePilot #energyPage :is(.energyForm input::placeholder,.energyForm textarea::placeholder){
+  color:#8295b2!important;
+}
+#app.styleOnePilot #energyPage .energyDesktopTable thead th{
+  background:#11182b!important;
+  color:#f4b84b!important;
+  border-color:#26334c!important;
+}
+#app.styleOnePilot #energyPage .energyDesktopTable tbody td{
+  background:#11182b!important;
+  color:#e7edf4!important;
+  border-color:#26334c!important;
+}
+#app.styleOnePilot #energyPage .energyActions .primary{
+  background:linear-gradient(90deg,#6966fe 0%,#29c1e0 100%)!important;
+  color:#0f1727!important;
+  border-color:transparent!important;
+}
+
+/* Inventory / Tools. */
+#app.styleOnePilot #inventoryPage :is(.inventoryCommand,.inventoryWorkspace){
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySectionBar,.inventoryMonthRail,.inventoryTableCard,.inventorySupportCard,.inventoryQuickAdd){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryStats article,.inventoryMetric){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySectionBar h2,.inventoryCardTitle h3,.inventoryQuickAdd h3,.inventoryStats b,.inventoryMetric b){
+  color:#fff!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySectionBar p,.inventoryCardTitle small,.inventoryStats small,.inventoryStats em,.inventoryMetric small,.inventoryMetric em,.inventoryMonthRail small){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs{
+  background:#ead19f!important;
+  border-color:#d7ba7b!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button{
+  color:#3f5774!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button.active{
+  background:#11182b!important;
+  color:#fff!important;
+  border-color:#263957!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySearch,.inventoryCommandMeta label,.inventoryQuickMenu summary){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#dce7ef!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySearch input,.inventoryCommandMeta select){
+  background:transparent!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #inventoryPage .materialMonthTabs button{
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#cbd7e3!important;
+}
+#app.styleOnePilot #inventoryPage .materialMonthTabs button.active,
+#app.styleOnePilot #inventoryPage .materialMonthTabs .active{
+  background:#2e7189!important;
+  color:#fff!important;
+  border-color:#4b8ea4!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryTableCard thead th,.toolsTable thead th,.transactionTable thead th,.materialMonthlyTable thead th){
+  background:#eef7fd!important;
+  color:#3c618c!important;
+  border-color:#dcebf5!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryTableCard tbody td,.toolsTable tbody td,.transactionTable tbody td,.materialMonthlyTable tbody td){
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+#app.styleOnePilot #inventoryPage .materialMatrix .stickyMaterial{
+  background:#11182b!important;
+}
+#app.styleOnePilot #inventoryPage .materialMatrix thead .stickyMaterial{
+  background:#eef7fd!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryPrimary,.inventorySecondary,.stockAlertFilterBtn){
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryPrimary{
+  background:#153e72!important;
+  border-color:#285b89!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #inventoryPage .inventorySecondary{
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#dce7ef!important;
+}
+
+/* Maintenance / Assets. */
+#app.styleOnePilot #maintenancePage :is(.maintenanceHero,.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard){
+  background:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceStats article{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #maintenancePage :is(
+  .maintenanceHero h1,.maintenanceSchedule h2,.maintenanceToolbar h2,.maintenanceStats b,.inventorySectionHead h3
+){color:#fff!important}
+#app.styleOnePilot #maintenancePage :is(
+  .maintenanceHero p,.maintenanceToolbar p,.maintenanceStats small,.maintenanceStats em,.inventorySectionHead p
+){color:#9fb0c5!important}
+#app.styleOnePilot #maintenancePage :is(.maintenanceToolbar,.maintenanceProjectMeta,.maintenanceMonthStrip,.maintenanceAssetCard){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#eaf2f8!important;
+}
+#app.styleOnePilot #maintenancePage :is(.inventorySearch,.maintenanceToolbar select){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceHistoryTable thead th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceHistoryTable tbody td{
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+
+/* Contractors. */
+#app.styleOnePilot #contractorPage :is(.contractorIntro,.contractorDirectory,.contractorProfile,.contractorJobsPanel){
+  background:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorStats article{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage :is(
+  .contractorIntro h1,.contractorToolbar h2,.contractorProfile h1,.contractorJobsHead h2,.contractorStats b
+){color:#fff!important}
+#app.styleOnePilot #contractorPage :is(
+  .contractorIntro p,.contractorToolbar p,.contractorProfile p,.contractorStats small,.contractorStats em
+){color:#9fb0c5!important}
+#app.styleOnePilot #contractorPage :is(.contractorSearch,.contractorJobFilters select,.contractorSpecialtyFilters button){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#dce7ef!important;
+}
+#app.styleOnePilot #contractorPage .contractorSpecialtyFilters button.active{
+  background:#2e7189!important;
+  color:#fff!important;
+  border-color:#4b8ea4!important;
+}
+#app.styleOnePilot #contractorPage :is(.contractorListHeader,.contractorJobsHead){
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot #contractorPage :is(.contractorCard,.contractorRow,.contractorJobCard){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#eef5fa!important;
+}
+
+/* Incident / Inspection / Documents share the same production dark workspace. */
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoHero{
+  background:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoHero :is(h1,p,span){
+  color:#fff!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoKpi,
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoPanel{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) :is(.demoKpi b,.demoPanel h2,.demoPanel h3){
+  color:#fff!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) :is(.demoKpi span,.demoKpi small,.demoPanel p,.demoPanel small){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot :is(#incidentPage,#documentsPage) .demoTable thead th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot :is(#incidentPage,#documentsPage) .demoTable tbody td{
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+#app.styleOnePilot #inspectionPage :is(.demoChecklistRow,.demoOpsList>*,.demoPanelBody>*){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#eef5fa!important;
+}
+
+/* Reports. */
+#app.styleOnePilot #reportsPage :is(.rc-heading,.rc-period,.rc-controls,.rc-preview,.rc-history){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #reportsPage :is(.rc-heading h2,.rc-card-heading h3,.rc-preview h3,.rc-history h3){
+  color:#fff!important;
+}
+#app.styleOnePilot #reportsPage :is(.rc-heading p,.rc-card-heading p,.rc-preview p,.rc-history p,.rc-range-hint,.rc-message){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot #reportsPage .rc-segments{
+  background:#18223b!important;
+  border-color:#30405f!important;
+}
+#app.styleOnePilot #reportsPage .rc-segments button{
+  background:transparent!important;
+  color:#c6d4df!important;
+}
+#app.styleOnePilot #reportsPage .rc-segments button.active{
+  background:#2e7189!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #reportsPage :is(input,select,.rc-button){
+  background:#18223b!important;
+  color:#eef5fa!important;
+  border-color:#30405f!important;
+}
+#app.styleOnePilot #reportsPage .rc-primary{
+  background:#153e72!important;
+  color:#fff!important;
+  border-color:#285b89!important;
+}
+#app.styleOnePilot #reportsPage table thead th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot #reportsPage table tbody td{
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+
+/* Shared modal palette for every module. */
+body:has(#app.styleOnePilot) :is(
+  .modalCard,.peopleManagerCard,.demoIncidentModalCard,.demoChecklistModalCard,
+  .technicalDocumentModalCard,.ccModalCard,.inventoryModalCard,.contractorModalCard,
+  .maintenanceModalCard
+){
+  background:#11182b!important;
+  border-color:#30405f!important;
+  color:#eef5fa!important;
+}
+body:has(#app.styleOnePilot) :is(
+  .modalCard,.peopleManagerCard,.demoIncidentModalCard,.demoChecklistModalCard,
+  .technicalDocumentModalCard,.ccModalCard,.inventoryModalCard,.contractorModalCard,
+  .maintenanceModalCard
+) :is(h2,h3,b,label>span){
+  color:#fff!important;
+}
+body:has(#app.styleOnePilot) :is(
+  .modalCard,.peopleManagerCard,.demoIncidentModalCard,.demoChecklistModalCard,
+  .technicalDocumentModalCard,.ccModalCard,.inventoryModalCard,.contractorModalCard,
+  .maintenanceModalCard
+) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),select,textarea){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#f3f7fb!important;
+}
+
+/* Keep mobile navigation aligned with production chrome. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#315c87!important;
+  }
+}
