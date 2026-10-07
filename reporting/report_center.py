@@ -42,7 +42,7 @@ FOOTER=pdfc.FOOTER
 ReportCanvas=pdfc.NumberedCanvas
 
 
-def styles():def styles():
+def styles():
     def style(name, **options):
         values = dict(fontName="Mont", fontSize=8, leading=12, textColor=INK, spaceAfter=0)
         values.update(options)
@@ -148,7 +148,7 @@ def _page_functions(data):
     )
 
 
-def _meta_table(data, sections, st):def _meta_table(data, sections, st):
+def _meta_table(data, sections, st):
     period = data.get("range") or {}
     from_date = str(period.get("from") or "—")
     to_date = str(period.get("to") or "—")
@@ -207,7 +207,7 @@ def _signature_block(data, st):
     return KeepTogether([Spacer(1, 8), table])
 
 
-def build_operations_doc(path, data, token, temp_dir, downloader):def build_operations_doc(path, data, token, temp_dir, downloader):
+def build_operations_doc(path, data, token, temp_dir, downloader):
     sections = data.get("sections")
     if not isinstance(sections, list) or not sections:
         raise ValueError("Chọn ít nhất một hạng mục báo cáo")
