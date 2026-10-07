@@ -53,16 +53,16 @@ async function setupProject(page){
   await page.waitForTimeout(250);
   const pilot=await page.locator("#app").evaluate(el=>el.classList.contains("styleOnePilot"));
   if(!pilot)throw new Error("Style 1 was not enabled for 130HH");
-  const isolation=await page.evaluate(()=>{
-    const old=currentBuilding;
+  const isolation=await page.evaluate(async()=>{
     prepareProjectContext({id:"127HH",name:"127 Hồng Hà",role:"admin"});
     applyBuildingUI();
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     const leaked=document.querySelector("#app")?.classList.contains("styleOnePilot");
     prepareProjectContext({id:"130HH",name:"130 Hồng Hà",role:"admin"});
     applyBuildingUI();
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     return leaked;
   });
-  await page.waitForTimeout(80);
   if(isolation)throw new Error("Style 1 leaked into 127HH");
 }
 async function switchModule(page,name,id){
