@@ -280,3 +280,68 @@
   .pendingPhotoViewerCard main{padding:0!important}
   .pendingPhotoViewerCard footer{grid-template-columns:1.3fr .7fr!important}
 }
+
+
+/* THUMBNAIL_CLEAN_VIEW_20261007_V2 */
+/* Never let legacy edit buttons cover thumbnails. Editing is only available after opening the large preview. */
+.pendingImg .photoAnnotatorEditBtn,
+.ccDispatchThumb .photoAnnotatorEditBtn{
+  display:none!important;
+}
+.pendingImg,
+.ccDispatchThumb{
+  position:relative!important;
+}
+.pendingImg>img,
+.ccDispatchThumb>img{
+  position:relative!important;
+  z-index:1!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  cursor:zoom-in!important;
+}
+.pendingImg>button:not(.photoAnnotatorEditBtn),
+.ccDispatchThumb>button[data-cc-remove-image]{
+  position:absolute!important;
+  z-index:6!important;
+  top:4px!important;
+  right:4px!important;
+  left:auto!important;
+  bottom:auto!important;
+  width:26px!important;
+  min-width:26px!important;
+  max-width:26px!important;
+  height:26px!important;
+  min-height:26px!important;
+  max-height:26px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  margin:0!important;
+  border:2px solid rgba(255,255,255,.92)!important;
+  border-radius:50%!important;
+  background:rgba(9,30,52,.92)!important;
+  color:#fff!important;
+  font-size:17px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.28)!important;
+}
+.pendingImg>span,
+.ccDispatchThumb>span{
+  z-index:5!important;
+}
+@media(max-width:760px){
+  .pendingImg>button:not(.photoAnnotatorEditBtn),
+  .ccDispatchThumb>button[data-cc-remove-image]{
+    width:28px!important;
+    min-width:28px!important;
+    max-width:28px!important;
+    height:28px!important;
+    min-height:28px!important;
+    max-height:28px!important;
+    font-size:18px!important;
+  }
+}
