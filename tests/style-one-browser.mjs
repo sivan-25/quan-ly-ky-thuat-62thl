@@ -61,6 +61,34 @@ async function switchModule(page,name,id){
   if(!visible)throw new Error(name+" page did not become visible");
   await assertNoOverflow(page,name);
 }
+async function assertProductionModulePalette(page,pageSelector,panelSelector,label){
+  const colors=await page.evaluate(({pageSelector,panelSelector})=>{
+    const pageEl=document.querySelector(pageSelector);
+    const panel=document.querySelector(panelSelector);
+    const sidebar=document.querySelector(".estaSidebar");
+    const topbar=document.querySelector(".estaTopbar");
+    const rgb=s=>{const m=String(s||"").match(/[0-9]+/g);return m&&m.length>=3?m.slice(0,3).map(Number):null};
+    const color=el=>el?getComputedStyle(el).backgroundColor:"";
+    const image=el=>el?getComputedStyle(el).backgroundImage:"";
+    return {
+      pageRgb:rgb(color(pageEl)),
+      panelRgb:rgb(color(panel)),
+      panelImage:image(panel),
+      sidebarRgb:rgb(color(sidebar)),
+      topbarRgb:rgb(color(topbar)),
+      topbarImage:image(topbar)
+    };
+  },{pageSelector,panelSelector});
+  const near=(a,b,t=14)=>a&&a.length===3&&a.every((v,i)=>Math.abs(v-b[i])<=t);
+  if(!near(colors.pageRgb,[247,223,182],14))throw new Error(label+" canvas does not match production cream: "+JSON.stringify(colors));
+  if(!near(colors.sidebarRgb,[15,92,120],14))throw new Error(label+" sidebar does not match production teal: "+JSON.stringify(colors));
+  const topbarDark=(colors.topbarRgb&&colors.topbarRgb.reduce((s,v)=>s+v,0)/3<120)||colors.topbarImage!=="none";
+  if(!topbarDark)throw new Error(label+" topbar lacks production navy treatment: "+JSON.stringify(colors));
+  const panelDark=(colors.panelRgb&&colors.panelRgb.reduce((s,v)=>s+v,0)/3<85)||colors.panelImage!=="none";
+  if(!panelDark)throw new Error(label+" primary panel does not use production dark surface: "+JSON.stringify(colors));
+  await page.screenshot({path:`${outDir}/${label}.png`,fullPage:true});
+}
+
 async function exerciseWork(page){
   await switchModule(page,"work","#workPage");
   await page.fill("#content","QA Style 1 - kiểm tra thao tác người dùng");
@@ -119,14 +147,16 @@ async function exerciseContractor(page){
   if(await page.locator("#contractorModal").evaluate(el=>el.classList.contains("hide")))throw new Error("Contractor modal did not open");
   await page.click("#closeContractorModal");
 }
-async function exerciseSpecial(page){
+async function exerciseSpecial(page,label){
   await switchModule(page,"incident","#incidentPage");
+  await assertProductionModulePalette(page,"#incidentPage","#incidentPage .demoPanel",label+"-incident");
   await page.click("#demoIncidentAdd");
   await page.waitForTimeout(80);
   if(await page.locator("#demoIncidentModal").evaluate(el=>el.classList.contains("hide")))throw new Error("Incident modal did not open");
   await page.locator(".demoIncidentModalClose").click();
 
   await switchModule(page,"inspection","#inspectionPage");
+  await assertProductionModulePalette(page,"#inspectionPage","#inspectionPage .demoPanel",label+"-inspection");
   await page.click("#demoInspectionAdd");
   await page.waitForTimeout(80);
   if(await page.locator("#demoChecklistModal").evaluate(el=>el.classList.contains("hide")))throw new Error("Inspection modal did not open");
@@ -134,10 +164,12 @@ async function exerciseSpecial(page){
 
   await switchModule(page,"documents","#documentsPage");
   await assertNoOverflow(page,"documents");
+  await assertProductionModulePalette(page,"#documentsPage","#documentsPage .demoPanel",label+"-documents");
 
   await switchModule(page,"reports","#reportsPage");
   await page.locator('[data-demo-report-range="week"]').click();
   await page.waitForTimeout(80);
+  await assertProductionModulePalette(page,"#reportsPage","#reportsPage .rc-controls",label+"-reports");
 }
 async function exerciseMobileMenu(page,label){
   if((await page.viewportSize()).width>760)return;
@@ -324,13 +356,17 @@ for(const viewport of viewports){
       throw new Error("Energy input does not match production navy field: "+JSON.stringify(energyColors));
     }
     await exerciseInventory(page);
+    await assertProductionModulePalette(page,"#inventoryPage","#inventoryPage .inventoryTableCard",viewport.name+"-inventory");
     await exerciseMaintenance(page);
+    await assertProductionModulePalette(page,"#maintenancePage","#maintenancePage .maintenanceBoard",viewport.name+"-maintenance");
     await exerciseContractor(page);
-    await exerciseSpecial(page);
+    await assertProductionModulePalette(page,"#contractorPage","#contractorPage .contractorDirectory",viewport.name+"-contractor");
+    await exerciseSpecial(page,viewport.name);
     await exerciseDesktopPerformance(page,viewport.name);
     await page.evaluate(()=>showHome());
     await page.waitForTimeout(100);
     await assertNoOverflow(page,viewport.name+" final-home");
+    await assertProductionModulePalette(page,"#homePage","#homePage .homePanel",viewport.name+"-home");
     await page.screenshot({path:`${outDir}/${viewport.name}.png`,fullPage:true});
 
     if(browserErrors.length)throw new Error("Browser errors: "+browserErrors.join(" | "));
