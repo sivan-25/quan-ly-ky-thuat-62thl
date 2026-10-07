@@ -371,6 +371,78 @@ function constructionPrintWindow(html){
   const w=open("","_blank");if(!w){toast("Trình duyệt đang chặn cửa sổ PDF");return}
   w.document.write(html);w.document.close();
 }
+async function constructionExportDirectoryEstaPdf(){
+  if(!constructionMaterials.length)return toast("Chưa có vật tư để xuất PDF");
+  if(typeof window.exportGenericEstaPdf!=="function")return toast("Bộ xuất PDF ESTA chưa sẵn sàng");
+  const year=constructionYearValue(),annual=constructionActiveMonth==="all";
+  const search=($("#constructionSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
+  const category=$("#constructionCategorySelect")?.value||"";
+  const list=constructionMaterials.filter(m=>(!category||m.category===category)&&(!search||[m.name,m.brand,m.specification,m.unit,m.supplier,m.storage_location,m.category,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search))));
+  if(!list.length)return toast("Không có vật tư phù hợp để xuất PDF");
+  const month=annual?null:Math.max(1,Math.min(12,Number(constructionActiveMonth)||1));
+  const snaps=list.map(m=>({m,s:constructionSnapshot(m,year)}));
+  const totalIn=snaps.reduce((n,x)=>n+(annual?x.s.totalIn:x.s.months[month-1].inQty),0);
+  const totalOut=snaps.reduce((n,x)=>n+(annual?x.s.totalOut:x.s.months[month-1].outQty),0);
+  const stock=x=>annual?x.s.closing:x.s.months[month-1].stock;
+  const rows=snaps.map((x,i)=>{
+    if(annual){
+      const detail=x.s.months.map((mm,idx)=>"T"+(idx+1)+": N "+constructionFmt(mm.inQty)+" / X "+constructionFmt(mm.outQty)+" / T "+constructionFmt(mm.stock)).join(" · ");
+      return [i+1,x.m.name+([x.m.specification,x.m.brand].filter(Boolean).length?" · "+[x.m.specification,x.m.brand].filter(Boolean).join(" · "):""),x.m.unit||"—",constructionFmt(x.s.opening),detail,constructionFmt(x.s.totalIn),constructionFmt(x.s.totalOut),constructionFmt(x.s.closing)];
+    }
+    const mm=x.s.months[month-1];
+    return [i+1,x.m.name,x.m.category||"Khác",x.m.unit||"—",constructionFmt(mm.begin),constructionFmt(mm.inQty),constructionFmt(mm.outQty),constructionFmt(mm.stock),x.m.storage_location||"—"];
+  });
+  return window.exportGenericEstaPdf({
+    title:annual?"BÁO CÁO VẬT TƯ THI CÔNG 12 THÁNG":"BÁO CÁO VẬT TƯ THI CÔNG",
+    sectionLabel:"QUẢN LÝ VẬT TƯ THI CÔNG",tableLabel:"NHẬP - XUẤT - TỒN",
+    periodLabel:annual?("12 THÁNG / "+year):("THÁNG "+String(month).padStart(2,"0")+" / "+year),
+    filename:"BaoCao_VatTuThiCong_"+(annual?("12Thang_"+year):("Thang"+String(month).padStart(2,"0")+"_"+year))+".pdf",
+    columns:annual?[
+      {label:"STT",weight:.5},{label:"Vật tư",weight:2.5},{label:"ĐVT",weight:.7},{label:"Đầu năm",weight:.9},
+      {label:"Phát sinh 12 tháng",weight:4.2},{label:"Tổng nhập",weight:.9},{label:"Tổng xuất",weight:.9},{label:"Tồn cuối",weight:.9}
+    ]:[
+      {label:"STT",weight:.5},{label:"Vật tư",weight:2.1},{label:"Nhóm",weight:1.2},{label:"ĐVT",weight:.7},
+      {label:"Tồn đầu",weight:.9},{label:"Nhập",weight:.9},{label:"Xuất",weight:.9},{label:"Tồn cuối",weight:.9},{label:"Vị trí lưu",weight:1.5}
+    ],
+    rows,
+    summaries:[
+      {value:constructionFmt(totalIn),label:annual?"NHẬP TRONG NĂM":"NHẬP TRONG THÁNG"},
+      {value:constructionFmt(totalOut),label:annual?"XUẤT TRONG NĂM":"XUẤT TRONG THÁNG"},
+      {value:snaps.filter(x=>stock(x)>0).length,label:"MẶT HÀNG CÒN TỒN"},
+      {value:snaps.filter(x=>constructionNum(x.m.min_qty)>0&&stock(x)<=constructionNum(x.m.min_qty)).length,label:"SẮP HẾT"}
+    ]
+  });
+}
+async function constructionExportDetailEstaPdf(){
+  const m=constructionMaterials.find(x=>String(x.id)===String(selectedConstructionMaterialId));
+  if(!m)return toast("Chưa chọn vật tư");
+  if(typeof window.exportGenericEstaPdf!=="function")return toast("Bộ xuất PDF ESTA chưa sẵn sàng");
+  const logs=constructionLogsFor(m.id).slice().sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")));
+  const rows=logs.map((x,i)=>[
+    i+1,x.work_date?fmt(x.work_date):"—",
+    constructionFmt(x.quantity)+" "+(m.unit||""),
+    x.work_content||"—",x.location||"—",x.contractor||"—",x.performer||"—",x.status||"—",x.note||"—"
+  ]);
+  const done=logs.filter(x=>x.status==="Hoàn thành").length;
+  return window.exportGenericEstaPdf({
+    title:"HỒ SƠ VẬT TƯ THI CÔNG · "+String(m.name||"").toUpperCase(),
+    sectionLabel:"QUẢN LÝ VẬT TƯ THI CÔNG",tableLabel:"LỊCH SỬ SỬ DỤNG",
+    periodLabel:"TOÀN BỘ LỊCH SỬ",
+    subtitle:[m.category,m.specification,m.brand,m.storage_location].filter(Boolean).join(" · "),
+    filename:"BaoCao_VatTuThiCong_"+String(m.name||"ESTA").replace(/[^A-Za-z0-9À-ỹ]+/g,"_")+"_"+today().replaceAll("-","")+".pdf",
+    columns:[
+      {label:"STT",weight:.5},{label:"Ngày",weight:1},{label:"Số lượng",weight:1},{label:"Hạng mục thi công",weight:2.2},
+      {label:"Vị trí",weight:1.3},{label:"Nhà thầu",weight:1.4},{label:"Người thực hiện",weight:1.4},{label:"Tình trạng",weight:1.1},{label:"Ghi chú",weight:1.5}
+    ],rows,
+    summaries:[
+      {value:logs.length,label:"LƯỢT SỬ DỤNG"},
+      {value:done,label:"HOÀN THÀNH"},
+      {value:logs.length-done,label:"ĐANG THEO DÕI"},
+      {value:constructionFmt(constructionSnapshot(m,constructionYearValue()).current),label:"TỒN HIỆN TẠI"}
+    ]
+  });
+}
+
 function constructionDirectoryReportHtml(){
   const year=constructionYearValue(),annual=constructionActiveMonth==="all";
   const search=($("#constructionSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
@@ -535,7 +607,7 @@ $("#constructionLogForm").onsubmit=async e=>{
     toast(id?"Đã cập nhật lịch sử sử dụng":"Đã thêm lần sử dụng vật tư");
   }catch(err){toast(err.message)}
 };
-$("#constructionExportPdf").onclick=()=>{if(!constructionMaterials.length)return toast("Chưa có vật tư để xuất PDF");constructionPrintWindow(constructionDirectoryReportHtml())};
-$("#constructionDetailPdf").onclick=()=>{if(!selectedConstructionMaterialId)return;constructionPrintWindow(constructionDetailReportHtml())};
+$("#constructionExportPdf").onclick=constructionExportDirectoryEstaPdf;
+$("#constructionDetailPdf").onclick=constructionExportDetailEstaPdf;
 $("#constructionExportExcel").onclick=()=>{if(!constructionMaterials.length)return toast("Chưa có vật tư để xuất Excel");constructionDownloadWorkbook(false)};
 $("#constructionDetailExcel").onclick=()=>constructionDownloadWorkbook(true);
