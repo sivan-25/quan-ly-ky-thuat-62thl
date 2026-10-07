@@ -206,7 +206,7 @@ def _card_head_meta(idx,t,inner_w):
     head.setStyle(TableStyle([
         ("BACKGROUND",(0,0),(0,0),AUB),("BACKGROUND",(1,0),(-1,0),CREAM_L),
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),("ALIGN",(0,0),(0,0),"CENTER"),("ALIGN",(2,0),(2,0),"RIGHT"),
-        ("TOPPADDING",(0,0),(-1,-1),6),("BOTTOMPADDING",(0,0),(-1,-1),6),
+        ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4),
         ("LEFTPADDING",(1,0),(1,0),8),("RIGHTPADDING",(2,0),(2,0),8),
         ("LINEBELOW",(0,0),(-1,0),1.3,COPPER)
     ]))
@@ -221,7 +221,7 @@ def _card_head_meta(idx,t,inner_w):
     meta.setStyle(TableStyle([
         ("BACKGROUND",(0,0),(-1,-1),CREAM_L),
         ("LEFTPADDING",(0,0),(-1,-1),8),("RIGHTPADDING",(0,0),(-1,-1),8),
-        ("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),6),
+        ("TOPPADDING",(0,0),(-1,-1),3),("BOTTOMPADDING",(0,0),(-1,-1),4),
         ("LINEBELOW",(0,0),(-1,-1),.35,TAUPE)
     ]))
     return head,meta
@@ -251,17 +251,13 @@ def task_card(idx,t,per_row=3):
             gap=pdfc.IMAGE_GAP
         )
         if grid:
-            image_holder=Table(
-                [[Paragraph("HÌNH ẢNH HIỆN TRƯỜNG",ST["sec"])]]+
-                [[g] for g in grid],
-                colWidths=[inner_w]
-            )
+            image_holder=Table([[g] for g in grid],colWidths=[inner_w])
             image_holder.setStyle(TableStyle([
-                ("LEFTPADDING",(0,0),(-1,-1),6),("RIGHTPADDING",(0,0),(-1,-1),6),
-                ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4)
+                ("LEFTPADDING",(0,0),(-1,-1),5),("RIGHTPADDING",(0,0),(-1,-1),5),
+                ("TOPPADDING",(0,0),(-1,-1),2),("BOTTOMPADDING",(0,0),(-1,-1),2)
             ]))
             rows.append(image_holder)
-    return [KeepTogether([_box(rows),Spacer(1,7)])]
+    return [KeepTogether([_box(rows),Spacer(1,4)])]
 
 
 def summary_line(tasks):
