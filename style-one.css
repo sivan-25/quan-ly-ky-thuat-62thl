@@ -2227,3 +2227,147 @@ body:has(#app.styleOnePilot),
 }
 
 /* VERCEL_REBUILD_TRIGGER_20261007_0854 */
+
+
+/* STYLE_ONE_MATCH_RENDERED_MAIN_COLORS_V16 */
+/* Match the ACTUAL rendered production colors sampled from the user's current main-site screenshot.
+   Color only: do not alter Style 1 layout, spacing, components, data or business logic. */
+#app.styleOnePilot{
+  --main-rendered-cream:#f7dfb6;
+  --main-rendered-sidebar:#15384f;
+  --main-rendered-topbar:#153e72;
+  --main-rendered-card:#ffffff;
+  --main-rendered-text:#183b56;
+  --main-rendered-muted:#718595;
+  --main-rendered-line:#e2e9ee;
+  --main-rendered-cyan:#19b8d4;
+}
+
+/* Main-site canvas is cream, not white/gray. */
+html:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot) #app.styleOnePilot,
+body:has(#app.styleOnePilot) #app.styleOnePilot>main,
+body:has(#app.styleOnePilot) #app.styleOnePilot main,
+body:has(#app.styleOnePilot) #app.styleOnePilot .page,
+body:has(#app.styleOnePilot) #app.styleOnePilot .modulePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot .demoFeaturePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #homePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #workPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #energyPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #inventoryPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #maintenancePage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #contractorPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #incidentPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #inspectionPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #documentsPage,
+body:has(#app.styleOnePilot) #app.styleOnePilot #reportsPage{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+
+/* Actual main-site chrome colors from screenshot. */
+#app.styleOnePilot .estaSidebar{
+  background:#15384f!important;
+  background-color:#15384f!important;
+  background-image:none!important;
+  border-right-color:rgba(255,255,255,.08)!important;
+}
+#app.styleOnePilot .estaTopbar{
+  background:#153e72!important;
+  background-color:#153e72!important;
+  background-image:none!important;
+  border-bottom-color:#234d7d!important;
+}
+#app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+#app.styleOnePilot .topModuleTitle p{color:#bfd0df!important}
+#app.styleOnePilot .topModuleIcon{
+  background:#214f7e!important;
+  color:#62d8e7!important;
+  border-color:#37658f!important;
+}
+#app.styleOnePilot .headerSearch{
+  background:#1d4778!important;
+  border-color:#315d87!important;
+}
+#app.styleOnePilot .headerSearch input,
+#app.styleOnePilot .headerSearch input::placeholder{
+  color:#dce8f3!important;
+}
+#app.styleOnePilot .iconAction,
+#app.styleOnePilot .pdfAction,
+#app.styleOnePilot .headerBell,
+#app.styleOnePilot .mobileMenuBtn{
+  background:#173f70!important;
+  border-color:#355f87!important;
+  color:#d7e5ef!important;
+}
+#app.styleOnePilot .headerBell i{
+  background:#c45f65!important;
+  border-color:#fff!important;
+}
+#app.styleOnePilot .account b{color:#fff!important}
+#app.styleOnePilot .account span{color:#a8bfd0!important}
+
+/* Cards remain white on the cream canvas, exactly like production. */
+#app.styleOnePilot :is(
+  .homePanel,.kpiCard,.styleOneInsights,.workEntryCard,.premiumTableCard,
+  .energyCard,.energyTableCard,.inventoryCommand,.inventoryWorkspace,.inventoryCard,
+  .maintenanceHero,.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,
+  .contractorIntro,.contractorDirectory,.contractorJobsPanel,.contractorProfile,
+  .demoPanel,.demoKpi,.opsKpi,.opsPanel,.opsScopeBar
+){
+  background:#fff!important;
+  background-color:#fff!important;
+  color:#183b56!important;
+  border-color:#e2e9ee!important;
+}
+
+/* Sidebar uses production-main active treatment rather than the pale branch treatment. */
+#app.styleOnePilot .estaNav button{
+  color:#c6d8e2!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  color:#fff!important;
+  background:rgba(255,255,255,.055)!important;
+}
+#app.styleOnePilot .estaNav button.active{
+  color:#fff!important;
+  border-color:rgba(63,190,225,.18)!important;
+  background:linear-gradient(90deg,rgba(24,151,191,.23),rgba(22,87,124,.16))!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .estaNav button.active:before{
+  background:#27c3df!important;
+  box-shadow:0 0 12px rgba(39,195,223,.38)!important;
+}
+#app.styleOnePilot .estaNav button.active svg{color:#49d1e7!important}
+
+/* Keep table/form surfaces white so the cream remains only the page canvas. */
+#app.styleOnePilot .premiumTableCard,
+#app.styleOnePilot .premiumTableCard .tableTop,
+#app.styleOnePilot .premiumTableCard .energyTableTop,
+#app.styleOnePilot table tbody td{
+  background:#fff!important;
+}
+#app.styleOnePilot table thead th{
+  background:#f7f9fb!important;
+}
+#app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot select,
+#app.styleOnePilot textarea{
+  background:#fff!important;
+  color:#183b56!important;
+}
+
+/* Mobile dock follows the same topbar navy; page canvas keeps the main cream. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot){
+    background:#f7dfb6!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#2a5987!important;
+  }
+}
