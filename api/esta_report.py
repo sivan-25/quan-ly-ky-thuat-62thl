@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import io, os, glob
-from PIL import Image, ImageOps
+from PIL import Image as PILImage, ImageOps
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
@@ -115,7 +115,7 @@ class Pill(Flowable):
         c.drawCentredString(self.w/2,self.h/2-self.size*.35,self.text)
 
 def load_image(path):
-    im=Image.open(path); im=ImageOps.exif_transpose(im).convert("RGB"); im.thumbnail((1600,1600))
+    im=PILImage.open(path); im=ImageOps.exif_transpose(im).convert("RGB"); im.thumbnail((1600,1600))
     buf=io.BytesIO(); im.save(buf,"JPEG",quality=85); buf.seek(0); return ImageReader(buf)
 
 def image_orientation(path):
@@ -123,7 +123,7 @@ def image_orientation(path):
     if not path or not os.path.exists(path):
         return "landscape"
     try:
-        im=Image.open(path); im=ImageOps.exif_transpose(im)
+        im=PILImage.open(path); im=ImageOps.exif_transpose(im)
         w,h=im.size
         return "portrait" if h > (w * 1.10) else "landscape"
     except Exception:
@@ -926,6 +926,7 @@ import tempfile
 import traceback
 import urllib.parse
 import urllib.request
+import urllib.error
 from http.server import BaseHTTPRequestHandler
 
 
@@ -975,10 +976,15 @@ def _validate_token(token):
         SB_URL + "/auth/v1/user",
         headers={"apikey": SB_KEY, "Authorization": "Bearer " + token},
     )
-    with urllib.request.urlopen(req, timeout=12) as resp:
-        if resp.status != 200:
-            raise PermissionError("Phiên đăng nhập không hợp lệ")
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            if resp.status != 200:
+                raise PermissionError("Phiên đăng nhập không hợp lệ")
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        if exc.code in (401, 403):
+            raise PermissionError("Phiên đăng nhập đã hết hạn hoặc không hợp lệ")
+        raise
 
 def _download_image(source, token):
     if not source:
