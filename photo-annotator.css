@@ -10,3 +10,14 @@
 .paTextModal,.paConfirm{position:absolute;inset:0;z-index:4;display:grid;place-items:center;padding:18px;background:rgba(2,7,13,.72);backdrop-filter:blur(5px)}.paTextModal.hidden,.paConfirm.hidden{display:none}.paTextModal>div,.paConfirm>div{width:min(420px,94vw);padding:18px;border:1px solid #38516f;border-radius:16px;background:#102039;box-shadow:0 24px 70px rgba(0,0,0,.45)}.paTextModal label{display:grid;gap:8px;font-size:12px;font-weight:700}.paTextModal input{width:100%;height:48px;padding:0 12px;border:1px solid #49617f;border-radius:10px;background:#09182c;color:#fff;font-size:16px;outline:none}.paTextModal span,.paConfirm span{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.paTextModal button,.paConfirm button{min-height:44px;padding:0 14px;border:1px solid #49617f;border-radius:10px;background:#172e4d;color:#fff}.paConfirm h3{margin:0 0 6px}.paConfirm p{margin:0;color:#b8c6d7;font-size:12px}.paConfirm .danger{border-color:#a4424b;background:#7c2631}
 @media(max-width:760px){.paHead{padding-left:12px;padding-right:12px}.paHead h2{font-size:17px}.paTools{display:block;padding:7px 8px}.paToolGroup{width:max-content;min-width:100%;justify-content:space-between}.paToolGroup button{min-width:52px;height:48px}.paColors{margin-top:6px;justify-content:center}.paColors button{width:42px;height:38px}.paStage{padding:4px}.paFoot{grid-template-columns:1fr 1fr}.paFoot .primary{grid-column:1/-1;grid-row:1}.paFoot button{min-height:48px}}
 @media(max-width:390px){.paToolGroup button{min-width:47px;padding-left:3px;padding-right:3px}.paToolGroup button b{font-size:8px}.paHead h2{font-size:16px}.paFoot button{font-size:12px}}
+/* 130HH pending-thumbnail edit affordance */
+.pendingImg,.ccDispatchThumb{position:relative}
+.pendingImg .photoAnnotatorEditBtn,.ccDispatchThumb .photoAnnotatorEditBtn{
+ position:absolute!important;left:5px!important;bottom:5px!important;top:auto!important;right:auto!important;
+ width:auto!important;min-width:54px!important;height:28px!important;min-height:28px!important;padding:0 8px!important;
+ border:1px solid rgba(255,255,255,.42)!important;border-radius:9px!important;background:rgba(8,31,55,.88)!important;
+ color:#fff!important;font-size:10px!important;font-weight:750!important;line-height:28px!important;z-index:3!important
+}
+@media(max-width:760px){
+ .pendingImg .photoAnnotatorEditBtn,.ccDispatchThumb .photoAnnotatorEditBtn{min-width:60px!important;height:32px!important;min-height:32px!important;font-size:11px!important;line-height:32px!important}
+}
