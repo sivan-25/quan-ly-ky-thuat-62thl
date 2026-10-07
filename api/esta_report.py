@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import io, os, glob
-from PIL import Image as PILImage, ImageOps
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas as rl_canvas
 from reportlab.platypus import (BaseDocTemplate, Flowable, Frame, HRFlowable,
                                 KeepTogether, PageTemplate, Paragraph, Spacer,
                                 Table, TableStyle, Image)
