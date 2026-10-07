@@ -1180,14 +1180,32 @@ function renderPendingTaskFiles(){
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));pendingPreviewUrls=[];
  box.innerHTML=pendingTaskFiles.map((f,i)=>{
    const u=URL.createObjectURL(f);pendingPreviewUrls.push(u);
-   const editable=photoAnnotator130Enabled()&&pendingTaskPhotoMeta[i]?.originalFile;
-   return '<div class="pendingImg"><img src="'+u+'" alt="Ảnh '+(i+1)+'">'+(editable?'<button type="button" class="photoAnnotatorEditBtn" onclick="editPendingTaskPhoto('+i+')" aria-label="Chỉnh sửa ảnh">✎ Chỉnh</button>':'')+'<button type="button" onclick="removePendingTaskFile('+i+')" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>';
+   return '<div class="pendingImg"><img class="pendingImgPhoto" src="'+u+'" alt="Ảnh '+(i+1)+'" role="button" tabindex="0" aria-label="Xem ảnh '+(i+1)+'" onclick="viewPendingTaskPhoto('+i+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();viewPendingTaskPhoto('+i+')}"><button type="button" class="pendingImgRemove" onclick="event.stopPropagation();removePendingTaskFile('+i+')" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>';
  }).join("");
 }
 window.removePendingTaskFile=i=>{
  if(i<0||i>=pendingTaskFiles.length)return;
  pendingTaskFiles.splice(i,1);pendingTaskPhotoMeta.splice(i,1);
  renderPendingTaskFiles();updateTaskImageInfo();
+};
+window.viewPendingTaskPhoto=i=>{
+ if(i<0||i>=pendingTaskFiles.length)return;
+ document.querySelector(".pendingPhotoViewer")?.remove();
+ const file=pendingTaskFiles[i],meta=pendingTaskPhotoMeta[i];
+ const editable=photoAnnotator130Enabled()&&!!meta?.originalFile;
+ const url=URL.createObjectURL(file);
+ const root=document.createElement("div");
+ root.className="pendingPhotoViewer";
+ root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");
+ root.innerHTML='<div class="pendingPhotoViewerCard"><header><b>Ảnh '+(i+1)+'</b><button type="button" class="pendingPhotoViewerClose" aria-label="Đóng">×</button></header><main><img src="'+url+'" alt="Ảnh '+(i+1)+'"></main><footer>'+(editable?'<button type="button" class="pendingPhotoViewerEdit">✎ Chỉnh sửa ảnh</button>':'')+'<button type="button" class="pendingPhotoViewerDone">Đóng</button></footer></div>';
+ const cleanup=()=>{URL.revokeObjectURL(url);root.remove()};
+ root.querySelector(".pendingPhotoViewerClose").onclick=cleanup;
+ root.querySelector(".pendingPhotoViewerDone").onclick=cleanup;
+ root.addEventListener("click",e=>{if(e.target===root)cleanup()});
+ const editBtn=root.querySelector(".pendingPhotoViewerEdit");
+ if(editBtn)editBtn.onclick=()=>{cleanup();setTimeout(()=>window.editPendingTaskPhoto(i),0)};
+ document.body.appendChild(root);
+ root.querySelector(".pendingPhotoViewerClose")?.focus({preventScroll:true});
 };
 window.editPendingTaskPhoto=async i=>{
  if(!photoAnnotator130Enabled()||i<0||i>=pendingTaskFiles.length)return;
