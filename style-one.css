@@ -1894,3 +1894,25 @@ body:has(#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode)) :is(#update
     background:#f3f5f7!important;
   }
 }
+
+
+/* STYLE_ONE_WORK_CANVAS_HARD_RESET_V13 */
+/* Hard reset the legacy Work canvas color. High specificity + no transition prevents
+   old theme rules from painting the yellow report-style background during route changes. */
+html body #app.styleOnePilot.workMode #workPage.page.modulePage.proModulePage{
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+  transition:none!important;
+  animation:none!important;
+}
+html body #app.styleOnePilot.workMode>main{
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+}
+html body:has(#app.styleOnePilot.workMode){
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+}
