@@ -248,6 +248,32 @@ for(const viewport of viewports){
     await assertNoOverflow(page,viewport.name+" home");
     await exerciseMobileMenu(page,viewport.name);
     await exerciseWork(page);
+    await page.screenshot({path:`${outDir}/${viewport.name}-work.png`,fullPage:true});
+    const workColors=await page.evaluate(()=>{
+      const pageEl=document.querySelector("#workPage");
+      const type=document.querySelector("#workPage .typeBadge");
+      const doing=document.querySelector("#workPage .badge.doing");
+      const performer=document.querySelector("#workPage .performerChips.pro>span");
+      const rgb=s=>{const m=String(s||"").match(/[0-9]+/g);return m&&m.length>=3?m.slice(0,3).map(Number):null};
+      return {
+        pageBg:getComputedStyle(pageEl).backgroundColor,
+        typeBg:type?getComputedStyle(type).backgroundColor:"",
+        doingBg:doing?getComputedStyle(doing).backgroundColor:"",
+        performerBg:performer?getComputedStyle(performer).backgroundColor:"",
+        pageRgb:rgb(getComputedStyle(pageEl).backgroundColor),
+        typeRgb:type?rgb(getComputedStyle(type).backgroundColor):null,
+        doingRgb:doing?rgb(getComputedStyle(doing).backgroundColor):null
+      };
+    });
+    if(workColors.pageRgb&&workColors.pageRgb[0]>245&&workColors.pageRgb[1]>210&&workColors.pageRgb[2]<190){
+      throw new Error("Work page still uses a yellow canvas: "+JSON.stringify(workColors));
+    }
+    if(workColors.typeRgb&&workColors.typeRgb.reduce((a,b)=>a+b,0)/3<150){
+      throw new Error("Work type badge is still too dark: "+JSON.stringify(workColors));
+    }
+    if(workColors.doingRgb&&workColors.doingRgb.reduce((a,b)=>a+b,0)/3<150){
+      throw new Error("Work status badge is still too dark: "+JSON.stringify(workColors));
+    }
     await exerciseEnergy(page);
     await exerciseInventory(page);
     await exerciseMaintenance(page);
