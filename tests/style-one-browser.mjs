@@ -251,65 +251,44 @@ for(const viewport of viewports){
     await page.screenshot({path:`${outDir}/${viewport.name}-work.png`,fullPage:true});
     const workColors=await page.evaluate(()=>{
       const pageEl=document.querySelector("#workPage");
-      const app=document.querySelector("#app");
-      const main=document.querySelector("#app>main")||document.querySelector("#app main");
-      const type=document.querySelector("#workPage .typeBadge");
-      const doing=document.querySelector("#workPage .badge.doing");
-      const performer=document.querySelector("#workPage .performerChips.pro>span");
+      const sidebar=document.querySelector(".estaSidebar");
+      const topbar=document.querySelector(".estaTopbar");
+      const row=document.querySelector("#workPage .premiumTableCard tbody tr td");
+      const head=document.querySelector("#workPage .premiumTableCard thead th");
+      const entry=document.querySelector("#workPage .workEntryCard");
       const rgb=s=>{const m=String(s||"").match(/[0-9]+/g);return m&&m.length>=3?m.slice(0,3).map(Number):null};
       const color=el=>el?getComputedStyle(el).backgroundColor:"";
+      const bgImage=el=>el?getComputedStyle(el).backgroundImage:"";
       return {
-        bodyBg:color(document.body),
-        appBg:color(app),
-        mainBg:color(main),
-        pageBg:color(pageEl),
-        typeBg:type?color(type):"",
-        doingBg:doing?color(doing):"",
-        performerBg:performer?color(performer):"",
-        bodyRgb:rgb(color(document.body)),
-        appRgb:rgb(color(app)),
-        mainRgb:rgb(color(main)),
         pageRgb:rgb(color(pageEl)),
-        typeRgb:type?rgb(color(type)):null,
-        doingRgb:doing?rgb(color(doing)):null
+        sidebarRgb:rgb(color(sidebar)),
+        rowRgb:rgb(color(row)),
+        headRgb:rgb(color(head)),
+        entryRgb:rgb(color(entry)),
+        entryBackgroundImage:bgImage(entry),
+        topbarBackgroundImage:bgImage(topbar)
       };
     });
-    const yellowish=v=>v&&v[0]>240&&v[1]>205&&v[2]<195;
-    if([workColors.bodyRgb,workColors.appRgb,workColors.mainRgb,workColors.pageRgb].some(yellowish)){
-      const workBgDiagnostics=await page.evaluate(()=>{
-        const el=document.querySelector("#workPage");
-        const rows=[];
-        const walk=rules=>{
-          for(const rule of Array.from(rules||[])){
-            try{
-              if(rule.cssRules){walk(rule.cssRules);continue;}
-              if(!rule.selectorText||!el.matches(rule.selectorText))continue;
-              const bg=rule.style?.getPropertyValue("background");
-              const bgc=rule.style?.getPropertyValue("background-color");
-              const bgi=rule.style?.getPropertyValue("background-image");
-              if(bg||bgc||bgi)rows.push({
-                selector:rule.selectorText,
-                background:bg||"",
-                backgroundColor:bgc||"",
-                backgroundImage:bgi||"",
-                bgPriority:rule.style?.getPropertyPriority("background")||"",
-                bgcPriority:rule.style?.getPropertyPriority("background-color")||""
-              });
-            }catch(_){}
-          }
-        };
-        for(const sheet of Array.from(document.styleSheets)){
-          try{walk(sheet.cssRules)}catch(_){}
-        }
-        return {className:el.className,style:el.getAttribute("style")||"",rows:rows.slice(-30)};
-      });
-      throw new Error("Work page still uses a yellow canvas: "+JSON.stringify({workColors,workBgDiagnostics}));
+    const nearWork=(a,b,t=12)=>a&&a.length===3&&a.every((v,i)=>Math.abs(v-b[i])<=t);
+    if(!nearWork(workColors.pageRgb,[247,223,182],12)){
+      throw new Error("Work canvas does not match production cream #F7DFB6: "+JSON.stringify(workColors));
     }
-    if(workColors.typeRgb&&workColors.typeRgb.reduce((a,b)=>a+b,0)/3<150){
-      throw new Error("Work type badge is still too dark: "+JSON.stringify(workColors));
+    if(!nearWork(workColors.sidebarRgb,[15,92,120],12)){
+      throw new Error("Work sidebar does not match production teal #0F5C78: "+JSON.stringify(workColors));
     }
-    if(workColors.doingRgb&&workColors.doingRgb.reduce((a,b)=>a+b,0)/3<150){
-      throw new Error("Work status badge is still too dark: "+JSON.stringify(workColors));
+    if(!nearWork(workColors.headRgb,[238,247,253],12)){
+      throw new Error("Work table header does not match production pale blue: "+JSON.stringify(workColors));
+    }
+    const rowIsDark=workColors.rowRgb&&workColors.rowRgb.reduce((s,v)=>s+v,0)/3<55;
+    if(!rowIsDark){
+      throw new Error("Work rows are not using production dark navy: "+JSON.stringify(workColors));
+    }
+    const entryIsBlue=workColors.entryBackgroundImage!=="none"||(workColors.entryRgb&&workColors.entryRgb[2]>workColors.entryRgb[0]+8);
+    if(!entryIsBlue){
+      throw new Error("Work entry card is not using production pale-blue treatment: "+JSON.stringify(workColors));
+    }
+    if(workColors.topbarBackgroundImage==="none"){
+      throw new Error("Work topbar is missing production navy gradient: "+JSON.stringify(workColors));
     }
     await exerciseEnergy(page);
     await page.screenshot({path:`${outDir}/${viewport.name}-energy.png`,fullPage:true});
