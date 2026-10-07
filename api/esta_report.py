@@ -12,6 +12,7 @@ from reportlab.platypus import (BaseDocTemplate, Flowable, Frame, HRFlowable,
                                 KeepTogether, PageTemplate, Paragraph, Spacer,
                                 Table, TableStyle, Image)
 from reportlab.lib.utils import ImageReader
+from xml.sax.saxutils import escape as xml_escape
 
 # Font bootstrap for Vercel: Montserrat only. The report layout below is the
 # ESTA_Report_Generator template supplied by the user; only font packaging is adapted.
@@ -756,6 +757,166 @@ def story_tools(data):
     return story
 
 
+# ===== GENERIC ESTA TABLE REPORT — ONE STANDARD FOR ALL MODULES =====
+def _generic_text(value):
+    return xml_escape(str(value if value is not None else "—"))
+
+def build_generic_doc(path, data):
+    ensure_fonts()
+    report_title=str(data.get("title") or "BÁO CÁO KỸ THUẬT").upper()
+    period_label=str(data.get("period_label") or "THEO DỮ LIỆU HIỆN TẠI")
+    first,later=make_energy_page_fns(report_title,period_label)
+    doc=BaseDocTemplate(path,pagesize=A4,title=report_title,
+        author="ESTA Property Management",subject=report_title,
+        creator="ESTA Property Management",leftMargin=MX,rightMargin=MX)
+    f1=Frame(MX,21*mm,CW,PH-38*mm-8*mm-21*mm,id="gf1",
+             leftPadding=0,rightPadding=0,topPadding=0,bottomPadding=0)
+    f2=Frame(MX,21*mm,CW,PH-12*mm-8*mm-21*mm,id="gf2",
+             leftPadding=0,rightPadding=0,topPadding=0,bottomPadding=0)
+    doc.addPageTemplates([
+        PageTemplate("first",[f1],onPage=first,autoNextPageTemplate="later"),
+        PageTemplate("later",[f2],onPage=later)
+    ])
+    doc.build(story_generic(data),canvasmaker=NumberedCanvas)
+
+def story_generic(data):
+    P=Paragraph
+    columns=data.get("columns") or []
+    rows=data.get("rows") or []
+    title=str(data.get("title") or "Báo cáo kỹ thuật")
+    section=str(data.get("section_label") or "BÁO CÁO KỸ THUẬT")
+    table_label=str(data.get("table_label") or "DANH SÁCH")
+    period=str(data.get("period_label") or "Theo dữ liệu hiện tại")
+    subtitle=str(data.get("subtitle") or "")
+    story=[
+        P(_generic_text(section.upper()),ST["eyebrow"]),Spacer(1,3),
+        P(_generic_text(title),ST["h1"]),
+        HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)
+    ]
+    meta=Table([
+        [P("TÒA NHÀ",ST["lbl"]),P(_generic_text(data.get("building") or "—"),ST["val"]),
+         P("NGÀY BÁO CÁO",ST["lbl"]),P(_generic_text(data.get("report_date") or "—"),ST["val"])],
+        [P("HẠNG MỤC",ST["lbl"]),P(_generic_text(section),ST["val"]),
+         P("KỲ BÁO CÁO",ST["lbl"]),P(_generic_text(period),ST["val"])]
+    ],colWidths=[28*mm,59*mm,28*mm,CW-115*mm])
+    meta.setStyle(TableStyle([
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),("LINEBELOW",(0,0),(-1,-1),.4,TAUPE),
+        ("TOPPADDING",(0,0),(-1,-1),3.5),("BOTTOMPADDING",(0,0),(-1,-1),3.5),
+        ("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),6)
+    ]))
+    story += [meta,Spacer(1,10)]
+    if subtitle:
+        story += [P(_generic_text(subtitle),ST["note"]),Spacer(1,8)]
+
+    summaries=(data.get("summaries") or [])[:4]
+    if summaries:
+        gap=3*mm
+        kw=(CW-gap*(len(summaries)-1))/max(1,len(summaries))
+        cells=[]; widths=[]
+        for i,item in enumerate(summaries):
+            if i: cells.append(""); widths.append(gap)
+            dark=bool(item.get("dark")) or i==0
+            cells.append([
+                P(_generic_text(item.get("value") if item.get("value") is not None else "—"),
+                  ST["kpi_n_d" if dark else "kpi_n"]),
+                P(_generic_text(item.get("label") or ""),ST["kpi_l_d" if dark else "kpi_l"])
+            ])
+            widths.append(kw)
+        k=Table([cells],colWidths=widths)
+        ks=[
+            ("TOPPADDING",(0,0),(-1,-1),8),("BOTTOMPADDING",(0,0),(-1,-1),8),
+            ("LEFTPADDING",(0,0),(-1,-1),8),("RIGHTPADDING",(0,0),(-1,-1),2),
+            ("VALIGN",(0,0),(-1,-1),"TOP")
+        ]
+        for ci in range(0,len(cells),2):
+            if ci==0: ks.append(("BACKGROUND",(ci,0),(ci,0),AUB))
+            else: ks += [("BACKGROUND",(ci,0),(ci,0),CREAM_L),("LINEABOVE",(ci,0),(ci,0),2,COPPER)]
+        k.setStyle(TableStyle(ks))
+        story += [k,Spacer(1,14)]
+
+    story += [P(_generic_text(table_label.upper()),ST["sec"]),Spacer(1,4)]
+    head=[P(_generic_text(c.get("label") or ""),ST["th"]) for c in columns]
+    table_rows=[head]
+    for row in rows:
+        vals=list(row) if isinstance(row,(list,tuple)) else []
+        vals=(vals+[""]*len(columns))[:len(columns)]
+        table_rows.append([
+            P(_generic_text(v),ST["td_b"] if i in (0,1) else ST["td"])
+            for i,v in enumerate(vals)
+        ])
+    if len(table_rows)==1:
+        table_rows.append([P("Chưa có dữ liệu",ST["note"])] + [""]*(max(1,len(columns))-1))
+
+    weights=[]
+    for c in columns:
+        try:
+            w=float(c.get("weight") or 1)
+        except Exception:
+            w=1
+        weights.append(max(.2,w))
+    if not weights: weights=[1]
+    total=sum(weights)
+    col_widths=[CW*w/total for w in weights]
+    tb=Table(table_rows,colWidths=col_widths,repeatRows=1)
+    style=[
+        ("BACKGROUND",(0,0),(-1,0),AUB),
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4),
+        ("LEFTPADDING",(0,0),(-1,-1),4),("RIGHTPADDING",(0,0),(-1,-1),3),
+        ("LINEBELOW",(0,1),(-1,-1),.4,TAUPE),("LINEBELOW",(0,-1),(-1,-1),1.5,COPPER)
+    ]
+    if len(columns)>0 and len(table_rows)>1:
+        style.append(("SPAN",(0,1),(-1,1))) if len(rows)==0 else None
+    for rr in range(2,len(table_rows),2):
+        style.append(("BACKGROUND",(0,rr),(-1,rr),CREAM_L))
+    tb.setStyle(TableStyle(style))
+    story += [tb,energy_signatures(data)]
+    return story
+
+def _prepare_generic_data(payload):
+    columns=payload.get("columns") or []
+    rows=payload.get("rows") or []
+    summaries=payload.get("summaries") or []
+    if not isinstance(columns,list) or not columns or len(columns)>12:
+        raise ValueError("Cột báo cáo không hợp lệ")
+    if not isinstance(rows,list) or len(rows)>1500:
+        raise ValueError("Dữ liệu báo cáo quá lớn hoặc không hợp lệ")
+    clean_columns=[]
+    for col in columns:
+        if not isinstance(col,dict): col={"label":str(col)}
+        clean_columns.append({
+            "label":str(col.get("label") or ""),
+            "weight":col.get("weight") or 1
+        })
+    clean_rows=[]
+    for row in rows:
+        if not isinstance(row,(list,tuple)): continue
+        clean_rows.append([str(v if v is not None else "") for v in list(row)[:len(clean_columns)]])
+    clean_summaries=[]
+    if isinstance(summaries,list):
+        for item in summaries[:4]:
+            if isinstance(item,dict):
+                clean_summaries.append({
+                    "value":str(item.get("value") if item.get("value") is not None else "—"),
+                    "label":str(item.get("label") or ""),
+                    "dark":bool(item.get("dark"))
+                })
+    return {
+        "building":str(payload.get("building") or "[CẦN BỔ SUNG]"),
+        "report_date":str(payload.get("report_date") or ""),
+        "period_label":str(payload.get("period_label") or "THEO DỮ LIỆU HIỆN TẠI"),
+        "title":str(payload.get("title") or "BÁO CÁO KỸ THUẬT"),
+        "section_label":str(payload.get("section_label") or "BÁO CÁO KỸ THUẬT"),
+        "table_label":str(payload.get("table_label") or "DANH SÁCH"),
+        "subtitle":str(payload.get("subtitle") or ""),
+        "kt_signer_name":str(payload.get("kt_signer_name") or ""),
+        "kt_signature_path":str(payload.get("_kt_signature_path") or ""),
+        "columns":clean_columns,
+        "rows":clean_rows,
+        "summaries":clean_summaries
+    }
+
+
 # ===== VERCEL API HANDLER =====
 # -*- coding: utf-8 -*-
 import base64
@@ -1019,6 +1180,11 @@ def generate_pdf(payload, token):
             missing_images = 0
             build_tools_doc(out_path, data)
             item_count = len(data["tools"])
+        elif report_type == "generic":
+            data = _prepare_generic_data(payload)
+            missing_images = 0
+            build_generic_doc(out_path, data)
+            item_count = len(data["rows"])
         else:
             data, missing_images = _prepare_data(payload, token, td)
             build_doc(
