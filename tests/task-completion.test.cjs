@@ -14,6 +14,7 @@ const submit=demo.slice(demo.indexOf('const originalTaskSubmit='),demo.indexOf('
  var demoIs=()=>true,demoLoad=()=>Promise.resolve(),demoPopulateWorkOptions=()=>{},demoResetWorkLinks=()=>{},demoUpdateLinkSummary=()=>{};
  var calls=[],messages=[],rows=[],taskSelectedPeople=['KT Test'],pendingTaskFiles=[],removedTaskImageRefs=[],existingTaskImages=[];
  var canProjectEdit=()=>true,toast=s=>messages.push(s),taskStorageKeyFor=id=>'fixture_'+id,load=()=>rows,taskDispatchMetadata=x=>({}),
+ styleOne130Active=()=>currentBuilding.id==='130HH',setTaskSaveState=state=>{const b=$('#saveBtn');if(b){b.dataset.saveState=state;b.disabled=state==='saving';}},
  syncTaskRecord=async(a,obj,id)=>{calls.push({a,obj,id});return {};},resetForm=()=>{},render=()=>{},renderHomeDashboard=()=>{},demoRenderHomeOps=()=>{},
  demoSyncContractorTask=async()=>{},demoFinalizeLinks=async()=>{};
  var demoReadWorkLinks=()=>({result:$('#demoTaskResult').value.trim(),cause:$('#demoTaskCause').value.trim(),materials:[]});
