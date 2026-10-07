@@ -3,6 +3,7 @@
 
 const UPDATE_ID="UPDATE";
 const DEMO_ID="DEMO";
+const LIVE_MOBILE_NAV_PROJECTS=new Set(["127HH","130HH","62THL","68PDL"]);
 const SLA_RULES={
  Critical:{response:5,target:30,label:"Critical"},
  High:{response:15,target:120,label:"High"},
@@ -30,6 +31,7 @@ const updateRealAdmin=()=>!!currentAccount?.is_admin;
 const updateTechView=()=>!updateRealAdmin()||(updateIsSandbox()&&updateRolePreview==="technician");
 const updateLeaderView=()=>updateRealAdmin()&&!updateTechView();
 const updateIs=()=>projectOverviewActive&&updateIsEligible()&&!$("#navWork")?.classList.contains("hide");
+const updateMobileNavAllowed=()=>projectOverviewActive&&(updateIsSandbox()||LIVE_MOBILE_NAV_PROJECTS.has(updateScopeId()))&&!$("#navWork")?.classList.contains("hide");
 function updateEnsureStateScope(){
  const id=updateScopeId();
  if(updateState.buildingId!==id)updateState=updateNewState(id);
@@ -657,7 +659,10 @@ function updateApplyMode(){
  $("#updateCommandCenter")?.classList.toggle("hide",!on);
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on||!updateIsSandbox());
- $("#updateMobileNav")?.classList.toggle("hide",!on);
+ const mobileNavOn=updateMobileNavAllowed();
+ $("#updateMobileNav")?.classList.toggle("hide",!mobileNavOn);
+ $("#updateMobileNav")?.classList.toggle("liveProjectMobileNav",mobileNavOn&&!updateIsSandbox());
+ $("#app")?.classList.toggle("liveProjectMobileNavMode",mobileNavOn&&!updateIsSandbox());
  updateSyncMobileNav();
  $("#updateAiButton")?.classList.toggle("hide",!on);
  $("#app")?.classList.toggle("updateTechnicianView",on&&updateTechView());
@@ -1561,7 +1566,7 @@ const updatePrevOpenAdminPortal=openAdminPortal;
 openAdminPortal=function(){
  updateCurrentRoute="admin";updateNavSeq+=1;
  updateHideStandalonePages();
- $("#app")?.classList.remove("updateProjectMode","updateStandaloneMode");
+ $("#app")?.classList.remove("updateProjectMode","updateStandaloneMode","liveProjectMobileNavMode");
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.add("hide"));
  $("#updateTrialRibbon")?.classList.add("hide");$("#updateMobileNav")?.classList.add("hide");$("#updateAiButton")?.classList.add("hide");
  updateStopNotificationTimer();updateCloseNotificationCenter();
