@@ -338,6 +338,59 @@ window.deleteContractorJob=async id=>{
     await loadContractorData(currentBuilding.id,true);toast("Đã xóa công việc");
   }catch(e){toast(e.message)}
 };
+async function contractorExportDirectoryEstaPdf(){
+  if(!contractors.length)return toast("Chưa có nhà thầu để xuất PDF");
+  if(typeof window.exportGenericEstaPdf!=="function")return toast("Bộ xuất PDF ESTA chưa sẵn sàng");
+  const rows=contractors.map((c,i)=>{
+    const jobs=contractorJobsFor(c.id),last=contractorLastJob(c.id);
+    const term=[c.contract_start_date?fmt(c.contract_start_date):"",c.contract_end_date?fmt(c.contract_end_date):""].filter(Boolean).join(" → ")||"—";
+    return [i+1,c.name||"—",c.specialty||"—",c.phone||"—",c.contact_name||"—",term,jobs.length,last?.work_date?fmt(last.work_date):"—",c.status||"—"];
+  });
+  const active=contractors.filter(c=>String(c.status||"").toLowerCase().includes("hoạt")||String(c.status||"").toLowerCase().includes("đang")).length;
+  const totalJobs=contractors.reduce((sum,c)=>sum+contractorJobsFor(c.id).length,0);
+  return window.exportGenericEstaPdf({
+    title:"BÁO CÁO DANH BẠ NHÀ THẦU",sectionLabel:"QUẢN LÝ NHÀ THẦU",tableLabel:"DANH SÁCH NHÀ THẦU",
+    periodLabel:"DANH MỤC HIỆN TẠI",filename:"BaoCao_NhaThau_"+today().replaceAll("-","")+".pdf",
+    columns:[
+      {label:"STT",weight:.5},{label:"Nhà thầu",weight:2.1},{label:"Lĩnh vực",weight:1.4},{label:"SĐT",weight:1.2},
+      {label:"Người liên hệ",weight:1.5},{label:"Thời hạn HĐ",weight:1.7},{label:"CV",weight:.7},{label:"Gần nhất",weight:1.1},{label:"Trạng thái",weight:1.1}
+    ],rows,
+    summaries:[
+      {value:contractors.length,label:"NHÀ THẦU"},
+      {value:active,label:"ĐANG HOẠT ĐỘNG"},
+      {value:totalJobs,label:"TỔNG CÔNG VIỆC"},
+      {value:contractors.filter(c=>c.contract_end_date&&c.contract_end_date<today()).length,label:"HẾT HẠN HĐ"}
+    ]
+  });
+}
+async function contractorExportDetailEstaPdf(){
+  const c=contractors.find(x=>String(x.id)===String(selectedContractorId));
+  if(!c)return toast("Chưa chọn nhà thầu");
+  if(typeof window.exportGenericEstaPdf!=="function")return toast("Bộ xuất PDF ESTA chưa sẵn sàng");
+  const jobs=contractorJobsFor(c.id).slice().sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")));
+  const rows=jobs.map((x,i)=>[
+    i+1,x.work_date?fmt(x.work_date):"—",x.completed_date?fmt(x.completed_date):"—",
+    x.work_content||"—",contractorCauseValue(x.cause)||"—",x.solution||"—",x.status||"—",x.note||"—"
+  ]);
+  const done=jobs.filter(x=>x.status==="Hoàn thành").length;
+  return window.exportGenericEstaPdf({
+    title:"HỒ SƠ NHÀ THẦU · "+String(c.name||"").toUpperCase(),sectionLabel:"QUẢN LÝ NHÀ THẦU",
+    tableLabel:"LỊCH SỬ CÔNG VIỆC",periodLabel:"TOÀN BỘ LỊCH SỬ",
+    subtitle:[c.specialty,c.phone&&("SĐT: "+c.phone),c.contact_name&&("Liên hệ: "+c.contact_name)].filter(Boolean).join(" · "),
+    filename:"BaoCao_NhaThau_"+String(c.name||"ESTA").replace(/[^A-Za-z0-9À-ỹ]+/g,"_")+"_"+today().replaceAll("-","")+".pdf",
+    columns:[
+      {label:"STT",weight:.5},{label:"Ngày",weight:1},{label:"Hoàn thành",weight:1},{label:"Nội dung",weight:2.4},
+      {label:"Nguyên nhân",weight:1.8},{label:"Hướng xử lý",weight:2},{label:"Tình trạng",weight:1.1},{label:"Ghi chú",weight:1.5}
+    ],rows,
+    summaries:[
+      {value:jobs.length,label:"TỔNG CÔNG VIỆC"},
+      {value:done,label:"HOÀN THÀNH"},
+      {value:jobs.length-done,label:"ĐANG THEO DÕI"},
+      {value:c.status||"—",label:"TRẠNG THÁI NHÀ THẦU"}
+    ]
+  });
+}
+
 function contractorDirectoryReportHtml(){
   const rows=contractors.map((c,i)=>{
     const jobs=contractorJobsFor(c.id),last=contractorLastJob(c.id);
@@ -458,8 +511,8 @@ function contractorInitEvents(){
   $("#addContractorJobBtn").onclick=openContractorJobModal;
   $("#contractorExportExcel").onclick=contractorExportDirectoryExcel;
   $("#contractorDetailExcel").onclick=contractorExportDetailExcel;
-  $("#contractorExportPdf").onclick=()=>{if(!contractors.length)return toast("Chưa có nhà thầu để xuất PDF");inventoryPrintWindow(contractorDirectoryReportHtml())};
-  $("#contractorDetailPdf").onclick=()=>{if(!selectedContractorId)return;inventoryPrintWindow(contractorDetailReportHtml())};
+  $("#contractorExportPdf").onclick=contractorExportDirectoryEstaPdf;
+  $("#contractorDetailPdf").onclick=contractorExportDetailEstaPdf;
   $("#closeContractorModal").onclick=$("#cancelContractorModal").onclick=()=>$("#contractorModal").classList.add("hide");
   $("#closeContractorJobModal").onclick=$("#cancelContractorJobModal").onclick=()=>$("#contractorJobModal").classList.add("hide");
   $("#contractorJobStatus").onchange=()=>{if($("#contractorJobStatus").value==="Hoàn thành"&&!$("#contractorJobCompletedDate").value)$("#contractorJobCompletedDate").value=today()};
