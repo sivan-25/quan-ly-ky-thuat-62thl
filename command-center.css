@@ -272,3 +272,27 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
     flex-wrap:wrap;
   }
 }
+
+
+/* ADMIN_DISPATCH_MEDIA_20261007 */
+.ccDispatchMedia{grid-column:1/-1;display:grid;gap:10px;padding:12px 14px;border:1px solid var(--ov-line);border-radius:12px;background:var(--ov-surface)}
+.ccDispatchMediaHead>div{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ccDispatchMediaHead b{color:var(--ov-text);font-size:12px;font-weight:800}
+.ccDispatchMediaHead small{color:var(--ov-muted);font-size:10px}
+.ccDispatchMediaActions{display:flex;gap:9px;flex-wrap:wrap}
+.ccDispatchFileInput{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
+#ccDispatchModal .ccMediaBtn{min-height:42px;padding:0 14px;border:1px solid #2d6f86;border-radius:10px;background:#103247;color:#36d7ef;font-size:12px;font-weight:750;cursor:pointer}
+#ccDispatchModal .ccMediaBtn:hover{border-color:#48c7df;background:#123b52}
+.ccDispatchPreview{display:flex;gap:8px;overflow-x:auto;padding-bottom:1px}
+.ccDispatchPreview:empty{display:none}
+.ccDispatchThumb{position:relative;flex:0 0 92px;width:92px;height:76px;border:1px solid var(--ov-line);border-radius:10px;overflow:hidden;background:var(--ov-control)}
+.ccDispatchThumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ccDispatchThumb button{position:absolute;right:4px;top:4px;width:25px;height:25px;border:0;border-radius:50%;background:rgba(8,21,34,.86);color:#fff;font-size:17px;line-height:25px;cursor:pointer}
+.ccDispatchThumb span{position:absolute;left:4px;bottom:4px;min-width:21px;height:21px;padding:0 5px;display:grid;place-items:center;border-radius:11px;background:rgba(8,21,34,.78);color:#fff;font-size:9px}
+@media(max-width:700px){
+ .ccDispatchMedia{padding:11px}
+ .ccDispatchMediaHead>div{align-items:flex-start;flex-direction:column;gap:4px}
+ .ccDispatchMediaActions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+ #ccDispatchModal .ccMediaBtn{min-height:46px;width:100%;font-size:13px}
+ .ccDispatchThumb{flex-basis:96px;width:96px;height:80px}
+}
