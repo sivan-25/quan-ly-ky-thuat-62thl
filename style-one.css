@@ -2545,3 +2545,222 @@ body:has(#app.styleOnePilot.energyMode) #app.styleOnePilot.energyMode #energyPag
     border-top-color:#315c87!important;
   }
 }
+
+
+/* STYLE_ONE_EXACT_PRODUCTION_WORK_V18 */
+/* Exact color-only match to the user's PRODUCTION Work screenshot.
+   Layout, sizing, behavior and data are unchanged. */
+html:has(#app.styleOnePilot.workMode),
+html:has(#app.styleOnePilot.workMode) body,
+body:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode #workPage.page{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+
+/* Production sidebar + active navigation. */
+html body #app.styleOnePilot .estaSidebar{
+  background:#0f5c78!important;
+  background-color:#0f5c78!important;
+  background-image:none!important;
+  border-right-color:rgba(255,255,255,.08)!important;
+}
+html body #app.styleOnePilot .estaPetalLogo span{
+  background:#d0a17f!important;
+}
+html body #app.styleOnePilot .estaSidebarBrand b{
+  color:#e1b69a!important;
+}
+html body #app.styleOnePilot .estaSidebarBrand small{
+  color:#b8d3de!important;
+}
+html body #app.styleOnePilot .estaNav button{
+  color:#d0e4ec!important;
+}
+html body #app.styleOnePilot .estaNav button:hover{
+  background:rgba(255,255,255,.06)!important;
+  color:#fff!important;
+}
+html body #app.styleOnePilot .estaNav button.active{
+  background:#2e7189!important;
+  color:#fff!important;
+  border-color:#4b8ea4!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot .estaNav button.active:before{
+  background:#43d8e7!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot .estaNav button.active svg{
+  color:#55d9e8!important;
+}
+
+/* Production topbar. */
+html body #app.styleOnePilot .estaTopbar{
+  background:linear-gradient(90deg,#153e72 0%,#143d70 60%,#133a69 100%)!important;
+  border-bottom-color:#254f7e!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+html body #app.styleOnePilot .topModuleTitle p{color:#bdd0df!important}
+html body #app.styleOnePilot .topModuleIcon{
+  background:#214f7e!important;
+  color:#45d7e8!important;
+  border-color:#37658f!important;
+}
+html body #app.styleOnePilot .headerSearch,
+html body #app.styleOnePilot .iconAction,
+html body #app.styleOnePilot .pdfAction,
+html body #app.styleOnePilot .headerBell,
+html body #app.styleOnePilot .mobileMenuBtn{
+  background:#173f70!important;
+  border-color:#355f87!important;
+  color:#d7e5ef!important;
+}
+html body #app.styleOnePilot .headerSearch input,
+html body #app.styleOnePilot .headerSearch input::placeholder{
+  color:#dce8f3!important;
+}
+
+/* Production Work entry card = pale blue, not white. */
+html body #app.styleOnePilot.workMode #workPage .workEntryCard{
+  background:linear-gradient(90deg,#ecf8ff 0%,#e4f3fe 100%)!important;
+  border-color:#8ecff7!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryHeader{
+  background:transparent!important;
+  border-bottom-color:#c8e5f7!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryHeader h2{
+  color:#173e61!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryHeader p{
+  color:#6f8798!important;
+}
+html body #app.styleOnePilot.workMode #workPage .workEntryCard input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+html body #app.styleOnePilot.workMode #workPage .workEntryCard select,
+html body #app.styleOnePilot.workMode #workPage .workEntryCard textarea,
+html body #app.styleOnePilot.workMode #workPage .workEntryCard .peopleSelectBtn{
+  background:#fff!important;
+  color:#28475e!important;
+  border-color:#bed6e6!important;
+}
+html body #app.styleOnePilot.workMode #workPage .linkedTaskBox,
+html body #app.styleOnePilot.workMode #workPage .workLinkRow,
+html body #app.styleOnePilot.workMode #workPage .taskLinkPanel{
+  background:#e3f4ff!important;
+  border-color:#7fc9f7!important;
+}
+
+/* KPI strip stays light, like production. */
+html body #app.styleOnePilot.workMode #workPage .stats,
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard{
+  background:#f7fbfe!important;
+  border-color:#dceaf3!important;
+}
+html body #app.styleOnePilot.workMode #workPage .stats article{
+  background:#fff!important;
+  border-color:#dde6eb!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot.workMode #workPage .stats article small{
+  color:#657c8d!important;
+}
+html body #app.styleOnePilot.workMode #workPage .stats article strong{
+  color:#153e61!important;
+}
+
+/* Table header is pale blue, body rows are production navy. */
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard .tableTop{
+  background:#f7fbfe!important;
+  border-color:#dceaf3!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard thead th,
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+  border-color:#dcebf5!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard tbody td,
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard td{
+  background:#11182b!important;
+  color:#f6f9fc!important;
+  border-bottom-color:#d4e0ea!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard tbody tr:nth-child(even) td{
+  background:#101729!important;
+}
+html body #app.styleOnePilot.workMode #workPage .premiumTableCard tbody tr:hover td{
+  background:#17243a!important;
+}
+html body #app.styleOnePilot.workMode #workPage .taskContentCell>b,
+html body #app.styleOnePilot.workMode #workPage .taskTitle{
+  color:#fff!important;
+}
+html body #app.styleOnePilot.workMode #workPage .dateCell{
+  color:#315c82!important;
+}
+html body #app.styleOnePilot.workMode #workPage .noteCell,
+html body #app.styleOnePilot.workMode #workPage .mutedDash{
+  color:#d9e7f2!important;
+}
+
+/* Production dark pills inside navy rows. */
+html body #app.styleOnePilot.workMode #workPage .typeBadge{
+  background:#17243a!important;
+  color:#d9e9f4!important;
+  border:1px solid #304764!important;
+}
+html body #app.styleOnePilot.workMode #workPage .badge.doing{
+  background:#362813!important;
+  color:#ffc85a!important;
+  border:1px solid #765017!important;
+}
+html body #app.styleOnePilot.workMode #workPage .badge.done{
+  background:#102f2f!important;
+  color:#7ae1bc!important;
+  border:1px solid #285a55!important;
+}
+html body #app.styleOnePilot.workMode #workPage .badge.wait,
+html body #app.styleOnePilot.workMode #workPage .badge.waiting{
+  background:#321a23!important;
+  color:#ff9eaa!important;
+  border:1px solid #67323e!important;
+}
+html body #app.styleOnePilot.workMode #workPage .performerChips.pro>span{
+  background:#102b31!important;
+  color:#d8fff0!important;
+  border-color:#28545a!important;
+}
+html body #app.styleOnePilot.workMode #workPage .performerChips.pro>span i{
+  background:#183d42!important;
+  color:#7be3c7!important;
+}
+html body #app.styleOnePilot.workMode #workPage .rowActionMenu summary{
+  background:#17243a!important;
+  color:#cfe1ef!important;
+  border-color:#304764!important;
+  box-shadow:none!important;
+}
+html body #app.styleOnePilot.workMode #workPage .rowActionMenu[open] summary{
+  background:#20324f!important;
+  color:#fff!important;
+  border-color:#426382!important;
+}
+
+/* Mobile keeps same production palette while retaining the approved mobile layout. */
+@media(max-width:760px){
+  html body:has(#app.styleOnePilot.workMode){
+    background:#f7dfb6!important;
+  }
+  body:has(#app.styleOnePilot.workMode) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#315c87!important;
+  }
+}
