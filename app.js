@@ -1030,6 +1030,9 @@ function syncWorkContentHeight(){
  el.style.height=Math.max(76,el.scrollHeight)+"px";
  el.style.overflowY="hidden";
 }
+function styleOne130Active(){return String(currentBuilding?.id||"").trim().toUpperCase()==="130HH"}
+let workSaveFeedbackTimer=0;
+function workSaveDefaultLabel(){return $("#editId")?.value?"Lưu thay đổi":"Lưu"}
 function setWorkSaveLabel(label){
  const btn=$("#saveBtn");if(!btn)return;
  let span=btn.querySelector("span");
@@ -1038,6 +1041,28 @@ function setWorkSaveLabel(label){
   span=btn.querySelector("span");
  }
  span.textContent=label;
+}
+function setTaskSaveState(state="idle"){
+ const btn=$("#saveBtn");if(!btn)return;
+ clearTimeout(workSaveFeedbackTimer);
+ btn.classList.remove("isSaving","isSaved");
+ if(!styleOne130Active()){
+  btn.disabled=state==="saving";
+  if(state!=="saving")setWorkSaveLabel(workSaveDefaultLabel());
+  return;
+ }
+ if(state==="saving"){
+  btn.disabled=true;btn.classList.add("isSaving");
+  btn.innerHTML='<i class="workSaveSpinner" aria-hidden="true"></i><span>Đang lưu...</span>';
+  return;
+ }
+ if(state==="saved"){
+  btn.disabled=true;btn.classList.add("isSaved");
+  btn.innerHTML='<svg class="workSaveCheck" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Đã lưu</span>';
+  workSaveFeedbackTimer=setTimeout(()=>setTaskSaveState("idle"),1300);
+  return;
+ }
+ btn.disabled=false;setWorkSaveLabel(workSaveDefaultLabel());
 }
 const DRAFT="qlkt62_draft";
 function saveDraft(){
@@ -1163,9 +1188,10 @@ function clearPendingTaskFiles(){
 function renderPendingTaskFiles(){
  const box=$("#pendingImagePreview");if(!box)return;
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));pendingPreviewUrls=[];
+ const canEdit=styleOne130Active();
  box.innerHTML=pendingTaskFiles.map((f,i)=>{
    const u=URL.createObjectURL(f);pendingPreviewUrls.push(u);
-   return '<div class="pendingImg"><img src="'+u+'" alt="Ảnh '+(i+1)+'"><button type="button" onclick="removePendingTaskFile('+i+')" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>';
+   return '<div class="pendingImg"><img src="'+u+'" alt="Ảnh '+(i+1)+'">'+(canEdit?'<button class="pendingImgEdit" type="button" onclick="openTaskImageEditor('+i+')" aria-label="Chỉnh sửa và đánh dấu ảnh">✎ Chỉnh</button>':'')+'<button class="pendingImgDelete" type="button" onclick="removePendingTaskFile('+i+')" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>';
  }).join("");
 }
 window.removePendingTaskFile=i=>{
@@ -1173,6 +1199,62 @@ window.removePendingTaskFile=i=>{
  pendingTaskFiles.splice(i,1);
  renderPendingTaskFiles();updateTaskImageInfo();
 };
+let taskImageEditorIndex=-1,taskImageEditorBase=null,taskImageEditorUrl="",taskImageEditorStrokes=[],taskImageEditorStroke=null;
+function ensureTaskImageEditor(){
+ let modal=$("#taskImageEditorModal");if(modal)return modal;
+ modal=document.createElement("div");modal.id="taskImageEditorModal";modal.className="taskImageEditorModal hide";
+ modal.innerHTML='<div class="taskImageEditorBackdrop" data-task-image-close></div><section class="taskImageEditorCard" role="dialog" aria-modal="true" aria-labelledby="taskImageEditorTitle"><header class="taskImageEditorHead"><div><span>ESTA · PHOTO MARKUP</span><h3 id="taskImageEditorTitle">Chỉnh sửa hình ảnh</h3><p>Dùng tay hoặc chuột để vẽ đánh dấu trực tiếp lên ảnh.</p></div><button type="button" data-task-image-close aria-label="Đóng">×</button></header><div class="taskImageEditorStage"><canvas id="taskImageEditorCanvas"></canvas></div><footer class="taskImageEditorTools"><div><button id="taskImageEditorUndo" type="button">↶ Hoàn tác</button><button id="taskImageEditorClear" type="button">Xóa nét vẽ</button></div><div><button type="button" data-task-image-close>Hủy</button><button id="taskImageEditorApply" class="primary" type="button">✓ Lưu ảnh</button></div></footer></section>';
+ document.body.appendChild(modal);
+ modal.addEventListener("click",e=>{if(e.target.closest("[data-task-image-close]"))closeTaskImageEditor()});
+ const canvas=modal.querySelector("#taskImageEditorCanvas");
+ const point=e=>{const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*canvas.width/Math.max(1,r.width),y:(e.clientY-r.top)*canvas.height/Math.max(1,r.height)}};
+ canvas.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;e.preventDefault();taskImageEditorStroke=[point(e)];taskImageEditorStrokes.push(taskImageEditorStroke);canvas.setPointerCapture?.(e.pointerId);drawTaskImageEditor()});
+ canvas.addEventListener("pointermove",e=>{if(!taskImageEditorStroke)return;e.preventDefault();taskImageEditorStroke.push(point(e));drawTaskImageEditor()});
+ const stop=e=>{if(taskImageEditorStroke){e?.preventDefault?.();taskImageEditorStroke=null}};
+ canvas.addEventListener("pointerup",stop);canvas.addEventListener("pointercancel",stop);canvas.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")stop(e)});
+ modal.querySelector("#taskImageEditorUndo").addEventListener("click",()=>{taskImageEditorStrokes.pop();drawTaskImageEditor()});
+ modal.querySelector("#taskImageEditorClear").addEventListener("click",()=>{taskImageEditorStrokes=[];drawTaskImageEditor()});
+ modal.querySelector("#taskImageEditorApply").addEventListener("click",applyTaskImageEditor);
+ return modal;
+}
+function drawTaskImageEditor(){
+ const canvas=$("#taskImageEditorCanvas");if(!canvas||!taskImageEditorBase)return;
+ const ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(taskImageEditorBase,0,0,canvas.width,canvas.height);
+ ctx.strokeStyle="#ff304f";ctx.fillStyle="#ff304f";ctx.lineWidth=Math.max(5,Math.round(canvas.width/150));ctx.lineCap="round";ctx.lineJoin="round";
+ taskImageEditorStrokes.forEach(stroke=>{
+  if(!stroke?.length)return;
+  if(stroke.length===1){ctx.beginPath();ctx.arc(stroke[0].x,stroke[0].y,ctx.lineWidth/2,0,Math.PI*2);ctx.fill();return}
+  ctx.beginPath();ctx.moveTo(stroke[0].x,stroke[0].y);for(let i=1;i<stroke.length;i++)ctx.lineTo(stroke[i].x,stroke[i].y);ctx.stroke();
+ });
+}
+function closeTaskImageEditor(){
+ $("#taskImageEditorModal")?.classList.add("hide");document.body.classList.remove("taskImageEditing");
+ if(taskImageEditorUrl){URL.revokeObjectURL(taskImageEditorUrl);taskImageEditorUrl=""}
+ taskImageEditorIndex=-1;taskImageEditorBase=null;taskImageEditorStrokes=[];taskImageEditorStroke=null;
+}
+window.openTaskImageEditor=i=>{
+ if(!styleOne130Active()||i<0||i>=pendingTaskFiles.length)return;
+ const file=pendingTaskFiles[i],modal=ensureTaskImageEditor(),canvas=modal.querySelector("#taskImageEditorCanvas"),img=new Image();
+ if(taskImageEditorUrl)URL.revokeObjectURL(taskImageEditorUrl);
+ taskImageEditorUrl=URL.createObjectURL(file);taskImageEditorIndex=i;taskImageEditorStrokes=[];taskImageEditorStroke=null;
+ img.onload=()=>{
+  const max=1800,scale=Math.min(1,max/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
+  canvas.width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));canvas.height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
+  taskImageEditorBase=img;drawTaskImageEditor();modal.classList.remove("hide");document.body.classList.add("taskImageEditing");
+ };
+ img.onerror=()=>{closeTaskImageEditor();toast("Không thể mở hình để chỉnh sửa")};img.src=taskImageEditorUrl;
+};
+function applyTaskImageEditor(){
+ const canvas=$("#taskImageEditorCanvas"),i=taskImageEditorIndex;if(!canvas||i<0||i>=pendingTaskFiles.length)return;
+ const apply=$("#taskImageEditorApply");if(apply){apply.disabled=true;apply.textContent="Đang lưu ảnh..."}
+ canvas.toBlob(blob=>{
+  if(apply){apply.disabled=false;apply.textContent="✓ Lưu ảnh"}
+  if(!blob){toast("Không thể lưu ảnh đã chỉnh sửa");return}
+  const old=pendingTaskFiles[i],base=String(old?.name||"hinh").replace(/\.[^.]+$/,"");
+  pendingTaskFiles[i]=new File([blob],base+"-danh-dau.jpg",{type:"image/jpeg",lastModified:Date.now()});
+  closeTaskImageEditor();renderPendingTaskFiles();updateTaskImageInfo();toast("Đã lưu phần đánh dấu vào ảnh");
+ },"image/jpeg",.9);
+}
 function updateTaskImageInfo(){
  const added=pendingTaskFiles.length,existing=existingTaskImages.length,editing=!!$("#editId")?.value,info=$("#imageInfo");
  if(!info)return;
@@ -1215,7 +1297,8 @@ $("#taskForm").onsubmit=async e=>{
    toast("Cần nhập ghi chú trước khi hoàn thành công việc");
    return;
  }
- const btn=$("#saveBtn");btn.disabled=true;
+ const btn=$("#saveBtn"),style130=styleOne130Active();let taskSaveSucceeded=false;
+ if(style130)setTaskSaveState("saving");else btn.disabled=true;
  try{
    const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
    let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
@@ -1226,6 +1309,7 @@ $("#taskForm").onsubmit=async e=>{
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
    resetForm();render();renderHomeDashboard();
+   if(style130){taskSaveSucceeded=true;setTaskSaveState("saved")}
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc");
 
    (async()=>{
@@ -1252,7 +1336,7 @@ $("#taskForm").onsubmit=async e=>{
      }
    })();
  }catch(err){toast(err.message||"Không thể lưu công việc")}
- finally{btn.disabled=false}
+ finally{if(style130){if(!taskSaveSucceeded)setTaskSaveState("idle")}else btn.disabled=false}
 };
 let workStatFilter="";
 function filtered(fx,ex){
@@ -2630,6 +2714,12 @@ function setInventoryTab(tab){
  $("#inventoryMaterialsPane").classList.toggle("hide",tab!=="materials");
  $("#inventoryToolsPane").classList.toggle("hide",tab!=="tools");
 }
+/* STYLE1_130HH_INVENTORY_TAB_RESTORE */
+document.querySelectorAll("[data-inventory-tab]").forEach(b=>{
+ b.addEventListener("click",()=>{
+   if(typeof styleOne130Active==="function"&&styleOne130Active())setInventoryTab(b.dataset.inventoryTab);
+ });
+});
 function resetMaterialForm(sampleName="",sampleUnit="Cái"){
  $("#materialId").value="";$("#materialCode").value="";$("#materialName").value=sampleName;$("#materialUnit").value=sampleUnit||"Cái";
  $("#materialTrackingStart").value=today();$("#materialTrackingStart").max=today();$("#materialOpeningQty").value="0";$("#materialMinQty").value="0";$("#materialNote").value="";
