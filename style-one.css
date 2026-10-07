@@ -1971,3 +1971,257 @@ body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main{
     border-top-color:#2c5685!important;
   }
 }
+
+
+/* STYLE_ONE_MAIN_SITE_PALETTE_V15 */
+/* Color-only synchronization with production main.
+   Layout, spacing, responsive behavior and business logic remain Style 1. */
+#app.styleOnePilot{
+  --s1-bg:#f4f7fa!important;
+  --s1-surface:#ffffff!important;
+  --s1-surface-2:#f7f9fb!important;
+  --s1-sidebar:#102b46!important;
+  --s1-sidebar-2:#0a2036!important;
+  --s1-ink:#183b56!important;
+  --s1-muted:#718595!important;
+  --s1-line:#e2e9ee!important;
+  --s1-line-strong:#cbd8e1!important;
+  --s1-accent:#19b8d4!important;
+  --s1-accent-2:#285b7c!important;
+  --s1-success:#2e956b!important;
+  --s1-warning:#bf812e!important;
+  --s1-danger:#c45f65!important;
+  --s1-shadow:0 8px 28px rgba(20,55,80,.055)!important;
+  color:#183b56!important;
+  background:#f4f7fa!important;
+}
+
+html:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot),
+#app.styleOnePilot,
+#app.styleOnePilot>main,
+#app.styleOnePilot main,
+#app.styleOnePilot .page,
+#app.styleOnePilot .modulePage,
+#app.styleOnePilot .demoFeaturePage{
+  background-color:#f4f7fa!important;
+  background-image:none!important;
+  color:#183b56!important;
+}
+
+/* Production sidebar colors. */
+#app.styleOnePilot .estaSidebar{
+  background:
+    radial-gradient(circle at 24% 8%,rgba(43,132,177,.16),transparent 22%),
+    linear-gradient(180deg,#102b46 0%,#0d263f 58%,#0a2036 100%)!important;
+  border-right-color:rgba(255,255,255,.05)!important;
+  box-shadow:12px 0 34px rgba(11,35,57,.07)!important;
+}
+#app.styleOnePilot .estaSidebarBrand{
+  border-bottom-color:rgba(255,255,255,.09)!important;
+}
+#app.styleOnePilot .estaSidebarBrand b{
+  color:#d2b9a8!important;
+}
+#app.styleOnePilot .estaSidebarBrand small{
+  color:#91adbf!important;
+}
+#app.styleOnePilot .estaPetalLogo span{
+  background:#19b8d4!important;
+}
+#app.styleOnePilot .estaNav button{
+  color:#91adbf!important;
+  background:transparent!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  color:#e9f6fb!important;
+  background:rgba(255,255,255,.045)!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .estaNav button.active{
+  color:#fff!important;
+  border-color:rgba(63,190,225,.16)!important;
+  background:linear-gradient(90deg,rgba(24,151,191,.23),rgba(22,87,124,.16))!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .estaNav button.active:before{
+  background:#27c3df!important;
+  box-shadow:0 0 12px rgba(39,195,223,.38)!important;
+}
+#app.styleOnePilot .estaNav button.active svg{
+  color:#49d1e7!important;
+}
+#app.styleOnePilot .sideBackup button,
+#app.styleOnePilot .sideBottom button{
+  color:#91adbf!important;
+  background:rgba(255,255,255,.035)!important;
+  border-color:rgba(255,255,255,.09)!important;
+}
+#app.styleOnePilot .sideAvatar{
+  border-color:rgba(216,185,165,.34)!important;
+  background:rgba(183,154,135,.14)!important;
+  color:#ddc6b7!important;
+}
+#app.styleOnePilot .sideUserCard #sideUser{
+  color:#88a4b8!important;
+}
+#app.styleOnePilot .sideUserCard #sideUser b{
+  color:#e8f1f5!important;
+}
+
+/* Production topbar colors: white, light border, muted blue controls. */
+#app.styleOnePilot .estaTopbar{
+  background:rgba(255,255,255,.96)!important;
+  border-bottom-color:#e2e9ef!important;
+  box-shadow:0 4px 18px rgba(23,55,82,.035)!important;
+}
+#app.styleOnePilot .topModuleTitle h1{
+  color:#183b56!important;
+}
+#app.styleOnePilot .topModuleTitle p{
+  color:#8497a5!important;
+}
+#app.styleOnePilot .topModuleIcon{
+  background:#eef5f9!important;
+  color:#285b7c!important;
+  border-color:#dde6ec!important;
+}
+#app.styleOnePilot .headerSearch{
+  background:#fff!important;
+  border-color:#dde6ec!important;
+}
+#app.styleOnePilot .headerSearch input{
+  color:#3f5c70!important;
+}
+#app.styleOnePilot .iconAction,
+#app.styleOnePilot .pdfAction,
+#app.styleOnePilot .headerBell,
+#app.styleOnePilot .mobileMenuBtn{
+  background:#fff!important;
+  color:#6e899b!important;
+  border-color:#dde6ec!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .headerBell i{
+  background:#20bad6!important;
+  border-color:#fff!important;
+}
+#app.styleOnePilot .headerAvatar{
+  background:#f1e9e4!important;
+  color:#80604e!important;
+  border-color:#e3d4ca!important;
+}
+
+/* Production surfaces and text. */
+#app.styleOnePilot :is(
+  .homePanel,.kpiCard,.styleOneInsights,.workEntryCard,.premiumTableCard,
+  .energyCard,.energyTableCard,.inventoryCommand,.inventoryWorkspace,.inventoryCard,
+  .maintenanceHero,.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,
+  .contractorIntro,.contractorDirectory,.contractorJobsPanel,.contractorProfile,
+  .demoPanel,.demoKpi
+){
+  background:#fff!important;
+  border-color:#e2e9ee!important;
+  color:#183b56!important;
+  box-shadow:0 8px 28px rgba(20,55,80,.055)!important;
+}
+
+/* Production table palette. */
+#app.styleOnePilot table thead th,
+#app.styleOnePilot .premiumTableCard th,
+#app.styleOnePilot .demoTable th{
+  background:#f7f9fb!important;
+  color:#6c8291!important;
+  border-color:#e5ebef!important;
+}
+#app.styleOnePilot table tbody td,
+#app.styleOnePilot .premiumTableCard td,
+#app.styleOnePilot .demoTable td{
+  background:#fff!important;
+  color:#405f72!important;
+  border-color:#eef2f4!important;
+}
+#app.styleOnePilot table tbody tr:hover td{
+  background:#fafcfd!important;
+}
+
+/* Exact production semantic pills. */
+#app.styleOnePilot .badge.done{
+  background:#eaf8f1!important;
+  color:#277c57!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .badge.doing{
+  background:#fff4e3!important;
+  color:#9f6a20!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .badge.waiting,
+#app.styleOnePilot .badge.wait{
+  background:#fff0f0!important;
+  color:#ac555a!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .typeBadge{
+  background:#eef5f9!important;
+  color:#4d7085!important;
+  border-color:transparent!important;
+}
+#app.styleOnePilot .performerChips.pro>span{
+  background:#f3f9f5!important;
+  color:#3a6550!important;
+  border-color:#dfe9e3!important;
+}
+#app.styleOnePilot .performerChips.pro>span i{
+  background:#dcefe3!important;
+  color:#32664b!important;
+}
+
+/* Production input/control palette. */
+#app.styleOnePilot input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+#app.styleOnePilot select,
+#app.styleOnePilot textarea{
+  background:#fff!important;
+  color:#183b56!important;
+  border-color:#d8e5ef!important;
+}
+#app.styleOnePilot input:focus,
+#app.styleOnePilot select:focus,
+#app.styleOnePilot textarea:focus{
+  border-color:#4daee8!important;
+  box-shadow:0 0 0 3px rgba(54,161,224,.09)!important;
+}
+#app.styleOnePilot button.primary,
+#app.styleOnePilot .primary,
+#app.styleOnePilot .inventoryPrimary,
+#app.styleOnePilot .contractorBtn.primary,
+#app.styleOnePilot #reportsPage .rc-primary{
+  background:#12324f!important;
+  color:#fff!important;
+  border-color:#12324f!important;
+  box-shadow:none!important;
+}
+
+/* Production mobile dock colors, preserving the branch dock layout. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:linear-gradient(180deg,#102b46 0%,#0a2036 100%)!important;
+    border-top-color:rgba(39,195,223,.34)!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button{
+    color:#b8cbd6!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>span,
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button>b{
+    color:#b8cbd6!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active{
+    background:linear-gradient(180deg,rgba(24,151,191,.25),rgba(22,87,124,.20))!important;
+    border-color:rgba(63,190,225,.24)!important;
+    box-shadow:none!important;
+  }
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>span,
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav button.active>b{
+    color:#fff!important;
+  }
+}
