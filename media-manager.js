@@ -33,6 +33,21 @@
   });
 
   const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+  async function portableArrayBuffer(blob){
+    const source=typeof blob?.slice==="function"
+      ? blob.slice(0,Number(blob.size||0),blob.type||"application/octet-stream")
+      : blob;
+    try{return await source.arrayBuffer()}catch(_){}
+    try{return await new Response(source).arrayBuffer()}catch(_){}
+    return await new Promise((resolve,reject)=>{
+      try{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=()=>reject(reader.error||new Error("Không thể đọc dữ liệu ảnh"));
+        reader.readAsArrayBuffer(source);
+      }catch(err){reject(err)}
+    });
+  }
   async function uploadWithRetry(blob,kind,recordId,index,buildingId){
     let last;
     for(let attempt=0;attempt<3;attempt++){
@@ -47,7 +62,7 @@
     throw last||new Error("Không thể tải hình");
   }
   async function queueBlob({blob,target,kind,recordId,index=0,buildingId,slot=0}){
-    const blobBuffer=await blob.arrayBuffer();
+    const blobBuffer=await portableArrayBuffer(blob);
     const item={
       id:crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2),
       target,kind,recordId:String(recordId),index,buildingId,slot,
