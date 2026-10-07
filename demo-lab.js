@@ -695,7 +695,7 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   $("#demoTaskResult")?.focus();
   return;
  }
- const btn=$("#saveBtn");btn.disabled=true;
+ let taskSaveSucceeded=false;setTaskSaveState("saving");
  try{
   const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
   let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
@@ -709,8 +709,9 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   if(syncResult?.item)obj={...obj,...syncResult.item};
   a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
+  taskSaveSucceeded=true;
   if(String(currentBuilding?.id||"")===String(buildingId)){
-   resetForm();render();renderHomeDashboard();
+   resetForm();render();renderHomeDashboard();setTaskSaveState("saved");
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
   }
 
@@ -744,7 +745,7 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   toast(message);
   if(/tồn kho|vật tư/i.test(message))$("#demoWorkLinks")?.setAttribute("open","");
  }
- finally{btn.disabled=false}
+ finally{if(!taskSaveSucceeded&&String(currentBuilding?.id||"")===String(buildingId))setTaskSaveState("idle")}
 };
 
 const originalDemoDelTask=window.delTask;

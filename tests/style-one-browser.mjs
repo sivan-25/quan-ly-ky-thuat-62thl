@@ -91,6 +91,22 @@ async function assertProductionModulePalette(page,pageSelector,panelSelector,lab
 
 async function exerciseWork(page){
   await switchModule(page,"work","#workPage");
+  const tinyPng=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVR42mP8z8Dwn4GBgYGJAQoAHgQCAQm1eP8AAAAASUVORK5CYII=","base64");
+  await page.setInputFiles("#images",{name:"qa-photo.png",mimeType:"image/png",buffer:tinyPng});
+  await page.waitForTimeout(80);
+  if(await page.locator(".pendingImgEdit").count()!==1)throw new Error("Work photo edit button was not rendered");
+  await page.locator(".pendingImgEdit").click();
+  await page.waitForTimeout(80);
+  if(await page.locator("#taskImageEditorModal").evaluate(el=>el.classList.contains("hide")))throw new Error("Work photo markup editor did not open");
+  const canvas=page.locator("#taskImageEditorCanvas"),box=await canvas.boundingBox();
+  if(!box)throw new Error("Work photo markup canvas is not visible");
+  await page.mouse.move(box.x+box.width*.25,box.y+box.height*.25);await page.mouse.down();await page.mouse.move(box.x+box.width*.75,box.y+box.height*.75,{steps:4});await page.mouse.up();
+  await page.click("#taskImageEditorApply");await page.waitForTimeout(100);
+  const editedName=await page.evaluate(()=>pendingTaskFiles[0]?.name||"");
+  if(!editedName.includes("-danh-dau"))throw new Error("Edited work photo did not replace the pending file");
+  const savingState=await page.evaluate(()=>{setTaskSaveState("saving");return {text:document.querySelector("#saveBtn")?.textContent,spinner:!!document.querySelector("#saveBtn .workSaveSpinner")};});
+  if(!savingState.spinner||!savingState.text.includes("Đang lưu"))throw new Error("Work save spinner state is missing");
+  await page.evaluate(()=>setTaskSaveState("idle"));
   await page.fill("#content","QA Style 1 - kiểm tra thao tác người dùng");
   await page.fill("#date","2026-10-06");
   const mobileChoices=await page.locator("#workChoices-type").isVisible().catch(()=>false);
@@ -103,7 +119,9 @@ async function exerciseWork(page){
   }
   await page.evaluate(()=>setPeopleSelected("task",["Kỹ thuật QA"]));
   await page.click("#saveBtn");
-  await page.waitForTimeout(180);
+  await page.waitForTimeout(120);
+  const saveFeedback=await page.locator("#saveBtn").evaluate(el=>({text:el.textContent,done:el.classList.contains("isSaved")}));
+  if(!saveFeedback.done||!saveFeedback.text.includes("Đã lưu"))throw new Error("Work save confirmation did not show Đã lưu");
   const count=await page.evaluate(()=>load().length);
   if(count!==1)throw new Error("Work save did not persist in local QA session");
   const rendered=await page.locator("#tbody").innerText();
@@ -171,6 +189,19 @@ async function exerciseSpecial(page,label){
   await page.waitForTimeout(80);
   await assertProductionModulePalette(page,"#reportsPage","#reportsPage .rc-controls",label+"-reports");
 }
+async function exerciseAdminDispatchMedia(page){
+  await page.waitForTimeout(700);
+  const trigger=page.locator("#ccDispatch");if(await trigger.count()!==1)throw new Error("Admin dispatch trigger was not created");
+  await trigger.dispatchEvent("click");await page.waitForTimeout(60);
+  const modal=page.locator("#ccDispatchModal");if(await modal.evaluate(el=>el.classList.contains("hide")))throw new Error("Admin dispatch modal did not open");
+  if(await page.locator("#ccDispatchCameraBtn").count()!==1||await page.locator("#ccDispatchLibraryBtn").count()!==1)throw new Error("Admin dispatch camera/library actions are missing");
+  const tinyPng=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVR42mP8z8Dwn4GBgYGJAQoAHgQCAQm1eP8AAAAASUVORK5CYII=","base64");
+  await page.setInputFiles("#ccDispatchImages",{name:"dispatch-photo.png",mimeType:"image/png",buffer:tinyPng});
+  await page.waitForTimeout(60);
+  if(await page.locator("#ccDispatchPreview .ccDispatchThumb").count()!==1)throw new Error("Admin dispatch image preview did not render");
+  await page.locator("#ccDispatchModal [data-cc-close]").first().click();
+}
+
 async function exerciseMobileMenu(page,label){
   if((await page.viewportSize()).width>760)return;
 
@@ -279,6 +310,7 @@ for(const viewport of viewports){
     await setupProject(page);
     await assertNoOverflow(page,viewport.name+" home");
     await exerciseMobileMenu(page,viewport.name);
+    await exerciseAdminDispatchMedia(page);
     await exerciseWork(page);
     await page.screenshot({path:`${outDir}/${viewport.name}-work.png`,fullPage:true});
     const workColors=await page.evaluate(()=>{
