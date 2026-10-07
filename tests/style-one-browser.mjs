@@ -349,8 +349,8 @@ for(const viewport of viewports){
     if(!topbarPainted){
       throw new Error("Topbar lacks production dark-navy treatment: "+JSON.stringify(energyColors));
     }
-    if(!near(energyColors.sidebarRgb,[21,56,79],12)){
-      throw new Error("Sidebar does not match production dark teal: "+JSON.stringify(energyColors));
+    if(!near(energyColors.sidebarRgb,[15,92,120],14)){
+      throw new Error("Sidebar does not match production teal #0F5C78: "+JSON.stringify(energyColors));
     }
     if(energyColors.valueRgb&&!near(energyColors.valueRgb,[24,34,59],14)){
       throw new Error("Energy input does not match production navy field: "+JSON.stringify(energyColors));
