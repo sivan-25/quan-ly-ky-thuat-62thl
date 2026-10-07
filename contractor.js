@@ -354,7 +354,7 @@ async function contractorExportDirectoryEstaPdf(){
     columns:[
       {label:"STT",weight:.5},{label:"Nhà thầu",weight:2.1},{label:"Lĩnh vực",weight:1.4},{label:"SĐT",weight:1.2},
       {label:"Người liên hệ",weight:1.5},{label:"Thời hạn HĐ",weight:1.7},{label:"CV",weight:.7},{label:"Gần nhất",weight:1.1},{label:"Trạng thái",weight:1.1}
-    ],rows,photos,
+    ],rows,
     summaries:[
       {value:contractors.length,label:"NHÀ THẦU"},
       {value:active,label:"ĐANG HOẠT ĐỘNG"},
@@ -386,7 +386,7 @@ async function contractorExportDetailEstaPdf(){
     columns:[
       {label:"STT",weight:.5},{label:"Ngày",weight:1},{label:"Hoàn thành",weight:1},{label:"Nội dung",weight:2.4},
       {label:"Nguyên nhân",weight:1.8},{label:"Hướng xử lý",weight:2},{label:"Tình trạng",weight:1.1},{label:"Ghi chú",weight:1.5}
-    ],rows,
+    ],rows,photos,
     summaries:[
       {value:jobs.length,label:"TỔNG CÔNG VIỆC"},
       {value:done,label:"HOÀN THÀNH"},
