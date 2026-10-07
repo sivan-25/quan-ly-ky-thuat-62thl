@@ -1728,6 +1728,50 @@ function pdfSignaturePayload(signature){
    kt_signature_data_url:String(signature?.image_data_url||"")
  };
 }
+async function exportGenericEstaPdf(config={}){
+ if(!centralSession?.access_token){toast("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");return false}
+ const signer=config.signer||await requestPdfSignature();
+ if(!signer)return false;
+ const payload={
+   report_type:"generic",
+   building:String(config.building||currentBuilding?.name||"[CẦN BỔ SUNG]"),
+   report_date:new Date().toLocaleDateString("vi-VN"),
+   period_label:String(config.periodLabel||"THEO DỮ LIỆU HIỆN TẠI"),
+   title:String(config.title||"BÁO CÁO KỸ THUẬT"),
+   section_label:String(config.sectionLabel||"BÁO CÁO KỸ THUẬT"),
+   table_label:String(config.tableLabel||"DANH SÁCH"),
+   subtitle:String(config.subtitle||""),
+   columns:Array.isArray(config.columns)?config.columns:[],
+   rows:Array.isArray(config.rows)?config.rows:[],
+   summaries:Array.isArray(config.summaries)?config.summaries:[],
+   ...pdfSignaturePayload(signer)
+ };
+ try{
+   toast("Đang tạo PDF theo chuẩn ESTA...");
+   const res=await centralAuthFetch("/api/esta_report",{
+     method:"POST",
+     headers:{"Content-Type":"application/json"},
+     body:JSON.stringify(payload)
+   });
+   if(!res.ok){
+     let detail={};try{detail=await res.json()}catch(_){}
+     throw new Error(detail?.detail||detail?.error||("Không thể tạo PDF ESTA (HTTP "+res.status+")"));
+   }
+   const blob=await res.blob();
+   if(!blob.size||!String(blob.type||"").includes("pdf"))throw new Error("Máy chủ chưa trả về file PDF hợp lệ");
+   const url=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=url;a.download=String(config.filename||"ESTA_BaoCao_KyThuat.pdf");
+   document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),60000);
+   toast("Đã xuất PDF ESTA chuẩn");
+   return true;
+ }catch(err){
+   console.warn("Generic ESTA PDF export failed",err);
+   toast(err.message||"Không thể xuất PDF ESTA");
+   return false;
+ }
+}
+window.exportGenericEstaPdf=exportGenericEstaPdf;
 function estaPdfSignatureBlockHtml(signature){
  const name=esc(String(signature?.name||""));
  const src=esc(String(signature?.image_data_url||""));
@@ -2077,26 +2121,14 @@ async function openReport(a,kind="current",previewWindow=null,photoLayout=1){
  if(!a.length){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Không có dữ liệu để xuất PDF");return}
  if(workReportBusy){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Báo cáo đang được tạo");return}
  workReportBusy=true;
- let signer=null;
  try{
-   signer=await requestPdfSignature();
+   const signer=await requestPdfSignature();
    if(!signer){if(previewWindow&&!previewWindow.closed)previewWindow.close();return}
-   toast("Đang tạo PDF theo mẫu ESTA chuẩn...");
-   try{
-     const exported=await exportEstaGeneratorPdf(a,signer);
-     if(exported)return;
-   }catch(serverErr){
-     console.warn("ESTA server PDF export failed; using browser fallback",serverErr);
-     toast("Máy chủ PDF chưa phản hồi. Đang chuyển sang chế độ xuất dự phòng...");
-   }
-   const prepared=await prepareWorkReportRows(a);
-   const period=workReportPeriod(kind,prepared.rows);
-   const html=reportHtml(prepared.rows,kind,photoLayout);
-   await downloadReportPdf(html,workReportFilename(period),previewWindow,signer);
-   if(prepared.failed)toast("Đã xuất PDF dự phòng · "+prepared.failed+" hình không tải được");
+   toast("Đang tạo PDF theo chuẩn ESTA...");
+   await exportEstaGeneratorPdf(a,signer);
  }catch(err){
-   console.warn("Work PDF export failed",err);
-   toast(err.message||"Không thể xuất PDF");
+   console.warn("Work ESTA PDF export failed",err);
+   toast((err.message||"Không thể xuất PDF")+" · Hệ thống không dùng mẫu PDF cũ để tránh sai chuẩn ESTA.");
  }finally{
    workReportBusy=false;
  }
@@ -3214,7 +3246,48 @@ $("#toolSearch").oninput=renderTools;
 $("#addMaterialBtn").onclick=()=>openMaterialModal();
 $("#openStockTxn").onclick=()=>openStockTxnModal();
 $("#addToolBtn").onclick=()=>openToolModal();
-$("#materialExportPdf").onclick=()=>{if(!inventoryActiveMaterials().length)return toast("Chưa có vật tư để xuất PDF");inventoryPrintWindow(materialReportHtml())};
+async function exportMaterialsEstaPdf(){
+ const y=inventoryYearValue(),allYear=String(inventoryActiveMonth)==="all";
+ const month=allYear?null:Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
+ const active=inventoryActiveMaterials().map(m=>({m,s:inventorySnapshot(m,y)}))
+   .filter(x=>allYear?x.s.months.some(mm=>mm.active):x.s.months[month-1]?.active);
+ if(!active.length)return toast("Chưa có vật tư để xuất PDF");
+ const stockValue=x=>allYear?inventoryNum(x.s.closing):inventoryNum(x.s.months[month-1]?.stock);
+ const totalIn=active.reduce((sum,x)=>sum+(allYear?inventoryNum(x.s.totalIn):inventoryNum(x.s.months[month-1]?.inQty)),0);
+ const totalOut=active.reduce((sum,x)=>sum+(allYear?inventoryNum(x.s.totalOut):inventoryNum(x.s.months[month-1]?.outQty)),0);
+ const inStock=active.filter(x=>stockValue(x)>0).length;
+ const low=active.filter(x=>inventoryNum(x.m.min_qty)>0&&stockValue(x)<=inventoryNum(x.m.min_qty)).length;
+ const rows=active.map((x,i)=>{
+   if(allYear){
+     const detail=x.s.months.map((mm,idx)=>mm.active?("T"+(idx+1)+": N "+inventoryFmt(mm.inQty)+" / X "+inventoryFmt(mm.outQty)):"T"+(idx+1)+": —").join(" · ");
+     return [i+1,x.m.name+(x.m.code?" · "+x.m.code:""),x.m.unit,inventoryFmt(x.s.opening??0),detail,inventoryFmt(x.s.totalIn),inventoryFmt(x.s.totalOut),inventoryFmt(x.s.closing??0)];
+   }
+   const mm=x.s.months[month-1];
+   return [i+1,x.m.name+(x.m.code?" · "+x.m.code:""),x.m.unit,inventoryFmt(mm.begin),inventoryFmt(mm.inQty),inventoryFmt(mm.outQty),inventoryFmt(mm.stock)];
+ });
+ const period=allYear?("12 THÁNG / "+y):("THÁNG "+String(month).padStart(2,"0")+" / "+y);
+ const columns=allYear?[
+   {label:"STT",weight:.6},{label:"Vật tư",weight:2.4},{label:"ĐVT",weight:.8},{label:"Tồn đầu",weight:1},
+   {label:"Phát sinh 12 tháng",weight:4.3},{label:"Tổng nhập",weight:1},{label:"Tổng xuất",weight:1},{label:"Tồn cuối",weight:1}
+ ]:[
+   {label:"STT",weight:.6},{label:"Vật tư",weight:2.7},{label:"ĐVT",weight:.8},{label:"Tồn đầu",weight:1},
+   {label:"Nhập",weight:1},{label:"Xuất",weight:1},{label:"Tồn cuối",weight:1}
+ ];
+ return exportGenericEstaPdf({
+   title:allYear?"BÁO CÁO VẬT TƯ TIÊU HAO 12 THÁNG":"BÁO CÁO NHẬP - XUẤT - TỒN VẬT TƯ",
+   sectionLabel:"QUẢN LÝ VẬT TƯ TIÊU HAO",tableLabel:"BẢNG VẬT TƯ",
+   periodLabel:period,filename:"BaoCao_VatTu_"+(allYear?("12Thang_"+y):("Thang"+String(month).padStart(2,"0")+"_"+y))+".pdf",
+   columns,rows,
+   summaries:[
+     {value:inventoryFmt(totalIn),label:allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP"},
+     {value:inventoryFmt(totalOut),label:allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT"},
+     {value:inStock,label:"MẶT HÀNG CÒN TỒN"},
+     {value:low,label:"SẮP HẾT"}
+   ]
+ });
+}
+window.exportMaterialsEstaPdf=exportMaterialsEstaPdf;
+$("#materialExportPdf").onclick=exportMaterialsEstaPdf;
 function toolsForReport(){
  const q=($("#toolSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
  return inventoryTools.filter(t=>!q||[t.name,t.code,t.brand,t.location,t.keeper,t.note,t.condition_status].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
@@ -3337,11 +3410,44 @@ $("#maintenanceExportPdf").onclick=()=>{
 };
 $("#closeMaintenanceExport").onclick=()=>$("#maintenanceExportModal").classList.add("hide");
 $("#maintenanceExportModal").onclick=e=>{if(e.target===$("#maintenanceExportModal"))$("#maintenanceExportModal").classList.add("hide")};
+async function exportMaintenanceEstaPdf(kind="week"){
+ const period=maintenanceReportPeriod(kind);
+ const inRange=(date)=>date&&String(date)>=period.from&&String(date)<=period.to;
+ const byId=Object.fromEntries(maintenanceAssets.map(a=>[String(a.id),a]));
+ const records=maintenanceRecords.filter(r=>inRange(r.service_date)).sort((a,b)=>String(a.service_date||"").localeCompare(String(b.service_date||"")));
+ const dueAssets=maintenanceAssets.filter(a=>inRange(a.next_due_date)).sort((a,b)=>String(a.next_due_date||"").localeCompare(String(b.next_due_date||"")));
+ if(!records.length&&!dueAssets.length)return toast("Không có dữ liệu bảo trì trong kỳ");
+ const rows=[];
+ records.forEach((r,i)=>{
+   const a=byId[String(r.asset_id)]||{};
+   rows.push([rows.length+1,"Đã bảo trì",a.name||"Thiết bị đã xóa",fmt(r.service_date),r.result_status||"—",r.performer||"—",r.work_done||r.note||"—"]);
+ });
+ dueAssets.forEach(a=>{
+   rows.push([rows.length+1,"Đến hạn",a.name||"—",fmt(a.next_due_date),a.frequency_days+" ngày",a.assigned_to||"—",(a.system_type||"—")+" · "+(a.location||"—")]);
+ });
+ const done=records.filter(r=>r.result_status==="Hoàn thành").length;
+ const attention=records.filter(r=>r.result_status!=="Hoàn thành").length;
+ return exportGenericEstaPdf({
+   title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"BẢO TRÌ THIẾT BỊ KỸ THUẬT",
+   tableLabel:"NHẬT KÝ & KẾ HOẠCH BẢO TRÌ",periodLabel:period.label,
+   subtitle:fmt(period.from)+" - "+fmt(period.to),filename:maintenanceReportFilename(period),
+   columns:[
+     {label:"STT",weight:.6},{label:"Nhóm",weight:1.1},{label:"Thiết bị",weight:2.4},
+     {label:"Ngày",weight:1.1},{label:"Kết quả / Chu kỳ",weight:1.4},{label:"Phụ trách",weight:1.4},{label:"Nội dung / Ghi chú",weight:2.8}
+   ],rows,
+   summaries:[
+     {value:records.length,label:"LƯỢT BẢO TRÌ"},
+     {value:done,label:"HOÀN THÀNH"},
+     {value:attention,label:"CẦN THEO DÕI"},
+     {value:dueAssets.length,label:"ĐẾN HẠN TRONG KỲ"}
+   ]
+ });
+}
+window.exportMaintenanceEstaPdf=exportMaintenanceEstaPdf;
 document.querySelectorAll("[data-maint-report-range]").forEach(b=>b.onclick=()=>{
  const kind=b.dataset.maintReportRange==="month"?"month":"week";
- const period=maintenanceReportPeriod(kind);
  $("#maintenanceExportModal").classList.add("hide");
- downloadReportPdf(maintenanceReportHtml(kind),maintenanceReportFilename(period));
+ exportMaintenanceEstaPdf(kind);
 });
 document.querySelectorAll("[data-maint-sample]").forEach(b=>b.onclick=()=>{const [n,s,f]=b.dataset.maintSample.split("|");openMaintenanceAssetModal(n,s,Number(f))});
 $("#closeMaintenanceAssetModal").onclick=$("#cancelMaintenanceAssetModal").onclick=()=>$("#maintenanceAssetModal").classList.add("hide");
