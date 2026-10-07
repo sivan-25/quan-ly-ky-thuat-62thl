@@ -312,6 +312,34 @@ for(const viewport of viewports){
       throw new Error("Work status badge is still too dark: "+JSON.stringify(workColors));
     }
     await exerciseEnergy(page);
+    await page.screenshot({path:`${outDir}/${viewport.name}-energy.png`,fullPage:true});
+    const energyColors=await page.evaluate(()=>{
+      const pageEl=document.querySelector("#energyPage");
+      const topbar=document.querySelector(".estaTopbar");
+      const sidebar=document.querySelector(".estaSidebar");
+      const value=document.querySelector("#energyValue");
+      const rgb=s=>{const m=String(s||"").match(/[0-9]+/g);return m&&m.length>=3?m.slice(0,3).map(Number):null};
+      const color=el=>el?getComputedStyle(el).backgroundColor:"";
+      return {
+        pageRgb:rgb(color(pageEl)),
+        topbarRgb:rgb(color(topbar)),
+        sidebarRgb:rgb(color(sidebar)),
+        valueRgb:rgb(color(value))
+      };
+    });
+    const near=(a,b,t=10)=>a&&a.length===3&&a.every((v,i)=>Math.abs(v-b[i])<=t);
+    if(!near(energyColors.pageRgb,[247,223,182],10)){
+      throw new Error("Energy canvas does not match production cream #F7DFB6: "+JSON.stringify(energyColors));
+    }
+    if(!near(energyColors.topbarRgb,[21,62,114],12)){
+      throw new Error("Topbar does not match production navy: "+JSON.stringify(energyColors));
+    }
+    if(!near(energyColors.sidebarRgb,[21,56,79],12)){
+      throw new Error("Sidebar does not match production dark teal: "+JSON.stringify(energyColors));
+    }
+    if(energyColors.valueRgb&&!near(energyColors.valueRgb,[24,34,59],14)){
+      throw new Error("Energy input does not match production navy field: "+JSON.stringify(energyColors));
+    }
     await exerciseInventory(page);
     await exerciseMaintenance(page);
     await exerciseContractor(page);
