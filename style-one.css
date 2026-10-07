@@ -3210,3 +3210,186 @@ body:has(#app.styleOnePilot) :is(
     border-top-color:#315c87!important;
   }
 }
+
+
+/* STYLE_ONE_FORCE_PRODUCTION_SURFACES_V20 */
+/* High-specificity color overrides to defeat legacy !important theme layers.
+   These rules still change COLOR ONLY. */
+html body #app#app.styleOnePilot .estaSidebar.estaSidebar{
+  background:#0f5c78!important;
+  background-color:#0f5c78!important;
+  background-image:none!important;
+}
+html body #app#app.styleOnePilot .estaTopbar.estaTopbar{
+  background:linear-gradient(90deg,#153e72 0%,#143d70 60%,#133a69 100%)!important;
+  border-bottom-color:#254f7e!important;
+}
+
+/* ENERGY */
+html body #app#app.styleOnePilot #energyPage#energyPage :is(.energySummaryCards article,.energyCard,.energyTableCard){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#f3f7fb!important;
+  box-shadow:none!important;
+}
+html body #app#app.styleOnePilot #energyPage#energyPage :is(.energyCard .formSectionHead,.energyTableCard .energyTableTop,.energyTableCard .tableTop){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+}
+html body #app#app.styleOnePilot #energyPage#energyPage .energyTableCard :is(.desktopTable,.energyDesktopTable,.empty){
+  background:#11182b!important;
+  color:#e7edf4!important;
+}
+html body #app#app.styleOnePilot #energyPage#energyPage :is(.energySummaryCards strong,.energyCard h2,.energyTableTop h2){
+  color:#fff!important;
+}
+html body #app#app.styleOnePilot #energyPage#energyPage :is(.energySummaryCards small,.energyCard p,.energyTableTop p,.energyForm label>span){
+  color:#8fa1be!important;
+}
+html body #app#app.styleOnePilot #energyPage#energyPage .energyForm :is(input:not([type="file"]),select,textarea,.peopleSelectBtn){
+  background:#18223b!important;
+  background-color:#18223b!important;
+  border-color:#30405f!important;
+  color:#f5f8fb!important;
+}
+html body #app#app.styleOnePilot #energyPage#energyPage .energyDesktopTable thead th{
+  background:#11182b!important;color:#f4b84b!important;border-color:#26334c!important;
+}
+html body #app#app.styleOnePilot #energyPage#energyPage .energyDesktopTable tbody td{
+  background:#11182b!important;color:#e7edf4!important;border-color:#26334c!important;
+}
+
+/* INVENTORY */
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage :is(
+  .inventorySectionBar,.inventoryMonthRail,.inventoryTableCard,.inventorySupportCard,.inventoryQuickAdd
+){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage :is(.inventoryStats article,.inventoryMetric){
+  background:#11182b!important;border-color:#27334b!important;color:#fff!important;box-shadow:none!important;
+}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage :is(
+  .inventorySectionBar h2,.inventoryCardTitle h3,.inventoryQuickAdd h3,.inventoryStats b,.inventoryMetric b,.inventoryMonthRail b
+){color:#fff!important}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage :is(
+  .inventorySectionBar p,.inventoryCardTitle small,.inventoryStats small,.inventoryStats em,.inventoryMetric small,.inventoryMetric em,.inventoryMonthRail small
+){color:#9fb0c5!important}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage :is(.inventoryTableCard tbody td,.toolsTable tbody td,.transactionTable tbody td,.materialMonthlyTable tbody td){
+  background:#11182b!important;color:#eef5fa!important;border-color:#293750!important;
+}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage :is(.inventoryTableCard thead th,.toolsTable thead th,.transactionTable thead th,.materialMonthlyTable thead th){
+  background:#eef7fd!important;color:#3c618c!important;border-color:#dcebf5!important;
+}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage .materialMatrix .stickyMaterial{background:#11182b!important}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage .materialMatrix thead .stickyMaterial{background:#eef7fd!important}
+html body #app#app.styleOnePilot #inventoryPage#inventoryPage :is(.inventorySearch,.inventoryCommandMeta label,.inventoryQuickMenu summary){
+  background:#18223b!important;border-color:#30405f!important;color:#dce7ef!important;
+}
+
+/* MAINTENANCE */
+html body #app#app.styleOnePilot #maintenancePage#maintenancePage :is(
+  .maintenanceHero,.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,.maintenanceStats article
+){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+html body #app#app.styleOnePilot #maintenancePage#maintenancePage :is(.maintenanceToolbar,.maintenanceProjectMeta,.maintenanceMonthStrip,.maintenanceAssetCard){
+  background:#18223b!important;border-color:#30405f!important;color:#eaf2f8!important;
+}
+html body #app#app.styleOnePilot #maintenancePage#maintenancePage :is(
+  .maintenanceHero h1,.maintenanceSchedule h2,.maintenanceToolbar h2,.maintenanceStats b,.inventorySectionHead h3
+){color:#fff!important}
+html body #app#app.styleOnePilot #maintenancePage#maintenancePage :is(
+  .maintenanceHero p,.maintenanceToolbar p,.maintenanceStats small,.maintenanceStats em,.inventorySectionHead p
+){color:#9fb0c5!important}
+html body #app#app.styleOnePilot #maintenancePage#maintenancePage .maintenanceHistoryTable thead th{
+  background:#eef7fd!important;color:#3c618c!important;
+}
+html body #app#app.styleOnePilot #maintenancePage#maintenancePage .maintenanceHistoryTable tbody td{
+  background:#11182b!important;color:#eef5fa!important;border-color:#293750!important;
+}
+
+/* CONTRACTOR */
+html body #app#app.styleOnePilot #contractorPage#contractorPage :is(
+  .contractorIntro,.contractorDirectory,.contractorProfile,.contractorJobsPanel,.contractorStats article
+){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+html body #app#app.styleOnePilot #contractorPage#contractorPage :is(.contractorCard,.contractorRow,.contractorJobCard){
+  background:#18223b!important;border-color:#30405f!important;color:#eef5fa!important;
+}
+html body #app#app.styleOnePilot #contractorPage#contractorPage :is(
+  .contractorIntro h1,.contractorToolbar h2,.contractorProfile h1,.contractorJobsHead h2,.contractorStats b
+){color:#fff!important}
+html body #app#app.styleOnePilot #contractorPage#contractorPage :is(
+  .contractorIntro p,.contractorToolbar p,.contractorProfile p,.contractorStats small,.contractorStats em
+){color:#9fb0c5!important}
+
+/* INCIDENT / CHECKLIST / DOCUMENTS */
+html body #app#app.styleOnePilot :is(#incidentPage#incidentPage,#inspectionPage#inspectionPage,#documentsPage#documentsPage) :is(
+  .demoHero,.demoKpi,.demoPanel
+){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+html body #app#app.styleOnePilot :is(#incidentPage#incidentPage,#inspectionPage#inspectionPage,#documentsPage#documentsPage) :is(
+  .demoHero h1,.demoHero span,.demoHero p,.demoKpi b,.demoPanel h2,.demoPanel h3
+){color:#fff!important}
+html body #app#app.styleOnePilot :is(#incidentPage#incidentPage,#documentsPage#documentsPage) .demoTable thead th{
+  background:#eef7fd!important;color:#3c618c!important;
+}
+html body #app#app.styleOnePilot :is(#incidentPage#incidentPage,#documentsPage#documentsPage) .demoTable tbody td{
+  background:#11182b!important;color:#eef5fa!important;border-color:#293750!important;
+}
+
+/* REPORTS */
+html body #app#app.styleOnePilot #reportsPage#reportsPage :is(.rc-heading,.rc-period,.rc-controls,.rc-preview,.rc-history){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+html body #app#app.styleOnePilot #reportsPage#reportsPage :is(.rc-heading h2,.rc-card-heading h3,.rc-preview h3,.rc-history h3){
+  color:#fff!important;
+}
+html body #app#app.styleOnePilot #reportsPage#reportsPage table thead th{
+  background:#eef7fd!important;color:#3c618c!important;
+}
+html body #app#app.styleOnePilot #reportsPage#reportsPage table tbody td{
+  background:#11182b!important;color:#eef5fa!important;border-color:#293750!important;
+}
+
+/* HOME + ADMIN */
+html body #app#app.styleOnePilot #homePage#homePage :is(.homeWelcome,.unifiedCommand,.kpiCard,.homePanel,.opsHero,.opsKpi,.opsPanel,.opsScopeBar),
+html body #app#app.styleOnePilot #adminPage#adminPage :is(.adminHero,.adminSection){
+  background:#11182b!important;
+  background-color:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
