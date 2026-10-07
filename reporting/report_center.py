@@ -207,6 +207,7 @@ def _signature_block(data, st):
 
 
 def build_operations_doc(path, data, token, temp_dir, downloader):
+    pdfc.ensure_fonts()
     sections = data.get("sections")
     if not isinstance(sections, list) or not sections:
         raise ValueError("Chọn ít nhất một hạng mục báo cáo")
