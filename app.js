@@ -835,6 +835,8 @@ window.homeOpenTask=id=>{
 };
 function applyBuildingUI(){
  if(!projectOverviewActive)return;
+ document.body.classList.toggle("estaWorkRefinements",usesSingleTaskResult());
+ $("#app").dataset.buildingId=String(currentBuilding?.id||"");
  renderAllPeopleSelectors();
  const name=currentBuilding?.name||"Dự án";
  document.querySelectorAll(".buildingNameText").forEach(el=>el.textContent=name);
@@ -1403,7 +1405,7 @@ function filtered(fx,ex){
    .filter(x=>(!q||(x.c+" "+x.n+" "+x.a).toLowerCase().includes(q))&&(!s||x.s===s)&&(!t||(x.t||"Hằng ngày")===t)&&(!f||x.d>=f)&&(!e||x.d<=e)&&statMatch(x))
    .sort((a,b)=>{
      const ai=Number(a?.id),bi=Number(b?.id);
-     if(Number.isFinite(ai)&&Number.isFinite(bi)&&ai!==bi)return ai-bi;
+     if(Number.isFinite(ai)&&Number.isFinite(bi)&&ai!==bi)return usesSingleTaskResult()?bi-ai:ai-bi;
      return 0;
    });
 }function typeBadge(t){t=t||"Hằng ngày";let c=t==="Bảo trì"?"maintenance":t==="Sự cố"?"incident":"daily";return '<span class="typeBadge '+c+'">'+esc(t)+'</span>'}function statusBadge(s){let c=s==="Đã hoàn thành"?"done":s==="Đang thực hiện"?"doing":"waiting";return '<span class="badge '+c+'">'+esc(s)+'</span>'}function performerChipsHtml(x,limit=3){
@@ -2210,11 +2212,11 @@ function renderEnergy(){
 
  const head=$("#energyHeadRow"),cols=$("#energyColgroup");
  if(dual){
-  if(cols)cols.innerHTML='<col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:13%"><col style="width:15%"><col style="width:8%"><col style="width:6%">';
-  if(head)head.innerHTML='<th>Ngày</th><th>EVN1</th><th>Tiêu thụ EVN1</th><th>EVN2</th><th>Tiêu thụ EVN2</th><th>Tổng tiêu thụ</th><th>Người thực hiện</th><th>Ghi chú</th><th>Ảnh</th><th>Thao tác</th>';
+  if(cols)cols.innerHTML='<col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:13%"><col style="width:15%"><col style="width:14%">';
+  if(head)head.innerHTML='<th>Ngày</th><th>EVN1</th><th>Tiêu thụ EVN1</th><th>EVN2</th><th>Tiêu thụ EVN2</th><th>Tổng tiêu thụ</th><th>Người thực hiện</th><th>Ghi chú</th><th>Ảnh</th>';
  }else{
-  if(cols)cols.innerHTML='<col style="width:11%"><col style="width:18%"><col style="width:12%"><col style="width:14%"><col style="width:27%"><col style="width:9%"><col style="width:9%">';
-  if(head)head.innerHTML='<th>Ngày</th><th id="energyValueColumn">Chỉ số ('+esc(m.unit)+')</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Ghi chú</th><th>Ảnh</th><th>Thao tác</th>';
+  if(cols)cols.innerHTML='<col style="width:11%"><col style="width:18%"><col style="width:12%"><col style="width:14%"><col style="width:27%"><col style="width:18%">';
+  if(head)head.innerHTML='<th>Ngày</th><th id="energyValueColumn">Chỉ số ('+esc(m.unit)+')</th><th>Chênh lệch</th><th>Người thực hiện</th><th>Ghi chú</th><th>Ảnh</th>';
  }
 
  const allType=energyLoad().filter(x=>x.type===energyType).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
@@ -2266,11 +2268,11 @@ function renderEnergy(){
     const d2=x.diff2===null?"—":(x.diff2>=0?"+":"")+energyFmt(x.diff2);
     const dt=x.totalDiff===null?"—":(x.totalDiff>=0?"+":"")+energyFmt(x.totalDiff);
     const imgs=(x.image||x.image2)?'<div class="energyDualThumbs">'+(x.image?'<span onclick="viewEnergyImage(\''+x.id+'\')"><small>EVN1</small>'+mediaImgHtml(x.image,"energyThumb")+'</span>':'')+(x.image2?'<span onclick="viewEnergyImage(\''+x.id+'\')"><small>EVN2</small>'+mediaImgHtml(x.image2,"energyThumb")+'</span>':'')+'</div>':"—";
-    return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+d1+'</td><td class="meterValue"><b>'+energyFmt(x.value2)+'</b></td><td class="meterDiff">'+d2+'</td><td class="meterDiff total">'+dt+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+imgs+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Sửa bản ghi</button>'+((x.image||x.image2)?'<button type="button" onclick="viewEnergyImage(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="deleteEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>';
+    return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+d1+'</td><td class="meterValue"><b>'+energyFmt(x.value2)+'</b></td><td class="meterDiff">'+d2+'</td><td class="meterDiff total">'+dt+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+imgs+'</td></tr>';
    }
    const diff=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
    const img=x.image?'<span class="energyThumbWrap" onclick="viewEnergyImage(\''+x.id+'\')">'+mediaImgHtml(x.image,"energyThumb")+'</span>':"—";
-   return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+img+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Sửa bản ghi</button>'+(x.image?'<button type="button" onclick="viewEnergyImage(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="deleteEnergy(\''+x.id+'\');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>';
+   return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+img+'</td></tr>';
  }).join("");
 
  $("#energyMobileCards").innerHTML=rows.map(x=>{

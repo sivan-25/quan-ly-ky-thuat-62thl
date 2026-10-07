@@ -1,0 +1,72 @@
+/* Approved work refinements: 62 THL, 68 PĐL, 127 HH and 130 HH. */
+@media (min-width: 761px) {
+  body.estaWorkRefinements #taskForm .workContent {
+    min-width: 0 !important;
+  }
+  body.estaWorkRefinements #taskForm #content.workContentInput {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    padding: 10px 12px !important;
+    border: 1px solid #bfdcff !important;
+    border-radius: 10px !important;
+    font: inherit;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+  }
+}
+
+body.estaWorkRefinements #demoWorkLinks #demoTaskResult,
+body.estaWorkRefinements #demoWorkLinks #demoTaskResult::placeholder {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+  letter-spacing: normal !important;
+}
+/* Keep phone inputs readable without triggering Safari's input zoom. */
+@media (max-width: 760px) {
+  body.estaWorkRefinements #demoWorkLinks #demoTaskResult {
+    font-size: 16px !important;
+  }
+}
+
+body.estaWorkRefinements #app.demoProjectMode.demoSampleProject #workPage .stats article[data-work-stat-filter][aria-pressed="true"] {
+  background: #d2e6ff !important;
+  border-color: #2478d4 !important;
+  box-shadow: inset 0 0 0 1px #2478d4 !important;
+}
+body.estaWorkRefinements #app.demoProjectMode.demoSampleProject #workPage .stats article[data-work-stat-filter][aria-pressed="true"] :is(small, strong) {
+  color: #123e6d !important;
+}
+
+/* 68 PĐL desktop: the form scrolls inside its allotted card, including Save. */
+@media (min-width: 761px) {
+  #app[data-building-id="68PĐL"] #energyPage .energyCard,
+  #app[data-building-id="68PDL"] #energyPage .energyCard {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyCard > *,
+  #app[data-building-id="68PDL"] #energyPage .energyCard > * {
+    flex-shrink: 0 !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm .energyActions,
+  #app[data-building-id="68PDL"] #energyPage #energyForm .energyActions {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 5;
+    margin: 0 !important;
+    padding: 10px 0 !important;
+    background: #11182b !important;
+  }
+}
