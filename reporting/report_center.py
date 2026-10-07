@@ -185,8 +185,7 @@ def _signature_block(data, st):
         raise ValueError("Chưa có họ và tên người ký KT")
     signature = ""
     if path and os.path.exists(path):
-        with PILImage.open(path) as source:
-            iw, ih = source.size
+        iw, ih = ImageReader(path).getSize()
         scale = min((58 * mm) / max(iw, 1), (18 * mm) / max(ih, 1))
         signature = Image(path, width=max(1, iw * scale), height=max(1, ih * scale), hAlign="CENTER")
     signed_name = ParagraphStyle("rc-signed-name", parent=st["meta_value"], alignment=1, fontSize=8, leading=10)
