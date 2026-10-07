@@ -1,76 +1,48 @@
-"""Vector PDF for the report center. Existing module PDFs keep their templates."""
-import io
+"""Vector PDF for the ESTA report center, using the shared PDF primitives."""
 import os
-from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
 from xml.sax.saxutils import escape
 
-from PIL import Image as PILImage, ImageOps
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.utils import ImageReader
 from reportlab.platypus import (
     BaseDocTemplate, Paragraph, Spacer, Table, TableStyle, KeepTogether,
-    Image, PageBreak, Frame, PageTemplate, HRFlowable,
+    Image, Frame, PageTemplate, HRFlowable,
 )
 
-# ESTA corporate PDF palette — shared with the established module reports.
-AUB = colors.HexColor("#411437")
-AUB_D = colors.HexColor("#2B1526")
-CREAM = colors.HexColor("#F3DEBF")
-CREAM_L = colors.HexColor("#F5ECD0")
-COPPER = colors.HexColor("#A46427")
-TAUPE = colors.HexColor("#A99586")
-STONE = colors.HexColor("#625045")
-PALE = colors.HexColor("#FFF8EC")
+from reporting import pdf_common as pdfc
 
-NAVY = AUB
-INK = AUB_D
-MUTED = STONE
-TEAL = COPPER
-LINE = TAUPE
-SOFT = CREAM_L
-TONES = {
-    "good": ("#411437", "#F5ECD0"),
-    "watch": ("#A46427", "#FFF1D8"),
-    "danger": ("#8A2635", "#F9E5E6"),
-    "info": ("#625045", "#F5ECD0"),
-    "muted": ("#7F7168", "#F2E8D8"),
+AUB=pdfc.AUB
+AUB_D=pdfc.AUB_D
+CREAM=pdfc.CREAM
+CREAM_L=pdfc.CREAM_L
+COPPER=pdfc.COPPER
+TAUPE=pdfc.TAUPE
+STONE=pdfc.STONE
+PALE=pdfc.PALE
+
+NAVY=AUB
+INK=AUB_D
+MUTED=STONE
+TEAL=COPPER
+LINE=TAUPE
+SOFT=CREAM_L
+TONES={
+    "good":("#411437","#F5ECD0"),
+    "watch":("#A46427","#FFF1D8"),
+    "danger":("#8A2635","#F9E5E6"),
+    "info":("#625045","#F5ECD0"),
+    "muted":("#7F7168","#F2E8D8"),
 }
-WIDTH = A4[0] - 32 * mm
-FOOTER = "ESTA PROPERTY MANAGEMENT  ·  A L'MAK COMPANY  ·  HO CHI MINH CITY"
+WIDTH=pdfc.CW
+FOOTER=pdfc.FOOTER
+ReportCanvas=pdfc.NumberedCanvas
 
 
-class ReportCanvas(Canvas):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._page_states = []
-
-    def showPage(self):
-        self._page_states.append(dict(self.__dict__))
-        self._startPage()
-
-    def save(self):
-        total = len(self._page_states)
-        for page in self._page_states:
-            self.__dict__.update(page)
-            self.saveState()
-            self.setStrokeColor(COPPER)
-            self.setLineWidth(1.5)
-            self.line(16 * mm, 16 * mm, A4[0] - 16 * mm, 16 * mm)
-            self.setFont("Mont-Light", 6.2)
-            self.setFillColor(STONE)
-            self.drawString(16 * mm, 11 * mm, FOOTER)
-            self.setFont("Mont-Light", 6.8)
-            self.drawRightString(A4[0] - 16 * mm, 11 * mm, f"Trang {self._pageNumber} / {total}")
-            self.restoreState()
-            Canvas.showPage(self)
-        Canvas.save(self)
-
-
-def styles():
+def styles():def styles():
     def style(name, **options):
         values = dict(fontName="Mont", fontSize=8, leading=12, textColor=INK, spaceAfter=0)
         values.update(options)
@@ -136,88 +108,47 @@ def data_table(columns, rows, st, widths=None):
     return table
 
 
+def _validated_photo(index, photo, data):
+    ref=str(photo.get("ref") or "")
+    caption=str(photo.get("caption") or f"Hình {index+1}")
+    if ref.startswith("storage:"):
+        storage_path=ref[8:]
+        building_id=str(data.get("building_id") or "")
+        encoded_segment="b-"+"".join(f"{byte:02x}" for byte in building_id.encode("utf-8"))
+        if not (storage_path.startswith(encoded_segment+"/") or storage_path.startswith(building_id+"/")):
+            raise ValueError("Ảnh không thuộc dự án báo cáo")
+    elif ref.startswith("data:image/"):
+        pass
+    else:
+        url=urlparse(ref)
+        if url.scheme!="https" or url.hostname!="upcjcrycahdfroxggsdz.supabase.co" or not url.path.startswith("/storage/v1/object/"):
+            raise ValueError("Nguồn ảnh chưa được hỗ trợ")
+    return {"source":ref,"ref":ref,"caption":caption,"id":ref}
+
+
 def _prepare_photo(index_photo, data, token, temp_dir, downloader):
-    index, photo = index_photo
-    ref = str(photo.get("ref") or "")
-    caption = str(photo.get("caption") or f"Ảnh {index + 1}")
+    # Compatibility helper retained for tests; actual image decode/compress is shared.
+    index,photo=index_photo
     try:
-        if ref.startswith("storage:"):
-            storage_path = ref[8:]
-            building_id = str(data.get("building_id") or "")
-            encoded_segment = "b-" + "".join(f"{byte:02x}" for byte in building_id.encode("utf-8"))
-            # Accept both the current encoded project folder and the legacy plain-id folder.
-            if not (storage_path.startswith(encoded_segment + "/") or storage_path.startswith(building_id + "/")):
-                raise ValueError("Ảnh không thuộc dự án báo cáo")
-        elif ref.startswith("data:image/"):
-            pass
-        else:
-            url = urlparse(ref)
-            if url.scheme != "https" or url.hostname != "upcjcrycahdfroxggsdz.supabase.co" or not url.path.startswith("/storage/v1/object/"):
-                raise ValueError("Nguồn ảnh chưa được hỗ trợ")
-        raw, _ = downloader(ref, token)
-        if not raw:
-            raise ValueError("Không tải được ảnh")
-        with PILImage.open(io.BytesIO(raw)) as source:
-            image = ImageOps.exif_transpose(source).convert("RGB")
-            image.thumbnail((1600, 1600))
-            width, height = image.size
-            path = os.path.join(temp_dir, f"operations-{index}.jpg")
-            image.save(path, "JPEG", quality=82, optimize=True)
-        return {"path": path, "width": width, "height": height, "caption": caption, "missing": False}
+        item=_validated_photo(index,photo,data)
+        prepared=pdfc.prepare_downloaded_image(item["source"],token,downloader,cache_id=item["id"])
+        return {
+            "prepared":prepared,"width":prepared.width,"height":prepared.height,
+            "caption":item["caption"],"missing":False
+        }
     except Exception:
-        return {"path": None, "width": 1, "height": 1, "caption": caption, "missing": True}
+        return {"prepared":None,"width":1,"height":1,"caption":str(photo.get("caption") or f"Hình {index+1}"),"missing":True}
 
 
 def _page_functions(data):
-    title = "BÁO CÁO VẬN HÀNH KỸ THUẬT"
-    period = str(data.get("period_label") or "").upper()
-    building = str(data.get("building") or "DỰ ÁN").upper()
-
-    def background(canvas):
-        canvas.setFillColor(CREAM)
-        canvas.rect(0, 0, A4[0], A4[1], stroke=0, fill=1)
-
-    def first(canvas, doc):
-        background(canvas)
-        band = 38 * mm
-        canvas.setFillColor(AUB)
-        canvas.rect(0, A4[1] - band, A4[0], band, stroke=0, fill=1)
-        canvas.setFillColor(COPPER)
-        canvas.rect(0, A4[1] - band - 1.5, A4[0], 1.5, stroke=0, fill=1)
-
-        logo_x = 49 * mm
-        canvas.setFillColor(PALE)
-        canvas.setFont("Mont-Bold", 22)
-        canvas.drawCentredString(logo_x, A4[1] - 15.5 * mm, "ESTA")
-        canvas.setFont("Mont-Light", 6.2)
-        canvas.setFillColor(CREAM)
-        canvas.drawCentredString(logo_x, A4[1] - 20.5 * mm, "PROPERTY MANAGEMENT")
-        canvas.setFont("Mont-SemiBold", 7.2)
-        canvas.drawCentredString(logo_x, A4[1] - 28.2 * mm, building)
-
-        canvas.setFillColor(CREAM)
-        canvas.setFont("Mont-Bold", 8.5)
-        canvas.drawRightString(A4[0] - 16 * mm, A4[1] - 17 * mm, title)
-        canvas.setFont("Mont-Light", 6.8)
-        canvas.drawRightString(A4[0] - 16 * mm, A4[1] - 23 * mm, period)
-
-    def later(canvas, doc):
-        background(canvas)
-        band = 12 * mm
-        canvas.setFillColor(AUB)
-        canvas.rect(0, A4[1] - band, A4[0], band, stroke=0, fill=1)
-        canvas.setFillColor(COPPER)
-        canvas.rect(0, A4[1] - band - 1.2, A4[0], 1.2, stroke=0, fill=1)
-        canvas.setFillColor(CREAM)
-        canvas.setFont("Mont-SemiBold", 6.2)
-        canvas.drawString(16 * mm, A4[1] - 7.3 * mm, "ESTA  ·  " + building)
-        canvas.setFont("Mont-Light", 6.0)
-        canvas.drawRightString(A4[0] - 16 * mm, A4[1] - 7.3 * mm, title + ("  ·  " + period if period else ""))
-
-    return first, later
+    return pdfc.make_page_fns(
+        "BÁO CÁO VẬN HÀNH KỸ THUẬT",
+        str(data.get("period_label") or ""),
+        str(data.get("building") or "DỰ ÁN")
+    )
 
 
-def _meta_table(data, sections, st):
+def _meta_table(data, sections, st):def _meta_table(data, sections, st):
     period = data.get("range") or {}
     from_date = str(period.get("from") or "—")
     to_date = str(period.get("to") or "—")
@@ -276,13 +207,7 @@ def _signature_block(data, st):
     return KeepTogether([Spacer(1, 8), table])
 
 
-def _photo_flowable(photo, cell_width, max_height, st):
-    scale = min((cell_width - 6) / photo["width"], max_height / photo["height"])
-    img = Image(photo["path"], width=photo["width"] * scale, height=photo["height"] * scale, hAlign="CENTER")
-    return [img, Spacer(1, 6), para(photo["caption"], st["small"])]
-
-
-def build_operations_doc(path, data, token, temp_dir, downloader):
+def build_operations_doc(path, data, token, temp_dir, downloader):def build_operations_doc(path, data, token, temp_dir, downloader):
     sections = data.get("sections")
     if not isinstance(sections, list) or not sections:
         raise ValueError("Chọn ít nhất một hạng mục báo cáo")
@@ -392,48 +317,28 @@ def build_operations_doc(path, data, token, temp_dir, downloader):
     else:
         story.append(para("Chưa có ghi chú, tồn tại hoặc kiến nghị được nhập cho các bản ghi đã chọn.", st["small"]))
 
-    missing = 0
+    missing=0
     if photos:
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            images = list(pool.map(lambda item: _prepare_photo(item, data, token, temp_dir, downloader), enumerate(photos)))
-        missing = sum(x["missing"] for x in images)
-        images = [x for x in images if not x["missing"] and x["path"]]
+        validated=[]
+        invalid=0
+        for i,photo in enumerate(photos):
+            try:
+                validated.append(_validated_photo(i,photo,data))
+            except Exception:
+                invalid+=1
+        prepared,failed=pdfc.prepare_remote_images(validated,token,downloader,source_key="source")
+        missing=invalid+failed
+        images=[x for x in prepared if x.get("prepared")]
         if images:
-            story.extend([PageBreak(), para("PHẦN 2  ·  HÌNH ẢNH HIỆN TRƯỜNG", st["eyebrow"]), Spacer(1, 3), para("Hình ảnh đính kèm", st["head"]), HRFlowable(width="100%", thickness=1.5, color=COPPER, spaceBefore=3, spaceAfter=8)])
-            layout = str(data.get("photo_layout") or "auto")
-            index = 0
-            while index < len(images):
-                first = images[index]
-                if layout == "1":
-                    pair = False
-                elif layout == "2":
-                    pair = index + 1 < len(images)
-                else:
-                    pair = (
-                        first["height"] > first["width"] * 1.1
-                        and index + 1 < len(images)
-                        and images[index + 1]["height"] > images[index + 1]["width"] * 1.1
-                    )
-                group = images[index:index + (2 if pair else 1)]
-                if len(group) == 2:
-                    gap = 4 * mm
-                    cell_width = (WIDTH - gap) / 2
-                    cells = [_photo_flowable(photo, cell_width, 96 * mm, st) for photo in group]
-                    row = Table([[cells[0], "", cells[1]]], colWidths=[cell_width, gap, cell_width])
-                else:
-                    cell_width = WIDTH
-                    photo = group[0]
-                    max_height = 150 * mm if photo["height"] > photo["width"] else 105 * mm
-                    row = Table([[_photo_flowable(photo, cell_width, max_height, st)]], colWidths=[WIDTH])
-                row.setStyle(TableStyle([
-                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("LEFTPADDING", (0, 0), (-1, -1), 3),
-                    ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-                    ("TOPPADDING", (0, 0), (-1, -1), 3),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
-                ]))
-                story.append(KeepTogether([row]))
-                index += len(group)
+            story += [Spacer(1,10),para("04 · Hình ảnh hiện trường",st["section"]),Spacer(1,4)]
+            layout=str(data.get("photo_layout") or "3")
+            cols=1 if layout=="1" else 2 if layout=="2" else 3
+            normalized=[
+                {"prepared":x["prepared"],"caption":str(x.get("caption") or f"Hình {i+1}")}
+                for i,x in enumerate(images)
+            ]
+            for row in pdfc.image_grid(normalized,WIDTH,cols=cols,cell_height=pdfc.IMAGE_CELL_HEIGHT,gap=pdfc.IMAGE_GAP):
+                story += [row,Spacer(1,5)]
 
     story.append(_signature_block(data, st))
 
@@ -445,11 +350,11 @@ def build_operations_doc(path, data, token, temp_dir, downloader):
         author="ESTA Property Management",
         subject="Báo cáo vận hành kỹ thuật",
         creator="ESTA Property Management",
-        leftMargin=16 * mm,
-        rightMargin=16 * mm,
+        leftMargin=pdfc.MX,
+        rightMargin=pdfc.MX,
     )
-    first_frame = Frame(16 * mm, 21 * mm, WIDTH, A4[1] - 38 * mm - 8 * mm - 21 * mm, id="rc-first", leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
-    later_frame = Frame(16 * mm, 21 * mm, WIDTH, A4[1] - 12 * mm - 8 * mm - 21 * mm, id="rc-later", leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
+    first_frame = Frame(pdfc.MX, 21 * mm, WIDTH, A4[1] - 38 * mm - 8 * mm - 21 * mm, id="rc-first", leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
+    later_frame = Frame(pdfc.MX, 21 * mm, WIDTH, A4[1] - 12 * mm - 8 * mm - 21 * mm, id="rc-later", leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
     doc.addPageTemplates([
         PageTemplate("first", [first_frame], onPage=first_page, autoNextPageTemplate="later"),
         PageTemplate("later", [later_frame], onPage=later_page),
