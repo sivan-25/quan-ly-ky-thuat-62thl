@@ -85,6 +85,10 @@
   }
   async function uploadOrQueue(meta){
     const blob=meta.blob||await prepare(meta.file);
+    if(!navigator.onLine){
+      await queueBlob({...meta,blob});
+      return {ref:"",queued:true};
+    }
     try{
       const ref=await uploadWithRetry(blob,meta.kind,meta.recordId,meta.index||0,meta.buildingId);
       return {ref,queued:false};
