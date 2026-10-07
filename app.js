@@ -108,6 +108,9 @@ async function sbFetch(path,{method="GET",body=null,token=null}={}){
  return data;
 }
 const MEDIA_BUCKET="task-images";
+const CLIENT_IMAGE_COMPRESSION_ENABLED=true;
+const CLIENT_IMAGE_MAX_PX=1600;
+const CLIENT_IMAGE_JPEG_QUALITY=.85;
 const mediaUrlCache=new Map();
 function isStorageRef(v){return typeof v==="string"&&v.startsWith("storage:")}
 function storagePathFromRef(v){return isStorageRef(v)?v.slice(8):v}
@@ -151,13 +154,17 @@ window.addEventListener("beforeunload",()=>{for(const x of mediaUrlCache.values(
 function imageFileToBlob(file){
  return new Promise((resolve,reject)=>{
    if(!file?.type?.startsWith("image/"))return reject(new Error("Chỉ hỗ trợ file hình ảnh"));
+   if(!CLIENT_IMAGE_COMPRESSION_ENABLED){resolve(file);return}
    const url=URL.createObjectURL(file),img=new Image();
    img.onload=()=>{
      try{
-       const max=1800,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+       const max=CLIENT_IMAGE_MAX_PX;
+       const scale=Math.min(1,max/Math.max(img.width,img.height));
+       const w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
        const cv=document.createElement("canvas");cv.width=w;cv.height=h;
-       cv.getContext("2d").drawImage(img,0,0,w,h);
-       cv.toBlob(blob=>{URL.revokeObjectURL(url);blob?resolve(blob):reject(new Error("Không thể xử lý hình ảnh"))},"image/jpeg",.74);
+       const ctx=cv.getContext("2d");
+       ctx.fillStyle="#ffffff";ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
+       cv.toBlob(blob=>{URL.revokeObjectURL(url);blob?resolve(blob):reject(new Error("Không thể xử lý hình ảnh"))},"image/jpeg",CLIENT_IMAGE_JPEG_QUALITY);
      }catch(e){URL.revokeObjectURL(url);reject(e)}
    };
    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Không đọc được hình ảnh này"))};
