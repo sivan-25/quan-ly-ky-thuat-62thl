@@ -1699,8 +1699,11 @@ function signatureFileToDataUrl(file){
 function resetPdfSignatureModal(){
  const select=$("#pdfSignerName"),fullName=$("#pdfSignerFullName"),file=$("#pdfSignatureFile"),preview=$("#pdfSignaturePreview"),err=$("#pdfSignatureError");
  if(!select||!file)return;
- select.innerHTML='<option value="">-- Chọn người ký KT --</option>'+pdfSignaturePeople().map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join("");
- select.value="";
+ const people=pdfSignaturePeople();
+ select.innerHTML='<option value="">-- Chọn người ký KT --</option>'+
+   people.map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join("")+
+   '<option value="__manual__">Khác · nhập họ tên thủ công</option>';
+ select.value=people.length?"":"__manual__";
  if(fullName)fullName.value="";
  file.value="";
  if(pdfSignaturePreviewUrl){URL.revokeObjectURL(pdfSignaturePreviewUrl);pdfSignaturePreviewUrl=""}
@@ -1764,8 +1767,11 @@ window.estaPdfSignatureBlockHtml=estaPdfSignatureBlockHtml;
 window.appendPdfSignatureToElement=appendPdfSignatureToElement;
 
 $("#pdfSignerName")?.addEventListener("change",e=>{
- const fullName=$("#pdfSignerFullName");
- if(fullName)fullName.value=String(e.target.value||"");
+ const fullName=$("#pdfSignerFullName"),value=String(e.target.value||"");
+ if(fullName){
+   fullName.value=value==="__manual__"?"":value;
+   if(value==="__manual__")fullName.focus();
+ }
  const err=$("#pdfSignatureError");if(err)err.textContent="";
 });
 $("#pdfSignatureFile")?.addEventListener("change",e=>{
@@ -2023,26 +2029,32 @@ function estaGeneratorPayload(rows){
    }))
  };
 }
-async function exportEstaGeneratorPdf(rows){
+async function exportEstaGeneratorPdf(rows,signer=null){
  if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
- const signer=await requestPdfSignature();
- if(!signer)return false;
+ const confirmedSigner=signer||await requestPdfSignature();
+ if(!confirmedSigner)return false;
  await ensureCentralSessionFresh();
  const controller=new AbortController();
  const timer=setTimeout(()=>controller.abort(),115000);
+ const requestPdf=()=>fetch("/api/esta_report",{
+   method:"POST",
+   headers:{
+     "Content-Type":"application/json",
+     "Authorization":"Bearer "+centralSession.access_token
+   },
+   body:JSON.stringify({...estaGeneratorPayload(rows),...pdfSignaturePayload(confirmedSigner)}),
+   signal:controller.signal
+ });
  try{
-   const res=await fetch("/api/esta_report",{
-     method:"POST",
-     headers:{
-       "Content-Type":"application/json",
-       "Authorization":"Bearer "+centralSession.access_token
-     },
-     body:JSON.stringify({...estaGeneratorPayload(rows),...pdfSignaturePayload(signer)}),
-     signal:controller.signal
-   });
+   let res=await requestPdf();
+   if(res.status===401&&centralSession?.refresh_token){
+     await ensureCentralSessionFresh(true);
+     res=await requestPdf();
+   }
    if(!res.ok){
      let detail={};try{detail=await res.json()}catch(_){}
-     throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo ESTA");
+     const message=detail?.detail||detail?.error||("Không thể tạo báo cáo ESTA (HTTP "+res.status+")");
+     const error=new Error(message);error.status=res.status;throw error;
    }
    const blob=await res.blob();
    if(!blob.size)throw new Error("File PDF trả về bị trống");
@@ -2055,6 +2067,7 @@ async function exportEstaGeneratorPdf(rows){
    setTimeout(()=>URL.revokeObjectURL(url),60000);
    if(missing)toast("Đã xuất PDF · "+missing+" hình không tải được nên giữ ô trống");
    else toast("Đã xuất PDF ESTA chuẩn");
+   return true;
  }catch(err){
    if(err?.name==="AbortError")throw new Error("Tạo PDF quá thời gian. Vui lòng thử lại.");
    throw err;
@@ -2064,11 +2077,25 @@ async function openReport(a,kind="current",previewWindow=null,photoLayout=1){
  if(!a.length){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Không có dữ liệu để xuất PDF");return}
  if(workReportBusy){if(previewWindow&&!previewWindow.closed)previewWindow.close();toast("Báo cáo đang được tạo");return}
  workReportBusy=true;
+ let signer=null;
  try{
+   signer=await requestPdfSignature();
+   if(!signer){if(previewWindow&&!previewWindow.closed)previewWindow.close();return}
    toast("Đang tạo PDF theo mẫu ESTA chuẩn...");
-   await exportEstaGeneratorPdf(a);
+   try{
+     const exported=await exportEstaGeneratorPdf(a,signer);
+     if(exported)return;
+   }catch(serverErr){
+     console.warn("ESTA server PDF export failed; using browser fallback",serverErr);
+     toast("Máy chủ PDF chưa phản hồi. Đang chuyển sang chế độ xuất dự phòng...");
+   }
+   const prepared=await prepareWorkReportRows(a);
+   const period=workReportPeriod(kind,prepared.rows);
+   const html=reportHtml(prepared.rows,kind,photoLayout);
+   await downloadReportPdf(html,workReportFilename(period),previewWindow,signer);
+   if(prepared.failed)toast("Đã xuất PDF dự phòng · "+prepared.failed+" hình không tải được");
  }catch(err){
-   console.warn("ESTA generator export failed",err);
+   console.warn("Work PDF export failed",err);
    toast(err.message||"Không thể xuất PDF");
  }finally{
    workReportBusy=false;
