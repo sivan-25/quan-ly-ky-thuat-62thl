@@ -577,13 +577,7 @@ def story_tools(data):
     for rr in range(2,len(rows),2):
         style.append(("BACKGROUND",(0,rr),(-1,rr),CREAM_L))
     tb.setStyle(TableStyle(style))
-    story += [tb]
-    photos=data.get("photos") or []
-    if photos:
-        story += [Spacer(1,10),P("HÌNH ẢNH ĐÍNH KÈM",ST["sec"]),Spacer(1,5)]
-        for grid_row in pdfc.image_grid(photos,CW,cols=3,cell_height=pdfc.IMAGE_CELL_HEIGHT,gap=pdfc.IMAGE_GAP):
-            story += [grid_row,Spacer(1,5)]
-    story += [energy_signatures(data)]
+    story += [tb,energy_signatures(data)]
     return story
 
 
@@ -700,7 +694,13 @@ def story_generic(data):
     for rr in range(2,len(table_rows),2):
         style.append(("BACKGROUND",(0,rr),(-1,rr),CREAM_L))
     tb.setStyle(TableStyle(style))
-    story += [tb,energy_signatures(data)]
+    story += [tb]
+    photos=data.get("photos") or []
+    if photos:
+        story += [Spacer(1,10),P("HÌNH ẢNH ĐÍNH KÈM",ST["sec"]),Spacer(1,5)]
+        for grid_row in pdfc.image_grid(photos,CW,cols=3,cell_height=pdfc.IMAGE_CELL_HEIGHT,gap=pdfc.IMAGE_GAP):
+            story += [grid_row,Spacer(1,5)]
+    story += [energy_signatures(data)]
     return story
 
 def _prepare_generic_data(payload, token, temp_dir):
