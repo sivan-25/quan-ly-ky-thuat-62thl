@@ -1751,3 +1751,146 @@ body:has(#app.styleOnePilot.homeMode.opsOverviewMode:not(.workMode)) :is(#update
   border-color:#dbe1e4!important;
   box-shadow:0 1px 5px rgba(24,44,58,.035)!important;
 }
+
+
+/* STYLE_ONE_WORK_COLOR_SYSTEM_V12 */
+/* Work layout/functionality is approved. This block changes COLORS ONLY. */
+#app.styleOnePilot.workMode{
+  --work-bg:#f3f5f7;
+  --work-surface:#ffffff;
+  --work-line:#dbe2e7;
+  --work-head:#eef2f5;
+  --work-text:#223744;
+  --work-muted:#687b87;
+  --work-navy:#173d59;
+  background:var(--work-bg)!important;
+}
+#app.styleOnePilot.workMode main,
+#app.styleOnePilot.workMode #workPage{
+  background:var(--work-bg)!important;
+  color:var(--work-text)!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryCard,
+#app.styleOnePilot.workMode #workPage .stats article,
+#app.styleOnePilot.workMode #workPage .premiumTableCard{
+  background:var(--work-surface)!important;
+  border-color:var(--work-line)!important;
+  box-shadow:0 2px 8px rgba(24,44,58,.045)!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryHeader,
+#app.styleOnePilot.workMode #workPage .premiumTableCard .tableTop{
+  background:#fff!important;
+  border-color:#e2e7ea!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryHeader h2,
+#app.styleOnePilot.workMode #workPage .taskContentCell>b,
+#app.styleOnePilot.workMode #workPage .taskTitle{
+  color:#223744!important;
+}
+#app.styleOnePilot.workMode #workPage .workEntryHeader p,
+#app.styleOnePilot.workMode #workPage .noteCell,
+#app.styleOnePilot.workMode #workPage .mutedDash{
+  color:#71828d!important;
+}
+
+/* Table: neutral header, dark readable content. */
+#app.styleOnePilot.workMode #workPage .premiumTableCard th{
+  background:var(--work-head)!important;
+  color:#3e5869!important;
+  border-bottom-color:#d9e1e5!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard td{
+  background:#fff!important;
+  color:#334b59!important;
+  border-bottom-color:#e8edef!important;
+}
+#app.styleOnePilot.workMode #workPage .premiumTableCard tbody tr:hover td{
+  background:#f7f9fa!important;
+}
+#app.styleOnePilot.workMode #workPage .dateCell{
+  color:#355a70!important;
+}
+#app.styleOnePilot.workMode #workPage .taskContentCell>b{
+  font-weight:560!important;
+}
+
+/* Pills become soft semantic indicators instead of dark competing blocks. */
+#app.styleOnePilot.workMode #workPage .typeBadge{
+  background:#edf2f6!important;
+  color:#38566c!important;
+  border:1px solid #d6e0e7!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.doing{
+  background:#fff4dc!important;
+  color:#87590b!important;
+  border:1px solid #efd7a2!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.done{
+  background:#eaf6ef!important;
+  color:#2f6b50!important;
+  border:1px solid #cbe4d6!important;
+}
+#app.styleOnePilot.workMode #workPage .badge.wait,
+#app.styleOnePilot.workMode #workPage .badge.waiting{
+  background:#fcecee!important;
+  color:#99484f!important;
+  border:1px solid #efc9cd!important;
+}
+#app.styleOnePilot.workMode #workPage .performerChips.pro>span{
+  background:#edf4f4!important;
+  color:#315e60!important;
+  border-color:#d3e3e3!important;
+}
+#app.styleOnePilot.workMode #workPage .performerChips.pro>span i{
+  background:#dcebea!important;
+  color:#315e60!important;
+}
+
+/* KPI cards use one calm base; status meaning lives in the small icon only. */
+#app.styleOnePilot.workMode #workPage .stats article{
+  background:#fff!important;
+}
+#app.styleOnePilot.workMode #workPage .stats article small{
+  color:#6d7e89!important;
+}
+#app.styleOnePilot.workMode #workPage .stats article strong{
+  color:#203744!important;
+}
+
+/* Action menu trigger: visible, but no solid navy square competing with data. */
+#app.styleOnePilot.workMode #workPage .rowActionMenu summary{
+  background:#f4f7f8!important;
+  color:#3d5a6d!important;
+  border-color:#d5dfe4!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot.workMode #workPage .rowActionMenu[open] summary{
+  background:#e9eff2!important;
+  color:#173d59!important;
+  border-color:#bccdd6!important;
+}
+
+/* Form colors follow the same neutral system without changing dimensions. */
+#app.styleOnePilot.workMode #workPage #taskForm input:not([type="hidden"]),
+#app.styleOnePilot.workMode #workPage #taskForm select,
+#app.styleOnePilot.workMode #workPage #taskForm textarea,
+#app.styleOnePilot.workMode #workPage #taskForm .peopleSelectBtn{
+  background:#fff!important;
+  border-color:#cbd5db!important;
+  color:#293f4c!important;
+}
+#app.styleOnePilot.workMode #workPage #taskForm input:focus,
+#app.styleOnePilot.workMode #workPage #taskForm select:focus,
+#app.styleOnePilot.workMode #workPage #taskForm textarea:focus{
+  border-color:#5d8295!important;
+  box-shadow:0 0 0 2px rgba(31,86,115,.10)!important;
+}
+
+/* Remove the old yellow canvas at every viewport. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot.workMode),
+  #app.styleOnePilot.workMode main,
+  #app.styleOnePilot.workMode #workPage{
+    background:#f3f5f7!important;
+  }
+}
