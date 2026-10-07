@@ -76,7 +76,11 @@
     return item.id;
   }
   async function prepare(file){
-    if(file?.type==="image/jpeg"&&String(file?.name||"").startsWith("camera-"))return file;
+    if(file?.type==="image/jpeg"&&String(file?.name||"").startsWith("camera-")){
+      return typeof file.slice==="function"
+        ? file.slice(0,Number(file.size||0),file.type||"image/jpeg")
+        : file;
+    }
     return imageFileToBlob(file);
   }
   async function uploadOrQueue(meta){
