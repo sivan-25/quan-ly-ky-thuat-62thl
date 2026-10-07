@@ -2764,3 +2764,449 @@ html body #app.styleOnePilot.workMode #workPage .rowActionMenu[open] summary{
     border-top-color:#315c87!important;
   }
 }
+
+
+/* STYLE_ONE_ALL_MODULES_PRODUCTION_PALETTE_V19 */
+/* Full-branch color sync to the current ESTA production look.
+   COLOR ONLY: no layout, spacing, visibility, data, or behavior changes. */
+#app.styleOnePilot{
+  --prod-cream:#f7dfb6;
+  --prod-sidebar:#0f5c78;
+  --prod-sidebar-active:#2e7189;
+  --prod-topbar:#153e72;
+  --prod-navy:#11182b;
+  --prod-navy-2:#18223b;
+  --prod-pale-blue:#eaf6fe;
+  --prod-pale-head:#eef7fd;
+  --prod-cyan:#19b8d4;
+  --prod-text:#183b56;
+  --prod-light:#f7fbfe;
+  --prod-line:#d8e5ee;
+}
+
+/* Every user-facing project module sits on the same production cream canvas. */
+body:has(#app.styleOnePilot) #app.styleOnePilot :is(
+  #homePage,#adminPage,#workPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,
+  #energyPage,#inventoryPage,#maintenancePage,#contractorPage,#constructionMaterialPage
+){
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+  background-image:none!important;
+}
+html:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot),
+body:has(#app.styleOnePilot) #app.styleOnePilot,
+body:has(#app.styleOnePilot) #app.styleOnePilot>main,
+body:has(#app.styleOnePilot) #app.styleOnePilot main{
+  background:#f7dfb6!important;
+  background-color:#f7dfb6!important;
+}
+
+/* Shared production navigation chrome. */
+html body #app.styleOnePilot .estaSidebar{
+  background:#0f5c78!important;
+  background-image:none!important;
+}
+html body #app.styleOnePilot .estaNav button.active{
+  background:#2e7189!important;
+  border-color:#4b8ea4!important;
+  color:#fff!important;
+}
+html body #app.styleOnePilot .estaTopbar{
+  background:linear-gradient(90deg,#153e72 0%,#143d70 60%,#133a69 100%)!important;
+  border-bottom-color:#254f7e!important;
+}
+html body #app.styleOnePilot .topModuleTitle h1{color:#fff!important}
+html body #app.styleOnePilot .topModuleTitle p{color:#bdd0df!important}
+
+/* Dashboard / Overview. */
+#app.styleOnePilot #homePage .homeWelcome,
+#app.styleOnePilot #homePage .unifiedCommand,
+#app.styleOnePilot #homePage .opsHero{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #homePage :is(.homeWelcome h1,.homeWelcome p,.homeEyebrow,.opsHero h1,.opsHero h2,.opsHero p){
+  color:#fff!important;
+}
+#app.styleOnePilot #homePage :is(.kpiCard,.homePanel,.opsKpi,.opsPanel,.opsScopeBar){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#f3f7fb!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #homePage :is(.kpiCard strong,.homePanel h2,.homePanel h3,.opsKpi b,.opsKpi strong,.opsPanel h2,.opsPanel h3){
+  color:#fff!important;
+}
+#app.styleOnePilot #homePage :is(.kpiCard small,.kpiCard span,.homePanel p,.homePanel small,.opsKpi span,.opsKpi small,.opsPanel p,.opsPanel small){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot #homePage :is(.homeRecentTasks button,.quickActions button,.homeEnergyList article,.ccProjectCard,.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini){
+  background:#18223b!important;
+  border-color:#2d3b57!important;
+  color:#eaf2f8!important;
+}
+#app.styleOnePilot #homePage :is(.homeRecentTasks b,.quickActions b,.homeEnergyList strong,.ccProjectCard h3,.updateFocusRow b,.updateSystemHealth b,.updateAttentionRow b,.updateTeamMini b){
+  color:#fff!important;
+}
+#app.styleOnePilot #homePage :is(.homeRecentTasks span,.homeRecentTasks small,.quickActions small,.homeEnergyList span,.homeEnergyList small){
+  color:#9fb0c5!important;
+}
+
+/* Admin / Projects. */
+#app.styleOnePilot #adminPage .adminHero{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #adminPage .adminHero :is(h1,p,.adminEyebrow){color:#fff!important}
+#app.styleOnePilot #adminPage .adminSection{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #adminPage .adminSectionHead :is(h2,p){color:#fff!important}
+#app.styleOnePilot #adminPage :is(.adminProjectCard,.adminAccountCard,.adminSettingsCard){
+  background:#18223b!important;
+  border-color:#2d3b57!important;
+  color:#eef5fa!important;
+}
+
+/* ENERGY: mirror current production screenshot. */
+#app.styleOnePilot #energyPage .energyTabs{
+  background:#ead19f!important;
+  border-color:#d7ba7b!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button{
+  color:#3f5774!important;
+}
+#app.styleOnePilot #energyPage .energyTabs button.active{
+  background:#11182b!important;
+  color:#fff!important;
+  border-color:#263957!important;
+  box-shadow:inset 0 -3px #19b8d4!important;
+}
+#app.styleOnePilot #energyPage :is(.energySummaryCards article,.energyCard,.energyTableCard){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#f3f7fb!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #energyPage :is(.energySummaryCards small,.energyCard p,.energyTableTop p,.energyForm label>span){
+  color:#8fa1be!important;
+}
+#app.styleOnePilot #energyPage :is(.energySummaryCards strong,.energyCard h2,.energyTableTop h2){
+  color:#fff!important;
+}
+#app.styleOnePilot #energyPage :is(
+  .energyForm input:not([type="file"]),.energyForm select,.energyForm textarea,.energyForm .peopleSelectBtn
+){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#f5f8fb!important;
+}
+#app.styleOnePilot #energyPage :is(.energyForm input::placeholder,.energyForm textarea::placeholder){
+  color:#8295b2!important;
+}
+#app.styleOnePilot #energyPage .energyDesktopTable thead th{
+  background:#11182b!important;
+  color:#f4b84b!important;
+  border-color:#26334c!important;
+}
+#app.styleOnePilot #energyPage .energyDesktopTable tbody td{
+  background:#11182b!important;
+  color:#e7edf4!important;
+  border-color:#26334c!important;
+}
+#app.styleOnePilot #energyPage .energyActions .primary{
+  background:linear-gradient(90deg,#6966fe 0%,#29c1e0 100%)!important;
+  color:#0f1727!important;
+  border-color:transparent!important;
+}
+
+/* Inventory / Tools. */
+#app.styleOnePilot #inventoryPage :is(.inventoryCommand,.inventoryWorkspace){
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySectionBar,.inventoryMonthRail,.inventoryTableCard,.inventorySupportCard,.inventoryQuickAdd){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryStats article,.inventoryMetric){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySectionBar h2,.inventoryCardTitle h3,.inventoryQuickAdd h3,.inventoryStats b,.inventoryMetric b){
+  color:#fff!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySectionBar p,.inventoryCardTitle small,.inventoryStats small,.inventoryStats em,.inventoryMetric small,.inventoryMetric em,.inventoryMonthRail small){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs{
+  background:#ead19f!important;
+  border-color:#d7ba7b!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button{
+  color:#3f5774!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryLocalTabs button.active{
+  background:#11182b!important;
+  color:#fff!important;
+  border-color:#263957!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySearch,.inventoryCommandMeta label,.inventoryQuickMenu summary){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#dce7ef!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventorySearch input,.inventoryCommandMeta select){
+  background:transparent!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #inventoryPage .materialMonthTabs button{
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#cbd7e3!important;
+}
+#app.styleOnePilot #inventoryPage .materialMonthTabs button.active,
+#app.styleOnePilot #inventoryPage .materialMonthTabs .active{
+  background:#2e7189!important;
+  color:#fff!important;
+  border-color:#4b8ea4!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryTableCard thead th,.toolsTable thead th,.transactionTable thead th,.materialMonthlyTable thead th){
+  background:#eef7fd!important;
+  color:#3c618c!important;
+  border-color:#dcebf5!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryTableCard tbody td,.toolsTable tbody td,.transactionTable tbody td,.materialMonthlyTable tbody td){
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+#app.styleOnePilot #inventoryPage .materialMatrix .stickyMaterial{
+  background:#11182b!important;
+}
+#app.styleOnePilot #inventoryPage .materialMatrix thead .stickyMaterial{
+  background:#eef7fd!important;
+}
+#app.styleOnePilot #inventoryPage :is(.inventoryPrimary,.inventorySecondary,.stockAlertFilterBtn){
+  box-shadow:none!important;
+}
+#app.styleOnePilot #inventoryPage .inventoryPrimary{
+  background:#153e72!important;
+  border-color:#285b89!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #inventoryPage .inventorySecondary{
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#dce7ef!important;
+}
+
+/* Maintenance / Assets. */
+#app.styleOnePilot #maintenancePage :is(.maintenanceHero,.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard){
+  background:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceStats article{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #maintenancePage :is(
+  .maintenanceHero h1,.maintenanceSchedule h2,.maintenanceToolbar h2,.maintenanceStats b,.inventorySectionHead h3
+){color:#fff!important}
+#app.styleOnePilot #maintenancePage :is(
+  .maintenanceHero p,.maintenanceToolbar p,.maintenanceStats small,.maintenanceStats em,.inventorySectionHead p
+){color:#9fb0c5!important}
+#app.styleOnePilot #maintenancePage :is(.maintenanceToolbar,.maintenanceProjectMeta,.maintenanceMonthStrip,.maintenanceAssetCard){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#eaf2f8!important;
+}
+#app.styleOnePilot #maintenancePage :is(.inventorySearch,.maintenanceToolbar select){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceHistoryTable thead th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot #maintenancePage .maintenanceHistoryTable tbody td{
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+
+/* Contractors. */
+#app.styleOnePilot #contractorPage :is(.contractorIntro,.contractorDirectory,.contractorProfile,.contractorJobsPanel){
+  background:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage .contractorStats article{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #contractorPage :is(
+  .contractorIntro h1,.contractorToolbar h2,.contractorProfile h1,.contractorJobsHead h2,.contractorStats b
+){color:#fff!important}
+#app.styleOnePilot #contractorPage :is(
+  .contractorIntro p,.contractorToolbar p,.contractorProfile p,.contractorStats small,.contractorStats em
+){color:#9fb0c5!important}
+#app.styleOnePilot #contractorPage :is(.contractorSearch,.contractorJobFilters select,.contractorSpecialtyFilters button){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#dce7ef!important;
+}
+#app.styleOnePilot #contractorPage .contractorSpecialtyFilters button.active{
+  background:#2e7189!important;
+  color:#fff!important;
+  border-color:#4b8ea4!important;
+}
+#app.styleOnePilot #contractorPage :is(.contractorListHeader,.contractorJobsHead){
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot #contractorPage :is(.contractorCard,.contractorRow,.contractorJobCard){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#eef5fa!important;
+}
+
+/* Incident / Inspection / Documents share the same production dark workspace. */
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoHero{
+  background:#11182b!important;
+  background-image:none!important;
+  border-color:#27334b!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoHero :is(h1,p,span){
+  color:#fff!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoKpi,
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) .demoPanel{
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) :is(.demoKpi b,.demoPanel h2,.demoPanel h3){
+  color:#fff!important;
+}
+#app.styleOnePilot :is(#incidentPage,#inspectionPage,#documentsPage) :is(.demoKpi span,.demoKpi small,.demoPanel p,.demoPanel small){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot :is(#incidentPage,#documentsPage) .demoTable thead th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot :is(#incidentPage,#documentsPage) .demoTable tbody td{
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+#app.styleOnePilot #inspectionPage :is(.demoChecklistRow,.demoOpsList>*,.demoPanelBody>*){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#eef5fa!important;
+}
+
+/* Reports. */
+#app.styleOnePilot #reportsPage :is(.rc-heading,.rc-period,.rc-controls,.rc-preview,.rc-history){
+  background:#11182b!important;
+  border-color:#27334b!important;
+  color:#eef5fa!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot #reportsPage :is(.rc-heading h2,.rc-card-heading h3,.rc-preview h3,.rc-history h3){
+  color:#fff!important;
+}
+#app.styleOnePilot #reportsPage :is(.rc-heading p,.rc-card-heading p,.rc-preview p,.rc-history p,.rc-range-hint,.rc-message){
+  color:#9fb0c5!important;
+}
+#app.styleOnePilot #reportsPage .rc-segments{
+  background:#18223b!important;
+  border-color:#30405f!important;
+}
+#app.styleOnePilot #reportsPage .rc-segments button{
+  background:transparent!important;
+  color:#c6d4df!important;
+}
+#app.styleOnePilot #reportsPage .rc-segments button.active{
+  background:#2e7189!important;
+  color:#fff!important;
+}
+#app.styleOnePilot #reportsPage :is(input,select,.rc-button){
+  background:#18223b!important;
+  color:#eef5fa!important;
+  border-color:#30405f!important;
+}
+#app.styleOnePilot #reportsPage .rc-primary{
+  background:#153e72!important;
+  color:#fff!important;
+  border-color:#285b89!important;
+}
+#app.styleOnePilot #reportsPage table thead th{
+  background:#eef7fd!important;
+  color:#3c618c!important;
+}
+#app.styleOnePilot #reportsPage table tbody td{
+  background:#11182b!important;
+  color:#eef5fa!important;
+  border-color:#293750!important;
+}
+
+/* Shared modal palette for every module. */
+body:has(#app.styleOnePilot) :is(
+  .modalCard,.peopleManagerCard,.demoIncidentModalCard,.demoChecklistModalCard,
+  .technicalDocumentModalCard,.ccModalCard,.inventoryModalCard,.contractorModalCard,
+  .maintenanceModalCard
+){
+  background:#11182b!important;
+  border-color:#30405f!important;
+  color:#eef5fa!important;
+}
+body:has(#app.styleOnePilot) :is(
+  .modalCard,.peopleManagerCard,.demoIncidentModalCard,.demoChecklistModalCard,
+  .technicalDocumentModalCard,.ccModalCard,.inventoryModalCard,.contractorModalCard,
+  .maintenanceModalCard
+) :is(h2,h3,b,label>span){
+  color:#fff!important;
+}
+body:has(#app.styleOnePilot) :is(
+  .modalCard,.peopleManagerCard,.demoIncidentModalCard,.demoChecklistModalCard,
+  .technicalDocumentModalCard,.ccModalCard,.inventoryModalCard,.contractorModalCard,
+  .maintenanceModalCard
+) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),select,textarea){
+  background:#18223b!important;
+  border-color:#30405f!important;
+  color:#f3f7fb!important;
+}
+
+/* Keep mobile navigation aligned with production chrome. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#153e72!important;
+    border-top-color:#315c87!important;
+  }
+}
