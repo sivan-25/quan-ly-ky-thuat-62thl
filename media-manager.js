@@ -47,9 +47,11 @@
     throw last||new Error("Không thể tải hình");
   }
   async function queueBlob({blob,target,kind,recordId,index=0,buildingId,slot=0}){
+    const blobBuffer=await blob.arrayBuffer();
     const item={
       id:crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2),
-      target,kind,recordId:String(recordId),index,buildingId,slot,blob,
+      target,kind,recordId:String(recordId),index,buildingId,slot,
+      blobBuffer,blobType:blob.type||"application/octet-stream",
       attempts:0,createdAt:new Date().toISOString()
     };
     await put(item);
@@ -120,7 +122,10 @@
       const items=await all();
       for(const item of items){
         try{
-          const ref=await uploadWithRetry(item.blob,item.kind,item.recordId,item.index,item.buildingId);
+          const queuedBlob=item.blob instanceof Blob
+            ? item.blob
+            : new Blob([item.blobBuffer||new ArrayBuffer(0)],{type:item.blobType||"application/octet-stream"});
+          const ref=await uploadWithRetry(queuedBlob,item.kind,item.recordId,item.index,item.buildingId);
           await attach(item,ref);
           await remove(item.id);
         }catch(err){
