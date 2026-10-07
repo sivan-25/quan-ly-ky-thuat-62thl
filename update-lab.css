@@ -2340,3 +2340,104 @@
     font-size:14px!important;
   }
 }
+
+
+/* LIVE_PROJECT_MOBILE_DOCK_20261007
+   Fixed bottom navigation for 127HH / 130HH / 62THL / 68PDL only. */
+@media(max-width:760px){
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav{
+  box-sizing:border-box!important;
+  position:fixed!important;
+  z-index:1880!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  width:100%!important;
+  height:calc(78px + env(safe-area-inset-bottom))!important;
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important;
+  gap:3px!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  align-items:center!important;
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+  border-radius:24px 24px 0 0!important;
+  background:#184b7d!important;
+  box-shadow:0 -8px 24px rgba(8,35,66,.22)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  transform:none!important;
+  transition:none!important;
+ }
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav:not(.hide){display:grid!important}
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav button{
+  position:relative!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  width:100%!important;
+  min-width:0!important;
+  height:58px!important;
+  margin:0!important;
+  padding:5px 1px!important;
+  border:1px solid transparent!important;
+  border-radius:16px!important;
+  background:transparent!important;
+  color:#c8d8e9!important;
+  box-shadow:none!important;
+  transform:none!important;
+ }
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav button.active{
+  border-color:rgba(35,205,230,.32)!important;
+  background:rgba(18,121,169,.34)!important;
+  color:#fff!important;
+ }
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav button:focus-visible{
+  outline:2px solid #2ad5ea!important;
+  outline-offset:-2px!important;
+ }
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav button>span{
+  display:grid!important;
+  place-items:center!important;
+  width:28px!important;
+  height:28px!important;
+  color:inherit!important;
+  line-height:1!important;
+ }
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav button svg{
+  display:block!important;
+  width:26px!important;
+  height:26px!important;
+ }
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav button>b{
+  font-size:12px!important;
+  font-weight:650!important;
+  line-height:15px!important;
+  white-space:nowrap!important;
+  letter-spacing:0!important;
+  color:inherit!important;
+ }
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav .updateMobileNotifBadge{
+  top:1px!important;
+  right:calc(50% - 27px)!important;
+  min-width:17px!important;
+  height:17px!important;
+  padding:0 3px!important;
+  font-size:10px!important;
+  line-height:17px!important;
+  border:2px solid #184b7d!important;
+  border-radius:50%!important;
+  background:#d25757!important;
+  color:#fff!important;
+ }
+ #app.liveProjectMobileNavMode main{
+  padding-bottom:calc(94px + env(safe-area-inset-bottom))!important;
+  scroll-padding-bottom:calc(104px + env(safe-area-inset-bottom))!important;
+ }
+ body.mobileNavOpen #updateMobileNav.liveProjectMobileNav{display:none!important}
+}
+@media(max-width:359px){
+ #updateMobileNav.updateMobileNav.liveProjectMobileNav button>b{font-size:11px!important}
+}
