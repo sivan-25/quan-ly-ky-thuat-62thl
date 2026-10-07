@@ -266,7 +266,34 @@ for(const viewport of viewports){
       };
     });
     if(workColors.pageRgb&&workColors.pageRgb[0]>245&&workColors.pageRgb[1]>210&&workColors.pageRgb[2]<190){
-      throw new Error("Work page still uses a yellow canvas: "+JSON.stringify(workColors));
+      const workBgDiagnostics=await page.evaluate(()=>{
+        const el=document.querySelector("#workPage");
+        const rows=[];
+        const walk=rules=>{
+          for(const rule of Array.from(rules||[])){
+            try{
+              if(rule.cssRules){walk(rule.cssRules);continue;}
+              if(!rule.selectorText||!el.matches(rule.selectorText))continue;
+              const bg=rule.style?.getPropertyValue("background");
+              const bgc=rule.style?.getPropertyValue("background-color");
+              const bgi=rule.style?.getPropertyValue("background-image");
+              if(bg||bgc||bgi)rows.push({
+                selector:rule.selectorText,
+                background:bg||"",
+                backgroundColor:bgc||"",
+                backgroundImage:bgi||"",
+                bgPriority:rule.style?.getPropertyPriority("background")||"",
+                bgcPriority:rule.style?.getPropertyPriority("background-color")||""
+              });
+            }catch(_){}
+          }
+        };
+        for(const sheet of Array.from(document.styleSheets)){
+          try{walk(sheet.cssRules)}catch(_){}
+        }
+        return {className:el.className,style:el.getAttribute("style")||"",rows:rows.slice(-30)};
+      });
+      throw new Error("Work page still uses a yellow canvas: "+JSON.stringify({workColors,workBgDiagnostics}));
     }
     if(workColors.typeRgb&&workColors.typeRgb.reduce((a,b)=>a+b,0)/3<150){
       throw new Error("Work type badge is still too dark: "+JSON.stringify(workColors));
