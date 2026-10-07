@@ -304,16 +304,20 @@ test("NEW10 offline project sync queues and flushes safely", async ({ page }) =>
 
 test("NEW10 media manager persists image while offline", async ({ page }) => {
   await activateNew10(page);
-  await page.evaluate(()=>{centralSession={access_token:"qa-token",expires_at:4102444800}});
-  await page.context().setOffline(true);
   const count=await page.evaluate(async()=>{
-    const file=new File([new Uint8Array([255,216,255,217])],"camera-qa.jpg",{type:"image/jpeg"});
-    const out=await window.ESTA_MEDIA_MANAGER.energyFile(file,"991",0,"NEW10");
-    return {queued:out.queued,count:await window.ESTA_MEDIA_MANAGER.count()};
+    centralSession={access_token:"qa-token",expires_at:4102444800};
+    const descriptor=Object.getOwnPropertyDescriptor(Navigator.prototype,"onLine");
+    Object.defineProperty(Navigator.prototype,"onLine",{configurable:true,get:()=>false});
+    try{
+      const file=new File([new Uint8Array([255,216,255,217])],"camera-qa.jpg",{type:"image/jpeg"});
+      const out=await window.ESTA_MEDIA_MANAGER.energyFile(file,"991",0,"NEW10");
+      return {queued:out.queued,count:await window.ESTA_MEDIA_MANAGER.count()};
+    }finally{
+      if(descriptor)Object.defineProperty(Navigator.prototype,"onLine",descriptor);
+    }
   });
   expect(count.queued).toBe(true);
   expect(count.count).toBeGreaterThan(0);
-  await page.context().setOffline(false);
 });
 
 test("NEW10 versioned PDF archive builds storage metadata without production write", async ({ page }) => {
