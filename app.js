@@ -1196,6 +1196,7 @@ window.editPendingTaskPhoto=async i=>{
   const result=await PhotoAnnotator.open(meta.originalFile,{annotations:meta.annotations||[]});
   if(result.action==="retake"){
    pendingTaskFiles.splice(i,1);pendingTaskPhotoMeta.splice(i,1);renderPendingTaskFiles();updateTaskImageInfo();
+   if(directCamera130Enabled()){openDirectCamera130();return}
    const input=$("#cameraNativeInput");input.value="";input.click();return;
   }
   if(result.action!=="use"||!result.blob)return;
@@ -1214,7 +1215,7 @@ function updateTaskImageInfo(){
   info.textContent=parts.join(" · ");
  }else info.textContent=added?"Đã chọn "+added+" hình":"";
 }
-async function addPendingTaskFiles(fileList,{retakeInput=null}={}){
+async function addPendingTaskFiles(fileList,{retakeInput=null,retakeHandler=null}={}){
  const incoming=Array.from(fileList||[]).filter(f=>f&&f.type?.startsWith("image/"));
  if(!incoming.length)return;
  if(!photoAnnotator130Enabled()){
@@ -1226,7 +1227,8 @@ async function addPendingTaskFiles(fileList,{retakeInput=null}={}){
   try{
    const result=await PhotoAnnotator.open(sourceFile);
    if(result.action==="retake"){
-    if(retakeInput){retakeInput.value="";setTimeout(()=>retakeInput.click(),0)}
+    if(typeof retakeHandler==="function")setTimeout(()=>retakeHandler(),0);
+    else if(retakeInput){retakeInput.value="";setTimeout(()=>retakeInput.click(),0)}
     break;
    }
    if(result.action!=="use"||!result.blob)continue;
@@ -1236,7 +1238,78 @@ async function addPendingTaskFiles(fileList,{retakeInput=null}={}){
   }catch(err){console.warn(err);toast(err?.message||"Không thể mở trình chỉnh sửa ảnh")}
  }
 }
+function directCamera130Enabled(){
+ return photoAnnotator130Enabled()&&window.matchMedia?.("(max-width:760px)")?.matches&&!!navigator.mediaDevices?.getUserMedia;
+}
+function captureVideoFrameToFile(video){
+ return new Promise((resolve,reject)=>{
+  const width=video.videoWidth||0,height=video.videoHeight||0;
+  if(!width||!height)return reject(new Error("Camera chưa sẵn sàng."));
+  const canvas=document.createElement("canvas");
+  canvas.width=width;canvas.height=height;
+  const ctx=canvas.getContext("2d",{alpha:false});
+  if(!ctx)return reject(new Error("Không thể xử lý ảnh camera."));
+  ctx.drawImage(video,0,0,width,height);
+  canvas.toBlob(blob=>{
+   if(!blob)return reject(new Error("Không thể tạo ảnh từ camera."));
+   resolve(new File([blob],"camera-130-"+Date.now()+".jpg",{type:"image/jpeg",lastModified:Date.now()}));
+  },"image/jpeg",.92);
+ });
+}
+async function openDirectCamera130(){
+ if(!directCamera130Enabled()){
+  const input=$("#cameraNativeInput");input.value="";input.click();return;
+ }
+ let stream=null,closed=false;
+ const root=document.createElement("div");
+ root.className="directCamera130";
+ root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");
+ root.innerHTML='<div class="directCamera130Stage"><video autoplay playsinline muted></video><div class="directCamera130Loading">Đang mở camera…</div><div class="directCamera130Top"><span>130 HỒNG HÀ · CAMERA</span><button type="button" aria-label="Đóng camera">×</button></div><div class="directCamera130Bottom"><button type="button" class="directCamera130Shot" aria-label="Chụp ảnh" disabled><i></i></button><small>Chụp</small></div></div>';
+ const video=root.querySelector("video"),shot=root.querySelector(".directCamera130Shot"),closeBtn=root.querySelector(".directCamera130Top button"),loading=root.querySelector(".directCamera130Loading");
+ const oldOverflow=document.body.style.overflow,oldOverscroll=document.body.style.overscrollBehavior;
+ const cleanup=()=>{
+  if(closed)return;closed=true;
+  try{stream?.getTracks?.().forEach(t=>t.stop())}catch(_){}
+  document.body.style.overflow=oldOverflow;document.body.style.overscrollBehavior=oldOverscroll;
+  root.remove();
+ };
+ closeBtn.onclick=cleanup;
+ root.addEventListener("click",e=>{if(e.target===root)cleanup()});
+ document.body.appendChild(root);document.body.style.overflow="hidden";document.body.style.overscrollBehavior="none";
+ try{
+  stream=await navigator.mediaDevices.getUserMedia({
+   audio:false,
+   video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}}
+  });
+  if(closed){stream.getTracks().forEach(t=>t.stop());return}
+  video.srcObject=stream;
+  await new Promise((resolve,reject)=>{
+   const ready=()=>{video.removeEventListener("loadedmetadata",ready);resolve()};
+   video.addEventListener("loadedmetadata",ready,{once:true});
+   setTimeout(()=>video.videoWidth?resolve():reject(new Error("Camera khởi động quá lâu.")),8000);
+  });
+  try{await video.play()}catch(_){}
+  loading.classList.add("hide");shot.disabled=false;
+  shot.onclick=async()=>{
+   if(shot.disabled)return;
+   shot.disabled=true;root.classList.add("capturing");
+   try{
+    const file=await captureVideoFrameToFile(video);
+    cleanup();
+    await addPendingTaskFiles([file],{retakeHandler:openDirectCamera130});
+   }catch(err){
+    console.warn(err);root.classList.remove("capturing");shot.disabled=false;
+    toast(err?.message||"Không thể chụp ảnh");
+   }
+  };
+ }catch(err){
+  console.warn(err);cleanup();
+  toast("Không mở được camera trực tiếp. Đang chuyển sang camera mặc định.");
+  const input=$("#cameraNativeInput");input.value="";setTimeout(()=>input.click(),80);
+ }
+}
 $("#openNativeCamera").onclick=()=>{
+ if(directCamera130Enabled()){openDirectCamera130();return}
  const input=$("#cameraNativeInput");
  input.value="";
  input.click();
