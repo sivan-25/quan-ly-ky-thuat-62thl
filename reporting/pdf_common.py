@@ -45,7 +45,7 @@ FOOTER = "ESTA PROPERTY MANAGEMENT  ·  A L'MAK COMPANY  ·  HO CHI MINH CITY"
 
 # Image tuning: change these constants once and all PDF types follow.
 IMAGE_COLS = 3
-IMAGE_CELL_HEIGHT = 52 * mm
+IMAGE_CELL_HEIGHT = 50 * mm
 IMAGE_GAP = 3 * mm
 IMAGE_MAX_PX = 900
 IMAGE_DECODE_HINT_PX = 1800
@@ -324,7 +324,7 @@ def prepare_remote_images(
 
 
 class ImageSlot(Flowable):
-    CAPTION_H = 12
+    CAPTION_H = 10
 
     def __init__(
         self,
