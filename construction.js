@@ -367,10 +367,6 @@ window.deleteConstructionLog=async id=>{
 function constructionReportCss(landscape=false){
   return typeof inventoryPdfCss==="function"?inventoryPdfCss(landscape):'@page{size:A4 '+(landscape?"landscape":"portrait")+';margin:10mm}body{font-family:Arial,sans-serif;font-size:9px;color:#243746}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccd7de;padding:5px}th{background:#edf4f7}.head{display:flex;justify-content:space-between}.title{text-align:center;margin:12px 0}.summary{display:flex;gap:8px}.summary div{flex:1;border:1px solid #d6e0e5;padding:7px}';
 }
-function constructionPrintWindow(html){
-  const w=open("","_blank");if(!w){toast("Trình duyệt đang chặn cửa sổ PDF");return}
-  w.document.write(html);w.document.close();
-}
 async function constructionExportDirectoryEstaPdf(){
   if(!constructionMaterials.length)return toast("Chưa có vật tư để xuất PDF");
   if(typeof window.exportGenericEstaPdf!=="function")return toast("Bộ xuất PDF ESTA chưa sẵn sàng");
@@ -443,33 +439,6 @@ async function constructionExportDetailEstaPdf(){
   });
 }
 
-function constructionDirectoryReportHtml(){
-  const year=constructionYearValue(),annual=constructionActiveMonth==="all";
-  const search=($("#constructionSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
-  const category=$("#constructionCategorySelect")?.value||"";
-  const list=constructionMaterials.filter(m=>(!category||m.category===category)&&(!search||[m.name,m.brand,m.specification,m.unit,m.supplier,m.storage_location,m.category,m.note].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search))));
-  if(annual){
-    const rows=list.map((m,i)=>{
-      const snap=constructionSnapshot(m,year);
-      return '<tr><td>'+(i+1)+'</td><td><b>'+esc(m.name)+'</b><br>'+esc([m.specification,m.brand].filter(Boolean).join(" · "))+'</td><td>'+esc(m.unit||"—")+'</td><td>'+constructionFmt(snap.opening)+'</td>'+
-        snap.months.map(mm=>'<td><span class="in">N '+constructionFmt(mm.inQty)+'</span><br><span class="out">X '+constructionFmt(mm.outQty)+'</span><br><b>T '+constructionFmt(mm.stock)+'</b></td>').join("")+
-        '<td>'+constructionFmt(snap.totalIn)+'</td><td>'+constructionFmt(snap.totalOut)+'</td><td><b>'+constructionFmt(snap.closing)+'</b></td></tr>';
-    }).join("");
-    return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Vật tư thi công '+year+'</title><style>'+constructionReportCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>VẬT TƯ THI CÔNG - THEO DÕI 12 THÁNG '+year+'</h1><p>Nhập · Xuất · Tồn</p></div><table><thead><tr><th>STT</th><th>Vật tư</th><th>ĐVT</th><th>Đầu năm</th>'+["T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"].map(x=>'<th>'+x+'</th>').join("")+'<th>Tổng N</th><th>Tổng X</th><th>Tồn cuối</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Vật tư thi công · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
-  }
-  const month=Math.max(1,Math.min(12,Number(constructionActiveMonth)||1));
-  const rows=list.map((m,i)=>{
-    const mm=constructionSnapshot(m,year).months[month-1];
-    return '<tr><td>'+(i+1)+'</td><td><b>'+esc(m.name)+'</b><br>'+esc([m.specification,m.brand].filter(Boolean).join(" · "))+'</td><td>'+esc(m.category||"Khác")+'</td><td>'+esc(m.unit||"—")+'</td><td>'+constructionFmt(mm.begin)+'</td><td class="in">'+constructionFmt(mm.inQty)+'</td><td class="out">'+constructionFmt(mm.outQty)+'</td><td><b>'+constructionFmt(mm.stock)+'</b></td><td>'+esc(m.storage_location||"—")+'</td></tr>';
-  }).join("");
-  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Vật tư thi công tháng '+month+'</title><style>'+constructionReportCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>VẬT TƯ THI CÔNG THÁNG '+String(month).padStart(2,"0")+' / '+year+'</h1><p>Nhập · Xuất · Tồn</p></div><table><thead><tr><th>STT</th><th>Vật tư</th><th>Nhóm</th><th>ĐVT</th><th>Tồn đầu</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối</th><th>Vị trí lưu</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Vật tư thi công · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
-}
-function constructionDetailReportHtml(){
-  const m=constructionMaterials.find(x=>String(x.id)===String(selectedConstructionMaterialId));if(!m)return "";
-  const logs=constructionLogsFor(m.id).sort((a,b)=>String(b.work_date||"").localeCompare(String(a.work_date||"")));
-  const rows=logs.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+fmt(x.work_date)+'</td><td>'+Number(x.quantity||0).toLocaleString("vi-VN",{maximumFractionDigits:2})+' '+esc(m.unit||"")+'</td><td><b>'+esc(x.work_content||"—")+'</b></td><td>'+esc(x.location||"—")+'</td><td>'+esc(x.contractor||"—")+'</td><td>'+esc(x.performer||"—")+'</td><td>'+esc(x.status)+'</td></tr>').join("");
-  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Hồ sơ '+esc(m.name)+'</title><style>'+constructionReportCss(true)+'</style></head><body><div class="head"><div class="brand">ESTA<small>PROPERTY MANAGEMENT</small></div><div class="doc">'+esc(currentBuilding.name)+'<br>Ngày xuất: '+new Date().toLocaleDateString("vi-VN")+'</div></div><div class="title"><h1>HỒ SƠ VẬT TƯ THI CÔNG: '+esc(m.name)+'</h1><p>'+esc(m.category||"Khác")+' · '+esc(m.status)+'</p></div><div class="summary"><div><span>Quy cách</span><b>'+esc(m.specification||"—")+'</b></div><div><span>Nhãn hiệu</span><b>'+esc(m.brand||"—")+'</b></div><div><span>Đơn vị tính</span><b>'+esc(m.unit||"—")+'</b></div><div><span>Lượt sử dụng</span><b>'+logs.length+'</b></div></div><table><thead><tr><th>STT</th><th>Ngày</th><th>Số lượng</th><th>Hạng mục thi công</th><th>Vị trí</th><th>Nhà thầu</th><th>Người thực hiện</th><th>Tình trạng</th></tr></thead><tbody>'+rows+'</tbody></table><div class="foot">ESTA · Hồ sơ vật tư thi công · '+esc(currentBuilding.name)+'</div><script>window.onload=()=>setTimeout(()=>window.print(),650)<\/script></body></html>';
-}
 function constructionDownloadWorkbook(detail=false){
   if(typeof XLSX==="undefined")return toast("Chưa tải được thư viện Excel");
   const wb=XLSX.utils.book_new();
