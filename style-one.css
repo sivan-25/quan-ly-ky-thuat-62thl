@@ -1916,3 +1916,58 @@ html body:has(#app.styleOnePilot.workMode){
   background-color:#f3f5f7!important;
   background-image:none!important;
 }
+
+
+/* STYLE_ONE_DESKTOP_CANVAS_AND_NAVY_V14 */
+/* Final desktop canvas reset: no beige/yellow may remain behind short pages. */
+html:has(#app.styleOnePilot.workMode),
+html:has(#app.styleOnePilot.workMode) body,
+body:has(#app.styleOnePilot.workMode),
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode main{
+  background:#f3f5f7!important;
+  background-color:#f3f5f7!important;
+  background-image:none!important;
+  transition:none!important;
+  animation:none!important;
+}
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode,
+body:has(#app.styleOnePilot.workMode) #app.styleOnePilot.workMode>main{
+  min-height:100vh!important;
+}
+
+/* One professional navy family instead of teal sidebar + blue header. */
+#app.styleOnePilot .estaSidebar{
+  background:#143b52!important;
+  border-right-color:#254c63!important;
+  box-shadow:3px 0 12px rgba(16,42,58,.08)!important;
+}
+#app.styleOnePilot .estaTopbar{
+  background:#173f73!important;
+  border-bottom-color:#2c5685!important;
+}
+#app.styleOnePilot .estaNav button{
+  color:#c7d7e0!important;
+}
+#app.styleOnePilot .estaNav button:hover{
+  background:#1d4b65!important;
+  color:#fff!important;
+}
+#app.styleOnePilot .estaNav button.active{
+  background:#e8eef2!important;
+  border-color:#c7d5dc!important;
+  color:#173d59!important;
+  box-shadow:none!important;
+}
+#app.styleOnePilot .estaNav button.active svg{
+  color:#1f617b!important;
+}
+
+/* Keep mobile dock in the same navy family. */
+@media(max-width:760px){
+  body:has(#app.styleOnePilot) #updateMobileNav.updateMobileNav{
+    background:#173f73!important;
+    border-top-color:#2c5685!important;
+  }
+}
