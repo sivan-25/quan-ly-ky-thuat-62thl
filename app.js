@@ -1052,7 +1052,15 @@ function restoreDraft(){
   requestAnimationFrame(syncWorkContentHeight);
  }catch(e){}
 }
-let existingTaskImages=[],removedTaskImageRefs=[],pendingTaskFiles=[],pendingPreviewUrls=[];
+let existingTaskImages=[],removedTaskImageRefs=[],pendingTaskFiles=[],pendingPreviewUrls=[],pendingTaskPhotoMeta=[];
+const PHOTO_ANNOTATOR_PROJECT_ID="130HH";
+function photoAnnotator130Enabled(buildingId=currentBuilding?.id){
+ return String(buildingId||"").trim().toUpperCase()===PHOTO_ANNOTATOR_PROJECT_ID&&!!window.PhotoAnnotator?.open;
+}
+function photoResultFile(result,sourceFile,prefix="annotated"){
+ const safe=(sourceFile?.name||"photo.jpg").replace(/\.[^.]+$/,"").replace(/[^A-Za-z0-9_-]+/g,"-").slice(0,60)||"photo";
+ return new File([result.blob],prefix+"-"+safe+"-"+Date.now()+".jpg",{type:"image/jpeg",lastModified:Date.now()});
+}
 function workEntryCard(){return document.querySelector("#workPage .workEntryCard")||document.querySelector("#workEditDrawer .workEntryCard")}
 function openWorkEditDrawer(){
  const drawer=$("#workEditDrawer"),mount=$("#workEditDrawerMount"),card=workEntryCard();
@@ -1157,7 +1165,7 @@ $("#note")?.addEventListener("input",()=>{
 $("#content")?.addEventListener("input",syncWorkContentHeight);
 function clearPendingTaskFiles(){
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
- pendingPreviewUrls=[];pendingTaskFiles=[];
+ pendingPreviewUrls=[];pendingTaskFiles=[];pendingTaskPhotoMeta=[];
  const box=$("#pendingImagePreview");if(box)box.innerHTML="";
 }
 function renderPendingTaskFiles(){
@@ -1165,13 +1173,29 @@ function renderPendingTaskFiles(){
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));pendingPreviewUrls=[];
  box.innerHTML=pendingTaskFiles.map((f,i)=>{
    const u=URL.createObjectURL(f);pendingPreviewUrls.push(u);
-   return '<div class="pendingImg"><img src="'+u+'" alt="Ảnh '+(i+1)+'"><button type="button" onclick="removePendingTaskFile('+i+')" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>';
+   const editable=photoAnnotator130Enabled()&&pendingTaskPhotoMeta[i]?.originalFile;
+   return '<div class="pendingImg"><img src="'+u+'" alt="Ảnh '+(i+1)+'">'+(editable?'<button type="button" class="photoAnnotatorEditBtn" onclick="editPendingTaskPhoto('+i+')" aria-label="Chỉnh sửa ảnh">✎ Chỉnh</button>':'')+'<button type="button" onclick="removePendingTaskFile('+i+')" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>';
  }).join("");
 }
 window.removePendingTaskFile=i=>{
  if(i<0||i>=pendingTaskFiles.length)return;
- pendingTaskFiles.splice(i,1);
+ pendingTaskFiles.splice(i,1);pendingTaskPhotoMeta.splice(i,1);
  renderPendingTaskFiles();updateTaskImageInfo();
+};
+window.editPendingTaskPhoto=async i=>{
+ if(!photoAnnotator130Enabled()||i<0||i>=pendingTaskFiles.length)return;
+ const meta=pendingTaskPhotoMeta[i];if(!meta?.originalFile)return;
+ try{
+  const result=await PhotoAnnotator.open(meta.originalFile,{annotations:meta.annotations||[]});
+  if(result.action==="retake"){
+   pendingTaskFiles.splice(i,1);pendingTaskPhotoMeta.splice(i,1);renderPendingTaskFiles();updateTaskImageInfo();
+   const input=$("#cameraNativeInput");input.value="";input.click();return;
+  }
+  if(result.action!=="use"||!result.blob)return;
+  pendingTaskFiles[i]=photoResultFile(result,meta.originalFile);
+  pendingTaskPhotoMeta[i]={originalFile:meta.originalFile,annotations:result.annotations||[]};
+  renderPendingTaskFiles();updateTaskImageInfo();
+ }catch(err){console.warn(err);toast(err?.message||"Không thể chỉnh sửa ảnh")}
 };
 function updateTaskImageInfo(){
  const added=pendingTaskFiles.length,existing=existingTaskImages.length,editing=!!$("#editId")?.value,info=$("#imageInfo");
@@ -1183,11 +1207,27 @@ function updateTaskImageInfo(){
   info.textContent=parts.join(" · ");
  }else info.textContent=added?"Đã chọn "+added+" hình":"";
 }
-function addPendingTaskFiles(fileList){
+async function addPendingTaskFiles(fileList,{retakeInput=null}={}){
  const incoming=Array.from(fileList||[]).filter(f=>f&&f.type?.startsWith("image/"));
  if(!incoming.length)return;
- pendingTaskFiles=[...pendingTaskFiles,...incoming];
- renderPendingTaskFiles();updateTaskImageInfo();
+ if(!photoAnnotator130Enabled()){
+  pendingTaskFiles=[...pendingTaskFiles,...incoming];
+  pendingTaskPhotoMeta.push(...incoming.map(()=>null));
+  renderPendingTaskFiles();updateTaskImageInfo();return;
+ }
+ for(const sourceFile of incoming){
+  try{
+   const result=await PhotoAnnotator.open(sourceFile);
+   if(result.action==="retake"){
+    if(retakeInput){retakeInput.value="";setTimeout(()=>retakeInput.click(),0)}
+    break;
+   }
+   if(result.action!=="use"||!result.blob)continue;
+   pendingTaskFiles.push(photoResultFile(result,sourceFile));
+   pendingTaskPhotoMeta.push({originalFile:sourceFile,annotations:result.annotations||[]});
+   renderPendingTaskFiles();updateTaskImageInfo();
+  }catch(err){console.warn(err);toast(err?.message||"Không thể mở trình chỉnh sửa ảnh")}
+ }
 }
 $("#openNativeCamera").onclick=()=>{
  const input=$("#cameraNativeInput");
@@ -1199,13 +1239,13 @@ $("#openNativeLibrary").onclick=()=>{
  input.value="";
  input.click();
 };
-$("#cameraNativeInput").onchange=e=>{
- addPendingTaskFiles(e.target.files);
- e.target.value="";
+$("#cameraNativeInput").onchange=async e=>{
+ const files=[...e.target.files];e.target.value="";
+ await addPendingTaskFiles(files,{retakeInput:$("#cameraNativeInput")});
 };
-$("#images").onchange=e=>{
- addPendingTaskFiles(e.target.files);
- e.target.value="";
+$("#images").onchange=async e=>{
+ const files=[...e.target.files];e.target.value="";
+ await addPendingTaskFiles(files,{retakeInput:$("#cameraNativeInput")});
 };
 $("#taskForm").onsubmit=async e=>{
  e.preventDefault();
