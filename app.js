@@ -189,7 +189,7 @@ async function uploadMediaFiles(files,kind,recordId,onProgress,buildingId=curren
  const worker=async()=>{
    while(true){
      const i=next++;if(i>=list.length)return;
-     const blob=(list[i].type==="image/jpeg"&&String(list[i].name||"").startsWith("camera-"))?list[i]:await imageFileToBlob(list[i]);
+     const blob=CLIENT_IMAGE_COMPRESSION_ENABLED?await imageFileToBlob(list[i]):list[i];
      refs[i]=await uploadMediaBlob(blob,kind,recordId,i,buildingId);
      done++;if(onProgress)onProgress(done,list.length);
    }
@@ -1613,6 +1613,7 @@ async function exportGenericEstaPdf(config={}){
    columns:Array.isArray(config.columns)?config.columns:[],
    rows:Array.isArray(config.rows)?config.rows:[],
    summaries:Array.isArray(config.summaries)?config.summaries:[],
+    photos:Array.isArray(config.photos)?config.photos:[],
    ...pdfSignaturePayload(signer)
  };
  try{
