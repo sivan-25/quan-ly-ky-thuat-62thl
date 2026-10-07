@@ -291,34 +291,53 @@ def prepare_remote_images(
     source_key: str = "source",
     workers: int = IMAGE_WORKERS,
 ) -> tuple[list[dict[str, Any]], int]:
-    """Download/decode/compress images in parallel while preserving input order."""
-    source_items = list(items)
+    """Download/decode/compress images in parallel while preserving input order.
 
-    def one(index_item):
-        index, item = index_item
+    Duplicate source IDs are processed once per batch, then reused by every item.
+    The global LRU cache additionally avoids reprocessing across report sections.
+    """
+    source_items = [dict(item) for item in items]
+    if not source_items:
+        return [], 0
+
+    keyed: dict[str, tuple[str, str]] = {}
+    for item in source_items:
+        source = str(item.get(source_key) or item.get("ref") or item.get("path") or "")
+        cache_id = str(item.get("id") or source)
+        if source:
+            keyed.setdefault(cache_id, (source, cache_id))
+
+    def prepare_unique(pair):
+        source, cache_id = pair
+        try:
+            return cache_id, prepare_downloaded_image(
+                source, token, downloader, cache_id=cache_id
+            ), False
+        except Exception:
+            return cache_id, None, True
+
+    unique_pairs = list(keyed.values())
+    max_workers = max(1, min(int(workers or 1), len(unique_pairs) or 1, 8))
+    prepared_by_id: dict[str, Optional[ProcessedImage]] = {}
+    missing_by_id: dict[str, bool] = {}
+    with ThreadPoolExecutor(max_workers=max_workers) as pool:
+        for cache_id, prepared, missing in pool.map(prepare_unique, unique_pairs):
+            prepared_by_id[cache_id] = prepared
+            missing_by_id[cache_id] = missing
+
+    results: list[dict[str, Any]] = []
+    for item in source_items:
         out = dict(item)
         source = str(out.get(source_key) or out.get("ref") or out.get("path") or "")
+        cache_id = str(out.get("id") or source)
         if not source:
             out["prepared"] = None
             out["missing"] = True
-            return index, out
-        try:
-            out["prepared"] = prepare_downloaded_image(
-                source, token, downloader, cache_id=str(out.get("id") or source)
-            )
-            out["missing"] = False
-        except Exception:
-            out["prepared"] = None
-            out["missing"] = True
-        return index, out
+        else:
+            out["prepared"] = prepared_by_id.get(cache_id)
+            out["missing"] = bool(missing_by_id.get(cache_id, True))
+        results.append(out)
 
-    if not source_items:
-        return [], 0
-    max_workers = max(1, min(int(workers or 1), len(source_items), 8))
-    with ThreadPoolExecutor(max_workers=max_workers) as pool:
-        prepared = list(pool.map(one, enumerate(source_items)))
-    prepared.sort(key=lambda x: x[0])
-    results = [item for _, item in prepared]
     missing = sum(1 for item in results if item.get("missing"))
     return results, missing
 
