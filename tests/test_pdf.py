@@ -143,6 +143,41 @@ class ReportTests(unittest.TestCase):
         self.assertLess(size_mb, 2.0)
         self.assertLess(elapsed, 20.0)
 
+    def test_generic_and_energy_images_use_shared_pipeline(self):
+        img = photo((1200, 1600))
+        generic = {
+            'report_type':'generic',
+            'building':'DỰ ÁN KIỂM THỬ',
+            'report_date':'01/09/2026',
+            'period_label':'THÁNG 09/2026',
+            'title':'BÁO CÁO SỰ CỐ & DEFECT',
+            'section_label':'SỰ CỐ / DEFECT',
+            'table_label':'DANH SÁCH SỰ CỐ',
+            'columns':[{'label':'Mã','weight':1},{'label':'Trạng thái','weight':1.2}],
+            'rows':[['SC-01','Đang xử lý']],
+            'photos':[{'ref':img,'caption':'Hình 1'},{'ref':img,'caption':'Hình 2'}],
+            'kt_signer_name':'Kỹ thuật kiểm thử',
+        }
+        raw, missing, count = generate_pdf(generic, '')
+        self.assertTrue(raw.startswith(b'%PDF'))
+        self.assertEqual((missing, count), (0, 1))
+
+        energy = {
+            'report_type':'energy',
+            'building':'DỰ ÁN KIỂM THỬ',
+            'report_date':'01/09/2026',
+            'energy_name':'Điện',
+            'unit':'kWh',
+            'rows':[{
+                'date':'2026-09-01','date_display':'01/09/2026','value':100,
+                'diff':10,'performer':'Kiểm thử','note':'Có ảnh','image':img,
+            }],
+            'kt_signer_name':'Kỹ thuật kiểm thử',
+        }
+        raw, missing, count = generate_pdf(energy, '')
+        self.assertTrue(raw.startswith(b'%PDF'))
+        self.assertEqual((missing, count), (0, 1))
+
     def test_original_work_energy_tools_renderers(self):
         samples = [
             {'report_type':'work','tasks':[{'title':'Dữ liệu thử','status':'Hoàn thành','date':'01/09/2026','assignee':'Kiểm thử'}]},
