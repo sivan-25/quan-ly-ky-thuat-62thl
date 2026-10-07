@@ -1,6 +1,8 @@
 """Renderer regression checks using synthetic data only. Run python -m unittest discover -s tests."""
 import base64
 import io
+import re
+import time
 from pathlib import Path
 import sys
 import unittest
@@ -16,6 +18,27 @@ def photo(size):
     output = io.BytesIO()
     Image.new('RGB', size, '#edf4f8').save(output, 'PNG')
     return 'data:image/png;base64,' + base64.b64encode(output.getvalue()).decode()
+
+
+def benchmark_photo(index, size=(1200, 1600)):
+    """Deterministic phone-like JPEG with enough detail to exercise compression."""
+    image = Image.new('RGB', size, (235, 229, 216))
+    px = image.load()
+    w, h = size
+    for y in range(0, h, 24):
+        tone = 45 + ((y // 24 + index * 7) % 160)
+        for x in range(w):
+            if y < h:
+                px[x, y] = (tone, (tone * 3) % 255, (tone * 5) % 255)
+    # Add high-contrast annotation-like marks.
+    for d in range(20, min(w, h) - 20, 37):
+        for off in range(5):
+            x = min(w - 1, d + off)
+            y = min(h - 1, d)
+            px[x, y] = (210, 20, 30)
+    out = io.BytesIO()
+    image.save(out, 'JPEG', quality=92, optimize=True)
+    return 'data:image/jpeg;base64,' + base64.b64encode(out.getvalue()).decode()
 
 
 def operations():
@@ -82,6 +105,43 @@ class ReportTests(unittest.TestCase):
     def test_invalid_column_count_is_rejected(self):
         payload = operations(); payload['sections'][0]['rows'][0] = ['Thiếu cột']
         with self.assertRaises(ValueError): generate_pdf(payload, '')
+
+    def test_compact_16_tasks_21_images_benchmark(self):
+        images = [benchmark_photo(i, (1200, 1600) if i % 3 else (1600, 1000)) for i in range(21)]
+        tasks = []
+        cursor = 0
+        # 5 tasks x2 images + 11 tasks x1 image = 21 images / 16 tasks.
+        for i in range(16):
+            take = 2 if i < 5 else 1
+            refs = images[cursor:cursor + take]
+            cursor += take
+            tasks.append({
+                'title': f'Công việc kiểm thử số {i + 1}',
+                'type': 'Sự cố' if i % 5 == 0 else 'Hằng ngày',
+                'status': ('Hoàn thành', 'Đang thực hiện', 'Chờ xử lý')[i % 3],
+                'date': f'{(i % 28) + 1:02d}/09/2026',
+                'assignee': 'Kỹ thuật kiểm thử',
+                'note': 'Kiểm tra hiện trường và xác nhận tình trạng.',
+                'images': [{'path': ref, 'caption': f'Hình {j + 1}'} for j, ref in enumerate(refs)],
+            })
+        payload = {
+            'report_type': 'work',
+            'building': 'DỰ ÁN KIỂM THỬ',
+            'report_date': '30/09/2026',
+            'kt_signer_name': 'Kỹ thuật kiểm thử',
+            'tasks': tasks,
+        }
+        started = time.perf_counter()
+        raw, missing, count = generate_pdf(payload, '')
+        elapsed = time.perf_counter() - started
+        pages = len(re.findall(rb'/Type\s*/Page\b', raw))
+        size_mb = len(raw) / (1024 * 1024)
+        print(f'PDF_BENCHMARK tasks={count} images=21 pages={pages} size_mb={size_mb:.2f} seconds={elapsed:.2f}')
+        self.assertEqual(missing, 0)
+        self.assertEqual(count, 16)
+        self.assertLessEqual(pages, 8)
+        self.assertLess(size_mb, 2.0)
+        self.assertLess(elapsed, 20.0)
 
     def test_original_work_energy_tools_renderers(self):
         samples = [
