@@ -141,8 +141,13 @@
     const rows=alerts(),n=ensureNotice(),box=n.querySelector("#new10NoticeList");
     box.innerHTML=rows.length?rows.map(x=>'<button type="button" data-new10-alert-module="'+x.module+'" data-tone="'+x.tone+'"><i></i><span><b>'+escapeHtml(x.title)+'</b><small>'+escapeHtml(x.desc)+'</small></span><em>›</em></button>').join(""):'<div class="new10NoticeEmpty"><b>Không có cảnh báo cần xử lý</b><span>Dữ liệu NEW10 đang ở trạng thái bình thường.</span></div>';
     const bell=document.querySelector(".headerBell");if(bell){
-      bell.classList.add("new10Bell");
-      const dot=bell.querySelector("i");if(dot){dot.textContent=rows.length?String(rows.length):"";dot.classList.toggle("hide",!rows.length)}
+      if(!bell.classList.contains("new10Bell"))bell.classList.add("new10Bell");
+      const dot=bell.querySelector("i");if(dot){
+        const nextText=rows.length?String(rows.length):"";
+        if(dot.textContent!==nextText)dot.textContent=nextText;
+        const shouldHide=!rows.length;
+        if(dot.classList.contains("hide")!==shouldHide)dot.classList.toggle("hide",shouldHide);
+      }
     }
   }
   function openNotice(){if(!pilot())return;refreshNotices();ensureNotice().classList.remove("hide")}
@@ -160,6 +165,17 @@
       const a=palette.querySelector("[data-new10-command].active");if(a){e.preventDefault();runCommand(a.dataset.new10Command)}
     }
   }
+  let mutationRefreshScheduled=false;
+  function scheduleMutationRefresh(){
+    if(mutationRefreshScheduled)return;
+    mutationRefreshScheduled=true;
+    requestAnimationFrame(()=>{
+      mutationRefreshScheduled=false;
+      if(!pilot())return;
+      syncSavedViewButtons();
+      refreshNotices();
+    });
+  }
   function boot(){
     ensurePalette();ensureNotice();syncSavedViewButtons();refreshNotices();
     document.addEventListener("keydown",onKey);
@@ -170,7 +186,7 @@
     window.addEventListener("esta:new10:media-queue",refreshNotices);
     window.addEventListener("esta:new10:sync-status",refreshNotices);
     setInterval(()=>{if(pilot())refreshNotices()},30000);
-    new MutationObserver(()=>{if(pilot()){syncSavedViewButtons();refreshNotices()}}).observe(document.getElementById("app"),{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+    new MutationObserver(scheduleMutationRefresh).observe(document.getElementById("app"),{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
   window.ESTA_PRODUCTIVITY=Object.freeze({openPalette,openNotice,saveView,loadView,refreshNotices});
