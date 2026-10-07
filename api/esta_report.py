@@ -14,39 +14,22 @@ from reportlab.platypus import (BaseDocTemplate, Flowable, Frame, HRFlowable,
 from reportlab.lib.utils import ImageReader
 from xml.sax.saxutils import escape as xml_escape
 
-# Font bootstrap for Vercel: Montserrat only. The report layout below is the
-# ESTA_Report_Generator template supplied by the user; only font packaging is adapted.
-def _prepare_montserrat():
-    font_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "reporting", "fonts")
-    return font_dir
+from reporting import pdf_common as pdfc
 
-AUB = colors.HexColor("#411437")
-AUB_D = colors.HexColor("#2B1526")
-CREAM = colors.HexColor("#F3DEBF")
-CREAM_L = colors.HexColor("#F5ECD0")
-COPPER = colors.HexColor("#A46427")
-TAUPE = colors.HexColor("#A99586")
-STONE = colors.HexColor("#625045")
-PALE = colors.HexColor("#FFF8EC")
-
-_FONTS_READY = False
-def ensure_fonts():
-    global _FONTS_READY
-    if _FONTS_READY:
-        return
-    font_dir = _prepare_montserrat()
-    for name, fn in [("Mont","Regular"),("Mont-Light","Light"),("Mont-Medium","Medium"),
-                     ("Mont-SemiBold","SemiBold"),("Mont-Bold","Bold"),
-                     ("Mont-XBold","ExtraBold"),("Mont-Italic","Italic")]:
-        pdfmetrics.registerFont(TTFont(name, os.path.join(font_dir, f"Montserrat-{fn}.ttf")))
-    pdfmetrics.registerFontFamily("Mont", normal="Mont", bold="Mont-Bold",
-                                  italic="Mont-Italic", boldItalic="Mont-Bold")
-    _FONTS_READY = True
-
-PW, PH = A4
-MX = 18 * mm
-CW = PW - 2 * MX
-FOOTER = "ESTA PROPERTY MANAGEMENT  ·  A L'MAK COMPANY  ·  HO CHI MINH CITY"
+AUB = pdfc.AUB
+AUB_D = pdfc.AUB_D
+CREAM = pdfc.CREAM
+CREAM_L = pdfc.CREAM_L
+COPPER = pdfc.COPPER
+TAUPE = pdfc.TAUPE
+STONE = pdfc.STONE
+PALE = pdfc.PALE
+PW, PH = pdfc.PW, pdfc.PH
+MX, CW = pdfc.MX, pdfc.CW
+FOOTER = pdfc.FOOTER
+ensure_fonts = pdfc.ensure_fonts
+tracked = pdfc.tracked
+NumberedCanvas = pdfc.NumberedCanvas
 
 def S(name, **kw):
     base = dict(fontName="Mont", fontSize=8.5, leading=12, textColor=colors.black)
@@ -74,25 +57,7 @@ ST = {
     "sec": S("sec", fontName="Mont-Bold", fontSize=6.8, leading=9, textColor=COPPER),
 }
 
-def draw_star(c, cx, cy, r, color):
-    import math
-    k = 0.22
-    pts = []
-    for i in range(8):
-        ang = math.pi / 4 * i
-        rad = r if i % 2 == 0 else r * k * 1.9
-        pts.append((cx + rad * math.cos(ang), cy + rad * math.sin(ang)))
-    p = c.beginPath(); p.moveTo(*pts[0])
-    for pt in pts[1:]: p.lineTo(*pt)
-    p.close(); c.setFillColor(color); c.drawPath(p, stroke=0, fill=1)
-
-def tracked(c, x, y, text, font, size, space, color, align="l"):
-    w = pdfmetrics.stringWidth(text, font, size) + space * (len(text) - 1)
-    if align == "r": x -= w
-    c.saveState(); t = c.beginText(x, y); t.setFont(font, size); t.setCharSpace(space)
-    t.setFillColor(color); t.textOut(text); c.drawText(t); c.restoreState()
-
-STATUS_STYLE = {
+STATUS_STYLE = {STATUS_STYLE = {
     "Đang thực hiện": (COPPER, COPPER, PALE),
     "Chờ xử lý": (CREAM_L, COPPER, AUB),
     "Hoàn thành": (AUB, AUB, PALE),
@@ -114,73 +79,11 @@ class Pill(Flowable):
         c.setFillColor(txt); c.setFont(self.font,self.size)
         c.drawCentredString(self.w/2,self.h/2-self.size*.35,self.text)
 
-def load_image(path):
-    im=PILImage.open(path); im=ImageOps.exif_transpose(im).convert("RGB"); im.thumbnail((1600,1600))
-    buf=io.BytesIO(); im.save(buf,"JPEG",quality=85); buf.seek(0); return ImageReader(buf)
-
-def image_orientation(path):
-    """Portrait only when height is > width by 10%; otherwise treat as landscape."""
-    if not path or not os.path.exists(path):
-        return "landscape"
-    try:
-        im=PILImage.open(path); im=ImageOps.exif_transpose(im)
-        w,h=im.size
-        return "portrait" if h > (w * 1.10) else "landscape"
-    except Exception:
-        return "landscape"
-
-class ImageSlot(Flowable):
-    CAP_H=13
-    def __init__(self,w,h,path=None,caption="",fit="cover"):
-        super().__init__(); self.w,self.h,self.path,self.caption,self.fit=w,h,path,caption,fit
-        self.img=load_image(path) if path and os.path.exists(path) else None
-    def wrap(self,aw,ah): return self.w,self.h+self.CAP_H
-    def draw(self):
-        c,w,h,yb=self.canv,self.w,self.h,self.CAP_H
-        if self.img:
-            iw,ih=self.img.getSize()
-            if self.fit=="contain": c.setFillColor(CREAM_L); c.rect(0,yb,w,h,stroke=0,fill=1); sc=min(w/iw,h/ih)
-            else: sc=max(w/iw,h/ih)
-            dw,dh=iw*sc,ih*sc
-            c.saveState(); p=c.beginPath(); p.rect(0,yb,w,h); c.clipPath(p,stroke=0,fill=0)
-            c.drawImage(self.img,(w-dw)/2,yb+(h-dh)/2,dw,dh); c.restoreState()
-            c.setStrokeColor(STONE); c.setLineWidth(.5); c.rect(0,yb,w,h,stroke=1,fill=0)
-        else:
-            c.setFillColor(CREAM_L); c.rect(0,yb,w,h,stroke=0,fill=1); c.setStrokeColor(TAUPE)
-            c.setLineWidth(.8); c.setDash(3,3); c.rect(.4,yb+.4,w-.8,h-.8,stroke=1,fill=0); c.setDash()
-            draw_star(c,w/2,yb+h/2+8,8,TAUPE)
-            tracked(c,w/2-(pdfmetrics.stringWidth("HÌNH ẢNH CHƯA CẬP NHẬT","Mont-Bold",6.5)+1.2*21)/2,
-                    yb+h/2-9,"HÌNH ẢNH CHƯA CẬP NHẬT","Mont-Bold",6.5,1.2,STONE)
-        c.setFillColor(STONE); c.setFont("Mont-Light",7); c.drawString(0,3,self.caption)
-
-class NumberedCanvas(rl_canvas.Canvas):
-    def __init__(self,*a,**k): super().__init__(*a,**k); self._saved=[]
-    def showPage(self): self._saved.append(dict(self.__dict__)); self._startPage()
-    def save(self):
-        total=len(self._saved)
-        for st in self._saved:
-            self.__dict__.update(st); self._footer(total); super().showPage()
-        super().save()
-    def _footer(self,total):
-        c=self; c.setStrokeColor(COPPER); c.setLineWidth(1.5); c.line(MX,16*mm,PW-MX,16*mm)
-        tracked(c,MX,11*mm,FOOTER,"Mont-Light",6.2,.9,STONE); c.setFont("Mont-Light",6.8)
-        c.setFillColor(STONE); c.drawRightString(PW-MX,11*mm,f"Trang {c._pageNumber} / {total}")
-
 def make_page_fns(step_label):
-    def background(c): c.setFillColor(CREAM); c.rect(0,0,PW,PH,stroke=0,fill=1)
-    def first(c,doc):
-        background(c); bh=38*mm; c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
-        c.setFillColor(COPPER); c.rect(0,PH-bh-1.5,PW,1.5,stroke=0,fill=1)
-        tracked(c,PW-MX,PH-17*mm,"BÁO CÁO CÔNG VIỆC KỸ THUẬT","Mont-Bold",8.5,1.4,CREAM,"r")
-        tracked(c,PW-MX,PH-23*mm,step_label.upper(),"Mont-Light",7,1.6,CREAM,"r")
-    def later(c,doc):
-        background(c); bh=12*mm; c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
-        c.setFillColor(COPPER); c.rect(0,PH-bh-1.2,PW,1.2,stroke=0,fill=1)
-        tracked(c,PW-MX,PH-7.2*mm,"BÁO CÁO CÔNG VIỆC KỸ THUẬT  ·  "+step_label.upper(),
-                "Mont-Light",6.5,1.3,CREAM,"r")
-    return first,later
+    return pdfc.make_page_fns("BÁO CÁO CÔNG VIỆC KỸ THUẬT", step_label)
 
-def build_doc(path,story_fn,step_label,title):
+
+def build_doc(path,story_fn,step_label,title):def build_doc(path,story_fn,step_label,title):
     ensure_fonts()
     first,later=make_page_fns(step_label)
     doc=BaseDocTemplate(path,pagesize=A4,title=title,author="ESTA Property Management",
@@ -281,138 +184,88 @@ def story_summary(data,sign=True,pointer=False):
     if sign: story.append(signatures(data))
     return story
 
-IMG_H=76*mm
-
 def _norm_images(t):
-    imgs=list(t.get("images") or [])
     out=[]
-    for j,im in enumerate(imgs):
-        if isinstance(im,str): im={"path":im}
-        path=im.get("path")
-        if not path or not os.path.exists(path):
+    for j,im in enumerate(list(t.get("images") or [])):
+        if isinstance(im, pdfc.ProcessedImage):
+            im={"prepared":im}
+        if not isinstance(im,dict):
+            continue
+        prepared=im.get("prepared")
+        if not prepared:
             continue
         out.append({
-            "path":path,
-            "caption":im.get("caption") or "Hình %d"%(j+1),
-            "orientation":image_orientation(path)
+            "prepared":prepared,
+            "caption":str(im.get("caption") or ("Hình %d"%(j+1)))
         })
     return out
 
+
 def _card_head_meta(idx,t,inner_w):
-    P=Paragraph; num_w,pill_w=13*mm,36*mm
-    head=Table([[P(f"{idx:02d}",ST["card_n"]),P(t["title"],ST["card_t"]),Pill(t["status"],"status",7.2,"RIGHT")]],
+    P=Paragraph
+    num_w,pill_w=12*mm,34*mm
+    head=Table([[P(f"{idx:02d}",ST["card_n"]),P(t["title"],ST["card_t"]),Pill(t["status"],"status",7.0,"RIGHT")]],
         colWidths=[num_w,inner_w-num_w-pill_w,pill_w])
-    head.setStyle(TableStyle([("BACKGROUND",(0,0),(0,0),AUB),("BACKGROUND",(1,0),(-1,0),CREAM_L),
+    head.setStyle(TableStyle([
+        ("BACKGROUND",(0,0),(0,0),AUB),("BACKGROUND",(1,0),(-1,0),CREAM_L),
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),("ALIGN",(0,0),(0,0),"CENTER"),("ALIGN",(2,0),(2,0),"RIGHT"),
-        ("TOPPADDING",(0,0),(-1,-1),8),("BOTTOMPADDING",(0,0),(-1,-1),8),
-        ("LEFTPADDING",(1,0),(1,0),10),("RIGHTPADDING",(2,0),(2,0),10),
-        ("LINEBELOW",(0,0),(-1,0),1.5,COPPER)]))
-    third=inner_w/3
-    meta=Table([[P("LOẠI CÔNG VIỆC",ST["lbl"]),P("NGÀY THỰC HIỆN",ST["lbl"]),P("NGƯỜI THỰC HIỆN",ST["lbl"])],
-        [P(t["type"],ST["val"]),P(t["date"],ST["val"]),P(t.get("assignee") or "—",ST["val"])],
-        [P("GHI CHÚ",ST["lbl"]),"",""],[P(t.get("note") or "—",S("nv",fontName="Mont",fontSize=8.3,leading=12)),"",""]],
-        colWidths=[third]*3)
-    meta.setStyle(TableStyle([("SPAN",(0,2),(2,2)),("SPAN",(0,3),(2,3)),
-        ("LEFTPADDING",(0,0),(-1,-1),10),("RIGHTPADDING",(0,0),(-1,-1),6),
-        ("TOPPADDING",(0,0),(-1,-1),1),("BOTTOMPADDING",(0,0),(-1,-1),1),
-        ("TOPPADDING",(0,0),(-1,0),8),("TOPPADDING",(0,2),(-1,2),6),
-        ("BOTTOMPADDING",(0,3),(-1,3),8),("LINEBELOW",(0,1),(-1,1),.4,TAUPE),
-        ("BOTTOMPADDING",(0,1),(-1,1),7)]))
+        ("TOPPADDING",(0,0),(-1,-1),6),("BOTTOMPADDING",(0,0),(-1,-1),6),
+        ("LEFTPADDING",(1,0),(1,0),8),("RIGHTPADDING",(2,0),(2,0),8),
+        ("LINEBELOW",(0,0),(-1,0),1.3,COPPER)
+    ]))
+    info_style=S("work_compact_meta",fontName="Mont",fontSize=7.3,leading=10,textColor=STONE)
+    meta_text=(
+        "<b>Loại:</b> %s  ·  <b>Ngày:</b> %s  ·  <b>Người thực hiện:</b> %s  ·  <b>Ghi chú:</b> %s"
+        % tuple(xml_escape(str(v or "—")) for v in (
+            t.get("type"),t.get("date"),t.get("assignee"),t.get("note")
+        ))
+    )
+    meta=Table([[P(meta_text,info_style)]],colWidths=[inner_w])
+    meta.setStyle(TableStyle([
+        ("BACKGROUND",(0,0),(-1,-1),CREAM_L),
+        ("LEFTPADDING",(0,0),(-1,-1),8),("RIGHTPADDING",(0,0),(-1,-1),8),
+        ("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),6),
+        ("LINEBELOW",(0,0),(-1,-1),.35,TAUPE)
+    ]))
     return head,meta
+
 
 def _box(rows):
     card=Table([[r] for r in rows],colWidths=[CW])
-    card.setStyle(TableStyle([("BOX",(0,0),(-1,-1),.6,TAUPE),("LEFTPADDING",(0,0),(-1,-1),1),
-        ("RIGHTPADDING",(0,0),(-1,-1),1),("TOPPADDING",(0,0),(-1,-1),0),("BOTTOMPADDING",(0,0),(-1,-1),0)]))
+    card.setStyle(TableStyle([
+        ("BOX",(0,0),(-1,-1),.55,TAUPE),
+        ("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),0),
+        ("TOPPADDING",(0,0),(-1,-1),0),("BOTTOMPADDING",(0,0),(-1,-1),0)
+    ]))
     return card
 
-def _img_row(slot,inner_w,first=False,label=None):
-    rows=[]
-    if label: rows.append([Paragraph(label,ST["sec"])])
-    rows.append([slot]); t=Table(rows,colWidths=[inner_w])
-    st=[("LEFTPADDING",(0,0),(-1,-1),10),("RIGHTPADDING",(0,0),(-1,-1),10),
-        ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4)]
-    if first:
-        st.append(("LINEABOVE",(0,0),(-1,0),.4,TAUPE)); st.append(("TOPPADDING",(0,0),(-1,0),6))
-    t.setStyle(TableStyle(st)); return t
 
-def _portrait_pair_row(a,b,inner_w,first=False,label=None):
-    gap=4*mm
-    available=inner_w-20
-    sw=(available-gap)/2
-    # Tall enough for phone portrait images while still fitting comfortably on A4.
-    slots=[
-        ImageSlot(sw,92*mm,a["path"],a["caption"],fit="contain"),
-        ImageSlot(sw,92*mm,b["path"],b["caption"],fit="contain")
-    ]
-    rows=[]
-    if label: rows.append([Paragraph(label,ST["sec"]),"",""])
-    rows.append([slots[0],"",slots[1]])
-    t=Table(rows,colWidths=[sw,gap,sw])
-    st=[("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),0),
-        ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4)]
-    if label:
-        st += [("SPAN",(0,0),(2,0)),("LEFTPADDING",(0,0),(2,0),10),
-               ("TOPPADDING",(0,0),(2,0),4),("BOTTOMPADDING",(0,0),(2,0),5)]
-    if first:
-        st.append(("LINEABOVE",(0,0),(-1,0),.4,TAUPE))
-    t.setStyle(TableStyle(st))
-    return t
-
-def _single_auto_row(im,inner_w,first=False,label=None):
-    sw=inner_w-20
-    # Landscape stays compact/full-width. A lone portrait receives a taller full-width
-    # presentation area; the image itself remains proportional and is never cropped.
-    h=112*mm if im.get("orientation")=="portrait" else 76*mm
-    slot=ImageSlot(sw,h,im["path"],im["caption"],fit="contain")
-    return _img_row(slot,inner_w,first=first,label=label)
-
-def _image_groups_in_order(imgs):
-    """Preserve upload order; only pair two adjacent portrait images."""
-    groups=[]
-    i=0
-    while i<len(imgs):
-        cur=imgs[i]
-        if cur.get("orientation")=="portrait" and i+1<len(imgs) and imgs[i+1].get("orientation")=="portrait":
-            groups.append(("pair",cur,imgs[i+1]))
-            i+=2
-        else:
-            groups.append(("single",cur))
-            i+=1
-    return groups
-
-def task_card(idx,t,per_row=1):
+def task_card(idx,t,per_row=3):
     inner_w=CW-2
     head,meta=_card_head_meta(idx,t,inner_w)
     imgs=_norm_images(t)
+    rows=[head,meta]
+    if imgs:
+        grid=pdfc.image_grid(
+            imgs,
+            available_width=inner_w-12,
+            cols=3,
+            cell_height=pdfc.IMAGE_CELL_HEIGHT,
+            gap=pdfc.IMAGE_GAP
+        )
+        if grid:
+            image_holder=Table(
+                [[Paragraph("HÌNH ẢNH HIỆN TRƯỜNG",ST["sec"])]]+
+                [[g] for g in grid],
+                colWidths=[inner_w]
+            )
+            image_holder.setStyle(TableStyle([
+                ("LEFTPADDING",(0,0),(-1,-1),6),("RIGHTPADDING",(0,0),(-1,-1),6),
+                ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4)
+            ]))
+            rows.append(image_holder)
+    return [KeepTogether([_box(rows),Spacer(1,7)])]
 
-    # No images: show only the work information. Do not render an empty image section.
-    if not imgs:
-        return [KeepTogether([_box([head,meta]),Spacer(1,9)])]
-
-    groups=_image_groups_in_order(imgs)
-    first=groups[0]
-    if first[0]=="pair":
-        first_img=_portrait_pair_row(first[1],first[2],inner_w,first=True,label="HÌNH ẢNH HIỆN TRƯỜNG")
-    else:
-        first_img=_single_auto_row(first[1],inner_w,first=True,label="HÌNH ẢNH HIỆN TRƯỜNG")
-
-    out=[KeepTogether([_box([head,meta,first_img]),Spacer(1,9)])]
-
-    for group in groups[1:]:
-        cont=Paragraph("%02d  ·  %s  —  <font name='Mont-Light'>hình ảnh (tiếp)</font>"%(idx,t["title"]),ST["sec"])
-        row_c=Table([[cont]],colWidths=[inner_w])
-        row_c.setStyle(TableStyle([
-            ("BACKGROUND",(0,0),(-1,-1),CREAM_L),("LINEBELOW",(0,0),(-1,-1),1.5,COPPER),
-            ("LEFTPADDING",(0,0),(-1,-1),10),("TOPPADDING",(0,0),(-1,-1),6),
-            ("BOTTOMPADDING",(0,0),(-1,-1),6)
-        ]))
-        if group[0]=="pair":
-            img_row=_portrait_pair_row(group[1],group[2],inner_w)
-        else:
-            img_row=_single_auto_row(group[1],inner_w)
-        out.append(KeepTogether([_box([row_c,img_row]),Spacer(1,9)]))
-    return out
 
 def summary_line(tasks):
     n=counts(tasks)
@@ -421,44 +274,27 @@ def summary_line(tasks):
 
 def story_detail(data,standalone=True):
     tasks=data["tasks"]; P=Paragraph
-    if standalone: story=intro(data,"Phần 2  ·  Báo cáo chi tiết kèm hình ảnh")
-    else:
-        story=[P("PHẦN 2  ·  CHI TIẾT KÈM HÌNH ẢNH",ST["eyebrow"]),Spacer(1,3),
-               P("Chi tiết từng công việc",ST["h1"]),
-               HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=6)]
-    story += [P(summary_line(tasks),ST["sec"]),Spacer(1,8)]
-    for i,t in enumerate(tasks,1): story += task_card(i,t,1)
-    story.append(signatures(data)); return story
+    story=[Spacer(1,8),P("CHI TIẾT CÔNG VIỆC",ST["sec"]),Spacer(1,5)]
+    for i,t in enumerate(tasks,1):
+        story += task_card(i,t,3)
+    story.append(signatures(data))
+    return story
+
 
 def story_merged(data):
-    from reportlab.platypus import PageBreak
-    return story_summary(data,sign=False,pointer=True)+[PageBreak()]+story_detail(data,standalone=False)
+    # Summary and detail flow continuously. No forced "Phần 2" page.
+    return story_summary(data,sign=False,pointer=False)+story_detail(data,standalone=False)
 
 
-# ===== ENERGY REPORT — ESTA STANDARD =====
+# ===== ENERGY REPORT — ESTA STANDARD =====# ===== ENERGY REPORT — ESTA STANDARD =====
 def energy_signatures(data):
     return _signed_kt_kst(data)
 
 def make_energy_page_fns(report_title, period_label):
-    short=(report_title or "BÁO CÁO NĂNG LƯỢNG").upper()
-    period=(period_label or "").upper()
-    def background(c):
-        c.setFillColor(CREAM); c.rect(0,0,PW,PH,stroke=0,fill=1)
-    def first(c,doc):
-        background(c); bh=38*mm
-        c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
-        c.setFillColor(COPPER); c.rect(0,PH-bh-1.5,PW,1.5,stroke=0,fill=1)
-        tracked(c,PW-MX,PH-17*mm,short,"Mont-Bold",8.5,1.25,CREAM,"r")
-        tracked(c,PW-MX,PH-23*mm,period,"Mont-Light",6.8,1.3,CREAM,"r")
-    def later(c,doc):
-        background(c); bh=12*mm
-        c.setFillColor(AUB); c.rect(0,PH-bh,PW,bh,stroke=0,fill=1)
-        c.setFillColor(COPPER); c.rect(0,PH-bh-1.2,PW,1.2,stroke=0,fill=1)
-        tracked(c,PW-MX,PH-7.2*mm,short+"  ·  "+period,
-                "Mont-Light",6.2,1.1,CREAM,"r")
-    return first,later
+    return pdfc.make_page_fns(report_title, period_label)
 
-def build_energy_doc(path,data):
+
+def build_energy_doc(path,data):def build_energy_doc(path,data):
     ensure_fonts()
     report_title="BÁO CÁO "+str(data.get("energy_name") or "NĂNG LƯỢNG").upper()
     first,later=make_energy_page_fns(report_title,data.get("period_label") or "")
@@ -615,34 +451,22 @@ def story_energy(data):
     tb.setStyle(TableStyle(ts))
     story += [tb]
 
-    image_rows=[r for r in rows if (r.get("image_path") and os.path.exists(r.get("image_path"))) or (r.get("image2_path") and os.path.exists(r.get("image2_path")))]
-    if image_rows:
-        from reportlab.platypus import PageBreak
-        story += [PageBreak(),P("PHẦN 2  ·  HÌNH ẢNH ĐỒNG HỒ",ST["eyebrow"]),Spacer(1,3),
-                  P("Hình ảnh ghi nhận",ST["h1"]),
-                  HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)]
-        counter=0
-        for r in image_rows:
-            pairs=[]
-            if r.get("image_path") and os.path.exists(r.get("image_path")):
-                pairs.append((meter1 if dual else energy_name,r.get("image_path"),r.get("value")))
-            if dual and r.get("image2_path") and os.path.exists(r.get("image2_path")):
-                pairs.append((meter2,r.get("image2_path"),r.get("value2")))
-            for label,path,val in pairs:
-                counter+=1
-                cap=str(r.get("date_display") or r.get("date") or "")+"  ·  "+_energy_num(val)
-                slot=ImageSlot(CW-16,82*mm,path,cap,fit="contain")
-                box=Table([[P(f"{counter:02d}  ·  {label}",ST["sec"])],[slot]],colWidths=[CW])
-                box.setStyle(TableStyle([
-                    ("BOX",(0,0),(-1,-1),.6,TAUPE),
-                    ("BACKGROUND",(0,0),(0,0),CREAM_L),
-                    ("LINEBELOW",(0,0),(0,0),1.5,COPPER),
-                    ("LEFTPADDING",(0,0),(-1,-1),8),
-                    ("RIGHTPADDING",(0,0),(-1,-1),8),
-                    ("TOPPADDING",(0,0),(-1,-1),5),
-                    ("BOTTOMPADDING",(0,0),(-1,-1),5)
-                ]))
-                story += [KeepTogether([box,Spacer(1,9)])]
+    energy_images=[]
+    counter=0
+    for r in rows:
+        pairs=[]
+        if r.get("image_prepared"):
+            pairs.append((meter1 if dual else energy_name,r.get("image_prepared"),r.get("value")))
+        if dual and r.get("image2_prepared"):
+            pairs.append((meter2,r.get("image2_prepared"),r.get("value2")))
+        for label,prepared,val in pairs:
+            counter+=1
+            cap="Hình %d · %s · %s · %s"%(counter,str(r.get("date_display") or r.get("date") or ""),label,_energy_num(val))
+            energy_images.append({"prepared":prepared,"caption":cap})
+    if energy_images:
+        story += [Spacer(1,10),P("HÌNH ẢNH ĐỒNG HỒ",ST["sec"]),Spacer(1,5)]
+        for grid_row in pdfc.image_grid(energy_images,CW,cols=3,cell_height=pdfc.IMAGE_CELL_HEIGHT,gap=pdfc.IMAGE_GAP):
+            story += [grid_row,Spacer(1,5)]
 
     story.append(energy_signatures(data))
     return story
@@ -873,7 +697,7 @@ def story_generic(data):
     story += [tb,energy_signatures(data)]
     return story
 
-def _prepare_generic_data(payload):
+def _prepare_generic_data(payload, token, temp_dir):
     columns=payload.get("columns") or []
     rows=payload.get("rows") or []
     summaries=payload.get("summaries") or []
@@ -884,10 +708,7 @@ def _prepare_generic_data(payload):
     clean_columns=[]
     for col in columns:
         if not isinstance(col,dict): col={"label":str(col)}
-        clean_columns.append({
-            "label":str(col.get("label") or ""),
-            "weight":col.get("weight") or 1
-        })
+        clean_columns.append({"label":str(col.get("label") or ""),"weight":col.get("weight") or 1})
     clean_rows=[]
     for row in rows:
         if not isinstance(row,(list,tuple)): continue
@@ -901,6 +722,24 @@ def _prepare_generic_data(payload):
                     "label":str(item.get("label") or ""),
                     "dark":bool(item.get("dark"))
                 })
+
+    raw_photos=payload.get("photos") or []
+    photo_items=[]
+    if isinstance(raw_photos,list):
+        for i,item in enumerate(raw_photos[:180],1):
+            if isinstance(item,str):
+                item={"ref":item}
+            if not isinstance(item,dict):
+                continue
+            source=str(item.get("ref") or item.get("path") or item.get("url") or "")
+            if source:
+                photo_items.append({
+                    "source":source,
+                    "caption":str(item.get("caption") or ("Hình %d"%i)),
+                    "id":str(item.get("id") or source)
+                })
+    prepared_photos,missing=pdfc.prepare_remote_images(photo_items,token,_download_image,source_key="source")
+
     return {
         "building":str(payload.get("building") or "[CẦN BỔ SUNG]"),
         "report_date":str(payload.get("report_date") or ""),
@@ -913,11 +752,13 @@ def _prepare_generic_data(payload):
         "kt_signature_path":str(payload.get("_kt_signature_path") or ""),
         "columns":clean_columns,
         "rows":clean_rows,
-        "summaries":clean_summaries
+        "summaries":clean_summaries,
+        "photos":[x for x in prepared_photos if x.get("prepared")],
+        "_missing_images":missing
     }
 
 
-# ===== VERCEL API HANDLER =====
+# ===== VERCEL API HANDLER =====# ===== VERCEL API HANDLER =====
 # -*- coding: utf-8 -*-
 import base64
 import json
@@ -955,18 +796,18 @@ def _prepare_signature(payload, temp_dir):
         raise ValueError("Ảnh chữ ký KT không hợp lệ")
     if not raw or len(raw)>1_500_000:
         raise ValueError("Ảnh chữ ký KT quá lớn hoặc không hợp lệ")
-    ext=".png" if "png" in head.lower() else ".jpg"
-    path=os.path.join(temp_dir,"kt_signature"+ext)
-    with open(path,"wb") as fh:
-        fh.write(raw)
     try:
-        ImageReader(path).getSize()
+        prepared=pdfc.process_image_bytes(raw,"signature:"+name,0.0)
     except Exception:
         raise ValueError("Không đọc được ảnh chữ ký KT")
+    path=os.path.join(temp_dir,"kt_signature.jpg")
+    with open(path,"wb") as fh:
+        fh.write(prepared.data)
     payload["_kt_signature_path"]=path
     return path
 
-def _json_bytes(obj):
+
+def _json_bytes(obj):def _json_bytes(obj):
     return json.dumps(obj, ensure_ascii=False).encode("utf-8")
 
 def _validate_token(token):
@@ -1018,125 +859,111 @@ def _download_image(source, token):
     return raw, ext
 
 def _prepare_data(payload, token, temp_dir):
-    data = {
-        "building": str(payload.get("building") or "[CẦN BỔ SUNG]"),
-        "report_date": str(payload.get("report_date") or ""),
-        "prepared_by": str(payload.get("prepared_by") or ""),
-        "kt_signer_name": str(payload.get("kt_signer_name") or ""),
-        "kt_signature_path": str(payload.get("_kt_signature_path") or ""),
-        "images_per_row": 2 if int(payload.get("images_per_row") or 1) == 2 else 1,
-        "tasks": [],
+    data={
+        "building":str(payload.get("building") or "[CẦN BỔ SUNG]"),
+        "report_date":str(payload.get("report_date") or ""),
+        "prepared_by":str(payload.get("prepared_by") or ""),
+        "kt_signer_name":str(payload.get("kt_signer_name") or ""),
+        "kt_signature_path":str(payload.get("_kt_signature_path") or ""),
+        "images_per_row":3,
+        "tasks":[]
     }
-    img_dir = os.path.join(temp_dir, "images")
-    os.makedirs(img_dir, exist_ok=True)
-    missing_images = 0
-
-    tasks = payload.get("tasks") or []
-    if not isinstance(tasks, list) or len(tasks) > 250:
+    tasks=payload.get("tasks") or []
+    if not isinstance(tasks,list) or len(tasks)>250:
         raise ValueError("Dữ liệu công việc không hợp lệ")
 
-    for ti, task in enumerate(tasks, 1):
-        if not isinstance(task, dict):
+    flat=[]
+    for ti,task in enumerate(tasks):
+        if not isinstance(task,dict):
             continue
-        row = {
-            "title": str(task.get("title") or "[CẦN BỔ SUNG]"),
-            "type": str(task.get("type") or "Hằng ngày"),
-            "status": str(task.get("status") or "Chờ xử lý"),
-            "date": str(task.get("date") or data["report_date"] or "[CẦN BỔ SUNG]"),
-            "assignee": str(task.get("assignee") or "[CẦN BỔ SUNG]"),
-            "note": str(task.get("note") or ""),
-            "images": [],
+        out={
+            "title":str(task.get("title") or "[CẦN BỔ SUNG]"),
+            "type":str(task.get("type") or "Hằng ngày"),
+            "status":str(task.get("status") or "Chờ xử lý"),
+            "date":str(task.get("date") or data["report_date"] or "[CẦN BỔ SUNG]"),
+            "assignee":str(task.get("assignee") or "[CẦN BỔ SUNG]"),
+            "note":str(task.get("note") or ""),
+            "images":[]
         }
-        images = task.get("images") or []
-        if not isinstance(images, list):
-            images = []
-        for ii, image in enumerate(images, 1):
-            if isinstance(image, str):
-                image = {"path": image}
-            if not isinstance(image, dict):
+        data["tasks"].append(out)
+        images=task.get("images") or []
+        if not isinstance(images,list):
+            continue
+        for ii,image in enumerate(images):
+            if isinstance(image,str):
+                image={"path":image}
+            if not isinstance(image,dict):
                 continue
-            source = str(image.get("path") or image.get("url") or "")
-            caption = str(image.get("caption") or ("Hình %d" % ii))
-            try:
-                raw, ext = _download_image(source, token)
-                if raw:
-                    local_path = os.path.join(img_dir, "task_%03d_img_%03d%s" % (ti, ii, ext))
-                    with open(local_path, "wb") as fh:
-                        fh.write(raw)
-                    row["images"].append({"path": local_path, "caption": caption})
-                else:
-                    missing_images += 1
-                    row["images"].append({"path": None, "caption": caption})
-            except Exception:
-                missing_images += 1
-                row["images"].append({"path": None, "caption": caption})
-        data["tasks"].append(row)
-    return data, missing_images
+            source=str(image.get("path") or image.get("url") or "")
+            if not source:
+                continue
+            flat.append({
+                "source":source,
+                "caption":str(image.get("caption") or ("Hình %d"%(ii+1))),
+                "task_index":len(data["tasks"])-1,
+                "image_index":ii,
+                "id":source
+            })
+    prepared,missing=pdfc.prepare_remote_images(flat,token,_download_image,source_key="source")
+    for item in prepared:
+        ti=item.get("task_index")
+        if item.get("prepared") and isinstance(ti,int) and 0<=ti<len(data["tasks"]):
+            data["tasks"][ti]["images"].append({
+                "prepared":item["prepared"],
+                "caption":item.get("caption") or ("Hình %d"%(len(data["tasks"][ti]["images"])+1))
+            })
+    return data,missing
+
 
 def _prepare_energy_data(payload, token, temp_dir):
-    rows = payload.get("rows") or []
-    if not isinstance(rows, list) or len(rows) > 500:
+    rows=payload.get("rows") or []
+    if not isinstance(rows,list) or len(rows)>500:
         raise ValueError("Dữ liệu năng lượng không hợp lệ")
 
-    dual_meter = bool(payload.get("dual_meter"))
-    data = {
-        "building": str(payload.get("building") or "[CẦN BỔ SUNG]"),
-        "report_date": str(payload.get("report_date") or ""),
-        "energy_name": str(payload.get("energy_name") or "Năng lượng"),
-        "unit": str(payload.get("unit") or ""),
-        "period_label": str(payload.get("period_label") or "THEO BỘ LỌC"),
-        "dual_meter": dual_meter,
-        "meter1_label": str(payload.get("meter1_label") or "EVN1"),
-        "meter2_label": str(payload.get("meter2_label") or "EVN2"),
-        "kt_signer_name": str(payload.get("kt_signer_name") or ""),
-        "kt_signature_path": str(payload.get("_kt_signature_path") or ""),
-        "rows": [],
+    dual_meter=bool(payload.get("dual_meter"))
+    data={
+        "building":str(payload.get("building") or "[CẦN BỔ SUNG]"),
+        "report_date":str(payload.get("report_date") or ""),
+        "energy_name":str(payload.get("energy_name") or "Năng lượng"),
+        "unit":str(payload.get("unit") or ""),
+        "period_label":str(payload.get("period_label") or "THEO BỘ LỌC"),
+        "dual_meter":dual_meter,
+        "meter1_label":str(payload.get("meter1_label") or "EVN1"),
+        "meter2_label":str(payload.get("meter2_label") or "EVN2"),
+        "kt_signer_name":str(payload.get("kt_signer_name") or ""),
+        "kt_signature_path":str(payload.get("_kt_signature_path") or ""),
+        "rows":[]
     }
-    img_dir = os.path.join(temp_dir, "energy_images")
-    os.makedirs(img_dir, exist_ok=True)
-    missing_images = 0
-
-    def download_slot(source, filename):
-        nonlocal missing_images
-        if not source:
-            return None
-        try:
-            raw, ext = _download_image(str(source), token)
-            if raw:
-                local_path = os.path.join(img_dir, filename + ext)
-                with open(local_path, "wb") as fh:
-                    fh.write(raw)
-                return local_path
-            missing_images += 1
-        except Exception:
-            missing_images += 1
-        return None
-
-    for ri, row in enumerate(rows, 1):
-        if not isinstance(row, dict):
+    flat=[]
+    for ri,row in enumerate(rows):
+        if not isinstance(row,dict):
             continue
-        out = {
-            "date": str(row.get("date") or ""),
-            "date_display": str(row.get("date_display") or row.get("date") or ""),
-            "value": row.get("value"),
-            "value2": row.get("value2"),
-            "diff": row.get("diff"),
-            "diff2": row.get("diff2"),
-            "total_diff": row.get("total_diff"),
-            "performer": str(row.get("performer") or ""),
-            "note": str(row.get("note") or ""),
-            "image_path": None,
-            "image2_path": None,
+        out={
+            "date":str(row.get("date") or ""),
+            "date_display":str(row.get("date_display") or row.get("date") or ""),
+            "value":row.get("value"),"value2":row.get("value2"),
+            "diff":row.get("diff"),"diff2":row.get("diff2"),"total_diff":row.get("total_diff"),
+            "performer":str(row.get("performer") or ""),"note":str(row.get("note") or ""),
+            "image_prepared":None,"image2_prepared":None
         }
-        out["image_path"] = download_slot(row.get("image"), "energy_%03d_1" % ri)
-        if dual_meter:
-            out["image2_path"] = download_slot(row.get("image2"), "energy_%03d_2" % ri)
         data["rows"].append(out)
+        row_index=len(data["rows"])-1
+        if row.get("image"):
+            flat.append({"source":str(row.get("image")),"row_index":row_index,"slot":1,"id":str(row.get("image"))})
+        if dual_meter and row.get("image2"):
+            flat.append({"source":str(row.get("image2")),"row_index":row_index,"slot":2,"id":str(row.get("image2"))})
 
-    data["rows"].sort(key=lambda x: (x.get("date") or ""))
-    return data, missing_images
+    prepared,missing=pdfc.prepare_remote_images(flat,token,_download_image,source_key="source")
+    for item in prepared:
+        ri=item.get("row_index")
+        if not item.get("prepared") or not isinstance(ri,int) or ri<0 or ri>=len(data["rows"]):
+            continue
+        data["rows"][ri]["image2_prepared" if item.get("slot")==2 else "image_prepared"]=item["prepared"]
+    data["rows"].sort(key=lambda x:(x.get("date") or ""))
+    return data,missing
 
-def _prepare_tools_data(payload):
+
+def _prepare_tools_data(payload):def _prepare_tools_data(payload):
     tools = payload.get("tools") or []
     if not isinstance(tools, list) or len(tools) > 1000:
         raise ValueError("Dữ liệu dụng cụ không hợp lệ")
@@ -1187,8 +1014,8 @@ def generate_pdf(payload, token):
             build_tools_doc(out_path, data)
             item_count = len(data["tools"])
         elif report_type == "generic":
-            data = _prepare_generic_data(payload)
-            missing_images = 0
+            data = _prepare_generic_data(payload, token, td)
+            missing_images = int(data.pop("_missing_images", 0) or 0)
             build_generic_doc(out_path, data)
             item_count = len(data["rows"])
         else:
