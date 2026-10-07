@@ -2486,3 +2486,62 @@
     pointer-events:none!important;
   }
 }
+
+
+/* LIVE_PROJECT_MOBILE_DOCK_COMPACT_20261007_V3 */
+@media(max-width:760px){
+  #updateMobileNav.updateMobileNav.liveProjectMobileNav{
+    left:0!important;
+    right:0!important;
+    bottom:-1px!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    min-height:calc(66px + env(safe-area-inset-bottom,0px))!important;
+    height:calc(66px + env(safe-area-inset-bottom,0px))!important;
+    padding:4px 7px calc(4px + env(safe-area-inset-bottom,0px))!important;
+    gap:2px!important;
+    border-radius:20px 20px 0 0!important;
+  }
+  body.estaMobileScrollShell #updateMobileNav.updateMobileNav.liveProjectMobileNav{
+    bottom:-1px!important;
+    min-height:calc(66px + env(safe-area-inset-bottom,0px))!important;
+    height:calc(66px + env(safe-area-inset-bottom,0px))!important;
+    padding-bottom:calc(4px + env(safe-area-inset-bottom,0px))!important;
+  }
+  #updateMobileNav.updateMobileNav.liveProjectMobileNav button{
+    height:48px!important;
+    min-height:48px!important;
+    gap:2px!important;
+    padding:3px 1px!important;
+    border-radius:13px!important;
+  }
+  #updateMobileNav.updateMobileNav.liveProjectMobileNav button>span{
+    width:25px!important;
+    height:25px!important;
+  }
+  #updateMobileNav.updateMobileNav.liveProjectMobileNav button svg{
+    width:23px!important;
+    height:23px!important;
+  }
+  #updateMobileNav.updateMobileNav.liveProjectMobileNav button>b{
+    font-size:11px!important;
+    line-height:13px!important;
+    font-weight:650!important;
+  }
+  #updateMobileNav.updateMobileNav.liveProjectMobileNav .updateMobileNotifBadge{
+    top:0!important;
+    right:calc(50% - 23px)!important;
+    min-width:15px!important;
+    height:15px!important;
+    font-size:9px!important;
+    line-height:15px!important;
+  }
+  #app.liveProjectMobileNavMode main{
+    padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;
+    scroll-padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;
+  }
+  #updateMobileNav.updateMobileNav.liveProjectMobileNav::after{
+    bottom:-30px!important;
+    height:32px!important;
+  }
+}
