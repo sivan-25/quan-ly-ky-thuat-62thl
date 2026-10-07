@@ -1390,7 +1390,29 @@ function demoInspectionHtml(ins){
  const items=ins.items||[];
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>'+esc(ins.template_name)+'</title><style>@page{size:A4;margin:20mm}body{font-family:Arial;color:#243746;font-size:11px}h1{text-align:center;color:#173d58}table{width:100%;border-collapse:collapse}th,td{border:1px solid #cfd8de;padding:7px}th{background:#173d58;color:white}.sign{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:40px;text-align:center}.space{height:70px}</style></head><body data-pdf-report="inspection"><h1>BÁO CÁO KIỂM TRA - '+esc(ins.template_name.toUpperCase())+'</h1><p><b>'+esc(ins.period_label)+'</b> · '+esc(currentBuilding.name)+'</p><table><tr><th>STT</th><th>Hạng mục</th><th>Tiêu chuẩn</th><th>Kết quả</th><th>Ghi chú</th></tr>'+items.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.standard||"")+'</td><td>'+esc(x.result||"")+'</td><td>'+esc(x.note||"")+'</td></tr>').join("")+'</table><h3>Kết luận / Kiến nghị</h3><p>'+esc(ins.result_status)+' · '+esc(ins.recommendation||"")+'</p><div class="sign"><div><b>NGƯỜI KIỂM TRA (KT)</b><div class="space"></div>Họ tên: ____________</div><div><b>NGƯỜI KIỂM SOÁT (KST)</b><div class="space"></div>Họ tên: ____________</div></div></body></html>';
 }
-window.demoExportInspection=id=>{const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(ins)downloadReportPdf(demoInspectionHtml(ins),"BaoCao_KiemTra_"+ins.inspection_code+".pdf")};
+window.demoExportInspection=async id=>{
+ const ins=demoCache.inspections.find(x=>String(x.id)===String(id));if(!ins)return;
+ if(typeof window.exportGenericEstaPdf!=="function")return toast("Bộ xuất PDF ESTA chưa sẵn sàng");
+ const items=Array.isArray(ins.items)?ins.items:[];
+ return window.exportGenericEstaPdf({
+   title:"BÁO CÁO KIỂM TRA · "+String(ins.template_name||"CHECKLIST").toUpperCase(),
+   sectionLabel:"KIỂM TRA / CHECKLIST",tableLabel:"HẠNG MỤC KIỂM TRA",
+   periodLabel:ins.period_label||"THEO LẦN KIỂM TRA",
+   subtitle:[ins.inspection_date?fmt(ins.inspection_date):"",ins.result_status||"",ins.recommendation||""].filter(Boolean).join(" · "),
+   filename:"BaoCao_KiemTra_"+(ins.inspection_code||today().replaceAll("-",""))+".pdf",
+   columns:[
+     {label:"STT",weight:.6},{label:"Hạng mục",weight:2.6},{label:"Tiêu chuẩn",weight:2},
+     {label:"Kết quả",weight:1.4},{label:"Ghi chú",weight:2.4}
+   ],
+   rows:items.map((x,i)=>[i+1,x.item||"—",x.standard||"—",x.result||"—",x.note||"—"]),
+   summaries:[
+     {value:items.length,label:"HẠNG MỤC"},
+     {value:items.filter(x=>x.result==="Đạt").length,label:"ĐẠT"},
+     {value:items.filter(x=>x.result&&x.result!=="Đạt").length,label:"CẦN THEO DÕI"},
+     {value:ins.result_status||"—",label:"KẾT QUẢ TỔNG THỂ"}
+   ]
+ });
+};
 window.demoAddChecklist=async()=>{
  await demoLoad();
  const modal=$("#demoChecklistModal");if(!modal)return;
@@ -1590,17 +1612,47 @@ function demoIncidentsReportHtml(){
  const bodyRows=rows.map(x=>'<tr><td>'+esc(useStartDate?demoIncidentVisibleRef(x):x.incident_code)+'</td><td>'+esc(x.area||"—")+'</td><td>'+esc(x.symptom||"—")+'</td>'+(hasCause?'<td>'+esc(demoCauseValue(x.cause)||"—")+'</td>':"")+'<td>'+esc(x.severity)+'</td><td>'+esc(x.status)+'</td></tr>').join("");
  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><style>@page{size:A4;margin:20mm}body{font-family:Arial;color:#243746;font-size:10px}h1{text-align:center;color:#173d58}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccd7de;padding:6px}th{background:#173d58;color:white}.sign{display:flex;justify-content:space-around;margin-top:40px}</style></head><body data-pdf-report="inspection"><h1>BÁO CÁO SỰ CỐ & DEFECT</h1><p>'+esc(currentBuilding.name)+' · '+esc(workReportPeriod("week").label)+'</p><table><tr><th>'+(useStartDate?'Ngày bắt đầu':'Mã')+'</th><th>Khu vực</th><th>Hiện tượng</th>'+causeHead+'<th>Mức độ</th><th>Trạng thái</th></tr>'+bodyRows+'</table><div class="sign"><div>NGƯỜI KIỂM TRA (KT)<br><br><br>Họ tên: ________</div><div>NGƯỜI KIỂM SOÁT (KST)<br><br><br>Họ tên: ________</div></div></body></html>';
 }
+async function demoExportIncidentsEstaPdf(){
+ if(typeof window.exportGenericEstaPdf!=="function")return toast("Bộ xuất PDF ESTA chưa sẵn sàng");
+ const rows=demoCache.incidents||[],useStartDate=demoUseIncidentStartDate();
+ if(!rows.length)return toast("Không có sự cố / defect để xuất PDF");
+ const hasCause=rows.some(x=>!!demoCauseValue(x.cause));
+ const columns=[
+   {label:useStartDate?"Ngày bắt đầu":"Mã",weight:1.3},{label:"Khu vực",weight:1.5},{label:"Hiện tượng",weight:2.6}
+ ];
+ if(hasCause)columns.push({label:"Nguyên nhân",weight:2.2});
+ columns.push({label:"Mức độ",weight:1.1},{label:"Trạng thái",weight:1.2});
+ const data=rows.map(x=>{
+   const r=[useStartDate?demoIncidentVisibleRef(x):(x.incident_code||"—"),x.area||"—",x.symptom||"—"];
+   if(hasCause)r.push(demoCauseValue(x.cause)||"—");
+   r.push(x.severity||"—",x.status||"—");
+   return r;
+ });
+ return window.exportGenericEstaPdf({
+   title:"BÁO CÁO SỰ CỐ & DEFECT",sectionLabel:"SỰ CỐ / DEFECT",tableLabel:"DANH SÁCH SỰ CỐ",
+   periodLabel:workReportPeriod("week").label,filename:"BaoCao_SuCo_"+workReportPeriod("week").suffix+".pdf",
+   columns,rows:data,
+   summaries:[
+     {value:rows.length,label:"TỔNG SỰ CỐ"},
+     {value:rows.filter(x=>x.status==="Đã đóng").length,label:"ĐÃ ĐÓNG"},
+     {value:rows.filter(x=>x.status!=="Đã đóng").length,label:"ĐANG XỬ LÝ"},
+     {value:rows.filter(x=>["Khẩn cấp","Cao"].includes(x.severity)).length,label:"ƯU TIÊN CAO"}
+   ]
+ });
+}
+window.demoExportIncidentsEstaPdf=demoExportIncidentsEstaPdf;
+
 async function demoRenderReports(){
  return window.ESTAReports.open();
 }
 window.demoExportReport=async type=>{
  const r=rangeDates("week");
  if(type==="work"){const a=load().filter(x=>x.d>=r.from&&x.d<=r.to);if(!a.length)return toast("Không có công việc trong kỳ");return openReport(a,"week")}
- if(type==="maintenance")return downloadReportPdf(maintenanceReportHtml("week"),maintenanceReportFilename(maintenanceReportPeriod("week")));
- if(type==="incident")return downloadReportPdf(demoIncidentsReportHtml(),"BaoCao_SuCo_"+workReportPeriod("week").suffix+".pdf");
+ if(type==="maintenance")return window.exportMaintenanceEstaPdf?.("week");
+ if(type==="incident")return window.demoExportIncidentsEstaPdf?.();
  if(type==="inspection"){const ins=demoCache.inspections[0];if(ins)return window.demoExportInspection(ins.id)}
- if(type==="energy"){setEnergyRange("week");const rows=energyRows();if(rows.length)return downloadReportPdf(energyReportHtml(rows),"BaoCao_NangLuong_"+workReportPeriod("week").suffix+".pdf")}
- if(type==="inventory"){await loadInventoryData(currentBuilding.id);return inventoryPrintWindow(materialReportHtml(),"BaoCao_VatTu_"+workReportPeriod("week").suffix+".pdf")}
+ if(type==="energy"){setEnergyRange("week");const rows=energyRowsForReport("week");if(rows.length)return exportEnergyEstaPdf(rows,"week")}
+ if(type==="inventory"){await loadInventoryData(currentBuilding.id);return window.exportMaterialsEstaPdf?.()}
 };
 
 document.addEventListener("click",e=>{
