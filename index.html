@@ -1367,7 +1367,7 @@
       <div id="demoReportModuleGrid" class="rc-module-list"></div>
       <div class="rc-options">
         <label><input id="rcIncludePhotos" type="checkbox" checked><span>Đính kèm ảnh hiện trường</span></label>
-        <label class="rc-field"><span>Bố cục ảnh</span><select id="rcPhotoLayout"><option value="auto">Tự động · ảnh đứng 2 / ngang 1</option><option value="1">1 ảnh mỗi dòng</option><option value="2">2 ảnh mỗi dòng</option></select></label>
+        <label class="rc-field"><span>Bố cục ảnh</span><select id="rcPhotoLayout"><option value="3" selected>3 ảnh mỗi dòng · gọn</option><option value="2">2 ảnh mỗi dòng</option><option value="1">1 ảnh mỗi dòng</option></select></label>
         <p>Ảnh và ghi chú lấy theo các bản ghi đã chọn trong kỳ.</p>
       </div>
       <div id="rcExportState" class="rc-export-state hide"><p id="rcExportNote" role="status"></p><button id="rcLatestPeriod" type="button" class="rc-button hide">Xem tháng có dữ liệu gần nhất</button></div>
@@ -2400,7 +2400,7 @@
 <div class="exportSection"><b>Báo cáo Công việc · Mẫu ESTA chuẩn</b><small>Xuất bằng ESTA_Report_Generator: 1 file PDF gồm Phần 1 Tổng hợp + Phần 2 Chi tiết & hình ảnh, font Inter và đúng bảng màu ESTA.</small>
 <div class="workPdfLayout workPdfFixedLayout">
   <span>Trình bày hình ảnh</span>
-  <div class="workPdfFixedOption"><b>Tự động theo chiều ảnh</b><small>2 ảnh dọc liên tiếp sẽ ghép cạnh nhau; ảnh ngang hoặc ảnh dọc lẻ hiển thị khung lớn. Giữ nguyên thứ tự, không cắt ảnh; công việc không có ảnh sẽ bỏ phần hình ảnh.</small></div>
+  <div class="workPdfFixedOption"><b>Bố cục ảnh gọn · tối đa 3 ảnh/hàng</b><small>Ảnh giữ nguyên tỉ lệ theo kiểu contain, không cắt vùng khoanh/vẽ. 1 ảnh dùng 1 ô lớn; 2 ảnh nằm cùng hàng; từ 3 ảnh trở lên xếp tối đa 3 ảnh mỗi hàng.</small></div>
 </div>
 <div class="exportChoices"><button data-range="today">Hôm nay</button><button data-range="week">Tuần này</button><button data-range="month">Tháng này</button><button data-range="current">Theo bộ lọc hiện tại</button></div></div>
 </div></div>
@@ -2429,8 +2429,8 @@
   </div>
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="app.js?v=20261007-esta-pdf-only03"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261007-esta-pdf-only03"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261007-esta-pdf-only03"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261006-dispatch-clear01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261006-single-result01"></script></body></html>
+<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="app.js?v=20261007-pdf-compact01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="contractor.js?v=20261007-pdf-compact01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261007-pdf-compact01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261006-dispatch-clear01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261006-single-result01"></script></body></html>
 
 
 
