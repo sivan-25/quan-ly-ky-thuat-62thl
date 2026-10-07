@@ -4,3 +4,7 @@ __pycache__/
 node_modules/
 .env
 .env.*
+playwright.local.mjs
+playwright-report/
+test-results/
+supabase/.temp/

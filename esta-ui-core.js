@@ -1,6 +1,7 @@
 (() => {
   "use strict";
   let scheduled=false;
+  const addClass=(el,name)=>{if(!el.classList.contains(name))el.classList.add(name)};
 
   const formIds=[
     "taskForm","energyForm","materialItemForm","stockTxnForm","toolItemForm",
@@ -20,32 +21,32 @@
   function decorateForms(){
     for(const id of formIds){
       const el=document.getElementById(id);if(!el)continue;
-      el.classList.add("estaFormCore");
+      addClass(el,"estaFormCore");
       if(!el.getAttribute("novalidate"))el.setAttribute("data-esta-native-validation","enabled");
     }
   }
   function decorateTables(){
     document.querySelectorAll("#app.new10Pilot .modulePage table,#app.new10Pilot .demoSpecialPage table").forEach(table=>{
-      table.classList.add("estaDataTableCore");
+      addClass(table,"estaDataTableCore");
       if(!table.getAttribute("role"))table.setAttribute("role","table");
       table.querySelectorAll("thead th").forEach(th=>{if(!th.getAttribute("scope"))th.setAttribute("scope","col")});
       const wrap=table.parentElement;
-      if(wrap&&wrap!==table&&/table|wrap|scroll/i.test(wrap.className||""))wrap.classList.add("estaTableViewport");
+      if(wrap&&wrap!==table&&/table|wrap|scroll/i.test(wrap.className||""))addClass(wrap,"estaTableViewport");
     });
   }
   function decorateToolbars(){
-    toolbarSelectors.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.classList.add("estaToolbarCore")));
+    toolbarSelectors.forEach(sel=>document.querySelectorAll(sel).forEach(el=>addClass(el,"estaToolbarCore")));
   }
   function decorateOverlays(){
     document.querySelectorAll("#app.new10Pilot .modal,#app.new10Pilot .workEditDrawer,#app.new10Pilot [class*='Modal']:not(form)").forEach(el=>{
-      el.classList.add("estaOverlayCore");
+      addClass(el,"estaOverlayCore");
       if(!el.getAttribute("role"))el.setAttribute("role","dialog");
       if(!el.hasAttribute("aria-modal"))el.setAttribute("aria-modal","true");
     });
   }
   function decorateButtons(){
     document.querySelectorAll("#app.new10Pilot button").forEach(btn=>{
-      if(!btn.type)btn.type="button";
+      if(!btn.hasAttribute("type")&&!btn.closest("form"))btn.type="button";
       if(!btn.getAttribute("aria-label")&&!text(btn))btn.setAttribute("aria-label",btn.title||"Thao tác");
     });
   }
@@ -54,7 +55,8 @@
     scheduled=false;
     const app=document.getElementById("app");
     if(!app)return;
-    app.classList.toggle("estaCoreV2",isPilot());
+    const active=isPilot();
+    if(app.classList.contains("estaCoreV2")!==active)app.classList.toggle("estaCoreV2",active);
     if(!isPilot())return;
     decorateForms();decorateTables();decorateToolbars();decorateOverlays();decorateButtons();
     app.dataset.estaCore="2";

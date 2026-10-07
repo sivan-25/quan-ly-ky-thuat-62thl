@@ -10,6 +10,7 @@ async function activateNew10(page) {
 
   await page.evaluate(() => {
     currentAccount = {
+      id: "new10-qa-admin",
       is_admin: true,
       display_name: "NEW10 QA Admin",
       buildings: [{ id: "NEW10", name: "new 1.0", role: "editor" }]
@@ -394,4 +395,99 @@ test("NEW10 realtime layer keeps polling fallback", async ({ page }) => {
   const state=await page.evaluate(()=>window.ESTA_REALTIME?.status?.());
   expect(state).toBeTruthy();
   expect(state.fallbackPollingMs).toBe(5000);
+});
+
+
+test("NEW10 interface settles without observer repaint loop", async ({ page }) => {
+  await activateNew10(page);
+  await page.waitForTimeout(250);
+  const mutations=await page.evaluate(async()=>{
+    let count=0;
+    const observer=new MutationObserver(rows=>count+=rows.length);
+    observer.observe(document.getElementById("app"),{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+    await new Promise(resolve=>setTimeout(resolve,400));observer.disconnect();return count;
+  });
+  expect(mutations).toBeLessThan(40);
+});
+
+test("NEW10 queued media keeps uploaded ref until server confirms the image link", async ({ page }) => {
+  await activateNew10(page);
+  let uploads=0,attachments=0;
+  await page.route("https://upcjcrycahdfroxggsdz.supabase.co/**", async route=>{
+    const request=route.request(),url=request.url();
+    if(url.includes("/storage/v1/object/")&&request.method()==="POST"){
+      uploads++;return route.fulfill({status:200,contentType:"application/json",body:"{}"});
+    }
+    if(url.includes("/functions/v1/project-sync")){
+      const body=request.postDataJSON();
+      if(body.action==="get")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({snapshot:{tasks:[],energy:[{id:991,type:"electric",date:"2026-10-07",value:50}]}})});
+      if(body.action==="upsert_energy"){
+        attachments++;
+        return route.fulfill({status:attachments===1?503:200,contentType:"application/json",body:JSON.stringify(attachments===1?{message:"Temporary unavailable"}:{updated_at:"ok"})});
+      }
+    }
+    await route.fulfill({status:200,contentType:"application/json",body:"[]"});
+  });
+  await page.evaluate(async()=>{
+    centralSession={access_token:"qa-token",expires_at:4102444800};
+    const descriptor=Object.getOwnPropertyDescriptor(Navigator.prototype,"onLine");
+    Object.defineProperty(Navigator.prototype,"onLine",{configurable:true,get:()=>false});
+    try{
+      // A real browser-created JPEG Blob exercises native IndexedDB I/O.
+      const canvas=document.createElement("canvas");canvas.width=canvas.height=2;
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg"));
+      await window.ESTA_MEDIA_MANAGER.energyFile(new File([blob],"camera-qa.jpg",{type:"image/jpeg"}),991,0,"NEW10");
+    }finally{Object.defineProperty(Navigator.prototype,"onLine",descriptor)}
+  });
+  await page.evaluate(()=>window.ESTA_MEDIA_MANAGER.flush());
+  expect(await page.evaluate(()=>window.ESTA_MEDIA_MANAGER.count())).toBe(1);
+  expect(uploads).toBe(1);
+  await page.evaluate(()=>window.ESTA_MEDIA_MANAGER.flush());
+  expect(await page.evaluate(()=>window.ESTA_MEDIA_MANAGER.count())).toBe(0);
+  expect(uploads).toBe(1);expect(attachments).toBe(2);
+});
+
+test("NEW10 pending edits survive reload and old cloud data", async ({ page }) => {
+  await activateNew10(page);
+  await page.route("https://upcjcrycahdfroxggsdz.supabase.co/**",route=>route.fulfill({status:503,contentType:"application/json",body:'{"message":"Temporary offline"}'}));
+  await page.evaluate(async()=>{
+    centralSession={access_token:"qa-token",expires_at:4102444800};
+    await window.ESTA_SYNC_QUEUE.enqueue("upsert_task",{item:{id:8001,d:"2026-10-07",c:"Chờ gửi sau khi có mạng",t:"Hằng ngày",s:"Đang thực hiện",a:"QA",n:"",imgs:[]}},"NEW10");
+  });
+  await activateNew10(page);
+  const task=await page.evaluate(()=>{
+    applyCloudSnapshot(currentBuilding,{tasks:[],energy:[],updated_at:"older"});
+    return readTaskCacheFor("NEW10").find(x=>x.id===8001);
+  });
+  expect(task.c).toBe("Chờ gửi sau khi có mạng");
+  expect(await page.evaluate(()=>window.ESTA_SYNC_QUEUE.count())).toBe(1);
+});
+
+test("NEW10 energy save stays with its original project during navigation", async ({ page }) => {
+  await activateNew10(page);
+  const result=await page.evaluate(async()=>{
+    centralSession={access_token:"qa-token",expires_at:4102444800};
+    const originalManager=window.ESTA_MEDIA_MANAGER,originalSync=window.syncEnergyRecord;
+    let started,release,sent;
+    const began=new Promise(resolve=>started=resolve);
+    window.ESTA_MEDIA_MANAGER={energyFile:async()=>{started();await new Promise(resolve=>release=resolve);return {ref:"storage:test-energy.jpg",queued:false}}};
+    window.syncEnergyRecord=async(_action,item,buildingId)=>{sent={item,buildingId}};
+    try{
+      writeEnergyCacheFor("NEW10",[]);writeEnergyCacheFor("127HH",[]);
+      document.getElementById("energyDate").value="2026-10-07";
+      document.getElementById("energyValue").value="125";
+      energySelectedPeople=["QA"];
+      const files=new DataTransfer();files.items.add(new File(["test"],"camera-qa.jpg",{type:"image/jpeg"}));
+      document.getElementById("energyImage").files=files.files;
+      const saving=document.getElementById("energyForm").onsubmit({preventDefault(){}});
+      await began;
+      currentBuilding={id:"127HH",name:"127 HH",role:"editor"};
+      document.getElementById("energyValue").value="999";
+      release();await saving;
+      return {sent,pilot:readEnergyCacheFor("NEW10"),other:readEnergyCacheFor("127HH")};
+    }finally{window.ESTA_MEDIA_MANAGER=originalManager;window.syncEnergyRecord=originalSync}
+  });
+  expect(result.sent.buildingId).toBe("NEW10");
+  expect(result.sent.item.value).toBe(125);
+  expect(result.pilot).toHaveLength(1);expect(result.other).toHaveLength(0);
 });

@@ -41,39 +41,48 @@
     return raw.startsWith(prefix)?raw.slice(prefix.length):"";
   }
   async function archivePdf({blob,buildingId,filename,reportType,periodLabel,periodFrom,periodTo,createdBy}){
-    if(!blob?.size)throw new Error("PDF rỗng");
-    const version=await nextVersion({buildingId,reportType,periodFrom,periodTo});
-    const stamp=new Date().toISOString().replace(/[:.]/g,"-");
+    if(!blob?.size||blob.type!=="application/pdf")throw new Error("PDF không hợp lệ");
+    if(blob.size>50*1024*1024)throw new Error("PDF vượt quá giới hạn 50 MB");
+    const sha=await checksum(blob);
+    const id=crypto.randomUUID();
     const year=String(new Date().getFullYear());
-    const path=storageProjectSegment(buildingId)+"/reports/"+year+"/"+safe(filename.replace(/\.pdf$/i,""))+"-v"+version+"-"+stamp+".pdf";
-    const [fileRef,sha]=await Promise.all([upload(blob,path),checksum(blob)]);
+    const path=storageProjectSegment(buildingId)+"/reports/"+year+"/"+safe(filename.replace(/\.pdf$/i,""))+"-"+id+".pdf";
+    const fileRef=await upload(blob,path);
     const record={
-      building_id:buildingId,
-      report_code:"BC-"+buildingId+"-"+Date.now().toString(36).toUpperCase(),
-      report_type:reportType,
-      period_label:periodLabel||"",
-      period_from:periodFrom||null,
-      period_to:periodTo||null,
-      file_name:filename,
-      file_ref:fileRef,
-      file_size:blob.size,
-      version,
-      checksum:sha,
-      mime_type:"application/pdf",
-      created_by:createdBy||null
+      id,building_id:buildingId,report_code:"BC-"+buildingId+"-"+id,
+      report_type:reportType,period_label:periodLabel||"",period_from:periodFrom||null,period_to:periodTo||null,
+      file_name:filename,file_ref:fileRef,file_size:blob.size,version:1,checksum:sha,mime_type:"application/pdf",created_by:createdBy||null
     };
     try{
-      const inserted=await sbFetch("/rest/v1/report_registry?select=*",{
-        method:"POST",token:centralSession?.access_token,body:record
-      });
-      return {record:Array.isArray(inserted)&&inserted[0]?inserted[0]:record,version,fileRef};
+      for(let attempt=0;attempt<4;attempt++){
+        record.version=await nextVersion({buildingId,reportType,periodFrom,periodTo});
+        try{
+          const inserted=await sbFetch("/rest/v1/report_registry?select=*",{
+            method:"POST",token:centralSession?.access_token,body:record,prefer:"return=representation"
+          });
+          const saved=inserted?.[0]||record;
+          return {record:saved,version:saved.version,fileRef};
+        }catch(err){
+          // Two users may export the same period simultaneously. The unique
+          // database index chooses a winner; retry the metadata, not the PDF.
+          if(err.code==="23505"&&attempt<3)continue;
+          throw err;
+        }
+      }
     }catch(err){
+      // A dropped response can follow a successful insert. Recover by its
+      // unique ID before considering cleanup; never delete a committed PDF.
       try{
-        await centralAuthFetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+mediaPathUrl(path),{method:"DELETE"});
+        const saved=await sbFetch("/rest/v1/report_registry?select=*&id=eq."+id,{token:centralSession?.access_token});
+        if(saved?.[0])return {record:saved[0],version:saved[0].version,fileRef};
+        if(Number(err.status)>=400&&Number(err.status)<500){
+          await centralAuthFetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+mediaPathUrl(path),{method:"DELETE"});
+        }
       }catch(_){}
       throw err;
     }
   }
+
   async function download(ref,filename="ESTA-report.pdf"){
     const path=splitRef(ref);if(!path)throw new Error("Tham chiếu PDF không hợp lệ");
     const res=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+BUCKET+"/"+mediaPathUrl(path));

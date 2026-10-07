@@ -223,3 +223,6 @@
   letter-spacing: .35px;
   vertical-align: middle;
 }
+
+#new10SyncStatus[role="button"]{cursor:pointer}
+#new10SyncStatus[role="button"]:focus-visible{outline:2px solid #315a72;outline-offset:3px}

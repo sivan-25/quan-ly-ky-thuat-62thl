@@ -4,10 +4,15 @@
   const isoDate = /^\d{4}-\d{2}-\d{2}$/;
   const text = (v) => String(v ?? "").trim();
   const number = (v) => Number(v);
-  const finite = (v) => Number.isFinite(number(v));
+  const finite = (v) => v !== null && v !== undefined && typeof v !== "boolean" && text(v) !== "" && Number.isFinite(number(v));
   const nonNegative = (v) => finite(v) && number(v) >= 0;
   const positive = (v) => finite(v) && number(v) > 0;
-  const validDate = (v) => isoDate.test(text(v)) && !Number.isNaN(Date.parse(text(v) + "T00:00:00"));
+  const validDate = (v) => {
+    const value=text(v);
+    if(!isoDate.test(value))return false;
+    const date=new Date(value+"T00:00:00Z");
+    return !Number.isNaN(date.getTime())&&date.toISOString().slice(0,10)===value;
+  };
 
   function issue(field, message) { return { field, message }; }
   function result(issues) { return { ok: issues.length === 0, issues, first: issues[0] || null }; }
@@ -17,7 +22,7 @@
       const x=[];
       if(!validDate(v.date)) x.push(issue("date","Ngày công việc không hợp lệ"));
       if(text(v.content).length < 2) x.push(issue("content","Vui lòng nhập nội dung công việc"));
-      if(!Array.isArray(v.performers) || !v.performers.filter(Boolean).length) x.push(issue("performer","Vui lòng chọn ít nhất 1 người thực hiện"));
+      if(!Array.isArray(v.performers) || !v.performers.filter(Boolean).length) x.push(issue("taskPeopleButton","Vui lòng chọn ít nhất 1 người thực hiện"));
       if(v.requiresCompletionNote && text(v.note).length < 1) x.push(issue("note","Cần nhập ghi chú trước khi hoàn thành công việc"));
       return result(x);
     },
@@ -26,7 +31,7 @@
       if(!validDate(v.date)) x.push(issue("energyDate","Ngày ghi chỉ số không hợp lệ"));
       if(!finite(v.value) || number(v.value) < 0) x.push(issue("energyValue","Chỉ số phải là số hợp lệ và không âm"));
       if(v.dual && (!finite(v.value2) || number(v.value2) < 0)) x.push(issue("energyValue2","Vui lòng nhập EVN2 hợp lệ"));
-      if(!Array.isArray(v.performers) || !v.performers.filter(Boolean).length) x.push(issue("energyPerformer","Vui lòng chọn ít nhất 1 người thực hiện"));
+      if(!Array.isArray(v.performers) || !v.performers.filter(Boolean).length) x.push(issue("energyPeopleButton","Vui lòng chọn ít nhất 1 người thực hiện"));
       return result(x);
     },
     material(v) {

@@ -124,14 +124,14 @@ async function centralAuthFetch(url,options={}){
  }
  return res;
 }
-async function sbFetch(path,{method="GET",body=null,token=null}={}){
+async function sbFetch(path,{method="GET",body=null,token=null,prefer=null}={}){
  const usesCentral=!!token&&token===centralSession?.access_token;
  if(usesCentral){await ensureCentralSessionFresh();token=centralSession?.access_token||token}
- const make=()=>{const headers={"apikey":SB_KEY,"Content-Type":"application/json"};if(token)headers.Authorization="Bearer "+token;return fetch(SB_URL+path,{method,headers,body:body===null?null:JSON.stringify(body)})};
+ const make=()=>{const headers={"apikey":SB_KEY,"Content-Type":"application/json"};if(token)headers.Authorization="Bearer "+token;if(prefer)headers.Prefer=prefer;return fetch(SB_URL+path,{method,headers,body:body===null?null:JSON.stringify(body)})};
  let res=await make();
  if(res.status===401&&usesCentral&&centralSession?.refresh_token){await ensureCentralSessionFresh(true);token=centralSession.access_token;res=await make()}
  let data=null;try{data=await res.json()}catch(e){}
- if(!res.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||"Không thể kết nối máy chủ");err.status=res.status;throw err}
+ if(!res.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||"Không thể kết nối máy chủ");err.status=res.status;err.code=data?.code;throw err}
  return data;
 }
 const MEDIA_BUCKET="task-images";
@@ -200,7 +200,7 @@ async function uploadMediaBlob(blob,kind,recordId,index=0,buildingId=currentBuil
    headers:{"Content-Type":"image/jpeg","x-upsert":"false"},
    body:blob
  });
- if(!res.ok){let d={};try{d=await res.json()}catch(e){}throw new Error(d?.message||d?.error||"Không thể tải hình lên máy chủ")}
+ if(!res.ok){let d={};try{d=await res.json()}catch(e){}const err=new Error(d?.message||d?.error||"Không thể tải hình lên máy chủ");err.status=res.status;throw err}
  return "storage:"+path;
 }
 async function uploadMediaFiles(files,kind,recordId,onProgress,buildingId=currentBuilding.id){
@@ -277,12 +277,15 @@ async function projectSync(action,payload={},buildingId=currentBuilding?.id){
  const pilot=window.ESTA_PROJECT_STORE?.isPilot?.(buildingId);
  const mutation=action!=="get";
  if(pilot&&mutation)window.ESTA_PROJECT_STORE.setStatus("syncing",action);
- if(pilot&&mutation&&window.ESTA_SYNC_QUEUE&&!navigator.onLine){
-   return window.ESTA_SYNC_QUEUE.enqueue(action,payload,buildingId,"offline");
+ if(pilot&&mutation&&window.ESTA_SYNC_QUEUE){
+   const queued=await window.ESTA_SYNC_QUEUE.enqueue(action,payload,buildingId,navigator.onLine?"":"offline");
+   if(navigator.onLine)await window.ESTA_SYNC_QUEUE.flush();
+   if(window.ESTA_SYNC_QUEUE.read().some(x=>x.id===queued.queue_id))return queued;
+   return {queued:false};
  }
  try{
    const result=await projectSyncDirect(action,payload,buildingId);
-   if(pilot)window.ESTA_PROJECT_STORE.setStatus("synced",action);
+   if(pilot&&!window.ESTA_SYNC_QUEUE?.status?.())window.ESTA_PROJECT_STORE.setStatus("synced",action);
    return result;
  }catch(err){
    if(pilot&&mutation&&window.ESTA_SYNC_QUEUE?.transient?.(err)){
@@ -583,8 +586,10 @@ setupMobilePeopleSheets();
 
 function applyCloudSnapshot(building,row){
  if(!row)return;
- writeTaskCacheFor(building.id,Array.isArray(row.tasks)?row.tasks:[]);
- writeEnergyCacheFor(building.id,Array.isArray(row.energy)?row.energy:[]);
+ const visible=window.ESTA_PROJECT_STORE?.isPilot?.(building.id)&&window.ESTA_SYNC_QUEUE
+   ?window.ESTA_SYNC_QUEUE.overlay(row,building.id):row;
+ writeTaskCacheFor(building.id,Array.isArray(visible.tasks)?visible.tasks:[]);
+ writeEnergyCacheFor(building.id,Array.isArray(visible.energy)?visible.energy:[]);
  cloudVersionByBuilding[building.id]=row.updated_at||"";
  if(currentBuilding?.id===building.id){render();renderEnergy();if(!$("#homePage").classList.contains("hide"))renderHomeDashboard()}
 }
@@ -621,13 +626,13 @@ async function appendTaskImages(taskId,images,buildingId){
  const r=await projectSync("append_task_images",{id:taskId,images},buildingId);
  if(r?.updated_at)cloudVersionByBuilding[buildingId]=r.updated_at;
 }
-async function syncEnergyRecord(action,itemOrId){
+async function syncEnergyRecord(action,itemOrId,buildingId=currentBuilding?.id){
  if(!centralSession?.access_token)return;
  try{
    const r=action==="upsert_energy"
-     ?await projectSync(action,{item:itemOrId})
-     :await projectSync(action,{id:itemOrId});
-   if(r?.updated_at)cloudVersionByBuilding[currentBuilding.id]=r.updated_at;
+     ?await projectSync(action,{item:itemOrId},buildingId)
+     :await projectSync(action,{id:itemOrId},buildingId);
+   if(r?.updated_at)cloudVersionByBuilding[buildingId]=r.updated_at;
  }catch(e){toast("Đã lưu trên máy nhưng chưa đồng bộ lên máy chủ");throw e}
 }
 async function loadProjectSnapshot(building){
@@ -642,7 +647,9 @@ async function loadProjectSnapshot(building){
  let previousLocalEnergy=readEnergyCacheFor(buildingId);
 
  try{
+   const queueRevision=window.ESTA_SYNC_QUEUE?.revision?.();
    const r=await projectSync("get",{},buildingId);
+   if(window.ESTA_PROJECT_STORE?.isPilot?.(buildingId)&&queueRevision!==window.ESTA_SYNC_QUEUE?.revision?.())return false;
    if(requestSeq!==projectOpenSeq||!projectOverviewActive||currentBuilding?.id!==buildingId)return false;
    const row=r?.snapshot||{building_id:buildingId,tasks:[],energy:[],updated_at:null};
    const cloudTasks=Array.isArray(row.tasks)?row.tasks:[];
@@ -662,8 +669,10 @@ async function loadProjectSnapshot(building){
      }
    }catch(e){console.warn("Local backup skipped",e)}
 
-   writeTaskCacheFor(buildingId,cloudTasks);
-   writeEnergyCacheFor(buildingId,cloudEnergy);
+   const visible=window.ESTA_PROJECT_STORE?.isPilot?.(buildingId)&&window.ESTA_SYNC_QUEUE
+     ?window.ESTA_SYNC_QUEUE.overlay({tasks:cloudTasks,energy:cloudEnergy},buildingId):{tasks:cloudTasks,energy:cloudEnergy};
+   writeTaskCacheFor(buildingId,visible.tasks);
+   writeEnergyCacheFor(buildingId,visible.energy);
    cloudVersionByBuilding[buildingId]=row.updated_at||"";
 
    // Best-effort legacy base64 migration. It must never prevent the project
@@ -706,8 +715,10 @@ async function pollProjectSnapshot(){
  if(!centralSession?.access_token||!currentBuilding?.id||document.hidden)return;
  if($("#adminPage")&&!$("#adminPage").classList.contains("hide"))return;
  try{
-   const r=await projectSync("get"),row=r?.snapshot;
-   if(row&&row.updated_at&&row.updated_at!==cloudVersionByBuilding[currentBuilding.id])applyCloudSnapshot(currentBuilding,row);
+   const building={...currentBuilding},queueRevision=window.ESTA_SYNC_QUEUE?.revision?.();
+   const r=await projectSync("get",{},building.id),row=r?.snapshot;
+   if(currentBuilding?.id!==building.id||(window.ESTA_PROJECT_STORE?.isPilot?.(building.id)&&queueRevision!==window.ESTA_SYNC_QUEUE?.revision?.()))return;
+   if(row&&row.updated_at&&row.updated_at!==cloudVersionByBuilding[building.id])applyCloudSnapshot(building,row);
  }catch(e){console.warn("Cloud refresh failed",e)}
 }
 setInterval(pollProjectSnapshot,5000);
@@ -2338,39 +2349,36 @@ $("#energyForm").onsubmit=async e=>{
  if(dual&&!$("#energyValue2").value){toast("Vui lòng nhập chỉ số EVN2");$("#energyValue2").focus();return}
  const btn=$("#energySaveBtn");btn.disabled=true;
  try{
+  const buildingId=currentBuilding.id;
   const editId=$("#energyEditId").value,id=editId||Date.now();
+  const fields={type:energyType,date:$("#energyDate").value,value:Number($("#energyValue").value),value2:dual?Number($("#energyValue2").value):null,a:energySelectedPeople.join(", "),performers:[...energySelectedPeople],note:$("#energyNote").value.trim()};
   const all=energyLoad(),old=editId?all.find(x=>String(x.id)===String(editId)):null;
   let image=old?.image||"",image2=old?.image2||"",queuedImages=0;
   const f=$("#energyImage").files[0],f2=$("#energyImage2").files[0];
   if(f){
-    if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_MEDIA_MANAGER){
-      const out=await window.ESTA_MEDIA_MANAGER.energyFile(f,id,0,currentBuilding.id);
+    if(window.ESTA_PROJECT_STORE?.isPilot?.(buildingId)&&window.ESTA_MEDIA_MANAGER){
+      const out=await window.ESTA_MEDIA_MANAGER.energyFile(f,id,0,buildingId);
       if(out.ref)image=out.ref;if(out.queued)queuedImages++;
-    }else{const blob=await imageFileToBlob(f);image=await uploadMediaBlob(blob,"energy",id,0)}
+    }else{const blob=await imageFileToBlob(f);image=await uploadMediaBlob(blob,"energy",id,0,buildingId)}
   }
   if(dual&&f2){
-    if(window.ESTA_PROJECT_STORE?.isPilot?.()&&window.ESTA_MEDIA_MANAGER){
-      const out=await window.ESTA_MEDIA_MANAGER.energyFile(f2,id,1,currentBuilding.id);
+    if(window.ESTA_PROJECT_STORE?.isPilot?.(buildingId)&&window.ESTA_MEDIA_MANAGER){
+      const out=await window.ESTA_MEDIA_MANAGER.energyFile(f2,id,1,buildingId);
       if(out.ref)image2=out.ref;if(out.queued)queuedImages++;
-    }else{const blob=await imageFileToBlob(f2);image2=await uploadMediaBlob(blob,"energy",id,1)}
+    }else{const blob=await imageFileToBlob(f2);image2=await uploadMediaBlob(blob,"energy",id,1,buildingId)}
   }
   const obj={
     id,
-    type:energyType,
-    date:$("#energyDate").value,
-    value:Number($("#energyValue").value),
-    value2:dual?Number($("#energyValue2").value):null,
-    a:energySelectedPeople.join(", "),
-    performers:[...energySelectedPeople],
-    note:$("#energyNote").value.trim(),
+    ...fields,
     image,
     image2:dual?image2:"",
     createdAt:old?.createdAt||new Date().toISOString()
   };
-  const next=editId?all.map(x=>String(x.id)===String(editId)?obj:x):[obj,...all];
-  energySaveAll(next);
-  await syncEnergyRecord("upsert_energy",obj);
-  resetEnergyForm();renderEnergy();renderHomeDashboard();
+  const latest=readEnergyCacheFor(buildingId);
+  const next=editId?latest.map(x=>String(x.id)===String(editId)?obj:x):[obj,...latest];
+  writeEnergyCacheFor(buildingId,next);
+  await syncEnergyRecord("upsert_energy",obj,buildingId);
+  if(currentBuilding.id===buildingId){resetEnergyForm();renderEnergy();renderHomeDashboard();}
   toast(queuedImages?(editId?"Đã cập nhật · ảnh sẽ tự tải khi có mạng":"Đã lưu chỉ số · ảnh sẽ tự tải khi có mạng"):(editId?"Đã cập nhật chỉ số":"Đã lưu chỉ số"));
  }catch(err){toast(err.message||"Không thể lưu dữ liệu")}
  finally{btn.disabled=false}
@@ -3728,4 +3736,3 @@ applyBuildingUI=function(){
  const restored=await restoreCentral();
  if(restored)window.enterAccount(restored.account,restored.session);
 })();
-

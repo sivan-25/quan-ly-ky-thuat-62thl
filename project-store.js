@@ -44,6 +44,10 @@
 
   function setStatus(state, detail = "") {
     if (!isPilot()) return;
+    if(state==="synced"){
+      const records=window.ESTA_SYNC_QUEUE?.count?.()||0,images=window.ESTA_MEDIA_MANAGER?.pendingCount?.()||0;
+      if(records||images){state="queued";detail=[records?records+" mục":"",images?images+" ảnh":""].filter(Boolean).join(" · ")+" chờ đồng bộ"}
+    }
     const value = {
       state,
       detail: String(detail || ""),

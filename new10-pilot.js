@@ -35,7 +35,10 @@
       badge = document.createElement("div");
       badge.id = "new10SyncStatus";
       badge.className = "new10SyncStatus";
-      badge.setAttribute("role", "status");
+      badge.setAttribute("role", "button");
+      badge.tabIndex=0;
+      badge.addEventListener("click",()=>window.ESTA_PRODUCTIVITY?.sync?.());
+      badge.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();window.ESTA_PRODUCTIVITY?.sync?.()}});
       badge.setAttribute("aria-live", "polite");
       document.body.appendChild(badge);
     }
@@ -46,7 +49,8 @@
     const view = syncBadgeLabel(status);
     badge.dataset.state = view.state;
     badge.textContent = view.text;
-    badge.title = status?.detail ? view.text + " · " + status.detail : view.text;
+    badge.title = "Bấm để đồng bộ lại · " + (status?.detail || view.text);
+    badge.setAttribute("aria-label",view.text+". Bấm để đồng bộ lại");
     return badge;
   }
 

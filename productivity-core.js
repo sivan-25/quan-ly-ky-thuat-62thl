@@ -39,7 +39,7 @@
       {id:"action:add-task",title:"Thêm công việc",desc:"Mở Công việc và nhập nội dung mới"},
       {id:"action:report",title:"Xuất báo cáo",desc:"Mở Trung tâm báo cáo"},
       {id:"action:filter",title:"Mở bộ lọc",desc:"Mở bộ lọc Công việc"},
-      {id:"action:sync",title:"Đồng bộ ngay",desc:"Flush dữ liệu và ảnh đang chờ"}
+      {id:"action:sync",title:"Đồng bộ ngay",desc:"Gửi lại dữ liệu và ảnh đang chờ"}
     ];
   }
   function renderPalette(){
@@ -63,8 +63,16 @@
     if(id==="action:report"){showModule("reports");return}
     if(id==="action:filter"){showModule("work");setTimeout(()=>document.getElementById("toggleFilter")?.click(),30);return}
     if(id==="action:sync"){
+      const oldChanges=window.ESTA_SYNC_QUEUE?.legacy?.()||[];
+      const oldImages=await window.ESTA_MEDIA_MANAGER?.legacy?.()||[];
+      if(oldChanges.length||oldImages.length){
+        const preview=oldChanges.slice(0,3).map(x=>x.payload?.item?.c||x.payload?.item?.date||x.action).join("\n");
+        if(!confirm("Có "+oldChanges.length+" thay đổi và "+oldImages.length+" ảnh chờ từ phiên bản trước.\n"+preview+"\nChỉ khôi phục nếu đây là dữ liệu bạn muốn gửi vào NEW10 bằng tài khoản hiện tại."))return;
+        await window.ESTA_SYNC_QUEUE?.recoverLegacy?.();
+        await window.ESTA_MEDIA_MANAGER?.recoverLegacy?.();
+      }
       window.ESTA_PROJECT_STORE?.setStatus?.("syncing","Đồng bộ thủ công");
-      await Promise.allSettled([window.ESTA_SYNC_QUEUE?.flush?.(),window.ESTA_MEDIA_MANAGER?.flush?.()]);
+      await Promise.allSettled([window.ESTA_SYNC_QUEUE?.flush?.({retry:true}),window.ESTA_MEDIA_MANAGER?.flush?.()]);
       return;
     }
   }
@@ -120,6 +128,7 @@
       if(due.length)out.push({tone:"warn",title:due.length+" thiết bị đến hạn",module:"maintenance",desc:"Kiểm tra lịch bảo trì"});
     }catch(_){}
     const q=window.ESTA_SYNC_QUEUE?.count?.()||0;
+    if(window.ESTA_SYNC_QUEUE?.legacy?.().length)out.push({tone:"warn",title:"Dữ liệu chờ từ phiên bản trước",module:"work",desc:"Chọn Đồng bộ ngay để kiểm tra và khôi phục"});
     if(q)out.push({tone:"info",title:q+" thay đổi chờ đồng bộ",module:"work",desc:"Hệ thống sẽ tự gửi khi mạng ổn định"});
     return out;
   }
@@ -139,7 +148,8 @@
   function refreshNotices(){
     if(!pilot())return;
     const rows=alerts(),n=ensureNotice(),box=n.querySelector("#new10NoticeList");
-    box.innerHTML=rows.length?rows.map(x=>'<button type="button" data-new10-alert-module="'+x.module+'" data-tone="'+x.tone+'"><i></i><span><b>'+escapeHtml(x.title)+'</b><small>'+escapeHtml(x.desc)+'</small></span><em>›</em></button>').join(""):'<div class="new10NoticeEmpty"><b>Không có cảnh báo cần xử lý</b><span>Dữ liệu NEW10 đang ở trạng thái bình thường.</span></div>';
+    const noticeHtml=rows.length?rows.map(x=>'<button type="button" data-new10-alert-module="'+x.module+'" data-tone="'+x.tone+'"><i></i><span><b>'+escapeHtml(x.title)+'</b><small>'+escapeHtml(x.desc)+'</small></span><em>›</em></button>').join(""):'<div class="new10NoticeEmpty"><b>Không có cảnh báo cần xử lý</b><span>Dữ liệu NEW10 đang ở trạng thái bình thường.</span></div>';
+    if(box.innerHTML!==noticeHtml)box.innerHTML=noticeHtml;
     const bell=document.querySelector(".headerBell");if(bell){
       if(!bell.classList.contains("new10Bell"))bell.classList.add("new10Bell");
       const dot=bell.querySelector("i");if(dot){
@@ -189,5 +199,5 @@
     new MutationObserver(scheduleMutationRefresh).observe(document.getElementById("app"),{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
-  window.ESTA_PRODUCTIVITY=Object.freeze({openPalette,openNotice,saveView,loadView,refreshNotices});
+  window.ESTA_PRODUCTIVITY=Object.freeze({openPalette,openNotice,saveView,loadView,refreshNotices,sync:()=>runCommand("action:sync").catch(err=>toast(err.message||"Chưa đồng bộ được, vui lòng thử lại"))});
 })();
