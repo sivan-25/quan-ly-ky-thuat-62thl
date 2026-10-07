@@ -18,8 +18,17 @@ async function activateNew10(page) {
     projectOverviewActive = true;
     document.querySelector("#login")?.classList.add("hide");
     document.querySelector("#app")?.classList.remove("hide");
+    return "context-ready";
+  });
+
+  await page.evaluate(() => {
     if (typeof applyBuildingUI === "function") applyBuildingUI();
+    return "building-ui-ready";
+  });
+
+  await page.evaluate(() => {
     window.ESTA_NEW10_PILOT.verify.syncScope();
+    return "pilot-scope-ready";
   });
 
   await expect(page.locator("#app")).toHaveClass(/new10Pilot/);
