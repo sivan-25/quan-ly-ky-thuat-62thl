@@ -57,7 +57,7 @@ ST = {
     "sec": S("sec", fontName="Mont-Bold", fontSize=6.8, leading=9, textColor=COPPER),
 }
 
-STATUS_STYLE = {STATUS_STYLE = {
+STATUS_STYLE = {
     "Đang thực hiện": (COPPER, COPPER, PALE),
     "Chờ xử lý": (CREAM_L, COPPER, AUB),
     "Hoàn thành": (AUB, AUB, PALE),
@@ -83,7 +83,7 @@ def make_page_fns(step_label):
     return pdfc.make_page_fns("BÁO CÁO CÔNG VIỆC KỸ THUẬT", step_label)
 
 
-def build_doc(path,story_fn,step_label,title):def build_doc(path,story_fn,step_label,title):
+def build_doc(path,story_fn,step_label,title):
     ensure_fonts()
     first,later=make_page_fns(step_label)
     doc=BaseDocTemplate(path,pagesize=A4,title=title,author="ESTA Property Management",
@@ -171,7 +171,7 @@ def story_summary(data,sign=True,pointer=False):
         rows.append([P(f"{i:02d}",ST["td_s"]),P(t["title"],ST["td_b"]),Pill(t["type"],"tag"),
                      Pill(t["status"],"status"),P(t["date"],ST["td"]),
                      P(t.get("assignee") or "—",ST["td_s"]),P(t.get("note") or "—",ST["note"])])
-    widths=[8,40,19,28,19,24,36]; widths=[w*mm*CW/(sum(widths)*mm) for w in widths]
+    widths=[7,36,24,31,18,25,33]; widths=[w*mm*CW/(sum(widths)*mm) for w in widths]
     tb=Table(rows,colWidths=widths,repeatRows=1)
     style=[("BACKGROUND",(0,0),(-1,0),AUB),("VALIGN",(0,0),(-1,-1),"MIDDLE"),
         ("TOPPADDING",(0,0),(-1,-1),3.5),("BOTTOMPADDING",(0,0),(-1,-1),3.5),
@@ -286,7 +286,7 @@ def story_merged(data):
     return story_summary(data,sign=False,pointer=False)+story_detail(data,standalone=False)
 
 
-# ===== ENERGY REPORT — ESTA STANDARD =====# ===== ENERGY REPORT — ESTA STANDARD =====
+# ===== ENERGY REPORT — ESTA STANDARD =====
 def energy_signatures(data):
     return _signed_kt_kst(data)
 
@@ -294,7 +294,7 @@ def make_energy_page_fns(report_title, period_label):
     return pdfc.make_page_fns(report_title, period_label)
 
 
-def build_energy_doc(path,data):def build_energy_doc(path,data):
+def build_energy_doc(path,data):
     ensure_fonts()
     report_title="BÁO CÁO "+str(data.get("energy_name") or "NĂNG LƯỢNG").upper()
     first,later=make_energy_page_fns(report_title,data.get("period_label") or "")
@@ -577,7 +577,13 @@ def story_tools(data):
     for rr in range(2,len(rows),2):
         style.append(("BACKGROUND",(0,rr),(-1,rr),CREAM_L))
     tb.setStyle(TableStyle(style))
-    story += [tb,energy_signatures(data)]
+    story += [tb]
+    photos=data.get("photos") or []
+    if photos:
+        story += [Spacer(1,10),P("HÌNH ẢNH ĐÍNH KÈM",ST["sec"]),Spacer(1,5)]
+        for grid_row in pdfc.image_grid(photos,CW,cols=3,cell_height=pdfc.IMAGE_CELL_HEIGHT,gap=pdfc.IMAGE_GAP):
+            story += [grid_row,Spacer(1,5)]
+    story += [energy_signatures(data)]
     return story
 
 
@@ -758,7 +764,7 @@ def _prepare_generic_data(payload, token, temp_dir):
     }
 
 
-# ===== VERCEL API HANDLER =====# ===== VERCEL API HANDLER =====
+# ===== VERCEL API HANDLER =====
 # -*- coding: utf-8 -*-
 import base64
 import json
@@ -807,7 +813,7 @@ def _prepare_signature(payload, temp_dir):
     return path
 
 
-def _json_bytes(obj):def _json_bytes(obj):
+def _json_bytes(obj):
     return json.dumps(obj, ensure_ascii=False).encode("utf-8")
 
 def _validate_token(token):
@@ -963,7 +969,7 @@ def _prepare_energy_data(payload, token, temp_dir):
     return data,missing
 
 
-def _prepare_tools_data(payload):def _prepare_tools_data(payload):
+def _prepare_tools_data(payload):
     tools = payload.get("tools") or []
     if not isinstance(tools, list) or len(tools) > 1000:
         raise ValueError("Dữ liệu dụng cụ không hợp lệ")
