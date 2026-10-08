@@ -1150,7 +1150,7 @@ function usesSingleTaskResult(){
 }
 
 function sync130QuickCompletion(){
- const active=String(currentBuilding?.id||"")==="130HH"&&window.matchMedia("(max-width:640px)").matches;
+ const active=["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
  let field=document.getElementById("task130ResultField");
  if(!field){
   field=document.createElement("div");field.id="task130ResultField";field.className="work130QuickResult hide";
@@ -1384,10 +1384,10 @@ $("#taskForm").onsubmit=async e=>{
    toast("Cần nhập ghi chú trước khi hoàn thành công việc");
    return;
  }
- if(String(currentBuilding?.id||"")==="130HH"&&$("#status").value==="Đã hoàn thành"&&window.matchMedia("(max-width:640px)").matches&&!document.getElementById("task130Result")?.value.trim()){
+ if(["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))&&$("#status").value==="Đã hoàn thành"&&window.matchMedia("(max-width:640px)").matches&&!document.getElementById("task130Result")?.value.trim()){
    toast("Vui lòng nhập KQ thực hiện");document.getElementById("task130Result")?.focus();return;
  }
- const quick130=String(currentBuilding?.id||"")==="130HH"&&window.matchMedia("(max-width:640px)").matches;
+ const quick130=["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
  const btn=$("#saveBtn"),quickBtn=quick130?document.getElementById("task130QuickSave"):null;
  if(btn.disabled)return;
  btn.disabled=true;
@@ -1399,7 +1399,7 @@ $("#taskForm").onsubmit=async e=>{
    const files=[...pendingTaskFiles];
    const removedRefs=[...removedTaskImageRefs];
    const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
-   const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),result:String(currentBuilding?.id||"")==="130HH"?(document.getElementById("task130Result")?.value.trim()||old?.result||""):(old?.result||""),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
+   const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),result:["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))?(document.getElementById("task130Result")?.value.trim()||old?.result||""):(old?.result||""),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
    // On 130 HH mobile, wait for remote acknowledgement before displaying success.
