@@ -751,7 +751,7 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
   if(String(currentBuilding?.id||"")===String(buildingId)){
-   if(quickButton){saved130=true;quickButton.textContent="✓ Đã lưu";quickButton.style.background="#216d50";quickButton.setAttribute("aria-busy","false");await new Promise(resolve=>setTimeout(resolve,300))}
+   if(quickButton){saved130=true;quickButton.textContent="✓ Đã lưu";quickButton.style.background="#216d50";quickButton.setAttribute("aria-busy","false");await new Promise(resolve=>setTimeout(resolve,100))}
    resetForm();render();renderHomeDashboard();
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
   }
