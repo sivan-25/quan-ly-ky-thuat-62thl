@@ -190,3 +190,29 @@ body.estaWorkRefinements #app.demoProjectMode.demoSampleProject #workPage .stats
 }
 #energyImagePreview:not(:empty), #energyImage2Preview:not(:empty) { cursor: pointer; }
 #ccTaskBody .ccProjectTag { white-space: nowrap; }
+
+/* Keep notes and completion results visible as separate lines in all four projects. */
+body.estaWorkRefinements #app #workPage .taskNoteSummary {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+  line-height: 1.5;
+}
+body.estaWorkRefinements #app #workPage .taskNoteLine {
+  display: block;
+}
+body.estaWorkRefinements #app #workPage .taskNoteLine + .taskNoteLine {
+  margin-top: 4px;
+}
+body.estaWorkRefinements #app #workPage .taskNoteLabel {
+  font-weight: 500;
+}
+body.estaWorkRefinements #app #workPage .noteCell:has(.taskNoteSummary),
+body.estaWorkRefinements #app #workPage .proTaskCard > p:has(.taskNoteSummary) {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  -webkit-line-clamp: unset !important;
+}
