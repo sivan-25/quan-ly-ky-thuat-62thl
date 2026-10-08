@@ -1155,7 +1155,7 @@ function sync130QuickCompletion(){
  if(!field){
   field=document.createElement("div");field.id="task130ResultField";field.className="work130QuickResult hide";
   field.innerHTML='<label for="task130Result">KQ thực hiện <b>*</b></label><textarea id="task130Result" rows="2" placeholder="Nhập kết quả thực hiện..."></textarea><button id="task130QuickSave" type="button">✓ Lưu công việc</button>';
-  document.querySelector("#taskForm .workStatus")?.insertAdjacentElement("afterend",field);
+  document.querySelector("#taskForm .workPerformer")?.insertAdjacentElement("afterend",field);
   document.getElementById("task130QuickSave")?.addEventListener("click",()=>{
    const form=document.getElementById("taskForm");
    if(typeof form?.requestSubmit==="function")form.requestSubmit(document.getElementById("saveBtn"));
