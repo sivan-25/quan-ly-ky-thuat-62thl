@@ -1416,7 +1416,7 @@ function filtered(fx,ex){
 }
 function taskNoteSummaryHtml(x){
  const note=String(x.n||"").trim()||"—",result=String(x.result||"").trim()||"—";
- return '<span class="taskNoteSummary"><span class="taskNoteLine"><span class="taskNoteLabel">Ghi chú: </span>'+esc(note)+'</span><span class="taskNoteLine"><span class="taskNoteLabel">Kết quả thực hiện: </span>'+esc(result)+'</span></span>';
+ return '<span class="taskNoteSummary"><span class="taskNoteLine"><span class="taskNoteLabel">Ghi chú: </span>'+esc(note)+'</span><span class="taskNoteLine"><span class="taskNoteLabel">KQ: </span>'+esc(result)+'</span></span>';
 }
 function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div class="thumbs" onclick="viewImages('+x.id+')">'+x.imgs.slice(0,3).map(v=>mediaImgHtml(v)).join("")+(x.imgs.length>3?'<span class="thumbMore">+'+(x.imgs.length-3)+'</span>':'')+'</div>'}function render(){
  const all=load(),a=filtered(),td=today();
