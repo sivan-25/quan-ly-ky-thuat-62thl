@@ -2074,6 +2074,7 @@ function sync68EnergyTabs(){
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
+ if(typeof energyManageReset==="function")energyManageReset();
  closeWorkFilter();
  const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
  const tops={work:"#topWorkTitle",energy:"#topEnergyTitle",inventory:"#topInventoryTitle",maintenance:"#topMaintenanceTitle",contractor:"#topContractorTitle",construction:"#topConstructionTitle"};
@@ -2253,6 +2254,30 @@ function energyRows(){
  });
  return energyRangeFiltered().map(x=>({...x,...(prevMap[String(x.id)]||{diff:null,diff2:null,totalDiff:null})}));
 }
+let energyManageMode=false;
+const energySelectedIds=new Set();
+let energyVisibleIds=[];
+function energyManageReset(){energyManageMode=false;energySelectedIds.clear();energyVisibleIds=[]}
+function energySelectCell(x){
+ return '<label class="energyDatePick">'+(energyManageMode?'<input class="energyRowCheck" type="checkbox" data-energy-select="'+esc(x.id)+'" aria-label="Chọn bản ghi ngày '+esc(fmt(x.date))+'" '+(energySelectedIds.has(String(x.id))?'checked':'')+'>':'')+'<span>'+fmt(x.date)+'</span></label>';
+}
+function energyMobileSelect(x){
+ return energyManageMode?'<label class="energyMobilePick"><input class="energyRowCheck" type="checkbox" data-energy-select="'+esc(x.id)+'" '+(energySelectedIds.has(String(x.id))?'checked':'')+'> Chọn bản ghi</label>':'';
+}
+function syncEnergyManageUI(){
+ const allowed=!!currentAccount?.is_admin;
+ if(!allowed&&energyManageMode)energyManageReset();
+ $("#energyManageBtn")?.classList.toggle("hide",!allowed);
+ if($("#energyManageBtn")){$("#energyManageBtn").textContent=energyManageMode?"✓ Đang chọn":"⚙ Cài đặt";$("#energyManageBtn").setAttribute("aria-pressed",String(energyManageMode))}
+ $("#energyDeleteBar")?.classList.toggle("hide",!energyManageMode);
+ if(!energyManageMode)return;
+ $("#energySelectedCount").textContent="Đã chọn "+energySelectedIds.size+" dòng";
+ $("#energyDeleteSelected").disabled=energySelectedIds.size===0;
+ const count=energyVisibleIds.filter(id=>energySelectedIds.has(id)).length;
+ $("#energySelectAll").checked=energyVisibleIds.length>0&&count===energyVisibleIds.length;
+ $("#energySelectAll").indeterminate=count>0&&count<energyVisibleIds.length;
+ document.querySelectorAll("#energyTbody [data-energy-id],#energyMobileCards [data-energy-id]").forEach(el=>el.classList.toggle("energyManageSelected",energySelectedIds.has(el.dataset.energyId)));
+}
 function renderEnergy(){
  sync68EnergyTabs();
  const m=ENERGY_META[energyType]||ENERGY_META.electric;
@@ -2289,6 +2314,9 @@ function renderEnergy(){
    const hay=[x.date,fmt(x.date),weekday(x.date),performerArray(x).join(" "),x.note||"",String(x.value??""),String(x.value2??"")].join(" ").toLocaleLowerCase("vi-VN");
    return hay.includes(q);
  }):displayRows;
+ energyVisibleIds=rows.map(x=>String(x.id));
+ if(energyManageMode){const valid=new Set(energyLoad().map(x=>String(x.id)));for(const id of energySelectedIds)if(!valid.has(id))energySelectedIds.delete(id)}
+ syncEnergyManageUI();
 
  const currentMonth=today().slice(0,7);
  const monthCount=allType.filter(x=>String(x.date||"").slice(0,7)===currentMonth).length;
@@ -2331,11 +2359,11 @@ function renderEnergy(){
     const d2=x.diff2===null?"—":(x.diff2>=0?"+":"")+energyFmt(x.diff2);
     const dt=x.totalDiff===null?"—":(x.totalDiff>=0?"+":"")+energyFmt(x.totalDiff);
     const imgs=(x.image||x.image2)?'<div class="energyDualThumbs">'+(x.image?'<span><small>EVN1</small>'+mediaImgHtml(x.image,"energyThumb")+'</span>':'')+(x.image2?'<span><small>EVN2</small>'+mediaImgHtml(x.image2,"energyThumb")+'</span>':'')+'</div>':"—";
-    return '<tr class="'+(sun?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+d1+'</td><td class="meterValue"><b>'+energyFmt(x.value2)+'</b></td><td class="meterDiff">'+d2+'</td><td class="meterDiff total">'+dt+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+imgs+'</td></tr>';
+    return '<tr class="'+(sun?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><td class="dateCell">'+energySelectCell(x)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+d1+'</td><td class="meterValue"><b>'+energyFmt(x.value2)+'</b></td><td class="meterDiff">'+d2+'</td><td class="meterDiff total">'+dt+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+imgs+'</td></tr>';
    }
    const diff=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
    const img=x.image?'<span class="energyThumbWrap">'+mediaImgHtml(x.image,"energyThumb")+'</span>':"—";
-   return '<tr class="'+(sun?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+img+'</td></tr>';
+   return '<tr class="'+(sun?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><td class="dateCell">'+energySelectCell(x)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+img+'</td></tr>';
  }).join("");
 
  $("#energyMobileCards").innerHTML=rows.map(x=>{
@@ -2349,6 +2377,7 @@ function renderEnergy(){
  if(q)$("#energySummaryText").textContent=rows.length?"Tìm thấy "+rows.length+" bản ghi phù hợp.":"Không tìm thấy bản ghi phù hợp.";
  else $("#energySummaryText").textContent=periodRows.length?"Lịch sử "+periodRows.length+" bản ghi theo ngày.":"Lịch sử chỉ số theo ngày.";
  hydrateMediaImages($("#energyTbody"));
+ syncEnergyManageUI();
 }
 window.editEnergy=id=>{
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
@@ -2386,18 +2415,46 @@ window.editEnergy=id=>{
 ["energyTbody","energyMobileCards"].forEach(id=>{
  const root=$("#"+id);
  root?.addEventListener("click",e=>{
-  if(e.target.closest("button,a,input,select,textarea"))return;
+  if(energyManageMode||e.target.closest("button,a,input,select,textarea,label"))return;
   const row=e.target.closest("[data-energy-id]");
   if(row)editEnergy(row.dataset.energyId);
  });
  root?.addEventListener("keydown",e=>{
   const row=e.target.closest("[data-energy-id]");
-  if(row&&e.target===row&&["Enter"," "].includes(e.key)){e.preventDefault();editEnergy(row.dataset.energyId)}
+  if(!energyManageMode&&row&&e.target===row&&["Enter"," "].includes(e.key)){e.preventDefault();editEnergy(row.dataset.energyId)}
  });
 });
 ["energyImagePreview","energyImage2Preview"].forEach(id=>{
  $("#"+id)?.addEventListener("click",e=>{if(e.target.closest("button"))return;const editId=$("#energyEditId").value;if(editId)viewEnergyImage(editId)});
 });
+$("#energyManageBtn").onclick=()=>{if(!currentAccount?.is_admin)return;energyManageMode=!energyManageMode;energySelectedIds.clear();renderEnergy()};
+$("#energyCancelManage").onclick=()=>{energyManageReset();renderEnergy()};
+$("#energySelectAll").onchange=e=>{for(const id of energyVisibleIds){if(e.target.checked)energySelectedIds.add(id);else energySelectedIds.delete(id)}renderEnergy()};
+["energyTbody","energyMobileCards"].forEach(id=>$("#"+id)?.addEventListener("change",e=>{
+ const check=e.target.closest("[data-energy-select]");if(!check||!energyManageMode)return;
+ if(check.checked)energySelectedIds.add(check.dataset.energySelect);else energySelectedIds.delete(check.dataset.energySelect);
+ renderEnergy();
+}));
+$("#energyDeleteSelected").onclick=async()=>{
+ if(!currentAccount?.is_admin||!energyManageMode||!energySelectedIds.size)return;
+ const ids=[...energySelectedIds],buildingId=currentBuilding.id,kind=energyType;
+ if(!confirm("Bạn chắc chắn muốn xóa "+ids.length+" bản ghi chỉ số "+(ENERGY_META[kind]?.name||kind)+"? Dữ liệu đã xóa không thể hoàn tác."))return;
+ const btn=$("#energyDeleteSelected");btn.disabled=true;btn.textContent="Đang xóa...";
+ let deleted=0,failed=false;
+ for(const id of ids){
+  if(currentBuilding.id!==buildingId){failed=true;break}
+  try{
+   if(centralSession?.access_token)await syncEnergyRecord("delete_energy",id);
+   energySaveAll(energyLoad().filter(x=>!(String(x.id)===id&&x.type===kind)));
+   energySelectedIds.delete(id);deleted++;
+  }catch(e){failed=true;break}
+ }
+ energyManageMode=failed;
+ btn.textContent="Xóa đã chọn";
+ if(!failed)energyManageReset();
+ renderEnergy();renderHomeDashboard();
+ toast(failed?"Đã xóa "+deleted+" dòng. Có lỗi đồng bộ, vui lòng thử lại.":"Đã xóa "+deleted+" bản ghi");
+};
 window.deleteEnergy=async id=>{
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
  if(!confirm("Xóa bản ghi chỉ số này?"))return;
