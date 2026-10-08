@@ -1408,7 +1408,7 @@ $("#taskForm").onsubmit=async e=>{
      await syncTaskRecord("upsert_task",obj,buildingId);
      quickSuccess=true;
      if(quickBtn){quickBtn.textContent="✓ Đã lưu";quickBtn.classList.add("is-saved");quickBtn.setAttribute("aria-busy","false");}
-     await new Promise(resolve=>setTimeout(resolve,300));
+     await new Promise(resolve=>setTimeout(resolve,100));
    }
    resetForm();render();renderHomeDashboard();
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc");
