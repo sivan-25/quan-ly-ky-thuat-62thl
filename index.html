@@ -1,5 +1,9 @@
 <!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"><title>ESTA | Property Management</title><link rel="stylesheet" href="style.css?v=20261002-unifieddemo01">
-<link rel="stylesheet" href="contractor.css?v=20261001-imgfix04"><link rel="stylesheet" href="photo-annotator.css?v=20261007-thumbclean03"><link rel="stylesheet" href="construction.css?v=20260924-2035"><style id="esta-work-v11">
+<link rel="stylesheet" href="contractor.css?v=20261001-imgfix04"><link rel="stylesheet" href="photo-annotator.css?v=20261007-thumbclean03"><link rel="stylesheet" href="construction.css?v=20260924-2035"><style>
+#app .quickReturnAdmin{display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:0 0 auto;border:1px solid #8d9f8d;background:#e9dfc9;color:#284e42;border-radius:10px;padding:7px 10px;font-size:12px;font-weight:750;white-space:nowrap;cursor:pointer}
+#app .quickReturnAdmin.hide{display:none!important}
+@media(max-width:640px){#app .quickReturnAdmin{padding:6px 8px;font-size:11px;border-radius:8px}}
+</style><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
   position:relative!important;
@@ -777,7 +781,11 @@
   <nav class="estaNav">
     <button id="navHome" class="active">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      <span>Tổng quan</span>
+      <span id="navHomeLabel">Tổng quan</span>
+    </button>
+    <button id="navProjectOverview" class="hide" type="button" aria-label="Tổng quan dự án">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2"/></svg>
+      <span>Tổng quan dự án</span>
     </button>
     <button id="navAdmin" class="hide">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 13h2v2H9zM13 13h2v2h-2z"/></svg>
@@ -842,6 +850,7 @@
 <main>
 <header class="estaTopbar">
   <button id="menu" class="mobileMenuBtn" type="button" aria-label="Mở menu điều hướng" aria-controls="mobileSidebar" aria-expanded="false">☰</button>
+  <button id="quickReturnAdmin" type="button" class="quickReturnAdmin hide" aria-label="Quay lại Tổng quan Admin">↩ <span>Về Admin</span></button>
   <div id="topHomeTitle" class="topModuleTitle">
     <div class="topModuleIcon homeIcon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
     <div><h1>Tổng quan vận hành</h1><p class="buildingNameText">Dự án</p></div>
