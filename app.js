@@ -817,13 +817,21 @@ function renderHomeDashboard(){
  $("#homeSolar").textContent=homeNumber(homeEnergyUse(energy,"solar"));
  $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
 }
+function syncOverviewNavigation(){
+ const admin=!!currentAccount?.is_admin;
+ const project=!!projectOverviewActive;
+ $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
+ $("#navProjectOverview").classList.toggle("hide",!admin||!project);
+ $("#quickReturnAdmin").classList.toggle("hide",!admin||!project);
+}
 function showHome(){
  closeWorkFilter();
+ syncOverviewNavigation();
  $("#homePage").classList.remove("hide");
  $("#adminPage").classList.add("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");$("#inventoryPage").classList.add("hide");$("#maintenancePage").classList.add("hide");$("#contractorPage").classList.add("hide");$("#constructionMaterialPage").classList.add("hide");
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
  $("#topHomeTitle").classList.remove("hide");$("#topAdminTitle").classList.add("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");$("#topInventoryTitle").classList.add("hide");$("#topMaintenanceTitle").classList.add("hide");$("#topContractorTitle").classList.add("hide");$("#topConstructionTitle").classList.add("hide");
- $("#navHome").classList.add("active");$("#navAdmin").classList.remove("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");$("#navContractor").classList.remove("active");$("#navConstruction")?.classList.remove("active");
+ $("#navHome").classList.toggle("active",!currentAccount?.is_admin||!projectOverviewActive);$("#navProjectOverview").classList.toggle("active",!!currentAccount?.is_admin&&projectOverviewActive);$("#navAdmin").classList.remove("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");$("#navContractor").classList.remove("active");$("#navConstruction")?.classList.remove("active");
  $("#app").classList.remove("adminMode","homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");$("#app").classList.add("homeMode");
  setMobileMenuOpen(false,true);
  renderHomeDashboard();
@@ -873,6 +881,7 @@ function openAdminOverview(){
 function prepareProjectContext(building){
  closeProjectOverlays();
  projectOverviewActive=true;
+ syncOverviewNavigation();
  const checklistBtn=$("#demoChecklistSaveBtn");if(checklistBtn){checklistBtn.disabled=false;checklistBtn.textContent="Lưu checklist"}
  const incidentBtn=$("#demoIncidentSaveBtn");if(incidentBtn){incidentBtn.disabled=false;incidentBtn.textContent="Lưu sự cố"}
  const documentBtn=$("#technicalDocumentSubmit");if(documentBtn)documentBtn.disabled=false;
@@ -912,12 +921,13 @@ function openAdminPortal(){
  if(!currentAccount?.is_admin)return;
  projectOpenSeq+=1;
  projectOverviewActive=false;
+ syncOverviewNavigation();
  closeProjectOverlays();
  ["navWork","navEnergy","navInventory","navMaintenance","navContractor","navConstruction"].forEach(id=>$("#"+id)?.classList.add("hide"));
  $("#homePage").classList.add("hide");$("#adminPage").classList.remove("hide");$("#workPage").classList.add("hide");$("#energyPage").classList.add("hide");$("#inventoryPage").classList.add("hide");$("#maintenancePage").classList.add("hide");$("#contractorPage").classList.add("hide");$("#constructionMaterialPage").classList.add("hide");
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
  $("#topHomeTitle").classList.add("hide");$("#topAdminTitle").classList.remove("hide");$("#topWorkTitle").classList.add("hide");$("#topEnergyTitle").classList.add("hide");$("#topInventoryTitle").classList.add("hide");$("#topMaintenanceTitle").classList.add("hide");$("#topContractorTitle").classList.add("hide");$("#topConstructionTitle").classList.add("hide");
- $("#navHome").classList.remove("active");$("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");$("#navContractor").classList.remove("active");$("#navConstruction")?.classList.remove("active");
+ $("#navHome").classList.remove("active");$("#navProjectOverview").classList.remove("active");$("#navAdmin").classList.add("active");$("#navWork").classList.remove("active");$("#navEnergy").classList.remove("active");$("#navInventory").classList.remove("active");$("#navMaintenance").classList.remove("active");$("#navContractor").classList.remove("active");$("#navConstruction")?.classList.remove("active");
  $("#app").classList.remove("homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");$("#app").classList.add("adminMode");setMobileMenuOpen(false,true);renderAdminPortal();
 }
 window.adminOpenBuilding=async(id,event)=>{
@@ -947,6 +957,7 @@ window.enterAccount=function(account,session=null){
  if($("#energyHeaderName"))$("#energyHeaderName").textContent="ESTA";
  $("#sideUser").innerHTML=account.is_admin?"Quản trị viên":"Tài khoản dự án";
  $("#navAdmin").classList.toggle("hide",!account.is_admin);
+ syncOverviewNavigation();
  $("#headerAvatar").textContent="E";$("#sideAvatar").textContent="E";
  renderTechnicalProjectSwitcher();
  if(account.is_admin){$("#navWork").classList.add("hide");$("#navEnergy").classList.add("hide");$("#navInventory").classList.add("hide");$("#navMaintenance").classList.add("hide");$("#navContractor").classList.add("hide");$("#navConstruction")?.classList.add("hide");showHome()}
@@ -2091,7 +2102,9 @@ function showModule(name){
  if(name==="contractor"){selectedContractorId="";$("#contractorPage").classList.remove("contractorDetailMode");$("#contractorDetail").classList.add("hide");$("#contractorOverview").classList.remove("hide");loadContractorData(currentBuilding.id)}
  if(name==="construction"){selectedConstructionMaterialId="";$("#constructionMaterialPage").classList.remove("contractorDetailMode");$("#constructionDetail").classList.add("hide");$("#constructionOverview").classList.remove("hide");loadConstructionMaterialData(currentBuilding.id)}
 }
-$("#navHome").onclick=()=>showHome();
+$("#navHome").onclick=()=>currentAccount?.is_admin?openAdminOverview():showHome();
+$("#navProjectOverview").onclick=()=>{if(projectOverviewActive)showHome()};
+$("#quickReturnAdmin").onclick=()=>openAdminOverview();
 $("#navAdmin").onclick=()=>openAdminPortal();
 $("#navWork").onclick=()=>showModule("work");
 $("#navEnergy").onclick=()=>showModule("energy");
