@@ -3,6 +3,19 @@
 #app .quickReturnAdmin{display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:0 0 auto;border:1px solid #8d9f8d;background:#e9dfc9;color:#284e42;border-radius:10px;padding:7px 10px;font-size:12px;font-weight:750;white-space:nowrap;cursor:pointer}
 #app .quickReturnAdmin.hide{display:none!important}
 @media(max-width:640px){#app .quickReturnAdmin{padding:6px 8px;font-size:11px;border-radius:8px}}
+</style><style>
+#app .energyManageBtn{border:1px solid #6b8496;border-radius:10px;padding:9px 11px;background:#13243c;color:#f4e2c4;font-weight:700;cursor:pointer;white-space:nowrap}
+#app .energyDeleteBar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:12px;background:#13243c;color:#f4e2c4;border:1px solid #587069;border-radius:10px;margin:10px 0}
+#app .energyDeleteBar.hide{display:none!important}
+#app .energyDeleteBar label,#app .energyDatePick,#app .energyMobilePick{display:flex;align-items:center;gap:7px;cursor:pointer}
+#app .energyDeleteBar input,#app .energyRowCheck{width:17px;height:17px;accent-color:#35bc9f;flex:none;cursor:pointer}
+#app .energyDeleteBar button{padding:8px 11px;border-radius:8px;border:1px solid #667c8d;background:#263a4b;color:white;cursor:pointer}
+#app #energyDeleteSelected:not(:disabled){background:#a43e36;border-color:#be5b50}
+#app #energyDeleteSelected:disabled{opacity:.45}
+#app .energyDatePick{white-space:nowrap}
+#app .energyManageSelected{box-shadow:inset 3px 0 #24bc9d;background:rgba(36,188,157,.11)!important}
+#app .energyMobilePick{margin-bottom:7px;font-size:12px}
+@media(max-width:640px){#app .energyDeleteBar{gap:8px;padding:9px}#app .energyManageBtn{padding:8px;font-size:12px}#app .energyDeleteBar label{width:100%}}
 </style><style id="esta-work-v11">
 #app #workPage .workEntryCard{
   display:block!important;
@@ -1555,7 +1568,7 @@
         <p id="energySummaryText">Lịch sử chỉ số theo ngày</p>
       </div>
 
-      <div class="energyTopTools">
+      <div class="energyTopTools"><button id="energyManageBtn" type="button" class="energyManageBtn hide">⚙ Cài đặt</button>
         <label class="energySearch" aria-label="Tìm bản ghi năng lượng">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
           <input id="energyQuickSearch" type="search" autocomplete="off" placeholder="Tìm theo ngày...">
@@ -1604,7 +1617,7 @@
       </table>
     </div>
 
-    <div id="energyMobileCards"></div>
+    <div id="energyDeleteBar" class="energyDeleteBar hide"><label><input id="energySelectAll" type="checkbox"> Chọn tất cả dòng hiển thị</label><strong id="energySelectedCount">Đã chọn 0 dòng</strong><button id="energyDeleteSelected" type="button" disabled>Xóa đã chọn</button><button id="energyCancelManage" type="button">Hủy</button></div><div id="energyMobileCards"></div>
 
     <div id="energyEmpty" class="empty hide">
       <span class="emptyTableIcon" aria-hidden="true">
