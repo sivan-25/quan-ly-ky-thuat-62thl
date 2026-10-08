@@ -391,6 +391,17 @@ function demoEnsureWorkPanel(){
  demoSyncCompletionFields();
  if(demoIs()){demoLoad().then(()=>{demoPopulateWorkOptions();demoResetWorkLinks(false)})}
 }
+document.getElementById("taskForm")?.addEventListener("invalid",event=>{
+ if(!demo130MobileQuick())return;
+ const element=event.target;
+ const label=element?.id==="content"?"Nội dung công việc":element?.id==="date"?"Ngày":element?.id==="task130Result"?"KQ thực hiện":element?.id==="demoTaskResult"?"KQ thực hiện":"Thông tin bắt buộc";
+ demo130MissingNotice("Vui lòng nhập "+label,element);
+},true);
+document.getElementById("task130Result")?.addEventListener("input",event=>{
+ if(!demo130MobileQuick())return;
+ const lower=document.getElementById("demoTaskResult");
+ if(lower)lower.value=event.target.value;
+});
 function demo130MobileQuick(){
  return String(currentBuilding?.id||"")==="130HH"&&window.matchMedia("(max-width:640px)").matches;
 }
