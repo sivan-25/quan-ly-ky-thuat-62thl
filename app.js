@@ -1169,7 +1169,7 @@ function sync130QuickCompletion(){
 }
 (function(){
  const css=document.createElement("style");
- css.textContent='@media(max-width:640px){#workPage #taskForm .work130QuickResult:not(.hide){display:flex!important;flex-direction:column;gap:8px;grid-column:1/-1;margin:4px 0 8px;padding:12px;border:1px solid #bfd4e6;border-radius:14px;background:#e2eff6}#workPage .work130QuickResult label{font-weight:750;color:#153667}#workPage .work130QuickResult textarea{box-sizing:border-box;width:100%;min-height:76px;padding:12px;border:1px solid #afcbe0;border-radius:10px;font:inherit;font-size:16px;resize:vertical;background:#fff}#workPage #task130QuickSave{min-height:48px;width:100%;border:0;border-radius:11px;background:#1a376a;color:white;font:inherit;font-weight:700}}';
+ css.textContent='@media(max-width:640px){#workPage #taskForm .work130QuickResult:not(.hide){display:flex!important;flex-direction:column;gap:8px;grid-column:1/-1;margin:4px 0 8px;padding:12px;border:1px solid #bfd4e6;border-radius:14px;background:#e2eff6}#workPage .work130QuickResult label{font-weight:750;color:#153667}#workPage .work130QuickResult textarea{box-sizing:border-box;width:100%;min-height:76px;padding:12px;border:1px solid #afcbe0;border-radius:10px;font:inherit;font-size:16px;resize:vertical;background:#fff}#workPage #task130QuickSave{min-height:48px;width:100%;border:0;border-radius:11px;background:#1a376a;color:white;font:inherit;font-weight:700}#workPage #task130QuickSave.is-saved{background:#216d50}#workPage #task130QuickSave:disabled{opacity:.88}}';
  document.head.appendChild(css);
 })();
 function syncCompletionNoteRequirement(focusNote=false){
@@ -1387,7 +1387,12 @@ $("#taskForm").onsubmit=async e=>{
  if(String(currentBuilding?.id||"")==="130HH"&&$("#status").value==="Đã hoàn thành"&&window.matchMedia("(max-width:640px)").matches&&!document.getElementById("task130Result")?.value.trim()){
    toast("Vui lòng nhập KQ thực hiện");document.getElementById("task130Result")?.focus();return;
  }
- const btn=$("#saveBtn");btn.disabled=true;
+ const quick130=String(currentBuilding?.id||"")==="130HH"&&window.matchMedia("(max-width:640px)").matches;
+ const btn=$("#saveBtn"),quickBtn=quick130?document.getElementById("task130QuickSave"):null;
+ if(btn.disabled)return;
+ btn.disabled=true;
+ if(quickBtn){quickBtn.disabled=true;quickBtn.textContent="◌ Đang lưu...";quickBtn.setAttribute("aria-busy","true");}
+ let quickSuccess=false;
  try{
    const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
    let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
@@ -1397,12 +1402,20 @@ $("#taskForm").onsubmit=async e=>{
    const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),result:String(currentBuilding?.id||"")==="130HH"?(document.getElementById("task130Result")?.value.trim()||old?.result||""):(old?.result||""),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
+   // On 130 HH mobile, wait for remote acknowledgement before displaying success.
+   if(quick130){
+     if(!centralSession?.access_token)throw new Error("Chưa kết nối máy chủ. Dữ liệu tạm nằm trên điện thoại, vui lòng thử lưu lại.");
+     await syncTaskRecord("upsert_task",obj,buildingId);
+     quickSuccess=true;
+     if(quickBtn){quickBtn.textContent="✓ Đã lưu";quickBtn.classList.add("is-saved");quickBtn.setAttribute("aria-busy","false");}
+     await new Promise(resolve=>setTimeout(resolve,1300));
+   }
    resetForm();render();renderHomeDashboard();
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc");
 
    (async()=>{
      try{
-       const taskSync=syncTaskRecord("upsert_task",obj,buildingId);
+       const taskSync=quick130?Promise.resolve():syncTaskRecord("upsert_task",obj,buildingId);
        const imageUpload=files.length?uploadMediaFiles(files,"tasks",id,null,buildingId):Promise.resolve([]);
        const [,uploaded]=await Promise.all([taskSync,imageUpload]);
        if(removedRefs.length)await deleteStoredMediaRefs(removedRefs);
@@ -1423,8 +1436,8 @@ $("#taskForm").onsubmit=async e=>{
        toast("Công việc đã lưu, nhưng có hình chưa đồng bộ. Hãy thử lại khi mạng ổn định.");
      }
    })();
- }catch(err){toast(err.message||"Không thể lưu công việc")}
- finally{btn.disabled=false}
+ }catch(err){toast(err.message||"Không thể lưu công việc");if(quickBtn&&!quickSuccess){quickBtn.textContent="Thử lưu lại";}}
+ finally{btn.disabled=false;if(quickBtn){quickBtn.disabled=false;quickBtn.removeAttribute("aria-busy");quickBtn.classList.remove("is-saved");if(quickSuccess)quickBtn.textContent="✓ Lưu công việc";}}
 };
 let workStatFilter="";
 function filtered(fx,ex){
