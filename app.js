@@ -2212,7 +2212,7 @@ function renderEnergy(){
 
  const head=$("#energyHeadRow"),cols=$("#energyColgroup");
  if(dual){
-  if(cols)cols.innerHTML='<col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:13%"><col style="width:15%"><col style="width:14%">';
+  if(cols)cols.innerHTML='<col style="width:11%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:13%"><col style="width:12%"><col style="width:14%">';
   if(head)head.innerHTML='<th>Ngày</th><th>EVN1</th><th>Tiêu thụ EVN1</th><th>EVN2</th><th>Tiêu thụ EVN2</th><th>Tổng tiêu thụ</th><th>Người thực hiện</th><th>Ghi chú</th><th>Ảnh</th>';
  }else{
   if(cols)cols.innerHTML='<col style="width:11%"><col style="width:18%"><col style="width:12%"><col style="width:14%"><col style="width:27%"><col style="width:18%">';
@@ -2221,11 +2221,14 @@ function renderEnergy(){
 
  const allType=energyLoad().filter(x=>x.type===energyType).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.id)-Number(b.id));
  const periodRows=energyRows();
+ // Compute consumption chronologically first; only reverse the visible history.
+ const displayRows=[...periodRows].sort((a,b)=>String(b.date).localeCompare(String(a.date))
+   ||(Date.parse(b.createdAt||b.created_at||"")||Number(b.id)||0)-(Date.parse(a.createdAt||a.created_at||"")||Number(a.id)||0));
  const q=($("#energyQuickSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
- const rows=q?periodRows.filter(x=>{
+ const rows=q?displayRows.filter(x=>{
    const hay=[x.date,fmt(x.date),weekday(x.date),performerArray(x).join(" "),x.note||"",String(x.value??""),String(x.value2??"")].join(" ").toLocaleLowerCase("vi-VN");
    return hay.includes(q);
- }):periodRows;
+ }):displayRows;
 
  const currentMonth=today().slice(0,7);
  const monthCount=allType.filter(x=>String(x.date||"").slice(0,7)===currentMonth).length;
@@ -2267,20 +2270,20 @@ function renderEnergy(){
     const d1=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
     const d2=x.diff2===null?"—":(x.diff2>=0?"+":"")+energyFmt(x.diff2);
     const dt=x.totalDiff===null?"—":(x.totalDiff>=0?"+":"")+energyFmt(x.totalDiff);
-    const imgs=(x.image||x.image2)?'<div class="energyDualThumbs">'+(x.image?'<span onclick="viewEnergyImage(\''+x.id+'\')"><small>EVN1</small>'+mediaImgHtml(x.image,"energyThumb")+'</span>':'')+(x.image2?'<span onclick="viewEnergyImage(\''+x.id+'\')"><small>EVN2</small>'+mediaImgHtml(x.image2,"energyThumb")+'</span>':'')+'</div>':"—";
-    return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+d1+'</td><td class="meterValue"><b>'+energyFmt(x.value2)+'</b></td><td class="meterDiff">'+d2+'</td><td class="meterDiff total">'+dt+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+imgs+'</td></tr>';
+    const imgs=(x.image||x.image2)?'<div class="energyDualThumbs">'+(x.image?'<span><small>EVN1</small>'+mediaImgHtml(x.image,"energyThumb")+'</span>':'')+(x.image2?'<span><small>EVN2</small>'+mediaImgHtml(x.image2,"energyThumb")+'</span>':'')+'</div>':"—";
+    return '<tr class="'+(sun?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+d1+'</td><td class="meterValue"><b>'+energyFmt(x.value2)+'</b></td><td class="meterDiff">'+d2+'</td><td class="meterDiff total">'+dt+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+imgs+'</td></tr>';
    }
    const diff=x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff);
-   const img=x.image?'<span class="energyThumbWrap" onclick="viewEnergyImage(\''+x.id+'\')">'+mediaImgHtml(x.image,"energyThumb")+'</span>':"—";
-   return '<tr class="'+(sun?"sunday":"")+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+img+'</td></tr>';
+   const img=x.image?'<span class="energyThumbWrap">'+mediaImgHtml(x.image,"energyThumb")+'</span>':"—";
+   return '<tr class="'+(sun?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><td class="dateCell">'+fmt(x.date)+'</td><td class="meterValue"><b>'+energyFmt(x.value)+'</b></td><td class="meterDiff">'+diff+'</td><td>'+performerChipsHtml(x)+'</td><td class="noteCell">'+esc(x.note||"—")+'</td><td>'+img+'</td></tr>';
  }).join("");
 
  $("#energyMobileCards").innerHTML=rows.map(x=>{
   const sunday=new Date(x.date+"T00:00:00").getDay()===0;
   if(dual){
-   return '<article class="mcard proEnergyCard '+(sunday?"sunday":"")+'"><div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>EVN1 '+energyFmt(x.value)+' · EVN2 '+energyFmt(x.value2)+'</h4></div><span class="mobileDiff">Tổng '+(x.totalDiff===null?"—":(x.totalDiff>=0?"+":"")+energyFmt(x.totalDiff))+'</span></div><div class="energyDualMobileDiff"><span>EVN1 '+(x.diff===null?"—":energyFmt(x.diff))+'</span><span>EVN2 '+(x.diff2===null?"—":energyFmt(x.diff2))+'</span></div><div class="mobileMeta">'+performerChipsHtml(x,2)+'</div><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+((x.image||x.image2)?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div></article>';
+   return '<article class="mcard proEnergyCard '+(sunday?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>EVN1 '+energyFmt(x.value)+' · EVN2 '+energyFmt(x.value2)+'</h4></div><span class="mobileDiff">Tổng '+(x.totalDiff===null?"—":(x.totalDiff>=0?"+":"")+energyFmt(x.totalDiff))+'</span></div><div class="energyDualMobileDiff"><span>EVN1 '+(x.diff===null?"—":energyFmt(x.diff))+'</span><span>EVN2 '+(x.diff2===null?"—":energyFmt(x.diff2))+'</span></div><div class="mobileMeta">'+performerChipsHtml(x,2)+'</div><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+((x.image||x.image2)?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div></article>';
   }
-  return '<article class="mcard proEnergyCard '+(sunday?"sunday":"")+'"><div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>'+energyFmt(x.value)+' '+m.unit+'</h4></div><span class="mobileDiff">'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</span></div><div class="mobileMeta">'+performerChipsHtml(x,2)+'</div><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+(x.image?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div></article>';
+  return '<article class="mcard proEnergyCard '+(sunday?"sunday":"")+'" data-energy-id="'+esc(x.id)+'" tabindex="0" aria-label="Chỉnh sửa chỉ số ngày '+esc(fmt(x.date))+'"><div class="mobileCardTop"><div><small>'+weekday(x.date)+' · '+fmt(x.date)+'</small><h4>'+energyFmt(x.value)+' '+m.unit+'</h4></div><span class="mobileDiff">'+(x.diff===null?"—":(x.diff>=0?"+":"")+energyFmt(x.diff))+'</span></div><div class="mobileMeta">'+performerChipsHtml(x,2)+'</div><p>'+esc(x.note||"Không có ghi chú")+'</p><div class="mobileCardFoot"><span>'+(x.image?"Có hình đồng hồ":"Không có hình")+'</span><button onclick="editEnergy(\''+x.id+'\')">Chỉnh sửa →</button></div></article>';
  }).join("");
 
  if(q)$("#energySummaryText").textContent=rows.length?"Tìm thấy "+rows.length+" bản ghi phù hợp.":"Không tìm thấy bản ghi phù hợp.";
@@ -2316,8 +2319,25 @@ window.editEnergy=id=>{
  $("#energySaveBtn").textContent="Cập nhật chỉ số";
  $("#energyCancelEdit").classList.remove("hide");
  renderEnergy();
- window.scrollTo({top:0,behavior:"smooth"});
+ $("#energyPage .energyCard").scrollIntoView({block:"start",behavior:"smooth"});
+ $("#energyValue").focus({preventScroll:true});
 };
+// Whole-row editing, including the photo cell. Delegate so refreshes keep working.
+["energyTbody","energyMobileCards"].forEach(id=>{
+ const root=$("#"+id);
+ root?.addEventListener("click",e=>{
+  if(e.target.closest("button,a,input,select,textarea"))return;
+  const row=e.target.closest("[data-energy-id]");
+  if(row)editEnergy(row.dataset.energyId);
+ });
+ root?.addEventListener("keydown",e=>{
+  const row=e.target.closest("[data-energy-id]");
+  if(row&&e.target===row&&["Enter"," "].includes(e.key)){e.preventDefault();editEnergy(row.dataset.energyId)}
+ });
+});
+["energyImagePreview","energyImage2Preview"].forEach(id=>{
+ $("#"+id)?.addEventListener("click",e=>{if(e.target.closest("button"))return;const editId=$("#energyEditId").value;if(editId)viewEnergyImage(editId)});
+});
 window.deleteEnergy=async id=>{
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
  if(!confirm("Xóa bản ghi chỉ số này?"))return;

@@ -9,15 +9,24 @@
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
-    height: 48px !important;
-    min-height: 48px !important;
-    padding: 10px 12px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    padding: 8px 12px !important;
     border: 1px solid #bfdcff !important;
     border-radius: 10px !important;
     font: inherit;
     font-size: 14px !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
+  }
+}
+@media (min-width: 1020px) {
+  body.estaWorkRefinements #taskForm #content.workContentInput {
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    padding: 7px 12px !important;
   }
 }
 
@@ -44,29 +53,140 @@ body.estaWorkRefinements #app.demoProjectMode.demoSampleProject #workPage .stats
   color: #123e6d !important;
 }
 
-/* 68 PĐL desktop: the form scrolls inside its allotted card, including Save. */
+/* 68 PĐL desktop: all entry controls fit in one card without an inner scrollbar. */
 @media (min-width: 761px) {
-  #app[data-building-id="68PĐL"] #energyPage .energyCard,
-  #app[data-building-id="68PDL"] #energyPage .energyCard {
+  #app:is([data-building-id="68PĐL"], [data-building-id="68PDL"]) #energyPage .energyCard {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: max-content max-content max-content !important;
+    align-content: start !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding-bottom: 8px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyCardTitle {
+    grid-column: 1 / -1 !important;
+    padding: 12px 14px 8px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-areas:
+      "edate eperformer"
+      "value value2"
+      "eimage eimage2"
+      "enote enote"
+      "actions actions" !important;
+    gap: 8px 10px !important;
+    padding: 0 14px 8px !important;
+    margin: 0 !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm > label {
     display: flex !important;
     flex-direction: column !important;
+    gap: 3px !important;
     min-height: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
+    min-width: 0 !important;
   }
-  #app[data-building-id="68PĐL"] #energyPage .energyCard > *,
-  #app[data-building-id="68PDL"] #energyPage .energyCard > * {
-    flex-shrink: 0 !important;
+  #app[data-building-id="68PĐL"] #energyPage #energyForm input:not([type="file"]):not([type="hidden"]),
+  #app[data-building-id="68PĐL"] #energyPage #energyForm .peopleSelectBtn {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 9px !important;
+    font-size: 12px !important;
   }
-  #app[data-building-id="68PĐL"] #energyPage #energyForm .energyActions,
-  #app[data-building-id="68PDL"] #energyPage #energyForm .energyActions {
-    position: sticky !important;
-    bottom: 0 !important;
-    z-index: 5;
+  #app[data-building-id="68PĐL"] #energyPage #energyForm label > span:first-child {
     margin: 0 !important;
-    padding: 10px 0 !important;
-    background: #11182b !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm .energyUploadPrompt {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 6px !important;
+    gap: 5px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyNote {
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    padding: 6px 9px !important;
+    resize: none !important;
+    font-size: 12px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm .energyActions {
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyActions button {
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyImagePreview {
+    min-width: 0 !important;
+    margin: 0 14px !important;
+    gap: 5px !important;
+    font-size: 9px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyImagePreview:empty {
+    display: none !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyImagePreview img {
+    width: 36px !important;
+    height: 30px !important;
   }
 }
+@media (min-width: 981px) and (max-height: 760px) {
+  #app[data-building-id="68PĐL"] #energyPage {
+    padding: 12px 18px 16px !important;
+    gap: 8px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyTabs {
+    margin: 0 !important;
+    padding: 4px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyTabs button {
+    height: 34px !important;
+    min-height: 34px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energySummaryCards article {
+    min-height: 46px !important;
+    padding: 8px 12px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyCardTitle {
+    padding: 8px 14px 6px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage .energyCardTitle .energyMark {
+    width: 30px !important;
+    height: 30px !important;
+    flex-basis: 30px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm {
+    gap: 4px 10px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm input:not([type="file"]):not([type="hidden"]),
+  #app[data-building-id="68PĐL"] #energyPage #energyForm .peopleSelectBtn {
+    height: 32px !important;
+    min-height: 32px !important;
+  }
+  #app[data-building-id="68PĐL"] #energyPage #energyForm .energyUploadPrompt {
+    height: 34px !important;
+    min-height: 34px !important;
+  }
+}
+
+#energyTbody tr[data-energy-id], #energyMobileCards [data-energy-id] { cursor: pointer; }
+#energyTbody tr[data-energy-id]:focus-visible, #energyMobileCards [data-energy-id]:focus-visible {
+  outline: 2px solid #63d9ea;
+  outline-offset: -2px;
+}
+#app #energyPage .energyHistoryTable .dateCell {
+  white-space: nowrap !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+#energyImagePreview:not(:empty), #energyImage2Preview:not(:empty) { cursor: pointer; }
+#ccTaskBody .ccProjectTag { white-space: nowrap; }
