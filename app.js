@@ -1135,6 +1135,7 @@ async function deleteStoredMediaRefs(refs){
 function resetForm(clearDraft=true){
  $("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";setPeopleSelected("task",[]);$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";
  syncCompletionNoteRequirement(false);
+ const quickResult=document.getElementById("task130Result");if(quickResult)quickResult.value="";
  clearPendingTaskFiles();clearExistingTaskImages();$("#imageInfo").textContent="";setWorkSaveLabel("Lưu");$("#cancelEdit").classList.add("hide");
  requestAnimationFrame(syncWorkContentHeight);
  restoreWorkEntryCard();
@@ -1147,7 +1148,32 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#workEditDrawer
 function usesSingleTaskResult(){
  return ["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""));
 }
+
+function sync130QuickCompletion(){
+ const active=String(currentBuilding?.id||"")==="130HH"&&window.matchMedia("(max-width:640px)").matches;
+ let field=document.getElementById("task130ResultField");
+ if(!field){
+  field=document.createElement("div");field.id="task130ResultField";field.className="work130QuickResult hide";
+  field.innerHTML='<label for="task130Result">KQ thực hiện <b>*</b></label><textarea id="task130Result" rows="2" placeholder="Nhập kết quả thực hiện..."></textarea><button id="task130QuickSave" type="button">✓ Lưu công việc</button>';
+  document.querySelector("#taskForm .workStatus")?.insertAdjacentElement("afterend",field);
+  document.getElementById("task130QuickSave")?.addEventListener("click",()=>{
+   const form=document.getElementById("taskForm");
+   if(typeof form?.requestSubmit==="function")form.requestSubmit(document.getElementById("saveBtn"));
+   else document.getElementById("saveBtn")?.click();
+  });
+ }
+ const completed=document.getElementById("status")?.value==="Đã hoàn thành";
+ field.classList.toggle("hide",!active||!completed);
+ const input=document.getElementById("task130Result");
+ if(input)input.required=Boolean(active&&completed);
+}
+(function(){
+ const css=document.createElement("style");
+ css.textContent='@media(max-width:640px){#workPage #taskForm .work130QuickResult:not(.hide){display:flex!important;flex-direction:column;gap:8px;grid-column:1/-1;margin:4px 0 8px;padding:12px;border:1px solid #bfd4e6;border-radius:14px;background:#e2eff6}#workPage .work130QuickResult label{font-weight:750;color:#153667}#workPage .work130QuickResult textarea{box-sizing:border-box;width:100%;min-height:76px;padding:12px;border:1px solid #afcbe0;border-radius:10px;font:inherit;font-size:16px;resize:vertical;background:#fff}#workPage #task130QuickSave{min-height:48px;width:100%;border:0;border-radius:11px;background:#1a376a;color:white;font:inherit;font-weight:700}}';
+ document.head.appendChild(css);
+})();
 function syncCompletionNoteRequirement(focusNote=false){
+ sync130QuickCompletion();
  const status=$("#status")?.value||"",note=$("#note"),field=$("#workNoteField"),hint=$("#completionNoteHint");
  if(!note)return true;
  const completed=status==="Đã hoàn thành"&&!usesSingleTaskResult();
@@ -1358,6 +1384,9 @@ $("#taskForm").onsubmit=async e=>{
    toast("Cần nhập ghi chú trước khi hoàn thành công việc");
    return;
  }
+ if(String(currentBuilding?.id||"")==="130HH"&&$("#status").value==="Đã hoàn thành"&&window.matchMedia("(max-width:640px)").matches&&!document.getElementById("task130Result")?.value.trim()){
+   toast("Vui lòng nhập KQ thực hiện");document.getElementById("task130Result")?.focus();return;
+ }
  const btn=$("#saveBtn");btn.disabled=true;
  try{
    const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
@@ -1365,7 +1394,7 @@ $("#taskForm").onsubmit=async e=>{
    const files=[...pendingTaskFiles];
    const removedRefs=[...removedTaskImageRefs];
    const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
-   const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
+   const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),result:String(currentBuilding?.id||"")==="130HH"?(document.getElementById("task130Result")?.value.trim()||old?.result||""):(old?.result||""),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
    resetForm();render();renderHomeDashboard();
@@ -1441,6 +1470,7 @@ window.editTask=id=>{
  clearPendingTaskFiles();
  existingTaskImages=Array.isArray(x.imgs)?[...x.imgs]:[];removedTaskImageRefs=[];
  $("#editId").value=x.id;$("#date").value=x.d;$("#content").value=x.c;$("#type").value=x.t||"Hằng ngày";$("#status").value=x.s;setPeopleSelected("task",performerArray(x));$("#note").value=x.n||"";
+ sync130QuickCompletion();if(document.getElementById("task130Result"))document.getElementById("task130Result").value=x.result||"";
  syncCompletionNoteRequirement(false);
  setWorkSaveLabel("Lưu thay đổi");$("#cancelEdit").classList.remove("hide");
  openWorkEditDrawer();renderExistingTaskImages();updateTaskImageInfo();requestAnimationFrame(syncWorkContentHeight);
