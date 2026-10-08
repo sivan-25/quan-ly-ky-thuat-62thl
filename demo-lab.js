@@ -370,7 +370,7 @@ function demoEnsureWorkPanel(){
   });
   ["status","type","demoTaskIncident"].forEach(id=>$("#"+id)?.addEventListener("change",()=>{
    demoSyncCompletionFields();
-   if(id==="status"&&usesSingleTaskResult()&&$("#status").value==="Đã hoàn thành")box.setAttribute("open","");
+   if(id==="status"&&usesSingleTaskResult()&&$("#status").value==="Đã hoàn thành"&&!demo130MobileQuick())box.setAttribute("open","");
   }));
   ["note","demoTaskResult"].forEach(id=>$("#"+id)?.addEventListener("input",demoSyncCompletionFields));
   ["demoTaskAsset","demoTaskIncident","demoTaskInspection","demoTaskContractor"].forEach(id=>$("#"+id)?.addEventListener("change",demoUpdateLinkSummary));
@@ -391,11 +391,32 @@ function demoEnsureWorkPanel(){
  demoSyncCompletionFields();
  if(demoIs()){demoLoad().then(()=>{demoPopulateWorkOptions();demoResetWorkLinks(false)})}
 }
+function demo130MobileQuick(){
+ return String(currentBuilding?.id||"")==="130HH"&&window.matchMedia("(max-width:640px)").matches;
+}
+function demo130MissingNotice(message,el){
+ if(!demo130MobileQuick()){toast(message);return}
+ let banner=document.getElementById("demo130MissingBanner");
+ if(!banner){
+  banner=document.createElement("div");banner.id="demo130MissingBanner";
+  banner.setAttribute("role","alert");
+  banner.style.cssText="position:fixed;top:calc(env(safe-area-inset-top, 0px) + 12px);left:12px;right:12px;z-index:2147483647;padding:15px 16px;background:#9b2e30;color:#fff;border-radius:12px;box-shadow:0 8px 28px #162b4880;font-size:16px;font-weight:700;text-align:center";
+  document.body.appendChild(banner);
+ }
+ banner.textContent="⚠ "+message;banner.hidden=false;
+ clearTimeout(banner.hideTimer);banner.hideTimer=setTimeout(()=>banner.hidden=true,3200);
+ if(el){el.focus({preventScroll:true});el.scrollIntoView({behavior:"smooth",block:"center"})}
+}
 function demoSyncCompletionFields(){
  const single=usesSingleTaskResult(),result=$("#demoTaskResult"),done=$("#status")?.value==="Đã hoàn thành";
  const label=$("#demoTaskResultLabel"),cause=$("#demoTaskCause"),note=$("#note");
  if(label)label.textContent=single?"Kết quả thực hiện"+(done?" *":""):"Hướng xử lý / Kết quả";
  if(result){
+  const quick=demo130MobileQuick()&&done,topResult=document.getElementById("task130Result");
+  if(quick&&topResult&&document.activeElement===topResult)result.value=topResult.value;
+  if(quick&&topResult&&document.activeElement!==topResult&&result.value&&!topResult.value)topResult.value=result.value;
+  result.closest("label")?.classList.toggle("hide",quick);
+  result.required=single&&done&&!quick;
   result.placeholder=single?"Nhập kết quả thực hiện; bắt buộc khi hoàn thành":"Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành...";
   result.setAttribute("aria-required",String(done));
   result.setAttribute("aria-invalid",String(single&&done&&!result.value.trim()));
@@ -682,7 +703,12 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
  if(!demoIs())return originalTaskSubmit.call($("#taskForm"),e);
  e.preventDefault();
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
- if(!taskSelectedPeople.length){toast("Vui lòng chọn ít nhất 1 người thực hiện");$("#taskPeopleButton").focus();return}
+ if(!taskSelectedPeople.length){demo130MissingNotice("Chưa chọn Người thực hiện",$("#taskPeopleButton"));return}
+ if(demo130MobileQuick()){
+  const fast=document.getElementById("task130Result"),bottom=$("#demoTaskResult");
+  if(fast&&bottom&&fast.value.trim())bottom.value=fast.value.trim();
+  if($("#status").value==="Đã hoàn thành"&&!bottom?.value.trim()){demo130MissingNotice("Vui lòng nhập KQ thực hiện",fast);return}
+ }
  let links;
  try{links=demoReadWorkLinks()}catch(materialError){
   toast(materialError.message||"Vật tư sử dụng không hợp lệ");
@@ -690,12 +716,16 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   return;
  }
  if($("#status").value==="Đã hoàn thành"&&!links.result){
-  toast(usesSingleTaskResult()?"Vui lòng nhập Kết quả thực hiện trước khi hoàn thành":"Vui lòng nhập Kết quả xử lý trước khi hoàn thành");
+  demo130MissingNotice(usesSingleTaskResult()?"Vui lòng nhập KQ thực hiện":"Vui lòng nhập Kết quả xử lý",demo130MobileQuick()?document.getElementById("task130Result"):$("#demoTaskResult"));
   $("#demoWorkLinks")?.setAttribute("open","");
-  $("#demoTaskResult")?.focus();
+  if(!demo130MobileQuick())$("#demoTaskResult")?.focus();
   return;
  }
- const btn=$("#saveBtn");btn.disabled=true;
+ const btn=$("#saveBtn"),quickButton=demo130MobileQuick()?document.getElementById("task130QuickSave"):null;
+ if(btn.disabled)return;
+ btn.disabled=true;
+ if(quickButton){quickButton.disabled=true;quickButton.textContent="◌ Đang lưu...";quickButton.setAttribute("aria-busy","true")}
+ let saved130=false;
  try{
   const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
   let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
@@ -710,6 +740,7 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
   if(String(currentBuilding?.id||"")===String(buildingId)){
+   if(quickButton){saved130=true;quickButton.textContent="✓ Đã lưu";quickButton.style.background="#216d50";quickButton.setAttribute("aria-busy","false");await new Promise(resolve=>setTimeout(resolve,300))}
    resetForm();render();renderHomeDashboard();
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
   }
@@ -741,10 +772,11 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   })();
  }catch(err){
   const message=err.message||"Không thể lưu công việc";
-  toast(message);
+  demo130MissingNotice(message);
+  if(quickButton)quickButton.textContent="Thử lưu lại";
   if(/tồn kho|vật tư/i.test(message))$("#demoWorkLinks")?.setAttribute("open","");
  }
- finally{btn.disabled=false}
+ finally{btn.disabled=false;if(quickButton){quickButton.disabled=false;quickButton.removeAttribute("aria-busy");quickButton.style.background="";if(saved130)quickButton.textContent="✓ Lưu công việc"}}
 };
 
 const originalDemoDelTask=window.delTask;
