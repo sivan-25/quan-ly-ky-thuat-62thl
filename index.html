@@ -677,7 +677,36 @@
   font-weight:750!important;
 }
 </style>
-<link rel="stylesheet" href="report-center.css?v=20261001-empty-period01"><link rel="stylesheet" href="admin-access.css?v=20261003-multiproject01"><link rel="stylesheet" href="demo-mobile.css?v=20261004-allprojects16"><link rel="stylesheet" href="update-lab.css?v=20261007-dockcompact03"><link rel="stylesheet" href="command-center.css?v=20261005-admin-dispatched01"><link rel="stylesheet" href="ui-refinements.css?v=20261008-note-result01"></head><body>
+<link rel="stylesheet" href="report-center.css?v=20261001-empty-period01"><link rel="stylesheet" href="admin-access.css?v=20261003-multiproject01"><link rel="stylesheet" href="demo-mobile.css?v=20261004-allprojects16"><link rel="stylesheet" href="update-lab.css?v=20261007-dockcompact03"><link rel="stylesheet" href="command-center.css?v=20261005-admin-dispatched01"><link rel="stylesheet" href="ui-refinements.css?v=20261008-note-result01"><style>
+/* ESTA_WORK_EDITOR_ACTIONS_DATE_PICKER_FIX_20261008 */
+.workEditDrawer #taskForm .workFormActions #cancelEdit{
+  opacity:1!important;visibility:visible!important;filter:none!important;
+  background:#f5f7fb!important;color:#19304c!important;
+  border:2px solid #bdcddd!important;font-weight:800!important;
+  font-size:14px!important;text-shadow:none!important;
+}
+.workEditDrawer #taskForm .workFormActions #saveBtn{
+  opacity:1!important;visibility:visible!important;filter:none!important;
+  background:#176b91!important;color:#ffffff!important;
+  border:2px solid #4bc4ed!important;font-weight:850!important;
+  font-size:14px!important;text-shadow:none!important;
+}
+.workEditDrawer #taskForm .workFormActions #saveBtn span,
+.workEditDrawer #taskForm .workFormActions #cancelEdit span{color:inherit!important;opacity:1!important;visibility:visible!important;font-size:inherit!important}
+.workEditDrawer #taskForm .workFormActions #saveBtn svg{stroke:#fff!important;color:#fff!important;opacity:1!important}
+.workEditDrawer #taskForm .workFormActions #saveBtn:focus-visible,
+.workEditDrawer #taskForm .workFormActions #cancelEdit:focus-visible,
+#demoWorkLinks #demoTaskDue:focus-visible{outline:3px solid #63dbea!important;outline-offset:2px!important}
+#demoWorkLinks .demoDueField{position:relative!important;cursor:pointer!important}
+#demoWorkLinks #demoTaskDue{
+  position:relative!important;pointer-events:auto!important;
+  cursor:pointer!important;opacity:1!important;z-index:1!important;
+  touch-action:manipulation!important;
+}
+#demoWorkLinks #demoTaskDue::-webkit-calendar-picker-indicator{
+  cursor:pointer!important;opacity:1!important;pointer-events:auto!important;
+}
+</style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -2428,7 +2457,24 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="photo-annotator.js?v=20261007-130hh01"></script><script src="app.js?v=20261008-allprojects-save100ms09"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261007-pdf-compact01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261008-allprojects-save100ms09"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261008-project-short01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261006-single-result01"></script></body></html>
+<script src="contractor.js?v=20261007-pdf-compact01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261008-allprojects-save100ms09"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261008-project-short01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261006-single-result01"></script><script>
+/* Native due-date picker: work form is moved into the editing drawer dynamically. */
+document.addEventListener("click",function estaDueDatePickerClick(event){
+  const target=event.target;
+  if(!(target instanceof Element))return;
+  const label=target.closest("#demoWorkLinks .demoDueField");
+  if(!label)return;
+  const input=label.querySelector("#demoTaskDue");
+  if(!input||input.disabled||input.readOnly)return;
+  if(target===input){
+    try{if(typeof input.showPicker==="function")input.showPicker();}catch(_error){input.focus();}
+    return;
+  }
+  event.preventDefault();
+  try{if(typeof input.showPicker==="function")input.showPicker();else input.focus();}
+  catch(_error){input.focus();}
+},true);
+</script></body></html>
 
 
 
