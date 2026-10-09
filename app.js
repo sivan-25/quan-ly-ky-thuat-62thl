@@ -1451,6 +1451,40 @@ $("#taskForm").onsubmit=async e=>{
  finally{btn.disabled=false;if(quickBtn){quickBtn.disabled=false;quickBtn.removeAttribute("aria-busy");quickBtn.classList.remove("is-saved");if(quickSuccess)quickBtn.textContent="✓ Lưu công việc";}}
 };
 let workStatFilter="";
+let workSelectMode=false;
+const workSelectedIds=new Set();
+function workRowCheckbox(x){
+ return workSelectMode?'<label title="Chọn công việc" onclick="event.stopPropagation()"><input type="checkbox" class="workRowPick" data-work-select="'+esc(x.id)+'" '+(workSelectedIds.has(String(x.id))?'checked':'')+'></label> ':'';
+}
+function syncWorkSelection(){
+ const btn=$("#workSelectModeBtn"),bar=$("#workSelectedPdfBar");
+ if(btn){btn.textContent=workSelectMode?"✓ Đang chọn":"☑ Chọn dòng";btn.setAttribute("aria-pressed",String(workSelectMode))}
+ if(bar)bar.classList.toggle("hide",!workSelectMode);
+ const count=$("#workSelectedCount");if(count)count.textContent="Đã chọn "+workSelectedIds.size+" dòng";
+ const print=$("#workPrintSelected");if(print)print.disabled=!workSelectedIds.size;
+ const visible=filtered().map(x=>String(x.id)),selected=visible.filter(id=>workSelectedIds.has(id)).length;
+ const all=$("#workSelectAll");if(all){all.checked=visible.length>0&&selected===visible.length;all.indeterminate=selected>0&&selected<visible.length}
+}
+function initWorkSelection(){
+ const controls=$("#workControls"),tbody=$("#tbody");
+ if(!controls||!tbody||$("#workSelectModeBtn"))return;
+ const select=document.createElement("button");select.id="workSelectModeBtn";select.type="button";select.textContent="☑ Chọn dòng";controls.appendChild(select);
+ const bar=document.createElement("div");bar.id="workSelectedPdfBar";bar.className="workSelectedPdfBar hide";
+ bar.innerHTML='<label><input type="checkbox" id="workSelectAll"> Chọn tất cả dòng hiển thị</label><strong id="workSelectedCount">Đã chọn 0 dòng</strong><button type="button" id="workPrintSelected" disabled>▣ In PDF đã chọn</button><button type="button" id="workCancelSelect">Hủy</button>';
+ const table=tbody.closest("table");table.parentElement.insertBefore(bar,table);
+ select.onclick=()=>{workSelectMode=!workSelectMode;workSelectedIds.clear();render()};
+ $("#workCancelSelect").onclick=()=>{workSelectMode=false;workSelectedIds.clear();render()};
+ $("#workSelectAll").onchange=e=>{filtered().forEach(x=>e.target.checked?workSelectedIds.add(String(x.id)):workSelectedIds.delete(String(x.id)));render()};
+ $("#workPrintSelected").onclick=()=>{
+  const rows=filtered().filter(x=>workSelectedIds.has(String(x.id)));
+  if(!rows.length)return toast("Vui lòng chọn ít nhất một dòng công việc");
+  openReport(rows,"selected");
+ };
+ const onPick=e=>{const el=e.target.closest("[data-work-select]");if(!el)return;if(el.checked)workSelectedIds.add(el.dataset.workSelect);else workSelectedIds.delete(el.dataset.workSelect);syncWorkSelection()};
+ tbody.addEventListener("change",onPick);
+ $("#mobileCards")?.addEventListener("change",onPick);
+}
+
 function filtered(fx,ex){
  let q=($("#search").value+" "+$("#globalSearch").value).toLowerCase().trim(),s=$("#filterStatus").value,t=$("#filterType").value,f=fx===undefined?$("#fromDate").value:fx,e=ex===undefined?$("#toDate").value:ex;
  const statMatch=x=>!workStatFilter||(workStatFilter==="today"?x.d===today():workStatFilter==="doing"?x.s==="Đang thực hiện":workStatFilter==="done"?x.s==="Đã hoàn thành":workStatFilter==="waiting"?x.s==="Chờ xử lý":true);
@@ -1484,9 +1518,10 @@ function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div 
    card.setAttribute("aria-pressed",String(active));
  });
  $("#empty").classList.toggle("hide",a.length>0);
- $("#tbody").innerHTML=a.map((x,i)=>'<tr><td class="sttCell">'+(i+1)+'</td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"—"))+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
- $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard"><div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"Không có ghi chú"))+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
+ $("#tbody").innerHTML=a.map((x,i)=>'<tr><td class="sttCell">'+workRowCheckbox(x)+(i+1)+'</td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"—"))+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
+ $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard">'+workRowCheckbox(x)+'<div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"Không có ghi chú"))+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
  hydrateMediaImages($("#tbody"));
+ syncWorkSelection();
 }
 window.editTask=id=>{
  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
@@ -2030,6 +2065,7 @@ async function openReport(a,kind="current",previewWindow=null,photoLayout=1){
    workReportBusy=false;
  }
 }
+initWorkSelection();
 $("#exportBtn").onclick=()=>$("#exportModal").classList.remove("hide");
 $("#closeExport").onclick=()=>$("#exportModal").classList.add("hide");
 $("#exportModal").onclick=e=>{if(e.target===$("#exportModal"))$("#exportModal").classList.add("hide")};
@@ -2273,6 +2309,7 @@ function syncEnergyManageUI(){
  if(!energyManageMode)return;
  $("#energySelectedCount").textContent="Đã chọn "+energySelectedIds.size+" dòng";
  $("#energyDeleteSelected").disabled=energySelectedIds.size===0;
+ $("#energyPrintSelected").disabled=energySelectedIds.size===0;
  const count=energyVisibleIds.filter(id=>energySelectedIds.has(id)).length;
  $("#energySelectAll").checked=energyVisibleIds.length>0&&count===energyVisibleIds.length;
  $("#energySelectAll").indeterminate=count>0&&count<energyVisibleIds.length;
@@ -2435,6 +2472,11 @@ $("#energySelectAll").onchange=e=>{for(const id of energyVisibleIds){if(e.target
  if(check.checked)energySelectedIds.add(check.dataset.energySelect);else energySelectedIds.delete(check.dataset.energySelect);
  renderEnergy();
 }));
+$("#energyPrintSelected").onclick=()=>{
+ const rows=energyRows().filter(x=>energySelectedIds.has(String(x.id)));
+ if(!rows.length)return toast("Vui lòng chọn ít nhất một dòng");
+ exportEnergyEstaPdf(rows,"selected");
+};
 $("#energyDeleteSelected").onclick=async()=>{
  if(!currentAccount?.is_admin||!energyManageMode||!energySelectedIds.size)return;
  const ids=[...energySelectedIds],buildingId=currentBuilding.id,kind=energyType;
