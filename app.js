@@ -822,7 +822,15 @@ function syncOverviewNavigation(){
  const project=!!projectOverviewActive;
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
  $("#navProjectOverview").classList.toggle("hide",!admin||!project);
- $("#quickReturnAdmin").classList.toggle("hide",!admin||!project);
+ const quick=$("#quickReturnAdmin");
+ if(quick){
+  const show=admin&&(project||!!lastAdminProject?.id);
+  quick.classList.toggle("hide",!show);
+  const label=quick.querySelector("span");
+  if(label)label.textContent=project?"Về Admin":"Về "+(currentAccount?.buildings?.find(x=>x.id===lastAdminProject?.id)?.name||lastAdminProject?.id||"dự án");
+  quick.setAttribute("aria-label",project?"Quay về Admin":"Quay lại dự án vừa mở");
+ }
+
 }
 function showHome(){
  closeWorkFilter();
@@ -866,6 +874,29 @@ function applyBuildingUI(){
  resetForm(false);render();renderEnergy();renderHomeDashboard();
 }
 let projectOpenSeq=0;
+let lastAdminProject=null;
+function activeProjectModule(){
+ const pageNames={work:"workPage",energy:"energyPage",inventory:"inventoryPage",maintenance:"maintenancePage",contractor:"contractorPage",construction:"constructionMaterialPage"};
+ for(const [name,id] of Object.entries(pageNames))if($("#"+id)&&!$("#"+id).classList.contains("hide"))return name;
+ return "home";
+}
+function rememberAdminProject(){
+ if(!currentAccount?.is_admin||!projectOverviewActive||!currentBuilding?.id)return;
+ lastAdminProject={id:currentBuilding.id,module:activeProjectModule()};
+}
+async function returnToLastAdminProject(){
+ if(!currentAccount?.is_admin||!lastAdminProject?.id)return;
+ const saved={...lastAdminProject};
+ const building=currentAccount.buildings?.find(x=>String(x.id)===String(saved.id));
+ if(!building){lastAdminProject=null;syncOverviewNavigation();toast("Bạn không còn quyền truy cập dự án trước đó");return}
+ if($("#quickReturnAdmin"))$("#quickReturnAdmin").disabled=true;
+ try{
+  await enterProject(building,{target:saved.module==="home"?"home":"work"});
+  if(saved.module!=="home"&&saved.module!=="work"&&projectOverviewActive&&currentBuilding?.id===saved.id)showModule(saved.module);
+ }catch(err){console.warn("Return to previous project failed",err);toast("Không thể quay lại dự án, vui lòng thử lại")}
+ finally{if($("#quickReturnAdmin"))$("#quickReturnAdmin").disabled=false;syncOverviewNavigation()}
+}
+
 function closeProjectOverlays(){
  try{restoreWorkEntryCard()}catch(e){}
  ["demoIncidentModal","demoChecklistModal","technicalDocumentModal","demoTaskDrawer","ccDispatchModal","viewer","peopleManagerModal"].forEach(id=>$("#"+id)?.classList.add("hide"));
@@ -917,6 +948,7 @@ async function enterProject(building,{target="home"}={}){
  return true;
 }
 function openAdminPortal(){
+ rememberAdminProject();
  closeWorkFilter();
  if(!currentAccount?.is_admin)return;
  projectOpenSeq+=1;
@@ -2161,7 +2193,7 @@ function showModule(name){
 }
 $("#navHome").onclick=()=>currentAccount?.is_admin?openAdminOverview():showHome();
 $("#navProjectOverview").onclick=()=>{if(projectOverviewActive)showHome()};
-$("#quickReturnAdmin").onclick=()=>openAdminOverview();
+$("#quickReturnAdmin").onclick=()=>projectOverviewActive?openAdminOverview():returnToLastAdminProject();
 $("#navAdmin").onclick=()=>openAdminPortal();
 $("#navWork").onclick=()=>showModule("work");
 $("#navEnergy").onclick=()=>showModule("energy");
