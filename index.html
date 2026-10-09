@@ -2279,12 +2279,17 @@
       <label class="jobSolutionField"><span>Hướng xử lý</span><textarea id="contractorJobSolution" rows="3" maxlength="1000" placeholder="Phương án xử lý, thay thế, khắc phục..."></textarea></label>
       <label class="jobNoteField"><span>Ghi chú</span><textarea id="contractorJobNote" rows="2" maxlength="800" placeholder="Ghi chú thêm nếu có..."></textarea></label>
 
-      <label class="contractorJobImageField">
-        <span>Hình ảnh công việc</span>
-        <input id="contractorJobImages" type="file" accept="image/*" multiple>
-        <small>Chọn nhiều ảnh nếu cần. Ảnh sẽ được nén và lưu theo dự án.</small>
+      <div class="contractorJobImageField">
+        <div class="contractorImageHeading"><span>Hình ảnh công việc</span><small>Ảnh được nén và lưu theo dự án</small></div>
+        <div class="contractorImageButtons">
+          <button type="button" class="contractorImageAdd" id="contractorJobCaptureBtn">📷 Chụp ảnh</button>
+          <button type="button" class="contractorImageAdd" id="contractorJobChooseBtn">▧ Chọn ảnh</button>
+          <span class="contractorImageCount" id="contractorImageCount">Chưa có ảnh</span>
+        </div>
+        <input id="contractorJobImages" class="contractorImageFileHidden" type="file" accept="image/*" multiple>
+        <input id="contractorJobCamera" class="contractorImageFileHidden" type="file" accept="image/*" capture="environment">
         <div id="contractorJobImagePreview" class="contractorJobImagePreview"></div>
-      </label>
+      </div>
 
       <div class="contractorFormActions contractorJobFormActions">
         <button id="cancelContractorJobModal" type="button" class="contractorBtn ghost">Hủy</button>
