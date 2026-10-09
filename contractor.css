@@ -3423,3 +3423,25 @@ body:has(#app.contractorMode) #contractorJobModal .contractorForm textarea:focus
  #contractorJobModal .contractorModalHead h3{font-size:20px!important}
  #contractorJobModal .contractorImageHeading small{display:none}
 }
+
+
+/* ESTA contractor detail: prominent return-to-list button */
+#app.contractorMode #contractorPage #contractorBackBtn{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:44px!important;padding:11px 17px!important;
+ background:linear-gradient(180deg,#1b4568 0%,#102c49 100%)!important;
+ color:#fff8ea!important;border:1px solid #5a91b8!important;
+ border-radius:12px!important;font-size:14px!important;font-weight:750!important;
+ letter-spacing:.1px!important;line-height:1.3!important;
+ box-shadow:0 5px 15px rgba(9,33,58,.22)!important;
+ opacity:1!important;cursor:pointer!important;
+ transition:background .18s ease,box-shadow .18s ease,transform .18s ease!important;
+}
+#app.contractorMode #contractorPage #contractorBackBtn:hover{
+ background:linear-gradient(180deg,#276086 0%,#174265 100%)!important;
+ color:#ffffff!important;border-color:#83c8ed!important;
+ box-shadow:0 8px 19px rgba(9,33,58,.29)!important;transform:translateY(-1px);
+}
+#app.contractorMode #contractorPage #contractorBackBtn:focus-visible{outline:3px solid #3dd5ed!important;outline-offset:3px!important}
+#app.contractorMode #contractorPage #contractorBackBtn:active{transform:translateY(0)}
+@media(max-width:640px){#app.contractorMode #contractorPage #contractorBackBtn{min-height:42px!important;padding:10px 13px!important;font-size:13px!important}}
