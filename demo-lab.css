@@ -3012,3 +3012,15 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     max-width:100%;
   }
 }
+
+
+/* Compact ESTA work result field: replace large gray copy-note button */
+#app #workPage .demoTaskResultField{display:flex!important;flex-direction:column;gap:7px;min-width:0;align-self:stretch}
+#app #workPage .demoTaskResultHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;min-height:26px}
+#app #workPage .demoTaskResultHead label{margin:0!important;padding:0!important;font-size:13px!important;font-weight:750!important;line-height:1.3;color:#143969!important}
+#app #workPage .demoTaskResultField #demoTaskResult{width:100%;min-height:52px;box-sizing:border-box;resize:vertical;border-radius:10px}
+#app #workPage .demoUseNoteInline{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 auto;min-height:30px!important;width:auto!important;max-width:100%;padding:5px 11px!important;border-radius:8px!important;border:1px solid #6ea8c3!important;background:#eef8fc!important;color:#115174!important;font-size:12px!important;line-height:1.3!important;font-weight:700!important;box-shadow:none!important;white-space:nowrap;cursor:pointer}
+#app #workPage .demoUseNoteInline.hide{display:none!important}
+#app #workPage .demoUseNoteInline:hover{background:#d9f2fa!important;border-color:#2d91b2!important;color:#0d4263!important}
+#app #workPage .demoUseNoteInline:focus-visible{outline:2px solid #179fd0;outline-offset:2px}
+@media(max-width:640px){#app #workPage .demoTaskResultHead{gap:6px}#app #workPage .demoTaskResultHead label{font-size:12px!important}#app #workPage .demoUseNoteInline{font-size:11px!important;padding:6px 8px!important}}
