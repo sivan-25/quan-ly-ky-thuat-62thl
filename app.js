@@ -1458,23 +1458,43 @@ function workRowCheckbox(x){
 }
 function syncWorkSelection(){
  const btn=$("#workSelectModeBtn"),bar=$("#workSelectedPdfBar");
- if(btn){btn.textContent=workSelectMode?"✓ Đang chọn":"☑ Chọn dòng";btn.setAttribute("aria-pressed",String(workSelectMode))}
+ if(btn){btn.classList.toggle("hide",!currentAccount?.is_admin);btn.textContent=workSelectMode?"✓ Đang chọn":"⚙ Cài đặt";btn.setAttribute("aria-pressed",String(workSelectMode))}
  if(bar)bar.classList.toggle("hide",!workSelectMode);
  const count=$("#workSelectedCount");if(count)count.textContent="Đã chọn "+workSelectedIds.size+" dòng";
  const print=$("#workPrintSelected");if(print)print.disabled=!workSelectedIds.size;
+ const del=$("#workDeleteSelected");if(del)del.disabled=!workSelectedIds.size;
  const visible=filtered().map(x=>String(x.id)),selected=visible.filter(id=>workSelectedIds.has(id)).length;
  const all=$("#workSelectAll");if(all){all.checked=visible.length>0&&selected===visible.length;all.indeterminate=selected>0&&selected<visible.length}
 }
 function initWorkSelection(){
- const controls=$("#workControls"),tbody=$("#tbody");
+ const controls=$("#workPage .workTableMeta"),tbody=$("#tbody");
  if(!controls||!tbody||$("#workSelectModeBtn"))return;
- const select=document.createElement("button");select.id="workSelectModeBtn";select.type="button";select.textContent="☑ Chọn dòng";controls.appendChild(select);
- const bar=document.createElement("div");bar.id="workSelectedPdfBar";bar.className="workSelectedPdfBar hide";
- bar.innerHTML='<label><input type="checkbox" id="workSelectAll"> Chọn tất cả dòng hiển thị</label><strong id="workSelectedCount">Đã chọn 0 dòng</strong><button type="button" id="workPrintSelected" disabled>▣ In PDF đã chọn</button><button type="button" id="workCancelSelect">Hủy</button>';
- const table=tbody.closest("table");table.parentElement.insertBefore(bar,table);
- select.onclick=()=>{workSelectMode=!workSelectMode;workSelectedIds.clear();render()};
+ const select=document.createElement("button");select.id="workSelectModeBtn";select.type="button";select.textContent="⚙ Cài đặt";select.className="energyManageBtn";controls.appendChild(select);
+ const bar=document.createElement("div");bar.id="workSelectedPdfBar";bar.className="energyDeleteBar workSelectedPdfBar hide";
+ bar.innerHTML='<label><input type="checkbox" id="workSelectAll"> Chọn tất cả dòng hiển thị</label><strong id="workSelectedCount">Đã chọn 0 dòng</strong><button type="button" id="workDeleteSelected" disabled>Xóa đã chọn</button><button type="button" id="workPrintSelected" disabled>▣ In PDF đã chọn</button><button type="button" id="workCancelSelect">Hủy</button>';
+ const desktop=tbody.closest(".desktopTable");desktop.insertAdjacentElement("afterend",bar);
+ select.onclick=()=>{if(!currentAccount?.is_admin)return;workSelectMode=!workSelectMode;workSelectedIds.clear();render()};
  $("#workCancelSelect").onclick=()=>{workSelectMode=false;workSelectedIds.clear();render()};
  $("#workSelectAll").onchange=e=>{filtered().forEach(x=>e.target.checked?workSelectedIds.add(String(x.id)):workSelectedIds.delete(String(x.id)));render()};
+ $("#workDeleteSelected").onclick=async()=>{
+  if(!currentAccount?.is_admin||!workSelectedIds.size)return;
+  const ids=[...workSelectedIds],buildingId=currentBuilding.id;
+  if(!confirm("Bạn chắc chắn muốn xóa "+ids.length+" công việc đã chọn? Dữ liệu đã xóa không thể hoàn tác."))return;
+  const btn=$("#workDeleteSelected");btn.disabled=true;btn.textContent="Đang xóa...";
+  let deleted=0,failed=false;
+  for(const id of ids){
+   if(currentBuilding.id!==buildingId){failed=true;break}
+   try{
+    if(centralSession?.access_token)await syncTaskRecord("delete_task",id);
+    save(load().filter(x=>String(x.id)!==id));
+    workSelectedIds.delete(id);deleted++;
+   }catch(err){console.warn("Bulk task delete failed",err);failed=true;break}
+  }
+  btn.textContent="Xóa đã chọn";
+  if(!failed){workSelectMode=false;workSelectedIds.clear()}
+  render();renderHomeDashboard();
+  toast(failed?"Đã xóa "+deleted+" dòng, có lỗi đồng bộ. Vui lòng thử lại.":"Đã xóa "+deleted+" công việc");
+ };
  $("#workPrintSelected").onclick=()=>{
   const rows=filtered().filter(x=>workSelectedIds.has(String(x.id)));
   if(!rows.length)return toast("Vui lòng chọn ít nhất một dòng công việc");
