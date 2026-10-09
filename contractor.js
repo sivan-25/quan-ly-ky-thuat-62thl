@@ -264,16 +264,33 @@ window.deleteContractor=async id=>{
   }catch(e){toast(e.message)}
 };
 let contractorJobExistingImages=[],contractorJobPendingFiles=[],contractorJobRemovedImages=[];
+const contractorPhotoObjectUrls=[];
+function cleanupContractorPhotoUrls(){contractorPhotoObjectUrls.splice(0).forEach(url=>URL.revokeObjectURL(url))}
+function autoSizeContractorJobFields(){
+ ["contractorJobContent","contractorJobCause","contractorJobSolution","contractorJobNote"].forEach(id=>{
+  const field=$("#"+id);if(!field)return;
+  field.style.height="auto";
+  field.style.height=Math.max(40,field.scrollHeight)+"px";
+ });
+}
+document.addEventListener("input",e=>{if(e.target?.matches?.("#contractorJobContent,#contractorJobCause,#contractorJobSolution,#contractorJobNote"))autoSizeContractorJobFields()});
+document.addEventListener("click",e=>{
+ if(e.target?.id==="contractorJobCaptureBtn")$("#contractorJobCamera")?.click();
+ if(e.target?.id==="contractorJobChooseBtn")$("#contractorJobImages")?.click();
+});
+
 function renderContractorJobImageState(){
   const box=$("#contractorJobImagePreview");if(!box)return;
+  cleanupContractorPhotoUrls();
   const existing=contractorJobExistingImages.map((ref,i)=>
     '<div class="contractorJobImageChip">'+mediaImgHtml(ref,"")+
     '<span>Ảnh hiện tại '+(i+1)+'</span><button type="button" data-remove-contractor-existing="'+i+'" aria-label="Xóa ảnh">×</button></div>'
   ).join("");
   const pending=contractorJobPendingFiles.map((f,i)=>
-    '<div class="contractorJobImageChip"><span>'+esc(f.name||("Ảnh mới "+(i+1)))+'</span><button type="button" data-remove-contractor-pending="'+i+'" aria-label="Bỏ ảnh">×</button></div>'
+    '<div class="contractorJobImageChip"><img src="'+(function(){const url=URL.createObjectURL(f);contractorPhotoObjectUrls.push(url);return url})()+'" alt="Ảnh mới"><span>Ảnh mới '+(i+1)+'</span><button type="button" data-remove-contractor-pending="'+i+'" aria-label="Bỏ ảnh">×</button></div>'
   ).join("");
   box.innerHTML=existing+pending;
+  const count=$("#contractorImageCount");if(count){const n=contractorJobExistingImages.length+contractorJobPendingFiles.length;count.textContent=n?n+" ảnh đã chọn":"Chưa có ảnh"}
   if(typeof hydrateMediaImages==="function")hydrateMediaImages(box);
 }
 function resetContractorJobImageState(images=[]){
@@ -281,10 +298,11 @@ function resetContractorJobImageState(images=[]){
   contractorJobPendingFiles=[];
   contractorJobRemovedImages=[];
   const input=$("#contractorJobImages");if(input)input.value="";
+  const camera=$("#contractorJobCamera");if(camera)camera.value="";
   renderContractorJobImageState();
 }
 document.addEventListener("change",e=>{
-  if(e.target?.id!=="contractorJobImages")return;
+  if(!["contractorJobImages","contractorJobCamera"].includes(e.target?.id))return;
   const files=[...(e.target.files||[])].filter(f=>f.type?.startsWith("image/"));
   contractorJobPendingFiles.push(...files);
   e.target.value="";
@@ -318,7 +336,7 @@ function resetContractorJobForm(contractorId){
 }
 function openContractorJobModal(){
   if(!selectedContractorId)return;
-  resetContractorJobForm(selectedContractorId);$("#contractorJobModal").classList.remove("hide");setTimeout(()=>$("#contractorJobContent").focus(),50);
+  resetContractorJobForm(selectedContractorId);$("#contractorJobModal").classList.remove("hide");requestAnimationFrame(autoSizeContractorJobFields);setTimeout(()=>$("#contractorJobContent").focus(),50);
 }
 window.editContractorJob=id=>{
   const x=contractorJobs.find(r=>String(r.id)===String(id));if(!x)return;
@@ -328,7 +346,7 @@ window.editContractorJob=id=>{
   resetContractorJobImageState(x.images||[]);
   $("#contractorJobModalTitle").textContent=x.source_task_id?"Chỉnh sửa công việc liên kết":"Chỉnh sửa công việc";
   $("#contractorJobModalContractor").textContent=(c?.name||"Nhà thầu")+(x.source_task_id?" · CV-"+String(x.source_task_id).slice(-6):"");
-  $("#contractorJobModal").classList.remove("hide");
+  $("#contractorJobModal").classList.remove("hide");requestAnimationFrame(autoSizeContractorJobFields);
 };
 window.deleteContractorJob=async id=>{
   if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
