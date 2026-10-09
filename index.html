@@ -12,6 +12,13 @@
 #app .energyDeleteBar button{padding:8px 11px;border-radius:8px;border:1px solid #667c8d;background:#263a4b;color:white;cursor:pointer}
 #app #energyDeleteSelected:not(:disabled){background:#a43e36;border-color:#be5b50}
 #app #energyDeleteSelected:disabled{opacity:.45}
+#app #energyPrintSelected:not(:disabled){background:#176e72;border-color:#35b8ba;color:#fff}
+#app #energyPrintSelected:disabled{opacity:.45}
+#app .workSelectedPdfBar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:10px 12px;margin:10px 0;background:#13243c;border:1px solid #587069;border-radius:10px;color:#f4e2c4}
+#app .workSelectedPdfBar button{padding:8px 11px;border-radius:8px;border:1px solid #667c8d;background:#176e72;color:#fff;cursor:pointer}
+#app .workSelectedPdfBar button:disabled{opacity:.45;cursor:not-allowed}
+#app .workRowPick{width:17px;height:17px;accent-color:#35bc9f;cursor:pointer}
+#app #workSelectModeBtn{border:1px solid #6b8496;border-radius:10px;padding:8px 11px;background:#13243c;color:#f4e2c4;font-weight:700;cursor:pointer}
 #app .energyDatePick{white-space:nowrap}
 #app .energyManageSelected{box-shadow:inset 3px 0 #24bc9d;background:rgba(36,188,157,.11)!important}
 #app .energyMobilePick{margin-bottom:7px;font-size:12px}
@@ -1617,7 +1624,7 @@
       </table>
     </div>
 
-    <div id="energyDeleteBar" class="energyDeleteBar hide"><label><input id="energySelectAll" type="checkbox"> Chọn tất cả dòng hiển thị</label><strong id="energySelectedCount">Đã chọn 0 dòng</strong><button id="energyDeleteSelected" type="button" disabled>Xóa đã chọn</button><button id="energyCancelManage" type="button">Hủy</button></div><div id="energyMobileCards"></div>
+    <div id="energyDeleteBar" class="energyDeleteBar hide"><label><input id="energySelectAll" type="checkbox"> Chọn tất cả dòng hiển thị</label><strong id="energySelectedCount">Đã chọn 0 dòng</strong><button id="energyDeleteSelected" type="button" disabled>Xóa đã chọn</button><button id="energyPrintSelected" type="button" disabled title="Xuất PDF theo những dòng đã tick">▣ In PDF đã chọn</button><button id="energyCancelManage" type="button">Hủy</button></div><div id="energyMobileCards"></div>
 
     <div id="energyEmpty" class="empty hide">
       <span class="emptyTableIcon" aria-hidden="true">
