@@ -3386,3 +3386,40 @@ body:has(#app.contractorMode) #contractorJobModal .contractorForm textarea:focus
  #viewer.imageOnlyViewer{padding:8px!important}
  #viewer.imageOnlyViewer .viewerLargeImage{max-width:96vw!important;max-height:88vh!important}
 }
+
+
+/* Contractor work log compact, content-adaptive modal */
+#contractorJobModal .contractorModalCard{width:min(980px,calc(100vw - 32px))!important;max-height:calc(100dvh - 28px)!important;display:flex!important;flex-direction:column!important;overflow-y:auto!important}
+#contractorJobModal .contractorModalHead{padding:15px 22px 12px!important;flex:none!important}
+#contractorJobModal .contractorModalHead h3{font-size:24px!important;line-height:1.2!important;margin:4px 0!important}
+#contractorJobModal .contractorJobCompactForm{gap:9px 12px!important;padding:12px 22px 16px!important;align-content:start!important}
+#contractorJobModal .contractorJobCompactForm label{min-width:0!important;gap:4px!important}
+#contractorJobModal .contractorJobCompactForm label>span{font-size:12px!important;line-height:1.2!important}
+#contractorJobModal .contractorJobCompactForm input:not([type="file"]),#contractorJobModal .contractorJobCompactForm select{min-height:39px!important;height:39px!important;padding:7px 10px!important;font-size:13px!important}
+#contractorJobModal .contractorJobCompactForm textarea{min-height:40px!important;height:40px;max-height:none!important;resize:none!important;overflow:hidden!important;padding:9px 11px!important;font-size:13px!important;line-height:20px!important;box-sizing:border-box!important}
+#contractorJobModal .contractorJobImageField{grid-column:1/-1!important;padding:10px 12px!important;background:#151f34!important;border:1px solid #31415c!important;border-radius:12px!important}
+#contractorJobModal .contractorImageHeading{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#contractorJobModal .contractorImageHeading>span{font-size:12px;font-weight:700;color:#b6c6e1}
+#contractorJobModal .contractorImageHeading small{font-size:10px;color:#8195b4}
+#contractorJobModal .contractorImageButtons{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+#contractorJobModal .contractorImageAdd{background:#20344e;color:#e4faff;border:1px solid #3a7188;border-radius:9px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer}
+#contractorJobModal .contractorImageAdd:hover{background:#22506a;border-color:#28b9db}
+#contractorJobModal .contractorImageCount{color:#9babc3;font-size:11px}
+#contractorJobModal .contractorImageFileHidden{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
+#contractorJobModal .contractorJobImagePreview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+#contractorJobModal .contractorJobImagePreview:empty{display:none}
+#contractorJobModal .contractorJobImageChip{width:92px;position:relative;display:flex;flex-direction:column;align-items:stretch;gap:3px;border:1px solid #354963;background:#1a2940;color:#d6e4fa;padding:5px;border-radius:10px;overflow:visible}
+#contractorJobModal .contractorJobImageChip img{width:100%;height:66px;object-fit:cover;border-radius:6px}
+#contractorJobModal .contractorJobImageChip span{font-size:10px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#contractorJobModal .contractorJobImageChip button{position:absolute;right:-6px;top:-6px;background:#a93e48;color:white;border:1px solid #e6a3a6;width:20px;height:20px;border-radius:50%}
+#contractorJobModal .contractorJobFormActions{display:flex!important;justify-content:flex-end;gap:10px;margin:0!important;padding:4px 0 0!important}
+#contractorJobModal .contractorJobFormActions button{min-height:38px!important}
+@media(max-width:760px){
+ #contractorJobModal .contractorModalCard{width:calc(100vw - 14px)!important;max-height:calc(100dvh - 14px)!important}
+ #contractorJobModal .contractorJobCompactForm{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:10px 12px 14px!important;gap:8px!important}
+ #contractorJobModal .jobDateField,#contractorJobModal .jobCompletedField{grid-column:span 1!important}
+ #contractorJobModal .jobStatusField,#contractorJobModal .jobContentField,#contractorJobModal .jobCauseField,#contractorJobModal .jobSolutionField,#contractorJobModal .jobNoteField{grid-column:1/-1!important}
+ #contractorJobModal .contractorModalHead{padding:13px!important}
+ #contractorJobModal .contractorModalHead h3{font-size:20px!important}
+ #contractorJobModal .contractorImageHeading small{display:none}
+}
