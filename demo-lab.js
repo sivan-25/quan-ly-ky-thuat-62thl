@@ -356,8 +356,7 @@ function demoEnsureWorkPanel(){
    '<label class="demoMobileHalf demoContractorField">Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
    '<div class="span2 demoTaskMaterialsField"><div class="demoTaskMaterialsHead"><span>Vật tư sử dụng</span><button id="demoAddTaskMaterial" type="button">+ Thêm vật tư</button></div><div id="demoTaskMaterialsRows" class="demoTaskMaterialsRows"></div><small id="demoTaskMaterialsEmpty" class="demoTaskMaterialsEmpty hide">Chưa có vật tư trong kho dự án.</small></div>'+
    '<label class="span2"><span>Nguyên nhân</span><textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
-   '<label class="span2"><span id="demoTaskResultLabel">Hướng xử lý / Kết quả</span><textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></label>'+
-   '<button id="demoUseNoteAsResult" class="secondary hide" type="button">Dùng ghi chú làm kết quả</button>'+
+   '<div class="span2 demoTaskResultField"><div class="demoTaskResultHead"><label id="demoTaskResultLabel" for="demoTaskResult">Hướng xử lý / Kết quả</label><button id="demoUseNoteAsResult" class="demoUseNoteInline hide" type="button" title="Chép nội dung ghi chú sang kết quả thực hiện">↗ Lấy từ ghi chú</button></div><textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></div>'+
    '</div>';
   card.appendChild(box);
   $("#demoUseNoteAsResult")?.addEventListener("click",()=>{
@@ -426,7 +425,7 @@ function demoSyncCompletionFields(){
   const quick=demo130MobileQuick()&&done,topResult=document.getElementById("task130Result");
   if(quick&&topResult&&document.activeElement===topResult)result.value=topResult.value;
   if(quick&&topResult&&document.activeElement!==topResult&&result.value&&!topResult.value)topResult.value=result.value;
-  result.closest("label")?.classList.toggle("hide",quick);
+  result.closest(".demoTaskResultField")?.classList.toggle("hide",quick);
   result.required=single&&done&&!quick;
   result.placeholder=single?"Nhập kết quả thực hiện; bắt buộc khi hoàn thành":"Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành...";
   result.setAttribute("aria-required",String(done));
