@@ -126,7 +126,7 @@ async function review(width){
   if(width===768){
    const linked=await page.evaluate(()=>{
     const panel=document.querySelector('#demoWorkLinks .demoWorkLinkGrid');
-    const cols=getComputedStyle(panel).gridTemplateColumns.split(/\\s+/).filter(Boolean);
+    const cols=getComputedStyle(panel).gridTemplateColumns.trim().split(' ').filter(Boolean);
     const panelRect=panel.getBoundingClientRect();
     const selectors=[...panel.querySelectorAll('select')];
     return {cols:cols.length,panelRight:panelRect.right,
