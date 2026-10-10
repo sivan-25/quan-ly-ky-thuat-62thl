@@ -259,7 +259,7 @@ class ReportTests(unittest.TestCase):
             pdf, missing, count = generate_pdf(payload, '')
             self.assertTrue(pdf.startswith(b'%PDF-'), building)
             self.assertEqual((missing, count), (0, 1), building)
-            pages = len(re.findall(rb'/Type\\s*/Page\\b', pdf))
+            pages = len(re.findall(rb'/Type\s*/Page\b', pdf))
             self.assertGreaterEqual(pages, 3, building)
 
     def test_original_work_energy_tools_renderers(self):
