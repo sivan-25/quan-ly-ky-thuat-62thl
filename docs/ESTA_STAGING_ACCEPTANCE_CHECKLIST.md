@@ -7,6 +7,8 @@ Status: **BLOCKED — no confirmed independent staging database** (2026-10-10).
 - A Supabase project with the app's production URL is active. Supabase returned **no development branches** for that project.
 - Another Supabase project named for 130 HH exists but is inactive. **Do not use, reset, restore, copy, write to, or delete it until its owner explicitly confirms its purpose.**
 - No Vercel custom staging environment was found.
+- **Schema reproducibility is incomplete:** the production Supabase migration history lists **40 applied migrations** (September–October 2026) but the GitHub `supabase/migrations` directory contains **only one SQL migration**. A newly created migration-only staging database would therefore not have the complete 36-table schema. Capture and review an authoritative schema-only baseline (tables, policies, functions, triggers, storage policies) and reconcile migration history before trying staging CRUD. Do not export or copy live row data.
+
 - **Critical:** `app.js` currently hardcodes the production Supabase URL and a publishable key. Merely creating Vercel Preview environment variables does **not** automatically redirect Preview to staging. A reviewed staging-only configuration mechanism is required and must be confirmed in browser network logs before any write tests.
 - Source browser screenshots and API flows are tested with fully mocked data. This is not a substitute for real authenticated CRUD.
 
