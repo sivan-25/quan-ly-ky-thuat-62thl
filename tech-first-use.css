@@ -35,3 +35,37 @@ body.techFirstUse .peopleEmpty span{color:#45574e!important;opacity:1!important}
 
 /* Existing overview CSS hides generic new sections; opt the onboarding card in. */
 body.techFirstUse #homePage #techFirstUseGuide{display:flex!important;visibility:visible!important}
+
+/* Technicians: use a predictable grid instead of the inherited 8-column,
+   compact desktop entry layout. The extra KQ row must not push fields offscreen. */
+@media(min-width:761px){
+ body.techFirstUse #workPage.techCreating #taskForm.workEntryForm{
+   display:grid!important;
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+   grid-auto-flow:row!important;
+   gap:12px!important;
+   width:100%!important;
+   box-sizing:border-box!important;
+ }
+ body.techFirstUse #workPage.techCreating #taskForm .workField{
+   min-width:0!important;
+   max-width:100%!important;
+ }
+ body.techFirstUse #workPage.techCreating #taskForm .workDate{grid-column:1 / span 1!important}
+ body.techFirstUse #workPage.techCreating #taskForm .workContent{grid-column:2 / span 2!important}
+ body.techFirstUse #workPage.techCreating #taskForm .workType{grid-column:1 / span 1!important}
+ body.techFirstUse #workPage.techCreating #taskForm .workStatus{grid-column:2 / span 1!important}
+ body.techFirstUse #workPage.techCreating #taskForm .workPerformer{grid-column:3 / span 1!important}
+ body.techFirstUse #workPage.techCreating #taskForm #techInlineResult{
+   grid-column:1 / -1!important;
+   grid-row:auto!important;
+   min-width:0!important;
+   box-sizing:border-box!important;
+ }
+ body.techFirstUse #workPage.techCreating #taskForm .workNote{grid-column:1 / span 2!important}
+ body.techFirstUse #workPage.techCreating #taskForm .workImage{grid-column:3 / span 1!important}
+ body.techFirstUse #workPage.techCreating #taskForm .workFormActions{
+   grid-column:1 / -1!important;
+   min-width:0!important;
+ }
+}
