@@ -1852,8 +1852,8 @@ function resetPdfSignatureModal(){
  select.innerHTML='<option value="">-- Chọn người ký KT --</option>'+
    people.map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join("")+
    '<option value="__manual__">Khác · nhập họ tên thủ công</option>';
- select.value=people.length?"":"__manual__";
- if(fullName)fullName.value="";
+ select.value=people.length?people[0]:"__manual__";
+ if(fullName)fullName.value=people.length?people[0]:"";
  file.value="";
  if(pdfSignaturePreviewUrl){URL.revokeObjectURL(pdfSignaturePreviewUrl);pdfSignaturePreviewUrl=""}
  if(preview){preview.innerHTML="";preview.classList.add("hide")}
@@ -1903,10 +1903,6 @@ async function exportGenericEstaPdf(config={}){
      headers:{"Content-Type":"application/json"},
      body:JSON.stringify(payload)
    });
-   if(!res.ok){
-     let detail={};try{detail=await res.json()}catch(_){}
-     throw new Error(detail?.detail||detail?.error||("Không thể tạo PDF ESTA (HTTP "+res.status+")"));
-   }
    const blob=await readVerifiedEstaPdf(res);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download=String(config.filename||"ESTA_BaoCao_KyThuat.pdf");
@@ -2101,26 +2097,12 @@ async function exportEstaGeneratorPdf(rows,signer=null){
  await ensureCentralSessionFresh();
  const controller=new AbortController();
  const timer=setTimeout(()=>controller.abort(),115000);
- const requestPdf=()=>fetch("/api/esta_report",{
-   method:"POST",
-   headers:{
-     "Content-Type":"application/json",
-     "Authorization":"Bearer "+centralSession.access_token
-   },
-   body:JSON.stringify({...estaGeneratorPayload(rows),...pdfSignaturePayload(confirmedSigner)}),
-   signal:controller.signal
- });
+ const payload={...estaGeneratorPayload(rows),...pdfSignaturePayload(confirmedSigner)};
  try{
-   let res=await requestPdf();
-   if(res.status===401&&centralSession?.refresh_token){
-     await ensureCentralSessionFresh(true);
-     res=await requestPdf();
-   }
-   if(!res.ok){
-     let detail={};try{detail=await res.json()}catch(_){}
-     const message=detail?.detail||detail?.error||("Không thể tạo báo cáo ESTA (HTTP "+res.status+")");
-     const error=new Error(message);error.status=res.status;throw error;
-   }
+   const res=await centralAuthFetch("/api/esta_report",{
+     method:"POST",headers:{"Content-Type":"application/json"},
+     body:JSON.stringify(payload),signal:controller.signal
+   });
    const blob=await readVerifiedEstaPdf(res);
    const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
    const url=URL.createObjectURL(blob);
@@ -2686,10 +2668,6 @@ async function exportEnergyEstaPdf(rows,kind="current"){
     method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify(payload),signal:controller.signal
    });
-   if(!res.ok){
-    let detail={};try{detail=await res.json()}catch(_){}
-    throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo Năng lượng");
-   }
    const blob=await readVerifiedEstaPdf(res);
    const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
@@ -3325,10 +3303,6 @@ async function exportToolsEstaPdf(){
     method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify(payload),signal:controller.signal
    });
-   if(!res.ok){
-    let detail={};try{detail=await res.json()}catch(_){}
-    throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo Dụng cụ kỹ thuật");
-   }
    const blob=await readVerifiedEstaPdf(res);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download="BaoCao_DungCuKyThuat_"+today().replaceAll("-","")+".pdf";
