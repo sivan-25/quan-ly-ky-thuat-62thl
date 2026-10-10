@@ -43,6 +43,35 @@ async function review(width){
   assert.equal(await page.locator('#techWorkShortcuts').isVisible(),true);
   assert.equal(await page.locator('#workPage > .workEntryCard').isVisible(),false,'list is shown before new form');
   await page.screenshot({path:out+'/01-work-list-'+width+'.png',animations:'disabled'});
+  // Seed only browser-local fixture tasks; never connect to real Supabase.
+  await page.evaluate(()=>{
+    projectPeople=[{id:'fictional-p1',name:'Kỹ thuật A'},{id:'fictional-p2',name:'Kỹ thuật B'}];
+    renderAllPeopleSelectors();
+    localStorage.setItem(taskStorageKeyFor(currentBuilding.id),JSON.stringify([
+      {id:881,d:today(),c:'Việc của Kỹ thuật A',t:'Hằng ngày',s:'Đang thực hiện',n:'',a:'Kỹ thuật A',performers:['Kỹ thuật A'],imgs:[]},
+      {id:882,d:today(),c:'Việc của Kỹ thuật B',t:'Hằng ngày',s:'Đang thực hiện',n:'',a:'Kỹ thuật B',performers:['Kỹ thuật B'],imgs:[]},
+      {id:883,d:'2026-01-01',c:'Việc cũ của Kỹ thuật B',t:'Bảo trì',s:'Đã hoàn thành',n:'',a:'Kỹ thuật B',performers:['Kỹ thuật B'],imgs:[]}
+    ]));
+    render();
+  });
+  assert.equal(await page.locator('#tbody tr').count(),3,'three synthetic tasks shown');
+  await page.locator('#techMineWork').click();
+  assert.equal(await page.locator('#tbody tr').count(),1,'mine filter shows only assigned tasks');
+  assert.match(await page.locator('#tbody').innerText(),/Việc của Kỹ thuật A/);
+  await page.locator('#techTodayWork').click();
+  assert.equal(await page.locator('#tbody tr').count(),2,'today filter excludes old task');
+  await page.locator('#techAllWork').click();
+  assert.equal(await page.locator('#tbody tr').count(),3,'all filter resets previous filters');
+
+  await page.evaluate(()=>window.editTask(881));
+  assert.equal(await page.locator('#workEditDrawer').isVisible(),true,'existing job opens edit drawer');
+  assert.equal(await page.locator('#content').isVisible(),true,'edit form stays visible');
+  assert.equal(await page.locator('#content').inputValue(),'Việc của Kỹ thuật A');
+  await page.screenshot({path:out+'/01b-work-edit-'+width+'.png',animations:'disabled'});
+  await page.locator('#closeWorkEditDrawer').evaluate(el=>el.click());
+  assert.equal(await page.locator('#workEditDrawer').isVisible(),false,'edit drawer closes');
+  assert.equal(await page.locator('#workPage > .workEntryCard').isVisible(),false,'list-first mode restored');
+
   await page.locator('#techCreateWork').click();
   assert.equal(await page.locator('#workPage > .workEntryCard').isVisible(),true,'create button opens form');
   await page.waitForTimeout(80);
@@ -57,7 +86,30 @@ async function review(width){
   await page.waitForTimeout(100);
   const mobile=width<=640;
   if(mobile)assert.equal(await page.locator('#task130Result').isVisible(),true,'mobile inline result');
-  else assert.equal(await page.locator('#techInlineResult').isVisible(),true,'desktop inline result');
+  else {
+   assert.equal(await page.locator('#techInlineResult').isVisible(),true,'desktop inline result');
+   const metrics=await page.evaluate(()=>{
+     const form=document.querySelector('#taskForm'),target=form.getBoundingClientRect();
+     const fields=['.workDate','.workContent','.workType','.workStatus','.workPerformer','#techInlineResult'];
+     return {form:{left:target.left,right:target.right},fields:fields.map(sel=>{
+       const el=form.querySelector(sel),r=el.getBoundingClientRect();
+       return {sel,x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,visible:getComputedStyle(el).display!=='none'};
+     })};
+   });
+   for(const field of metrics.fields){
+    assert.equal(field.visible,true,field.sel+' must be visible');
+    assert.ok(field.w>80&&field.h>25,field.sel+' must have a real size');
+    assert.ok(field.x>=metrics.form.left-6,field.sel+' should not overflow left');
+    assert.ok(field.right<=metrics.form.right+6,field.sel+' should not overflow right');
+   }
+   // No form field should be placed on top of another field.
+   for(let i=0;i<metrics.fields.length;i++)for(let j=i+1;j<metrics.fields.length;j++){
+    const a=metrics.fields[i],b=metrics.fields[j];
+    const overlapX=Math.min(a.right,b.right)-Math.max(a.x,b.x);
+    const overlapY=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+    assert.ok(overlapX<8||overlapY<8,'form fields overlap: '+a.sel+' / '+b.sel);
+   }
+  }
   const result=mobile?'#task130Result':'#demoTaskResult';
   await page.locator(result).fill('Kiểm tra xong, máy bơm hoạt động tốt');
   await page.screenshot({path:out+'/02-complete-'+width+'.png',animations:'disabled'});
