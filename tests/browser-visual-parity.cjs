@@ -7,13 +7,13 @@ const assert = require('node:assert/strict');
 const output = process.env.ESTA_VISUAL_DIR || 'visual-artifacts';
 fs.mkdirSync(output, {recursive:true});
 const widths=[{width:320,height:720},{width:390,height:844},{width:768,height:1024},{width:1024,height:768},{width:1440,height:900}];
-const scenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL'];
+const scenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL','inventory-62THL','maintenance-68PĐL','contractor-130HH','incident-127HH','inspection-130HH','documents-62THL','reports-68PĐL'];
 const results=[];
 const fixedTime=Date.parse('2026-10-10T02:00:00.000Z');
 const channelTolerance=8; // observed headless anti-aliasing jitter was at most 6/255
 async function fixture(page,scenario){
  if(scenario==='login')return;
- const projectId=scenario.startsWith('work-')?scenario.slice(5):scenario.startsWith('edit-')?scenario.slice(5):'68PĐL';
+ const projectId=scenario.includes('-')&&scenario!=='admin-home'?scenario.split('-').slice(1).join('-'):'68PĐL';
  await page.evaluate(({id,scenario})=>{
    const names={'62THL':'62 Trần Huy Liệu','68PĐL':'68 Phan Đăng Lưu','127HH':'127 Hồng Hà','130HH':'130 Hồng Hà'};
    const buildings=Object.keys(names).map(key=>({id:key,name:names[key],role:'editor'}));
@@ -35,7 +35,7 @@ async function fixture(page,scenario){
    else if(scenario==='admin-home')window.eval('projectOverviewActive=false;showHome();');
    else if(scenario.startsWith('work-'))window.eval('showModule("work");');
    else if(scenario.startsWith('edit-'))window.eval('showModule("work");window.editTask(1001);');
-   else window.eval('showModule("energy");');
+   else window.eval('showModule('+JSON.stringify(scenario.split('-')[0])+');');
  },{id:projectId,scenario});
 }
 async function capture(browser,site,scenario,viewport){
@@ -68,7 +68,7 @@ async function capture(browser,site,scenario,viewport){
      const el=document.querySelector(selector);
      return el&&!el.classList.contains('hide')&&getComputedStyle(el).display!=='none';
    };
-   const selector=['#login','#adminPage','#homePage','#workPage','#energyPage'].find(visible)||'body';
+   const selector=['#login','#adminPage','#homePage','#workPage','#energyPage','#inventoryPage','#maintenancePage','#contractorPage','#incidentPage','#inspectionPage','#documentsPage','#reportsPage'].find(visible)||'body';
    const rect=document.querySelector(selector).getBoundingClientRect();
    return {section:selector,rect:[rect.x,rect.y,rect.width,rect.height].map(x=>Math.round(x*10)/10),
      docWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,
@@ -87,7 +87,8 @@ async function capture(browser,site,scenario,viewport){
     const label=scenario+'-'+viewport.width;
     const base=await capture(browser,'http://127.0.0.1:8765/',scenario,viewport);
     const next=await capture(browser,'http://127.0.0.1:8766/',scenario,viewport);
-    const expected=scenario==='login'?'#login':scenario==='admin'?'#adminPage':scenario==='admin-home'?'#homePage':scenario==='energy-68PĐL'?'#energyPage':'#workPage';
+    const moduleName=scenario.split('-')[0];
+    const expected=scenario==='login'?'#login':scenario==='admin'?'#adminPage':scenario==='admin-home'?'#homePage':(moduleName==='edit'?'#workPage':'#'+moduleName+'Page');
     assert.equal(base.stats.section,expected,'main source should display '+expected+' for '+scenario);
     assert.equal(next.stats.section,expected,'candidate should display '+expected+' for '+scenario);
     if(scenario.startsWith('work-'))assert.ok(base.stats.tasks>=2,'fixture work tasks must actually render for '+scenario);
