@@ -332,6 +332,66 @@ function ensureDispatch(){
  m.querySelector("#ccDispatchDeletePersonal").addEventListener("click",deletePersonalTask);
 m.querySelector("#ccDispatchCameraBtn").addEventListener("click",()=>openDispatchDirectCamera());m.querySelector("#ccDispatchLibraryBtn").addEventListener("click",()=>{const input=m.querySelector("#ccDispatchImages");input.value="";input.click()});m.querySelector("#ccDispatchCamera").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera")})});m.querySelector("#ccDispatchImages").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera")})});m.querySelector("#ccDispatchForm").addEventListener("submit",submitDispatch);return m;
 }
+function updateDispatchMode(){
+ const m=$c("#ccDispatchModal");if(!m||!m.querySelector("#ccDispatchPersonal"))return;
+ const personal=m.querySelector("#ccDispatchPersonal").checked,assignee=m.querySelector("#ccDispatchAssignee");
+ if(personal&&!m.classList.contains("ccPersonalMode"))previousProjectAssignee=assignee.value||"Kỹ thuật dự án";
+ if(!personal&&m.classList.contains("ccPersonalMode"))assignee.value=previousProjectAssignee;
+ m.classList.toggle("ccPersonalMode",personal);
+ m.querySelector("#ccDispatchHeading").textContent=personal?(personalEditId?"Chỉnh sửa công việc thực hiện":"Ghi nhận công việc thực hiện"):"Giao công việc xuống dự án";
+ m.querySelector("#ccDispatchSubheading").textContent=personal?"Công việc của Văn, lưu tại Admin và không chuyển xuống dự án.":"Một nội dung có thể giao đồng thời cho nhiều dự án.";
+ m.querySelector("#ccDispatchTargetsHeading").textContent=personal?"Công việc thực hiện · không thuộc dự án":"Dự án nhận việc *";
+ m.querySelector("#ccDispatchPersonalStatusWrap").classList.toggle("hide",!personal);
+ m.querySelector("#ccDispatchDeletePersonal").classList.toggle("hide",!personalEditId);
+ m.querySelector("#ccDispatchSave").textContent=personal?(personalEditId?"Lưu thay đổi":"Lưu công việc"):"Giao công việc";
+ if(personal)assignee.value="Văn";
+ assignee.readOnly=personal;
+ m.querySelector("#ccDispatchAll").disabled=personal||!!personalEditId;
+ m.querySelectorAll('[name="ccTarget"]').forEach(x=>x.disabled=!!personalEditId);
+ m.querySelector("#ccDispatchPersonal").disabled=!!personalEditId;
+}
+function openDispatchPersonal(id){
+ const task=personalTasks.find(t=>String(t.id)===String(id));
+ if(!task)return toast("Không tìm thấy công việc cá nhân. Hãy làm mới dữ liệu.");
+ openDispatch();
+ const m=$c("#ccDispatchModal");personalEditId=task.id;
+ m.querySelector("#ccDispatchPersonal").checked=true;
+ m.querySelector("#ccDispatchTitle").value=task.title||"";
+ m.querySelector("#ccDispatchType").value=task.task_type||"Hằng ngày";
+ m.querySelector("#ccDispatchPriority").value=task.priority||"Trung bình";
+ m.querySelector("#ccDispatchStart").value=task.start_date||todayC();
+ m.querySelector("#ccDispatchDue").value=task.end_date||todayC();
+ m.querySelector("#ccDispatchPersonalStatus").value=task.status||"Đang thực hiện";
+ m.querySelector("#ccDispatchNote").value=task.notes||"";
+ personalExistingImages=Array.isArray(task.image_paths)?[...task.image_paths]:[];
+ updateDispatchMode();
+ renderDispatchMedia();
+}
+async function viewExistingDispatchPhoto(i){
+ const ref=personalExistingImages[i];if(!ref)return;
+ try{
+  const url=await mediaObjectUrl(ref);
+  document.querySelector(".pendingPhotoViewer")?.remove();
+  const root=document.createElement("div");root.className="pendingPhotoViewer";root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");
+  root.innerHTML='<div class="pendingPhotoViewerCard"><header><b>Ảnh công việc đã lưu</b><button type="button" class="pendingPhotoViewerClose" aria-label="Đóng">×</button></header><main><img alt="Ảnh công việc đã lưu"></main><footer><button type="button" class="pendingPhotoViewerDone">Đóng</button></footer></div>';
+  root.querySelector("img").src=url;
+  const cleanup=()=>root.remove();
+  root.querySelector(".pendingPhotoViewerClose").onclick=cleanup;
+  root.querySelector(".pendingPhotoViewerDone").onclick=cleanup;
+  root.addEventListener("click",e=>{if(e.target===root)cleanup()});
+  document.body.appendChild(root);
+ }catch(err){console.warn(err);toast("Không tải được hình ảnh công việc")}
+}
+async function deletePersonalTask(){
+ if(!personalEditId||!confirm("Xóa công việc cá nhân này khỏi danh sách?"))return;
+ const m=$c("#ccDispatchModal"),btn=m.querySelector("#ccDispatchDeletePersonal");
+ btn.disabled=true;
+ try{
+  await sbFetch("/rest/v1/admin_personal_tasks?id=eq."+encodeURIComponent(personalEditId),{method:"DELETE",token:centralSession?.access_token});
+  toast("Đã xóa công việc cá nhân");closeDispatch();await loadCenter(true);
+ }catch(err){console.warn(err);toast(err?.message||"Không thể xóa công việc")}
+ finally{btn.disabled=false}
+}
 function openDispatch(){const m=ensureDispatch(),box=m.querySelector("#ccDispatchProjects");personalEditId=null;personalExistingImages=[];clearDispatchMedia();m.querySelector("#ccDispatchForm").reset();box.innerHTML=activeProjects().map(b=>'<label><input type="checkbox" name="ccTarget" value="'+escC(b.id)+'"><span><b>'+escC(b.id)+'</b>'+escC(b.name||b.id)+'</span></label>').join("")+'<label class="ccPersonalTarget"><input id="ccDispatchPersonal" type="checkbox"><span><b>Công việc thực hiện</b>Không liên kết dự án · Văn</span></label>';m.querySelector("#ccDispatchAll").checked=false;m.querySelector("#ccDispatchAssignee").value="Kỹ thuật dự án";previousProjectAssignee="Kỹ thuật dự án";updateDispatchMode();const td=todayC(),d=new Date(td+"T00:00:00");d.setDate(d.getDate()+2);m.querySelector("#ccDispatchStart").value=td;m.querySelector("#ccDispatchDue").value=d.toLocaleDateString("en-CA");const people=[...new Set(activeRows().flatMap(r=>(r.ops?.people||[]).map(p=>p.name)).filter(Boolean))];m.querySelector("#ccPeople").innerHTML=people.map(n=>'<option value="'+escC(n)+'"></option>').join("");m.classList.remove("hide");setTimeout(()=>m.querySelector("#ccDispatchTitle")?.focus(),20)}
 function closeDispatch(){$c("#ccDispatchModal")?.classList.add("hide")}
 async function submitDispatch(e){
