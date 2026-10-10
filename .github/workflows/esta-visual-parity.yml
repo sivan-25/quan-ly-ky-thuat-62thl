@@ -12,6 +12,7 @@ on:
       - "**/*.css"
       - "tests/browser-visual-parity.cjs"
       - "tests/request-count-comparison.cjs"
+      - "tests/browser-cold-load-benchmark.cjs"
       - ".github/workflows/esta-visual-parity.yml"
 
 permissions:
@@ -49,6 +50,8 @@ jobs:
           curl --fail --silent http://127.0.0.1:8766/ > /dev/null
       - name: Compare actual production and optimized request counts with isolated fixtures
         run: node tests/request-count-comparison.cjs
+      - name: Measure anonymous source cold-load baseline (no real user data)
+        run: node tests/browser-cold-load-benchmark.cjs
       - name: Capture and compare screenshots for Admin and four projects
         run: node tests/browser-visual-parity.cjs
       - name: Preserve visual evidence for review
