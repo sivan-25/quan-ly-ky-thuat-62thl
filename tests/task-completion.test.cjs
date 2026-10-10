@@ -3,7 +3,7 @@ const {JSDOM}=require('jsdom');
 const app=fs.readFileSync(require('node:path').join(__dirname,'../app.js'),'utf8'),demo=fs.readFileSync(require('node:path').join(__dirname,'../demo-lab.js'),'utf8');
 const policy=app.slice(app.indexOf('function usesSingleTaskResult'),app.indexOf('$("#status")?.addEventListener("change",()=>{',app.indexOf('function usesSingleTaskResult')));
 const panel=demo.slice(demo.indexOf('function demoEnsureWorkPanel'),demo.indexOf('function demoTaskMaterialOptions'));
-const submit=demo.slice(demo.indexOf('const originalTaskSubmit='),demo.indexOf('const originalDemoDelTask='));
+const submit=demo.slice(demo.indexOf('const techPendingTaskIds='),demo.indexOf('const originalDemoDelTask='));
 (async()=>{
  const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<link\b[^>]*>/gi,'');
  const dom=new JSDOM(html,{url:'https://fixture.test',runScripts:'outside-only'});
