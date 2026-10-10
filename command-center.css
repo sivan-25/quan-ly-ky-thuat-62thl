@@ -403,3 +403,31 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
    background:#4b2836!important;color:#ffc7bd!important;font-weight:750!important;
  }
 }
+
+
+/* Admin work journal: separate from the four operational projects. */
+.ccDispatchProjects .ccPersonalTarget{
+ grid-column:1/-1;
+ border:1px solid #99aa9d;
+ background:linear-gradient(110deg,#e8eddf,#f3eddf);
+ padding:12px 13px;
+}
+.ccDispatchProjects .ccPersonalTarget b{font-size:12px;color:#244d43}
+.ccDispatchProjects .ccPersonalTarget span{display:flex;flex-direction:column;gap:2px}
+.ccDispatchProjects .ccPersonalTarget:has(input:checked){
+ border-color:#32816b;
+ box-shadow:0 0 0 2px rgba(50,129,107,.18);
+ background:#e2efdf;
+}
+.ccPersonalMode #ccDispatchAssignee[readonly]{
+ color:#244d43;
+ background:#e8efdc;
+ font-weight:750;
+ cursor:default;
+}
+.ccPersonalMode .ccDispatchInline{grid-template-columns:repeat(3,minmax(0,1fr))}
+#ccDispatchDeletePersonal{margin-right:auto;color:#9b3434;border-color:#ceaeae}
+@media(max-width:760px){
+ .ccPersonalMode .ccDispatchInline{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ccDispatchProjects .ccPersonalTarget{grid-column:1/-1}
+}
