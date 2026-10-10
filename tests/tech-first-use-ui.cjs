@@ -91,11 +91,12 @@ async function review(width){
    const metrics=await page.evaluate(()=>{
      const form=document.querySelector('#taskForm'),target=form.getBoundingClientRect();
      const fields=['.workDate','.workContent','.workType','.workStatus','.workPerformer','#techInlineResult'];
-     return {form:{left:target.left,right:target.right},fields:fields.map(sel=>{
-       const el=form.querySelector(sel),r=el.getBoundingClientRect();
-       return {sel,x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,visible:getComputedStyle(el).display!=='none'};
+     return {form:{left:target.left,right:target.right,width:target.width,display:getComputedStyle(form).display,columns:getComputedStyle(form).gridTemplateColumns,flow:getComputedStyle(form).gridAutoFlow},fields:fields.map(sel=>{
+       const el=form.querySelector(sel),r=el.getBoundingClientRect(),css=getComputedStyle(el);
+       return {sel,x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,visible:css.display!=='none',display:css.display,position:css.position,gridColumn:css.gridColumn,gridRow:css.gridRow};
      })};
    });
+   console.log('DESKTOP FORM GEOMETRY',JSON.stringify(metrics));
    for(const field of metrics.fields){
     assert.equal(field.visible,true,field.sel+' must be visible');
     assert.ok(field.w>80&&field.h>25,field.sel+' must have a real size');
