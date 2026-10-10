@@ -69,3 +69,24 @@ body.techFirstUse #homePage #techFirstUseGuide{display:flex!important;visibility
    min-width:0!important;
  }
 }
+
+/* A tablet still displays the desktop sidebar; four linked-work columns become
+   too narrow at 768–920px. Use two readable columns for technicians only. */
+@media(min-width:761px) and (max-width:920px){
+ body.techFirstUse #workPage #demoWorkLinks .demoWorkLinkGrid{
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   gap:10px!important;
+ }
+ body.techFirstUse #workPage #demoWorkLinks .demoWorkLinkGrid .span2{
+   grid-column:1 / -1!important;
+ }
+ body.techFirstUse #workPage #demoWorkLinks .demoWorkLinkGrid label{
+   min-width:0!important;
+ }
+ body.techFirstUse #workPage #demoWorkLinks .demoWorkLinkGrid input,
+ body.techFirstUse #workPage #demoWorkLinks .demoWorkLinkGrid select{
+   box-sizing:border-box!important;
+   width:100%!important;
+   min-width:0!important;
+ }
+}
