@@ -28,7 +28,7 @@ async function main() {
       requests++;if(fail)throw Error('Simulated offline');
       if(url.startsWith('/rest/v1/admin_personal_tasks')){
         if(method==='GET')return personal;
-        if(method==='POST'){personal.push({...body,created_at:'2026-10-05T10:00:00Z'});return null}
+        if(method==='POST'){personal.push({...body,created_at:new Date(Date.now()+60000).toISOString()});return null}
         const id=decodeURIComponent(url.split('id=eq.')[1]||'');
         if(method==='PATCH'){Object.assign(personal.find(x=>x.id===id),body);return null}
         if(method==='DELETE'){personal=personal.filter(x=>x.id!==id);return null}
