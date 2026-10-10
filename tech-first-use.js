@@ -6,6 +6,15 @@ const isTech=()=>!!currentAccount&&!currentAccount.is_admin&&!!projectOverviewAc
 const work=$tech("#workPage");
 if(!work)return;
 let mineFilter=false;
+// Legacy work styles can override new display CSS. Update only the card in the list,
+// not the same card when it is moved to the editing drawer.
+function syncTechFormVisibility(){
+ const card=work.querySelector(":scope > .workEntryCard");
+ if(!card)return;
+ if(isTech()&&!work.classList.contains("techCreating"))
+  card.style.setProperty("display","none","important");
+ else card.style.removeProperty("display");
+}
 function ownName(){
  const account=currentAccount||{};
  const raw=[account.display_name,account.full_name,account.name,account.username,
@@ -68,6 +77,7 @@ $tech("#techMineWork").onclick=()=>{
 };
 $tech("#techCreateWork").onclick=()=>{
  work.classList.add("techCreating");
+ syncTechFormVisibility();
  $tech("#techCreateWork").textContent="Đang thêm công việc";
  if($tech("#editId")?.value)resetForm();
  autoOwnPerformer();
@@ -86,7 +96,23 @@ showModule=function(name,...rest){
   $tech("#techCreateWork").textContent="＋ Thêm công việc";
  }
  refreshGuided();
+ syncTechFormVisibility();
  return response;
+};
+// Removing the inline hidden style before entering the task editor avoids an invisible drawer.
+const oldEditTask=window.editTask;
+if(typeof oldEditTask==="function")window.editTask=function(...args){
+ const card=work.querySelector(".workEntryCard");
+ card?.style.removeProperty("display");
+ const result=oldEditTask.apply(this,args);
+ queueMicrotask(()=>{card?.style.removeProperty("display");refreshResult()});
+ return result;
+};
+const oldReset=resetForm;
+resetForm=function(...args){
+ const result=oldReset.apply(this,args);
+ syncTechFormVisibility();
+ return result;
 };
 const originalRenderPeople=renderPeopleSelector;
 renderPeopleSelector=function(kind,...rest){
@@ -174,5 +200,5 @@ $tech("#status")?.addEventListener("change",()=>queueMicrotask(refreshResult));
 $tech("#taskForm")?.addEventListener("submit",()=>queueMicrotask(refreshResult));
 const baseHome=renderHomeDashboard;
 renderHomeDashboard=function(...args){const res=baseHome.apply(this,args);annotateHome();return res};
-setTimeout(refreshGuided,0);
+setTimeout(()=>{refreshGuided();syncTechFormVisibility()},0);
 })();
