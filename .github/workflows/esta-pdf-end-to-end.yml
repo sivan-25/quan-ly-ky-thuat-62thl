@@ -1,0 +1,81 @@
+name: ESTA PDF end-to-end regression
+
+on:
+  push:
+    branches: [fix-esta-pdf-export-multi-image-safe]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python-pdf-and-http:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.txt pypdf==5.9.0
+      - name: Create real PDFs and exercise local HTTP POST
+        env:
+          ESTA_PDF_EVIDENCE: '1'
+          ESTA_PDF_EVIDENCE_DIR: pdf-evidence
+        run: python -m unittest discover -s tests -p 'test_pdf*.py' -v
+      - name: Render representative PDFs into screenshots
+        run: |
+          mkdir -p pdf-evidence/rendered
+          for name in esta-work-4-photos esta-work-12-photos esta-work-24-photos esta-generic-admin esta-operations esta-http-verified-7-photos; do
+            test -f "pdf-evidence/${name}.pdf"
+            pdftoppm -f 1 -singlefile -scale-to 1100 -png "pdf-evidence/${name}.pdf" "pdf-evidence/rendered/${name}-first"
+            pdfinfo "pdf-evidence/${name}.pdf" | grep -E '^Pages:|^Page size:'
+          done
+          test -s pdf-evidence/rendered/esta-work-24-photos-first.png
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: esta-pdf-real-output-evidence
+          path: pdf-evidence/
+          if-no-files-found: warn
+          retention-days: 7
+
+  frontend-and-layout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 44be5858afed5ae92042ad75107e3cdded2a31c0
+          path: baseline
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - run: |
+          npm ci --ignore-scripts
+          npm install --no-save --package-lock=false playwright@1.56.1 pngjs@7.0.0
+          npx playwright install chromium
+      - run: npm test
+      - name: Compare 85 screenshots and DOM layouts
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory baseline >/tmp/before.log 2>&1 &
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory . >/tmp/after.log 2>&1 &
+          sleep 3
+          curl --fail -s http://127.0.0.1:8765/ >/dev/null
+          curl --fail -s http://127.0.0.1:8766/ >/dev/null
+          node tests/browser-visual-parity.cjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: esta-pdf-front-end-visual-parity
+          path: visual-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
