@@ -13,7 +13,7 @@ function section(first, last) {
 async function main(){
  const dom=new JSDOM('<select id="pdfSignerName"></select><input id="pdfSignerFullName"><input id="pdfSignatureFile" type="file"><div id="pdfSignaturePreview"></div><p id="pdfSignatureError"></p><div id="toast"></div>',{url:'https://fixture.test'});
  const context={
-  Response,Blob,URL,console,document:dom.window.document,
+  Response,Blob,URL,console:{warn:()=>{}},document:dom.window.document,$:selector=>dom.window.document.querySelector(selector),
   currentBuilding:{id:'62THL',name:'62 Trần Huy Liệu'},
   projectPeople:[{name:'Kỹ thuật Test'}],currentAccount:{display_name:'Quản lý ESTA'},
   pdfSignaturePreviewUrl:'',
