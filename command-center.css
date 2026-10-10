@@ -478,3 +478,116 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
  #app.homeMode #estaCommandCenter .ccPdfTools label{font-size:11px;min-height:33px}
  #app.homeMode #estaCommandCenter #ccPrintSelected{width:100%;min-height:42px;font-size:13px}
 }
+
+
+/* Admin 2026-10-10: one compact command bar; remove the duplicate full-width hero. */
+#app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter>.ccHero{display:none!important}
+#app.homeMode.opsOverviewMode.adminCommandHome #homePage{
+ padding:9px 14px 22px!important;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar{
+ margin-bottom:8px!important;padding:7px 13px!important;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome #topHomeTitle p{display:none!important}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext{
+ display:flex;align-items:center;gap:9px;min-width:0;margin-top:4px;
+ color:#c1d4df;font-size:10.5px;font-weight:550;white-space:nowrap;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext.hide,
+#app.homeMode.opsOverviewMode.adminCommandHome .ccAdminHeaderActions.hide{display:none!important}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext i{
+ display:inline-flex;align-items:center;gap:6px;padding:2px 7px;
+ border-radius:6px;background:#ffffff16;color:#dff2e9;
+ font-size:10px;font-style:normal;white-space:nowrap;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext i:before{
+ content:"";width:6px;height:6px;flex:none;border-radius:50%;background:#9cd4b3;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext i.offline:before{background:#f3ba72}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccAdminHeaderActions{
+ display:flex;align-items:center;justify-content:flex-end;
+ flex:1 1 auto;min-width:0;gap:7px;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .headerTools{min-width:0;flex:1 1 auto}
+#app.homeMode.opsOverviewMode.adminCommandHome .headerSearch{display:none!important}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch{
+ display:flex;align-items:center;gap:8px;flex:0 1 clamp(150px,16vw,230px);
+ width:clamp(150px,16vw,230px);min-width:125px;height:40px;
+ padding:0 10px;border:1px solid #385572;border-radius:10px;
+ background:#101e35;color:#9bb5cb;box-sizing:border-box;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch svg{
+ flex:none;width:17px;height:17px;fill:none;stroke:currentColor;
+ stroke-width:1.9;stroke-linecap:round;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch input{
+ width:100%;min-width:0;border:0;outline:0;background:transparent;
+ color:#f1f6fb;font-size:12px;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch input::placeholder{color:#92a6bd;opacity:1}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch:focus-within{
+ border-color:#37c5dc;box-shadow:0 0 0 2px #26cce725;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction{
+ flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+ height:40px;min-height:40px;padding:0 12px;border:1px solid #3a6177;
+ border-radius:9px;background:#18354b;color:#dbeef5;
+ font-size:12px;font-weight:650;white-space:nowrap;cursor:pointer;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction.primary{
+ background:#175366;color:#82e8f1;border-color:#328a99;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction:not(:disabled):hover{
+ background:#27516a;border-color:#4aaab7;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction:focus-visible{
+ outline:2px solid #44d5e5;outline-offset:2px;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction:disabled{opacity:.55;cursor:wait}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopCount{
+ display:grid;place-items:center;min-width:20px;height:20px;padding:0 5px;
+ border-radius:7px;background:#255e70;color:#c9fbff;font-size:11px;
+}
+#app.homeMode.opsOverviewMode.adminCommandHome .ccTopCount.hide{display:none!important}
+@media(min-width:761px) and (max-width:1180px){
+ #app.homeMode.opsOverviewMode.adminCommandHome #topHomeTitle{min-width:170px!important;gap:8px!important}
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext span{display:none}
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction{padding:0 8px;font-size:11px}
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch{flex-basis:145px;width:145px;min-width:100px}
+ #app.homeMode.opsOverviewMode.adminCommandHome .account{min-width:95px!important;padding-left:6px!important}
+}
+@media(max-width:760px){
+ #app.homeMode.opsOverviewMode.adminCommandHome .estaTopbar{
+  position:relative!important;height:auto!important;min-height:62px!important;
+  padding:9px 10px 10px!important;flex-wrap:wrap!important;
+  align-items:center!important;row-gap:7px!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome #topHomeTitle{
+  flex:1 1 calc(100% - 56px)!important;max-width:calc(100% - 56px)!important;
+  min-width:0!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext{gap:6px;font-size:9px;margin-top:3px}
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext i{font-size:9px;padding:2px 5px}
+ #app.homeMode.opsOverviewMode.adminCommandHome .headerTools{
+  order:3!important;width:100%!important;flex:1 0 100%!important;
+  display:flex!important;min-width:0!important;
+  justify-content:stretch!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome .headerBell{
+  position:absolute!important;right:10px!important;top:9px!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccAdminHeaderActions{
+  width:100%!important;display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:6px!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch{
+  grid-column:1/-1;min-width:0!important;max-width:none!important;
+  width:100%!important;min-height:40px;flex:auto;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction{
+  width:100%;min-width:0;min-height:42px!important;
+  padding:0 4px!important;font-size:11px!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome #homePage{padding:8px 8px 76px!important}
+ #app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar{margin-bottom:8px!important}
+}
