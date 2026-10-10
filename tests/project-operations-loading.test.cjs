@@ -5,9 +5,10 @@ const path=require('node:path');
 const vm=require('node:vm');
 
 const source=fs.readFileSync(path.join(__dirname,'../demo-lab.js'),'utf8');
+const stockStart=source.indexOf('function demoStock(m){');
 const start=source.indexOf('const demoLoadsInFlight=new Map();');
 const end=source.indexOf('function demoHideSpecialPages(){',start);
-assert.ok(start>=0&&end>start,'real project loader exists');
+assert.ok(stockStart>=0&&start>stockStart&&end>start,'real stock and project loader functions exist');
 
 const calls=[],warnings=[];
 const sandbox={
@@ -20,7 +21,7 @@ const sandbox={
  console:{warn:(...args)=>warnings.push(args)}
 };
 vm.createContext(sandbox);
-vm.runInContext(`let demoCache={loaded:false,buildingId:"",incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};`+source.slice(start,end),sandbox);
+vm.runInContext(`let demoCache={loaded:false,buildingId:"",incidents:[],inspections:[],documents:[],reports:[],assets:[],contractors:[],materials:[],materialTx:[]};`+source.slice(stockStart,end),sandbox);
 const load=sandbox.demoLoad;
 const getCache=()=>vm.runInContext('demoCache',sandbox);
 const setUnloaded=()=>vm.runInContext('demoCache.loaded=false',sandbox);
@@ -29,6 +30,13 @@ function finish(from,to,label){
 }
 
 (async()=>{
+ // Preserve stock arithmetic while avoiding a temporary filtered transactions array.
+ vm.runInContext("demoCache.materialTx=[{material_id:'17',tx_type:'in',qty:5},{material_id:17,tx_type:'out',qty:2},{material_id:'other',tx_type:'out',qty:999}]",sandbox);
+ assert.equal(sandbox.demoStock({id:17,opening_qty:10}),13);
+ assert.equal(sandbox.demoStock({id:'other',opening_qty:1000}),1);
+ assert.equal(sandbox.demoStock({id:'missing',opening_qty:7}),7);
+ vm.runInContext("demoCache.materialTx=[]",sandbox);
+
  // Several UI entry points before the first response: only eight requests, not sixteen.
  const first=load(),joined=load();
  assert.equal(calls.length,8,'simultaneous non-forced loads share one 8-table fetch');
@@ -92,5 +100,5 @@ function finish(from,to,label){
  await load();
  assert.equal(calls.length,64,'inactive app should not fetch');
 
- console.log('PASS: 8-table project load coalescing, explicit reload, cache, stale responses, A-B-A navigation, retry and inactive guard; no live Supabase.');
+ console.log('PASS: material stock calculation, 8-table project load coalescing, explicit reload, cache, stale responses, A-B-A navigation, retry and inactive guard; no live Supabase.');
 })().catch(error=>{console.error(error);process.exitCode=1;});
