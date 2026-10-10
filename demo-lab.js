@@ -708,6 +708,9 @@ async function demoFinalizeLinks(obj,old,buildingId=currentBuilding?.id){
   demoCache.loaded=false;await demoLoad(true);
  }
 }
+// 127 Hồng Hà only: retry an unacknowledged save with the same task ID.
+const tech127PendingIds=new Map();
+const tech127PendingKey=(buildingId,editId,content,date)=>String(buildingId)+"|"+String(editId||"new")+"|"+String(date)+"|"+String(content).trim();
 const originalTaskSubmit=$("#taskForm")?.onsubmit;
 if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
  if(!demoIs())return originalTaskSubmit.call($("#taskForm"),e);
@@ -738,14 +741,24 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
  let saved130=false;
  try{
   const buildingId=currentBuilding.id,storageKey=taskStorageKeyFor(buildingId);
-  let a=load(),editId=Number($("#editId").value),id=editId||Date.now(),old=editId?a.find(x=>x.id===editId):null;
+  let a=load(),editId=Number($("#editId").value),old=editId?a.find(x=>x.id===editId):null;
+  const tech127SafeSave=String(buildingId)==="127HH";
+  const retryKey=tech127SafeSave?tech127PendingKey(buildingId,editId,$("#content").value,$("#date").value):"";
+  const id=editId||(tech127SafeSave?(tech127PendingIds.get(retryKey)||Date.now()):Date.now());
+  if(tech127SafeSave&&!editId)tech127PendingIds.set(retryKey,id);
   const files=[...pendingTaskFiles],removedRefs=[...removedTaskImageRefs];
   const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
   let obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length,...links};
   if(obj.s==="Đã hoàn thành")obj.completedAt=old?.completedAt||new Date().toISOString();
 
   // Inventory reconciliation is blocking: insufficient stock means the work order is not saved.
+  // Other projects retain their existing behavior unchanged.
+  if(tech127SafeSave&&!centralSession?.access_token)
+   throw new Error("Chưa kết nối máy chủ. Công việc chưa được lưu; nội dung vẫn ở biểu mẫu.");
   const syncResult=await syncTaskRecord("upsert_task",obj,buildingId);
+  if(tech127SafeSave&&(!syncResult||(!syncResult.updated_at&&!syncResult.item)))
+   throw new Error("Máy chủ chưa xác nhận lưu. Vui lòng thử lại; mã công việc được giữ để tránh trùng.");
+  if(tech127SafeSave&&!editId)tech127PendingIds.delete(retryKey);
   if(syncResult?.item)obj={...obj,...syncResult.item};
   a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
