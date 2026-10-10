@@ -49,8 +49,9 @@ const submit=demo.slice(demo.indexOf('const techPendingTaskIds='),demo.indexOf('
     currentBuilding.id='130HH';centralSession=null;calls=[];messages=[];
     $('#date').value='2026-10-10';$('#content').value='Không có mạng';
     $('#status').value='Đang thực hiện';$('#demoTaskResult').value='';
+    const beforeCount=JSON.parse(localStorage.getItem('fixture_130HH')||'[]').length;
     await $('#taskForm').onsubmit({preventDefault(){}});
-    return {remoteCalls:calls.length,localCount:JSON.parse(localStorage.getItem('fixture_130HH')||'[]').length,
+    return {remoteCalls:calls.length,localCount:JSON.parse(localStorage.getItem('fixture_130HH')||'[]').length-beforeCount,
       warned:messages.some(m=>m.includes('Chưa kết nối máy chủ')),contentPreserved:$('#content').value==='Không có mạng'};
   });
   assert.deepEqual(offline,{remoteCalls:0,localCount:0,warned:true,contentPreserved:true});
