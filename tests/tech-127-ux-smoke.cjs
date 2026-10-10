@@ -5,6 +5,32 @@ const {chromium}=require('playwright');
 const out='tech-ux-review';
 fs.mkdirSync(out,{recursive:true});
 const results=[];
+
+/* 127 HH production regression: ensure extra result UI is not created for
+   Admin or the three other projects, even after the status is completed. */
+async function assertOriginalTaskForm(page,label){
+ const diag=await page.evaluate(()=>{
+  const kq=document.querySelector("#demoTaskResult");
+  const form=document.querySelector("#taskForm");
+  const holder=document.querySelector("#techInlineResult");
+  const fields=[...form.querySelectorAll(":scope > .workField")].slice(0,5).map(el=>{
+   const r=el.getBoundingClientRect();
+   return {name:el.className,x:r.x,y:r.y,w:r.width,h:r.height};
+  });
+  return {kqParent:kq?.parentElement?.className,
+   movedResult:!!holder&&holder.contains(kq),
+   techFlag:document.body.classList.contains("techFirstUse"),
+   hasHolder:!!holder,
+   fields,formWidth:form.getBoundingClientRect().width};
+ });
+ assert.ok(diag.kqParent?.includes("demoTaskResultField"),label+" must preserve the result field");
+ assert.equal(diag.movedResult,false,label+" cannot move KQ into new form");
+ assert.equal(diag.hasHolder,false,label+" must not create technician KQ holder");
+ assert.equal(diag.techFlag,false,label+" must not activate technician-only styles");
+ for(const f of diag.fields)assert.ok(f.w>=45&&f.h>=30,label+" invalid field geometry "+JSON.stringify(f));
+ console.log("UNCHANGED NON-127/ADMIN "+label,JSON.stringify(diag));
+}
+
 async function review(width){
  const browser=await chromium.launch({headless:true});
  const context=await browser.newContext({viewport:{width,height:width<600?844:900},permissions:[],deviceScaleFactor:1});
@@ -166,6 +192,19 @@ async function review(width){
   await page.waitForTimeout(170);
   assert.equal(await page.evaluate(()=>document.body.classList.contains('techFirstUse')),false,'Admin must not receive technician styles');
   assert.equal(await page.locator('#techWorkShortcuts').isVisible(),false,'Admin must not receive project-127 shortcuts');
+  // Simulate opening 127 as an Admin and switching its status to Completed:
+  // this is the regression seen in the supplied screenshot.
+  await page.evaluate(()=>{
+   window.eval("currentBuilding={id:'127HH',name:'127 Hồng Hà'};projectOverviewActive=true;");
+   window.eval("showModule('work')");
+   const status=document.querySelector('#status');
+   status.value='Đã hoàn thành';
+   status.dispatchEvent(new Event('change',{bubbles:true}));
+   if(typeof demoSyncCompletionFields==='function')demoSyncCompletionFields();
+  });
+  await page.waitForTimeout(100);
+  await assertOriginalTaskForm(page,"Admin/127HH after completing task");
+  await page.screenshot({path:out+'/04-admin-127-no-overlap-'+width+'.png',animations:'disabled'});
   results.push({width,checks:['Admin hidden','guide visible','task list before form','create work button','auto-select current performer','completion result near status','no false save offline','form retained','project switch on mobile'],after,errorCount:errors.length,errors});
   assert.deepEqual(errors,[],'no uncaught browser JS errors');
  }finally{await context.close();await browser.close();}

@@ -90,3 +90,33 @@ body.techFirstUse #homePage #techFirstUseGuide{display:flex!important;visibility
    min-width:0!important;
  }
 }
+
+/* Strictly scope the inline-KQ grid rules to 127HH technician role.
+   Never stretch or reflow the original eight-column Admin work form. */
+@media(min-width:761px){
+ body.techFirstUse #workPage #taskForm.workEntryForm:has(> #techInlineResult){
+   display:grid!important;
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+   grid-auto-flow:row!important;
+   gap:12px!important;
+   min-width:0!important;
+   width:100%!important;
+   box-sizing:border-box!important;
+ }
+ body.techFirstUse #workPage #taskForm:has(> #techInlineResult) > .workField{
+   min-width:0!important;
+   max-width:100%!important;
+ }
+ body.techFirstUse #workPage #taskForm > #techInlineResult,
+ body.techFirstUse .workEditDrawer #taskForm > #techInlineResult{
+   grid-column:1 / -1!important;
+   grid-row:auto!important;
+   min-width:0!important;
+   max-width:100%!important;
+   box-sizing:border-box!important;
+ }
+ body.techFirstUse .workEditDrawer:not(.hide) #taskForm.workEntryForm:has(> #techInlineResult){
+   grid-auto-flow:row!important;
+   min-width:0!important;
+ }
+}

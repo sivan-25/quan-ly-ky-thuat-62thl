@@ -7,6 +7,21 @@ const isTech=()=>!!currentAccount&&!currentAccount.is_admin&&!!projectOverviewAc
 const work=$tech("#workPage");
 if(!work)return;
 let mineFilter=false;
+// Preserve the exact location of the original KQ field so non-technicians
+// and other projects never inherit technician-only form modifications.
+let tech127ResultAnchor=null;
+function restoreTech127Result(){
+ const resultField=$tech("#demoTaskResult")?.closest(".demoTaskResultField");
+ if(resultField&&tech127ResultAnchor?.parentNode)
+  tech127ResultAnchor.parentNode.replaceChild(resultField,tech127ResultAnchor);
+ else if(resultField&&resultField.closest("#techInlineResult")){
+  const originalGrid=$tech("#demoWorkLinks .demoWorkLinkGrid");
+  originalGrid?.appendChild(resultField);
+ }
+ tech127ResultAnchor=null;
+ $tech("#techInlineResult")?.remove();
+}
+
 // Legacy work styles can override new display CSS. Update only the card in the list,
 // not the same card when it is moved to the editing drawer.
 // Store the previous inline styles so switching from 127HH back to any other
@@ -177,7 +192,12 @@ window.enterAccount=function(...args){
  return result;
 };
 function refreshResult(){
- if(typeof usesSingleTaskResult!=="function"||!usesSingleTaskResult())return;
+ // CRITICAL: this feature is scoped only to a technician in 127HH.
+ // Admin, other projects and other roles must use the original form layout.
+ if(!isTech()||typeof usesSingleTaskResult!=="function"||!usesSingleTaskResult()){
+  restoreTech127Result();
+  return;
+ }
  const form=$tech("#taskForm"),result=$tech("#demoTaskResult"),status=$tech("#status");
  if(!form||!result||!status)return;
  const holder=$tech("#techInlineResult")||document.createElement("div");
@@ -188,7 +208,13 @@ function refreshResult(){
  if(!holder.isConnected&&(peopleField||statusField))
   (peopleField||statusField).insertAdjacentElement("afterend",holder);
  const resultField=result.closest(".demoTaskResultField");
- if(resultField && resultField.parentElement!==holder)holder.appendChild(resultField);
+ if(resultField&&resultField.parentElement!==holder){
+  if(!tech127ResultAnchor&&resultField.parentNode){
+   tech127ResultAnchor=document.createComment("ESTA 127HH KQ original position");
+   resultField.parentNode.insertBefore(tech127ResultAnchor,resultField);
+  }
+  holder.appendChild(resultField);
+ }
  const done=status.value==="Đã hoàn thành";
  const mobile=window.matchMedia("(max-width:640px)").matches;
  holder.classList.toggle("hide",!done||mobile);
@@ -235,7 +261,15 @@ function refreshGuided(){
  const tech=isTech();
  document.body.classList.toggle("techFirstUse",tech);
  quick.classList.toggle("hide",!tech);
- if(!tech){mineFilter=false;work.classList.remove("techCreating");$tech("#techFirstUseGuide")?.classList.add("hide");return}
+ if(!tech){
+  restoreTech127Result();
+  mineFilter=false;
+  work.classList.remove("techCreating");
+  const guide=$tech("#techFirstUseGuide");
+  guide?.classList.add("hide");
+  guide?.style.removeProperty("display");
+  return;
+ }
  annotateHome();
  // Demo module inserts result controls lazily.
  if($tech("#demoTaskResult"))refreshResult();
