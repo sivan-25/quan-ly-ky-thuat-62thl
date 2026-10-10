@@ -32,3 +32,6 @@ body.techFirstUse .peopleEmpty span{color:#45574e!important;opacity:1!important}
  .techFirstUseGuide{padding:12px}
  .techInlineResult{display:none}
 }
+
+/* Existing overview CSS hides generic new sections; opt the onboarding card in. */
+body.techFirstUse #homePage #techFirstUseGuide{display:flex!important;visibility:visible!important}
