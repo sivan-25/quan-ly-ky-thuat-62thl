@@ -178,6 +178,48 @@ class ReportTests(unittest.TestCase):
         self.assertTrue(raw.startswith(b'%PDF'))
         self.assertEqual((missing, count), (0, 1))
 
+    def test_admin_assigned_work_uses_esta_template(self):
+        # Same seven-column payload produced by the Admin task selection UI.
+        payload = {
+            'report_type': 'generic',
+            'building': 'TỔNG QUAN ADMIN',
+            'title': 'BÁO CÁO CÔNG VIỆC ADMIN GIAO',
+            'section_label': 'THEO DÕI CÔNG VIỆC ADMIN',
+            'table_label': 'DANH SÁCH CÔNG VIỆC ĐÃ CHỌN',
+            'report_date': '10/10/2026',
+            'period_label': 'TỪ 05/10/2026 ĐẾN 10/10/2026',
+            'subtitle': 'Phạm vi: 62 THL · Cá nhân · Văn · 2 công việc',
+            'kt_signer_name': 'Kỹ thuật kiểm thử',
+            'columns': [
+                {'label': 'STT', 'weight': .35},
+                {'label': 'Dự án / Nguồn', 'weight': .95},
+                {'label': 'Nội dung công việc', 'weight': 2.8},
+                {'label': 'Ngày / Hạn', 'weight': 1.05},
+                {'label': 'Trạng thái / Mức độ', 'weight': 1.18},
+                {'label': 'Người thực hiện', 'weight': 1.15},
+                {'label': 'KQ / Ghi chú', 'weight': 2.1},
+            ],
+            'rows': [
+                ['1', '62 THL', 'Kiểm tra, bảo trì máy lạnh tầng 4',
+                 '05/10/2026 · Hạn 10/10/2026', 'Hoàn thành · Cao',
+                 'Kỹ thuật dự án', 'KQ: Đã xử lý, kiểm tra ổn định. ' * 12],
+                ['2', 'Cá nhân · Văn', 'Tổng hợp nhật ký công việc hằng ngày',
+                 '10/10/2026 · Hạn 10/10/2026', 'Hoàn thành · Trung bình',
+                 'Văn', 'Ghi chú: Đã báo cáo quản lý'],
+            ],
+            'summaries': [
+                {'label': 'TỔNG CÔNG VIỆC', 'value': '2', 'dark': True},
+                {'label': 'HOÀN THÀNH', 'value': '2'},
+                {'label': 'ĐANG THỰC HIỆN', 'value': '0'},
+                {'label': 'CHỜ XỬ LÝ', 'value': '0'},
+            ],
+            'photos': [{'ref': photo((640, 480)), 'caption': '62 THL · Ảnh xác nhận'}],
+        }
+        raw, missing, count = generate_pdf(payload, '')
+        self.assertTrue(raw.startswith(b'%PDF'))
+        self.assertEqual((missing, count), (0, 2))
+        self.assertGreater(len(raw), 8000)
+
     def test_original_work_energy_tools_renderers(self):
         samples = [
             {'report_type':'work','tasks':[{'title':'Dữ liệu thử','status':'Hoàn thành','date':'01/09/2026','assignee':'Kiểm thử'}]},
