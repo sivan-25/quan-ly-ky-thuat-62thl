@@ -50,7 +50,7 @@ Counts above are static text scans. Multiple rules for the same selector can be 
 - `.github/workflows/esta-safe-optimization.yml`: isolated GitHub Actions checks for existing JS and PDF regressions.
 - `tests/task-completion.test.cjs`: JSDOM fixture now mocks missing browser `matchMedia` (the original app is untouched).
 
-**Runtime scope:** only `pollProjectSnapshot` in `app.js` was adjusted. No HTML, CSS, other JavaScript flows, Python/PDF templates, authentication, RLS, schema, or production data was changed. This is an unmerged Preview-only patch.
+**Phase 1 runtime scope:** only `pollProjectSnapshot` in `app.js` was adjusted. Phase 2 additionally optimizes `demoLoad` and `demoStock` in `demo-lab.js` (details below). No HTML, CSS, Python/PDF templates, authentication, RLS, schema, or production data was changed. These are unmerged Preview-only patches.
 
 ## Baseline & validation status
 
