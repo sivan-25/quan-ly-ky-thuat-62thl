@@ -54,7 +54,7 @@ const submit=demo.slice(demo.indexOf('const techPendingTaskIds='),demo.indexOf('
     return {remoteCalls:calls.length,localCount:JSON.parse(localStorage.getItem('fixture_130HH')||'[]').length-beforeCount,
       warned:messages.some(m=>m.includes('Chưa kết nối máy chủ')),contentPreserved:$('#content').value==='Không có mạng'};
   });
-  assert.deepEqual(offline,{remoteCalls:0,localCount:0,warned:true,contentPreserved:true});
+  for(const [key,value] of Object.entries({remoteCalls:0,localCount:0,warned:true,contentPreserved:true}))assert.equal(offline[key],value,key);
   const retry=await page.evaluate(async()=>{
     currentBuilding.id='127HH';centralSession={access_token:'MOCK'};
     $('#date').value='2026-10-10';$('#content').value='Thử lại không trùng';
