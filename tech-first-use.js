@@ -132,8 +132,11 @@ function refreshResult(){
  if(!form||!result||!status)return;
  const holder=$tech("#techInlineResult")||document.createElement("div");
  holder.id="techInlineResult";holder.className="techInlineResult";
- const statusField=form.querySelector(".workStatus");
- if(!holder.isConnected&&statusField)statusField.insertAdjacentElement("afterend",holder);
+ const peopleField=form.querySelector(".workPerformer"),statusField=form.querySelector(".workStatus");
+ // The result is directly below the status/performer row, not before the
+ // still-unplaced performer grid cell (which could overflow on desktop).
+ if(!holder.isConnected&&(peopleField||statusField))
+  (peopleField||statusField).insertAdjacentElement("afterend",holder);
  const resultField=result.closest(".demoTaskResultField");
  if(resultField && resultField.parentElement!==holder)holder.appendChild(resultField);
  const done=status.value==="Đã hoàn thành";
