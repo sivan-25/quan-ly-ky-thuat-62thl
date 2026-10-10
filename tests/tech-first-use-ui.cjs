@@ -67,6 +67,16 @@ async function review(width){
   assert.equal(await page.locator('#workEditDrawer').isVisible(),true,'existing job opens edit drawer');
   assert.equal(await page.locator('#content').isVisible(),true,'edit form stays visible');
   assert.equal(await page.locator('#content').inputValue(),'Việc của Kỹ thuật A');
+  // Editing an existing job to Completed must reveal the SAME KQ field.
+  await page.evaluate(()=>{
+    const status=document.querySelector('#status');
+    status.value='Đã hoàn thành';
+    status.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await page.waitForTimeout(80);
+  const editResult=width<=640?'#task130Result':'#demoTaskResult';
+  assert.equal(await page.locator(editResult).isVisible(),true,'KQ visible while editing completed task');
+  assert.equal(await page.locator('#workEditDrawer').isVisible(),true,'completion does not dismiss editor');
   await page.screenshot({path:out+'/01b-work-edit-'+width+'.png',animations:'disabled'});
   await page.locator('#closeWorkEditDrawer').evaluate(el=>el.click());
   assert.equal(await page.locator('#workEditDrawer').isVisible(),false,'edit drawer closes');
@@ -131,7 +141,7 @@ async function review(width){
  }finally{await context.close();await browser.close();}
 }
 (async()=>{
- for(const width of [390,1440])await review(width);
+ for(const width of [320,390,768,1024,1440])await review(width);
  fs.writeFileSync(out+'/results.json',JSON.stringify(results,null,2));
  console.log('PASS technician UX smoke: 2 viewports; '+JSON.stringify(results.map(x=>({width:x.width,after:x.after,errorCount:x.errorCount}))));
 })().catch(e=>{console.error(e);process.exitCode=1});
