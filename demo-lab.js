@@ -39,9 +39,9 @@ async function demoLoad(force=false){
  if(!demoIs())return demoCache;
  const buildingId=String(currentBuilding?.id||"");
  if(!buildingId)return demoCache;
- if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force)return demoCache;
  const loadKey=buildingId+":"+projectOpenSeq;
  if(!force&&demoLoadsInFlight.has(loadKey))return demoLoadsInFlight.get(loadKey);
+ if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force)return demoCache;
  const requestId=++demoLoadRequestId;
  const pending=(async()=>{
   try{
