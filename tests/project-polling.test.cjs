@@ -77,5 +77,25 @@ vm.runInContext(source.slice(start,end),sandbox);
  await sandbox.pollProjectSnapshot();
  assert.equal(pending.length,6);
 
+ // A -> B -> A: a previous, slow A request must not stall the newly reopened A.
+ sandbox.$=()=>({classList:{contains:()=>true}});
+ sandbox.currentBuilding={id:'62THL'};
+ sandbox.projectOpenSeq=3;
+ const staleA=sandbox.pollProjectSnapshot();
+ assert.equal(pending.length,7);
+ sandbox.currentBuilding={id:'130HH'};
+ sandbox.projectOpenSeq=4;
+ sandbox.currentBuilding={id:'62THL'};
+ sandbox.projectOpenSeq=5;
+ const reopenedA=sandbox.pollProjectSnapshot();
+ assert.equal(pending.length,8,'new project visit must not wait on old request');
+ pending[6].resolve({snapshot:{updated_at:'stale'}});
+ await staleA;
+ assert.equal(applied.length,2,'old navigation response rejected');
+ pending[7].resolve({snapshot:{updated_at:'v3'}});
+ await reopenedA;
+ assert.equal(applied.length,3);
+ assert.equal(applied[2].id,'62THL');
+
  console.log('PASS: one request per project in flight, cross-project safety, retry after failure, hidden/admin skip; Supabase mocked.');
 })().catch(error=>{console.error(error);process.exitCode=1;});
