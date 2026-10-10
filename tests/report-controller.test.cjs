@@ -43,6 +43,12 @@ function setup() {
       if (mode === 'pdf-error') return { ok: false, status: 500, json: async () => ({ error: 'test PDF error' }) };
       return { ok: true, blob: async () => new w.Blob(['%PDF-test'], { type: 'application/pdf' }), headers: new Map() };
     },
+    // Shared verifier is separately covered by project-pdf-http.test.cjs.
+    // This isolated report-controller test exercises its success and error flows.
+    readVerifiedEstaPdf: async res => {
+      if (!res.ok) { const error = await res.json(); throw new Error(error.error || 'PDF failed'); }
+      return res.blob();
+    },
     mediaImgHtml: () => '', hydrateMediaImages: async () => {}, waitForReportImages: async () => {},
     print: () => w.dispatchEvent(new w.Event('afterprint')),
   });
