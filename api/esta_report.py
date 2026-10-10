@@ -256,8 +256,11 @@ def task_card(idx,t,per_row=3):
             available_width=inner_w-12,
             cols=3,
             cell_height=pdfc.IMAGE_CELL_HEIGHT,
-            gap=pdfc.IMAGE_GAP
+            gap=pdfc.IMAGE_GAP,
+            fixed_columns=True,
         )
+        # One row = up to three images. Each row can move to the next page,
+        # without locking the whole task's image gallery into a giant table.
         for row in grid:
             story.extend([row,Spacer(1,3)])
     story.append(Spacer(1,8))
