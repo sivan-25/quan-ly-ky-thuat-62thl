@@ -2,17 +2,17 @@
 
 ## Scope and provenance
 
-**Status: source-level audit with passing isolated CI regressions, NOT a measured production performance optimization.**
+**Status: source audit, passing isolated CI regressions, and one narrowly scoped unmerged request-coalescing improvement. Production UI/data and measured runtime speed remain unchanged/unverified.**
 
 - User-specified repo: `sivan-25/quan-ly-ky-thuat`, `main` at `63d6534bbbd9ecea36bb5090b056f004b8bb7ebc`.
   - Git tree has only `README.md` and `index.html`; the latter says `QLKT5 — Báo cáo kỹ thuật` and uses GitHub's contents API. It is **not** the full ESTA project source.
 - Vercel-linked ESTA application repo (confirmed by user-supplied Vercel dashboard screenshot): `sivan-25/quan-ly-ky-thuat-62thl`, `main` at `63aebcc166b09e8fb81b3b858b7237e69021fe1e`.
   - Contains the Admin/project UI, Supabase integration, PDF API, 4-project flows, and automated tests.
   - Vercel dashboard UI shows the project `esta-property-operations` linked to this GitHub repository; however, the exact production commit SHA has not yet been verified by Vercel API.
-- Vercel project discovery identified `esta-property-operations`, project ID `prj_8YhYZ4yScXp1NH0xBKDGb1ma8hKd`. Project/deployment inspection was denied (HTTP 403 for the connected scope). **The GitHub repository link is confirmed from Vercel UI; the production commit SHA could not be verified via API.**
+- Vercel project `esta-property-operations` (`prj_8YhYZ4yScXp1NH0xBKDGb1ma8hKd`) was inspected successfully without explicit team scope. Production deployment `dpl_GBfPnn3cs3EF3g6LB9MFZqgaHYw6` is `READY` and targets `main` SHA **`63aebcc166b09e8fb81b3b858b7237e69021fe1e`**, exactly the original branch baseline. Preview is separate.
 - This audit uses GitHub file contents and the Ponytail source rules. GitNexus docs were reviewed, but its CLI/MCP graph **was not run**; it is not part of this patch. Its PolyForm Noncommercial licensing requires a separate use-rights check.
 
-**Safety decision:** work on `optimize-esta-safe` within the linked source repo; add only non-runtime audit guardrails, a static smoke check, a test-only fixture correction, and CI verification. Do not merge, deploy, modify Supabase data, or silently assume this is the production source.
+**Safety decision:** work only on `optimize-esta-safe` within the linked source repo. Non-runtime guardrails and tests plus a minimal runtime snapshot-polling change are in DRAFT PR; no production release. Do not merge, deploy, modify Supabase data, or silently assume this is the production source.
 
 ## Source inventory (candidate repo)
 
@@ -50,7 +50,7 @@ Counts above are static text scans. Multiple rules for the same selector can be 
 - `.github/workflows/esta-safe-optimization.yml`: isolated GitHub Actions checks for existing JS and PDF regressions.
 - `tests/task-completion.test.cjs`: JSDOM fixture now mocks missing browser `matchMedia` (the original app is untouched).
 
-**No runtime HTML, CSS, JavaScript, Python, APIs, PDF templates, authentication, RLS, schema, or data was changed.**
+**Runtime scope:** only `pollProjectSnapshot` in `app.js` was adjusted. No HTML, CSS, other JavaScript flows, Python/PDF templates, authentication, RLS, schema, or production data was changed. This is an unmerged Preview-only patch.
 
 ## Baseline & validation status
 
@@ -59,21 +59,21 @@ Counts above are static text scans. Multiple rules for the same selector can be 
 | GitHub tree / static source inspection | Completed |
 | GitNexus graph indexing / impact | Not run (tool unavailable; license check pending) |
 | Ponytail minimal-change review | Applied to proposed workflow; source rules inspected |
-| Production Vercel SHA / Git link verification | Vercel dashboard screenshot confirms linked GitHub repo; production SHA inaccessible via Vercel API 403 |
+| Production Vercel SHA / Git link verification | **Confirmed:** `sivan-25/quan-ly-ky-thuat-62thl` `main` `63aebcc...` `READY`, domain `esta-property-operations.vercel.app` |
 | `npm ci --ignore-scripts && npm test` | **PASS** in GitHub Actions; test-only JSDOM `matchMedia` fixture correction |
 | Python unit tests | **PASS**: 11 tests; PDF fixture benchmark: 16 tasks, 21 images, 7 pages, 1.29 MB, ~0.97 s |
 | Desktop/mobile screenshots | Not collected |
 | Supabase CRUD/regression | Not executed (live data protection) |
 | PDF golden-file compare | Not run |
 | Lighthouse/Network/INP/LCP or save latency | Not measured |
-| Vercel preview / production | Preview reported success via GitHub commit status; no authenticated Vercel deep inspection or production deployment performed |
+| Vercel preview / production | Production and preview deployment metadata verified via Vercel API. No production deployment performed for this PR. |
 
 Do not advertise performance gains until measurements exist.
 
 ## Prioritized safe execution plan
 
 **P0 — Correct source of truth.**
-- Repository link is verified by the user's Vercel dashboard screenshot. Verify the exact production commit and root directory in Vercel before runtime changes; confirm it matches the tested base SHA.
+- Source repo, branch, deployed production SHA confirmed. Root directory was not independently established, but runtime repo/commit match source baseline.
 - Use a **separate isolated fixture/test database** for write tests. Do not use production credentials for CRUD smoke testing.
 
 **P1 — Freeze baseline and add regression protection.**
@@ -93,10 +93,18 @@ Do not advertise performance gains until measurements exist.
 
 ## Exit criteria for a real optimization PR
 
-Only report “optimized” when there are actual runtime diffs, measurements before/after, documented test results, confirmed deployment origin, and evidence that all 4 projects and Admin keep their layout, workflows, permissions, data semantics and ESTA PDF standard.
+Only report real-world speed gains after measured before/after timing and visual regression tests. The initial request-coalescing patch demonstrably reduces *overlapping same-session refresh calls* under fixture conditions, but no end-user speed improvement has been measured.
 
 ## CI baseline evidence (2026-10-10)
 
 - Initial run: [38015488736](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38015488736). PDF and asset-reference checks passed; JS suite failed only because JSDOM did not implement `window.matchMedia`.
 - Corrected **test-only fixture**, then reran: [38015557211](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38015557211). Both JS and PDF jobs completed successfully. No runtime code was modified.
 - This establishes a regression-test baseline; it does **not** measure or claim real-world frontend speed improvement. No browser visual/performance baseline exists yet.
+
+## Safe runtime change — project snapshot polling (2026-10-10)
+
+- In `app.js`, `pollProjectSnapshot` now coalesces overlapping `projectSync("get")` operations per project **and navigation session**. Two simultaneous interval/focus triggers produce one request; a newly visited project is not blocked by a stale in-flight poll.
+- The project ID is captured at request start; late responses are ignored if the project or navigation sequence has changed. Existing data version checks, polling interval (5 s), visibility/Admin-page guards, and normal refresh behavior remain in place.
+- Added `tests/project-polling.test.cjs` (mock-only; no live Supabase writes), wired into `npm test` to check duplicate polls, project switch, A→B→A return, exceptions/retry, hidden/Admin skip.
+- Initial CI checks (prior to A→B→A extension): [38016027790](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38016027790) passed JavaScript and PDF jobs. The expanded test must also pass before release.
+- **No measured user latency or transfer-size improvement claimed.** This specific change cuts redundant concurrent polling requests, not the 5-second normal refresh cadence.
