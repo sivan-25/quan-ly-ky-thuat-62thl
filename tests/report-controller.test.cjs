@@ -49,6 +49,8 @@ function setup() {
       if (!res.ok) { const error = await res.json(); throw new Error(error.error || 'PDF failed'); }
       return res.blob();
     },
+    // Real PDF payload reduction is exercised in Chromium separately.
+    estaPdfRequestBody: async payload => JSON.stringify(payload),
     mediaImgHtml: () => '', hydrateMediaImages: async () => {}, waitForReportImages: async () => {},
     print: () => w.dispatchEvent(new w.Event('afterprint')),
   });
