@@ -29,32 +29,43 @@ function demoContractor(id){return demoCache.contractors.find(x=>String(x.id)===
 function demoMaterial(id){return demoCache.materials.find(x=>String(x.id)===String(id))}
 function demoStock(m){
  let q=Number(m?.opening_qty||0);
- demoCache.materialTx.filter(x=>String(x.material_id)===String(m?.id)).forEach(x=>q+=(x.tx_type==="in"?1:-1)*Number(x.qty||0));
+ const materialId=String(m?.id);
+ for(const x of demoCache.materialTx)if(String(x.material_id)===materialId)q+=(x.tx_type==="in"?1:-1)*Number(x.qty||0);
  return q;
 }
+// Reuse an ongoing 8-table read for the same project and navigation session.
+const demoLoadsInFlight=new Map();
+let demoLoadRequestId=0;
 async function demoLoad(force=false){
  if(!demoIs())return demoCache;
  const buildingId=String(currentBuilding?.id||"");
  if(!buildingId)return demoCache;
+ const loadKey=buildingId+":"+projectOpenSeq;
+ if(!force&&demoLoadsInFlight.has(loadKey))return demoLoadsInFlight.get(loadKey);
  if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force)return demoCache;
- try{
-  const b="building_id=eq."+demoQs(buildingId);
-  const [inc,ins,docs,reps,assets,cons,mats,tx]=await Promise.all([
-   demoRest("incidents",b+"&select=*&order=detected_at.desc"),
-   demoRest("inspections",b+"&select=*&order=inspection_date.desc"),
-   demoRest("technical_documents",b+"&select=*&order=created_at.desc"),
-   demoRest("report_registry",b+"&select=*&order=created_at.desc"),
-   demoRest("maintenance_assets",b+"&select=*&order=code.asc"),
-   demoRest("contractors",b+"&select=*&order=name.asc"),
-   demoRest("inventory_materials",b+"&archived_at=is.null&select=*&order=name.asc"),
-   demoRest("inventory_material_transactions",b+"&select=*&order=tx_date.desc")
-  ]);
-  // Ignore a late response from the project we have already left.
-  // Without this guard, linked Incident/Contractor/Material dropdowns can briefly show data from the previous building.
-  if(String(currentBuilding?.id||"")!==buildingId)return demoCache;
-  demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
- }catch(e){console.warn("Project operations data load failed",e)}
- return demoCache;
+ const requestId=++demoLoadRequestId;
+ const pending=(async()=>{
+  try{
+   const b="building_id=eq."+demoQs(buildingId);
+   const [inc,ins,docs,reps,assets,cons,mats,tx]=await Promise.all([
+    demoRest("incidents",b+"&select=*&order=detected_at.desc"),
+    demoRest("inspections",b+"&select=*&order=inspection_date.desc"),
+    demoRest("technical_documents",b+"&select=*&order=created_at.desc"),
+    demoRest("report_registry",b+"&select=*&order=created_at.desc"),
+    demoRest("maintenance_assets",b+"&select=*&order=code.asc"),
+    demoRest("contractors",b+"&select=*&order=name.asc"),
+    demoRest("inventory_materials",b+"&archived_at=is.null&select=*&order=name.asc"),
+    demoRest("inventory_material_transactions",b+"&select=*&order=tx_date.desc")
+   ]);
+   // Never replace a newer reload, or data from a project we have left.
+   if(String(currentBuilding?.id||"")!==buildingId||requestId!==demoLoadRequestId)return demoCache;
+   demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
+  }catch(e){console.warn("Project operations data load failed",e)}
+  return demoCache;
+ })();
+ demoLoadsInFlight.set(loadKey,pending);
+ try{return await pending}
+ finally{if(demoLoadsInFlight.get(loadKey)===pending)demoLoadsInFlight.delete(loadKey)}
 }
 function demoHideSpecialPages(){
  DEMO_MODULES.forEach(n=>$("#app")?.classList.remove(n+"Mode"));
