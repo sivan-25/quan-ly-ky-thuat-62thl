@@ -8,6 +8,13 @@ on:
       - "reporting/**"
       - "tests/test_pdf.py"
       - ".github/workflows/pdf-regression.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "api/esta_report.py"
+      - "reporting/**"
+      - "tests/test_pdf.py"
+      - ".github/workflows/pdf-regression.yml"
   workflow_dispatch:
 
 jobs:
