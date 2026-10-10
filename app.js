@@ -97,6 +97,45 @@ async function centralAuthFetch(url,options={}){
  }
  return res;
 }
+
+/* Shared PDF verification: never download Vercel sign-in HTML as a .pdf file. */
+async function readVerifiedEstaPdf(response){
+ const type=String(response?.headers?.get?.("Content-Type")||"").toLowerCase();
+ if(!response.ok){
+  let detail="",payload=null;
+  try{
+   if(type.includes("json"))payload=await response.json();
+   else detail=(await response.text()).replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,180);
+  }catch(_){}
+  const info=String(payload?.detail||payload?.error||detail||"").slice(0,260);
+  if(response.status===401)throw Error("Phiên đăng nhập đã hết hạn. Đăng nhập ESTA rồi thử lại."+(info?" ("+info+")":""));
+  if(response.status===403)throw Error("Máy chủ từ chối truy cập API xuất PDF (403). Có thể cần kiểm tra quyền hoặc bảo vệ Vercel."+(info?" ("+info+")":""));
+  if(response.status===413)throw Error("Dữ liệu báo cáo quá lớn (413). Hãy chọn ít công việc hoặc hình hơn.");
+  if([502,503,504].includes(response.status))throw Error("Máy chủ PDF chưa phản hồi (HTTP "+response.status+"). Thử xuất ít dữ liệu hơn.");
+  throw Error(info||"Không thể xuất PDF ESTA (HTTP "+response.status+")");
+ }
+ if(!type.includes("application/pdf")){
+  const html=type.includes("html")||/vercel\.com\/(?:login|sso)|vercel\.app\/login/i.test(String(response.url||""));
+  throw Error(html?"API trả về trang đăng nhập/web thay vì PDF. Kiểm tra bảo vệ Vercel và đăng nhập.":"API không trả về PDF (Content-Type: "+(type||"trống")+").");
+ }
+ const blob=await response.blob();
+ if(!blob.size)throw Error("PDF từ máy chủ bị trống");
+ if(await blob.slice(0,5).text()!=="%PDF-")throw Error("File trả về không phải PDF hợp lệ");
+ return blob;
+}
+function reportPdfIssue(error){
+ const msg=String(error?.message||error||"Xuất PDF thất bại");
+ console.warn("ESTA PDF:",error);toast(msg);
+ let box=document.querySelector("#estaPdfErrorNotice");
+ if(!box){
+  box=document.createElement("div");box.id="estaPdfErrorNotice";box.setAttribute("role","alert");
+  box.innerHTML='<span id="estaPdfErrorText"></span><button type="button" aria-label="Đóng thông báo lỗi PDF">×</button>';
+  box.querySelector("button").addEventListener("click",()=>box.remove());document.body.appendChild(box);
+ }
+ box.querySelector("#estaPdfErrorText").textContent="Xuất PDF chưa thành công: "+msg;
+}
+function clearReportPdfIssue(){document.querySelector("#estaPdfErrorNotice")?.remove()}
+
 async function sbFetch(path,{method="GET",body=null,token=null}={}){
  const usesCentral=!!token&&token===centralSession?.access_token;
  if(usesCentral){await ensureCentralSessionFresh();token=centralSession?.access_token||token}
@@ -1868,17 +1907,15 @@ async function exportGenericEstaPdf(config={}){
      let detail={};try{detail=await res.json()}catch(_){}
      throw new Error(detail?.detail||detail?.error||("Không thể tạo PDF ESTA (HTTP "+res.status+")"));
    }
-   const blob=await res.blob();
-   if(!blob.size||!String(blob.type||"").includes("pdf"))throw new Error("Máy chủ chưa trả về file PDF hợp lệ");
+   const blob=await readVerifiedEstaPdf(res);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download=String(config.filename||"ESTA_BaoCao_KyThuat.pdf");
    document.body.appendChild(a);a.click();a.remove();
    setTimeout(()=>URL.revokeObjectURL(url),60000);
-   toast("Đã xuất PDF ESTA chuẩn");
+   clearReportPdfIssue();toast("Đã xuất PDF ESTA chuẩn");
    return true;
  }catch(err){
-   console.warn("Generic ESTA PDF export failed",err);
-   toast(err.message||"Không thể xuất PDF ESTA");
+   reportPdfIssue(err);
    return false;
  }
 }
@@ -2084,8 +2121,7 @@ async function exportEstaGeneratorPdf(rows,signer=null){
      const message=detail?.detail||detail?.error||("Không thể tạo báo cáo ESTA (HTTP "+res.status+")");
      const error=new Error(message);error.status=res.status;throw error;
    }
-   const blob=await res.blob();
-   if(!blob.size)throw new Error("File PDF trả về bị trống");
+   const blob=await readVerifiedEstaPdf(res);
    const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
    const url=URL.createObjectURL(blob);
    const a=document.createElement("a");
@@ -2093,7 +2129,7 @@ async function exportEstaGeneratorPdf(rows,signer=null){
    a.download="ESTA_BaoCao_KyThuat_TongHop_ChiTiet.pdf";
    document.body.appendChild(a);a.click();a.remove();
    setTimeout(()=>URL.revokeObjectURL(url),60000);
-   if(missing)toast("Đã xuất PDF · "+missing+" hình không tải được nên giữ ô trống");
+   clearReportPdfIssue();if(missing)toast("Đã xuất PDF · "+missing+" hình không tải được nên giữ ô trống");
    else toast("Đã xuất PDF ESTA chuẩn");
    return true;
  }catch(err){
@@ -2112,7 +2148,7 @@ async function openReport(a,kind="current",previewWindow=null,photoLayout=1){
    await exportEstaGeneratorPdf(a,signer);
  }catch(err){
    console.warn("Work ESTA PDF export failed",err);
-   toast((err.message||"Không thể xuất PDF")+" · Hệ thống không dùng mẫu PDF cũ để tránh sai chuẩn ESTA.");
+   reportPdfIssue(err);
  }finally{
    workReportBusy=false;
  }
@@ -2646,28 +2682,25 @@ async function exportEnergyEstaPdf(rows,kind="current"){
   };
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),115000);
   try{
-   const res=await fetch("/api/esta_report",{
-    method:"POST",
-    headers:{"Content-Type":"application/json","Authorization":"Bearer "+centralSession.access_token},
-    body:JSON.stringify(payload),
-    signal:controller.signal
+   const res=await centralAuthFetch("/api/esta_report",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload),signal:controller.signal
    });
    if(!res.ok){
     let detail={};try{detail=await res.json()}catch(_){}
     throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo Năng lượng");
    }
-   const blob=await res.blob();
-   if(!blob.size)throw new Error("File PDF trả về bị trống");
+   const blob=await readVerifiedEstaPdf(res);
    const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download=energyReportFilename(period);
    document.body.appendChild(a);a.click();a.remove();
    setTimeout(()=>URL.revokeObjectURL(url),60000);
-   toast(missing?"Đã xuất PDF ESTA · "+missing+" hình không tải được":"Đã xuất PDF Năng lượng ESTA chuẩn");
+   clearReportPdfIssue();toast(missing?"Đã xuất PDF ESTA · "+missing+" hình không tải được":"Đã xuất PDF Năng lượng ESTA chuẩn");
   }finally{clearTimeout(timer)}
  }catch(err){
   if(err?.name==="AbortError")toast("Tạo PDF quá thời gian. Vui lòng thử lại.");
-  else toast(err.message||"Không thể xuất PDF Năng lượng");
+  else reportPdfIssue(err);
  }finally{energyReportBusy=false}
 }
 $("#energyExportPdf").onclick=()=>{
@@ -3288,27 +3321,24 @@ async function exportToolsEstaPdf(){
   };
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),115000);
   try{
-   const res=await fetch("/api/esta_report",{
-    method:"POST",
-    headers:{"Content-Type":"application/json","Authorization":"Bearer "+centralSession.access_token},
-    body:JSON.stringify(payload),
-    signal:controller.signal
+   const res=await centralAuthFetch("/api/esta_report",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload),signal:controller.signal
    });
    if(!res.ok){
     let detail={};try{detail=await res.json()}catch(_){}
     throw new Error(detail?.detail||detail?.error||"Không thể tạo báo cáo Dụng cụ kỹ thuật");
    }
-   const blob=await res.blob();
-   if(!blob.size)throw new Error("File PDF trả về bị trống");
+   const blob=await readVerifiedEstaPdf(res);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
    a.href=url;a.download="BaoCao_DungCuKyThuat_"+today().replaceAll("-","")+".pdf";
    document.body.appendChild(a);a.click();a.remove();
    setTimeout(()=>URL.revokeObjectURL(url),60000);
-   toast("Đã xuất PDF Dụng cụ kỹ thuật ESTA chuẩn");
+   clearReportPdfIssue();toast("Đã xuất PDF Dụng cụ kỹ thuật ESTA chuẩn");
   }finally{clearTimeout(timer)}
  }catch(err){
   if(err?.name==="AbortError")toast("Tạo PDF quá thời gian. Vui lòng thử lại.");
-  else toast(err.message||"Không thể xuất PDF Dụng cụ kỹ thuật");
+  else reportPdfIssue(err);
  }finally{toolReportBusy=false}
 }
 $("#toolExportPdf").onclick=exportToolsEstaPdf;
