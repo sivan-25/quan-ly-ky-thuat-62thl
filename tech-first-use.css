@@ -1,0 +1,34 @@
+/* ESTA first-use additions: technical editor only. */
+body.techFirstUse #workPage:not(.techCreating)>.workEntryCard,
+body.techFirstUse #workPage:not(.techCreating) #workEntryHomeAnchor{display:none!important}
+.techWorkShortcuts{background:#e7dbc5;border:1px solid #b9aa8c;border-radius:14px;padding:13px 15px;margin:12px 0;color:#294238}
+.techWorkShortcutsHead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.techWorkShortcutsHead strong{font-size:17px}
+.techWorkShortcutsHead small{font-size:13px;font-weight:600;color:#495e56}
+.techWorkShortcutActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.techWorkShortcutActions button{font:inherit;font-size:14px;font-weight:700;padding:10px 13px;min-height:42px;border:1px solid #778d7e;border-radius:10px;background:#f3e8d2;color:#254235;cursor:pointer}
+.techWorkShortcutActions button.active{background:#325044;color:#fff}
+.techWorkShortcutActions .techCreateWork{background:#254d43;color:#fff;margin-left:auto}
+.techWorkNotice{font-size:13px;margin:6px 0 0;color:#7c3c26}
+.techWorkNotice:empty{display:none}
+.techInlineResult{grid-column:1/-1;background:#e7e0d0;border:1px solid #b6a886;border-radius:11px;padding:10px}
+.techInlineResult .demoTaskResultField{display:flex;flex-direction:column;gap:6px}
+.techInlineResult .demoTaskResultHead{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.techInlineResult #demoTaskResult{width:100%;box-sizing:border-box;min-height:74px;border-radius:9px;border:1px solid #9eaaab;padding:10px;font:inherit;font-size:15px;background:#fff9ef}
+.techFirstUseGuide{background:#e7dbc5;color:#233f36;border:1px solid #b9a882;border-radius:14px;padding:14px;margin:10px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.techFirstUseGuide>div{flex:1 1 240px}
+.techFirstUseGuide strong{font-size:17px}
+.techFirstUseGuide p{font-size:14px;line-height:1.55;margin:5px 0}
+.techFirstUseGuide button{padding:11px 15px;background:#285448;color:#fff;border:0;border-radius:10px;font-size:14px;font-weight:750;min-height:44px;cursor:pointer}
+.techFirstUseGuide details{width:100%;font-size:13px}
+.techFirstUseGuide summary{cursor:pointer;font-weight:700}
+body.techFirstUse .peopleEmpty{color:#3a5248!important;font-size:14px!important}
+body.techFirstUse .peopleEmpty span{color:#45574e!important;opacity:1!important}
+@media(max-width:640px){
+ .techWorkShortcuts{padding:12px;margin:8px 0}
+ .techWorkShortcutActions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .techWorkShortcutActions .techCreateWork{margin:0;grid-column:1/-1}
+ .techWorkShortcutActions button{font-size:13px}
+ .techFirstUseGuide{padding:12px}
+ .techInlineResult{display:none}
+}
