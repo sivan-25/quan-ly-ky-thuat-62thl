@@ -11,6 +11,7 @@ on:
       - "index.html"
       - "**/*.css"
       - "tests/browser-visual-parity.cjs"
+      - "tests/request-count-comparison.cjs"
       - ".github/workflows/esta-visual-parity.yml"
 
 permissions:
@@ -46,6 +47,8 @@ jobs:
           sleep 3
           curl --fail --silent http://127.0.0.1:8765/ > /dev/null
           curl --fail --silent http://127.0.0.1:8766/ > /dev/null
+      - name: Compare actual production and optimized request counts with isolated fixtures
+        run: node tests/request-count-comparison.cjs
       - name: Capture and compare screenshots for Admin and four projects
         run: node tests/browser-visual-parity.cjs
       - name: Preserve visual evidence for review
