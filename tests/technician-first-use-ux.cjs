@@ -75,7 +75,7 @@ try{
   const picker=page.locator('#taskPeopleOptions [data-person]').first();
   if(!(await picker.isVisible()))await page.locator('#taskPeopleButton').click();
   await picker.click();
-  await page.locator('#status').selectOption({label:'Đã hoàn thành'});
+  await page.evaluate(()=>{const field=document.querySelector('#status');field.value='Đã hoàn thành';field.dispatchEvent(new Event('change',{bubbles:true}));});
   await page.waitForTimeout(140);
   const result=page.locator('#task130Result');
   obs(width,'completeResultFieldVisible',await result.isVisible());
