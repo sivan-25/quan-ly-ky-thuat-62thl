@@ -1,5 +1,7 @@
 # ESTA — Staging verification checklist (production-isolated)
 
+> **Decision updated 2026-10-10: owner explicitly requires ZERO additional cost.** No Supabase project/branch creation, paid service, upgrade, or new staging provisioning. The infrastructure setup below is deferred indefinitely unless the owner changes this restriction. Continue with mock-only and read-only tests; do not use production business data for write tests.
+
 Status: **BLOCKED — no confirmed independent staging database** (2026-10-10).
 
 ## Safe infrastructure discovery
