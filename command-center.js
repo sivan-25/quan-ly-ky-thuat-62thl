@@ -22,6 +22,47 @@ const activeIds=()=>new Set(activeProjects().map(x=>String(x.id)));
 const activeRows=()=>{const ids=activeIds();return rows.filter(r=>ids.has(String(r?.building?.id||"")))};
 const isDone=t=>["Đã hoàn thành","Hoàn thành"].includes(String(t?.s||""));
 const priorityRank=p=>p==="Khẩn cấp"?4:p==="Cao"?3:p==="Trung bình"?2:1;
+function syncAdminHeader(){
+ const topState=$c("#ccTopDataState"),oldState=$c("#ccDataState");
+ if(topState&&oldState){topState.textContent=oldState.textContent;topState.classList.toggle("offline",oldState.classList.contains("offline"))}
+ const refresh=$c("#ccHeaderRefresh");
+ if(refresh){refresh.disabled=loading;refresh.textContent=loading?"Đang tải…":"↻ Làm mới"}
+ const pdf=$c("#ccHeaderPdf"),count=$c("#ccHeaderPdfCount");
+ if(pdf){pdf.disabled=pdfExportBusy;pdf.setAttribute("aria-label",pdfSelectedKeys.size?"Xuất PDF "+pdfSelectedKeys.size+" công việc đã chọn":"Xuất PDF các công việc đã chọn")}
+ if(count){count.textContent=String(pdfSelectedKeys.size);count.classList.toggle("hide",!pdfSelectedKeys.size)}
+}
+function ensureAdminHeader(admin){
+ const tools=$c(".estaTopbar .headerTools"),title=$c("#topHomeTitle");
+ if(tools&&!$c("#ccAdminHeaderActions")){
+  const box=document.createElement("div");box.id="ccAdminHeaderActions";box.className="ccAdminHeaderActions hide";
+  box.setAttribute("role","group");box.setAttribute("aria-label","Thao tác nhanh Tổng quan Admin");
+  box.innerHTML='<label class="ccTopSearch" for="ccHeaderSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input type="search" id="ccHeaderSearch" autocomplete="off" placeholder="Tìm công việc..." aria-label="Tìm công việc Admin"></label><button id="ccHeaderDispatch" type="button" class="ccTopAction primary">＋ Giao công việc</button><button id="ccHeaderRefresh" type="button" class="ccTopAction">↻ Làm mới</button><button id="ccHeaderPdf" type="button" class="ccTopAction">Xuất PDF <b class="ccTopCount hide" id="ccHeaderPdfCount">0</b></button>';
+  tools.insertBefore(box,tools.querySelector(".headerSearch"));
+  box.querySelector("#ccHeaderSearch").addEventListener("input",e=>{
+   if(!globalScope())return;
+   const search=$c("#ccSearch");
+   if(search){search.value=e.target.value;search.dispatchEvent(new Event("input",{bubbles:true}))}
+  });
+  box.querySelector("#ccHeaderDispatch").addEventListener("click",()=>{if(globalScope())openDispatch()});
+  box.querySelector("#ccHeaderRefresh").addEventListener("click",()=>{if(globalScope())loadCenter(true)});
+  box.querySelector("#ccHeaderPdf").addEventListener("click",()=>{if(globalScope())exportAdminAssignedPdf()});
+ }
+ if(title&&!title.querySelector("#ccTopContext")){
+  const copy=title.lastElementChild;
+  if(copy){
+   const context=document.createElement("div");context.id="ccTopContext";context.className="ccTopContext hide";
+   context.innerHTML='<span>Trung tâm điều hành · Đa dự án</span><i id="ccTopDataState">Đang tải dữ liệu</i>';
+   copy.appendChild(context);
+  }
+ }
+ $c("#ccAdminHeaderActions")?.classList.toggle("hide",!admin);
+ $c("#ccTopContext")?.classList.toggle("hide",!admin);
+ if(admin){
+  const topSearch=$c("#ccHeaderSearch"),bottomSearch=$c("#ccSearch");
+  if(topSearch&&bottomSearch&&topSearch.value!==bottomSearch.value)topSearch.value=bottomSearch.value;
+  syncAdminHeader();
+ }
+}
 function ensureScopeBar(home){
  let bar=$c("#overviewScopeBar");
  if(!bar){
@@ -47,6 +88,7 @@ function ensureRoot(){
  if(dataAccount&&dataAccount!==currentAccount){rows=[];activity=[];personalTasks=[];lastUpdated="";dataAccount=null;taskPage=alertPage=activityPage=1;taskScope="admin";pdfSelectedKeys.clear();pdfFilteredTasks=[]}
  const home=$c("#homePage");if(!home)return null;
  ensureScopeBar(home);
+ ensureAdminHeader(globalScope());
  let root=$c("#"+ROOT_ID);
  if(!root){
   root=document.createElement("section");root.id=ROOT_ID;root.className="ccRoot opsOverview hide";
@@ -66,7 +108,7 @@ function ensureRoot(){
    renderLists();
   });
   ["#ccProjectFilter","#ccStatusFilter","#ccPriorityFilter"].forEach(id=>root.querySelector(id).addEventListener("change",()=>{taskPage=alertPage=activityPage=1;renderLists();renderActivity()}));
-  root.querySelector("#ccSearch").addEventListener("input",()=>{taskPage=alertPage=activityPage=1;renderLists();renderActivity()});
+  root.querySelector("#ccSearch").addEventListener("input",e=>{const top=$c("#ccHeaderSearch");if(top&&top.value!==e.target.value)top.value=e.target.value;taskPage=alertPage=activityPage=1;renderLists();renderActivity()});
   root.addEventListener("click",e=>{
    if(e.target.closest("[data-cc-pdf-select]"))return;
    const scope=e.target.closest("[data-cc-scope]");if(scope){taskScope=scope.dataset.ccScope;taskPage=1;renderLists();return}
@@ -83,6 +125,7 @@ function ensureRoot(){
  home.querySelector(".homeWelcome")?.classList.remove("ccAdminWelcomeHidden");
  home.querySelector(".homeKpis")?.classList.remove("ccLegacyKpisHidden");
  if(admin){
+  syncAdminHeader();
   const title=$c("#topHomeTitle h1");if(title)title.textContent="Tổng quan";
   const subtitle=$c("#topHomeTitle p");if(subtitle)subtitle.textContent="Toàn bộ dự án";
  }
@@ -153,7 +196,7 @@ async function exportAdminAssignedPdf(){
  if(!globalScope()||!centralSession?.access_token)return toast("Cần đăng nhập Admin để xuất PDF");
  const available=new Map(taskRows().filter(isAdminTask).map(t=>[pdfTaskKey(t),t]));
  const selected=[...pdfSelectedKeys].map(key=>available.get(key)).filter(Boolean);
- if(!selected.length)return toast("Hãy tick chọn ít nhất một công việc Admin để xuất PDF");
+ if(!selected.length){$c("#ccPdfTools")?.scrollIntoView?.({behavior:"smooth",block:"center"});return toast("Hãy tick chọn công việc trong bảng để xuất PDF")}
  if(typeof window.exportGenericEstaPdf!=="function")return toast("Chức năng PDF ESTA chưa sẵn sàng. Hãy tải lại trang");
  const dated=selected.map(t=>String(t.d||t.dispatchedAt||"").slice(0,10)).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
  const from=dated[0]||"",to=dated[dated.length-1]||"";
@@ -220,6 +263,7 @@ function renderLists(){
  const selectAllPdf=$c("#ccPdfSelectAll");
  if(selectAllPdf){selectAllPdf.checked=pdfFilteredKeys.length>0&&checkedFiltered===pdfFilteredKeys.length;selectAllPdf.indeterminate=checkedFiltered>0&&checkedFiltered<pdfFilteredKeys.length;selectAllPdf.disabled=!pdfFilteredKeys.length||pdfExportBusy}
  const printBtn=$c("#ccPrintSelected");if(printBtn){printBtn.disabled=!pdfSelectedKeys.size||pdfExportBusy;printBtn.textContent=pdfExportBusy?"Đang xuất PDF…":"📄 Xuất PDF ("+pdfSelectedKeys.size+")"}
+ syncAdminHeader();
  taskPage=Math.max(1,Math.min(taskPage,Math.ceil(tasks.length/TASK_PAGE_SIZE)));
  const body=$c("#ccTaskBody");if(body)body.innerHTML=tasks.length?tasks.slice((taskPage-1)*TASK_PAGE_SIZE,taskPage*TASK_PAGE_SIZE).map(t=>'<tr tabindex="0" aria-label="Mở công việc" data-cc-task data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'"><td data-label="Chọn" class="ccPdfSelectCell">'+(isAdminTask(t)?'<input type="checkbox" data-cc-pdf-select="'+escC(pdfTaskKey(t))+'" aria-label="Chọn in PDF công việc '+escC(t.c||"")+'" '+(pdfSelectedKeys.has(pdfTaskKey(t))?'checked':'')+'>':'')+'</td><td data-label="Dự án"><span class="ccProjectTag">'+escC(shortProjectName(t._buildingId))+'</span></td><td data-label="Công việc"><b>'+escC(t.c||"Công việc kỹ thuật")+'</b>'+(t.personalWork?'<small>Công việc thực hiện · Văn'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':isAdminTask(t)?'<small>Admin giao'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':(t.n?'<small>'+escC(t.n)+'</small>':""))+'</td><td data-label="Trạng thái"><span class="ccStatus '+statusClass(t.s)+'">'+escC(t.s||"Đang thực hiện")+'</span></td><td data-label="Mức độ"><span class="ccPriority p'+priorityRank(t.priority)+'">'+escC(t.priority||"Trung bình")+'</span></td><td data-label="Người thực hiện">'+escC(t.a||"—")+'</td><td data-label="Hạn">'+fmtC(t.dueDate||"")+'</td><td data-label="Cảnh báo">'+warningHtml(t)+'</td></tr>').join(""):'<tr><td colspan="8" class="ccEmptyCell">'+(taskScope==="admin"&&!adminTasks.length?"Chưa có công việc Admin đã giao. Nhấn ＋ Giao công việc để bắt đầu.":"Không có công việc phù hợp với bộ lọc.")+'</td></tr>';
  const meta=$c("#ccTaskMeta");if(meta)meta.textContent=tasks.length+" công việc · "+tasks.filter(t=>t.s==="Đang thực hiện").length+" đang làm · "+tasks.filter(isDone).length+" hoàn thành · "+tasks.filter(t=>t.s==="Chờ xử lý").length+" chờ xử lý · "+tasks.filter(isOverdue).length+" quá hạn";
@@ -272,6 +316,7 @@ async function loadCenter(force=false){
  const refresh=root.querySelector("#ccRefresh");
  const oldRefreshText=refresh?.textContent||"Làm mới";
  if(refresh){refresh.disabled=true;refresh.textContent="Đang tải…"}
+ syncAdminHeader();
  try{
    const [res,personal]=await Promise.all([
      sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession?.access_token,body:{}}),
@@ -284,18 +329,21 @@ async function loadCenter(force=false){
    activity=Array.isArray(res?.activity)?res.activity:[];
    lastUpdated=res?.generated_at||new Date().toISOString();
    const state=$c("#ccDataState");if(state){state.textContent="Dữ liệu mới nhất";state.classList.remove("offline")}
+   syncAdminHeader();
    const message=$c("#ccLoadMessage");if(message)message.textContent="";
    renderCenter();
  }catch(e){
    console.warn("Admin Command Center failed",e);
    if(currentAccount!==account||!globalScope())return;
    const state=$c("#ccDataState");if(state){state.textContent="Chưa đồng bộ";state.classList.add("offline")}
+   syncAdminHeader();
    const message=$c("#ccLoadMessage");if(message)message.textContent=lastUpdated?"Chưa làm mới được dữ liệu. Đang hiển thị bản cập nhật lúc "+new Date(lastUpdated).toLocaleString("vi-VN")+". Nhấn Làm mới để thử lại.":"Không tải được dữ liệu Tổng quan. Nhấn Làm mới để thử lại.";
  }finally{
    loading=false;
    root.classList.remove("loading");
    root.removeAttribute("aria-busy");
    if(refresh){refresh.disabled=false;refresh.textContent=oldRefreshText}
+   syncAdminHeader();
    if(currentAccount!==account&&globalScope())loadCenter(false);
  }
 }
