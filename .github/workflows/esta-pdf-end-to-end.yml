@@ -78,6 +78,7 @@ jobs:
           sleep 3
           curl --fail -s http://127.0.0.1:8765/ >/dev/null
           curl --fail -s http://127.0.0.1:8766/ >/dev/null
+          node tests/pdf-payload-browser.test.cjs
           node tests/browser-visual-parity.cjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
