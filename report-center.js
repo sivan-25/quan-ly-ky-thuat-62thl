@@ -173,8 +173,10 @@
     state.busy = true; buttons(); message("Đang tạo PDF gồm " + model.sections.length + " hạng mục và " + payload.photos.length + " ảnh…");
     try {
       const res = await centralAuthFetch("/api/esta_report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      if (!res.ok) { const error = await res.json().catch(() => ({})); throw new Error(error.error || "Không thể tạo PDF (" + res.status + ")"); }
-      const blob = await res.blob(); if (!blob.size || !blob.type.includes("pdf")) throw new Error("Máy chủ chưa trả về file PDF hợp lệ");
+      // Use the same shared PDF response verifier as every other ESTA
+      // exporter. It rejects Vercel sign-in HTML, PDF error JSON, empty blobs,
+      // and invalid %PDF headers instead of downloading broken files.
+      const blob = await readVerifiedEstaPdf(res);
       const url = URL.createObjectURL(blob), link = document.createElement("a");
       link.href = url; link.download = filename; document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
       const missing = Number(res.headers.get("X-ESTA-Missing-Images") || 0);
