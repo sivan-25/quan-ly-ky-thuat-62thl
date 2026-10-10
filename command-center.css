@@ -593,3 +593,21 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
  #app.homeMode.opsOverviewMode.adminCommandHome #homePage{padding:8px 8px 76px!important}
  #app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar{margin-bottom:8px!important}
 }
+
+/* Persistent, dismissible PDF failure diagnostics for all project modules. */
+#estaPdfErrorNotice{
+ position:fixed;z-index:2600;top:max(12px,env(safe-area-inset-top));
+ left:50%;transform:translateX(-50%);width:min(680px,calc(100vw - 24px));
+ box-sizing:border-box;display:flex;align-items:flex-start;gap:14px;
+ padding:14px 16px;border:1px solid #e4ad7d;border-left:4px solid #ce8139;
+ border-radius:12px;background:#fff6e6;color:#623b23;box-shadow:0 14px 50px #17243738;
+ font:600 13px/1.5 Inter,Arial,sans-serif;white-space:normal;overflow-wrap:anywhere;
+}
+#estaPdfErrorNotice span{flex:1;min-width:0}
+#estaPdfErrorNotice button{
+ border:0;border-radius:6px;flex:none;width:30px;height:30px;
+ background:#f5ddbe;color:#623b23;font-size:21px;line-height:1;cursor:pointer;
+}
+@media(max-width:640px){
+ #estaPdfErrorNotice{top:max(8px,env(safe-area-inset-top));padding:11px 12px;font-size:12px}
+}
