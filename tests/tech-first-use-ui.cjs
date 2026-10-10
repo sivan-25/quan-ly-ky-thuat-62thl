@@ -29,7 +29,13 @@ async function review(width){
    projectOverview:projectOverviewActive,
    workBar:!!document.querySelector('#techWorkShortcuts'),
    techClass:document.body.classList.contains('techFirstUse'),
-   homeHidden:document.querySelector('#homePage')?.classList.contains('hide')
+   homeHidden:document.querySelector('#homePage')?.classList.contains('hide'),
+   homeActualDisplay:getComputedStyle(document.querySelector('#homePage')).display,
+   guideDisplay:getComputedStyle(document.querySelector('#techFirstUseGuide')).display,
+   guideVisibility:getComputedStyle(document.querySelector('#techFirstUseGuide')).visibility,
+   guideRect:document.querySelector('#techFirstUseGuide').getBoundingClientRect().toJSON(),
+   guideParentTag:document.querySelector('#techFirstUseGuide').parentElement?.id,
+   appDisplay:getComputedStyle(document.querySelector('#app')).display
   })),null,2),'browser-errors',errors);
   assert.equal(await page.locator('#techFirstUseGuide').isVisible(),true,'new technician sees start guide');
   await page.locator('#navWork').evaluate(el=>el.click());
