@@ -134,6 +134,9 @@ function annotateHome(){
   guide.querySelector("#techGuideOpenTasks").onclick=()=>showModule("work");
  }
  guide.classList.remove("hide");
+ // Existing dashboard rules hide dynamically inserted sections. An inline
+ // important display declaration keeps the technician guide visible.
+ guide.style.setProperty("display","flex","important");
  // Accessible, no numeric health score is modified.
  for(const el of home.querySelectorAll("small,span")){
   const text=(el.textContent||"").trim().toUpperCase();
