@@ -481,6 +481,8 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 
 
 /* Admin 2026-10-10: one compact command bar; remove the duplicate full-width hero. */
+/* Outside Admin Overview, never show Admin-only shortcuts on project screens. */
+#app .ccAdminHeaderActions,#app .ccTopContext{display:none!important}
 #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter>.ccHero{display:none!important}
 #app.homeMode.opsOverviewMode.adminCommandHome #homePage{
  padding:9px 14px 22px!important;
@@ -490,7 +492,7 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 }
 #app.homeMode.opsOverviewMode.adminCommandHome #topHomeTitle p{display:none!important}
 #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext{
- display:flex;align-items:center;gap:9px;min-width:0;margin-top:4px;
+ display:flex!important;align-items:center;gap:9px;min-width:0;margin-top:4px;
  color:#c1d4df;font-size:10.5px;font-weight:550;white-space:nowrap;
 }
 #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext.hide,
@@ -505,7 +507,7 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 }
 #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext i.offline:before{background:#f3ba72}
 #app.homeMode.opsOverviewMode.adminCommandHome .ccAdminHeaderActions{
- display:flex;align-items:center;justify-content:flex-end;
+ display:flex!important;align-items:center;justify-content:flex-end;
  flex:1 1 auto;min-width:0;gap:7px;
 }
 #app.homeMode.opsOverviewMode.adminCommandHome .headerTools{min-width:0;flex:1 1 auto}
