@@ -2,6 +2,13 @@
 
 These instructions apply to this repository's code changes and reviews.
 
+## Zero-new-cost requirement (owner decision, 2026-10-10)
+- **Budget: 0 VND additional charges.** Do not create Supabase projects or branches, Vercel paid/custom environments, upgrade plans, subscribe to third-party services, or activate paid monitoring/features.
+- Do not initiate any service operation that requires credit-card setup, billing confirmation, or may cause a paid resource to be provisioned.
+- Stay within the existing no-extra-charge CI/platform quotas; avoid excessive Vercel Preview deployments and unnecessary reruns. If free quota cannot be confirmed, stop that operation and report the limitation.
+- Use local mocked data, read-only inspection, existing free CI capacity, and static/browser regression comparisons. Do not access real production Supabase for write, delete, seed, or authenticated CRUD test scenarios.
+- Authenticated end-to-end CRUD, camera/storage testing and real Save-to-Supabase latency must be explicitly reported as **unverified** until a safe truly isolated zero-cost environment is available. Never weaken isolation or imply unrun tests succeeded.
+
 ## Preserve product behavior
 - Do not modify the production branch, deploy production, or run writes/deletes/migrations against live Supabase without explicit approval.
 - Preserve the exact HTML structure, desktop/mobile presentation, CSS cascade, colors, labels, positioning, workflow, PDF format, API contracts, data schemas, authorization, and the four active projects: 62 THL, 68 PĐL, 127 HH, 130 HH.
