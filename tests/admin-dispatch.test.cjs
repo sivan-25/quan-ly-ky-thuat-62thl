@@ -16,7 +16,7 @@ async function main() {
   rows[2].snapshot.tasks = [task(77,{dispatchedByAdmin:true,dispatchedAt:'2026-10-05T09:00:00Z',dueDate:'2026-10-04'})];
   rows[4].snapshot.tasks = [task(500,{dispatchedByAdmin:true})];
   rows[5].snapshot.tasks = [task(600,{dispatchedByAdmin:true})];
-  let fail=false, requests=0, opened=null, edited=null, timer, personal=[];
+  let fail=false, requests=0, opened=null, edited=null, timer, personal=[],pdfCalls=[];
   Object.assign(w, {
     currentAccount:{is_admin:true,buildings:projects},currentBuilding:{id:''},projectOverviewActive:false,projectOpenSeq:0,
     centralSession:{access_token:'ISOLATED-TEST'},today:()=> '2026-10-05',
@@ -39,6 +39,7 @@ async function main() {
     load:()=>rows.find(r=>r.building.id===w.currentBuilding.id)?.snapshot.tasks||[],editTask:id=>{edited=id},
     syncTaskRecord:async(action,item,buildingId)=>{rows.find(r=>r.building.id===buildingId).snapshot.tasks.push(item);return {item}}
   });
+  w.exportGenericEstaPdf=async config=>{pdfCalls.push(config);return true};
   w.console.warn=()=>{};
   w.eval(fs.readFileSync(path.join(root,'command-center.js'),'utf8'));
   await w.estaCommandCenterRefresh();
@@ -48,9 +49,26 @@ async function main() {
   assert.equal(q('#ccAllTaskCount').textContent,'25');
   assert.equal(visible().length,20);
   assert.equal(visible()[0].dataset.building,'127HH');
+  // Select-all reaches every filtered Admin task, including later pages.
+  assert.equal(q('#ccPrintSelected').disabled,true);
+  rows[0].snapshot.tasks[0].imgs=['storage:b-TEST/tasks/test/image.jpg'];
+  rows[0].snapshot.tasks[0].result='Hoàn tất kiểm tra';
+  await w.estaCommandCenterRefresh();
+  q('#ccPdfSelectAll').click();
+  assert.match(q('#ccPrintSelected').textContent,/24/);
+  q('#ccTaskPager [data-page="2"]').click();
+  assert.equal(visible().length,4);
+  assert.equal(visible()[0].querySelector('[data-cc-pdf-select]').checked,true);
+  q('#ccPrintSelected').click();await next();await next();
+  assert.equal(pdfCalls.length,1);
+  assert.equal(pdfCalls[0].rows.length,24);
+  assert.equal(pdfCalls[0].photos.length,1);
+  assert.ok(pdfCalls[0].rows.some(row=>String(row[6]).includes('KQ: Hoàn tất kiểm tra')));
+  assert.ok(pdfCalls[0].rows.every(row=>!String(row[2]).includes('Việc kỹ thuật tự tạo')));
+  assert.equal(q('#ccPrintSelected').disabled,true,'Successful PDF clears selection');
   assert.ok(!q('#ccTaskBody').textContent.includes('Việc kỹ thuật tự tạo'));
   assert.ok(![...q('#ccProjectFilter').options].some(o=>['UPDATE','DEMO'].includes(o.value)));
-  q('#ccTaskPager [data-page="2"]').click();assert.equal(visible().length,4);
+  assert.equal(visible().length,4,'PDF export keeps the current task page');
   select('#ccStatusFilter','Đã hoàn thành');assert.equal(visible().length,1);
   assert.ok(visible()[0].querySelector('.ccStatus.done'));assert.equal(q('#ccTaskBody img'),null);
   select('#ccStatusFilter','overdue');assert.equal(visible().length,1);assert.equal(visible()[0].dataset.taskId,'77');
@@ -96,6 +114,13 @@ async function main() {
   assert.equal(q('#ccAdminTaskCount').textContent,'26');
   assert.equal(q('#ccAllTaskCount').textContent,'27');
   assert.equal(visible()[0].dataset.building,'PERSONAL');
+  visible()[0].querySelector('[data-cc-pdf-select]').click();
+  assert.match(q('#ccPrintSelected').textContent,/1/);
+  q('#ccPrintSelected').click();await next();await next();
+  assert.equal(pdfCalls.length,2);
+  assert.equal(pdfCalls[1].rows.length,1);
+  assert.equal(pdfCalls[1].rows[0][1],'Cá nhân · Văn');
+  assert.ok(pdfCalls[1].title.includes('ADMIN'));
   visible()[0].click();
   assert.equal(q('#ccDispatchHeading').textContent,'Chỉnh sửa công việc thực hiện');
   assert.equal(q('#ccDispatchTitle').value,personal[0].title);
