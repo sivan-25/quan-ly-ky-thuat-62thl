@@ -70,3 +70,34 @@ Hiện bản tối ưu có kiểm chứng được việc giảm truy vấn trù
 **Chưa đủ điều kiện để cam kết không có lỗi khi người dùng thật vận hành.** Cần người dùng xem Preview, sau đó thử lưu, sửa, chụp ảnh, lọc, xuất PDF và chuyển dự án bằng tài khoản thử nghiệm trên thiết bị thật; nên có môi trường Supabase staging trước khi merge.
 
 **Quy tắc phát hành: giữ PR #29 Draft, không merge, không promote/deploy production cho đến khi người dùng đồng ý.**
+
+## 6. Kết quả mở rộng & đánh giá staging (10/10/2026)
+
+### Kiểm tra trực quan bổ sung
+- Mở rộng từ **50 lên 85 trường hợp**, tại 320/390/768/1024/1440 px.
+- Đã bổ sung: Vật tư, Bảo trì, Nhà thầu, Sự cố, Checklist, Tài liệu, Báo cáo.
+- [GitHub Actions #38018643627](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38018643627): **PASS 85/85** so sánh pixel có ngưỡng chống nhiễu rất nhỏ (tối đa 8/255/kênh), hình học DOM và lỗi JavaScript.
+- [Ảnh Before/After của 85 trường hợp và tệp `comparison.json`](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38018643627/artifacts/11657622046).
+- Đây vẫn là **Chromium giả lập và dữ liệu mock**; không chứng minh đủ các chức năng ghi, thiết bị thật hoặc tài khoản thật.
+
+### Benchmark cold-load cục bộ, không đăng nhập
+- [GitHub Actions #38018541883](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38018541883): 7 lượt đo mỗi phiên bản, localhost, tất cả kết nối ngoài bị chặn.
+- Thời gian tải (median, đo wall clock): `main` **82,40 ms**, nhánh thử nghiệm **80,91 ms**.
+- Sự kiện `load`: **82 ms → 80 ms**. Payload local mã nguồn: **1.799.328 B → 1.800.322 B** (tăng 994 B). Số tài nguyên local **23 → 23**, số phần tử DOM **2.855 → 2.855**.
+- Sai khác thời gian rất nhỏ, nằm trong nhiễu đo. Không được quảng cáo đây là cải thiện tốc độ thực tế; mục tiêu của thay đổi nằm ở giảm đọc Supabase trùng nhau **sau khi đăng nhập**.
+
+### Cơ sở dữ liệu và cách ly staging
+- Supabase production hiện có **36 bảng public, đều bật RLS**; 0 branch staging được kết nối.
+- Có một Supabase project khác đang inactive, chưa biết mục đích nên **không sử dụng**.
+- Supabase production ghi nhận **40 migrations đã áp dụng** trong khi GitHub chỉ có **1 file `supabase/migrations/*.sql`**. Cần reconciled schema-only baseline trước khi có thể tạo staging tương đương; không đọc/copy dữ liệu công việc thật.
+- Mã `app.js` hiện hardcode Supabase production URL và publishable key. Chỉ tạo Preview env vars **không đủ** để tách dữ liệu khỏi production.
+- Xem [quy trình staging và nghiệm thu](../docs/ESTA_STAGING_ACCEPTANCE_CHECKLIST.md).
+
+### Những việc còn cần chủ dự án phê duyệt
+1. Chọn tổ chức Supabase, xem chi phí staging project/branch và xác nhận nếu muốn tạo.
+2. Xây dựng đầy đủ schema/staging từ migrations và cấu hình staging endpoint an toàn, không sao chép production records.
+3. Chạy E2E có đăng nhập: ghi/sửa/xóa, ảnh, phân quyền, và PDF bằng dữ liệu staging.
+4. Đo tốc độ thao tác thật, kiểm tra iPhone Safari và Android Chrome.
+5. Sau các bước đó, chủ dự án phê duyệt merge/deploy nếu đạt.
+
+**Production `main` chưa nhận PR này.**
