@@ -18,7 +18,7 @@ const sandbox={
  $:()=>({classList:{contains:()=>true}}), // Admin page is hidden.
  projectSync:(action,payload,buildingId)=>new Promise((resolve,reject)=>pending.push({action,payload,buildingId,resolve,reject})),
  cloudVersionByBuilding:{},
- applyCloudSnapshot:(building,row)=>applied.push({id:building.id,row}),
+ applyCloudSnapshot:(building,row)=>{applied.push({id:building.id,row});sandbox.cloudVersionByBuilding[building.id]=row.updated_at;},
  console:{warn:(...args)=>warnings.push(args)}
 };
 vm.createContext(sandbox);
@@ -39,7 +39,7 @@ vm.runInContext(source.slice(start,end),sandbox);
  assert.equal(pending.length,2);
  pending[1].resolve({snapshot:{updated_at:'v1'}});
  await c;
- assert.equal(applied.length,2,'unchanged version behavior preserved without mutating production data');
+ assert.equal(applied.length,1,'unchanged version should not trigger another application');
 
  // A slow response for the previous project must be ignored after navigation.
  const old=sandbox.pollProjectSnapshot();
@@ -51,11 +51,11 @@ vm.runInContext(source.slice(start,end),sandbox);
  assert.equal(pending[3].buildingId,'130HH');
  pending[2].resolve({snapshot:{updated_at:'wrong-project'}});
  await old;
- assert.equal(applied.length,2,'stale previous-project snapshot was not applied');
+ assert.equal(applied.length,1,'stale previous-project snapshot was not applied');
  pending[3].resolve({snapshot:{updated_at:'v2'}});
  await fresh;
- assert.equal(applied.length,3);
- assert.equal(applied[2].id,'130HH');
+ assert.equal(applied.length,2);
+ assert.equal(applied[1].id,'130HH');
 
  // A rejected request must release the lock for future polling.
  const failed=sandbox.pollProjectSnapshot();
