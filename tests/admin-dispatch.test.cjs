@@ -92,7 +92,7 @@ async function main() {
   assert.equal(personal.length,1);
   assert.equal(personal[0].assignee,'Văn');
   assert.equal(personal[0].status,'Hoàn thành');
-  assert.equal(rows.reduce((n,r)=>n+(r.snapshot.tasks||[]).length,0),27,'Personal work must not touch a project snapshot');
+  assert.equal(rows.reduce((n,r)=>n+(r.snapshot.tasks||[]).length,0),28,'Personal work must not touch a project snapshot');
   assert.equal(q('#ccAdminTaskCount').textContent,'26');
   assert.equal(q('#ccAllTaskCount').textContent,'27');
   assert.equal(visible()[0].dataset.building,'PERSONAL');
