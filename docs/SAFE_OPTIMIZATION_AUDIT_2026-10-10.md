@@ -108,3 +108,25 @@ Only report real-world speed gains after measured before/after timing and visual
 - Added `tests/project-polling.test.cjs` (mock-only; no live Supabase writes), wired into `npm test` to check duplicate polls, project switch, A→B→A return, exceptions/retry, hidden/Admin skip.
 - Initial CI checks (prior to A→B→A extension): [38016027790](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38016027790) passed JavaScript and PDF jobs. The expanded test must also pass before release.
 - **No measured user latency or transfer-size improvement claimed.** This specific change cuts redundant concurrent polling requests, not the 5-second normal refresh cadence.
+
+## Phase 2 — operations data fetching & stock calculation (2026-10-10)
+
+**Runtime changes: `demo-lab.js` only.** No HTML, CSS, database schema, RLS, API contracts, PDFs, or production business records modified.
+
+1. `demoLoad(force=false)` now reuses an in-flight promise for the same project and navigation session, so simultaneous UI callers use one batch of **8 Supabase table reads** instead of issuing duplicate batches. Reads continue fetching the same eight tables and return the same `demoCache` shape.
+2. Explicit `demoLoad(true)` refreshes still initiate a fresh batch, as required after writes to incidents, checklists, equipment, and inventory. Non-forced UI callers join the latest in-flight refresh rather than reading stale cached values during that refresh.
+3. A monotonically increasing request ID blocks an older batch from overwriting the cache after a newer refresh or a project switch. The new promise map is cleaned after completion or handled failures.
+4. `demoStock(m)` now accumulates matching transactions with a single loop, avoiding an intermediate array produced by `filter()`. Opening stock, incoming/outgoing arithmetic and ID comparisons remain unchanged.
+
+**Verification**
+
+- Isolated test `tests/project-operations-loading.test.cjs` verifies concurrent loads, fresh/forced reads, cached results, A→B→A navigation, stale response prevention, retry on a failed query, inactive app checks, and inventory arithmetic.
+- [GitHub Actions run #38016644457](https://github.com/sivan-25/quan-ly-ky-thuat-62thl/actions/runs/38016644457): both JS and Python/PDF regression jobs **passed**.
+- GitHub/Vercel build of preview from `7f5c335397f1c5080df96f05ddbb694064a924f1`: **READY**. The production `main` branch remains untouched.
+- Controlled fixture result: two simultaneous ordinary initial calls cause **8** table requests rather than **16**; a forced load still performs all **8** tables. This is a count from mocked tests, **not a measured real-network benchmark**.
+
+**Open release gates**
+
+- Browser screenshot visual comparison on actual mobile & desktop breakpoints, and authenticated operations smoke checks against isolated nonproduction data are still needed.
+- Actual before/after network transfer, navigation, input responsiveness and save latency are not measured. Avoid claiming a percentage speedup.
+- No merge or release to production until the user's explicit approval.
