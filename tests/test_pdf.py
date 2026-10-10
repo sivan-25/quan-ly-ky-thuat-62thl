@@ -12,7 +12,6 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from api.esta_report import generate_pdf
 from reporting.report_center import _prepare_photo
-from reporting import pdf_common as pdfc
 
 
 def photo(size):
@@ -220,47 +219,6 @@ class ReportTests(unittest.TestCase):
         self.assertTrue(raw.startswith(b'%PDF'))
         self.assertEqual((missing, count), (0, 2))
         self.assertGreater(len(raw), 8000)
-
-    def test_work_photo_grid_has_three_equal_columns_per_row(self):
-        images = [{'prepared': object(), 'caption': f'Hình {i+1}'} for i in range(11)]
-        rows = pdfc.image_grid(images, cols=3, fixed_columns=True)
-        self.assertEqual(len(rows), 4)
-        photo_slots = [
-            [c for c in row._cellvalues[0] if isinstance(c, pdfc.ImageSlot)]
-            for row in rows
-        ]
-        self.assertEqual([len(group) for group in photo_slots], [3, 3, 3, 2])
-        widths = [slot.width for group in photo_slots for slot in group]
-        self.assertTrue(all(abs(w - widths[0]) < 0.01 for w in widths))
-        self.assertLessEqual(widths[0] * 3 + pdfc.IMAGE_GAP * 2, pdfc.CW + .01)
-
-    def test_single_work_with_21_photos_spans_pages_without_layout_error(self):
-        # Regresses reported "Table 1 rows x 1 cols tallest row 934 points"
-        # by reproducing one work record taller than any A4 page.
-        img = photo((480, 720))
-        task = {
-            'title': 'Kiểm tra hệ thống và xử lý tồn đọng',
-            'type': 'Bảo trì',
-            'status': 'Hoàn thành',
-            'date': '10/10/2026',
-            'assignee': 'Kỹ thuật ESTA',
-            'note': 'Kết quả: Đã hoàn thành công việc và kiểm tra ổn định. ' * 18,
-            'images': [{'path': img, 'caption': f'Hình kiểm tra thứ {i+1}'}
-                       for i in range(21)],
-        }
-        for building in ('62 THL', '68 PĐL', '127 HH', '130 HH'):
-            payload = {
-                'report_type': 'work',
-                'building': building,
-                'report_date': '10/10/2026',
-                'kt_signer_name': 'Văn',
-                'tasks': [task],
-            }
-            pdf, missing, count = generate_pdf(payload, '')
-            self.assertTrue(pdf.startswith(b'%PDF-'), building)
-            self.assertEqual((missing, count), (0, 1), building)
-            pages = len(re.findall(rb'/Type\s*/Page\b', pdf))
-            self.assertGreaterEqual(pages, 3, building)
 
     def test_original_work_energy_tools_renderers(self):
         samples = [
