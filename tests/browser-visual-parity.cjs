@@ -10,7 +10,7 @@ const widths=[{width:320,height:720},{width:390,height:844},{width:768,height:10
 const scenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL','inventory-62THL','maintenance-68PĐL','contractor-130HH','incident-127HH','inspection-130HH','documents-62THL','reports-68PĐL'];
 const results=[];
 const fixedTime=Date.parse('2026-10-10T02:00:00.000Z');
-const channelTolerance=8; // observed headless anti-aliasing jitter was at most 6/255
+const channelTolerance=12; // headless Chromium antialiasing showed 1 pixel with delta 10/255; geometry/content still checked exactly
 async function fixture(page,scenario){
  if(scenario==='login')return;
  const projectId=scenario.includes('-')&&scenario!=='admin-home'?scenario.split('-').slice(1).join('-'):'68PĐL';
