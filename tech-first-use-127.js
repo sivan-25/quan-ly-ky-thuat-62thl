@@ -9,15 +9,22 @@ if(!work)return;
 let mineFilter=false;
 // Legacy work styles can override new display CSS. Update only the card in the list,
 // not the same card when it is moved to the editing drawer.
+// Store the previous inline styles so switching from 127HH back to any other
+// project restores exactly what the original application had.
+let tech127GridBackup=null,tech127HiddenCard=null,tech127CardDisplay=null;
+function tech127StyleSnapshot(el,property){
+ return {el,property,value:el.style.getPropertyValue(property),priority:el.style.getPropertyPriority(property)};
+}
+function tech127RestoreStyle(saved){
+ if(saved.value)saved.el.style.setProperty(saved.property,saved.value,saved.priority);
+ else saved.el.style.removeProperty(saved.property);
+}
 function syncTechCreateGrid(){
  const form=$tech("#taskForm");
  if(!form)return;
  const active=isTech()&&work.classList.contains("techCreating")&&!!form.closest("#workPage")&&
   window.matchMedia("(min-width:761px)").matches;
- for(const [property,value] of [["grid-template-columns","repeat(3,minmax(0,1fr))"],["grid-auto-flow","row"]]){
-  if(active)form.style.setProperty(property,value,"important");
-  else form.style.removeProperty(property);
- }
+ if(!active&&!tech127GridBackup)return; // untouched on all other projects
  const fields=[
   [".workDate","1 / span 1"],[".workContent","2 / span 2"],
   [".workType","1 / span 1"],[".workStatus","2 / span 1"],
@@ -25,25 +32,38 @@ function syncTechCreateGrid(){
   [".workNote","1 / span 2"],[".workImage","3 / span 1"],
   [".workFormActions","1 / -1"]
  ];
+ const overrides=[
+  [form,"grid-template-columns","repeat(3,minmax(0,1fr))"],
+  [form,"grid-auto-flow","row"]
+ ];
  for(const [selector,column] of fields){
   const el=form.querySelector(selector);
-  if(!el)continue;
-  if(active){
-   el.style.setProperty("grid-column",column,"important");
-   el.style.setProperty("grid-row","auto","important");
-  }else{
-   el.style.removeProperty("grid-column");
-   el.style.removeProperty("grid-row");
-  }
+  if(el){overrides.push([el,"grid-column",column],[el,"grid-row","auto"])}
+ }
+ if(active){
+  if(!tech127GridBackup)tech127GridBackup=overrides.map(([el,property])=>tech127StyleSnapshot(el,property));
+  for(const [el,property,value] of overrides)el.style.setProperty(property,value,"important");
+ }else{
+  for(const saved of tech127GridBackup)tech127RestoreStyle(saved);
+  tech127GridBackup=null;
  }
 }
 function syncTechFormVisibility(){
  syncTechCreateGrid();
  const card=work.querySelector(":scope > .workEntryCard");
- if(!card)return;
- if(isTech()&&!work.classList.contains("techCreating"))
+ const hide=!!card&&isTech()&&!work.classList.contains("techCreating");
+ if(hide){
+  if(tech127HiddenCard!==card){
+   if(tech127HiddenCard&&tech127CardDisplay)tech127RestoreStyle(tech127CardDisplay);
+   tech127HiddenCard=card;
+   tech127CardDisplay=tech127StyleSnapshot(card,"display");
+  }
   card.style.setProperty("display","none","important");
- else card.style.removeProperty("display");
+ }else if(tech127HiddenCard){
+  if(tech127CardDisplay)tech127RestoreStyle(tech127CardDisplay);
+  tech127HiddenCard=null;
+  tech127CardDisplay=null;
+ }
 }
 function ownName(){
  const account=currentAccount||{};
