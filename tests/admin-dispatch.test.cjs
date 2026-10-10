@@ -68,7 +68,7 @@ async function main() {
   assert.equal(q('#ccPrintSelected').disabled,true,'Successful PDF clears selection');
   assert.ok(!q('#ccTaskBody').textContent.includes('Việc kỹ thuật tự tạo'));
   assert.ok(![...q('#ccProjectFilter').options].some(o=>['UPDATE','DEMO'].includes(o.value)));
-  q('#ccTaskPager [data-page="2"]').click();assert.equal(visible().length,4);
+  assert.equal(visible().length,4,'PDF export keeps the current task page');
   select('#ccStatusFilter','Đã hoàn thành');assert.equal(visible().length,1);
   assert.ok(visible()[0].querySelector('.ccStatus.done'));assert.equal(q('#ccTaskBody img'),null);
   select('#ccStatusFilter','overdue');assert.equal(visible().length,1);assert.equal(visible()[0].dataset.taskId,'77');
