@@ -29,7 +29,8 @@ function demoContractor(id){return demoCache.contractors.find(x=>String(x.id)===
 function demoMaterial(id){return demoCache.materials.find(x=>String(x.id)===String(id))}
 function demoStock(m){
  let q=Number(m?.opening_qty||0);
- demoCache.materialTx.filter(x=>String(x.material_id)===String(m?.id)).forEach(x=>q+=(x.tx_type==="in"?1:-1)*Number(x.qty||0));
+ const materialId=String(m?.id);
+ for(const x of demoCache.materialTx)if(String(x.material_id)===materialId)q+=(x.tx_type==="in"?1:-1)*Number(x.qty||0);
  return q;
 }
 // Reuse an ongoing 8-table read for the same project and navigation session.
