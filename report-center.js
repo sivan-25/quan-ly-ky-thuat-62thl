@@ -172,7 +172,7 @@
     const payload = { report_type: "operations", building: buildingName, building_id: buildingId, report_date: M.date(M.localDay()), prepared_by: author, period_label: model.period, range: model.range, sections: model.sections, health: model.health, schedule: model.schedule, notes: model.notes, energy_totals: model.energyTotals, photos: q("#rcIncludePhotos").checked ? model.photos : [], photo_layout: q("#rcPhotoLayout").value, counts: { records: model.count, tasks: model.taskCount, done: model.done }, ...(window.pdfSignaturePayload ? window.pdfSignaturePayload(signer) : {}) };
     state.busy = true; buttons(); message("Đang tạo PDF gồm " + model.sections.length + " hạng mục và " + payload.photos.length + " ảnh…");
     try {
-      const res = await centralAuthFetch("/api/esta_report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const res = await centralAuthFetch("/api/esta_report", { method: "POST", headers: { "Content-Type": "application/json" }, body: await estaPdfRequestBody(payload) });
       // Use the same shared PDF response verifier as every other ESTA
       // exporter. It rejects Vercel sign-in HTML, PDF error JSON, empty blobs,
       // and invalid %PDF headers instead of downloading broken files.
