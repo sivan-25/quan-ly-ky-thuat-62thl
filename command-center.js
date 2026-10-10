@@ -335,7 +335,16 @@ m.querySelector("#ccDispatchCameraBtn").addEventListener("click",()=>openDispatc
 function updateDispatchMode(){
  const m=$c("#ccDispatchModal");if(!m||!m.querySelector("#ccDispatchPersonal"))return;
  const personal=m.querySelector("#ccDispatchPersonal").checked,assignee=m.querySelector("#ccDispatchAssignee");
- if(personal&&!m.classList.contains("ccPersonalMode"))previousProjectAssignee=assignee.value||"Kỹ thuật dự án";
+ if(personal&&!m.classList.contains("ccPersonalMode")){
+  previousProjectAssignee=assignee.value||"Kỹ thuật dự án";
+  if(!personalEditId){
+   // A daily work log starts and ends on the same day unless changed.
+   const start=m.querySelector("#ccDispatchStart"),due=m.querySelector("#ccDispatchDue");
+   const initial=new Date(todayC()+"T00:00:00");initial.setDate(initial.getDate()+2);
+   if(due.value===initial.toLocaleDateString("en-CA"))due.value=start.value;
+   m.querySelector("#ccDispatchPersonalStatus").value="Hoàn thành";
+  }
+ }
  if(!personal&&m.classList.contains("ccPersonalMode"))assignee.value=previousProjectAssignee;
  m.classList.toggle("ccPersonalMode",personal);
  m.querySelector("#ccDispatchHeading").textContent=personal?(personalEditId?"Chỉnh sửa công việc thực hiện":"Ghi nhận công việc thực hiện"):"Giao công việc xuống dự án";
