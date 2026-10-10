@@ -238,26 +238,35 @@ def _box(rows):
 
 
 def task_card(idx,t,per_row=3):
+    """Keep a compact ESTA task header but paginate long photo collections.
+
+    A single KeepTogether containing the complete task and all its images
+    exceeds the printable A4 frame when one task has many photos. Each photo
+    row is an independent, unsplittable flowable (up to three photos); ReportLab
+    may continue subsequent rows on the following page without dropping data.
+    """
     inner_w=CW-2
     head,meta=_card_head_meta(idx,t,inner_w)
+    header=_box([head,meta])
     imgs=_norm_images(t)
-    rows=[head,meta]
-    if imgs:
-        grid=pdfc.image_grid(
-            imgs,
-            available_width=inner_w-12,
-            cols=3,
-            cell_height=pdfc.IMAGE_CELL_HEIGHT,
-            gap=pdfc.IMAGE_GAP
-        )
-        if grid:
-            image_holder=Table([[g] for g in grid],colWidths=[inner_w])
-            image_holder.setStyle(TableStyle([
-                ("LEFTPADDING",(0,0),(-1,-1),5),("RIGHTPADDING",(0,0),(-1,-1),5),
-                ("TOPPADDING",(0,0),(-1,-1),2),("BOTTOMPADDING",(0,0),(-1,-1),2)
-            ]))
-            rows.append(image_holder)
-    return [KeepTogether([_box(rows),Spacer(1,4)])]
+    if not imgs:
+        return [header,Spacer(1,4)]
+    grid=pdfc.image_grid(
+        imgs,
+        available_width=inner_w-12,
+        cols=3,
+        cell_height=pdfc.IMAGE_CELL_HEIGHT,
+        gap=pdfc.IMAGE_GAP
+    )
+    if not grid:
+        return [header,Spacer(1,4)]
+    # Keep the title and first three photos together where possible; never
+    # keep multiple photo rows in one giant table or KeepTogether block.
+    story=[KeepTogether([header,Spacer(1,3),grid[0]])]
+    for row in grid[1:]:
+        story.extend([Spacer(1,4),row])
+    story.append(Spacer(1,6))
+    return story
 
 
 def summary_line(tasks):
