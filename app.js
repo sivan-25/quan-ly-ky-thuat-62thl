@@ -694,13 +694,22 @@ async function loadProjectSnapshot(building){
    return false;
  }
 }
+// Coalesce only overlapping polls of the same project; never block a different project.
+const projectSnapshotPollInFlight=new Set();
 async function pollProjectSnapshot(){
- if(!centralSession?.access_token||!currentBuilding?.id||document.hidden)return;
+ const buildingId=currentBuilding?.id;
+ if(!centralSession?.access_token||!buildingId||document.hidden)return;
  if($("#adminPage")&&!$("#adminPage").classList.contains("hide"))return;
+ const requestSeq=projectOpenSeq,pollKey=buildingId+":"+requestSeq;
+ if(projectSnapshotPollInFlight.has(pollKey))return;
+ projectSnapshotPollInFlight.add(pollKey);
  try{
-   const r=await projectSync("get"),row=r?.snapshot;
-   if(row&&row.updated_at&&row.updated_at!==cloudVersionByBuilding[currentBuilding.id])applyCloudSnapshot(currentBuilding,row);
+   const r=await projectSync("get",{},buildingId),row=r?.snapshot;
+   // A delayed response from the previous project must never update this one.
+   if(requestSeq!==projectOpenSeq||currentBuilding?.id!==buildingId)return;
+   if(row&&row.updated_at&&row.updated_at!==cloudVersionByBuilding[buildingId])applyCloudSnapshot(currentBuilding,row);
  }catch(e){console.warn("Cloud refresh failed",e)}
+ finally{projectSnapshotPollInFlight.delete(pollKey)}
 }
 setInterval(pollProjectSnapshot,5000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)pollProjectSnapshot()});
