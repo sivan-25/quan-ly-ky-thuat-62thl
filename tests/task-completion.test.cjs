@@ -13,9 +13,9 @@ const submit=demo.slice(demo.indexOf('const originalTaskSubmit='),demo.indexOf('
  await page.addScriptTag({content:`
  var $=s=>document.querySelector(s),currentBuilding={id:'62THL'},demoCache={incidents:[],materials:[]};
  var demoIs=()=>true,demoLoad=()=>Promise.resolve(),demoPopulateWorkOptions=()=>{},demoResetWorkLinks=()=>{},demoUpdateLinkSummary=()=>{};
- var calls=[],messages=[],rows=[],taskSelectedPeople=['KT Test'],pendingTaskFiles=[],removedTaskImageRefs=[],existingTaskImages=[];
+ var centralSession={access_token:'MOCKED-SESSION'},calls=[],messages=[],rows=[],taskSelectedPeople=['KT Test'],pendingTaskFiles=[],removedTaskImageRefs=[],existingTaskImages=[];
  var canProjectEdit=()=>true,toast=s=>messages.push(s),taskStorageKeyFor=id=>'fixture_'+id,load=()=>rows,taskDispatchMetadata=x=>({}),
- syncTaskRecord=async(a,obj,id)=>{calls.push({a,obj,id});return {};},resetForm=()=>{},render=()=>{},renderHomeDashboard=()=>{},demoRenderHomeOps=()=>{},
+ syncTaskRecord=async(a,obj,id)=>{calls.push({a,obj,id});return {updated_at:'fixture-server-ack'};},resetForm=()=>{},render=()=>{},renderHomeDashboard=()=>{},demoRenderHomeOps=()=>{},
  demoSyncContractorTask=async()=>{},demoFinalizeLinks=async()=>{};
  var demoReadWorkLinks=()=>({result:$('#demoTaskResult').value.trim(),cause:$('#demoTaskCause').value.trim(),materials:[]});
  `+policy+panel+submit+`;demoEnsureWorkPanel();`});
@@ -43,6 +43,31 @@ const submit=demo.slice(demo.indexOf('const originalTaskSubmit='),demo.indexOf('
    assert.equal(out.valid,true);assert.equal(out.noteRequired,false);assert.equal(out.saved.id,project);assert.equal(out.saved.obj.n,'');assert.ok(out.saved.obj.result);
    for(const key of ['blocked','inProgress','copied','preserved','causeHidden','causeShown'])assert.equal(out[key],true,key);
   }
+ }
+ {
+  const offline=await page.evaluate(async()=>{
+    currentBuilding.id='130HH';centralSession=null;calls=[];messages=[];
+    $('#date').value='2026-10-10';$('#content').value='Không có mạng';
+    $('#status').value='Đang thực hiện';$('#demoTaskResult').value='';
+    await $('#taskForm').onsubmit({preventDefault(){}});
+    return {remoteCalls:calls.length,localCount:JSON.parse(localStorage.getItem('fixture_130HH')||'[]').length,
+      warned:messages.some(m=>m.includes('Chưa kết nối máy chủ')),contentPreserved:$('#content').value==='Không có mạng'};
+  });
+  assert.deepEqual(offline,{remoteCalls:0,localCount:0,warned:true,contentPreserved:true});
+  const retry=await page.evaluate(async()=>{
+    currentBuilding.id='127HH';centralSession={access_token:'MOCK'};
+    $('#date').value='2026-10-10';$('#content').value='Thử lại không trùng';
+    $('#status').value='Đang thực hiện';$('#demoTaskResult').value='';
+    const oldSync=syncTaskRecord;let calls=[];
+    syncTaskRecord=async(action,obj,b)=>{calls.push(obj.id);if(calls.length===1)throw Error('Kết nối gián đoạn');return {updated_at:'ack'};};
+    await $('#taskForm').onsubmit({preventDefault(){}});
+    const retained=$('#content').value==='Thử lại không trùng';
+    await $('#taskForm').onsubmit({preventDefault(){}});
+    syncTaskRecord=oldSync;
+    return {sameId:calls.length===2&&calls[0]===calls[1],retained};
+  });
+  assert.equal(retry.sameId,true,'same ID reused after failed upsert');
+  assert.equal(retry.retained,true,'draft preserved after failed request');
  }
  const legacy=await page.evaluate(()=>{currentBuilding.id='DEMO';$('#status').value='Đã hoàn thành';$('#note').value='';demoSyncCompletionFields();return $('#note').required;});
  assert.equal(legacy,true);
