@@ -18,7 +18,9 @@ async function review(width){
   await page.goto('http://127.0.0.1:8766/',{waitUntil:'load'});
   await page.evaluate(()=>window.enterAccount({username:'kt-test',display_name:'Kỹ thuật A',is_admin:false,buildings:[
    {id:'127HH',name:'127 Hồng Hà',role:'editor'},
-   {id:'130HH',name:'130 Hồng Hà',role:'editor'}
+   {id:'130HH',name:'130 Hồng Hà',role:'editor'},
+   {id:'62THL',name:'62 Trần Huy Liệu',role:'editor'},
+   {id:'68PĐL',name:'68 Phan Đăng Lưu',role:'editor'}
   ]},null));
   await page.waitForTimeout(200);
   assert.equal(await page.locator('#navAdmin').isVisible(),false,'technical role has no Admin menu');
@@ -144,14 +146,26 @@ async function review(width){
   assert.equal(after.count,before,'no local fake-success save without server ACK');
   assert.equal(after.text,'Kiểm tra máy bơm kỹ thuật','form preserved for offline retry');
   await page.screenshot({path:out+'/03-unsynced-'+width+'.png',animations:'disabled'});
-  if(mobile){
-   await page.locator('#technicalProjectSelect').selectOption('130HH');
-   await page.waitForTimeout(150);
-   assert.equal(await page.evaluate(()=>currentBuilding.id),'130HH','technical project switch works');
-   assert.equal(await page.evaluate(()=>document.body.classList.contains('techFirstUse')),false,'new UX disabled outside 127HH');
+  for(const otherId of ['130HH','62THL','68PĐL']){
+   await page.locator('#technicalProjectSelect').selectOption(otherId);
+   await page.waitForTimeout(180);
+   assert.equal(await page.evaluate(()=>currentBuilding.id),otherId,'project switching '+otherId);
    await page.locator('#navWork').evaluate(el=>el.click());
-   assert.equal(await page.locator('#techWorkShortcuts').isVisible(),false,'130HH never shows 127 shortcuts');
+   assert.equal(await page.evaluate(()=>document.body.classList.contains('techFirstUse')),false,otherId+' must not activate 127 UX');
+   assert.equal(await page.locator('#techWorkShortcuts').isVisible(),false,otherId+' must not show 127 toolbar');
+   assert.equal(await page.locator('#workPage > .workEntryCard').isVisible(),true,otherId+' keeps original work form');
+   assert.equal(await page.evaluate(()=>document.querySelector('#taskForm').style.getPropertyValue('grid-template-columns')),'',otherId+' keeps original form grid');
   }
+  await page.locator('#technicalProjectSelect').selectOption('127HH');
+  await page.waitForTimeout(180);
+  await page.locator('#navWork').evaluate(el=>el.click());
+  assert.equal(await page.locator('#techWorkShortcuts').isVisible(),true,'127 UX returns after project switch');
+  await page.evaluate(()=>window.enterAccount({username:'mock-admin',is_admin:true,buildings:[
+   {id:'127HH',name:'127 Hồng Hà',role:'admin'}
+  ]},null));
+  await page.waitForTimeout(170);
+  assert.equal(await page.evaluate(()=>document.body.classList.contains('techFirstUse')),false,'Admin must not receive technician styles');
+  assert.equal(await page.locator('#techWorkShortcuts').isVisible(),false,'Admin must not receive project-127 shortcuts');
   results.push({width,checks:['Admin hidden','guide visible','task list before form','create work button','auto-select current performer','completion result near status','no false save offline','form retained','project switch on mobile'],after,errorCount:errors.length,errors});
   assert.deepEqual(errors,[],'no uncaught browser JS errors');
  }finally{await context.close();await browser.close();}
@@ -159,5 +173,5 @@ async function review(width){
 (async()=>{
  for(const width of [320,390,768,1024,1440])await review(width);
  fs.writeFileSync(out+'/results.json',JSON.stringify(results,null,2));
- console.log('PASS technician UX smoke: 2 viewports; '+JSON.stringify(results.map(x=>({width:x.width,after:x.after,errorCount:x.errorCount}))));
+ console.log('PASS 127HH-only technician UX smoke: 5 viewports; '+JSON.stringify(results.map(x=>({width:x.width,after:x.after,errorCount:x.errorCount}))));
 })().catch(e=>{console.error(e);process.exitCode=1});
