@@ -8,7 +8,36 @@ if(!work)return;
 let mineFilter=false;
 // Legacy work styles can override new display CSS. Update only the card in the list,
 // not the same card when it is moved to the editing drawer.
+function syncTechCreateGrid(){
+ const form=$tech("#taskForm");
+ if(!form)return;
+ const active=isTech()&&work.classList.contains("techCreating")&&!!form.closest("#workPage")&&
+  window.matchMedia("(min-width:761px)").matches;
+ for(const [property,value] of [["grid-template-columns","repeat(3,minmax(0,1fr))"],["grid-auto-flow","row"]]){
+  if(active)form.style.setProperty(property,value,"important");
+  else form.style.removeProperty(property);
+ }
+ const fields=[
+  [".workDate","1 / span 1"],[".workContent","2 / span 2"],
+  [".workType","1 / span 1"],[".workStatus","2 / span 1"],
+  [".workPerformer","3 / span 1"],["#techInlineResult","1 / -1"],
+  [".workNote","1 / span 2"],[".workImage","3 / span 1"],
+  [".workFormActions","1 / -1"]
+ ];
+ for(const [selector,column] of fields){
+  const el=form.querySelector(selector);
+  if(!el)continue;
+  if(active){
+   el.style.setProperty("grid-column",column,"important");
+   el.style.setProperty("grid-row","auto","important");
+  }else{
+   el.style.removeProperty("grid-column");
+   el.style.removeProperty("grid-row");
+  }
+ }
+}
 function syncTechFormVisibility(){
+ syncTechCreateGrid();
  const card=work.querySelector(":scope > .workEntryCard");
  if(!card)return;
  if(isTech()&&!work.classList.contains("techCreating"))
@@ -144,6 +173,7 @@ function refreshResult(){
  holder.classList.toggle("hide",!done||mobile);
  // The mobile completion field already exists in app.js and is kept unchanged.
  if(!mobile&&resultField)resultField.classList.remove("hide");
+ syncTechCreateGrid();
  if(resultField){
   resultField.querySelector("#demoTaskResultLabel")?.setAttribute("title","Bắt buộc khi chọn Đã hoàn thành");
  }
