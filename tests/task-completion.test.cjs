@@ -8,6 +8,8 @@ const submit=demo.slice(demo.indexOf('const originalTaskSubmit='),demo.indexOf('
  const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<link\b[^>]*>/gi,'');
  const dom=new JSDOM(html,{url:'https://fixture.test',runScripts:'outside-only'});
  dom.window.HTMLElement.prototype.scrollIntoView=function(){};
+ // JSDOM does not implement matchMedia; this form fixture runs at desktop width.
+ dom.window.matchMedia=query=>({media:String(query),matches:false});
  const page={addScriptTag:async({content})=>dom.window.eval(content),evaluate:async(fn,arg)=>dom.window.eval('('+fn.toString()+')('+JSON.stringify(arg)+')')};
  await page.addScriptTag({content:`
  var $=s=>document.querySelector(s),currentBuilding={id:'62THL'},demoCache={incidents:[],materials:[]};
