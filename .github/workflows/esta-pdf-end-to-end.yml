@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-      - run: python -m pip install -r requirements.txt pypdf==5.9.0
+      - run: python -m pip install -r requirements.txt pypdf==5.9.0 pymupdf==1.26.4
       - name: Create real PDFs and exercise local HTTP POST
         env:
           ESTA_PDF_EVIDENCE: '1'
@@ -29,11 +29,18 @@ jobs:
       - name: Render representative PDFs into screenshots
         run: |
           mkdir -p pdf-evidence/rendered
-          for name in esta-work-4-photos esta-work-12-photos esta-work-24-photos esta-generic-admin esta-operations esta-http-verified-7-photos; do
-            test -f "pdf-evidence/${name}.pdf"
-            pdftoppm -f 1 -singlefile -scale-to 1100 -png "pdf-evidence/${name}.pdf" "pdf-evidence/rendered/${name}-first"
-            pdfinfo "pdf-evidence/${name}.pdf" | grep -E '^Pages:|^Page size:'
-          done
+          python - <<'PY'
+          import fitz
+          from pathlib import Path
+          for name in ["esta-work-4-photos","esta-work-12-photos","esta-work-24-photos",
+                       "esta-generic-admin","esta-operations","esta-http-verified-7-photos"]:
+              source=Path("pdf-evidence")/(name+".pdf")
+              doc=fitz.open(source)
+              assert len(doc)>0, name
+              image=doc[0].get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False)
+              image.save(str(Path("pdf-evidence/rendered")/(name+"-first.png")))
+              print("RENDERED_PDF",name,"pages",len(doc))
+          PY
           test -s pdf-evidence/rendered/esta-work-24-photos-first.png
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
