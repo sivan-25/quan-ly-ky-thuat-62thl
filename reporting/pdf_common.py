@@ -400,8 +400,13 @@ def image_grid(
     cols: int = IMAGE_COLS,
     cell_height: float = IMAGE_CELL_HEIGHT,
     gap: float = IMAGE_GAP,
+    fixed_columns: bool = False,
 ) -> list[Table]:
-    """Return compact rows. Row width adapts to 1, 2 or 3 actual images."""
+    """Return page-safe compact image rows, never more than three per row.
+
+    Fixed columns keep the same image width on partially filled final rows;
+    each returned Table remains an independent flowable for page breaks.
+    """
     valid = [x for x in images if x and x.get("prepared")]
     if not valid:
         return []
@@ -411,7 +416,8 @@ def image_grid(
     for offset in range(0, len(valid), cols):
         group = valid[offset : offset + cols]
         n = len(group)
-        cell_width = (available_width - gap * (n - 1)) / n
+        slots = cols if fixed_columns else n
+        cell_width = (available_width - gap * (slots - 1)) / slots
         cells: list[Any] = []
         widths: list[float] = []
         for i, item in enumerate(group):
