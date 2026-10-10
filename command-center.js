@@ -1,7 +1,7 @@
 (()=>{
 "use strict";
 const ROOT_ID="estaCommandCenter";
-let rows=[],activity=[],loading=false,lastUpdated="",dataAccount=null,taskPage=1,alertPage=1,activityPage=1;
+let rows=[],activity=[],loading=false,lastUpdated="",lastFetchedAt=0,dataAccount=null,taskPage=1,alertPage=1,activityPage=1;
 let taskScope="admin";
 const pdfSelectedKeys=new Set();
 let pdfFilteredTasks=[],pdfExportBusy=false;
@@ -85,7 +85,7 @@ function ensureScopeBar(home){
  return bar;
 }
 function ensureRoot(){
- if(dataAccount&&dataAccount!==currentAccount){rows=[];activity=[];personalTasks=[];lastUpdated="";dataAccount=null;taskPage=alertPage=activityPage=1;taskScope="admin";pdfSelectedKeys.clear();pdfFilteredTasks=[]}
+ if(dataAccount&&dataAccount!==currentAccount){rows=[];activity=[];personalTasks=[];lastUpdated="";lastFetchedAt=0;dataAccount=null;taskPage=alertPage=activityPage=1;taskScope="admin";pdfSelectedKeys.clear();pdfFilteredTasks=[]}
  const home=$c("#homePage");if(!home)return null;
  ensureScopeBar(home);
  ensureAdminHeader(globalScope());
@@ -137,9 +137,27 @@ function taskRows(){
  personalTasks.forEach(t=>out.push({id:t.id,d:t.start_date,c:t.title,t:t.task_type,s:t.status,n:t.notes,a:t.assignee,imgs:t.image_paths||[],priority:t.priority,dueDate:t.end_date,dispatchedAt:t.created_at,dispatchedByAdmin:true,personalWork:true,_buildingId:"PERSONAL",_buildingName:"Công việc thực hiện"}));
  return out;
 }
-function stockOf(row,m){
- let q=Number(m?.opening_qty||0);const start=String(m?.tracking_start_date||m?.created_at||todayC()).slice(0,10),end=todayC();
- (row?.ops?.inventory_material_transactions||[]).filter(x=>String(x.material_id)===String(m?.id)).forEach(x=>{const date=String(x.tx_date||"").slice(0,10);if(date&&date>=start&&date<=end)q+=(x.tx_type==="in"?1:-1)*Number(x.qty||0)});return q;
+// Group transactions once per project dashboard render. Retain the same
+// per-material date window and arithmetic; duplicate IDs still work.
+function adminMaterialTransactionIndex(row){
+ const grouped=new Map();
+ for(const tx of row?.ops?.inventory_material_transactions||[]){
+  const key=String(tx.material_id);
+  if(!grouped.has(key))grouped.set(key,[]);
+  grouped.get(key).push(tx);
+ }
+ return grouped;
+}
+function stockOf(row,m,txByMaterial=null){
+ let q=Number(m?.opening_qty||0);
+ const materialId=String(m?.id),start=String(m?.tracking_start_date||m?.created_at||todayC()).slice(0,10),end=todayC();
+ const source=txByMaterial?txByMaterial.get(materialId)||[]:row?.ops?.inventory_material_transactions||[];
+ for(const x of source){
+  if(!txByMaterial&&String(x.material_id)!==materialId)continue;
+  const date=String(x.tx_date||"").slice(0,10);
+  if(date&&date>=start&&date<=end)q+=(x.tx_type==="in"?1:-1)*Number(x.qty||0);
+ }
+ return q;
 }
 function alerts(){
  const out=[],td=todayC(),d7=new Date(td+"T00:00:00");d7.setDate(d7.getDate()+7);const soon=d7.toLocaleDateString("en-CA");
@@ -149,7 +167,10 @@ function alerts(){
   (r.ops?.incidents||[]).forEach(x=>{if(x.status!=="Đã đóng"&&(x.severity==="Khẩn cấp"||x.severity==="Cao"))out.push({sev:x.severity==="Khẩn cấp"?3:2,bid,bn,module:"incident",refId:x.id,title:"Sự cố "+x.severity.toLowerCase(),detail:(x.incident_code||"Sự cố")+" · "+(x.area||x.symptom||""),tag:x.status||"Đang mở",date:String(x.detected_at||"").slice(0,10)})});
   (r.ops?.inspections||[]).forEach(x=>{if(x.result_status!=="Đạt")out.push({sev:(x.result_status==="Không đạt"||x.result_status==="Cần khắc phục")?2:1,bid,bn,module:"inspection",refId:x.id,title:"Checklist "+String(x.result_status||"cần chú ý").toLowerCase(),detail:(x.inspection_code||"")+" · "+(x.template_name||"Kiểm tra định kỳ"),tag:x.result_status||"Cần chú ý",date:x.inspection_date||""})});
   (r.ops?.maintenance_assets||[]).filter(x=>x.status!=="Ngừng sử dụng").forEach(x=>{const due=String(x.next_due_date||"");if(x.status==="Hỏng")out.push({sev:3,bid,bn,module:"maintenance",refId:x.id,title:"Thiết bị hỏng",detail:(x.code||"")+" · "+(x.name||"Thiết bị"),tag:"Hỏng",date:due});else if(due&&due<td)out.push({sev:3,bid,bn,module:"maintenance",refId:x.id,title:"Bảo trì quá hạn",detail:(x.code||"")+" · "+(x.name||"Thiết bị"),tag:fmtC(due),date:due});else if(due&&due<=soon)out.push({sev:1,bid,bn,module:"maintenance",refId:x.id,title:"Sắp đến hạn bảo trì",detail:(x.code||"")+" · "+(x.name||"Thiết bị"),tag:fmtC(due),date:due})});
-  (r.ops?.inventory_materials||[]).forEach(m=>{const min=Number(m.min_qty||0);if(min<=0)return;const qty=stockOf(r,m);if(qty<=min)out.push({sev:qty<=0?3:2,bid,bn,module:"inventory",refId:m.id,title:qty<=0?"Vật tư đã hết":"Vật tư tồn thấp",detail:(m.name||"Vật tư")+" · còn "+qty.toLocaleString("vi-VN")+" "+(m.unit||""),tag:"Min "+min.toLocaleString("vi-VN")})});
+  const materialList=r.ops?.inventory_materials||[];
+  // Buildings without a minimum-stock threshold need no transaction index.
+  const stockTransactions=materialList.some(m=>Number(m.min_qty||0)>0)?adminMaterialTransactionIndex(r):null;
+  materialList.forEach(m=>{const min=Number(m.min_qty||0);if(min<=0)return;const qty=stockOf(r,m,stockTransactions);if(qty<=min)out.push({sev:qty<=0?3:2,bid,bn,module:"inventory",refId:m.id,title:qty<=0?"Vật tư đã hết":"Vật tư tồn thấp",detail:(m.name||"Vật tư")+" · còn "+qty.toLocaleString("vi-VN")+" "+(m.unit||""),tag:"Min "+min.toLocaleString("vi-VN")})});
   (r.ops?.contractor_jobs||[]).forEach(j=>{if(j.status==="Chờ xử lý"||j.status==="Tạm dừng")out.push({sev:1,bid,bn,module:"contractor",refId:j.id,title:"Nhà thầu "+j.status.toLowerCase(),detail:j.work_content||"Công việc nhà thầu",tag:j.status,date:j.work_date||""})});
  });
  personalTasks.forEach(t=>{
@@ -307,7 +328,7 @@ function renderCenter(){const root=ensureRoot();if(!root||!globalScope())return;
 function renderEnergySummary(){const box=$c("#ccEnergyList");if(box)box.innerHTML=window.estaOverviewUI.energyHtml(activeRows().map(r=>({id:r.building.id,name:r.building.name,energy:r.snapshot?.energy||[]})))}
 async function loadCenter(force=false){
  if(!globalScope())return;
- if(!force&&dataAccount===currentAccount&&lastUpdated&&Date.now()-Date.parse(lastUpdated)<30000){renderCenter();return}
+ if(!force&&dataAccount===currentAccount&&lastFetchedAt&&Date.now()-lastFetchedAt<30000){renderCenter();return}
  const root=ensureRoot();if(!root||loading)return;
  loading=true;
  const account=currentAccount;
@@ -328,6 +349,7 @@ async function loadCenter(force=false){
    dataAccount=account;
    activity=Array.isArray(res?.activity)?res.activity:[];
    lastUpdated=res?.generated_at||new Date().toISOString();
+   lastFetchedAt=Date.now(); // cache age is measured from the actual successful fetch, not server metadata
    const state=$c("#ccDataState");if(state){state.textContent="Dữ liệu mới nhất";state.classList.remove("offline")}
    syncAdminHeader();
    const message=$c("#ccLoadMessage");if(message)message.textContent="";

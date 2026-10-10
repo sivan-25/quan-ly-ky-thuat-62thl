@@ -752,6 +752,19 @@ async function centralLogin(identifier,password){
 async function restoreCentral(){
  let s;try{s=JSON.parse(localStorage.getItem("esta_central_session")||"null")}catch(e){return null}
  if(!s?.access_token)return null;
+ // Refresh an almost-expired stored session before fetching the user/profile.
+ // Otherwise the first protected request fails, followed by another full login read.
+ // If proactive refresh fails, preserve the original legacy fallback below.
+ const expiresAt=Number(s.expires_at||0);
+ if(s.refresh_token&&Number.isFinite(expiresAt)&&expiresAt>0&&expiresAt<=Math.floor(Date.now()/1000)+30){
+  try{
+   const d=await sbFetch("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:{refresh_token:s.refresh_token}});
+   if(d?.access_token){
+    s={access_token:d.access_token,refresh_token:d.refresh_token||s.refresh_token,expires_at:d.expires_at||0};
+    localStorage.setItem("esta_central_session",JSON.stringify(s));
+   }
+  }catch(_e){/* Legacy refresh fallback below remains available. */}
+ }
  try{return {session:s,account:await loadCentralAccount(s.access_token)}}catch(err){
    if(!s.refresh_token){localStorage.removeItem("esta_central_session");return null}
    try{
