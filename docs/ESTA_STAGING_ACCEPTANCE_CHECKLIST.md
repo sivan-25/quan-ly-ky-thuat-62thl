@@ -7,6 +7,7 @@ Status: **BLOCKED — no confirmed independent staging database** (2026-10-10).
 - A Supabase project with the app's production URL is active. Supabase returned **no development branches** for that project.
 - Another Supabase project named for 130 HH exists but is inactive. **Do not use, reset, restore, copy, write to, or delete it until its owner explicitly confirms its purpose.**
 - No Vercel custom staging environment was found.
+- **Critical:** `app.js` currently hardcodes the production Supabase URL and a publishable key. Merely creating Vercel Preview environment variables does **not** automatically redirect Preview to staging. A reviewed staging-only configuration mechanism is required and must be confirmed in browser network logs before any write tests.
 - Source browser screenshots and API flows are tested with fully mocked data. This is not a substitute for real authenticated CRUD.
 
 ## Setup only after owner confirms billing and organization
