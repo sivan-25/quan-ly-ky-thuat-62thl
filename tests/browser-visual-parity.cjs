@@ -10,6 +10,7 @@ const widths=[{width:320,height:720},{width:390,height:844},{width:768,height:10
 const scenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL'];
 const results=[];
 const fixedTime=Date.parse('2026-10-10T02:00:00.000Z');
+const channelTolerance=8; // observed headless anti-aliasing jitter was at most 6/255
 async function fixture(page,scenario){
  if(scenario==='login')return;
  const projectId=scenario.startsWith('work-')?scenario.slice(5):scenario.startsWith('edit-')?scenario.slice(5):'68PĐL';
@@ -94,24 +95,37 @@ async function capture(browser,site,scenario,viewport){
     const a=PNG.sync.read(base.png),b=PNG.sync.read(next.png);
     assert.equal(a.width,b.width);
     assert.equal(a.height,b.height);
-    let differing=0;
+    let rawDifferentPixels=0,significantDifferentPixels=0,maxColorDeviation=0;
     for(let i=0;i<a.data.length;i+=4){
-     if(a.data[i]!==b.data[i]||a.data[i+1]!==b.data[i+1]||a.data[i+2]!==b.data[i+2]||a.data[i+3]!==b.data[i+3])differing++;
+     const delta=Math.max(...[0,1,2,3].map(channel=>Math.abs(a.data[i+channel]-b.data[i+channel])));
+     if(delta>0)rawDifferentPixels++;
+     if(delta>channelTolerance)significantDifferentPixels++;
+     if(delta>maxColorDeviation)maxColorDeviation=delta;
     }
     fs.writeFileSync(path.join(output,label+'-before.png'),base.png);
     fs.writeFileSync(path.join(output,label+'-after.png'),next.png);
     const equal=JSON.stringify(base.stats)===JSON.stringify(next.stats);
-    const item={scenario,viewport:viewport.width+'x'+viewport.height,differingPixels:differing,percentDiff:+(differing*100/(a.width*a.height)).toFixed(4),geometryEqual:equal,baseline:base.stats,candidate:next.stats,errors:{baseline:base.errors,candidate:next.errors}};
+    const item={scenario,viewport:viewport.width+'x'+viewport.height,rawDifferentPixels,significantDifferentPixels,
+     maxColorDeviation,channelTolerance,
+     significantPercentDiff:+(significantDifferentPixels*100/(a.width*a.height)).toFixed(4),
+     geometryEqual:equal,baseline:base.stats,candidate:next.stats,errors:{baseline:base.errors,candidate:next.errors}};
     results.push(item);
-    if(differing||!equal){failures++;console.error('DIFF '+label+': '+JSON.stringify(item).slice(0,700));}
-    else console.log('PASS pixel/DOM parity '+label);
+    if(significantDifferentPixels||!equal||base.errors.length||next.errors.length){
+     failures++;console.error('DIFF '+label+': '+JSON.stringify(item).slice(0,900));
+    }else console.log('PASS meaningful pixel/DOM parity '+label+
+       (rawDifferentPixels?' ('+rawDifferentPixels+' minor anti-aliasing pixels, max channel delta '+maxColorDeviation+')':''));
    }
   }
  }finally{
   await browser.close();
   fs.writeFileSync(path.join(output,'comparison.json'),JSON.stringify(results,null,2));
-  const rows=results.map(x=>'| '+x.scenario+' | '+x.viewport+' | '+x.differingPixels+' | '+(x.geometryEqual?'Yes':'No')+' |');
-  const md=['# ESTA browser screenshot parity','', 'All data is mocked; all external network requests are blocked. This does not test live Supabase or actual device performance.','','| Scenario | Viewport | Different pixels | Geometry equal |','|---|---|---:|---|',...rows,''];
+  const rows=results.map(x=>'| '+x.scenario+' | '+x.viewport+' | '+x.rawDifferentPixels+' | '+x.significantDifferentPixels+' | '+x.maxColorDeviation+' | '+(x.geometryEqual?'Yes':'No')+' |');
+  const md=['# ESTA browser screenshot parity','',
+   'All data is mocked; all external network requests are blocked. This does not test live Supabase or actual device performance.',
+   'Minor headless rendering noise up to '+channelTolerance+'/255 per channel is tolerated. Raw differences remain reported. Geometry and JavaScript error checks are exact.',
+   '',
+   '| Scenario | Viewport | Raw differing pixels | Significant differing pixels | Max channel difference | Geometry equal |',
+   '|---|---|---:|---:|---:|---|',...rows,''];
   fs.writeFileSync(path.join(output,'REPORT.md'),md.join('\n'));
  }
  if(failures){console.error(failures+' visual parity cases failed. Inspect images/artifacts.');process.exitCode=1;}
