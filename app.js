@@ -98,6 +98,56 @@ async function centralAuthFetch(url,options={}){
  return res;
 }
 
+/* Keep PDF POST bodies within the Vercel handler's 2.5 MB limit.
+   Large old inline images are compressed only in this outgoing report copy;
+   original user photos and Supabase records are never modified. */
+async function estaPdfRequestBody(payload){
+ const limit=2_350_000; // headroom below server's 2_500_000-byte cap
+ let body=JSON.stringify(payload);
+ if(new Blob([body]).size<=limit)return body;
+ const copy=JSON.parse(body),inline=[];
+ function collect(node){
+  if(!node||typeof node!=="object")return;
+  if(Array.isArray(node)){for(const value of node)collect(value);return}
+  for(const key of Object.keys(node)){
+   const value=node[key];
+   if(key!=="kt_signature_data_url"&&typeof value==="string"&&/^data:image\/(?:png|jpe?g|webp);base64,/i.test(value))
+    inline.push([node,key,value]);
+   else if(value&&typeof value==="object")collect(value);
+  }
+ }
+ collect(copy);
+ inline.sort((a,b)=>b[2].length-a[2].length);
+ async function shrink(url){
+  return new Promise(resolve=>{
+   const image=new Image();
+   image.onload=()=>{
+    try{
+     const scale=Math.min(1,1100/Math.max(image.naturalWidth||image.width,image.naturalHeight||image.height,1));
+     const canvas=document.createElement("canvas");
+     canvas.width=Math.max(1,Math.round((image.naturalWidth||image.width)*scale));
+     canvas.height=Math.max(1,Math.round((image.naturalHeight||image.height)*scale));
+     const ctx=canvas.getContext("2d");
+     if(!ctx){resolve(null);return}
+     ctx.fillStyle="#ffffff";ctx.fillRect(0,0,canvas.width,canvas.height);
+     ctx.drawImage(image,0,0,canvas.width,canvas.height);
+     const next=canvas.toDataURL("image/jpeg",.76);
+     resolve(next&&next.length<url.length?next:null);
+    }catch(_){resolve(null)}
+   };
+   image.onerror=()=>resolve(null);
+   image.src=url;
+  });
+ }
+ for(const [owner,key,original] of inline){
+  const reduced=await shrink(original);
+  if(reduced)owner[key]=reduced;
+  body=JSON.stringify(copy);
+  if(new Blob([body]).size<=limit)return body;
+ }
+ throw new Error("Dữ liệu PDF vượt giới hạn máy chủ (2,5 MB). Hãy chọn ít công việc hoặc ảnh hơn và xuất thành nhiều lần.");
+}
+
 /* Shared PDF verification: never download Vercel sign-in HTML as a .pdf file. */
 async function readVerifiedEstaPdf(response){
  const type=String(response?.headers?.get?.("Content-Type")||"").toLowerCase();
@@ -1923,7 +1973,7 @@ async function exportGenericEstaPdf(config={}){
    const res=await centralAuthFetch("/api/esta_report",{
      method:"POST",
      headers:{"Content-Type":"application/json"},
-     body:JSON.stringify(payload)
+     body:await estaPdfRequestBody(payload)
    });
    const blob=await readVerifiedEstaPdf(res);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
@@ -2123,7 +2173,7 @@ async function exportEstaGeneratorPdf(rows,signer=null){
  try{
    const res=await centralAuthFetch("/api/esta_report",{
      method:"POST",headers:{"Content-Type":"application/json"},
-     body:JSON.stringify(payload),signal:controller.signal
+     body:await estaPdfRequestBody(payload),signal:controller.signal
    });
    const blob=await readVerifiedEstaPdf(res);
    const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
@@ -2688,7 +2738,7 @@ async function exportEnergyEstaPdf(rows,kind="current"){
   try{
    const res=await centralAuthFetch("/api/esta_report",{
     method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(payload),signal:controller.signal
+    body:await estaPdfRequestBody(payload),signal:controller.signal
    });
    const blob=await readVerifiedEstaPdf(res);
    const missing=Number(res.headers.get("X-ESTA-Missing-Images")||0);
@@ -3323,7 +3373,7 @@ async function exportToolsEstaPdf(){
   try{
    const res=await centralAuthFetch("/api/esta_report",{
     method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(payload),signal:controller.signal
+    body:await estaPdfRequestBody(payload),signal:controller.signal
    });
    const blob=await readVerifiedEstaPdf(res);
    const url=URL.createObjectURL(blob),a=document.createElement("a");
