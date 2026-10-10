@@ -22,6 +22,15 @@ async function review(width){
   ]},null));
   await page.waitForTimeout(200);
   assert.equal(await page.locator('#navAdmin').isVisible(),false,'technical role has no Admin menu');
+  console.log('FIRST-USE GUIDE DEBUG',JSON.stringify(await page.evaluate(()=>({
+   guide:!!document.querySelector('#techFirstUseGuide'),
+   guideHidden:document.querySelector('#techFirstUseGuide')?.className,
+   account:currentAccount?.is_admin,
+   projectOverview:projectOverviewActive,
+   workBar:!!document.querySelector('#techWorkShortcuts'),
+   techClass:document.body.classList.contains('techFirstUse'),
+   homeHidden:document.querySelector('#homePage')?.classList.contains('hide')
+  })),null,2),'browser-errors',errors);
   assert.equal(await page.locator('#techFirstUseGuide').isVisible(),true,'new technician sees start guide');
   await page.locator('#navWork').evaluate(el=>el.click());
   await page.waitForTimeout(170);
