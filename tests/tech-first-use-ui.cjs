@@ -123,6 +123,19 @@ async function review(width){
   }
   const result=mobile?'#task130Result':'#demoTaskResult';
   await page.locator(result).fill('Kiểm tra xong, máy bơm hoạt động tốt');
+  if(width===768){
+   const linked=await page.evaluate(()=>{
+    const panel=document.querySelector('#demoWorkLinks .demoWorkLinkGrid');
+    const cols=getComputedStyle(panel).gridTemplateColumns.split(/\\s+/).filter(Boolean);
+    const panelRect=panel.getBoundingClientRect();
+    const selectors=[...panel.querySelectorAll('select')];
+    return {cols:cols.length,panelRight:panelRect.right,
+      selectBounds:selectors.map(el=>({right:el.getBoundingClientRect().right,width:el.getBoundingClientRect().width}))};
+   });
+   assert.equal(linked.cols,2,'tablet linked-work fields must render two columns');
+   assert.ok(linked.selectBounds.every(x=>x.width>80&&x.right<=linked.panelRight+7),
+     'tablet linked-work selectors must be readable and inside their panel');
+  }
   await page.screenshot({path:out+'/02-complete-'+width+'.png',animations:'disabled'});
   const before=await page.evaluate(()=>load().length);
   await page.locator('#saveBtn').evaluate(el=>el.click());
