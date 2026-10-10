@@ -16,7 +16,7 @@ async function main() {
   rows[2].snapshot.tasks = [task(77,{dispatchedByAdmin:true,dispatchedAt:'2026-10-05T09:00:00Z',dueDate:'2026-10-04'})];
   rows[4].snapshot.tasks = [task(500,{dispatchedByAdmin:true})];
   rows[5].snapshot.tasks = [task(600,{dispatchedByAdmin:true})];
-  let fail=false, requests=0, opened=null, edited=null, timer;
+  let fail=false, requests=0, opened=null, edited=null, timer, personal=[];
   Object.assign(w, {
     currentAccount:{is_admin:true,buildings:projects},currentBuilding:{id:''},projectOverviewActive:false,projectOpenSeq:0,
     centralSession:{access_token:'ISOLATED-TEST'},today:()=> '2026-10-05',
@@ -24,7 +24,17 @@ async function main() {
     setInterval:fn=>{timer=fn;return 1},setTimeout:()=>0,
     showModule:()=>{},applyBuildingUI:()=>{},render:()=>{},renderHomeDashboard:()=>{},openAdminPortal:()=>{},openAdminOverview:()=>{},toast:()=>{},
     estaOverviewUI:{energyHtml:()=>''},
-    sbFetch:async()=>{requests++;if(fail)throw Error('Simulated offline');return {rows,activity:[],generated_at:new Date().toISOString()}},
+    sbFetch:async(url,{method='GET',body=null}={})=>{
+      requests++;if(fail)throw Error('Simulated offline');
+      if(url.startsWith('/rest/v1/admin_personal_tasks')){
+        if(method==='GET')return personal;
+        if(method==='POST'){personal.push({...body,created_at:'2026-10-05T10:00:00Z'});return null}
+        const id=decodeURIComponent(url.split('id=eq.')[1]||'');
+        if(method==='PATCH'){Object.assign(personal.find(x=>x.id===id),body);return null}
+        if(method==='DELETE'){personal=personal.filter(x=>x.id!==id);return null}
+      }
+      return {rows,activity:[],generated_at:new Date().toISOString()};
+    },
     enterProject:async(building)=>{opened=building.id;w.currentBuilding=building;w.projectOverviewActive=true;w.projectOpenSeq++;q('#workPage').classList.remove('hide');return true},
     load:()=>rows.find(r=>r.building.id===w.currentBuilding.id)?.snapshot.tasks||[],editTask:id=>{edited=id},
     syncTaskRecord:async(action,item,buildingId)=>{rows.find(r=>r.building.id===buildingId).snapshot.tasks.push(item);return {item}}
@@ -63,6 +73,42 @@ async function main() {
   assert.equal(visible()[0].dataset.building,'130HH');
   const dispatched=rows[3].snapshot.tasks[0];assert.equal(dispatched.dispatchedByAdmin,true);assert.equal(dispatched.dueDateExplicit,true);assert.ok(dispatched.dispatchGroupId);
   q('#ccDispatchModal [data-cc-close]').click();assert.equal(q('#ccDispatchModal').classList.contains('hide'),true);
+
+  // A personal work entry is stored separately, yet visible in the same Admin list.
+  q('#ccDispatch').click();
+  q('#ccDispatchAssignee').value='Kỹ thuật tuỳ chọn';
+  q('#ccDispatchPersonal').click();
+  assert.equal(q('#ccDispatchPersonal').checked,true);
+  assert.equal(q('#ccDispatchAssignee').value,'Văn');
+  assert.equal(q('#ccDispatchAssignee').readOnly,true);
+  assert.equal([...w.document.querySelectorAll('[name="ccTarget"]:checked')].length,0);
+  assert.equal(q('#ccDispatchPersonalStatusWrap').classList.contains('hide'),false);
+  q('#ccDispatchTitle').value='Kiểm tra và báo cáo công việc của Văn';
+  q('#ccDispatchStart').value='2026-10-05';
+  q('#ccDispatchDue').value='2026-10-05';
+  q('#ccDispatchPersonalStatus').value='Hoàn thành';
+  q('#ccDispatchForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  await next();await next();
+  assert.equal(personal.length,1);
+  assert.equal(personal[0].assignee,'Văn');
+  assert.equal(personal[0].status,'Hoàn thành');
+  assert.equal(rows.reduce((n,r)=>n+(r.snapshot.tasks||[]).length,0),27,'Personal work must not touch a project snapshot');
+  assert.equal(q('#ccAdminTaskCount').textContent,'26');
+  assert.equal(q('#ccAllTaskCount').textContent,'27');
+  assert.equal(visible()[0].dataset.building,'PERSONAL');
+  visible()[0].click();
+  assert.equal(q('#ccDispatchHeading').textContent,'Chỉnh sửa công việc thực hiện');
+  assert.equal(q('#ccDispatchTitle').value,personal[0].title);
+  assert.equal(q('#ccDispatchPersonalStatus').value,'Hoàn thành');
+  q('#ccDispatchTitle').value='Báo cáo công việc đã cập nhật';
+  q('#ccDispatchForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  await next();await next();
+  assert.equal(personal[0].title,'Báo cáo công việc đã cập nhật');
+  w.confirm=()=>true;
+  q('#ccDispatchDeletePersonal').click();await next();await next();
+  assert.equal(personal.length,0);
+  assert.equal(q('#ccAdminTaskCount').textContent,'25');
+
   w.currentAccount={is_admin:true,buildings:[projects[3]]};await w.estaCommandCenterRefresh();assert.equal(q('#ccAdminTaskCount').textContent,'1');
   w.currentAccount={is_admin:false,buildings:[projects[3]]};w.renderHomeDashboard();assert.equal(q('#estaCommandCenter').classList.contains('hide'),true);
   const before=requests;timer();await next();assert.equal(requests,before,'No global fetch for technical accounts');
