@@ -730,7 +730,109 @@
 #demoWorkLinks #demoTaskDue::-webkit-calendar-picker-indicator{
   cursor:pointer!important;opacity:1!important;pointer-events:auto!important;
 }
-</style></head><body>
+</style>
+<!-- ESTA_WORK_EDITOR_FOOTER_BUTTONS_20261011 -->
+<style id="esta-work-editor-footer-buttons">
+/* The enhanced work editor moves its action buttons outside #taskForm.
+   Scope the override to the actual edit footer, not the form parent. */
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{
+  display:flex!important;position:relative!important;inset:auto!important;
+  grid-template-columns:none!important;justify-content:flex-end!important;
+  align-items:center!important;gap:12px!important;width:auto!important;max-width:none!important;
+  margin:0 20px 16px!important;padding:14px 0 2px!important;
+  border-top:1px solid rgba(160,188,211,.25)!important;
+  background:transparent!important;box-shadow:none!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button{
+  display:inline-flex!important;position:relative!important;align-items:center!important;
+  justify-content:center!important;flex:0 0 auto!important;gap:9px!important;
+  width:auto!important;height:48px!important;min-height:48px!important;max-height:48px!important;
+  margin:0!important;padding:0 20px!important;border-radius:11px!important;
+  font-family:Inter,system-ui,sans-serif!important;font-size:14px!important;font-weight:780!important;
+  line-height:1.2!important;letter-spacing:0!important;
+  text-align:center!important;text-indent:0!important;text-transform:none!important;
+  text-shadow:none!important;white-space:nowrap!important;
+  opacity:1!important;visibility:visible!important;filter:none!important;
+  box-sizing:border-box!important;
+  transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #cancelEdit{
+  min-width:124px!important;color:#344b60!important;background:#f2f4f5!important;
+  border:1px solid #d0dce6!important;box-shadow:0 2px 5px rgba(0,0,0,.08)!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn{
+  min-width:210px!important;color:#fff!important;
+  background:linear-gradient(115deg,#216f91 0%,#14546f 100%)!important;
+  border:1px solid #3e9fba!important;box-shadow:0 4px 14px rgba(13,93,126,.26)!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn span{
+  display:inline!important;font-size:inherit!important;font-weight:inherit!important;
+  color:inherit!important;opacity:1!important;white-space:nowrap!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn svg{
+  display:block!important;width:18px!important;height:18px!important;
+  min-width:18px!important;max-width:18px!important;min-height:18px!important;max-height:18px!important;
+  flex:0 0 18px!important;margin:0!important;padding:0!important;overflow:visible!important;
+  fill:none!important;color:#fff!important;stroke:currentColor!important;stroke-width:2.15!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn svg path{
+  fill:none!important;stroke:currentColor!important;stroke-width:inherit!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #cancelEdit::before,
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #cancelEdit::after,
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn::before,
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn::after{
+  content:none!important;display:none!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #cancelEdit.hide{display:none!important}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #cancelEdit:not(:disabled):hover{
+  color:#1e4158!important;background:#fff!important;border-color:#91b8ca!important;
+  transform:translateY(-1px)!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn:not(:disabled):hover{
+  background:linear-gradient(115deg,#2986a9 0%,#176785 100%)!important;
+  border-color:#72d3e3!important;box-shadow:0 6px 18px rgba(19,115,150,.30)!important;
+  transform:translateY(-1px)!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button:focus-visible{
+  outline:3px solid #76dce9!important;outline-offset:3px!important;
+}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button:disabled{
+  opacity:.65!important;cursor:wait!important;transform:none!important;
+}
+@media(max-width:760px){
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{
+    position:sticky!important;inset:auto 0 0!important;z-index:45!important;
+    display:grid!important;grid-template-columns:minmax(92px,.42fr) minmax(0,1fr)!important;
+    grid-template-rows:50px!important;align-items:stretch!important;gap:9px!important;
+    width:100%!important;margin:0!important;
+    padding:10px 12px calc(12px + env(safe-area-inset-bottom))!important;
+    background:#111e30!important;border-top:1px solid rgba(159,184,207,.24)!important;
+    box-shadow:0 -8px 24px rgba(7,17,31,.20)!important;
+  }
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button{
+    width:100%!important;min-width:0!important;max-width:none!important;
+    height:50px!important;min-height:50px!important;max-height:50px!important;
+    padding:0 10px!important;font-size:14px!important;grid-row:1!important;
+  }
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #cancelEdit{grid-column:1!important}
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn{grid-column:2!important}
+}
+@media(max-width:359px){
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{
+    grid-template-columns:86px minmax(0,1fr)!important;gap:7px!important;padding-inline:9px!important;
+  }
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button{font-size:12px!important;padding-inline:7px!important}
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn svg{
+    width:16px!important;height:16px!important;min-width:16px!important;flex-basis:16px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button{transition:none!important}
+}
+</style>
+</head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -1126,7 +1228,7 @@
     <div class="workFormActions">
       <button id="cancelEdit" type="button" class="workCancel hide">Hủy</button>
       <button id="saveBtn" class="workSave" type="submit">
-        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
         <span>Lưu</span>
       </button>
     </div>
