@@ -7,11 +7,13 @@ from pathlib import Path
 import sys
 import unittest
 import tempfile
+from unittest.mock import patch
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from api.esta_report import generate_pdf
 from reporting.report_center import _prepare_photo
+from reporting.pdf_common import ImageSlot
 
 
 def photo(size):
@@ -46,6 +48,59 @@ def operations():
 
 
 class ReportTests(unittest.TestCase):
+    def test_work_many_photos_paginate_without_losing_or_cropping_images(self):
+        # Production failure: 18 photos in one work item formed a 934pt cell
+        # that could not fit the 725pt A4 frame. Cover every project and a
+        # partial final row as well as several full pages of photos.
+        portrait, landscape = photo((300, 500)), photo((600, 300))
+        original_draw = ImageSlot.draw
+        for building in ('62 Trần Huy Liệu', '68 Phan Đăng Lưu', '127 Hồng Hà', '130 Hồng Hà'):
+            for image_count in (3, 4, 18, 40):
+                with self.subTest(building=building, images=image_count):
+                    drawn = []
+                    def record_draw(slot):
+                        x, y = slot.canv.absolutePosition(0, 0)
+                        drawn.append((slot.caption, slot.canv.getPageNumber(), x, y, slot.width, slot.height + slot.CAPTION_H))
+                        original_draw(slot)
+                    captions = [f'Hình kiểm thử {i + 1:02d}' for i in range(image_count)]
+                    payload = {
+                        'report_type': 'work', 'building': building,
+                        'report_date': '11/10/2026', 'kt_signer_name': 'Kỹ thuật kiểm thử',
+                        'tasks': [{'title': 'Kiểm tra hệ thống kỹ thuật', 'status': 'Hoàn thành',
+                                   'images': [{'path': portrait if i % 2 else landscape, 'caption': caption}
+                                              for i, caption in enumerate(captions)]}],
+                    }
+                    with patch.object(ImageSlot, 'draw', record_draw):
+                        raw, missing, count = generate_pdf(payload, '')
+                    self.assertTrue(raw.startswith(b'%PDF'))
+                    self.assertEqual((missing, count), (0, 1))
+                    self.assertEqual([r[0] for r in drawn], captions)
+                    rows = {}
+                    for caption, page, x, y, width, height in drawn:
+                        self.assertGreaterEqual(x, 50)
+                        self.assertLessEqual(x + width, 545)
+                        self.assertGreaterEqual(y, 59)
+                        self.assertLessEqual(y + height, 786)
+                        rows[(page, round(y, 1))] = rows.get((page, round(y, 1)), 0) + 1
+                    self.assertLessEqual(max(rows.values()), 3)
+
+    def test_long_cells_in_work_energy_tools_and_admin_reports(self):
+        long_text = 'Nội dung và kết quả kiểm tra kỹ thuật có dấu tiếng Việt. ' * 180
+        samples = [
+            {'report_type': 'work', 'tasks': [{'title': long_text, 'note': long_text, 'status': 'Hoàn thành'}]},
+            {'report_type': 'energy', 'rows': [{'date': '2026-10-11', 'value': 100, 'note': long_text}]},
+            {'report_type': 'tools', 'tools': [{'name': 'Đồng hồ đo', 'note': long_text}]},
+            {'report_type': 'generic', 'title': 'BÁO CÁO CÔNG VIỆC ADMIN GIAO',
+             'columns': [{'label': 'STT'}, {'label': 'Nội dung'}, {'label': 'KQ / Ghi chú'}],
+             'rows': [['1', long_text, long_text]]},
+        ]
+        for payload in samples:
+            with self.subTest(report_type=payload['report_type']):
+                payload.update(building='DỰ ÁN KIỂM THỬ', report_date='11/10/2026', kt_signer_name='Kỹ thuật kiểm thử')
+                raw, missing, count = generate_pdf(payload, '')
+                self.assertTrue(raw.startswith(b'%PDF'))
+                self.assertEqual((missing, count), (0, 1))
+
     def test_operations_vector_pdf(self):
         raw, missing, count = generate_pdf(operations(), '')
         self.assertTrue(raw.startswith(b'%PDF'))

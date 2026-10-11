@@ -168,11 +168,12 @@ def story_summary(data,sign=True,pointer=False):
         rows.append([P(f"{i:02d}",ST["td_s"]),P(t["title"],ST["td_b"]),Pill(t["type"],"tag"),
                      Pill(t["status"],"status"),P(t["date"],ST["td"]),
                      P(t.get("assignee") or "—",ST["td_s"]),P(t.get("note") or "—",ST["note"])])
-    widths=[7,36,24,31,18,25,33]; widths=[w*mm*CW/(sum(widths)*mm) for w in widths]
-    tb=Table(rows,colWidths=widths,repeatRows=1)
+    widths=[7,34,24,31,20,25,33]; widths=[w*mm*CW/(sum(widths)*mm) for w in widths]
+    tb=Table(rows,colWidths=widths,repeatRows=1,splitByRow=1,splitInRow=1)
     style=[("BACKGROUND",(0,0),(-1,0),AUB),("VALIGN",(0,0),(-1,-1),"MIDDLE"),
         ("TOPPADDING",(0,0),(-1,-1),3.5),("BOTTOMPADDING",(0,0),(-1,-1),3.5),
         ("LEFTPADDING",(0,0),(-1,-1),5),("RIGHTPADDING",(0,0),(-1,-1),4),
+        ("LEFTPADDING",(0,0),(0,-1),2),("RIGHTPADDING",(0,0),(0,-1),2),
         ("LINEBELOW",(0,1),(-1,-1),.4,TAUPE),("LINEBELOW",(0,-1),(-1,-1),1.5,COPPER)]
     for r in range(2,len(rows),2): style.append(("BACKGROUND",(0,r),(-1,r),CREAM_L))
     tb.setStyle(TableStyle(style)); story.append(tb)
@@ -202,7 +203,7 @@ def _card_head_meta(idx,t,inner_w):
     P=Paragraph
     num_w,pill_w=12*mm,34*mm
     head=Table([[P(f"{idx:02d}",ST["card_n"]),P(t["title"],ST["card_t"]),Pill(t["status"],"status",7.0,"RIGHT")]],
-        colWidths=[num_w,inner_w-num_w-pill_w,pill_w])
+        colWidths=[num_w,inner_w-num_w-pill_w,pill_w],splitByRow=1,splitInRow=1)
     head.setStyle(TableStyle([
         ("BACKGROUND",(0,0),(0,0),AUB),("BACKGROUND",(1,0),(-1,0),CREAM_L),
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),("ALIGN",(0,0),(0,0),"CENTER"),("ALIGN",(2,0),(2,0),"RIGHT"),
@@ -217,7 +218,7 @@ def _card_head_meta(idx,t,inner_w):
             t.get("type"),t.get("date"),t.get("assignee"),t.get("note")
         ))
     )
-    meta=Table([[P(meta_text,info_style)]],colWidths=[inner_w])
+    meta=Table([[P(meta_text,info_style)]],colWidths=[inner_w],splitByRow=1,splitInRow=1)
     meta.setStyle(TableStyle([
         ("BACKGROUND",(0,0),(-1,-1),CREAM_L),
         ("LEFTPADDING",(0,0),(-1,-1),8),("RIGHTPADDING",(0,0),(-1,-1),8),
@@ -225,16 +226,6 @@ def _card_head_meta(idx,t,inner_w):
         ("LINEBELOW",(0,0),(-1,-1),.35,TAUPE)
     ]))
     return head,meta
-
-
-def _box(rows):
-    card=Table([[r] for r in rows],colWidths=[CW])
-    card.setStyle(TableStyle([
-        ("BOX",(0,0),(-1,-1),.55,TAUPE),
-        ("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),0),
-        ("TOPPADDING",(0,0),(-1,-1),0),("BOTTOMPADDING",(0,0),(-1,-1),0)
-    ]))
-    return card
 
 
 def task_card(idx,t,per_row=3):
@@ -250,14 +241,20 @@ def task_card(idx,t,per_row=3):
             cell_height=pdfc.IMAGE_CELL_HEIGHT,
             gap=pdfc.IMAGE_GAP
         )
-        if grid:
-            image_holder=Table([[g] for g in grid],colWidths=[inner_w])
+        # Each photo row is a standalone flowable, so ReportLab can move it
+        # intact to the next page without nesting all photos in one tall cell.
+        for g in grid:
+            image_holder=Table([[g]],colWidths=[inner_w])
             image_holder.setStyle(TableStyle([
                 ("LEFTPADDING",(0,0),(-1,-1),5),("RIGHTPADDING",(0,0),(-1,-1),5),
                 ("TOPPADDING",(0,0),(-1,-1),2),("BOTTOMPADDING",(0,0),(-1,-1),2)
             ]))
             rows.append(image_holder)
-    return [KeepTogether([_box(rows),Spacer(1,4)])]
+    for row in rows:
+        row.setStyle(TableStyle([("BOX",(0,0),(-1,-1),.55,TAUPE)]))
+    # Keep the heading, metadata and first photo row together, then let later
+    # photo rows fill the remaining page. Never nest the whole card in a Table.
+    return [KeepTogether(rows[:3])]+rows[3:]+[Spacer(1,4)]
 
 
 def summary_line(tasks):
@@ -428,7 +425,7 @@ def story_energy(data):
         widths=[9,24,27,25,35,54]
 
     widths=[w*mm*CW/(sum(widths)*mm) for w in widths]
-    tb=Table(table_rows,colWidths=widths,repeatRows=1)
+    tb=Table(table_rows,colWidths=widths,repeatRows=1,splitByRow=1,splitInRow=1)
     ts=[
         ("BACKGROUND",(0,0),(-1,0),AUB),
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
@@ -556,7 +553,7 @@ def story_tools(data):
         ])
     col=[8,33,20,20,25,27,24,37]
     col=[w*mm*CW/(sum(col)*mm) for w in col]
-    tb=Table(rows,colWidths=col,repeatRows=1)
+    tb=Table(rows,colWidths=col,repeatRows=1,splitByRow=1,splitInRow=1)
     style=[
         ("BACKGROUND",(0,0),(-1,0),AUB),
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
@@ -674,7 +671,7 @@ def story_generic(data):
     if not weights: weights=[1]
     total=sum(weights)
     col_widths=[CW*w/total for w in weights]
-    tb=Table(table_rows,colWidths=col_widths,repeatRows=1)
+    tb=Table(table_rows,colWidths=col_widths,repeatRows=1,splitByRow=1,splitInRow=1)
     style=[
         ("BACKGROUND",(0,0),(-1,0),AUB),
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
