@@ -1,0 +1,91 @@
+
+/* ESTA Admin work editor, isolated from project work modal styles. */
+#estaCommandCenter .ccAdminTaskEdit{
+ display:inline-flex;align-items:center;justify-content:center;gap:5px;
+ margin-top:7px;padding:5px 11px;border-radius:8px;
+ border:1px solid #4889a1;background:#183f53;color:#80e5ef;
+ font-family:inherit;font-size:12px;font-weight:760;white-space:nowrap;cursor:pointer;
+ transition:background .15s,border-color .15s,color .15s;
+}
+#estaCommandCenter .ccAdminTaskEdit:hover{background:#17607b;color:#fff;border-color:#65d3df}
+#estaCommandCenter .ccAdminTaskEdit:focus-visible{outline:3px solid #61d7ed;outline-offset:2px}
+.ccAdminWorkEdit{position:fixed;inset:0;z-index:17000;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Inter,system-ui,sans-serif;color:#203950}
+.ccAdminWorkEdit.hide,.ccAdminWorkEdit .hide{display:none!important}
+.ccWeBackdrop{position:absolute;inset:0;background:rgba(4,13,27,.76);backdrop-filter:blur(5px)}
+.ccWeCard{position:relative;width:min(960px,100%);max-height:min(92dvh,1000px);display:flex;flex-direction:column;min-width:0;border:1px solid #50829b;border-radius:18px;background:#eef7fc;box-shadow:0 30px 90px rgba(0,0,0,.42);overflow:hidden}
+.ccWeHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 24px;background:linear-gradient(110deg,#142b45,#1e425d);color:#f6fbff;border-bottom:1px solid #50768c}
+.ccWeHead>div{min-width:0}
+.ccWeHead span{display:block;margin-bottom:5px;color:#72d9e5;font-size:11px;font-weight:800;letter-spacing:1.2px}
+.ccWeHead h2{margin:0;font-size:22px;line-height:1.25;font-weight:850}
+.ccWeHead p{margin:7px 0 0;color:#bed4e4;font-size:13px;line-height:1.4}
+.ccWeX{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:10px;border:1px solid #6b879a;background:#284760;color:#fff;font-size:28px;cursor:pointer}
+.ccWeX:hover{background:#a74f56}
+#ccWeForm{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#a5c6d9 transparent;scrollbar-width:thin}
+#ccWeForm.ccWeLoading{opacity:.68;pointer-events:none}
+.ccWeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:22px 24px}
+.ccWeGrid label{display:flex;flex-direction:column;gap:7px;min-width:0;font-size:13px;font-weight:760;color:#1c4964}
+.ccWeGrid label.full{grid-column:1/-1}
+.ccWeGrid label>span{line-height:1.3}
+.ccWeGrid input,.ccWeGrid select,.ccWeGrid textarea{
+ width:100%;min-width:0;box-sizing:border-box;border:1px solid #bbd0dc;
+ border-radius:10px;background:#fff;color:#233e53;
+ padding:11px 12px;font:500 14px/1.45 Inter,system-ui,sans-serif;
+ min-height:45px;outline:none;box-shadow:0 1px 2px rgba(7,35,54,.04)
+}
+.ccWeGrid textarea{resize:vertical;min-height:73px}
+.ccWeGrid input:focus,.ccWeGrid select:focus,.ccWeGrid textarea:focus{border-color:#228cb4;box-shadow:0 0 0 3px rgba(46,167,191,.14)}
+.ccWeImages{margin:0 24px 16px;border:1px solid #c1d9e6;background:#e1eff7;border-radius:13px;padding:14px}
+.ccWeImagesTitle{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.ccWeImagesTitle b{display:block;color:#164762;font-size:14px}
+.ccWeImagesTitle small{display:block;margin-top:5px;color:#58758a;font-size:12px;line-height:1.4}
+.ccWeUpload{display:inline-flex;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:39px;padding:0 13px;border-radius:9px;background:#1c6d89;color:#fff;font-size:13px;font-weight:780;white-space:nowrap;cursor:pointer}
+.ccWeUpload:hover{background:#2287a6}
+.ccWeUpload input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+#ccWePhotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;margin-top:13px}
+.ccWePhoto{position:relative;min-width:0;padding:5px 5px 25px;border:1px solid #bbd3df;border-radius:11px;background:#fff;overflow:hidden}
+.ccWePhoto>button:first-child{display:block;width:100%;height:100px;border:0;padding:0;border-radius:6px;background:#cbdde6;overflow:hidden;cursor:zoom-in}
+.ccWePhoto img{display:block;width:100%;height:100%;object-fit:cover}
+.ccWePhoto>small{position:absolute;bottom:6px;left:8px;color:#49677a;font-size:10px;font-weight:650}
+.ccWeRemove{position:absolute;right:4px;top:4px;display:grid;place-items:center;width:27px;height:27px;border:1px solid #fff;border-radius:50%;background:#9a3c48;color:#fff;font-size:20px;cursor:pointer}
+.ccWeRemove:hover{background:#c73241}
+.ccWeNoImage{font-size:12px;color:#667f90}
+.ccWeError{margin:0 24px 12px;padding:11px 13px;background:#fff0f0;border:1px solid #f3b0b0;border-radius:9px;color:#a22035;font-size:13px;font-weight:750}
+.ccWeActions{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:4px;padding:16px 24px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #c6dae5;background:#e4f1f8}
+.ccWeActions>span{margin-right:auto;max-width:360px;font-size:12px;line-height:1.4;color:#58768c}
+.ccWeCancel,.ccWeSave{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 19px;font:780 14px Inter,system-ui,sans-serif;border-radius:10px;cursor:pointer;white-space:nowrap;transition:.14s ease}
+.ccWeCancel{border:1px solid #b4c9d5;background:#fff;color:#2b4961}
+.ccWeCancel:hover{background:#f3f7f9;border-color:#789caf}
+.ccWeSave{border:1px solid #2e91ac;background:linear-gradient(120deg,#176b91,#13516f);box-shadow:0 5px 15px rgba(15,83,111,.21);color:#fff}
+.ccWeSave:hover:not(:disabled){background:linear-gradient(120deg,#2586a8,#176d8d)}
+.ccWeSave:disabled{opacity:.62;cursor:wait}
+.ccWeSave svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ccWeX:focus-visible,.ccWeCancel:focus-visible,.ccWeSave:focus-visible,.ccWeUpload:focus-within,.ccWeRemove:focus-visible{outline:3px solid #49b6df;outline-offset:2px}
+.ccWeViewer{position:fixed;inset:0;z-index:17500;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.9)}
+.ccWeViewer>div{position:relative;max-width:96vw;max-height:94dvh}
+.ccWeViewer img{display:block;max-width:96vw;max-height:92dvh;object-fit:contain}
+.ccWeViewer button{position:absolute;top:-10px;right:-10px;width:37px;height:37px;border:1px solid #fff;border-radius:50%;background:#aa3942;color:white;font-size:23px;cursor:pointer}
+@media(max-width:760px){
+ .ccAdminWorkEdit{align-items:stretch;padding:0}
+ .ccWeCard{height:100dvh;max-height:100dvh;width:100%;border-radius:0;border:0}
+ .ccWeHead{padding:calc(14px + env(safe-area-inset-top)) 14px 14px}
+ .ccWeHead h2{font-size:18px}
+ .ccWeHead p{font-size:12px}
+ .ccWeGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:14px}
+ .ccWeGrid label{font-size:12px}
+ .ccWeGrid input,.ccWeGrid select,.ccWeGrid textarea{font-size:16px}
+ .ccWeGrid label.full{grid-column:1/-1}
+ .ccWeImages{margin:0 14px 13px;padding:11px}
+ .ccWeImagesTitle{align-items:flex-start}
+ .ccWeImagesTitle small{font-size:11px}
+ .ccWeActions{position:sticky;bottom:0;z-index:3;gap:8px;padding:10px 12px calc(11px + env(safe-area-inset-bottom))}
+ .ccWeActions>span{display:none}
+ .ccWeCancel{flex:0 0 95px}
+ .ccWeSave{flex:1;min-width:0}
+ .ccWeError{margin:0 14px 10px}
+ #estaCommandCenter .ccAdminTaskEdit{font-size:11px;padding:5px 8px}
+}
+@media(max-width:370px){
+ .ccWeGrid{grid-template-columns:1fr}
+ .ccWeCancel{flex-basis:79px}
+ .ccWeCancel,.ccWeSave{font-size:12px;padding:0 8px}
+}
