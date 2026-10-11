@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 import unittest
 import tempfile
+import threading
 from unittest.mock import patch
 from PIL import Image
 
@@ -14,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from api.esta_report import generate_pdf
 from reporting.report_center import _prepare_photo
 from reporting.pdf_common import ImageSlot
+from reporting import pdf_common as pdfc
 
 
 def photo(size):
@@ -48,6 +50,69 @@ def operations():
 
 
 class ReportTests(unittest.TestCase):
+    def test_image_cache_tracks_content_and_output_settings(self):
+        def encoded(color):
+            out = io.BytesIO()
+            Image.new('RGB', (1200, 900), color).save(out, 'PNG')
+            return out.getvalue()
+        red, blue = encoded('red'), encoded('blue')
+        a = pdfc.process_image_bytes(red, 'same-path-or-signer')
+        b = pdfc.process_image_bytes(blue, 'same-path-or-signer')
+        self.assertNotEqual(a.data, b.data)
+        self.assertEqual(pdfc.process_image_bytes(red, 'different-url').data, a.data)
+        small = pdfc.process_image_bytes(red, 'same-path-or-signer', max_px=450)
+        self.assertEqual(max(a.width, a.height), 900)
+        self.assertEqual(max(small.width, small.height), 450)
+        self.assertNotEqual(pdfc.process_image_bytes(red, 'same-path-or-signer', quality=90).data, a.data)
+
+    def test_fast_image_processing_preserves_orientation_and_transparency(self):
+        image = Image.new('RGB', (4032, 3024), 'white')
+        image.paste('red', (0, 0, 2016, 3024))
+        exif = Image.Exif(); exif[274] = 6
+        raw = io.BytesIO(); image.save(raw, 'JPEG', quality=90, exif=exif)
+        prepared = pdfc.process_image_bytes(raw.getvalue(), 'phone-orientation')
+        self.assertEqual((prepared.width, prepared.height), (675, 900))
+        with Image.open(prepared.buffer()) as result:
+            r, g, b = result.getpixel((300, 100))
+            self.assertGreater(r, 240); self.assertLess(g, 15)
+            self.assertTrue(all(v > 240 for v in result.getpixel((300, 800))))
+        rgba = Image.new('RGBA', (600, 400), (0, 0, 0, 0))
+        rgba.paste((240, 20, 20, 255), (200, 100, 400, 300))
+        raw = io.BytesIO(); rgba.save(raw, 'PNG')
+        prepared = pdfc.process_image_bytes(raw.getvalue(), 'annotation-transparency')
+        with Image.open(prepared.buffer()) as result:
+            self.assertEqual(result.mode, 'RGB')
+            self.assertTrue(all(v > 245 for v in result.getpixel((10, 10))))
+            self.assertGreater(result.getpixel((300, 200))[0], 220)
+
+    def test_parallel_downloads_are_bounded_ordered_and_recheck_access(self):
+        raw = base64.b64decode(photo((300, 500)).split(',', 1)[1])
+        lock, barrier = threading.Lock(), threading.Barrier(8)
+        active, peak, calls = 0, 0, []
+        def download(source, token):
+            nonlocal active, peak
+            with lock:
+                active += 1; peak = max(peak, active); calls.append(source)
+            try:
+                barrier.wait(timeout=5)
+                return raw, '.png'
+            finally:
+                with lock: active -= 1
+        items = [{'source': f'photo-{i}', 'caption': f'Hình {i}'} for i in range(16)]
+        items.append(dict(items[0], caption='Ảnh dùng lại'))
+        prepared, missing = pdfc.prepare_remote_images(items, 'authorized', download, workers=99)
+        self.assertEqual((peak, len(calls), missing), (8, 16, 0))
+        self.assertEqual([x['caption'] for x in prepared], [x['caption'] for x in items])
+        self.assertTrue(all(x['prepared'] for x in prepared))
+        # A warm processed-image cache must never skip the next download's
+        # authorization or conceal a missing/inaccessible source.
+        with patch.object(pdfc, 'prepare_downloaded_image', wraps=pdfc.prepare_downloaded_image):
+            def denied(source, token):
+                raise PermissionError('Access denied')
+            prepared, missing = pdfc.prepare_remote_images(items, 'denied', denied)
+        self.assertEqual(missing, len(items))
+        self.assertTrue(all(x['prepared'] is None for x in prepared))
+
     def test_work_many_photos_paginate_without_losing_or_cropping_images(self):
         # Production failure: 18 photos in one work item formed a 934pt cell
         # that could not fit the 725pt A4 frame. Cover every project and a

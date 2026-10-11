@@ -12,6 +12,7 @@ No third-party dependencies beyond ReportLab and Pillow.
 from __future__ import annotations
 
 import io
+import hashlib
 import os
 import threading
 from collections import OrderedDict
@@ -48,14 +49,13 @@ IMAGE_COLS = 3
 IMAGE_CELL_HEIGHT = 50 * mm
 IMAGE_GAP = 3 * mm
 IMAGE_MAX_PX = 900
-IMAGE_DECODE_HINT_PX = 1800
 IMAGE_JPEG_QUALITY = 72
 IMAGE_CACHE_LIMIT = 192
-IMAGE_WORKERS = 4
+IMAGE_WORKERS = 8
 
 _FONTS_READY = False
 _CACHE_LOCK = threading.Lock()
-_IMAGE_CACHE: "OrderedDict[tuple[str, float], tuple[bytes, int, int]]" = OrderedDict()
+_IMAGE_CACHE: "OrderedDict[tuple[str, int, int], tuple[bytes, int, int]]" = OrderedDict()
 
 
 def _font_dir() -> str:
@@ -192,7 +192,7 @@ class ProcessedImage:
         return bio
 
 
-def _cache_get(key: tuple[str, float]) -> Optional[ProcessedImage]:
+def _cache_get(key: tuple[str, int, int]) -> Optional[ProcessedImage]:
     with _CACHE_LOCK:
         value = _IMAGE_CACHE.get(key)
         if not value:
@@ -202,7 +202,7 @@ def _cache_get(key: tuple[str, float]) -> Optional[ProcessedImage]:
     return ProcessedImage(raw, width, height, key[0])
 
 
-def _cache_put(key: tuple[str, float], image: ProcessedImage) -> None:
+def _cache_put(key: tuple[str, int, int], image: ProcessedImage) -> None:
     with _CACHE_LOCK:
         _IMAGE_CACHE[key] = (image.data, image.width, image.height)
         _IMAGE_CACHE.move_to_end(key)
@@ -224,14 +224,17 @@ def process_image_bytes(
     """
     if not raw:
         raise ValueError("Ảnh trống")
-    key = (str(cache_id or "bytes"), float(mtime or 0.0))
+    # Cache processed bytes, not URLs/names: changed photos/signatures must not
+    # reuse stale pixels, and large data URLs must not be retained as LRU keys.
+    # The download (including its access check) still happens before this cache.
+    key = (hashlib.sha256(raw).hexdigest(), int(max_px), int(quality))
     cached = _cache_get(key)
     if cached:
         return cached
 
     with PILImage.open(io.BytesIO(raw)) as source:
         try:
-            source.draft("RGB", (IMAGE_DECODE_HINT_PX, IMAGE_DECODE_HINT_PX))
+            source.draft("RGB", (max_px, max_px))
         except Exception:
             pass
         image = ImageOps.exif_transpose(source)
@@ -244,15 +247,13 @@ def process_image_bytes(
                 image = matte
             else:
                 image = image.convert("RGB")
-        else:
-            image = image.copy()
 
     width, height = image.size
     longest = max(width, height, 1)
     if longest > max_px:
         scale = max_px / float(longest)
         target = (max(1, round(width * scale)), max(1, round(height * scale)))
-        image = image.resize(target, PILImage.Resampling.LANCZOS)
+        image = image.resize(target, PILImage.Resampling.LANCZOS, reducing_gap=3.0)
 
     out = io.BytesIO()
     image.save(out, "JPEG", quality=quality, optimize=True)
