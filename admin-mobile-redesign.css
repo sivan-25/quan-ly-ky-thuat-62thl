@@ -1,0 +1,321 @@
+/* ESTA · Admin mobile dashboard redesign · 2026-10-12
+   Presentation only. Project dashboards, roles, data and existing actions are preserved. */
+@media (max-width:760px) {
+  #app.homeMode.opsOverviewMode.adminCommandHome {
+    --ov-surface:#fffefa;
+    --ov-panel:#faf8f3;
+    --ov-control:#fff;
+    --ov-soft:#eef3f1;
+    --ov-line:#dce5e1;
+    --ov-hover:#edf6f3;
+    --ov-muted:#5b6e7a;
+    --ov-text:#1b3343;
+    --ov-accent:#0b787b;
+    background:#f3eee5!important;
+    color-scheme:light;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #homePage,
+  #app.homeMode.opsOverviewMode.adminCommandHome .homeDashboard,
+  #app.homeMode.opsOverviewMode.adminCommandHome main {
+    background:#f3eee5!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #homePage {
+    padding:12px 12px calc(76px + env(safe-area-inset-bottom))!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.opsOverview {
+    gap:11px!important;
+    color:var(--ov-text)!important;
+  }
+
+  /* Toolbar: a compact command strip, with one clear primary action. */
+  #app.homeMode.opsOverviewMode.adminCommandHome .estaTopbar {
+    padding:9px 12px 11px!important;
+    row-gap:9px!important;
+    background:linear-gradient(115deg,#163c50,#204f58)!important;
+    border-bottom:0!important;
+    box-shadow:0 4px 16px rgba(24,53,63,.12)!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .mobileMenuBtn {
+    width:43px!important;height:43px!important;min-width:43px!important;
+    border-radius:12px!important;
+    background:#fffefa!important;color:#1d5360!important;
+    border:1px solid #d9e6e3!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #topHomeTitle {
+    flex:1 1 calc(100% - 110px)!important;
+    max-width:calc(100% - 110px)!important;
+    padding:0!important;gap:0!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #topHomeTitle .topModuleIcon {
+    display:none!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #topHomeTitle h1 {
+    font-size:21px!important;letter-spacing:-.35px!important;
+    font-weight:800!important;line-height:1.16!important;
+    white-space:nowrap!important;color:#fff!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext {
+    margin-top:5px!important;min-height:18px;gap:6px!important;
+    font-size:10px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext span {
+    display:none!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopContext i {
+    background:#e7f4eb1c!important;color:#d7f3e6!important;
+    padding:3px 7px!important;border-radius:99px!important;
+    font-size:10px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .headerBell {
+    width:42px!important;height:43px!important;
+    top:9px!important;right:12px!important;
+    border-radius:12px!important;
+    background:#143244!important;border:1px solid #446778!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .headerTools {
+    margin:0!important;order:3!important;
+    min-width:0!important;width:100%!important;
+    flex:1 0 100%!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccAdminHeaderActions {
+    width:100%!important;display:grid!important;
+    grid-template-columns:minmax(0,1.9fr) minmax(0,1fr) minmax(0,1fr)!important;
+    gap:7px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch {
+    grid-column:1/-1!important;
+    box-sizing:border-box!important;min-height:43px!important;height:43px!important;
+    padding:0 13px!important;
+    background:#fffefa!important;border:1px solid #c5dbd9!important;
+    border-radius:12px!important;color:#3a6371!important;
+    box-shadow:0 2px 4px rgba(9,38,50,.04);
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch input {
+    color:#163948!important;font-size:16px!important;font-weight:500!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopSearch input::placeholder {
+    color:#728894!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction {
+    min-width:0!important;width:100%!important;
+    height:41px!important;min-height:41px!important;
+    padding:0 5px!important;border-radius:11px!important;
+    color:#f2f7f9!important;background:#264e5f!important;
+    border:1px solid #527486!important;
+    font-size:12px!important;font-weight:750!important;
+    letter-spacing:-.15px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction.primary {
+    background:#06777c!important;color:#fff!important;
+    border-color:#31a5a9!important;
+    box-shadow:0 2px 8px rgba(6,52,65,.18);
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction:active {
+    transform:translateY(1px);
+  }
+
+  /* Compact scope selector in the content area. */
+  #app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar {
+    display:flex!important;min-height:54px!important;
+    align-items:center!important;gap:10px!important;
+    margin-bottom:11px!important;padding:7px 11px!important;
+    background:#fffefa!important;border:1px solid #e4e5dc!important;
+    border-radius:14px!important;box-shadow:0 3px 12px #18394a09!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar.hide {display:none!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar label {
+    flex:none!important;font-size:11px!important;font-weight:750!important;
+    color:#536b75!important;white-space:nowrap!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar select {
+    flex:1!important;width:0!important;min-width:0!important;
+    min-height:39px!important;height:39px!important;
+    color:#183f4d!important;background:#f3f7f5!important;
+    border:1px solid #d7e6e1!important;border-radius:10px!important;
+    font-size:14px!important;font-weight:700!important;
+    padding:0 9px!important;color-scheme:light!important;
+  }
+
+  /* Scan order: outstanding work, today, warnings, overdue, incidents, projects. */
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpiGrid {
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;margin:0!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi {
+    appearance:none!important;display:flex!important;flex-direction:column!important;
+    align-items:flex-start!important;justify-content:center!important;
+    min-width:0!important;min-height:87px!important;
+    padding:10px 12px 10px 14px!important;
+    border-radius:14px!important;border:1px solid #e0e6df!important;
+    background:#fffefa!important;
+    color:#19394a!important;
+    box-shadow:0 3px 12px rgba(29,57,64,.055)!important;
+    overflow:hidden!important;
+    text-align:left!important;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:before {
+    top:12px!important;bottom:12px!important;left:0!important;
+    width:4px!important;border-radius:0 4px 4px 0!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi>span {
+    margin:0 0 4px!important;font-size:10px!important;
+    font-weight:800!important;letter-spacing:.38px!important;
+    line-height:1.25!important;color:#637785!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi>b {
+    font-size:28px!important;font-weight:820!important;
+    line-height:1!important;letter-spacing:-.5px!important;
+    color:#173748!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi>small {
+    margin-top:4px!important;font-size:10.5px!important;
+    line-height:1.2!important;color:#647b82!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:nth-child(3) {
+    order:-6!important;background:#e7f4ee!important;border-color:#c8e4d8!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:nth-child(3):before {background:#17826a!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:nth-child(2) {order:-5!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:nth-child(4) {
+    order:-4!important;background:#fff4e6!important;border-color:#f0e0c6!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:nth-child(5) {
+    order:-3!important;background:#fff2f0!important;border-color:#ecd9d5!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:nth-child(6) {order:-2!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsKpi:nth-child(1) {order:-1!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome button.opsKpi {cursor:pointer!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome button.opsKpi:active {
+    filter:brightness(.96);
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome button.opsKpi:focus-visible {
+    outline:2px solid #087b7c!important;outline-offset:2px!important;
+  }
+
+  /* Project portfolio: full-width, readable, finger-sized rows. */
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectHeading {
+    display:flex!important;justify-content:space-between!important;
+    align-items:end!important;margin:3px 1px -2px!important;
+    gap:8px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectHeading h3 {
+    margin:0!important;color:#1b3d4c!important;font-size:16px!important;
+    font-weight:800!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectHeading span {
+    color:#6c7e85!important;font-size:11px!important;white-space:nowrap;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjects {
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectCard {
+    min-width:0!important;width:100%!important;min-height:82px!important;
+    padding:11px 13px!important;align-items:center!important;
+    border:1px solid #e1e6e0!important;border-radius:14px!important;
+    background:#fffefa!important;color:#1e3b49!important;
+    box-shadow:0 3px 10px rgba(27,55,65,.05)!important;
+    transition:border-color .14s,background .14s;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectCard:active {
+    background:#eff8f4!important;border-color:#9ec9bd!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectCard>div>span {
+    color:#0d858b!important;font-size:10.5px!important;font-weight:800!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectCard h3 {
+    margin:1px 0 6px!important;color:#213b4a!important;
+    font-size:15px!important;font-weight:750!important;line-height:1.25!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectStats {
+    gap:5px!important;display:flex!important;flex-wrap:wrap!important;
+    color:#506774!important;font-size:11px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectStats span {
+    padding:2px 6px!important;background:#eff3f1!important;
+    border-radius:6px!important;color:#536a76!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectStats .hot {
+    color:#b0433d!important;background:#fff0e9!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectCard>i {
+    color:#258a85!important;font-size:21px!important;
+  }
+
+  /* Secondary content remains accessible without dark-on-dark cards. */
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsPanel {
+    background:#fffefa!important;border:1px solid #e1e6e0!important;
+    border-radius:14px!important;box-shadow:0 3px 12px #18394a08!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsPanelHead {
+    background:#f8faf7!important;border-bottom:1px solid #e3e8e3!important;
+    padding:12px 14px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsPanelHead span {color:#0a7b7c!important;font-weight:800!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsPanelHead :is(h2,h3) {color:#203d49!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsPanelHead p {color:#657b84!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccFilters {background:#f7f9f6!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccFilters :is(input,select) {
+    color:#213e4c!important;background:#fffefa!important;
+    border:1px solid #dce6df!important;border-radius:9px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTable td,
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsProjectActivity :is(b,span,time) {color:#354d5b!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccAlertCount {
+    background:#fbe8dd!important;color:#a65337!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome :is(.ccStatus,.ccPriority,.ccWarn,.ccProjectTag) {
+    color:#456371!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTaskScopes {background:#f9faf6!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTaskScopes button {
+    background:#fffefa!important;color:#546a76!important;
+    border-color:#dbe5e0!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTaskScopes button[aria-pressed="true"] {
+    background:#e5f4ef!important;color:#067577!important;
+    border-color:#9ecfc3!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTaskScopes b {
+    background:#e5ebe8!important;color:inherit!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccActivity em,
+  #app.homeMode.opsOverviewMode.adminCommandHome .opsQuickActions button {
+    color:#087d80!important;
+  }
+
+  /* Short bottom dock: no oversized white block over content. */
+  #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav {
+    min-height:calc(60px + env(safe-area-inset-bottom))!important;
+    height:auto!important;gap:5px!important;
+    padding:4px 10px calc(4px + env(safe-area-inset-bottom))!important;
+    background:rgba(255,254,250,.98)!important;
+    border-top:1px solid #e0e9e3!important;
+    box-shadow:0 -3px 18px rgba(19,58,60,.07)!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav button {
+    min-height:52px!important;border-radius:11px!important;
+    color:#6b7e83!important;gap:2px!important;
+    font-size:11px!important;font-weight:700!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav button svg {
+    width:21px!important;height:21px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav button[aria-current="page"] {
+    background:#e6f3ed!important;color:#0f6d66!important;
+    font-weight:800!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome button:focus-visible,
+  #app.homeMode.opsOverviewMode.adminCommandHome select:focus-visible {
+    outline:2px solid #0e8b89!important;outline-offset:2px!important;
+  }
+}
+@media(max-width:360px) {
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccTopAction {font-size:10.5px!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectStats {font-size:10px!important;}
+  #app.homeMode.opsOverviewMode.adminCommandHome #overviewScopeBar label {font-size:10px!important;}
+}
+@media(min-width:761px) {
+  #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectHeading {display:none!important;}
+}
