@@ -1,13 +1,15 @@
 /*
- * ESTA camera permissions: never trigger a new getUserMedia permission prompt
- * during a routine "Chụp hình" action. Use system camera unless direct capture
- * is already permitted. This code NEVER requests camera permission itself.
+ * ESTA seamless photo capture. Direct camera captures a frame to the image
+ * annotator with NO native OS "Use Photo" confirmation. getUserMedia can
+ * trigger a camera permission prompt on the user's first tap; JavaScript
+ * cannot bypass that OS/browser requirement. No camera opens on app launch.
  */
 (() => {
   "use strict";
   let status = "unknown";
   let livePermission = null;
   let sequence = 0;
+  let deniedThisSession = false;
 
   const isIOS = () => {
     const ua = navigator.userAgent || "";
@@ -15,12 +17,18 @@
       (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   };
 
-  // In installed Safari PWAs, native capture is more predictable than
-  // getUserMedia; the browser/OS controls its own permission prompts.
-  const canUseDirect = () => {
-    return !isIOS() &&
-      status === "granted" &&
-      !!navigator.mediaDevices?.getUserMedia;
+  // Use in-app camera on iPhone/Android when possible. Only this mode
+  // bypasses the native camera's mandatory "Sử dụng ảnh" confirmation.
+  // A user click starts getUserMedia; do not request a stream on page load.
+  const canUseDirect = () =>
+    !deniedThisSession && status !== "denied" &&
+    !!navigator.mediaDevices?.getUserMedia;
+
+  const reportFailure = error => {
+    if (["NotAllowedError", "PermissionDeniedError", "SecurityError"].includes(error?.name)) {
+      deniedThisSession = true;
+      status = "denied";
+    }
   };
 
   async function refresh() {
@@ -35,7 +43,11 @@
       if (livePermission && livePermission !== p) livePermission.onchange = null;
       livePermission = p;
       status = p.state || "unknown";
-      p.onchange = () => { status = p.state || "unknown"; };
+      if (status === "granted") deniedThisSession = false;
+      p.onchange = () => {
+        status = p.state || "unknown";
+        if (status === "granted") deniedThisSession = false;
+      };
     } catch (_) {
       if (current === sequence) status = "unsupported";
     }
@@ -44,6 +56,7 @@
 
   window.ESTACameraPolicy = Object.freeze({
     canUseDirect,
+    reportFailure,
     refresh,
     get state() { return status; }
   });
