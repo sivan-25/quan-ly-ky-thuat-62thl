@@ -329,7 +329,7 @@ function renderPeopleSelector(kind){
  const selected=peopleSelected(kind);
  const names=[...new Set([...projectPeople.map(x=>x.name),...selected])].filter(Boolean);
  if(!names.length){
-   box.innerHTML='<div class="peopleEmpty"><b>Chưa có người thực hiện</b><span>Chọn “'+(inline?'Quản lý':'Chỉnh sửa danh sách')+'” để thêm nhân sự cho dự án.</span></div>';
+   box.innerHTML='<div class="peopleEmpty"><b>Chưa có người thực hiện</b><span>Nhấn biểu tượng Cài đặt nhân sự trên thanh phía trên để thêm tên cho dự án.</span></div>';
  }else{
    const scrollTop=box.scrollTop;
    const existing=Array.from(box.querySelectorAll("[data-person]"));
@@ -385,7 +385,7 @@ function closePeopleMenus(){
 }
 function openPeopleManager(){
  closePeopleMenus();
- $("#peopleManagerProject").textContent="Danh sách của "+(currentBuilding?.name||"dự án")+" · tự động lưu riêng theo dự án.";
+ $("#peopleManagerProject").textContent="Danh sách của "+(currentBuilding?.name||"dự án")+" · dùng chung tại Công việc, Năng lượng, Vật tư và Bảo trì.";
  $("#peopleManagerModal").classList.remove("hide");
  renderPeopleManager();
 }
@@ -403,30 +403,30 @@ async function fetchProjectPeople(buildingId=currentBuilding?.id){
  const rows=await sbFetch("/rest/v1/building_people?select=id,name&building_id=eq."+encodeURIComponent(buildingId)+"&order=name.asc",{token:centralSession.access_token});
  return Array.isArray(rows)?rows:[];
 }
+/* All project modules read one shared building_people catalog. Keep old records
+   unchanged; deleting the final entry must not re-import names from old tasks. */
+function refreshProjectPeopleControls(){
+ renderAllPeopleSelectors();
+ if(typeof inventoryFillPeople==="function")inventoryFillPeople();
+ if(typeof constructionFillPeople==="function")constructionFillPeople();
+ const list=document.getElementById("estaProjectPeopleDatalist");
+ if(list)list.innerHTML=projectPeople.map(p=>'<option value="'+esc(p.name)+'"></option>').join("");
+}
 async function loadProjectPeople(buildingId=currentBuilding?.id){
  if(!buildingId||!projectOverviewActive)return;
  const requestSeq=projectOpenSeq;
  let cached=[];try{cached=JSON.parse(localStorage.getItem(peopleLocalKey(buildingId))||"[]")}catch(e){}
  projectPeople=Array.isArray(cached)?cached:[];
- renderAllPeopleSelectors();
+ refreshProjectPeopleControls();
  if(!centralSession?.access_token)return;
  try{
-   let rows=await fetchProjectPeople(buildingId);
+   const rows=await fetchProjectPeople(buildingId);
    if(requestSeq!==projectOpenSeq||!projectOverviewActive||buildingId!==currentBuilding?.id)return;
-   if(!rows.length&&buildingId===currentBuilding?.id){
-     const legacy=existingProjectPeople();
-     if(legacy.length&&canProjectEdit()){
-       try{
-         await sbFetch("/rest/v1/building_people",{method:"POST",token:centralSession.access_token,body:legacy.map(name=>({building_id:buildingId,name}))});
-         rows=await fetchProjectPeople(buildingId);
-       }catch(e){console.warn("Seed project people failed",e)}
-     }else if(legacy.length){
-       rows=legacy.map((name,i)=>({id:"legacy-"+i,name}));
-     }
-   }
-   if(requestSeq!==projectOpenSeq||!projectOverviewActive||buildingId!==currentBuilding?.id)return;
+   // An empty catalog is intentional after the last person is removed.
    projectPeople=rows;
-   cacheProjectPeople();renderAllPeopleSelectors();renderPeopleManager();
+   cacheProjectPeople();
+   refreshProjectPeopleControls();
+   renderPeopleManager();
  }catch(e){console.warn("Load project people failed",e)}
 }
 async function addProjectPerson(name){
@@ -489,7 +489,8 @@ $("#taskPeopleButton").onclick=e=>togglePeopleMenu("task",e);
 $("#energyPeopleButton").onclick=e=>togglePeopleMenu("energy",e);
 $("#taskPeopleMenu").onclick=e=>e.stopPropagation();
 $("#energyPeopleMenu").onclick=e=>e.stopPropagation();
-document.querySelectorAll("[data-people-edit]").forEach(btn=>btn.onclick=e=>{e.preventDefault();e.stopPropagation();openPeopleManager()});
+const peopleSettingsButton=$("#peopleSettingsBtn");
+if(peopleSettingsButton)peopleSettingsButton.onclick=e=>{e.preventDefault();e.stopPropagation();if(projectOverviewActive&&currentBuilding?.id)openPeopleManager()};
 document.addEventListener("click",e=>{if(!e.target.closest(".peopleSelect"))closePeopleMenus()});
 $("#closePeopleManager").onclick=()=>$("#peopleManagerModal").classList.add("hide");
 $("#peopleManagerModal").onclick=e=>{if(e.target===$("#peopleManagerModal"))$("#peopleManagerModal").classList.add("hide")};
@@ -527,30 +528,7 @@ function setupMobilePeopleSheets(){
    else{if(menu.previousSibling!==anchors.get(menu))anchors.get(menu).after(menu);menu.classList.remove("mobilePeopleSheet")}
    menu.classList.toggle("inlinePeoplePicker",inline);
    if(inline&&!wasInline)menu.classList.remove("hide");else if(!inline&&wasInline)menu.classList.add("hide");
-   const edit=menu.querySelector("[data-people-edit]");
-   if(edit){
-    if(!edit.dataset.originalLabel)edit.dataset.originalLabel=edit.textContent;
-    let actions=menu.querySelector(".peopleInlineActions");
-    if(inline){
-     if(!actions){
-      actions=document.createElement("div");actions.className="peopleInlineActions";menu.append(actions);
-      const confirm=document.createElement("button");confirm.type="button";confirm.className="peopleInlineConfirm";
-      confirm.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Xác nhận</span>';
-      confirm.onclick=e=>{
-       e.preventDefault();e.stopPropagation();menu.classList.add("hide");
-       const trigger=document.getElementById(menu.id==="energyPeopleMenu"?"energyPeopleButton":"taskPeopleButton");
-       trigger?.setAttribute("aria-expanded","false");trigger?.focus({preventScroll:true});
-      };
-      actions.append(confirm);
-     }
-     if(edit.parentNode!==actions)actions.prepend(edit);
-     edit.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12-6 1 1-6L16 3Zm-2 2 5 5M4 15l5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Quản lý</span>';edit.title="Quản lý danh sách";edit.setAttribute("aria-label","Quản lý danh sách");
-    }else{
-     if(actions){menu.append(edit);actions.remove()}
-     menu.querySelector(".peopleInlineHead")?.remove();
-     edit.textContent=edit.dataset.originalLabel;edit.removeAttribute("title");edit.removeAttribute("aria-label");
-    }
-   }
+
   });
  }
  syncMobilePeopleLayout=arrange;
@@ -881,6 +859,7 @@ function renderHomeDashboard(){
 function syncOverviewNavigation(){
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
+ $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
  $("#navProjectOverview").classList.toggle("hide",!admin||!project);
  const quick=$("#quickReturnAdmin");
@@ -916,6 +895,7 @@ function applyBuildingUI(){
  $("#app").dataset.buildingId=String(currentBuilding?.id||"");
  renderAllPeopleSelectors();
  const name=currentBuilding?.name||"Dự án";
+ syncOverviewNavigation();
  document.querySelectorAll(".buildingNameText").forEach(el=>el.textContent=name);
  const ht=$("#topHomeTitle p"),wt=$("#topWorkTitle p"),et=$("#topEnergyTitle p"),it=$("#topInventoryTitle p"),mt=$("#topMaintenanceTitle p"),ct=$("#topContractorTitle p"),cmt=$("#topConstructionTitle p");
  if(ht)ht.textContent=isAdminOverview()?"Toàn bộ dự án":name;
@@ -2818,7 +2798,7 @@ function inventorySnapshot(material,year=inventoryYearValue()){
 }
 function inventoryFillPeople(){
  const names=projectPeople.map(x=>x.name).filter(Boolean);
- ["stockTxnPerformer","maintenanceAssigned","maintenanceRecordPerformer"].forEach(id=>{
+ ["stockTxnPerformer","maintenanceAssigned","maintenanceRecordPerformer","toolKeeper"].forEach(id=>{
    const el=$("#"+id);if(!el)return;
    const old=el.value;
    el.innerHTML='<option value="">— Chọn —</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");
