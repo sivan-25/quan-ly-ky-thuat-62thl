@@ -117,7 +117,7 @@ function ensureRoot(){
    if(e.target.closest("[data-cc-dispatch]"))return openDispatch();
    if(e.target.closest("[data-cc-directory]"))return openAdminPortal();
    const energy=e.target.closest("[data-overview-energy]");if(energy)return openEnergy(energy.dataset.overviewEnergy);
-   const p=e.target.closest("[data-cc-project]");if(p)return openProject(p.dataset.ccProject);const t=e.target.closest("[data-cc-task]");if(t){if(t.dataset.adminAssigned==="true"&&t.dataset.building!=="PERSONAL")return window.estaAdminWorkEditor?.open(t.dataset.building,t.dataset.taskId);return openTask(t.dataset.building,t.dataset.taskId)}const a=e.target.closest("[data-cc-alert]");if(a)return openAlert(a.dataset.building,a.dataset.module,a.dataset.refId,a.dataset.taskId)});
+   const p=e.target.closest("[data-cc-project]");if(p)return openProject(p.dataset.ccProject);const t=e.target.closest("[data-cc-task]");if(t){if(t.dataset.adminAssigned==="true"&&t.dataset.building!=="PERSONAL"&&typeof window.estaAdminWorkEditor?.open==="function")return window.estaAdminWorkEditor.open(t.dataset.building,t.dataset.taskId);return openTask(t.dataset.building,t.dataset.taskId)}const a=e.target.closest("[data-cc-alert]");if(a)return openAlert(a.dataset.building,a.dataset.module,a.dataset.refId,a.dataset.taskId)});
  }
  const admin=globalScope();root.classList.toggle("hide",!admin);
  $c("#app")?.classList.toggle("adminCommandHome",admin);
