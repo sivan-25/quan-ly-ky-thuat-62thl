@@ -319,3 +319,12 @@
 @media(min-width:761px) {
   #app.homeMode.opsOverviewMode.adminCommandHome .ccProjectHeading {display:none!important;}
 }
+
+/* Keep destination headings in view when tapping a mobile KPI. */
+@media(max-width:760px){
+ #app.homeMode.opsOverviewMode.adminCommandHome #ccProjectCards,
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccWorkspace>.opsPanel,
+ #app.homeMode.opsOverviewMode.adminCommandHome .ccAlertsPanel {
+   scroll-margin-top:18px;
+ }
+}
