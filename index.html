@@ -832,7 +832,15 @@
   .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button{transition:none!important}
 }
 </style>
-<link rel="stylesheet" href="admin-work-editor.css?v=20261011-adminedit01"></head><body>
+<link rel="stylesheet" href="admin-work-editor.css?v=20261011-adminedit01"><link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#173b56">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ESTA">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="stylesheet" href="esta-mobile.css?v=20261012-app01">
+</head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -889,6 +897,27 @@
   </div>
 </section>
 <div id="app" class="hide">
+<nav id="estaBottomNav" class="estaBottomNav" aria-label="Điều hướng nhanh trên điện thoại">
+  <button type="button" data-esta-nav="home" aria-label="Tổng quan" aria-current="page">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Tổng quan</span>
+  </button>
+  <button type="button" data-esta-nav="projects" aria-label="Dự án" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21h16M6 21V8l6-4 6 4v13M9 12h2v2H9zM13 12h2v2h-2z"/></svg><span>Dự án</span>
+  </button>
+  <button type="button" data-esta-nav="work" aria-label="Công việc">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M8 10l2 2 4-4M8 17h8"/></svg><span>Công việc</span>
+  </button>
+  <button type="button" data-esta-nav="energy" aria-label="Năng lượng">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-8 12h6l-1 8 9-13h-6z"/></svg><span>Năng lượng</span>
+  </button>
+  <button type="button" data-esta-nav="inventory" aria-label="Dụng cụ và vật tư">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v14H3zM6 4h12v3M7 12h4M13 12h4M7 17h10"/></svg><span>Vật tư</span>
+  </button>
+  <button type="button" data-esta-action="more" aria-label="Mở tất cả chức năng" aria-controls="mobileSidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.25"/><circle cx="12" cy="12" r="1.25"/><circle cx="19" cy="12" r="1.25"/></svg><span>Thêm</span>
+  </button>
+</nav>
+
 <button id="menuBackdrop" class="menuBackdrop" type="button" aria-label="Đóng menu điều hướng" hidden></button>
 <aside id="mobileSidebar" class="estaSidebar" aria-label="Điều hướng">
   <div class="mobileSidebarHeader"><span>MENU</span><button id="sidebarClose" type="button" aria-label="Đóng menu"><span aria-hidden="true">×</span> Đóng</button></div>
@@ -2610,7 +2639,9 @@ document.addEventListener("click",function estaDueDatePickerClick(event){
   try{if(typeof input.showPicker==="function")input.showPicker();else input.focus();}
   catch(_error){input.focus();}
 },true);
-</script></body></html>
+</script><script src="esta-mobile.js?v=20261012-app01"></script>
+<script src="pwa-register.js?v=20261012-pwa01"></script>
+</body></html>
 
 
 
