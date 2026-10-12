@@ -483,6 +483,7 @@ async function openDispatchDirectCamera(){
     ?"Camera ESTA chưa được cấp quyền. Hãy cho phép hoặc dùng camera điện thoại."
     :"Không mở được camera ESTA. Anh có thể dùng camera điện thoại.";
   shot.disabled=true;
+  shot.classList.add("hide");loading.classList.add("cameraError");
   const fallbackButton=document.createElement("button");
   fallbackButton.type="button";
   fallbackButton.className="directCamera130NativeFallback";
