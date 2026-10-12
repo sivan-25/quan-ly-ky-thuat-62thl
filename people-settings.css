@@ -1,0 +1,66 @@
+/* ESTA · Shared people settings, 2026-10-12.
+   One project-wide catalog, one touch to select a performer. */
+#app .peopleSettingsTopBtn{
+ display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ height:40px;min-width:40px;padding:0 11px;
+ flex:0 0 auto;cursor:pointer;touch-action:manipulation;
+ border:1.5px solid #49a8bd;border-radius:11px;
+ background:#112f49;color:#e5f6f6;box-shadow:none;
+ font-size:12px;font-weight:750;line-height:1;
+}
+#app .peopleSettingsTopBtn.hide{display:none!important}
+#app .peopleSettingsTopBtn svg{
+ display:block;width:20px;height:20px;flex:0 0 20px;
+ fill:none;stroke:currentColor;stroke-width:1.7;
+ stroke-linecap:round;stroke-linejoin:round;
+}
+#app .peopleSettingsTopBtn:focus-visible{
+ outline:2px solid #46c6db;outline-offset:2px;
+}
+#app .peopleSettingsTopBtn:hover{border-color:#72cedc;background:#17445b}
+#app .peopleSettingsTopBtn span{white-space:nowrap}
+#app .peopleOption{cursor:pointer;touch-action:manipulation}
+#app .inlinePeoplePicker .peopleOption{cursor:pointer}
+#app .inlinePeoplePicker .peopleNativeCheck{cursor:pointer;accent-color:#1475df}
+#app .peopleOption:focus-within{outline:2px solid #318bdf;outline-offset:-2px}
+#app .peopleManagerCard .peopleManagerFoot{color:#60768d}
+@media(max-width:1000px){
+ #app .peopleSettingsTopBtn{width:40px;min-width:40px;padding:0}
+ #app .peopleSettingsTopBtn span{display:none!important}
+}
+@media(max-width:760px){
+ #app .headerTools .peopleSettingsTopBtn,
+ #app.demoMobilePilot .headerTools .peopleSettingsTopBtn{
+  width:38px!important;min-width:38px!important;
+  height:42px!important;min-height:42px!important;
+  flex:0 0 38px!important;padding:0!important;
+  display:grid!important;place-items:center!important;
+  border-radius:10px!important;
+ }
+ #app .headerTools .peopleSettingsTopBtn.hide,
+ #app.demoMobilePilot .headerTools .peopleSettingsTopBtn.hide{display:none!important}
+ #app .headerTools .peopleSettingsTopBtn svg{width:19px!important;height:19px!important}
+ #app .headerTools .peopleSettingsTopBtn span{display:none!important}
+}
+@media(max-width:430px){
+ #app.demoMobilePilot .estaTopbar{gap:4px!important;padding-left:6px!important;padding-right:6px!important}
+ #app.demoMobilePilot .mobileMenuBtn{
+  width:38px!important;min-width:38px!important;flex:0 0 38px!important;
+ }
+ #app.demoMobilePilot .quickReturnAdmin{
+  font-size:10px!important;padding:6px 6px!important;
+ }
+ #app.demoMobilePilot .headerTools,
+ #app.demoMobilePilot .workHeaderActions{gap:4px!important}
+ #app.demoMobilePilot .estaTopbar .estaReportPdfBtn,
+ #app.demoMobilePilot .headerBell{
+  width:36px!important;min-width:36px!important;flex:0 0 36px!important;
+  height:40px!important;min-height:40px!important;
+ }
+ #app.demoMobilePilot .headerTools .peopleSettingsTopBtn{
+  width:36px!important;min-width:36px!important;flex:0 0 36px!important;
+  height:40px!important;min-height:40px!important;
+ }
+ #app.demoMobilePilot .topModuleTitle h1{font-size:14px!important}
+}
+@media(prefers-reduced-motion:reduce){#app .peopleSettingsTopBtn{transition:none!important}}
