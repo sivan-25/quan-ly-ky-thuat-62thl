@@ -1389,7 +1389,7 @@ async function addPendingTaskFiles(fileList,{retakeInput=null,retakeHandler=null
  }
 }
 function directCamera130Enabled(){
- return photoAnnotator130Enabled()&&window.matchMedia?.("(max-width:760px)")?.matches&&!!navigator.mediaDevices?.getUserMedia;
+ return photoAnnotator130Enabled()&&window.matchMedia?.("(max-width:760px)")?.matches&&window.ESTACameraPolicy?.canUseDirect()===true;
 }
 function captureVideoFrameToFile(video){
  return new Promise((resolve,reject)=>{
