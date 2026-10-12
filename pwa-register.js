@@ -144,3 +144,5 @@
   window.addEventListener('online', wake);
   document.addEventListener('visibilitychange', wake);
 })();
+
+/* Deployment sync: PWA release verification, 2026-10-12. */
