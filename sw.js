@@ -1,6 +1,6 @@
 /* ESTA PWA v1. Authentication, API, private records and documents stay network-only. */
-const CACHE = "esta-pwa-shell-v1";
-const ICONS = ["/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png"];
+const CACHE = "esta-pwa-shell-v2-tech-icon";
+const ICONS = ["/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable-512.png", "/icons/apple-touch-icon.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ICONS)).then(() => self.skipWaiting()));
 });
