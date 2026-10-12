@@ -289,3 +289,40 @@
     font-size:9px!important;
   }
 }
+
+/* Reflow the inventory page topbar so its full title is never ellipsized. */
+@media(max-width:760px){
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) .estaTopbar{
+   display:flex!important;flex-wrap:wrap!important;
+   height:auto!important;min-height:64px!important;
+   padding:8px 9px!important;gap:6px!important;align-items:center!important;
+   overflow:visible!important;
+ }
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) #menu{order:1!important;}
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) #quickReturnAdmin{order:2!important;}
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) .headerTools{
+   order:3!important;min-width:0!important;
+   flex:1 1 auto!important;max-width:100%!important;
+   justify-content:flex-end!important;
+ }
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) #topInventoryTitle{
+   order:4!important;flex:1 0 100%!important;
+   width:100%!important;max-width:100%!important;
+   min-width:0!important;overflow:visible!important;
+   padding:3px 4px 5px!important;
+ }
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) #topInventoryTitle h1{
+   display:block!important;max-width:100%!important;
+   white-space:normal!important;overflow:visible!important;
+   text-overflow:clip!important;font-size:18px!important;
+   line-height:1.25!important;
+ }
+}
+@media(max-width:390px){
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) #quickReturnAdmin{
+   padding:0 7px!important;min-width:40px!important;
+ }
+ #app.inventoryMode:has(#inventoryPage:not(.hide)) #quickReturnAdmin span{
+   display:none!important;
+ }
+}
