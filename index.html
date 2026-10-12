@@ -840,6 +840,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=esta-tech-20261012">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png?v=esta-tech-20261012">
 <link rel="stylesheet" href="esta-mobile.css?v=20261012-app01">
+<link rel="stylesheet" href="people-settings.css?v=20261012-shared01">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -1074,6 +1075,10 @@
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
       <input id="globalSearch" placeholder="Tìm công việc...">
     </div>
+    <button id="peopleSettingsBtn" class="peopleSettingsTopBtn hide" type="button" title="Cài đặt người thực hiện" aria-label="Cài đặt người thực hiện: thêm hoặc xóa tên" aria-haspopup="dialog" aria-controls="peopleManagerModal">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-2.2c0-2.4 2.1-4.3 5.5-4.3 1.6 0 2.9.3 3.9.9M18 14.2v2.1m0 3.4v.1M15.2 16.3a2.8 2.8 0 1 1 5.6 0 2.8 2.8 0 0 1-5.6 0Z"/></svg>
+      <span>Nhân sự</span>
+    </button>
     <button class="headerBell" type="button" title="Thông báo"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button>
   </div>
   <div class="account">
@@ -1227,7 +1232,7 @@
         <div id="taskPeopleMenu" class="peopleSelectMenu hide">
           <div class="peopleMenuHead"><b>Chọn người thực hiện</b><span>Có thể chọn nhiều người</span></div>
           <div id="taskPeopleOptions" class="peopleOptions"></div>
-          <button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button>
+          
         </div>
       </div>
     </label>
@@ -1678,7 +1683,7 @@
           <div id="energyPeopleMenu" class="peopleSelectMenu hide">
             <div class="peopleMenuHead"><b>Chọn người thực hiện</b><span>Có thể chọn nhiều người</span></div>
             <div id="energyPeopleOptions" class="peopleOptions"></div>
-            <button class="peopleEditBtn" type="button" data-people-edit>✎ Chỉnh sửa danh sách</button>
+            
           </div>
         </div>
       </label>
@@ -2366,7 +2371,7 @@
       <label class="full"><span>Hạng mục / nội dung thi công *</span><textarea id="constructionLogContent" rows="3" maxlength="900" required placeholder="VD: Lắp đặt đường ống máy lạnh tầng 6"></textarea></label>
       <label class="wide"><span>Vị trí thi công</span><input id="constructionLogLocation" maxlength="220" placeholder="Tầng, phòng, khu vực..."></label>
       <label><span>Nhà thầu</span><input id="constructionLogContractor" maxlength="180" placeholder="Đơn vị thi công"></label>
-      <label><span>Người thực hiện</span><input id="constructionLogPerformer" maxlength="160" placeholder="Tên người thực hiện"></label>
+      <label><span>Người thực hiện</span><input id="constructionLogPerformer" maxlength="160" list="estaProjectPeopleDatalist" placeholder="Tên người thực hiện"></label>
       <label class="wide"><span>Ghi chú</span><textarea id="constructionLogNote" rows="3" maxlength="600" placeholder="Thông tin phát sinh, nghiệm thu, lưu ý..."></textarea></label>
       <div class="contractorFormActions"><button id="cancelConstructionLogModal" type="button" class="contractorBtn ghost">Hủy</button><button type="submit" class="contractorBtn primary">Lưu lần sử dụng</button></div>
     </form>
@@ -2524,6 +2529,7 @@
     </form>
   </div>
 </div>
+<datalist id="estaProjectPeopleDatalist"></datalist>
 <div id="peopleManagerModal" class="modal hide">
   <div class="modalCard peopleManagerCard">
     <button id="closePeopleManager" class="modalClose" type="button">×</button>
@@ -2621,7 +2627,7 @@
   </div>
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-permission01"></script><script src="app.js?v=20261012-camera-fast01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-permission01"></script><script src="app.js?v=20261012-shared-people01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261007-pdf-compact01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261008-allprojects-save100ms09"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261012-camera-fast01"></script><script src="admin-work-editor.js?v=20261011-adminedit01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261006-single-result01"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
