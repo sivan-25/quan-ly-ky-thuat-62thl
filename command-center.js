@@ -438,7 +438,7 @@ async function editDispatchPhoto(i){
  }catch(err){console.warn(err);toast(err?.message||"Không thể chỉnh sửa ảnh")}
 }
 function ccDirectCameraEnabled(){
- return window.matchMedia?.("(max-width:760px)")?.matches&&!!navigator.mediaDevices?.getUserMedia&&!!window.PhotoAnnotator?.open;
+ return window.matchMedia?.("(max-width:760px)")?.matches&&window.ESTACameraPolicy?.canUseDirect()===true&&!!window.PhotoAnnotator?.open;
 }
 async function openDispatchDirectCamera(){
  const fallback=()=>{const input=$c("#ccDispatchCamera");if(input){input.value="";input.click()}};
