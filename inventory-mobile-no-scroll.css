@@ -1,0 +1,291 @@
+/* ESTA mobile inventory — presentation only, no data/schema/permission changes.
+   One full-width material card per item. Never render product photos. */
+@media (max-width:760px) {
+  #app #inventoryPage:not(.hide) {
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    min-width:0!important;overflow-x:clip!important;padding:8px 9px calc(95px + env(safe-area-inset-bottom))!important;
+  }
+  #app #inventoryPage :is(.inventoryWorkspace,.inventoryPane,.inventoryMonthRail,.inventoryMonthTabs,
+    .inventoryTableCard,.inventoryTableScroll,.inventorySupportGrid,.inventoryCommand,.inventoryStats) {
+    min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+  }
+  /* All 12 months and the year overview are available without a horizontal gesture. */
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthTabs {
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    width:100%!important;max-width:100%!important;
+    gap:5px!important;margin:8px 0!important;
+    padding:6px!important;overflow:visible!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthTabs button {
+    min-width:0!important;width:100%!important;
+    height:37px!important;min-height:37px!important;
+    font-size:12px!important;padding:0 2px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthTabs .yearOverviewBtn {
+    grid-column:1/-1!important;min-height:36px!important;
+  }
+  /* Search and material actions stay usable without squeezing the page. */
+  #app #inventoryMaterialsPane .inventoryToolbarActions {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;min-width:0!important;width:100%!important;
+  }
+  #app #inventoryMaterialsPane .inventoryToolbarActions .inventorySearch {
+    grid-column:1/-1!important;width:100%!important;min-width:0!important;
+  }
+  #app #inventoryMaterialsPane .inventoryToolbarActions :is(button,.inventoryQuickMenu,summary) {
+    width:100%!important;min-width:0!important;box-sizing:border-box!important;
+    font-size:12px!important;min-height:42px!important;
+  }
+  #app #inventoryMaterialsPane .inventoryToolbarActions .inventoryQuickMenu {
+    grid-column:1;
+  }
+  #app #inventoryMaterialsPane .inventoryToolbarActions #addMaterialBtn {
+    grid-column:2;
+  }
+
+  /* Monthly materials: card header has actual text and unit, four numeric cells
+     show the complete begin / received / used / closing values at a glance. */
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyCard .inventoryTableScroll,
+  #app.demoMobilePilot #inventoryMaterialsPane .materialMonthlyCard .inventoryTableScroll {
+    width:100%!important;max-width:100%!important;
+    overflow-x:clip!important;overflow-y:visible!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable {
+    display:block!important;min-width:0!important;max-width:100%!important;
+    width:100%!important;table-layout:auto!important;
+    background:transparent!important;border-collapse:separate!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable thead {
+    display:none!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody {
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    gap:9px!important;padding:9px!important;
+    width:100%!important;box-sizing:border-box!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody tr {
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:0!important;align-items:stretch!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    padding:8px 9px!important;box-sizing:border-box!important;
+    border:1px solid #30435b!important;
+    border-radius:12px!important;
+    background:#131f34!important;
+    box-shadow:0 3px 10px rgba(0,0,0,.06)!important;
+    overflow:hidden!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody tr.lowStock {
+    border-color:#7d4850!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td,
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody tr:nth-child(even) td,
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody tr:hover td {
+    display:flex!important;flex-direction:column!important;align-items:center!important;
+    justify-content:center!important;gap:4px!important;
+    min-width:0!important;width:auto!important;max-width:100%!important;
+    box-sizing:border-box!important;
+    height:auto!important;min-height:0!important;
+    padding:8px 3px!important;
+    margin:0!important;border:0!important;
+    background:transparent!important;text-align:center!important;
+    font-variant-numeric:tabular-nums;white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    font-size:13px!important;line-height:1.3!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td.sttCell {
+    grid-column:1!important;grid-row:1!important;
+    align-items:flex-start!important;justify-content:flex-start!important;
+    padding:7px 6px!important;
+    color:#9ab1ca!important;font-size:12px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td.sttCell:before {
+    content:"STT"!important;display:block;
+    font-size:9px;color:#7f95ad;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td.materialNameCell {
+    grid-column:2/-1!important;grid-row:1!important;
+    align-items:flex-start!important;justify-content:center!important;
+    text-align:left!important;padding:6px 4px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable .materialNameCell b {
+    font-size:15px!important;line-height:1.32!important;
+    font-weight:730!important;color:#edf5ff!important;
+    white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important;
+    text-overflow:clip!important;max-width:100%!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable .materialNameCell small {
+    max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td:nth-child(3) {
+    grid-column:1/-1!important;grid-row:2!important;
+    display:block!important;padding:0 6px 8px!important;
+    color:#a8bfd0!important;text-align:left!important;
+    border-bottom:1px solid #2b3a52!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td:nth-child(3):before {
+    content:"Đơn vị: "!important;color:#8da1b8!important;
+  }
+  /* Regular monthly inventory */
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(n+4):nth-child(-n+7) {
+    grid-row:3!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(4) {grid-column:1!important;}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(5) {grid-column:2!important;}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(6) {grid-column:3!important;}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(7) {grid-column:4!important;}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(4):before {content:"Tồn đầu";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(5):before {content:"Nhập";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(6):before {content:"Xuất";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(7):before {content:"Tồn cuối";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable:not(.yearView) td:nth-child(8) {
+    grid-column:1/-1!important;grid-row:4!important;
+  }
+
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable td:nth-child(n+4):before {
+    display:block!important;color:#9babbd!important;
+    font-size:10px!important;font-weight:670!important;line-height:1.25!important;
+    white-space:nowrap!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable td .stockFinal {
+    min-width:42px!important;min-height:28px!important;height:auto!important;
+    font-size:13px!important;padding:4px 8px!important;
+    box-sizing:border-box!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable .invRowActions.compact {
+    display:flex!important;gap:10px!important;justify-content:flex-end!important;
+    align-items:center!important;width:100%!important;
+    padding:6px 4px 2px!important;
+    border-top:1px solid #2b3a52!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable .invRowActions.compact button {
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    width:42px!important;height:42px!important;min-width:42px!important;
+    min-height:42px!important;flex:none!important;border-radius:10px!important;
+    touch-action:manipulation!important;
+  }
+
+  /* Year totals are also read vertically, including all 12 monthly N/X values. */
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(4) {
+    grid-column:1!important;grid-row:3!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(17) {
+    grid-column:2!important;grid-row:3!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(18) {
+    grid-column:3!important;grid-row:3!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(19) {
+    grid-column:4!important;grid-row:3!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(4):before {content:"Tồn đầu";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(17):before {content:"Tổng nhập";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(18):before {content:"Tổng xuất";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(19):before {content:"Tồn cuối";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td.yearMonthCell {
+    grid-column:span 2!important;
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    column-gap:5px!important;row-gap:3px!important;
+    border-top:1px solid #293b52!important;
+    padding:8px 5px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td.yearMonthCell:before {
+    grid-column:1/-1!important;color:#d4e4ee!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(5):before{content:"Tháng 01";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(6):before{content:"Tháng 02";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(7):before{content:"Tháng 03";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(8):before{content:"Tháng 04";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(9):before{content:"Tháng 05";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(10):before{content:"Tháng 06";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(11):before{content:"Tháng 07";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(12):before{content:"Tháng 08";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(13):before{content:"Tháng 09";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(14):before{content:"Tháng 10";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(15):before{content:"Tháng 11";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(16):before{content:"Tháng 12";}
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable.yearView td:nth-child(20){
+    grid-column:1/-1!important;
+  }
+
+  /* Transaction history. No columns or controls are dropped. */
+  #app.inventoryMode #inventoryMaterialsPane .transactionCard .inventoryTableScroll {
+    width:100%!important;overflow-x:clip!important;overflow-y:visible!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable {
+    display:block!important;width:100%!important;min-width:0!important;
+    max-width:100%!important;table-layout:auto!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable :is(colgroup,thead) {
+    display:none!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable tbody {
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;padding:9px!important;width:100%!important;
+    box-sizing:border-box!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable tbody tr {
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    min-width:0!important;width:100%!important;
+    border:1px solid #30435b!important;border-radius:11px!important;
+    background:#131f34!important;overflow:hidden!important;
+    box-sizing:border-box!important;padding:9px 11px!important;gap:3px 10px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td,
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable tbody tr:nth-child(even) td {
+    display:block!important;min-width:0!important;width:auto!important;
+    max-width:100%!important;
+    height:auto!important;min-height:0!important;
+    padding:5px 0!important;
+    white-space:normal!important;overflow-wrap:anywhere!important;
+    background:transparent!important;border:0!important;
+    text-align:left!important;font-size:12.5px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:before {
+    display:block!important;font-size:10px!important;
+    line-height:1.3!important;color:#91a7bd!important;margin-bottom:2px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(1){grid-column:1;grid-row:1;}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(1):before{content:"Ngày";}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(2){
+    grid-column:1/-1;grid-row:2;
+    padding:7px 0!important;border-top:1px solid #2c3b52!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(2):before{content:"Vật tư";}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(3){grid-column:2;grid-row:1;}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(3):before{content:"Loại";}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(4){grid-column:1;grid-row:3;}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(4):before{content:"Số lượng";}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(5){grid-column:2;grid-row:3;}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(5):before{content:"Người thực hiện";}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(6){
+    grid-column:1/-1;grid-row:4;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(6):before{content:"Ghi chú";}
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(7){
+    grid-column:1/-1;grid-row:5;
+    border-top:1px solid #2c3b52!important;
+    text-align:right!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(7):before {
+    content:"Thao tác";text-align:left!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .transactionTable td:nth-child(7) button {
+    min-height:40px!important;min-width:40px!important;
+    touch-action:manipulation!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .inventoryTableCard,
+  #app.inventoryMode #inventoryMaterialsPane .inventoryTableScroll {
+    max-width:100%!important;
+  }
+}
+@media(max-width:365px) {
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable tbody td {
+    font-size:12px!important;
+  }
+  #app.inventoryMode #inventoryMaterialsPane .materialMonthlyTable td:nth-child(n+4):before {
+    font-size:9px!important;
+  }
+}
