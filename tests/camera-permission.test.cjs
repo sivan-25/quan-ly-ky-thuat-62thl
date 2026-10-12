@@ -37,24 +37,33 @@ async function policyFixture({ios=false,initial='prompt',supported=true}={}) {
       await new Promise(resolve=>setImmediate(resolve));
     },
     async refresh(){await win.ESTACameraPolicy.refresh()},
+    fail(error){win.ESTACameraPolicy.reportFailure(error)},
     events
   };
 }
 
 (async()=>{
  const prompt=await policyFixture({initial:'prompt'});
- assert.equal(prompt.direct,false,'Not-yet-granted Android camera uses native capture');
+ assert.equal(prompt.direct,true,'Android opens in-app camera with permission obtained on explicit capture tap');
  assert.equal(prompt.requests,0,'Permission policy never calls getUserMedia');
  await prompt.change('granted');
  assert.equal(prompt.direct,true,'Existing Android grant supports fast direct camera');
  await prompt.change('denied');
- assert.equal(prompt.direct,false,'Revoked permission returns to native capture');
+ assert.equal(prompt.direct,false,'Revoked camera permission returns to system camera');
 
  const unsupported=await policyFixture({supported:false});
- assert.equal(unsupported.direct,false,'Unsupported Permissions API uses native capture');
+ assert.equal(unsupported.direct,true,'Unsupported Permissions API can still use camera stream on gesture');
  const ios=await policyFixture({ios:true,initial:'granted'});
- assert.equal(ios.direct,false,'iPhone installed PWA prefers native capture');
+ assert.equal(ios.direct,true,'iPhone installed PWA prefers direct capture to skip Use Photo prompt');
  assert.equal(ios.queryCount,0,'iPhone skips unnecessary permission query');
+ ios.fail({name:'NotAllowedError'});
+ assert.equal(ios.direct,false,'Denied camera access in iPhone session falls back to system capture');
+ const recoverable=await policyFixture({initial:'granted'});
+ recoverable.fail({name:'AbortError'});
+ assert.equal(recoverable.direct,true,'Transient camera failure must not mark permission denied');
+ const denied=await policyFixture({initial:'granted'});
+ denied.fail({name:'SecurityError'});
+ assert.equal(denied.direct,false,'Explicit browser security denial disables direct camera');
 
  const html=js('index.html');
  const start=html.indexOf('camera-permission.js?v=');
@@ -72,6 +81,12 @@ async function policyFixture({ios=false,initial='prompt',supported=true}={}) {
  assert.match(admin,/const fallback=\(\)=>\{const input=\$c\("#ccDispatchCamera"\);if\(input\)\{input.value="";input.click\(\)\}\}/,'Admin retains native user-gesture fallback');
  assert.match(html,/id="cameraNativeInput"[^>]*capture="environment"/);
  assert.match(admin,/id="ccDispatchCamera"[^>]*capture="environment"/);
+ assert.match(project,/await addPendingTaskFiles\(\[file\],\{retakeHandler:openDirectCamera130\}\)/,'Project camera shutter must open annotator directly');
+ assert.match(admin,/await addDispatchMedia\(\[file\],\{retakeInput:null,forceAnnotate:true\}\)/,'Admin shutter always opens annotator even before choosing a project');
+ assert.match(admin,/addDispatchMedia\(files,\{retakeInput:m\.querySelector\("#ccDispatchCamera"\),forceAnnotate:true\}\)/,'System fallback must open Admin annotator');
+ assert.match(project,/fallback\.onclick=\(\)=>\{\s*cleanup\(\);\s*const input=/,'Project fallback requires a new user gesture');
+ assert.match(admin,/fallbackButton\.onclick=\(\)=>\{cleanup\(\);fallback\(\)\}/,'Admin fallback requires a new user gesture');
+ assert.ok(html.includes('camera-permission.js?v=20261012-seamless02'));
  assert.equal(prompt.requests,0);
- console.log('ESTA camera permission policy: native fallback, Android pre-grant, iOS and Admin/project guards OK');
+ console.log('ESTA camera direct-to-editor: iOS/Android shutter, permission fallback and project/Admin guards OK');
 })().catch(err=>{console.error(err);process.exitCode=1});

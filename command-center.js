@@ -395,9 +395,9 @@ function renderDispatchMedia(){
  box.innerHTML=personalExistingImages.map((ref,i)=>'<div class="ccDispatchThumb"><img '+(isStorageRef(ref)?'data-storage-path="'+escC(storagePathFromRef(ref))+'"':'src="'+escC(ref)+'"')+' class="ccDispatchThumbPhoto" role="button" tabindex="0" data-cc-existing-view="'+i+'" alt="Ảnh đã lưu '+(i+1)+'"><button type="button" data-cc-remove-existing="'+i+'" aria-label="Xóa ảnh đã lưu">×</button><span>'+(i+1)+'</span></div>').join("")+ccDispatchFiles.map((f,i)=>{const u=URL.createObjectURL(f);ccDispatchPreviewUrls.push(u);return '<div class="ccDispatchThumb"><img class="ccDispatchThumbPhoto" src="'+u+'" alt="Ảnh giao việc '+(i+1)+'" role="button" tabindex="0" data-cc-view-image="'+i+'" aria-label="Xem ảnh giao việc '+(i+1)+'"><button type="button" data-cc-remove-image="'+i+'" aria-label="Xóa ảnh">×</button><span>'+(i+1)+'</span></div>'}).join("");
  if(personalExistingImages.length&&typeof hydrateMediaImages==="function")hydrateMediaImages(box);
 }
-async function addDispatchMedia(fileList,{retakeInput=null}={}){
+async function addDispatchMedia(fileList,{retakeInput=null,forceAnnotate=false}={}){
  const incoming=[...fileList].filter(f=>f?.type?.startsWith("image/"));if(!incoming.length)return;
- const annotate=(ccDispatch130Selected()||$c("#ccDispatchPersonal")?.checked)&&!!window.PhotoAnnotator?.open;
+ const annotate=(forceAnnotate||ccDispatch130Selected()||$c("#ccDispatchPersonal")?.checked)&&!!window.PhotoAnnotator?.open;
  if(!annotate){ccDispatchFiles.push(...incoming);ccDispatchPhotoMeta.push(...incoming.map(()=>null));renderDispatchMedia();return}
  for(const sourceFile of incoming){
   try{
@@ -472,10 +472,25 @@ async function openDispatchDirectCamera(){
    try{
     const file=await captureVideoFrameToFile(video);
     cleanup();
-    await addDispatchMedia([file],{retakeInput:null});
+    await addDispatchMedia([file],{retakeInput:null,forceAnnotate:true});
    }catch(err){console.warn(err);root.classList.remove("capturing");shot.disabled=false;toast(err?.message||"Không thể chụp ảnh")}
   };
- }catch(err){console.warn(err);cleanup();toast("Không mở được camera trực tiếp. Đang chuyển sang camera mặc định.");setTimeout(fallback,80)}
+ }catch(err){
+  console.warn(err);
+  if(closed)return;
+  window.ESTACameraPolicy?.reportFailure?.(err);
+  loading.textContent=err?.name==="NotAllowedError"
+    ?"Camera ESTA chưa được cấp quyền. Hãy cho phép hoặc dùng camera điện thoại."
+    :"Không mở được camera ESTA. Anh có thể dùng camera điện thoại.";
+  shot.disabled=true;
+  shot.classList.add("hide");loading.classList.add("cameraError");
+  const fallbackButton=document.createElement("button");
+  fallbackButton.type="button";
+  fallbackButton.className="directCamera130NativeFallback";
+  fallbackButton.textContent="Dùng camera điện thoại";
+  fallbackButton.onclick=()=>{cleanup();fallback()};
+  root.querySelector(".directCamera130Bottom").appendChild(fallbackButton);
+ }
 }
 function ensureDispatch(){
  let m=$c("#ccDispatchModal");if(m)return m;m=document.createElement("div");m.id="ccDispatchModal";m.className="ccModal hide";
@@ -487,7 +502,7 @@ function ensureDispatch(){
    updateDispatchMode();
  });
  m.querySelector("#ccDispatchDeletePersonal").addEventListener("click",deletePersonalTask);
-m.querySelector("#ccDispatchCameraBtn").addEventListener("click",()=>openDispatchDirectCamera());m.querySelector("#ccDispatchLibraryBtn").addEventListener("click",()=>{const input=m.querySelector("#ccDispatchImages");input.value="";input.click()});m.querySelector("#ccDispatchCamera").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera")})});m.querySelector("#ccDispatchImages").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera")})});m.querySelector("#ccDispatchForm").addEventListener("submit",submitDispatch);return m;
+m.querySelector("#ccDispatchCameraBtn").addEventListener("click",()=>openDispatchDirectCamera());m.querySelector("#ccDispatchLibraryBtn").addEventListener("click",()=>{const input=m.querySelector("#ccDispatchImages");input.value="";input.click()});m.querySelector("#ccDispatchCamera").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera"),forceAnnotate:true})});m.querySelector("#ccDispatchImages").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera")})});m.querySelector("#ccDispatchForm").addEventListener("submit",submitDispatch);return m;
 }
 function updateDispatchMode(){
  const m=$c("#ccDispatchModal");if(!m||!m.querySelector("#ccDispatchPersonal"))return;

@@ -345,3 +345,27 @@
     font-size:18px!important;
   }
 }
+
+/* Camera permission fallback, reachable via a real user tap on iOS/Android. */
+.directCamera130Shot.hide{display:none!important}
+.directCamera130Loading.cameraError{
+  width:min(330px,calc(100vw - 32px))!important;
+  max-width:calc(100vw - 32px)!important;
+  border-radius:14px!important;
+  text-align:center!important;
+  font-size:14px!important;
+  line-height:1.5!important;
+  padding:16px!important;
+}
+.directCamera130NativeFallback{
+  min-height:48px!important;
+  padding:11px 20px!important;
+  border:1px solid rgba(255,255,255,.7)!important;
+  border-radius:12px!important;
+  background:#f1e0bc!important;
+  color:#183a40!important;
+  font-size:15px!important;
+  font-weight:800!important;
+  touch-action:manipulation!important;
+  cursor:pointer!important;
+}

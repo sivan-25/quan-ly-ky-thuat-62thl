@@ -1436,9 +1436,25 @@ async function openDirectCamera130(){
    }
   };
  }catch(err){
-  console.warn(err);cleanup();
-  toast("Không mở được camera trực tiếp. Đang chuyển sang camera mặc định.");
-  const input=$("#cameraNativeInput");input.value="";setTimeout(()=>input.click(),80);
+  console.warn(err);
+  if(closed)return;
+  window.ESTACameraPolicy?.reportFailure?.(err);
+  // Browsers block file-input clicks after an async permission rejection.
+  // Give users a real button gesture for the system-camera fallback.
+  loading.textContent=err?.name==="NotAllowedError"
+    ?"Camera ESTA chưa được cấp quyền. Hãy cho phép hoặc dùng camera điện thoại."
+    :"Không mở được camera ESTA. Anh có thể dùng camera điện thoại.";
+  shot.disabled=true;
+  shot.classList.add("hide");loading.classList.add("cameraError");
+  const fallback=document.createElement("button");
+  fallback.type="button";
+  fallback.className="directCamera130NativeFallback";
+  fallback.textContent="Dùng camera điện thoại";
+  fallback.onclick=()=>{
+    cleanup();
+    const input=$("#cameraNativeInput");input.value="";input.click();
+  };
+  root.querySelector(".directCamera130Bottom").appendChild(fallback);
  }
 }
 $("#openNativeCamera").onclick=()=>{
