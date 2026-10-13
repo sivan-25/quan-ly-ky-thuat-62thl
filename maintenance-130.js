@@ -289,19 +289,39 @@ async function savePlan(ev){
  }catch(err){toast("Không lưu được: "+(err.message||err));}
  finally{busy=false;btn.disabled=false;}
 }
+function localDatetime(iso){
+ if(!iso)return "";
+ const d=new Date(iso);if(!Number.isFinite(d.getTime()))return "";
+ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes());
+}
+function recordedImages(event){
+ return Array.isArray(event.image_paths)?event.image_paths.map(x=>typeof x==="string"?{kind:"after",ref:x}:x).filter(x=>x?.ref):[];
+}
+function showImages(e){
+ const box=$("m130PhotoPreview");if(!box)return;
+ const photos=recordedImages(e);
+ box.innerHTML=photos.map(p=>'<div class="m130SavedPhoto"><small>'+(p.kind==="before"?"Trước":"Sau")+'</small>'+(typeof mediaImgHtml==="function"?mediaImgHtml(p.ref):'<span>Đã lưu ảnh</span>')+'</div>').join("");
+ if(typeof hydrateMediaImages==="function")hydrateMediaImages(box).catch(()=>{});
+}
 function openEvent(key){
  if(!canWrite())return;
  const o=getYearSchedule(year).find(x=>x.event.event_key===key);if(!o)return;
- currentEvent=o;
+ currentEvent=o;const e=o.event;
  $("m130ModalTitle").textContent=o.item.work_title;
  $("m130PlanForm").hidden=true;$("m130EventForm").hidden=false;
  $("m130EventInfo").textContent=o.item.system_group+" · "+(o.item.subsystem||"")+" · Chu kỳ: "+(interval(o.item)||"không lặp")+" tháng";
- $("m130EventDate").value=o.event.planned_date||o.scheduled;
- $("m130EventStatus").value=o.event.status==="planned"&&String(o.event.result_note||"").trim()?"completed":o.event.status;
- $("m130ResultTip").textContent=$("m130EventStatus").value==="completed"?"✓ Lưu kết quả sẽ đánh dấu Hoàn thành.":"Nhập kết quả thực hiện để tự chuyển sang Hoàn thành.";
- $("m130Who").value=o.event.completed_by||(personLabel(o.item.assigned_to).includes("Chưa chọn tên")?"":o.item.assigned_to)||"";
+ $("m130EventDate").value=e.planned_date||o.scheduled;
+ $("m130EventStatus").value=e.status==="skipped"?"cancelled":e.status;
+ $("m130ResultTip").textContent=e.status==="completed"&&!e.started_at?"Hồ sơ cũ đã hoàn thành, chưa đủ ảnh và mốc thời gian. Có thể bổ sung minh chứng.":"Hoàn thành yêu cầu KTV, thời gian, kết quả và ảnh.";
+ $("m130Who").value=e.completed_by||(personLabel(o.item.assigned_to).includes("Chưa chọn tên")?"":o.item.assigned_to)||"";
  renderPersonPickers();
- $("m130Result").value=o.event.result_note||"";
+ $("m130Result").value=e.result_note||"";
+ $("m130ResultCode").value=e.result_code||"";
+ $("m130StartAt").value=localDatetime(e.started_at);
+ $("m130EndAt").value=localDatetime(e.finished_at);
+ $("m130PostponeReason").value=e.postpone_reason||"";
+ $("m130BeforePhotos").value="";$("m130AfterPhotos").value="";
+ showImages(e);
  $("m130Overlay").hidden=false;
 }
 async function saveEvent(ev){
