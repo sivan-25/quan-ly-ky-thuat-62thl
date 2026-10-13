@@ -12,25 +12,6 @@
  padding:14px!important;
  min-width:0;
 }
-#maintenancePage #maint130 .m130ServiceCard.m130State-done{
- background:#f3fcf7!important;border-left-color:#168451!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-working{
- background:#f1f7ff!important;border-left-color:#1d70d2!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-late{
- background:#fff5f5!important;border-left-color:#d5263b!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-planned{
- background:#fffaf1!important;border-left-color:#d3911c!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-review{
- background:#fff8e9!important;border-left-color:#af7512!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-postponed,
-#maintenancePage #maint130 .m130ServiceCard.m130State-cancelled{
- background:#f7f6fa!important;border-left-color:#7f6b99!important
-}
 #maintenancePage #maint130 .m130ServiceCard .m130SystemLabel{
  color:#345875!important;font-size:11px!important;font-weight:850!important;
  letter-spacing:.035em!important
@@ -178,4 +159,114 @@
  #maintenancePage #maint130 .m130Evidence img{width:66px;height:59px}
  #m130Gallery{padding:8px}
  #m130Gallery .m130GalleryPanel{width:100%;padding:9px}
+}
+
+
+
+/* ESTA · Unified status palette and responsive evidence positions.
+   Variables replace repeated background/border overrides for 6 statuses. */
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow){
+ --maint-color:#61758c;
+ --maint-border:#cad4dd;
+ --maint-bg-start:#fff;
+ --maint-bg-end:#f9fbfd;
+ background:linear-gradient(115deg,var(--maint-bg-start),var(--maint-bg-end))!important;
+ border:1px solid var(--maint-border)!important;
+ border-left:6px solid var(--maint-color)!important;
+ box-shadow:0 2px 9px color-mix(in srgb,var(--maint-color) 12%,transparent)!important;
+ min-width:0;
+}
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-done{
+ --maint-color:#0c8246;--maint-border:#9bcfaf;
+ --maint-bg-start:#dbf6e7;--maint-bg-end:#eafaf1;
+}
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-working{
+ --maint-color:#155fbb;--maint-border:#9cbee9;
+ --maint-bg-start:#e0eeff;--maint-bg-end:#eff6ff;
+}
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-late{
+ --maint-color:#c51937;--maint-border:#e7a3ac;
+ --maint-bg-start:#ffdde3;--maint-bg-end:#fff0f1;
+}
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-planned{
+ --maint-color:#996510;--maint-border:#e4c57e;
+ --maint-bg-start:#fff0cc;--maint-bg-end:#fff8e5;
+}
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-review{
+ --maint-color:#9a6506;--maint-border:#ddbf74;
+ --maint-bg-start:#fdf0ce;--maint-bg-end:#fff8e5;
+}
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow):is(.m130State-postponed,.m130State-cancelled){
+ --maint-color:#74548e;--maint-border:#cbb8df;
+ --maint-bg-start:#eae5f1;--maint-bg-end:#f8f5fc;
+}
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow) :is(.m130CardStatus,.m130Badge){
+ background:var(--maint-color)!important;color:#fff!important;
+ border-color:var(--maint-color)!important;font-weight:850!important;
+}
+/* Card: content stays left, photos fill the unused space on the right. */
+#maintenancePage #maint130 .m130CardLower{
+ display:flex;align-items:flex-start;gap:12px;min-width:0;
+ flex:1 0 auto;margin:0 0 10px;
+}
+#maintenancePage #maint130 .m130CardDetails{flex:1 1 0;min-width:0}
+#maintenancePage #maint130 .m130CardLower .m130CardMeta{
+ margin:10px 0 7px!important;color:#243d56!important;
+}
+#maintenancePage #maint130 .m130CardLower .m130CardResult{
+ margin:0!important;min-width:0;overflow-wrap:anywhere;
+}
+#maintenancePage #maint130 .m130CardLower>.m130Evidence{
+ flex:0 1 184px;min-width:0;max-width:192px;
+ margin:9px 0 0!important;align-self:flex-start;
+}
+/* Rows: evidence is a direct sibling of the description and actions. */
+#maintenancePage #maint130 .m130CompactRow{
+ display:flex!important;flex-wrap:nowrap!important;
+ align-items:center!important;gap:12px!important;min-width:0!important;
+}
+#maintenancePage #maint130 .m130CompactRow>.m130EntryBody{
+ flex:1 1 0!important;min-width:0!important;overflow-wrap:anywhere;
+}
+#maintenancePage #maint130 .m130CompactRow>.m130Evidence{
+ flex:0 0 auto;max-width:255px;
+ margin:0!important;align-self:center;align-content:center;
+ justify-content:flex-end;
+}
+#maintenancePage #maint130 .m130CompactRow>.m130EntryActions{
+ flex:0 0 auto;margin-left:0;align-self:center;
+}
+#maintenancePage #maint130 .m130CompactRow .m130Date{
+ flex:0 0 60px;min-width:0;width:60px;
+}
+#maintenancePage #maint130 .m130CompactRow .m130Date b{color:#17314b!important}
+@media(min-width:641px) and (max-width:1199px){
+ #maintenancePage #maint130 .m130CompactRow>.m130Evidence{
+  max-width:170px;justify-content:flex-start;
+ }
+ #maintenancePage #maint130 .m130CompactRow>.m130EntryActions button{
+  padding:7px 8px!important;font-size:10px!important;
+ }
+}
+@media(max-width:640px){
+ #maintenancePage #maint130 .m130CardLower{flex-direction:column;gap:4px}
+ #maintenancePage #maint130 .m130CardLower>.m130Evidence{
+  align-self:stretch;flex:0 0 auto;max-width:none;width:100%;
+ }
+ #maintenancePage #maint130 .m130CompactRow{
+  flex-wrap:wrap!important;align-items:flex-start!important;gap:7px!important;
+ }
+ #maintenancePage #maint130 .m130CompactRow .m130Date{
+  flex:0 0 46px;width:46px;
+ }
+ #maintenancePage #maint130 .m130CompactRow>.m130EntryBody{
+  flex:1 1 calc(100% - 56px)!important;
+ }
+ #maintenancePage #maint130 .m130CompactRow>.m130Evidence{
+  flex:1 1 calc(100% - 53px);min-width:0;max-width:calc(100% - 53px);
+  margin:1px 0 0 53px!important;justify-content:flex-start;
+ }
+ #maintenancePage #maint130 .m130CompactRow>.m130EntryActions{
+  flex:1 1 100%;width:100%;justify-content:flex-end;
+ }
 }
