@@ -110,7 +110,7 @@
       const filters=mode==="130"?$("maint130")?.querySelector(".m130Toolbar"):mode==="68"?$("maint68")?.querySelector(".ma68Filters"):page.querySelector(".maintenanceBoard .inventoryToolbarActions");
       move(stats,$("estamStats"));move(filters,$("estamNativeFilters"));
       const actions=$("estamNativeActions");
-      if(mode==="130"){move($("m130Create"),actions);move($("m130Legacy"),actions);}
+      if(mode==="130"){move($("m130Create"),actions);move($("m130Legacy"),actions);originalPress('[data-m130-layout="list"]');originalPress('[data-m130-view="rows"]');}
       else if(mode==="standard")move($("addMaintenanceAsset"),actions);
       const pdf=mode==="130"?$("m130Pdf"):mode==="68"?$("ma68Pdf"):$("maintenanceExportPdf");
       const topBtn=$("estamHeaderPdf");
