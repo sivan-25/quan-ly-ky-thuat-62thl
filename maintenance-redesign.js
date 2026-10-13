@@ -26,7 +26,8 @@
     '<div id="estamExtraView" class="estamExtraView" hidden></div>';
   head?.insertAdjacentElement("afterend",shell);
   const origins=new Map();
-  let mode="",view="rows", extraEntries=[], queued=false, lastMonth="", ready=false;
+  let mode="",view="rows", extraEntries=[], queued=false, ready=false;
+  const autoMonth=new Set();
   const move=(el,slot)=>{
     if(!el)return;
     if(!origins.has(el)){const marker=document.createComment("ESTA original position");el.parentNode.insertBefore(marker,el);origins.set(el,marker);}
@@ -106,6 +107,7 @@
       restore();mode=target;view="rows";
       shell.dataset.kind=mode;
       page.dataset.estamKind=mode;
+      page.dataset.estamView=view;
       const stats=mode==="130"?$("m130Stats"):mode==="68"?$("ma68Stats"):page.querySelector(".maintenanceStats");
       const filters=mode==="130"?$("maint130")?.querySelector(".m130Toolbar"):mode==="68"?$("maint68")?.querySelector(".ma68Filters"):page.querySelector(".maintenanceBoard .inventoryToolbarActions");
       move(stats,$("estamStats"));move(filters,$("estamNativeFilters"));
@@ -115,6 +117,14 @@
       const pdf=mode==="130"?$("m130Pdf"):mode==="68"?$("ma68Pdf"):$("maintenanceExportPdf");
       const topBtn=$("estamHeaderPdf");
       if(topBtn)topBtn.disabled=!pdf;
+    }
+    if(mode==="standard"){
+      const projectId=typeof currentBuilding!=="undefined"?String(currentBuilding?.id||""):"";
+      const loaded=typeof maintenanceLoadedBuilding!=="undefined"?String(maintenanceLoadedBuilding):"";
+      if(projectId&&loaded===projectId&&!autoMonth.has(projectId)){
+        const target=$("maintenanceMonthStrip")?.querySelector('[data-maint-month="'+(new Date().getMonth()+1)+'"]');
+        if(target){autoMonth.add(projectId);if(!target.classList.contains("active"))target.click();}
+      }
     }
     refreshHeader();
   }
