@@ -1,0 +1,199 @@
+(function(){
+"use strict";
+const B="130HH", $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const now=new Date();
+let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],ready=false,busy=false,currentEvent=null,currentPlan=null;
+const active=()=>typeof currentBuilding!=="undefined"&&String(currentBuilding?.id||"")===B;
+const canWrite=()=>typeof canProjectEdit==="function"&&canProjectEdit();
+const pad=n=>String(n).padStart(2,"0");
+const fmt=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"—";
+const monthISO=d=>String(d).slice(0,7)+"-01";
+function addMonths(anchor,delta){
+ const p=String(anchor).split("-").map(Number);
+ if(p.length!==3||!p.every(Number.isFinite))return "";
+ const abs=p[0]*12+p[1]-1+delta,y=Math.floor(abs/12),m=abs%12+1;
+ const day=Math.min(p[2],new Date(Date.UTC(y,m,0)).getUTCDate());
+ return y+"-"+pad(m)+"-"+pad(day);
+}
+function interval(i){const n=Number(String(i?.cadence||"").match(/\d+/)?.[0]||0);return Number.isInteger(n)&&n>=1&&n<=120?n:0;}
+function byDate(i){return stored.filter(e=>e.item_id===i.id).sort((a,b)=>String(a.planned_month).localeCompare(String(b.planned_month)))[0];}
+function schedule(y){
+ const result=[],known=new Map(stored.map(e=>[e.event_key,e]));
+ for(const i of items){
+  const base=byDate(i);if(!base)continue;
+  const origin=base.planned_date||String(base.planned_month).slice(0,7)+"-01";
+  const n=interval(i),limit=n?1200:1;
+  for(let k=0;k<limit;k++){
+   const date=k===0?origin:addMonths(origin,k*n);
+   if(!date||date.slice(0,4)>String(y))break;
+   if(date.slice(0,4)<String(y))continue;
+   const key=i.plan_code+":"+date.slice(0,7);
+   const real=known.get(key)||null;
+   result.push({item:i,event:real||{item_id:i.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,status:"planned",result_note:"",completed_by:"",image_paths:[]},virtual:!real,scheduled:date});
+  }
+ }
+ return result.sort((a,b)=>String(a.event.planned_date||a.scheduled).localeCompare(String(b.event.planned_date||b.scheduled))||a.item.work_title.localeCompare(b.item.work_title,"vi"));
+}
+function status(o){
+ const e=o.event;
+ if(e.status==="completed")return ["Hoàn thành","done"];
+ if(e.status==="skipped")return ["Không thực hiện","skip"];
+ const day=e.planned_date||o.scheduled,t=new Date(),today=t.getFullYear()+"-"+pad(t.getMonth()+1)+"-"+pad(t.getDate());
+ return day<today?["Chưa xác nhận","late"]:["Sắp diễn ra","soon"];
+}
+function ensure(){
+ if($("maint130"))return;
+ const page=$("maintenancePage"),anchor=page?.querySelector(".maintenanceSchedule");
+ if(!page||!anchor)return;
+ const root=document.createElement("section");root.id="maint130";
+ root.innerHTML='<div class="m130Header"><div><small>ESTA · 130 HỒNG HÀ · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Create">＋ Thêm công việc</button><button type="button" id="m130Pdf">Xuất PDF</button><button type="button" id="m130Reload">Làm mới</button></div></div>'+
+ '<div class="m130Stats" id="m130Stats"></div><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
+ '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa hoàn thành</option><option value="completed">Hoàn thành</option><option value="skipped">Không thực hiện</option></select></div>'+
+ '<div class="m130ListTop"><div><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><button type="button" id="m130Legacy">Thiết bị & nhật ký <span>⌄</span></button></div><div class="m130List" id="m130List"></div>';
+ anchor.parentNode.insertBefore(root,anchor);
+ const overlay=document.createElement("div");overlay.id="m130Overlay";overlay.hidden=true;overlay.innerHTML='<div class="m130Dialog"><div class="m130ModalHead"><h3 id="m130ModalTitle">Công việc bảo trì</h3><button type="button" id="m130Close" aria-label="Đóng">×</button></div><form id="m130PlanForm" hidden>'+
+ '<label>Nội dung công việc *<textarea id="m130Title" rows="2" required maxlength="500"></textarea></label><div class="m130Two"><label>Hệ thống<select id="m130System"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Chiếu sáng</option><option>Camera & an ninh</option><option>Khác</option></select></label><label>Vị trí<input id="m130Location" maxlength="160" placeholder="Tầng / khu vực"></label></div>'+
+ '<div class="m130Two"><label>Ngày bắt đầu chu kỳ *<input type="date" id="m130First" required></label><label>Chu kỳ (tháng)<input type="number" id="m130Cycle" min="0" max="120" step="1" value="0" required></label></div><p class="m130Hint" id="m130NextHint">0 = không lặp. Ví dụ 10/10/2026 + 3 tháng → 10/01/2027 → 10/04/2027.</p><label>Người phụ trách<input id="m130Assignee" maxlength="120" value="Kỹ thuật"></label><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu kế hoạch</button></div></form>'+
+ '<form id="m130EventForm" hidden><p id="m130EventInfo" class="m130Hint"></p><div class="m130Two"><label>Ngày dự kiến<input id="m130EventDate" type="date" required></label><label>Trạng thái<select id="m130EventStatus"><option value="planned">Chưa xác nhận</option><option value="completed">Hoàn thành</option><option value="skipped">Không thực hiện</option></select></label></div><label>Người thực hiện<input id="m130Who" maxlength="120"></label><label>Kết quả / ghi chú<textarea id="m130Result" rows="3" maxlength="2000" placeholder="Kết quả thực tế hoặc lý do chưa thực hiện"></textarea></label><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu kết quả</button></div></form></div>';
+ document.body.appendChild(overlay);
+ $("m130Prev").onclick=()=>{year=Math.max(2020,year-1);render();};
+ $("m130Next").onclick=()=>{year=Math.min(2100,year+1);render();};
+ $("m130Create").onclick=()=>openPlan();
+ $("m130Pdf").onclick=exportPdf;
+ $("m130Reload").onclick=()=>load(true);
+ $("m130Legacy").onclick=()=>{page.classList.toggle("maint130-assets-open");$("m130Legacy").setAttribute("aria-expanded",String(page.classList.contains("maint130-assets-open")));};
+ ["m130Search","m130Group","m130State"].forEach(id=>$(id).addEventListener(id==="m130Search"?"input":"change",render));
+ root.addEventListener("click",ev=>{
+  const m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]");
+  if(m){month=Number(m.dataset.m130Month);render();}
+  else if(e)openEvent(e.dataset.m130Event);
+  else if(p)openPlan(p.dataset.m130Plan);
+ });
+ $("m130Close").onclick=closeDialog;
+ overlay.querySelectorAll("[data-m130-cancel]").forEach(b=>b.onclick=closeDialog);
+ overlay.addEventListener("click",ev=>{if(ev.target===overlay)closeDialog();});
+ $("m130PlanForm").onsubmit=savePlan;
+ $("m130EventForm").onsubmit=saveEvent;
+ ["m130Cycle","m130First"].forEach(id=>$(id).addEventListener("input",hint));
+}
+function show(){
+ ensure();
+ const yes=active(),page=$("maintenancePage");
+ $("maint130").hidden=!yes;page?.classList.toggle("maint130-mode",yes);
+ if(!yes)page?.classList.remove("maint130-assets-open");
+ return yes;
+}
+function hint(){
+ const start=$("m130First").value,n=Number($("m130Cycle").value);
+ $("m130NextHint").textContent=n>0&&start?"Lịch kế tiếp: "+fmt(addMonths(start,n))+" → "+fmt(addMonths(start,n*2))+"; giữ nguyên ngày lịch khi chuyển năm.":"Chu kỳ 0 tháng: công việc chỉ xuất hiện một lần.";
+}
+function render(){
+ if(!show()||!ready)return;
+ const all=schedule(year),subset=all.filter(o=>Number(o.scheduled.slice(5,7))===month);
+ $("m130Stats").innerHTML=[[items.length,"Kế hoạch"],[subset.length,"Công việc tháng"],[subset.filter(o=>o.event.status==="completed").length,"Đã hoàn thành"],[subset.filter(o=>status(o)[1]==="late").length,"Chưa xác nhận"],[subset.filter(o=>o.virtual).length,"Theo chu kỳ"]].map(x=>'<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
+ $("m130Year").textContent="Năm "+year;
+ $("m130Months").innerHTML=Array.from({length:12},(_,idx)=>{const m=idx+1,count=all.filter(o=>Number(o.scheduled.slice(5,7))===m).length;return '<button type="button" data-m130-month="'+m+'" class="'+(m===month?"sel":"")+'"><small>Th '+pad(m)+'</small><b>'+count+'</b></button>';}).join("");
+ const groups=[...new Set(items.map(i=>i.system_group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi")),select=$("m130Group"),old=select.value;
+ if(select.options.length!==groups.length+1||groups.some(g=>![...select.options].some(o=>o.value===g))){select.innerHTML='<option value="">Tất cả hệ thống</option>'+groups.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");select.value=old;}
+ const q=$("m130Search").value.trim().toLocaleLowerCase("vi-VN"),g=select.value,s=$("m130State").value;
+ const visible=subset.filter(o=>(!g||o.item.system_group===g)&&(!s||(s==="planned"?o.event.status==="planned":o.event.status===s))&&(!q||[o.item.work_title,o.item.system_group,o.item.subsystem,o.item.assigned_to].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
+ $("m130ListTitle").textContent="Công việc tháng "+pad(month)+"/"+year;
+ $("m130ListCount").textContent=visible.length+" / "+subset.length+" công việc";
+ $("m130List").innerHTML=visible.map((o,idx)=>{
+  const e=o.event,i=o.item,st=status(o),key=esc(e.event_key),demo=String(i.source_notes||"").startsWith("MẪU");
+  return '<article class="m130Entry"><div class="m130Date"><b>'+fmt(e.planned_date||o.scheduled).slice(0,5)+'</b><small>'+year+'</small></div><div class="m130EntryBody"><div class="m130Pills"><span class="m130Sys">'+esc(i.system_group)+'</span><span class="m130Badge '+st[1]+'">'+st[0]+'</span>'+(demo?'<span class="m130Sample">MẪU</span>':'')+(interval(i)?'<span class="m130Cycle">↻ '+interval(i)+' tháng</span>':'')+'</div><h4>'+esc(i.work_title)+'</h4><p>'+esc(i.subsystem||"Chưa đặt vị trí")+' · Phụ trách: '+esc(i.assigned_to||"Kỹ thuật")+'</p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div><div class="m130EntryActions"><button type="button" data-m130-event="'+key+'" '+(!canWrite()?"disabled":"")+'>Cập nhật</button><button type="button" class="m130Edit" data-m130-plan="'+esc(i.id)+'" '+(!canWrite()?"disabled":"")+'>Sửa lịch</button></div></article>';
+ }).join("")||'<p class="m130Empty">Không có công việc trong tháng và bộ lọc này.</p>';
+ $("m130Create").disabled=!canWrite();
+}
+async function load(force){
+ if(!show()||busy||!centralSession?.access_token)return;
+ if(ready&&!force){render();return;}
+ busy=true;$("m130List").innerHTML='<p class="m130Empty">Đang tải dữ liệu bảo trì...</p>';
+ try{
+  const token=centralSession.access_token,[i,e]=await Promise.all([
+   sbFetch("/rest/v1/esta_maintenance_plan_items?select=*&building_id=eq."+B+"&order=created_at.asc",{token}),
+   sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=*&building_id=eq."+B+"&order=planned_month.asc,planned_date.asc",{token})
+  ]);
+  if(!active())return;
+  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];ready=true;render();
+ }catch(err){$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
+ finally{busy=false;}
+}
+function closeDialog(){$("m130Overlay").hidden=true;currentPlan=null;currentEvent=null;}
+function openPlan(id){
+ if(!canWrite())return;
+ currentPlan=id?items.find(i=>i.id===id):null;
+ const i=currentPlan,base=i?byDate(i):null;
+ $("m130ModalTitle").textContent=i?"Chỉnh sửa kế hoạch":"Thêm công việc bảo trì";
+ $("m130PlanForm").hidden=false;$("m130EventForm").hidden=true;
+ $("m130Title").value=i?.work_title||"";
+ $("m130System").value=i?.system_group||"HVAC";
+ $("m130Location").value=i?.subsystem||"";
+ $("m130First").value=base?.planned_date||base?.planned_month||year+"-"+pad(month)+"-10";
+ $("m130First").readOnly=!!i;
+ $("m130Cycle").value=interval(i);
+ $("m130Assignee").value=i?.assigned_to||"Kỹ thuật";
+ hint();$("m130Overlay").hidden=false;
+}
+async function savePlan(ev){
+ ev.preventDefault();if(busy||!active()||!canWrite())return;
+ const title=$("m130Title").value.trim(),date=$("m130First").value,n=Number($("m130Cycle").value);
+ if(!title||!date||!Number.isInteger(n)||n<0||n>120)return toast("Kiểm tra nội dung, ngày và chu kỳ (0–120 tháng).");
+ busy=true;const btn=$("m130PlanForm").querySelector("[type=submit]");btn.disabled=true;
+ try{
+  const token=centralSession.access_token,fields={work_title:title,system_group:$("m130System").value,subsystem:$("m130Location").value.trim(),assigned_to:$("m130Assignee").value.trim()||"Kỹ thuật",cadence:n?n+" tháng":"Không lặp"};
+  if(currentPlan){
+   await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(currentPlan.id)+"&building_id=eq."+B,{method:"PATCH",token,body:fields});
+  }else{
+   const id=crypto.randomUUID(),code="130HH-USER-"+id.slice(0,13);
+   await sbFetch("/rest/v1/esta_maintenance_plan_items",{method:"POST",token,body:{id,building_id:B,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Bổ sung từ trang Bảo trì 130 HH",...fields}});
+   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:{item_id:id,building_id:B,event_key:code+":"+date.slice(0,7),planned_month:monthISO(date),planned_date:date,status:"planned",source_kind:"year",location:$("m130Location").value.trim()}});
+   year=Number(date.slice(0,4));month=Number(date.slice(5,7));
+  }
+  closeDialog();ready=false;await load(true);toast("Đã lưu kế hoạch bảo trì");
+ }catch(err){toast("Không lưu được: "+(err.message||err));}
+ finally{busy=false;btn.disabled=false;}
+}
+function openEvent(key){
+ if(!canWrite())return;
+ const o=schedule(year).find(x=>x.event.event_key===key);if(!o)return;
+ currentEvent=o;
+ $("m130ModalTitle").textContent=o.item.work_title;
+ $("m130PlanForm").hidden=true;$("m130EventForm").hidden=false;
+ $("m130EventInfo").textContent=o.item.system_group+" · "+(o.item.subsystem||"")+" · Chu kỳ: "+(interval(o.item)||"không lặp")+" tháng";
+ $("m130EventDate").value=o.event.planned_date||o.scheduled;
+ $("m130EventStatus").value=o.event.status;
+ $("m130Who").value=o.event.completed_by||o.item.assigned_to||"Kỹ thuật";
+ $("m130Result").value=o.event.result_note||"";
+ $("m130Overlay").hidden=false;
+}
+async function saveEvent(ev){
+ ev.preventDefault();if(busy||!currentEvent||!canWrite()||!active())return;
+ const o=currentEvent,date=$("m130EventDate").value,s=$("m130EventStatus").value,who=$("m130Who").value.trim(),result=$("m130Result").value.trim();
+ if(!date||date.slice(0,7)!==o.scheduled.slice(0,7))return toast("Ngày chỉnh sửa phải thuộc tháng đang lên kế hoạch.");
+ if(s==="completed"&&(!who||!result))return toast("Nhập người thực hiện và kết quả bảo trì.");
+ if(s==="skipped"&&!result)return toast("Nhập lý do không thực hiện.");
+ busy=true;const btn=$("m130EventForm").querySelector("[type=submit]");btn.disabled=true;
+ try{
+  const token=centralSession.access_token,fields={planned_date:date,status:s,result_note:result,completed_by:s==="completed"?who:"",completed_at:s==="completed"?new Date().toISOString():null,updated_at:new Date().toISOString()};
+  if(o.virtual){
+   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:{id:crypto.randomUUID(),item_id:o.item.id,building_id:B,event_key:o.event.event_key,planned_month:monthISO(o.scheduled),location:o.item.subsystem||"",source_kind:"year",...fields}});
+  }else{
+   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(o.event.id)+"&building_id=eq."+B,{method:"PATCH",token,body:fields});
+  }
+  closeDialog();ready=false;await load(true);toast("Đã cập nhật công việc bảo trì");
+ }catch(err){toast("Lỗi lưu kết quả: "+(err.message||err));}
+ finally{busy=false;btn.disabled=false;}
+}
+async function exportPdf(){
+ if(!active()||!ready)return;
+ if(typeof window.exportGenericEstaPdf!=="function")return toast("Chức năng PDF chưa sẵn sàng.");
+ const list=schedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month);
+ if(!list.length)return toast("Không có công việc để xuất.");
+ const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,fmt(o.event.planned_date||o.scheduled),status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
+ try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ 130 HH",tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_130HH_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed").length,label:"HOÀN THÀNH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
+}
+window.mountMaintenance130=()=>{if(active())load();else show();};
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{ensure();show();},{once:true});else{ensure();show();}
+})();
