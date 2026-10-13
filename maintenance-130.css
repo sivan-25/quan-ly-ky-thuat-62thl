@@ -121,3 +121,118 @@
 #maint130 .m130Months button:focus-visible{outline:3px solid #4b92cb;outline-offset:2px}
 #maint130 .m130CardStatus.done{background:#b8f4d1;color:#06482b}
 #maint130 .m130ServiceCard.m130State-done{border-left-color:#18c478}
+
+
+/* === ESTA 130 HH | Compact branded maintenance UI, October 2026 ===
+   Project scoped: 62 THL, 68 PDL and 127 HH remain unchanged. */
+#maintenancePage.maint130-mode > .maintenanceHero{display:none!important}
+#maintenancePage.maint130-mode{--m130-purple:#411437;--m130-purple2:#683a60;--m130-cream:#F3DEBF;--m130-paper:#FFF9EF;--m130-bg:#F5ECD0;--m130-copper:#A46427;color:#411437}
+#maint130{color:#411437;max-width:100%;min-width:0}
+#maint130 .m130Header{background:linear-gradient(112deg,#411437 0%,#5b2751 100%);padding:16px 19px;border:1px solid #72446a;border-radius:14px}
+#maint130 .m130Header small{color:#f3debf}
+#maint130 .m130Header h2{color:#fff7ee;font-size:21px;line-height:1.3;margin:3px 0 4px}
+#maint130 .m130Header p{color:#f5e9e0;font-size:12px}
+#maint130 .m130Actions button{color:#411437;background:#f3debf;border:1px solid #f3debf;padding:9px 13px}
+#maint130 .m130Stats{grid-template-columns:repeat(5,minmax(0,1fr));margin:10px 0;gap:8px}
+#maint130 .m130Stats>div{background:#fff9ef;border:1px solid #e7d9c5;border-radius:10px;padding:10px 12px;gap:2px}
+#maint130 .m130Stats b{font-size:23px;color:#411437}
+#maint130 .m130Stats span{color:#775973;font-size:11px}
+#maint130 .m130Cal{padding:10px 12px;background:#fff9ef;border:1px solid #e4d2bd;border-radius:12px}
+#maint130 .m130Year{margin-bottom:7px}
+#maint130 .m130Year b{color:#411437}
+#maint130 .m130Year button{border-color:#d8c3c9;color:#411437;background:#faefdf;font-size:20px;padding:2px 13px}
+#maint130 .m130Months{gap:5px}
+#maint130 .m130Months button{background:#faf0e2;border:1px solid #e8d7bf;color:#58364d;padding:7px 2px;border-radius:8px}
+#maint130 .m130Months button.sel{background:#411437;color:#fff7ee;border-color:#411437}
+#maint130 .m130Months button b{font-size:16px}
+#maint130 .m130Months button small{font-size:10px}
+#maint130 .m130Toolbar{margin:10px 0;gap:7px}
+#maint130 .m130Toolbar input,#maint130 .m130Toolbar select{background:#fffaf4;border:1px solid #d8c3b2;color:#411437;padding:9px 10px;font-size:12px}
+#maint130 .m130ListTop{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:9px 0}
+#maint130 .m130ListTop>.m130Heading{display:flex;flex-direction:column;gap:2px}
+#maint130 .m130ListTop>.m130Heading b{color:#411437;font-size:16px}
+#maint130 .m130ListTop>.m130Heading small{color:#856e70}
+#maint130 .m130ListTop>.m130ListTools{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap;width:auto}
+#maint130 .m130AddButton{border:1px solid #411437;background:#411437;color:#fff9f1;padding:9px 13px;border-radius:8px;font-size:12px;font-weight:850;cursor:pointer}
+#maint130 .m130AddButton:disabled{opacity:.5;cursor:not-allowed}
+#maint130 .m130ViewSwitch{background:#f3e5d6;border:1px solid #d9c4cb;border-radius:9px;padding:3px;display:flex;flex-direction:row}
+#maint130 .m130ViewSwitch button{color:#6f4d68;font-size:12px;padding:7px 13px}
+#maint130 .m130ViewSwitch button[aria-pressed="true"]{color:#fff;background:#411437;box-shadow:none}
+#maint130 #m130Legacy{background:#fff9ef;border-color:#decbba;color:#68465e;padding:8px 10px}
+#maint130 #m130Legacy[aria-expanded="true"]{background:#f2e2d4;border-color:#a46427}
+#maint130 .m130List{min-width:0;gap:7px}
+#maint130 .m130List.m130RowsMode{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+#maint130 .m130CompactRow{display:flex;align-items:center;gap:12px;background:#fffaf3;border:1px solid #e4d5c5;border-left:4px solid #c2a17a;border-radius:10px;padding:11px 13px;min-width:0;cursor:pointer}
+#maint130 .m130CompactRow.m130State-done{border-left-color:#25915d;background:#f1fbf4}
+#maint130 .m130CompactRow.m130State-late{border-left-color:#ce6548;background:#fff8ef}
+#maint130 .m130CompactRow.m130State-soon{border-left-color:#ce9532;background:#fffbf2}
+#maint130 .m130CompactRow.m130State-ontrack{border-left-color:#8a6591}
+#maint130 .m130CompactRow.m130State-skip{border-left-color:#96939b}
+#maint130 .m130CompactRow:focus-visible{outline:3px solid #A46427;outline-offset:2px}
+#maint130 .m130CompactRow .m130Date{width:56px;min-width:56px;background:#f4e4d5;padding:9px 4px;border-radius:8px}
+#maint130 .m130CompactRow .m130Date b{font-size:17px;color:#411437}
+#maint130 .m130CompactRow .m130Date small{color:#89666d}
+#maint130 .m130CompactRow .m130EntryBody{min-width:0;flex:1}
+#maint130 .m130CompactRow .m130EntryBody h4{font-size:14px;color:#411437;margin:5px 0;line-height:1.4}
+#maint130 .m130CompactRow .m130EntryBody p{color:#75606c;font-size:11px}
+#maint130 .m130CompactRow .m130EntryBody p strong{color:#5c324e}
+#maint130 .m130CompactRow .m130Sys{background:#f3e8da;color:#65385d}
+#maint130 .m130CompactRow .m130Cycle{background:#efebf1;color:#6f4866}
+#maint130 .m130CompactRow .m130EntryActions{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+#maint130 .m130CompactRow .m130EntryActions button{border:1px solid #d3b8c9;background:#f2e7ed;color:#411437;border-radius:7px;padding:7px 12px;font-size:11px}
+#maint130 .m130CompactRow .m130EntryActions button:first-child{background:#411437;color:#fff;border-color:#411437}
+#maint130 .m130CompactRow .m130EntryActions .m130Edit{background:#fff8ed;border-color:#d9c4b3;color:#765261}
+#maint130 .m130CompactRow .m130EntryActions button:disabled{opacity:.46}
+#maint130 .m130Badge.done{color:#13562b;background:#cef1d9}
+#maint130 .m130Badge.soon{color:#845200;background:#ffedbf}
+#maint130 .m130Badge.late{color:#963b21;background:#ffe0d4}
+#maint130 .m130Badge.ontrack{color:#5d3370;background:#ede1f3}
+#maint130 .m130Badge.skip{color:#4c4a50;background:#e7e4e5}
+#maint130 .m130ServiceCard{background:linear-gradient(135deg,#321831,#251a2b);border-color:#57354f;color:#fff7ee;box-shadow:0 5px 16px #381c3016}
+#maint130 .m130ServiceCard h3{color:#fff9f1}
+#maint130 .m130SystemLabel{color:#ebc38c}
+#maint130 .m130SampleTag{background:#57344d;color:#f5ddae}
+#maint130 .m130CardLocation,#maint130 .m130CardMeta{color:#debed6}
+#maint130 .m130CardMeta b{color:#fff3e7}
+#maint130 .m130CardMetrics{background:#211427}
+#maint130 .m130CardMetrics small{color:#c5a1bc}
+#maint130 .m130CardMetrics strong{color:#fff5eb}
+#maint130 .m130CardFoot{border-color:#5f4058}
+#maint130 .m130CardFoot .m130RecordBtn{background:#f3debf;color:#411437;border-color:#f3debf}
+#maint130 .m130CardFoot .m130PlanBtn{background:#51304c;color:#fff3e7;border-color:#815776}
+#maint130 .m130CardFoot .m130DeleteBtn{color:#ffd4d4;border-color:#a56573;background:#663a47}
+#maint130 .m130CardResult{background:#473044;color:#fff2e0}
+#m130Overlay .m130Dialog{background:#fff9ef;color:#411437;border:1px solid #ecd9c2}
+#m130Overlay h3{color:#411437}
+#m130Overlay .m130ModalHead button{color:#411437;background:#f1e2d8}
+#m130Overlay input,#m130Overlay textarea,#m130Overlay select{color:#411437;border-color:#dbc6b6}
+#m130Overlay .m130Hint{color:#69495b;background:#f7eada}
+#m130Overlay .m130CompleteTip{background:#f4e2ee;color:#582347;border-color:#e9c2d9}
+#m130Overlay .m130Foot [type=submit]{background:#411437;color:#fff;border-color:#411437}
+#m130Overlay .m130PersonQuick{display:flex;gap:6px;flex-wrap:wrap;margin-top:-4px}
+#m130Overlay .m130PersonQuick button{border:1px solid #d9becd;background:#f5e8ec;color:#411437;font-size:11px;font-weight:750;padding:6px 10px;border-radius:8px;cursor:pointer}
+@media(max-width:900px){
+ #maint130 .m130Stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #maint130 .m130ListTop>.m130ListTools{width:100%;justify-content:flex-start}
+}
+@media(max-width:640px){
+ #maint130 .m130Stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #maint130 .m130Header{padding:12px}
+ #maint130 .m130Header h2{font-size:18px}
+ #maint130 .m130Cal{padding:9px}
+ #maint130 .m130Months{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #maint130 .m130ListTop>.m130ListTools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center}
+ #maint130 .m130AddButton{min-width:0;padding:9px 6px;white-space:nowrap}
+ #maint130 .m130ViewSwitch{min-width:0}
+ #maint130 .m130ViewSwitch button{padding:7px 10px}
+ #maint130 #m130Legacy{grid-column:1/-1;justify-self:start;font-size:11px;padding:6px 9px}
+ #maint130 .m130CompactRow{display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px;padding:10px}
+ #maint130 .m130CompactRow .m130Date{width:46px;min-width:46px;padding:7px 2px}
+ #maint130 .m130CompactRow .m130Date b{font-size:15px}
+ #maint130 .m130CompactRow .m130EntryBody{flex:1 1 calc(100% - 56px)}
+ #maint130 .m130CompactRow .m130EntryBody h4{font-size:13px}
+ #maint130 .m130CompactRow .m130EntryActions{width:100%;flex-direction:row;justify-content:flex-end}
+ #maint130 .m130CompactRow .m130EntryActions button{flex:1;max-width:155px}
+ #maint130 .m130List.m130CardsMode{grid-template-columns:minmax(0,1fr)}
+ #m130Overlay .m130PersonQuick{gap:5px}
+}
