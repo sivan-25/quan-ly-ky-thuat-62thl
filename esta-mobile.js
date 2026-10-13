@@ -18,6 +18,8 @@
     button: bar.querySelector('[data-esta-nav="' + key + '"]')
   })).filter(item => item.source && item.button);
   const more = bar.querySelector('[data-esta-action="more"]');
+  const adminTasks = bar.querySelector('[data-esta-action="admin-tasks"]');
+  const adminDispatch = bar.querySelector('[data-esta-action="admin-dispatch"]');
 
   function sync() {
     const on = !app.classList.contains("hide");
@@ -29,6 +31,12 @@
       if (active) button.setAttribute("aria-current", "page");
       else button.removeAttribute("aria-current");
     }
+    // Admin shortcuts exist only in the Admin command center and never reveal
+    // a module that the logged-in account cannot access.
+    const adminHome = on && app.classList.contains("homeMode") &&
+      app.classList.contains("adminCommandHome");
+    if (adminTasks) adminTasks.hidden = !adminHome;
+    if (adminDispatch) adminDispatch.hidden = !adminHome;
     if (more) {
       more.hidden = !on;
       more.setAttribute("aria-expanded", String(app.classList.contains("menuOpen")));
@@ -43,6 +51,17 @@
       window.requestAnimationFrame(sync);
     });
   }
+  adminTasks?.addEventListener("click", () => {
+    if (!app.classList.contains("adminCommandHome") || app.classList.contains("hide")) return;
+    const section = document.getElementById("ccTaskTitle")?.closest(".ccPanel");
+    section?.scrollIntoView({behavior: "smooth", block: "start"});
+  });
+  adminDispatch?.addEventListener("click", () => {
+    if (!app.classList.contains("adminCommandHome") || app.classList.contains("hide")) return;
+    const source = document.getElementById("ccHeaderDispatch") || document.getElementById("ccDispatch");
+    if (source && !source.disabled) source.click();
+  });
+
   more?.addEventListener("click", () => {
     const menu = document.getElementById("menu");
     if (menu && !app.classList.contains("hide")) menu.click();

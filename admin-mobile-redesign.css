@@ -285,25 +285,31 @@
     color:#087d80!important;
   }
 
-  /* Short bottom dock: no oversized white block over content. */
+  /* Compact, dark mobile dock, aligned to the header and outside safe-area clashes. */
   #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav {
     min-height:calc(60px + env(safe-area-inset-bottom))!important;
-    height:auto!important;gap:5px!important;
-    padding:4px 10px calc(4px + env(safe-area-inset-bottom))!important;
-    background:rgba(255,254,250,.98)!important;
-    border-top:1px solid #e0e9e3!important;
-    box-shadow:0 -3px 18px rgba(19,58,60,.07)!important;
+    height:auto!important;gap:3px!important;margin:0!important;
+    padding:5px 8px calc(5px + env(safe-area-inset-bottom))!important;
+    background:linear-gradient(110deg,#153d4e,#1d4e57)!important;
+    border-top:1px solid #39727b!important;
+    box-shadow:0 -7px 24px rgba(10,35,43,.22)!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav::before {
+    content:none!important;display:none!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav button {
     min-height:52px!important;border-radius:11px!important;
-    color:#6b7e83!important;gap:2px!important;
-    font-size:11px!important;font-weight:700!important;
+    color:#d3e6e8!important;gap:2px!important;
+    font-size:10.5px!important;font-weight:700!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav [data-esta-action="admin-dispatch"]{
+    color:#e8fff5!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav button svg {
     width:21px!important;height:21px!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome .estaBottomNav button[aria-current="page"] {
-    background:#e6f3ed!important;color:#0f6d66!important;
+    background:rgba(172,236,214,.17)!important;color:#f6fffa!important;
     font-weight:800!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome button:focus-visible,

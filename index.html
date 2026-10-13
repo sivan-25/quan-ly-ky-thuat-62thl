@@ -839,8 +839,8 @@
 <meta name="apple-mobile-web-app-title" content="ESTA">
 <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=esta-tech-20261012">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png?v=esta-tech-20261012">
-<link rel="stylesheet" href="esta-mobile.css?v=20261012-app01">
-<link rel="stylesheet" href="admin-mobile-redesign.css?v=20261012-adminclarity01">
+<link rel="stylesheet" href="esta-mobile.css?v=20261013-dock01">
+<link rel="stylesheet" href="admin-mobile-redesign.css?v=20261013-dock01">
 <link rel="stylesheet" href="inventory-mobile-no-scroll.css?v=20261012-noscroll02">
 <link rel="stylesheet" href="people-settings.css?v=20261012-shared01">
 </head><body>
@@ -903,6 +903,12 @@
 <nav id="estaBottomNav" class="estaBottomNav" aria-label="Điều hướng nhanh trên điện thoại">
   <button type="button" data-esta-nav="home" aria-label="Tổng quan" aria-current="page">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Tổng quan</span>
+  </button>
+  <button type="button" data-esta-action="admin-tasks" aria-label="Xem danh sách công việc Admin đã giao" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M8 10h8M8 14h8M8 18h5"/></svg><span>Công việc</span>
+  </button>
+  <button type="button" data-esta-action="admin-dispatch" aria-label="Giao công việc mới" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Giao việc</span>
   </button>
   <button type="button" data-esta-nav="projects" aria-label="Dự án" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21h16M6 21V8l6-4 6 4v13M9 12h2v2H9zM13 12h2v2h-2z"/></svg><span>Dự án</span>
@@ -2647,7 +2653,7 @@ document.addEventListener("click",function estaDueDatePickerClick(event){
   try{if(typeof input.showPicker==="function")input.showPicker();else input.focus();}
   catch(_error){input.focus();}
 },true);
-</script><script src="esta-mobile.js?v=20261012-app01"></script>
+</script><script src="esta-mobile.js?v=20261013-dock01"></script>
 <script src="pwa-register.js?v=20261012-autoupdate01"></script>
 </body></html>
 
