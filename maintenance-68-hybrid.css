@@ -286,3 +286,96 @@
  #hy68 .hy68-months button{padding:7px 2px}
  #hy68 .hy68-months .hy68-month-progress{font-size:8.5px}
 }
+
+
+/* 68 PDL – compact maintenance rows: keep status clear without oversized cards */
+#hy68 .hy68-head{padding:11px 14px;gap:10px}
+#hy68 .hy68-heading h2{font-size:20px;margin-bottom:2px}
+#hy68 .hy68-heading p{font-size:11px}
+#hy68 .hy68-summary{gap:7px;margin:9px 0}
+#hy68 .hy68-stat{padding:9px 10px;min-height:62px;gap:3px;border-radius:9px}
+#hy68 .hy68-stat strong{font-size:22px}
+#hy68 .hy68-stat span{font-size:10.5px}
+#hy68 .hy68-calendar-head{padding:7px 1px 4px}
+#hy68 .hy68-months{gap:5px;margin:6px 0 8px}
+#hy68 .hy68-months button{gap:2px;padding:6px 2px;border-radius:7px}
+#hy68 .hy68-months button strong{font-size:14px}
+#hy68 .hy68-months .hy68-month-progress{font-size:9px}
+#hy68 .hy68-context{padding:9px 12px;gap:6px;margin:2px 0 9px}
+#hy68 .hy68-overview-title strong{font-size:14px}
+#hy68 .hy68-overview-title>span{font-size:11px}
+#hy68 .hy68-progress{height:6px}
+#hy68 .hy68-legend{font-size:10px;gap:5px 12px}
+#hy68 .hy68-context .hy68-status-explain{font-size:9.5px}
+#hy68 .hy68-list{gap:8px}
+#hy68 .hy68-group{border-radius:10px}
+#hy68 .hy68-group-head{padding:8px 11px}
+#hy68 .hy68-group-head h3{font-size:12.5px}
+#hy68 .hy68-group-head .hy68-group-count{padding:3px 8px;font-size:10px}
+#hy68 .hy68-group-list{padding:4px;gap:4px}
+#hy68 .hy68-task,#hy68 .hy68-task:first-child{
+ display:grid;grid-template-columns:112px minmax(0,1fr);min-height:0;
+ border:1px solid #e4e3da;border-left:4px solid #98a59a;border-radius:8px;
+ box-shadow:none;background:#fff;overflow:hidden;
+}
+#hy68 .hy68-task.hy68-status-done{border-left-color:#238954}
+#hy68 .hy68-task.hy68-status-pending{border-left-color:#d68d1b}
+#hy68 .hy68-task.hy68-status-review{border-left-color:#c64e37}
+#hy68 .hy68-task.hy68-status-skip{border-left-color:#7a828a}
+#hy68 .hy68-date-panel{gap:3px;min-width:0;padding:9px 9px;justify-content:center}
+#hy68 .hy68-date-panel strong{font-size:14px;line-height:1.25}
+#hy68 .hy68-date-panel small{font-size:9px;letter-spacing:0;font-weight:750}
+#hy68 .hy68-task .hy68-task-main{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;grid-auto-rows:min-content;
+ gap:3px 10px;align-items:center;min-width:0;padding:8px 11px;
+}
+#hy68 .hy68-task-headline{grid-column:1;display:flex;flex-wrap:wrap;align-items:center;gap:5px 10px;min-width:0}
+#hy68 .hy68-job{min-width:0;flex:1 1 200px}
+#hy68 .hy68-job h4{font-size:13px;line-height:1.4;margin:0;font-weight:850}
+#hy68 .hy68-subline{display:block;font-size:10.5px;color:#6a796d;margin-top:2px;line-height:1.35;overflow-wrap:anywhere}
+#hy68 .hy68-big-status{padding:3px 8px;min-height:25px;gap:5px;border-radius:30px;font-size:10px;line-height:1.25;white-space:normal}
+#hy68 .hy68-big-status>span{width:15px;height:15px;font-size:10px}
+#hy68 .hy68-result-panel,
+#hy68 .hy68-result-panel.done,
+#hy68 .hy68-result-panel.pending,
+#hy68 .hy68-result-panel.review,
+#hy68 .hy68-result-panel.skip{
+ grid-column:1;display:flex;align-items:baseline;flex-wrap:wrap;gap:3px 6px;
+ border:0;background:transparent;border-radius:0;padding:0;margin:0;
+}
+#hy68 .hy68-result-panel b{display:inline;color:#34533e;font-size:10.5px;letter-spacing:0}
+#hy68 .hy68-result-panel p{font-size:11px;line-height:1.4;margin:0;color:#5a685e;white-space:pre-wrap;overflow-wrap:anywhere}
+#hy68 .hy68-result-panel.done p{color:#207349}
+#hy68 .hy68-result-panel.review p{color:#98513e}
+#hy68 .hy68-inline-note{grid-column:1;margin:0;font-size:10px;color:#96602d;line-height:1.35;overflow-wrap:anywhere}
+#hy68 .hy68-brief-note{grid-column:1;font-size:10.5px;color:#66756a;line-height:1.4}
+#hy68 .hy68-brief-note summary{display:list-item;cursor:pointer;font-weight:750}
+#hy68 .hy68-brief-note p{margin:4px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+#hy68 .hy68-task-bottom{grid-column:2;grid-row:1 / span 5;display:flex;justify-content:flex-end;align-self:center}
+#hy68 .hy68-task-bottom button{min-height:31px;padding:5px 10px;font-size:11px;border-radius:7px;background:#e3eee4;color:#245d3d;border:1px solid #c2d6c4}
+#hy68 .hy68-task-bottom button:hover{background:#d4e8d6}
+@media(max-width:640px){
+ #hy68 .hy68-head{padding:11px 12px}
+ #hy68 .hy68-heading h2{font-size:18px}
+ #hy68 .hy68-stat{padding:8px 9px;min-height:58px}
+ #hy68 .hy68-stat strong{font-size:20px}
+ #hy68 .hy68-months button{padding:6px 2px}
+ #hy68 .hy68-months .hy68-month-progress{font-size:8px}
+ #hy68 .hy68-context{padding:9px 10px;gap:6px}
+ #hy68 .hy68-group-head{padding:8px 10px}
+ #hy68 .hy68-group-list{padding:4px;gap:4px}
+ #hy68 .hy68-task,#hy68 .hy68-task:first-child{grid-template-columns:minmax(0,1fr);gap:0}
+ #hy68 .hy68-date-panel{flex-direction:row;align-items:center;justify-content:flex-start;gap:7px;padding:6px 9px;border:0;border-bottom:1px solid #e8e2d7}
+ #hy68 .hy68-date-panel strong{font-size:12.5px}
+ #hy68 .hy68-date-panel small{font-size:9px}
+ #hy68 .hy68-task .hy68-task-main{grid-template-columns:minmax(0,1fr) auto;padding:8px 9px;gap:4px 6px}
+ #hy68 .hy68-task-headline{display:flex;flex-wrap:wrap;gap:4px 7px}
+ #hy68 .hy68-job{flex:1 1 160px}
+ #hy68 .hy68-job h4{font-size:12.5px;line-height:1.4}
+ #hy68 .hy68-subline{font-size:10px}
+ #hy68 .hy68-big-status{min-height:22px;font-size:9.5px;padding:3px 7px}
+ #hy68 .hy68-result-panel p{font-size:10.5px}
+ #hy68 .hy68-inline-note{font-size:10px}
+ #hy68 .hy68-task-bottom{grid-row:1 / span 5;grid-column:2;align-self:center}
+ #hy68 .hy68-task-bottom button{width:auto;min-width:63px;min-height:30px;padding:5px 7px;font-size:10px}
+}
