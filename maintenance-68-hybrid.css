@@ -153,3 +153,6 @@
  #hy68Dialog .hy68-form-footer{bottom:calc(-8px - env(safe-area-inset-bottom));padding:12px 0 calc(7px + env(safe-area-inset-bottom))}
  #hy68Dialog .hy68-form-footer button{flex:1}
 }
+
+#hy68 .hy68-sandbox-notice{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;background:#fff0d2;color:#754d16;border:1px solid #ead09c;border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:11px;line-height:1.55}
+#hy68 .hy68-sandbox-notice strong{font-size:11px;letter-spacing:.3px;font-weight:900}
