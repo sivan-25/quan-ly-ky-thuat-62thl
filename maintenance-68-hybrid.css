@@ -1,0 +1,155 @@
+/* ESTA 68 PDL hybrid preview — scoped CSS only. */
+#maintenancePage.hy68-on{--hy-ink:#233f32;--hy-green:#274f3d;--hy-border:#e2dece;--hy-sub:#64746a;--hy-cream:#f7f1e6}
+#maintenancePage.hy68-on .maintenanceHero,#maintenancePage.hy68-on>.maintenanceStats{display:none!important}
+#maintenancePage.hy68-on #maint68{display:none!important}
+#maintenancePage.hy68-on:not(.hy68-devices-on) .maintenanceBoard,
+#maintenancePage.hy68-on:not(.hy68-devices-on) .maintenanceSchedule,
+#maintenancePage.hy68-on:not(.hy68-devices-on) .maintenanceHistoryCard{display:none!important}
+#maintenancePage.hy68-on #maintenanceExportPdf{display:none!important}
+#hy68[hidden],#hy68Dialog[hidden],#hy68WorkArea[hidden],#hy68DeviceIntro[hidden],#hy68CreateFields[hidden],#hy68EditFields[hidden],#hy68Warning[hidden]{display:none!important}
+#hy68,#hy68 *{box-sizing:border-box}
+#hy68{max-width:100%;min-width:0;color:#284438;font-family:inherit;padding:0 0 18px}
+#hy68 button,#hy68 input,#hy68 select,#hy68Dialog button,#hy68Dialog input,#hy68Dialog select,#hy68Dialog textarea{font:inherit}
+#hy68 button{cursor:pointer;transition:background-color .12s,border-color .12s,transform .12s}
+#hy68 button:focus-visible,#hy68 input:focus-visible,#hy68 select:focus-visible,#hy68Dialog :focus-visible{outline:3px solid #73a58a;outline-offset:2px}
+#hy68 button:disabled{opacity:.5;cursor:not-allowed}
+#hy68 .hy68-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding:15px 18px;background:linear-gradient(117deg,#244b3a,#355c43);color:#fff;border:1px solid #3a654d;border-radius:15px;box-shadow:0 8px 22px #203a2b14}
+#hy68 .hy68-heading{min-width:0;max-width:740px}
+#hy68 .hy68-heading .hy68-eyebrow{display:block;color:#eeddbb;font-size:10px;font-weight:850;letter-spacing:1.3px;margin-bottom:5px}
+#hy68 .hy68-heading h2{font-size:22px;font-weight:850;margin:0 0 4px;color:#fff;line-height:1.22}
+#hy68 .hy68-heading p{font-size:12px;line-height:1.5;margin:0;color:#e8eadc}
+#hy68 .hy68-actions{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}
+#hy68 .hy68-actions button{border:1px solid #bccdbd;background:#f5f0e4;color:#244a38;border-radius:9px;font-size:12px;font-weight:750;padding:10px 12px;min-height:38px;white-space:nowrap}
+#hy68 .hy68-actions button.hy68-primary,#hy68 .hy68-device-head button{background:#e4bb80;border-color:#e9c894;color:#253e31}
+#hy68 .hy68-actions button:hover{background:#fff8e9}
+#hy68 .hy68-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:13px 0}
+#hy68 .hy68-stat{min-width:0;border:1px solid #e2ddcf;background:#fffdf8;border-radius:12px;padding:14px 15px;box-shadow:0 3px 12px #2c4d4010;display:flex;flex-direction:column;gap:5px}
+#hy68 .hy68-stat strong{color:#2e5440;font-size:25px;line-height:1;font-weight:850;font-variant-numeric:tabular-nums}
+#hy68 .hy68-stat span{color:#627063;font-size:11px;font-weight:700;line-height:1.45}
+#hy68 .hy68-stat.blue{border-top:3px solid #3978ba}
+#hy68 .hy68-stat.green{border-top:3px solid #269064}
+#hy68 .hy68-stat.amber{border-top:3px solid #e0a548}
+#hy68 .hy68-stat.docket{border-top:3px solid #b7905d}
+#hy68 .hy68-stat.calendar{border-top:3px solid #57745f}
+#hy68 .hy68-nav{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0 11px;border-bottom:1px solid #e0decd;padding-bottom:7px}
+#hy68 .hy68-nav button{padding:10px 16px;min-height:42px;border:1px solid transparent;background:transparent;border-radius:10px;color:#506455;font-size:13px;font-weight:800}
+#hy68 .hy68-nav button.active{background:#2b5741;color:#fff;box-shadow:0 3px 11px #274b342a}
+#hy68 .hy68-nav button:not(.active):hover{border-color:#dcd8c8;background:#f7f0e4}
+#hy68 .hy68-months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;margin:10px 0 13px}
+#hy68 .hy68-months button{display:grid;gap:5px;justify-items:center;min-width:0;padding:9px 2px;border:1px solid #e2dacb;background:#fffaf1;border-radius:10px;color:#597061}
+#hy68 .hy68-months button small{font-size:10px;font-weight:750}
+#hy68 .hy68-months button strong{font-size:15px;font-weight:850;font-variant-numeric:tabular-nums}
+#hy68 .hy68-months button.active{background:#2e5a43;color:#fff;border-color:#2e5a43}
+#hy68 .hy68-toolbar{border:1px solid #e0dccd;background:#fffcf5;border-radius:12px;padding:10px;display:grid;gap:10px}
+#hy68 .hy68-origin{display:flex;flex-wrap:wrap;gap:6px}
+#hy68 .hy68-origin button{background:#f5f0e5;border:1px solid transparent;border-radius:8px;padding:8px 12px;color:#59675c;font-size:12px;font-weight:750}
+#hy68 .hy68-origin button.active{background:#dbe8da;color:#215139;border-color:#a8c8ac}
+#hy68 .hy68-filters{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
+#hy68 .hy68-filters input,#hy68 .hy68-filters select{width:100%;min-width:0;background:#fff;border:1px solid #dbd8c9;color:#28483a;border-radius:8px;font-size:12px;padding:11px 12px;height:39px}
+#hy68 .hy68-context{display:flex;gap:6px;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:15px 2px 9px}
+#hy68 .hy68-context strong{font-size:15px;font-weight:850;color:#2a4a38}
+#hy68 .hy68-context span{font-size:11px;color:#667367}
+#hy68 .hy68-list{display:grid;gap:12px}
+#hy68 .hy68-group{background:#fffcf7;border:1px solid #e1ddce;border-radius:13px;overflow:hidden;box-shadow:0 3px 14px #254a3810}
+#hy68 .hy68-group-head{padding:12px 15px;background:#f1ebdf;display:flex;gap:8px;justify-content:space-between;align-items:center}
+#hy68 .hy68-group-head h3{margin:0;color:#264a38;font-size:13px;font-weight:850;line-height:1.45}
+#hy68 .hy68-group-head span{color:#7a765c;font-size:11px;font-weight:700;white-space:nowrap}
+#hy68 .hy68-task{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:13px;padding:11px 15px;border-top:1px solid #eee9dd;min-width:0}
+#hy68 .hy68-task:first-child{border-top:0}
+#hy68 .hy68-task:hover{background:#fffef9}
+#hy68 .hy68-task-main{min-width:0}
+#hy68 .hy68-task-source{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#hy68 .hy68-source{display:inline-block;padding:3px 7px;border-radius:6px;font-size:10px;line-height:1.2;font-weight:850;white-space:nowrap}
+#hy68 .hy68-source.excel{background:#e4ede3;color:#316548}
+#hy68 .hy68-source.custom{background:#e6effc;color:#285c9c}
+#hy68 .hy68-place{color:#6b776c;font-size:10px;font-weight:650;min-width:0;overflow-wrap:anywhere}
+#hy68 .hy68-task h4{margin:6px 0;color:#2e4236;font-size:13px;line-height:1.48;font-weight:800;overflow-wrap:anywhere}
+#hy68 .hy68-task-meta{display:flex;flex-wrap:wrap;gap:7px 12px;align-items:center;font-size:11px;color:#617266}
+#hy68 .hy68-badge{display:inline-block;border-radius:40px;padding:4px 9px;font-size:10px;line-height:1.25;font-weight:850;white-space:nowrap}
+#hy68 .hy68-badge.done{background:#d9f0df;color:#14663b}
+#hy68 .hy68-badge.pending{background:#edf0ed;color:#56665d}
+#hy68 .hy68-badge.skip{background:#eee7e1;color:#806756}
+#hy68 .hy68-badge.review{background:#fff0cf;color:#8b5b10}
+#hy68 .hy68-review{padding:8px 10px;background:#fff5df;color:#865a1b;border-radius:8px;font-size:11px;line-height:1.5;margin:7px 0 0}
+#hy68 .hy68-note{font-size:11px;color:#2e6048;background:#f1f7f1;padding:8px 10px;border-radius:7px;margin:7px 0 0;overflow-wrap:anywhere}
+#hy68 .hy68-task>button{border:1px solid #bfd1bf;border-radius:9px;background:#e8f0e7;color:#285340;font-weight:800;font-size:12px;padding:9px 12px;min-width:90px}
+#hy68 .hy68-task>button:hover{background:#d6e7d6}
+#hy68 .hy68-empty{border:1px dashed #dcd3c1;border-radius:13px;background:#fffbf3;color:#6a735e;text-align:center;padding:25px;font-size:13px}
+#hy68 .hy68-unscheduled{margin:14px 0}
+#hy68 .hy68-unscheduled details{border-radius:12px;border:1px solid #ded9c8;background:#fffdf8;overflow:hidden}
+#hy68 .hy68-unscheduled summary{padding:13px 15px;background:#f2ecdf;color:#344f3d;cursor:pointer;font-size:13px;font-weight:800}
+#hy68 .hy68-unplanned{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid #eee7d9}
+#hy68 .hy68-unplanned>div{min-width:0;display:grid;gap:5px}
+#hy68 .hy68-unplanned b{font-size:12px;color:#2c4838;line-height:1.5;overflow-wrap:anywhere}
+#hy68 .hy68-unplanned small{color:#738174;font-size:11px}
+#hy68 .hy68-unplanned button,#hy68 .hy68-device-head button{flex-shrink:0;border:1px solid #b5c9b6;background:#e3eee3;color:#24533a;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:750;min-height:35px}
+#hy68 .hy68-device-head{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fffcf5;border:1px solid #e1dccd;border-radius:12px;padding:16px;margin:12px 0}
+#hy68 .hy68-device-head h3{font-size:15px;color:#28533d;margin:0 0 5px}
+#hy68 .hy68-device-head p{font-size:12px;color:#637366;margin:0;line-height:1.5}
+#hy68Dialog{position:fixed;inset:0;z-index:22000;display:flex;align-items:center;justify-content:center;padding:12px;background:rgba(23,41,31,.65);overscroll-behavior:contain}
+#hy68Dialog *{box-sizing:border-box}
+#hy68Dialog .hy68-modal{width:min(100%,590px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;border-radius:16px;background:#fffdf6;border:1px solid #e5dbc8;box-shadow:0 24px 70px #0b28184b;padding:18px;color:#264336;display:grid;gap:12px}
+#hy68Dialog .hy68-modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#hy68Dialog .hy68-modal-header small{color:#8c6d49;font-size:10px;letter-spacing:1px;font-weight:850}
+#hy68Dialog .hy68-modal-header h3{font-size:19px;margin:5px 0 0;color:#284936;line-height:1.4}
+#hy68Dialog .hy68-modal-header>button{font-size:22px;border:0;border-radius:8px;background:#f1eadb;color:#456452;padding:2px 10px;cursor:pointer}
+#hy68Dialog .hy68-muted{color:#6b7669;line-height:1.55;font-size:12px;margin:0}
+#hy68Dialog #hy68CreateFields,#hy68Dialog #hy68EditFields{display:grid;gap:11px}
+#hy68Dialog .hy68-modal label{font-size:12px;font-weight:800;display:grid;gap:6px}
+#hy68Dialog .hy68-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#hy68Dialog .hy68-modal input,#hy68Dialog .hy68-modal select,#hy68Dialog .hy68-modal textarea{border:1px solid #d7d2c5;background:#fff;color:#284636;font:inherit;font-size:13px;border-radius:9px;padding:11px 12px;width:100%;min-width:0;outline-color:#5d9c73}
+#hy68Dialog .hy68-modal textarea{resize:vertical}
+#hy68Dialog .hy68-form-note{color:#7b705e;background:#f7f0e0;padding:10px;border-radius:8px;margin:0;line-height:1.45;font-size:11px}
+#hy68Dialog .hy68-warning{background:#fff0cf;border-radius:8px;padding:9px;color:#8c5d1d;font-size:11px}
+#hy68Dialog .hy68-photos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#hy68Dialog .hy68-photos label{background:#eff5ed;border-radius:10px;padding:10px;border:1px dashed #b5c9b1}
+#hy68Dialog .hy68-photos input{padding:5px 3px;font-size:11px;background:transparent;border:0}
+#hy68Dialog .hy68-preview{display:flex;gap:7px;flex-wrap:wrap}
+#hy68Dialog .hy68-thumb{height:85px;width:85px;object-fit:cover;border-radius:9px;border:1px solid #d9d4c8;cursor:zoom-in}
+#hy68Dialog .hy68-thumb.expanded{max-width:100%;width:auto;height:auto;max-height:45vh;object-fit:contain;cursor:zoom-out}
+#hy68Dialog #hy68PhotoNotice{font-size:11px;color:#527358}
+#hy68Dialog .hy68-form-footer{position:sticky;bottom:-18px;z-index:2;display:flex;justify-content:flex-end;gap:9px;background:#fffdf6;border-top:1px solid #eee7d8;padding:13px 0 5px}
+#hy68Dialog .hy68-form-footer button{border:1px solid #bbcbb9;background:#f5f2e8;color:#31523e;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer}
+#hy68Dialog .hy68-form-footer .hy68-primary{background:#295a40;color:#fff;border-color:#295a40}
+#hy68Dialog .hy68-form-footer button:disabled{opacity:.5}
+@media(max-width:1100px){#hy68 .hy68-summary{grid-template-columns:repeat(3,minmax(0,1fr))}#hy68 .hy68-months{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:640px){
+ #maintenancePage.hy68-on{width:100%;max-width:100%;overflow-x:clip!important}
+ #hy68{padding:0 1px 100px}
+ #hy68 .hy68-head{padding:14px 13px;gap:11px;border-radius:13px}
+ #hy68 .hy68-heading h2{font-size:19px}
+ #hy68 .hy68-heading p{font-size:11px}
+ #hy68 .hy68-actions{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:6px}
+ #hy68 .hy68-actions button{padding:9px 5px;font-size:11px;min-width:0;white-space:normal;min-height:40px}
+ #hy68 .hy68-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}
+ #hy68 .hy68-stat{padding:11px}
+ #hy68 .hy68-stat strong{font-size:24px}
+ #hy68 .hy68-stat span{font-size:11px}
+ #hy68 .hy68-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:10px 0;padding-bottom:8px}
+ #hy68 .hy68-nav button{font-size:11px;line-height:1.3;padding:9px 3px;min-height:45px;min-width:0}
+ #hy68 .hy68-months{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+ #hy68 .hy68-months button{padding:9px 2px}
+ #hy68 .hy68-toolbar{padding:9px;gap:9px}
+ #hy68 .hy68-origin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ #hy68 .hy68-origin button{font-size:10px;padding:8px 2px;line-height:1.35}
+ #hy68 .hy68-filters{grid-template-columns:1fr 1fr;gap:7px}
+ #hy68 .hy68-filters input{grid-column:1/-1}
+ #hy68 .hy68-context{padding:12px 1px 9px}
+ #hy68 .hy68-context strong{font-size:14px}
+ #hy68 .hy68-group-head{padding:11px 12px}
+ #hy68 .hy68-task{padding:12px 11px;grid-template-columns:1fr;gap:8px}
+ #hy68 .hy68-task h4{font-size:13px;margin:5px 0}
+ #hy68 .hy68-task>button{width:100%;text-align:center;min-height:37px;font-size:12px}
+ #hy68 .hy68-task-meta{font-size:11px;gap:6px 10px}
+ #hy68 .hy68-unplanned{align-items:flex-start;padding:11px;gap:7px}
+ #hy68 .hy68-unplanned button{padding:8px;font-size:11px}
+ #hy68 .hy68-device-head{padding:12px;align-items:flex-start}
+ #hy68 .hy68-device-head button{white-space:nowrap;padding:8px}
+ #hy68Dialog{align-items:flex-end;padding:0}
+ #hy68Dialog .hy68-modal{width:100%;max-height:92dvh;border-radius:17px 17px 0 0;padding:16px 13px calc(8px + env(safe-area-inset-bottom));}
+ #hy68Dialog .hy68-modal-header h3{font-size:17px}
+ #hy68Dialog .hy68-modal-grid{grid-template-columns:1fr}
+ #hy68Dialog .hy68-photos{grid-template-columns:1fr 1fr}
+ #hy68Dialog .hy68-form-footer{bottom:calc(-8px - env(safe-area-inset-bottom));padding:12px 0 calc(7px + env(safe-area-inset-bottom))}
+ #hy68Dialog .hy68-form-footer button{flex:1}
+}
