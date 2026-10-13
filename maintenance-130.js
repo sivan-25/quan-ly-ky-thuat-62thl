@@ -8,7 +8,7 @@ function readView(){
  try{const v=localStorage.getItem(VIEW_KEY);if(v==="cards"||v==="rows")return v;}catch(_){}
  return typeof window!=="undefined"&&window.matchMedia?.("(max-width:640px)")?.matches?"rows":"cards";
 }
-let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null;
+let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list";
 function clearScheduleCache(){scheduleCache=null}
 function getYearSchedule(y){if(scheduleCache?.year===y)return scheduleCache.events;const events=schedule(y);scheduleCache={year:y,events};return events}
 function personLabel(value){
@@ -59,6 +59,7 @@ function schedule(y){
   if(!prev||String(e.planned_month)<String(prev.planned_month))first.set(e.item_id,e);
  }
  for(const i of items){
+  if(i.deleted_at)continue;
   const base=first.get(i.id);if(!base)continue;
   const origin=String(base.planned_date||String(base.planned_month).slice(0,7)+"-01");
   if(!/^\d{4}-\d{2}-\d{2}$/.test(origin))continue;
@@ -75,13 +76,46 @@ function schedule(y){
  }
  return result.sort((a,b)=>String(a.event.planned_date||a.scheduled).localeCompare(String(b.event.planned_date||b.scheduled))||a.item.work_title.localeCompare(b.item.work_title,"vi"));
 }
-function status(o){
- const e=o.event;
- if(e.status==="completed")return ["Hoàn thành","done"];
- if(e.status==="skipped")return ["Không thực hiện","skip"];
- const day=e.planned_date||o.scheduled,t=new Date(),today=t.getFullYear()+"-"+pad(t.getMonth()+1)+"-"+pad(t.getDate());
- const warning=new Date(t.getFullYear(),t.getMonth(),t.getDate()+30),soon=warning.getFullYear()+"-"+pad(warning.getMonth()+1)+"-"+pad(warning.getDate());
- return day<today?["Chưa xác nhận","late"]:day<=soon?["Sắp đến hạn","soon"]:["Đúng kế hoạch","ontrack"];
+const isoToday=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
+const demo=i=>String(i?.source_notes||"").startsWith("MẪU");
+const dateOf=o=>String(o.event.due_date||o.event.planned_date||o.scheduled).slice(0,10);
+function stateKey(o){
+ const st=String(o.event.status||"planned");
+ if(st==="completed")return "done";
+ if(st==="cancelled"||st==="skipped")return "cancelled";
+ if(st==="postponed")return "postponed";
+ if(st==="awaiting_approval")return "review";
+ if(st==="in_progress")return "working";
+ if(dateOf(o)<isoToday())return "late";
+ return "planned";
+}
+const stateNames={done:"Hoàn thành",cancelled:"Hủy",postponed:"Hoãn",review:"Chờ duyệt",working:"Đang thực hiện",late:"Quá hạn",planned:"Chưa thực hiện"};
+function status(o){const k=stateKey(o);return [stateNames[k],k]}
+function scopeEvents(events){
+ const choice=$("m130SampleFilter")?.value||"all";
+ return events.filter(o=>choice==="all"||(choice==="real"?!demo(o.item):demo(o.item)));
+}
+function countsFor(events){
+ const counts={planned:0,working:0,review:0,done:0,late:0,postponed:0,cancelled:0};
+ for(const o of events)counts[stateKey(o)]+=1;
+ return counts;
+}
+function kpiHtml(events){
+ const c=countsFor(events),today=isoToday(),weekEnd=new Date(today+"T12:00:00");
+ weekEnd.setDate(weekEnd.getDate()+7);
+ const limit=weekEnd.getFullYear()+"-"+pad(weekEnd.getMonth()+1)+"-"+pad(weekEnd.getDate());
+ const todayCount=events.filter(o=>dateOf(o)===today).length,weekCount=events.filter(o=>dateOf(o)>=today&&dateOf(o)<=limit).length;
+ const eligible=events.filter(o=>o.event.status==="completed"&&o.event.finished_at);
+ const onTime=eligible.filter(o=>String(o.event.finished_at).slice(0,10)<=dateOf(o)).length;
+ const timely=eligible.length?Math.round(onTime/eligible.length*100)+"%":"—";
+ const pair=[[c.late,"Quá hạn","late"],[todayCount,"Hôm nay","today"],[weekCount,"7 ngày tới","week"],[c.review,"Chờ duyệt","review"],[timely,"Đúng hạn","done"]];
+ $("m130Stats").innerHTML=pair.map(x=>'<div class="m130Kpi '+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
+ const parts=[["Chưa thực hiện",c.planned],["Đang thực hiện",c.working],["Chờ duyệt",c.review],["Hoàn thành",c.done],["Quá hạn",c.late],["Hoãn / Hủy",c.postponed+c.cancelled]];
+ $("m130StatusSummary").innerHTML='<strong>Tổng '+events.length+' công việc</strong> · '+parts.map(([name,num])=>'<span>'+name+': <b>'+num+'</b></span>').join("");
+ const real=events.filter(o=>!demo(o.item)),pm=real.filter(o=>o.item.work_type!=="CM").length,cm=real.filter(o=>o.item.work_type==="CM").length;
+ const cost=real.reduce((sum,o)=>sum+Number(o.event.labor_cost||0)+Number(o.event.material_cost||0),0);
+ const money=new Intl.NumberFormat("vi-VN").format(cost);
+ $("m130AdvancedKpis").innerHTML='<div><b>PM / CM</b><strong>'+pm+' / '+cm+'</strong></div><div><b>Chi phí đã nhập</b><strong>'+money+' đ</strong></div><div><b>MTTR</b><strong>—</strong><small>Cần dữ liệu sửa chữa CM có thời gian khôi phục</small></div><div><b>MTBF</b><strong>—</strong><small>Cần lịch sử hỏng theo mã thiết bị</small></div>';
 }
 function ensure(){
  if($("maint130"))return;
@@ -89,8 +123,8 @@ function ensure(){
  if(!page||!anchor)return;
  const root=document.createElement("section");root.id="maint130";
  root.innerHTML='<div class="m130Header"><div><small>ESTA · 130 HỒNG HÀ · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">↓ Xuất PDF</button></div></div>'+
- '<div class="m130Stats" id="m130Stats"></div><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
- '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa hoàn thành</option><option value="completed">Hoàn thành</option><option value="skipped">Không thực hiện</option></select></div>'+
+ '<div class="m130Stats" id="m130Stats"></div><div class="m130StatusSummary" id="m130StatusSummary"></div><details class="m130ExtraStats"><summary>Chỉ số PM/CM · Chi phí · MTTR/MTBF</summary><div id="m130AdvancedKpis"></div></details><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
+ '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa thực hiện</option><option value="working">Đang thực hiện</option><option value="review">Chờ duyệt</option><option value="done">Hoàn thành</option><option value="late">Quá hạn</option><option value="cancelled">Hoãn / Hủy</option></select><select id="m130SampleFilter"><option value="all">Tất cả dữ liệu</option><option value="real">Chỉ công việc thật</option><option value="sample">Chỉ dữ liệu mẫu</option></select></div>'+
  '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div>';
  anchor.parentNode.insertBefore(root,anchor);
  const overlay=document.createElement("div");overlay.id="m130Overlay";overlay.hidden=true;overlay.innerHTML='<div class="m130Dialog"><div class="m130ModalHead"><h3 id="m130ModalTitle">Công việc bảo trì</h3><button type="button" id="m130Close" aria-label="Đóng">×</button></div><form id="m130PlanForm" hidden>'+
@@ -103,7 +137,7 @@ function ensure(){
  $("m130Create").onclick=()=>openPlan();
  $("m130Pdf").onclick=exportPdf;
  $("m130Legacy").onclick=()=>{const opened=page.classList.toggle("maint130-assets-open");$("m130Legacy").setAttribute("aria-expanded",String(opened));if(opened&&typeof loadMaintenanceData==="function")loadMaintenanceData(B);};
- ["m130Search","m130Group","m130State"].forEach(id=>$(id).addEventListener(id==="m130Search"?"input":"change",()=>renderList()));
+ ["m130Search","m130Group","m130State","m130SampleFilter"].forEach(id=>$(id).addEventListener(id==="m130Search"?"input":"change",()=>{if(id==="m130SampleFilter")render();else renderList()}));
  root.addEventListener("keydown",ev=>{const r=ev.target.closest("[data-m130-open]");if(r&&ev.target===r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();openEvent(r.dataset.m130Open);}});
  root.addEventListener("click",ev=>{
   const v=ev.target.closest("[data-m130-view]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]");
@@ -157,7 +191,7 @@ function hint(){
 function render(){
  if(!show()||!ready)return;
  const all=getYearSchedule(year),subset=all.filter(o=>Number(o.scheduled.slice(5,7))===month);
- $("m130Stats").innerHTML=[[items.length,"Kế hoạch"],[subset.length,"Công việc tháng"],[subset.filter(o=>o.event.status==="completed").length,"Đã hoàn thành"],[subset.filter(o=>status(o)[1]==="late").length,"Chưa xác nhận"],[subset.filter(o=>o.virtual).length,"Theo chu kỳ"]].map(x=>'<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
+ kpiHtml(scopeEvents(subset));
  $("m130Year").textContent="Năm "+year;
  $("m130Months").innerHTML=Array.from({length:12},(_,idx)=>{const m=idx+1,count=all.filter(o=>Number(o.scheduled.slice(5,7))===m).length;return '<button type="button" data-m130-month="'+m+'" class="'+(m===month?"sel":"")+'"><small>Th '+pad(m)+'</small><b>'+count+'</b></button>';}).join("");
  const groups=[...new Set(items.map(i=>i.system_group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi")),select=$("m130Group"),old=select.value;
@@ -166,8 +200,8 @@ function render(){
 }
 function renderList(){
  if(!show()||!ready)return;
- const subset=getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month); const q=$("m130Search").value.trim().toLocaleLowerCase("vi-VN"),g=$("m130Group").value,s=$("m130State").value;
- const visible=subset.filter(o=>(!g||o.item.system_group===g)&&(!s||(s==="planned"?o.event.status==="planned":o.event.status===s))&&(!q||[o.item.work_title,o.item.system_group,o.item.subsystem,o.item.assigned_to].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
+ const subset=scopeEvents(getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month)); const q=$("m130Search").value.trim().toLocaleLowerCase("vi-VN"),g=$("m130Group").value,s=$("m130State").value;
+ const visible=subset.filter(o=>(!g||o.item.system_group===g)&&(!s||(s==="late"?stateKey(o)==="late":s==="cancelled"?(stateKey(o)==="cancelled"||stateKey(o)==="postponed"):stateKey(o)===s))&&(!q||[o.item.work_title,o.item.system_group,o.item.subsystem,o.item.assigned_to].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
  $("m130ListTitle").textContent="Công việc tháng "+pad(month)+"/"+year;
  $("m130ListCount").textContent=visible.length+" / "+subset.length+" công việc";
  const isCards=viewMode==="cards",list=$("m130List");
@@ -190,7 +224,7 @@ function renderList(){
    '<div class="m130CardHead"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><div class="m130TopTags">'+(demo?'<span class="m130SampleTag">MẪU</span>':'')+'<span class="m130CardStatus '+st[1]+'">'+st[0]+'</span></div></div>'+
    '<h3>'+esc(i.work_title)+'</h3><p class="m130CardLocation">'+location+' · Lịch kỳ này: '+fmt(e.planned_date||o.scheduled)+'</p>'+
    '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+fmt(upcoming)+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
-   '<div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span><span>Trạng thái: <b>'+(e.status==="completed"?"Đã hoàn thành":e.status==="skipped"?"Không thực hiện":"Đang theo dõi")+'</b></span></div>'+
+   '<div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span><span>Trạng thái: <b>'+st[0]+'</b></span></div>'+
    (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+
    '<div class="m130CardFoot"><button type="button" class="m130RecordBtn" data-m130-event="'+record+'" '+editable+'>'+(e.status==="completed"?"✓ Xem / sửa KQ":"＋ Ghi bảo trì")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
  }).join("")||'<p class="m130Empty">Không có công việc trong tháng và bộ lọc này.</p>';
@@ -316,7 +350,7 @@ async function deletePlan(id){
 async function exportPdf(){
  if(!active()||!ready)return;
  if(typeof window.exportGenericEstaPdf!=="function")return toast("Chức năng PDF chưa sẵn sàng.");
- const list=getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month);
+ const list=scopeEvents(getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month));
  if(!list.length)return toast("Không có công việc để xuất.");
  const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,fmt(o.event.planned_date||o.scheduled),status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
  try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ 130 HH",tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_130HH_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed").length,label:"HOÀN THÀNH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
