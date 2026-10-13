@@ -112,31 +112,22 @@ function kpiHtml(events){
  const timely=eligible.length?Math.round(onTime/eligible.length*100)+"%":"—";
  const pair=[[c.late,"Quá hạn","late"],[todayCount,"Hôm nay","today"],[weekCount,"7 ngày tới","week"],[c.review,"Chờ duyệt","review"],[timely,"Đúng hạn","done"]];
  $("m130Stats").innerHTML=pair.map(x=>'<div class="m130Kpi '+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
- const parts=[["Chưa thực hiện",c.planned],["Đang thực hiện",c.working],["Chờ duyệt",c.review],["Hoàn thành",c.done],["Quá hạn",c.late],["Hoãn / Hủy",c.postponed+c.cancelled]];
- $("m130StatusSummary").innerHTML='<strong>Tổng '+events.length+' công việc</strong> · '+parts.map(([name,num])=>'<span>'+name+': <b>'+num+'</b></span>').join("");
- const real=events.filter(o=>!demo(o.item)),pm=real.filter(o=>o.item.work_type!=="CM").length,cm=real.filter(o=>o.item.work_type==="CM").length;
- const cost=real.reduce((sum,o)=>sum+Number(o.event.labor_cost||0)+Number(o.event.material_cost||0),0);
- const failures=new Map();for(const o of real.filter(x=>x.item.work_type==="CM"&&x.item.asset_code)){
-  const code=o.item.asset_code;failures.set(code,(failures.get(code)||0)+1);
- }
- const top=[...failures].sort((a,b)=>b[1]-a[1]).slice(0,3).map(([code,n])=>code+" ("+n+")").join(", ");
- const money=new Intl.NumberFormat("vi-VN").format(cost);
- $("m130AdvancedKpis").innerHTML='<div><b>PM / CM</b><strong>'+pm+' / '+cm+'</strong></div><div><b>Chi phí đã nhập</b><strong>'+money+' đ</strong></div><div><b>MTTR</b><strong>—</strong><small>Cần dữ liệu sửa chữa CM có thời gian khôi phục</small></div><div><b>MTBF</b><strong>—</strong><small>Cần lịch sử hỏng theo mã thiết bị</small></div><div><b>Top thiết bị CM</b><strong>'+esc(top||'—')+'</strong><small>Đếm theo lịch CM thực tế</small></div>';
 }
+
 function ensure(){
  if($("maint130"))return;
  const page=$("maintenancePage"),anchor=page?.querySelector(".maintenanceSchedule");
  if(!page||!anchor)return;
  const root=document.createElement("section");root.id="maint130";
  root.innerHTML='<div class="m130Header"><div><small>ESTA · 130 HỒNG HÀ · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">↓ Xuất PDF</button></div></div>'+
- '<div class="m130Stats" id="m130Stats"></div><div class="m130StatusSummary" id="m130StatusSummary"></div><details class="m130ExtraStats"><summary>Chỉ số PM/CM · Chi phí · MTTR/MTBF</summary><div id="m130AdvancedKpis"></div><button type="button" id="m130AuditButton" class="m130AuditButton">Xem lịch sử chỉnh sửa / xóa</button><div id="m130AuditHistory" aria-live="polite"></div></details><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
+ '<div class="m130Stats" id="m130Stats"></div><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
  '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa thực hiện</option><option value="working">Đang thực hiện</option><option value="review">Chờ duyệt</option><option value="done">Hoàn thành</option><option value="late">Quá hạn</option><option value="cancelled">Hoãn / Hủy</option></select><select id="m130PriorityFilter"><option value="">Mọi ưu tiên</option><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select><select id="m130TypeFilter"><option value="">PM + CM</option><option value="PM">PM</option><option value="CM">CM</option></select><select id="m130TechnicianFilter"><option value="">Mọi KTV</option></select><select id="m130SampleFilter"><option value="all">Tất cả dữ liệu</option><option value="real">Chỉ công việc thật</option><option value="sample">Chỉ dữ liệu mẫu</option></select></div>'+
- '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><div class="m130LayoutSwitch" role="group" aria-label="Chế độ xem lịch"><button type="button" data-m130-layout="list" aria-pressed="true">Danh sách</button><button type="button" data-m130-layout="calendar" aria-pressed="false">Lịch</button><button type="button" data-m130-layout="timeline" aria-pressed="false">Timeline</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div>';
+ '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><div class="m130LayoutSwitch" role="group" aria-label="Chế độ xem lịch"><button type="button" data-m130-layout="list" aria-pressed="true">Danh sách</button><button type="button" data-m130-layout="calendar" aria-pressed="false">Lịch</button><button type="button" data-m130-layout="timeline" aria-pressed="false">Timeline</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div><details class="m130AuditPanel"><summary>Nhật ký chỉnh sửa / xóa</summary><button type="button" id="m130AuditButton" class="m130AuditButton">Xem nhật ký</button><div id="m130AuditHistory" aria-live="polite"></div></details>';
  anchor.parentNode.insertBefore(root,anchor);
  const overlay=document.createElement("div");overlay.id="m130Overlay";overlay.hidden=true;overlay.innerHTML='<div class="m130Dialog"><div class="m130ModalHead"><h3 id="m130ModalTitle">Công việc bảo trì</h3><button type="button" id="m130Close" aria-label="Đóng">×</button></div><form id="m130PlanForm" hidden>'+
  '<label>Nội dung công việc *<textarea id="m130Title" rows="2" required maxlength="500"></textarea></label><div class="m130Two"><label>Hệ thống<select id="m130System"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Chiếu sáng</option><option>Camera & an ninh</option><option>Khác</option></select></label><label>Vị trí<input id="m130Location" maxlength="160" placeholder="Tầng / khu vực"></label></div><div class="m130Two"><label>Mã thiết bị<input id="m130AssetCode" maxlength="80" placeholder="VD: PCCC-001"></label><label>Loại bảo trì<select id="m130WorkType"><option value="PM">PM · Phòng ngừa</option><option value="CM">CM · Khắc phục</option></select></label></div><label>Mức ưu tiên<select id="m130Priority"><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select></label>'+
  '<div class="m130Two"><label>Ngày bắt đầu chu kỳ *<input type="date" id="m130First" required></label><label>Chu kỳ bảo trì<select id="m130Cycle" required><option value="0">1 lần</option><option value="1">1 tháng</option><option value="3">3 tháng</option><option value="4">4 tháng</option><option value="6">6 tháng</option><option value="12">1 năm</option></select></label></div><p class="m130Hint" id="m130NextHint">Chọn chu kỳ, hệ thống sẽ tự tính ngày lặp. Ví dụ 10/10/2026 + 3 tháng → 10/01/2027 → 10/04/2027.</p><label>Tên kỹ thuật / người phụ trách *<input id="m130Assignee" list="m130PeopleOptions" maxlength="120" placeholder="Chọn tên kỹ thuật viên..." required></label><div class="m130PersonQuick" id="m130AssigneeQuick"></div><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu kế hoạch</button></div></form>'+
- '<form id="m130EventForm" hidden><p id="m130EventInfo" class="m130Hint"></p><p id="m130ResultTip" class="m130CompleteTip" aria-live="polite">Hoàn thành cần đủ minh chứng.</p><div class="m130Two"><label>Ngày dự kiến<input id="m130EventDate" type="date" required></label><label>Trạng thái<select id="m130EventStatus"><option value="planned">Chưa thực hiện</option><option value="in_progress">Đang thực hiện</option><option value="awaiting_approval">Chờ duyệt</option><option value="completed">Hoàn thành</option><option value="postponed">Hoãn</option><option value="cancelled">Hủy</option></select></label></div><label>Kỹ thuật viên thực hiện *<input id="m130Who" list="m130PeopleOptions" maxlength="120" placeholder="Chọn tên KTV..." autocomplete="off"></label><div class="m130PersonQuick" id="m130WhoQuick"></div><div class="m130Two"><label>Bắt đầu lúc<input id="m130StartAt" type="datetime-local"></label><label>Kết thúc lúc<input id="m130EndAt" type="datetime-local"></label></div><label>Kết quả kiểm tra<select id="m130ResultCode"><option value="">— Chọn kết quả —</option><option value="pass">Đạt</option><option value="fail">Không đạt</option><option value="monitor">Cần theo dõi</option></select></label><label>Kết quả thực hiện / ghi chú<textarea id="m130Result" rows="3" maxlength="2000" placeholder="Ghi nhận thực tế và hướng xử lý"></textarea></label><label>Lý do hoãn / hủy<input id="m130PostponeReason" maxlength="600" placeholder="Bắt buộc nếu Hoãn hoặc Hủy"></label><div class="m130Two"><label>Nhân công (đ)<input id="m130LaborCost" type="number" min="0" step="1000" placeholder="0"></label><label>Vật tư (đ)<input id="m130MaterialCost" type="number" min="0" step="1000" placeholder="0"></label></div><div class="m130PhotoFields"><label>Ảnh trước bảo trì<input id="m130BeforePhotos" type="file" accept="image/*" multiple></label><label>Ảnh sau bảo trì<input id="m130AfterPhotos" type="file" accept="image/*" multiple></label></div><div id="m130PhotoPreview" class="m130PhotoPreview"></div><p class="m130Hint">Hoàn thành bắt buộc: KTV, thời gian bắt đầu/kết thúc, kết quả Đạt/Không đạt/Cần theo dõi, ghi chú và ít nhất 1 ảnh trước hoặc sau.</p><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu công việc</button></div></form><datalist id="m130PeopleOptions"></datalist></div>';
+ '<form id="m130EventForm" hidden><p id="m130EventInfo" class="m130Hint"></p><div class="m130Two"><label>Ngày dự kiến<input id="m130EventDate" type="date" required></label><label>Trạng thái<select id="m130EventStatus"><option value="in_progress">Đang thực hiện</option><option value="completed">Hoàn thành</option><option value="cancelled">Hủy</option></select></label></div><label>Kỹ thuật viên thực hiện *<input id="m130Who" list="m130PeopleOptions" maxlength="120" placeholder="Chọn tên KTV..." autocomplete="off"></label><div class="m130PersonQuick" id="m130WhoQuick"></div><label>Kết quả kiểm tra<select id="m130ResultCode"><option value="">— Chọn kết quả —</option><option value="pass">Đạt</option><option value="fail">Không đạt</option><option value="monitor">Cần theo dõi</option></select></label><label>Kết quả thực hiện / ghi chú<textarea id="m130Result" rows="3" maxlength="2000" placeholder="Ghi nhận thực tế và hướng xử lý"></textarea></label><label>Lý do hoãn / hủy<input id="m130PostponeReason" maxlength="600" placeholder="Bắt buộc nếu Hoãn hoặc Hủy"></label><div class="m130Two"><label>Nhân công (đ)<input id="m130LaborCost" type="number" min="0" step="1000" placeholder="0"></label><label>Vật tư (đ)<input id="m130MaterialCost" type="number" min="0" step="1000" placeholder="0"></label></div><div class="m130PhotoFields"><label>Ảnh trước bảo trì<input id="m130BeforePhotos" type="file" accept="image/*" multiple></label><label>Ảnh sau bảo trì<input id="m130AfterPhotos" type="file" accept="image/*" multiple></label></div><div id="m130PhotoPreview" class="m130PhotoPreview"></div><p class="m130Hint">Hoàn thành cần chọn KTV, kết quả Đạt/Không đạt/Cần theo dõi, ghi chú và ít nhất 1 ảnh trước hoặc sau.</p><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu công việc</button></div></form><datalist id="m130PeopleOptions"></datalist></div>';
  document.body.appendChild(overlay);
  $("m130Prev").onclick=()=>{year=Math.max(2020,year-1);render();};
  $("m130Next").onclick=()=>{year=Math.min(2100,year+1);render();};
@@ -184,12 +175,6 @@ function ensure(){
  overlay.addEventListener("click",ev=>{if(ev.target===overlay)closeDialog();});
  $("m130PlanForm").onsubmit=savePlan;
  $("m130EventForm").onsubmit=saveEvent;
- $("m130Result").addEventListener("input",()=>{
-  const st=$("m130EventStatus");
-  if($("m130Result").value.trim()&&st.value==="planned")st.value="awaiting_approval";
-  $("m130ResultTip").textContent="Đã ghi nhận kết quả. Kiểm tra KTV, thời gian và ảnh trước khi chuyển Hoàn thành.";
- });
- $("m130EventStatus").addEventListener("change",()=>{$("m130ResultTip").textContent=$("m130EventStatus").value==="completed"?"Hoàn thành bắt buộc có KTV, thời gian, kết quả và ảnh.":"Chọn đúng tiến độ thực tế; quá hạn tính tự động.";});
  ["m130BeforePhotos","m130AfterPhotos"].forEach(id=>$(id).addEventListener("change",()=>{const box=$("m130PhotoPreview");box.querySelector(".m130SelectedCount")?.remove();const node=document.createElement("p");node.className="m130SelectedCount";node.textContent=([...$("m130BeforePhotos").files,...$("m130AfterPhotos").files].length)+" ảnh mới sẽ được tải khi lưu.";box.prepend(node);}));
  ["m130Cycle","m130First"].forEach(id=>$(id).addEventListener("input",hint));
 }
@@ -383,14 +368,11 @@ function openEvent(key){
  $("m130PlanForm").hidden=true;$("m130EventForm").hidden=false;
  $("m130EventInfo").textContent=o.item.system_group+" · "+(o.item.subsystem||"")+" · Chu kỳ: "+cycleLabel(interval(o.item));
  $("m130EventDate").value=e.planned_date||o.scheduled;
- $("m130EventStatus").value=e.status==="skipped"?"cancelled":e.status;
- $("m130ResultTip").textContent=e.status==="completed"&&!e.started_at?"Hồ sơ cũ đã hoàn thành, chưa đủ ảnh và mốc thời gian. Có thể bổ sung minh chứng.":"Hoàn thành yêu cầu KTV, thời gian, kết quả và ảnh.";
+ $("m130EventStatus").value=e.status==="completed"?"completed":(["cancelled","postponed","skipped"].includes(e.status)?"cancelled":"in_progress");
  $("m130Who").value=e.completed_by||(personLabel(o.item.assigned_to).includes("Chưa chọn tên")?"":o.item.assigned_to)||"";
  renderPersonPickers();
  $("m130Result").value=e.result_note||"";
  $("m130ResultCode").value=e.result_code||"";
- $("m130StartAt").value=localDatetime(e.started_at);
- $("m130EndAt").value=localDatetime(e.finished_at);
  $("m130PostponeReason").value=e.postpone_reason||"";
  $("m130LaborCost").value=e.labor_cost??"";
  $("m130MaterialCost").value=e.material_cost??"";
@@ -403,19 +385,17 @@ async function saveEvent(ev){
  if(busy||!currentEvent||!canWrite()||!active())return;
  const o=currentEvent,old=o.event,date=$("m130EventDate").value,statusValue=$("m130EventStatus").value;
  const who=$("m130Who").value.trim(),result=$("m130Result").value.trim(),resultCode=$("m130ResultCode").value||null;
- const startText=$("m130StartAt").value,endText=$("m130EndAt").value,reason=$("m130PostponeReason").value.trim();
+ const reason=$("m130PostponeReason").value.trim();
  const before=[...$("m130BeforePhotos").files],after=[...$("m130AfterPhotos").files],photos=recordedImages(old);
- const legacyComplete=old.status==="completed"&&statusValue==="completed"&&(!old.started_at||!old.result_code);
+ const legacyComplete=old.status==="completed"&&statusValue==="completed";
  if(!date||date.slice(0,7)!==o.scheduled.slice(0,7))return toast("Ngày dự kiến cần nằm trong tháng đang chọn.");
  if(["postponed","cancelled"].includes(statusValue)&&!reason)return toast("Nhập lý do hoãn hoặc hủy.");
  if(statusValue==="completed"&&!legacyComplete){
   if(!who||["Kỹ thuật","Kỹ thuật dự án","Nhà thầu"].includes(who))return toast("Bắt buộc chọn tên kỹ thuật viên thực hiện.");
   if(peopleOptions().length&&!peopleOptions().includes(who))return toast("Chọn KTV từ danh sách nhân sự của dự án.");
-  if(!startText||!endText||new Date(endText)<new Date(startText))return toast("Nhập giờ bắt đầu, kết thúc hợp lệ.");
   if(!resultCode||!result)return toast("Chọn Đạt/Không đạt/Cần theo dõi và nhập kết quả thực tế.");
   if(!photos.length&&!before.length&&!after.length)return toast("Cần ít nhất 1 ảnh trước hoặc sau bảo trì.");
  }
- const started_at=startText?new Date(startText).toISOString():null,finished_at=endText?new Date(endText).toISOString():null;
  const laborCost=Number($("m130LaborCost").value||0),materialCost=Number($("m130MaterialCost").value||0);
  if(!Number.isFinite(laborCost)||!Number.isFinite(materialCost)||laborCost<0||materialCost<0)return toast("Chi phí không hợp lệ.");
  busy=true;const btn=$("m130EventForm").querySelector("[type=submit]");btn.disabled=true;
@@ -428,7 +408,7 @@ async function saveEvent(ev){
   }
   const image_paths=[...photos,...uploaded];
   if(statusValue==="completed"&&!legacyComplete&&!image_paths.length)throw Error("Phải có ít nhất một ảnh bảo trì.");
-  const fields={planned_date:date,due_date:date,status:statusValue,result_note:result,result_code:resultCode,completed_by:who,started_at,finished_at,postpone_reason:reason,labor_cost:laborCost,material_cost:materialCost,image_paths,completed_at:statusValue==="completed"?(old.completed_at||new Date().toISOString()):null,updated_at:new Date().toISOString()};
+  const fields={planned_date:date,due_date:date,status:statusValue,result_note:result,result_code:resultCode,completed_by:who,postpone_reason:reason,labor_cost:laborCost,material_cost:materialCost,image_paths,completed_at:statusValue==="completed"?(old.completed_at||new Date().toISOString()):null,updated_at:new Date().toISOString()};
   const token=centralSession.access_token;
   if(wasVirtual){
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:{id,item_id:o.item.id,building_id:B,event_key:old.event_key,planned_month:monthISO(o.scheduled),location:o.item.subsystem||"",source_kind:"year",...fields}});
