@@ -51,3 +51,6 @@
 #ma68Overlay .ma68Actions button[type=submit]{background:#345a43;color:white;border-color:#345a43}
 @media(max-width:980px){#maint68 .ma68Stats{grid-template-columns:repeat(3,minmax(0,1fr))}#maint68 .ma68Months{grid-template-columns:repeat(6,minmax(0,1fr))}}
 @media(max-width:640px){#maint68 .ma68Header{padding:15px}#maint68 .ma68Header h2{font-size:20px}#maint68 .ma68Stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#maint68 .ma68Stats div{padding:10px}#maint68 .ma68Months{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}#maint68 .ma68Filters{grid-template-columns:1fr 1fr;gap:7px}#maint68 .ma68Filters input{grid-column:1/-1}#maint68 .ma68Entry{padding:11px;align-items:flex-start;gap:7px}#maint68 .ma68Entry button{padding:8px}#maint68 .ma68Section>header{padding:11px}}
+
+#maintenancePage .maintenanceStats[hidden],#maintenancePage .maintenanceHistoryCard[hidden],#maintenancePage .maintenanceBoard[hidden],#maintenancePage .maintenanceSchedule[hidden],#maintenanceExportPdf[hidden]{display:none!important}
+#maint68 .ma68HeaderActions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
