@@ -156,3 +156,23 @@
 
 #hy68 .hy68-sandbox-notice{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;background:#fff0d2;color:#754d16;border:1px solid #ead09c;border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:11px;line-height:1.55}
 #hy68 .hy68-sandbox-notice strong{font-size:11px;letter-spacing:.3px;font-weight:900}
+
+/* Unified preview: only one add action and a compact calendar (no source/search toolbar). */
+#hy68 .hy68-calendar-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 3px 5px}
+#hy68 .hy68-calendar-head>div{min-width:0;display:grid;gap:3px}
+#hy68 .hy68-calendar-head strong{font-weight:850;color:#294c38;font-size:14px;line-height:1.4}
+#hy68 .hy68-calendar-head small{font-size:11px;color:#677569}
+#hy68 #hy68AllYear{border:1px solid #adc9b5;border-radius:9px;padding:9px 14px;background:#f5f0e5;color:#2a5740;font-size:12px;font-weight:800;white-space:nowrap}
+#hy68 #hy68AllYear.active{background:#2b5941;color:#fff;border-color:#2b5941}
+#hy68 .hy68-task-source{min-height:17px}
+#hy68 .hy68-task-source .hy68-place{font-size:11px;color:#6a7d6b}
+#hy68 .hy68-context{padding:10px 2px 9px}
+@media(max-width:640px){
+ #hy68 .hy68-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #hy68 .hy68-actions button{font-size:10.5px;padding:8px 4px;min-height:42px;font-weight:800}
+ #hy68 .hy68-calendar-head{gap:7px;padding-top:11px}
+ #hy68 .hy68-calendar-head strong{font-size:13px}
+ #hy68 .hy68-calendar-head small{font-size:10px}
+ #hy68 #hy68AllYear{font-size:11px;padding:8px 10px}
+ #hy68 .hy68-context span{font-size:10px}
+}
