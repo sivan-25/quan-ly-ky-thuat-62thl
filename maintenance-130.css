@@ -236,3 +236,113 @@
  #maint130 .m130List.m130CardsMode{grid-template-columns:minmax(0,1fr)}
  #m130Overlay .m130PersonQuick{gap:5px}
 }
+
+
+/* ESTA maintenance 130HH v2: workflow evidence, balanced KPIs, calendar and timeline */
+#maint130 .m130Header{padding:11px 15px;border-radius:12px}
+#maint130 .m130Header h2{font-size:18px}
+#maint130 .m130Header p{font-size:11px}
+#maint130 .m130Stats{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:9px 0}
+#maint130 .m130Stats>div{padding:8px 11px;gap:1px;min-width:0}
+#maint130 .m130Stats b{font-size:22px}
+#maint130 .m130Kpi.late{border-color:#e3a19d;background:#fff0ea}
+#maint130 .m130Kpi.late b{color:#a52e28}
+#maint130 .m130Kpi.review{border-color:#e6cfac;background:#fffaed}
+#maint130 .m130Kpi.review b{color:#81510d}
+#maint130 .m130Kpi.done b{color:#411437}
+#maint130 .m130StatusSummary{display:flex;flex-wrap:wrap;gap:4px 11px;align-items:center;color:#71556c;font-size:11px;padding:5px 7px 8px}
+#maint130 .m130StatusSummary strong{color:#411437}
+#maint130 .m130StatusSummary span{white-space:nowrap}
+#maint130 .m130ExtraStats{margin-bottom:8px;background:#fff9ef;border:1px solid #e9dbc7;border-radius:9px;padding:7px 11px}
+#maint130 .m130ExtraStats summary{cursor:pointer;font-weight:750;color:#68415e;font-size:11px}
+#maint130 #m130AdvancedKpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:9px}
+#maint130 #m130AdvancedKpis>div{display:flex;flex-direction:column;gap:3px;border-radius:7px;background:#f6ebde;padding:9px;min-width:0}
+#maint130 #m130AdvancedKpis b{font-size:11px;color:#71516e}
+#maint130 #m130AdvancedKpis strong{font-size:17px;color:#411437}
+#maint130 #m130AdvancedKpis small{font-size:10px;color:#876f77}
+#maint130 .m130Toolbar{display:flex;flex-wrap:wrap;gap:6px}
+#maint130 .m130Toolbar input{flex:2 1 220px}
+#maint130 .m130Toolbar select{flex:1 1 130px;min-width:116px;width:auto;padding:8px}
+#maint130 .m130LayoutSwitch{display:flex;flex-wrap:wrap;background:#f3e5d6;border:1px solid #dcc7d0;border-radius:9px;padding:3px;gap:2px}
+#maint130 .m130LayoutSwitch button{background:transparent;border:none;border-radius:6px;padding:7px 9px;font-size:11px;font-weight:800;color:#6e5065;cursor:pointer}
+#maint130 .m130LayoutSwitch button[aria-pressed="true"]{background:#411437;color:#fffaf2}
+#maint130 .m130CardStatus.late{background:#ffded8;color:#a12919}
+#maint130 .m130CardStatus.review{background:#fff0c8;color:#81510d}
+#maint130 .m130CardStatus.working{background:#d7e9ff;color:#204e85}
+#maint130 .m130CardStatus.planned{background:#ede4f1;color:#552d6a}
+#maint130 .m130CardStatus.postponed,#maint130 .m130CardStatus.cancelled{background:#e5e1e5;color:#58505d}
+#maint130 .m130ServiceCard.m130State-review{border-left-color:#d4a52f}
+#maint130 .m130ServiceCard.m130State-working{border-left-color:#4c9df0}
+#maint130 .m130ServiceCard.m130State-planned{border-left-color:#8968a1}
+#maint130 .m130ServiceCard.m130State-postponed,#maint130 .m130ServiceCard.m130State-cancelled{border-left-color:#87818b}
+#maint130 .m130CompactRow.m130State-review{border-left-color:#d4a52f;background:#fffbf2}
+#maint130 .m130CompactRow.m130State-working{border-left-color:#4c9df0;background:#f1f7ff}
+#maint130 .m130CompactRow.m130State-planned{border-left-color:#8968a1}
+#maint130 .m130CompactRow.m130State-postponed,#maint130 .m130CompactRow.m130State-cancelled{border-left-color:#8b8690;background:#f7f5f6}
+#maint130 .m130Badge.review{background:#fff0c8;color:#81510d}
+#maint130 .m130Badge.working{background:#d7e9ff;color:#204e85}
+#maint130 .m130Badge.planned{background:#ede4f1;color:#552d6a}
+#maint130 .m130Badge.postponed,#maint130 .m130Badge.cancelled{background:#e5e1e5;color:#58505d}
+#maint130 .m130Badge.late{background:#ffdbd5;color:#a12919}
+#m130Overlay .m130PhotoFields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#m130Overlay .m130PhotoFields label{border:1px dashed #d7afbe;background:#f9f0eb;border-radius:9px;padding:10px;min-width:0}
+#m130Overlay .m130PhotoFields input{max-width:100%;padding:7px;font-size:12px;background:#fff9f3}
+#m130Overlay .m130PhotoPreview{display:flex;flex-wrap:wrap;gap:8px}
+#m130Overlay .m130SavedPhoto{display:grid;gap:3px;background:#f4eadf;border-radius:9px;padding:6px;width:102px}
+#m130Overlay .m130SavedPhoto small{color:#704d6c}
+#m130Overlay .m130SavedPhoto img{width:90px;height:76px;object-fit:cover;border-radius:7px}
+#m130Overlay .m130SelectedCount{font-size:12px;font-weight:750;color:#411437}
+#maint130 .m130Timeline{display:grid;gap:7px;border-left:3px solid #d0a8bc;padding-left:11px;margin:7px}
+#maint130 .m130TimelineItem{display:grid;grid-template-columns:115px minmax(0,1fr) auto;gap:11px;align-items:center;text-align:left;background:#fffaf3;border:1px solid #e0cdbc;border-left:4px solid #9b728c;border-radius:8px;padding:9px 11px;width:100%;cursor:pointer;color:#411437}
+#maint130 .m130TimelineItem.late{border-left-color:#b93e34}
+#maint130 .m130TimelineItem.done{border-left-color:#18965a}
+#maint130 .m130TimelineItem.review{border-left-color:#dbac33}
+#maint130 .m130TimelineItem time{font-size:12px;font-weight:800}
+#maint130 .m130TimelineItem span{display:flex;flex-direction:column;gap:3px;min-width:0}
+#maint130 .m130TimelineItem b{overflow-wrap:anywhere;font-size:12px}
+#maint130 .m130TimelineItem small{color:#80677c;font-size:11px}
+#maint130 .m130TimelineItem em{font-size:11px;font-style:normal;font-weight:800;white-space:nowrap}
+#maint130 .m130CalendarWrap{padding:10px;background:#fff9ee;border:1px solid #e6d4c2;border-radius:12px}
+#maint130 .m130CalendarWrap>p{margin:0 0 9px;font-size:11px;color:#85677a}
+#maint130 .m130CalendarGrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;min-width:0}
+#maint130 .m130CalendarWeek{text-align:center;font-size:12px;color:#623453;padding:6px}
+#maint130 .m130CalendarBlank{background:transparent;min-height:65px}
+#maint130 .m130CalendarDay{border:1px solid #e7d5c4;border-radius:8px;background:#fffdfa;min-height:85px;min-width:0;padding:4px}
+#maint130 .m130CalendarDay>b{display:block;font-size:11px;color:#6c4561;margin:3px}
+#maint130 .m130CalendarChip{display:block;width:100%;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#f2e5ef;border:1px solid #e2cee0;border-radius:5px;color:#411437;font-size:10px;font-weight:650;padding:5px 4px;margin:3px 0;cursor:grab}
+#maint130 .m130CalendarChip.late{background:#ffe2dd;color:#92251e;border-color:#eebeb7}
+#maint130 .m130CalendarChip.done{background:#d5f0df;color:#225f3d;border-color:#b7dfc3;cursor:pointer}
+#maint130 .m130CalendarChip.review{background:#fff0cb;color:#81520e}
+#maint130 .m130CalendarChip.working{background:#deedff;color:#245da3}
+@media(max-width:760px){
+ #maint130 #m130AdvancedKpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #maint130 .m130Toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #maint130 .m130Toolbar input{grid-column:1/-1;min-width:0;width:100%}
+ #maint130 .m130Toolbar select{min-width:0;width:100%;font-size:11px}
+ #maint130 .m130LayoutSwitch{justify-content:center;grid-column:1/-1}
+ #maint130 .m130ListTop>.m130ListTools{display:flex;flex-wrap:wrap;width:100%;justify-content:flex-start}
+ #maint130 .m130Stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+ #maint130 .m130Stats>div{padding:8px 4px;text-align:center}
+ #maint130 .m130Stats b{font-size:17px}
+ #maint130 .m130Stats span{font-size:9px}
+ #maint130 .m130TimelineItem{grid-template-columns:86px minmax(0,1fr);gap:6px}
+ #maint130 .m130TimelineItem em{grid-column:2}
+ #maint130 .m130CalendarGrid{gap:2px}
+ #maint130 .m130CalendarDay{padding:2px;min-height:48px;border-radius:5px}
+ #maint130 .m130CalendarChip{font-size:9px;padding:3px 2px;white-space:normal;overflow-wrap:anywhere;line-height:1.2}
+ #maint130 .m130CalendarWeek{font-size:9px}
+ #m130Overlay .m130PhotoFields{grid-template-columns:1fr}
+}
+@media(max-width:390px){
+ #maint130 .m130Stats span{font-size:8px}
+ #maint130 .m130StatusSummary{font-size:10px}
+ #maint130 .m130LayoutSwitch button{padding:6px}
+}
+body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide){
+ width:42px!important;height:42px!important;min-width:42px!important;border-radius:50%!important;
+ padding:0!important;display:flex!important;align-items:center;justify-content:center;
+ position:fixed!important;left:12px!important;right:auto!important;
+ bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;
+ font-size:0!important;z-index:1200!important;
+}
+body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) span{font-size:20px!important}
