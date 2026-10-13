@@ -57,8 +57,19 @@
   #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable tr[data-cc-task]:has(.ccPriority.p3):not(:has(.ccWarn.critical,.ccPriority.p4)) {
     border-left-color:#ea580c!important;
   }
+  /* State-first card outlines: blue = doing, green = finished.
+     Priority / deadline warnings remain visible in their separate chips. */
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable tr[data-cc-task]:has(.ccStatus.doing) {
+    border-color:#a9c8fa!important;
+    border-left:6px solid #1d4ed8!important;
+    background:#f5f9ff!important;
+    box-shadow:0 2px 9px rgba(29,78,216,.09)!important;
+  }
   #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable tr[data-cc-task]:has(.ccStatus.done) {
-    border-left-color:#16a34a!important;
+    border-color:#a4ddb8!important;
+    border-left:6px solid #15803d!important;
+    background:#f4fcf6!important;
+    box-shadow:0 2px 9px rgba(21,128,61,.09)!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable tr[data-cc-task] > td {
     display:block!important;min-width:0!important;width:auto!important;
