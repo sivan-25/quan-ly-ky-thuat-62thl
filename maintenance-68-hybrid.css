@@ -176,3 +176,113 @@
  #hy68 #hy68AllYear{font-size:11px;padding:8px 10px}
  #hy68 .hy68-context span{font-size:10px}
 }
+
+
+/* Manager-focused maintenance summaries: dates, work and result are readable at a glance. */
+#hy68 .hy68-stat.blue{border-top:4px solid #d68c1a;background:#fffaf0}
+#hy68 .hy68-stat.blue strong{color:#9a5d0b}
+#hy68 .hy68-stat.green{border-top:4px solid #238b56;background:#f5fbf4}
+#hy68 .hy68-stat.green strong{color:#176a3d}
+#hy68 .hy68-stat.amber{border-top:4px solid #c74e37;background:#fff6f1}
+#hy68 .hy68-stat.amber strong{color:#a73c29}
+#hy68 .hy68-months .hy68-month-progress{font-size:9px;font-weight:750;white-space:nowrap;line-height:1.2;max-width:100%;color:inherit;opacity:.87}
+#hy68 .hy68-overview-title{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;align-items:center;width:100%}
+#hy68 .hy68-context{display:grid;gap:9px;background:#fffdf6;border:1px solid #e5ddce;border-radius:12px;margin:3px 0 13px;padding:13px 15px}
+#hy68 .hy68-overview-title strong{font-size:16px;color:#264938}
+#hy68 .hy68-overview-title>span{font-size:12px;font-weight:700;color:#586b5e}
+#hy68 .hy68-progress{display:block;height:10px;width:100%;background:#e8e9df;border-radius:50px;overflow:hidden}
+#hy68 .hy68-progress>div{height:100%;min-width:0;background:#278957;border-radius:50px;transition:width .18s ease}
+#hy68 .hy68-legend{display:flex;gap:8px 17px;align-items:center;flex-wrap:wrap;color:#405b48;font-size:11px;font-weight:750}
+#hy68 .hy68-legend span{display:inline-flex;gap:6px;align-items:center}
+#hy68 .hy68-dot{display:inline-block;width:9px;height:9px;border-radius:50%}
+#hy68 .hy68-dot.done{background:#16834b}
+#hy68 .hy68-dot.pending{background:#d98b15}
+#hy68 .hy68-dot.review{background:#c64f39}
+#hy68 .hy68-context .hy68-status-explain{font-size:10.5px;color:#607063;line-height:1.5;margin:0}
+#hy68 .hy68-group-head{padding:13px 16px}
+#hy68 .hy68-group-head h3{font-size:14px}
+#hy68 .hy68-group-head .hy68-group-count{display:inline-flex;justify-content:center;background:#fffdf8;border:1px solid #ded8c8;border-radius:50px;padding:5px 11px;color:#365343;font-weight:850;font-size:11px}
+#hy68 .hy68-group-list{padding:9px;display:grid;gap:9px;background:#fffdf7}
+#hy68 .hy68-task{display:grid;grid-template-columns:minmax(143px,180px) minmax(0,1fr);align-items:stretch;gap:0;min-height:0;padding:0;border:1px solid #dfdfd3;border-left:6px solid #9ca79d;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 3px 12px rgba(30,62,45,.045)}
+#hy68 .hy68-task:first-child{border-top:1px solid #dfdfd3}
+#hy68 .hy68-task:hover{background:#fff}
+#hy68 .hy68-task.hy68-status-done{border-left-color:#208953;background:#fcfffc}
+#hy68 .hy68-task.hy68-status-pending{border-left-color:#d58a18;background:#fffefa}
+#hy68 .hy68-task.hy68-status-review{border-left-color:#c94e36;background:#fffdfa}
+#hy68 .hy68-task.hy68-status-skip{border-left-color:#78838b;background:#fcfcfc}
+#hy68 .hy68-date-panel{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:8px;min-width:0;padding:15px 14px;background:#edf1ed;border-right:1px solid #e1e4dc}
+#hy68 .hy68-status-done .hy68-date-panel{background:#e4f3e8}
+#hy68 .hy68-status-pending .hy68-date-panel{background:#fff0d3}
+#hy68 .hy68-status-review .hy68-date-panel{background:#fde6df}
+#hy68 .hy68-status-skip .hy68-date-panel{background:#ededee}
+#hy68 .hy68-date-panel small{font-size:10px;font-weight:900;letter-spacing:.5px;color:#586959}
+#hy68 .hy68-date-panel strong{font-size:19px;line-height:1.25;font-weight:900;color:#244d38;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#hy68 .hy68-status-pending .hy68-date-panel strong{color:#9b590c}
+#hy68 .hy68-status-review .hy68-date-panel strong{color:#9c422f}
+#hy68 .hy68-date-panel>span{font-size:11px;color:#7f6550;font-weight:700}
+#hy68 .hy68-task .hy68-task-main{min-width:0;padding:15px 17px;display:grid;gap:11px}
+#hy68 .hy68-task-headline{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px}
+#hy68 .hy68-job{min-width:0;flex:1 1 270px}
+#hy68 .hy68-job>small{color:#617568;font-size:10px;font-weight:900;letter-spacing:.65px;line-height:1.25}
+#hy68 .hy68-job h4{margin:4px 0 0;font-size:16px;line-height:1.5;font-weight:850;color:#1f3f2e;overflow-wrap:anywhere}
+#hy68 .hy68-big-status{display:inline-flex;gap:8px;align-items:center;padding:9px 12px;min-height:38px;max-width:100%;border:1px solid;border-radius:9px;font-size:12px;font-weight:900;line-height:1.4;letter-spacing:.1px}
+#hy68 .hy68-big-status>span{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;font-size:14px;flex-shrink:0}
+#hy68 .hy68-big-status.done{background:#d9f1e1;border-color:#94cca9;color:#14653d}
+#hy68 .hy68-big-status.done>span{background:#17834a;color:#fff}
+#hy68 .hy68-big-status.pending{background:#fff0d3;border-color:#ebc381;color:#965809}
+#hy68 .hy68-big-status.pending>span{background:#d58a18;color:#fff}
+#hy68 .hy68-big-status.review{background:#ffe3db;border-color:#eba897;color:#963a29}
+#hy68 .hy68-big-status.review>span{background:#c55036;color:#fff}
+#hy68 .hy68-big-status.skip{background:#ededee;border-color:#c6c6c7;color:#5c676d}
+#hy68 .hy68-big-status.skip>span{background:#77818a;color:#fff}
+#hy68 .hy68-facts{display:flex;flex-wrap:wrap;gap:8px 15px;font-size:12px;color:#51665a;line-height:1.6}
+#hy68 .hy68-facts>span{max-width:100%;overflow-wrap:anywhere}
+#hy68 .hy68-facts b{color:#2c4a38;font-weight:850}
+#hy68 .hy68-task-note{border-top:1px dashed #e0dfd4;padding-top:9px}
+#hy68 .hy68-task-note b{color:#586958;font-size:11px;font-weight:850}
+#hy68 .hy68-task-note p{font-size:12px;color:#596c5f;line-height:1.55;margin:5px 0 0;overflow-wrap:anywhere}
+#hy68 .hy68-result-panel{border-radius:9px;border:1px solid #e1e8df;padding:11px 13px;max-width:100%;background:#f5f8f5}
+#hy68 .hy68-result-panel b{display:block;color:#455947;font-size:10px;font-weight:900;letter-spacing:.35px}
+#hy68 .hy68-result-panel p{font-size:12px;line-height:1.6;color:#4c5f53;margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+#hy68 .hy68-result-panel.done{background:#e9f8ee;border-color:#b9dfc6}
+#hy68 .hy68-result-panel.done b,#hy68 .hy68-result-panel.done p{color:#185e3b}
+#hy68 .hy68-result-panel.pending{background:#fff8e9;border-color:#f0dec0}
+#hy68 .hy68-result-panel.pending b,#hy68 .hy68-result-panel.pending p{color:#875b20}
+#hy68 .hy68-result-panel.review{background:#fff1eb;border-color:#efc2b3}
+#hy68 .hy68-result-panel.review b,#hy68 .hy68-result-panel.review p{color:#8f402b}
+#hy68 .hy68-result-panel.skip{background:#f3f1ee;border-color:#dbd9d5}
+#hy68 .hy68-task-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 14px}
+#hy68 .hy68-task-bottom span{font-size:11px;font-weight:750;color:#627367;line-height:1.5}
+#hy68 .hy68-task-bottom button{cursor:pointer;border:1px solid #b8cebc;border-radius:9px;background:#27583e;color:#fff;font-size:12px;font-weight:850;padding:10px 15px;min-height:40px}
+#hy68 .hy68-task-bottom button:hover{background:#1c4730}
+#hy68 .hy68-task-bottom button:disabled{cursor:not-allowed;opacity:.55;background:#d2d9d0;color:#526052}
+@media(max-width:950px){
+ #hy68 .hy68-task{grid-template-columns:minmax(128px,150px) minmax(0,1fr)}
+ #hy68 .hy68-job h4{font-size:15px}
+ #hy68 .hy68-date-panel strong{font-size:17px}
+}
+@media(max-width:640px){
+ #hy68 .hy68-context{padding:12px 11px;gap:10px}
+ #hy68 .hy68-overview-title strong{font-size:14px}
+ #hy68 .hy68-overview-title>span{font-size:11px}
+ #hy68 .hy68-group-head{padding:11px 12px}
+ #hy68 .hy68-group-head h3{font-size:12px}
+ #hy68 .hy68-group-head .hy68-group-count{font-size:10px;padding:4px 8px}
+ #hy68 .hy68-group-list{padding:7px;gap:8px}
+ #hy68 .hy68-task{grid-template-columns:minmax(0,1fr);gap:0}
+ #hy68 .hy68-date-panel{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 8px;border-right:0;border-bottom:1px solid #dfded2;padding:10px 12px}
+ #hy68 .hy68-date-panel small{font-size:9px}
+ #hy68 .hy68-date-panel strong{font-size:16px}
+ #hy68 .hy68-date-panel>span{font-size:10px}
+ #hy68 .hy68-task .hy68-task-main{padding:12px 12px;gap:9px}
+ #hy68 .hy68-task-headline{display:grid;gap:9px}
+ #hy68 .hy68-job h4{font-size:15px;line-height:1.45}
+ #hy68 .hy68-big-status{width:fit-content;max-width:100%;font-size:11px;padding:7px 10px;min-height:34px}
+ #hy68 .hy68-facts{display:grid;gap:5px;font-size:11px}
+ #hy68 .hy68-result-panel{padding:10px 11px}
+ #hy68 .hy68-result-panel p{font-size:12px}
+ #hy68 .hy68-task-bottom{align-items:stretch;flex-direction:column;gap:8px}
+ #hy68 .hy68-task-bottom button{width:100%;font-size:12px}
+ #hy68 .hy68-months button{padding:7px 2px}
+ #hy68 .hy68-months .hy68-month-progress{font-size:8.5px}
+}
