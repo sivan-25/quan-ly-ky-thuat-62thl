@@ -327,42 +327,57 @@ function openEvent(key){
 async function saveEvent(ev){
  ev.preventDefault();
  if(busy||!currentEvent||!canWrite()||!active())return;
- const o=currentEvent,date=$("m130EventDate").value,s=$("m130EventStatus").value,who=$("m130Who").value.trim(),result=$("m130Result").value.trim();
- if(!date||date.slice(0,7)!==o.scheduled.slice(0,7))return toast("Ngày chỉnh sửa phải thuộc tháng đang lên kế hoạch.");
- if(s==="completed"&&(!who||!result))return toast("Nhập người thực hiện và kết quả bảo trì.");
- if(s==="skipped"&&!result)return toast("Nhập lý do không thực hiện.");
+ const o=currentEvent,old=o.event,date=$("m130EventDate").value,statusValue=$("m130EventStatus").value;
+ const who=$("m130Who").value.trim(),result=$("m130Result").value.trim(),resultCode=$("m130ResultCode").value||null;
+ const startText=$("m130StartAt").value,endText=$("m130EndAt").value,reason=$("m130PostponeReason").value.trim();
+ const before=[...$("m130BeforePhotos").files],after=[...$("m130AfterPhotos").files],photos=recordedImages(old);
+ const legacyComplete=old.status==="completed"&&statusValue==="completed"&&(!old.started_at||!old.result_code);
+ if(!date||date.slice(0,7)!==o.scheduled.slice(0,7))return toast("Ngày dự kiến cần nằm trong tháng đang chọn.");
+ if(["postponed","cancelled"].includes(statusValue)&&!reason)return toast("Nhập lý do hoãn hoặc hủy.");
+ if(statusValue==="completed"&&!legacyComplete){
+  if(!who||["Kỹ thuật","Kỹ thuật dự án","Nhà thầu"].includes(who))return toast("Bắt buộc chọn tên kỹ thuật viên thực hiện.");
+  if(peopleOptions().length&&!peopleOptions().includes(who))return toast("Chọn KTV từ danh sách nhân sự của dự án.");
+  if(!startText||!endText||new Date(endText)<new Date(startText))return toast("Nhập giờ bắt đầu, kết thúc hợp lệ.");
+  if(!resultCode||!result)return toast("Chọn Đạt/Không đạt/Cần theo dõi và nhập kết quả thực tế.");
+  if(!photos.length&&!before.length&&!after.length)return toast("Cần ít nhất 1 ảnh trước hoặc sau bảo trì.");
+ }
+ const started_at=startText?new Date(startText).toISOString():null,finished_at=endText?new Date(endText).toISOString():null;
  busy=true;const btn=$("m130EventForm").querySelector("[type=submit]");btn.disabled=true;
- const original=o.event,wasVirtual=o.virtual,id=wasVirtual?crypto.randomUUID():original.id;
- const fields={planned_date:date,status:s,result_note:result,completed_by:s==="completed"?who:"",completed_at:s==="completed"?new Date().toISOString():null,updated_at:new Date().toISOString()};
+ const wasVirtual=o.virtual,id=wasVirtual?crypto.randomUUID():old.id,uploaded=[];
  try{
+  if(before.length||after.length){
+   if(typeof uploadMediaFiles!=="function")throw Error("Hệ thống tải ảnh chưa sẵn sàng.");
+   if(before.length){const refs=await uploadMediaFiles(before,"maintenance-before",id,null,B);uploaded.push(...refs.map(ref=>({kind:"before",ref})));}
+   if(after.length){const refs=await uploadMediaFiles(after,"maintenance-after",id,null,B);uploaded.push(...refs.map(ref=>({kind:"after",ref})));}
+  }
+  const image_paths=[...photos,...uploaded];
+  if(statusValue==="completed"&&!legacyComplete&&!image_paths.length)throw Error("Phải có ít nhất một ảnh bảo trì.");
+  const fields={planned_date:date,due_date:date,status:statusValue,result_note:result,result_code:resultCode,completed_by:who,started_at,finished_at,postpone_reason:reason,image_paths,completed_at:statusValue==="completed"?(old.completed_at||new Date().toISOString()):null,updated_at:new Date().toISOString()};
   const token=centralSession.access_token;
   if(wasVirtual){
-   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:{id,item_id:o.item.id,building_id:B,event_key:original.event_key,planned_month:monthISO(o.scheduled),location:o.item.subsystem||"",source_kind:"year",...fields}});
+   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:{id,item_id:o.item.id,building_id:B,event_key:old.event_key,planned_month:monthISO(o.scheduled),location:o.item.subsystem||"",source_kind:"year",...fields}});
   }else{
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:fields});
   }
-  const confirmed={...original,...fields,id,building_id:B,item_id:o.item.id};
-  if(wasVirtual)stored.push(confirmed);
-  else stored=stored.map(x=>x.id===id?confirmed:x);
-  clearScheduleCache();closeDialog();
-  render();
-  toast(s==="completed"?"✓ Đã lưu và đánh dấu Hoàn thành":s==="skipped"?"Đã ghi nhận không thực hiện":"Đã lưu cập nhật bảo trì");
- }catch(err){toast("Lỗi lưu kết quả: "+(err.message||err));}
+  const next={...old,...fields,id,item_id:o.item.id,building_id:B};
+  if(wasVirtual)stored.push(next);else stored=stored.map(x=>x.id===id?next:x);
+  clearScheduleCache();closeDialog();render();
+  toast(statusValue==="completed"?"✓ Hoàn thành đã lưu đủ minh chứng":statusValue==="awaiting_approval"?"Đã chuyển Chờ duyệt":"✓ Đã lưu tiến độ bảo trì");
+  if(statusValue==="completed"&&resultCode==="fail")toast("Lưu ý: kết quả KHÔNG ĐẠT. Cần xử lý tiếp.");
+ }catch(err){toast("Chưa lưu được: "+(err.message||err));}
  finally{busy=false;btn.disabled=false;}
 }
 async function deletePlan(id){
  if(busy||!canWrite()||!active())return;
- const i=items.find(x=>x.id===id);if(!i)return;
- const related=stored.filter(e=>e.item_id===id);
- const message='Xóa kế hoạch "'+i.work_title+'" và '+related.length+' lần bảo trì đã lưu?\nCác kỳ lặp theo chu kỳ cũng sẽ biến mất. Không thể hoàn tác.';
- if(!confirm(message))return;
+ const item=items.find(x=>x.id===id&&!x.deleted_at);if(!item)return;
+ if(!confirm('Chuyển kế hoạch "'+item.work_title+'" vào thùng lưu trữ? Kế hoạch sẽ bị ẩn khỏi danh sách nhưng vẫn giữ lịch sử và nhật ký kiểm tra.'))return;
  busy=true;
  try{
-  const token=centralSession.access_token;
-  await sbFetch('/rest/v1/esta_maintenance_plan_occurrences?building_id=eq.'+B+'&item_id=eq.'+encodeURIComponent(id),{method:"DELETE",token});
-  await sbFetch('/rest/v1/esta_maintenance_plan_items?building_id=eq.'+B+'&id=eq.'+encodeURIComponent(id),{method:"DELETE",token});
-  clearScheduleCache();ready=false;busy=false;await load(true);toast("Đã xóa kế hoạch bảo trì");
- }catch(err){toast("Không xóa được: "+(err.message||err));}
+  const deleted_at=new Date().toISOString(),token=centralSession.access_token;
+  await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Ẩn theo xác nhận trên giao diện bảo trì 130 HH"}});
+  items=items.map(x=>x.id===id?{...x,deleted_at}:x);
+  clearScheduleCache();render();toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
+ }catch(err){toast("Không thể xóa mềm: "+(err.message||err));}
  finally{busy=false;}
 }
 async function exportPdf(){
