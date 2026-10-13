@@ -88,10 +88,10 @@ function ensure(){
  const page=$("maintenancePage"),anchor=page?.querySelector(".maintenanceSchedule");
  if(!page||!anchor)return;
  const root=document.createElement("section");root.id="maint130";
- root.innerHTML='<div class="m130Header"><div><small>ESTA · 130 HỒNG HÀ · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">Xuất PDF</button><button type="button" id="m130Reload">Làm mới</button></div></div>'+
+ root.innerHTML='<div class="m130Header"><div><small>ESTA · 130 HỒNG HÀ · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">↓ Xuất PDF</button></div></div>'+
  '<div class="m130Stats" id="m130Stats"></div><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
  '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa hoàn thành</option><option value="completed">Hoàn thành</option><option value="skipped">Không thực hiện</option></select></div>'+
- '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị & nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div>';
+ '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div>';
  anchor.parentNode.insertBefore(root,anchor);
  const overlay=document.createElement("div");overlay.id="m130Overlay";overlay.hidden=true;overlay.innerHTML='<div class="m130Dialog"><div class="m130ModalHead"><h3 id="m130ModalTitle">Công việc bảo trì</h3><button type="button" id="m130Close" aria-label="Đóng">×</button></div><form id="m130PlanForm" hidden>'+
  '<label>Nội dung công việc *<textarea id="m130Title" rows="2" required maxlength="500"></textarea></label><div class="m130Two"><label>Hệ thống<select id="m130System"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Chiếu sáng</option><option>Camera & an ninh</option><option>Khác</option></select></label><label>Vị trí<input id="m130Location" maxlength="160" placeholder="Tầng / khu vực"></label></div>'+
@@ -102,7 +102,6 @@ function ensure(){
  $("m130Next").onclick=()=>{year=Math.min(2100,year+1);render();};
  $("m130Create").onclick=()=>openPlan();
  $("m130Pdf").onclick=exportPdf;
- $("m130Reload").onclick=()=>load(true);
  $("m130Legacy").onclick=()=>{page.classList.toggle("maint130-assets-open");$("m130Legacy").setAttribute("aria-expanded",String(page.classList.contains("maint130-assets-open")));};
  ["m130Search","m130Group","m130State"].forEach(id=>$(id).addEventListener(id==="m130Search"?"input":"change",()=>renderList()));
  root.addEventListener("keydown",ev=>{const r=ev.target.closest("[data-m130-open]");if(r&&ev.target===r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();openEvent(r.dataset.m130Open);}});
@@ -175,18 +174,15 @@ function renderList(){
  list.classList.toggle("m130CardsMode",isCards);
  list.classList.toggle("m130RowsMode",!isCards);
  $("maint130").querySelectorAll("[data-m130-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m130View===viewMode)));
- list.innerHTML=(isCards||!visible.length?"":'<div class="m130RowHead" aria-hidden="true"><span>Ngày</span><span>Hệ thống</span><span>Nội dung công việc</span><span>Vị trí</span><span>Chu kỳ</span><span>Trạng thái</span><span>Thao tác</span></div>')+visible.map(o=>{
+ list.innerHTML=visible.map(o=>{
   const e=o.event,i=o.item,st=status(o),key=esc(e.event_key),demo=String(i.source_notes||"").startsWith("MẪU");
   const cycle=interval(i),cycleText=cycle?cycle+" tháng":"Một lần",location=esc(i.subsystem||"Chưa ghi vị trí");
   if(!isCards){
-   return '<article class="m130WorkRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Mở công việc '+esc(i.work_title)+'">'+
-   '<div class="m130Col m130ColDate"><small>Ngày</small><b>'+fmt(e.planned_date||o.scheduled)+'</b></div>'+
-   '<div class="m130Col m130ColSystem"><small>Hệ thống</small><span>'+esc(i.system_group)+'</span></div>'+
-   '<div class="m130Col m130ColContent"><small>Nội dung</small><b>'+esc(i.work_title)+'</b>'+(demo?'<em>MẪU</em>':'')+'<p>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</p>'+(e.result_note?'<p><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+
-   '<div class="m130Col m130ColLocation"><small>Vị trí</small><span>'+location+'</span></div>'+
-   '<div class="m130Col m130ColCycle"><small>Chu kỳ</small><span>'+cycleText+'</span></div>'+
-   '<div class="m130Col m130ColStatus"><small>Trạng thái</small><span class="m130Badge '+st[1]+'">'+st[0]+'</span></div>'+
-   '<div class="m130Col m130ColActions"><small>Thao tác</small><button type="button" data-m130-event="'+key+'" '+(!canWrite()?'':'disabled')+'>'+(e.status==="completed"?'Xem KQ':'Ghi KQ')+'</button><button type="button" class="m130RowEdit" data-m130-plan="'+esc(i.id)+'" '+(!canWrite()?'':'disabled')+'>Sửa</button></div></article>';
+   return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
+    '<div class="m130Date"><b>'+fmt(e.planned_date||o.scheduled).slice(0,5)+'</b><small>'+year+'</small></div>'+
+    '<div class="m130EntryBody"><div class="m130Pills"><span class="m130Sys">'+esc(i.system_group)+'</span><span class="m130Badge '+st[1]+'">'+st[0]+'</span>'+(demo?'<span class="m130Sample">MẪU</span>':'')+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+'</div>'+
+    '<h4>'+esc(i.work_title)+'</h4><p>'+location+' · <strong>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</strong></p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+
+    '<div class="m130EntryActions"><button type="button" data-m130-event="'+key+'" '+(canWrite()?"":"disabled")+'>'+(e.status==="completed"?"Xem KQ":"Ghi bảo trì")+'</button><button type="button" class="m130Edit" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'>Sửa</button></div></article>';
   }
   const done=lastCompleted(o),upcoming=nextCardDate(o);
   const record=esc(e.event_key),editable=canWrite()?"":"disabled";
