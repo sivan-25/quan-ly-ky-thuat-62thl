@@ -12,25 +12,6 @@
  padding:14px!important;
  min-width:0;
 }
-#maintenancePage #maint130 .m130ServiceCard.m130State-done{
- background:#f3fcf7!important;border-left-color:#168451!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-working{
- background:#f1f7ff!important;border-left-color:#1d70d2!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-late{
- background:#fff5f5!important;border-left-color:#d5263b!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-planned{
- background:#fffaf1!important;border-left-color:#d3911c!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-review{
- background:#fff8e9!important;border-left-color:#af7512!important
-}
-#maintenancePage #maint130 .m130ServiceCard.m130State-postponed,
-#maintenancePage #maint130 .m130ServiceCard.m130State-cancelled{
- background:#f7f6fa!important;border-left-color:#7f6b99!important
-}
 #maintenancePage #maint130 .m130ServiceCard .m130SystemLabel{
  color:#345875!important;font-size:11px!important;font-weight:850!important;
  letter-spacing:.035em!important
@@ -181,71 +162,49 @@
 }
 
 
-/* ESTA 2026-10-13: unmistakable whole-item status colors + photo placement.
-   Synchronized for Cards and Rows, no change to data/status calculation. */
-#maintenancePage #maint130 .m130ServiceCard.m130State-done,
-#maintenancePage #maint130 .m130CompactRow.m130State-done{
- background:linear-gradient(115deg,#dbf6e7 0%,#eafaf1 100%)!important;
- border-color:#9bcfaf!important;border-left:6px solid #0c8647!important;
- box-shadow:0 2px 9px rgba(13,129,71,.09),inset 0 0 0 1px rgba(17,132,75,.04)!important;
+
+/* ESTA · Unified status palette and responsive evidence positions.
+   Variables replace repeated background/border overrides for 6 statuses. */
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow){
+ --maint-color:#61758c;
+ --maint-border:#cad4dd;
+ --maint-bg-start:#fff;
+ --maint-bg-end:#f9fbfd;
+ background:linear-gradient(115deg,var(--maint-bg-start),var(--maint-bg-end))!important;
+ border:1px solid var(--maint-border)!important;
+ border-left:6px solid var(--maint-color)!important;
+ box-shadow:0 2px 9px color-mix(in srgb,var(--maint-color) 12%,transparent)!important;
+ min-width:0;
 }
-#maintenancePage #maint130 .m130ServiceCard.m130State-working,
-#maintenancePage #maint130 .m130CompactRow.m130State-working{
- background:linear-gradient(115deg,#e0eeff 0%,#eff6ff 100%)!important;
- border-color:#9cbee9!important;border-left:6px solid #166dcc!important;
- box-shadow:0 2px 9px rgba(24,105,209,.1),inset 0 0 0 1px rgba(25,103,203,.04)!important;
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-done{
+ --maint-color:#0c8246;--maint-border:#9bcfaf;
+ --maint-bg-start:#dbf6e7;--maint-bg-end:#eafaf1;
 }
-#maintenancePage #maint130 .m130ServiceCard.m130State-late,
-#maintenancePage #maint130 .m130CompactRow.m130State-late{
- background:linear-gradient(115deg,#ffdde3 0%,#fff0f1 100%)!important;
- border-color:#e7a3ac!important;border-left:6px solid #cf1535!important;
- box-shadow:0 2px 9px rgba(197,25,55,.12),inset 0 0 0 1px rgba(201,26,54,.05)!important;
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-working{
+ --maint-color:#155fbb;--maint-border:#9cbee9;
+ --maint-bg-start:#e0eeff;--maint-bg-end:#eff6ff;
 }
-#maintenancePage #maint130 .m130ServiceCard.m130State-planned,
-#maintenancePage #maint130 .m130CompactRow.m130State-planned{
- background:linear-gradient(115deg,#fff0cc 0%,#fff8e5 100%)!important;
- border-color:#e4c57e!important;border-left:6px solid #c28313!important;
- box-shadow:0 2px 9px rgba(162,115,26,.09)!important;
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-late{
+ --maint-color:#c51937;--maint-border:#e7a3ac;
+ --maint-bg-start:#ffdde3;--maint-bg-end:#fff0f1;
 }
-#maintenancePage #maint130 .m130ServiceCard.m130State-review,
-#maintenancePage #maint130 .m130CompactRow.m130State-review{
- background:linear-gradient(115deg,#fdf0ce 0%,#fff8e5 100%)!important;
- border-color:#ddbf74!important;border-left:6px solid #b9800c!important;
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-planned{
+ --maint-color:#996510;--maint-border:#e4c57e;
+ --maint-bg-start:#fff0cc;--maint-bg-end:#fff8e5;
 }
-#maintenancePage #maint130 .m130ServiceCard.m130State-cancelled,
-#maintenancePage #maint130 .m130CompactRow.m130State-cancelled,
-#maintenancePage #maint130 .m130ServiceCard.m130State-postponed,
-#maintenancePage #maint130 .m130CompactRow.m130State-postponed{
- background:linear-gradient(115deg,#eae5f1 0%,#f8f5fc 100%)!important;
- border-color:#cbb8df!important;border-left:6px solid #7b5d9c!important;
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow).m130State-review{
+ --maint-color:#9a6506;--maint-border:#ddbf74;
+ --maint-bg-start:#fdf0ce;--maint-bg-end:#fff8e5;
 }
-#maintenancePage #maint130 .m130CardStatus.done,
-#maintenancePage #maint130 .m130CompactRow .m130Badge.done{
- color:#fff!important;background:#0c8246!important;border-color:#0c8246!important;
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow):is(.m130State-postponed,.m130State-cancelled){
+ --maint-color:#74548e;--maint-border:#cbb8df;
+ --maint-bg-start:#eae5f1;--maint-bg-end:#f8f5fc;
 }
-#maintenancePage #maint130 .m130CardStatus.working,
-#maintenancePage #maint130 .m130CompactRow .m130Badge.working{
- color:#fff!important;background:#155fbb!important;border-color:#155fbb!important;
+#maintenancePage #maint130 :is(.m130ServiceCard,.m130CompactRow) :is(.m130CardStatus,.m130Badge){
+ background:var(--maint-color)!important;color:#fff!important;
+ border-color:var(--maint-color)!important;font-weight:850!important;
 }
-#maintenancePage #maint130 .m130CardStatus.late,
-#maintenancePage #maint130 .m130CompactRow .m130Badge.late{
- color:#fff!important;background:#c51937!important;border-color:#c51937!important;
-}
-#maintenancePage #maint130 .m130CardStatus.planned,
-#maintenancePage #maint130 .m130CompactRow .m130Badge.planned{
- color:#fff!important;background:#996510!important;border-color:#996510!important;
-}
-#maintenancePage #maint130 .m130CardStatus.review,
-#maintenancePage #maint130 .m130CompactRow .m130Badge.review{
- color:#fff!important;background:#9a6506!important;border-color:#9a6506!important;
-}
-#maintenancePage #maint130 .m130CardStatus.postponed,
-#maintenancePage #maint130 .m130CardStatus.cancelled,
-#maintenancePage #maint130 .m130CompactRow .m130Badge.postponed,
-#maintenancePage #maint130 .m130CompactRow .m130Badge.cancelled{
- color:#fff!important;background:#74548e!important;border-color:#74548e!important;
-}
-/* Card: keep information left and evidence right, using otherwise empty width. */
+/* Card: content stays left, photos fill the unused space on the right. */
 #maintenancePage #maint130 .m130CardLower{
  display:flex;align-items:flex-start;gap:12px;min-width:0;
  flex:1 0 auto;margin:0 0 10px;
@@ -261,14 +220,10 @@
  flex:0 1 184px;min-width:0;max-width:192px;
  margin:9px 0 0!important;align-self:flex-start;
 }
-#maintenancePage #maint130 .m130CardLower:not(:has(.m130Evidence)) .m130CardDetails{
- flex-basis:100%;
-}
-/* Row: thumbnails are siblings of information, not nested under it.
-   Flex naturally places them on the same horizontal line next to actions. */
+/* Rows: evidence is a direct sibling of the description and actions. */
 #maintenancePage #maint130 .m130CompactRow{
- display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
- gap:12px!important;min-width:0!important;
+ display:flex!important;flex-wrap:nowrap!important;
+ align-items:center!important;gap:12px!important;min-width:0!important;
 }
 #maintenancePage #maint130 .m130CompactRow>.m130EntryBody{
  flex:1 1 0!important;min-width:0!important;overflow-wrap:anywhere;
@@ -285,7 +240,6 @@
  flex:0 0 60px;min-width:0;width:60px;
 }
 #maintenancePage #maint130 .m130CompactRow .m130Date b{color:#17314b!important}
-/* At medium widths photo block wraps internally, but never forces page-wide scrolling. */
 @media(min-width:641px) and (max-width:1199px){
  #maintenancePage #maint130 .m130CompactRow>.m130Evidence{
   max-width:170px;justify-content:flex-start;
@@ -294,15 +248,13 @@
   padding:7px 8px!important;font-size:10px!important;
  }
 }
-/* Phone: a single readable column with the evidence below details. */
 @media(max-width:640px){
  #maintenancePage #maint130 .m130CardLower{flex-direction:column;gap:4px}
  #maintenancePage #maint130 .m130CardLower>.m130Evidence{
   align-self:stretch;flex:0 0 auto;max-width:none;width:100%;
  }
  #maintenancePage #maint130 .m130CompactRow{
-  flex-wrap:wrap!important;align-items:flex-start!important;
-  gap:7px!important;
+  flex-wrap:wrap!important;align-items:flex-start!important;gap:7px!important;
  }
  #maintenancePage #maint130 .m130CompactRow .m130Date{
   flex:0 0 46px;width:46px;
@@ -311,14 +263,10 @@
   flex:1 1 calc(100% - 56px)!important;
  }
  #maintenancePage #maint130 .m130CompactRow>.m130Evidence{
-  flex:1 1 100%;max-width:none;margin:1px 0 0 53px!important;
-  justify-content:flex-start;
+  flex:1 1 calc(100% - 53px);min-width:0;max-width:calc(100% - 53px);
+  margin:1px 0 0 53px!important;justify-content:flex-start;
  }
  #maintenancePage #maint130 .m130CompactRow>.m130EntryActions{
-  flex:1 1 100%;width:100%;
-  justify-content:flex-end;
- }
- #maintenancePage #maint130 .m130CardStatus{
-  font-weight:850!important;
+  flex:1 1 100%;width:100%;justify-content:flex-end;
  }
 }
