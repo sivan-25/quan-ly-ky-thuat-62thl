@@ -168,7 +168,7 @@
 #maintenancePage #maint130 .m130Cal.estamMonthsOpen,
 #maintenancePage #maint68 .ma68Months.estamMonthsOpen,
 #maintenancePage .maintenanceSchedule.estamMonthsOpen{display:block!important}
-#maintenancePage #maint130 .m130ListTop{margin:0 0 7px!important;padding:8px 4px!important}
+#maintenancePage #maint130 .m130ListTop{display:none!important}
 #maintenancePage #maint130 .m130Heading{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #maintenancePage #maint130 .m130Heading b{font-size:14px!important;color:#1d385c!important}
 #maintenancePage #maint130 .m130Heading small{font-size:11px!important;color:#677b91!important}
