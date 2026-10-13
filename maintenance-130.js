@@ -107,8 +107,8 @@ function kpiHtml(events){
  weekEnd.setDate(weekEnd.getDate()+7);
  const limit=weekEnd.getFullYear()+"-"+pad(weekEnd.getMonth()+1)+"-"+pad(weekEnd.getDate());
  const todayCount=events.filter(o=>dateOf(o)===today).length,weekCount=events.filter(o=>dateOf(o)>=today&&dateOf(o)<=limit).length;
- const eligible=events.filter(o=>o.event.status==="completed"&&o.event.finished_at);
- const onTime=eligible.filter(o=>String(o.event.finished_at).slice(0,10)<=dateOf(o)).length;
+ const eligible=events.filter(o=>o.event.status==="completed"&&(o.event.completed_at||o.event.finished_at));
+ const onTime=eligible.filter(o=>String(o.event.completed_at||o.event.finished_at).slice(0,10)<=dateOf(o)).length;
  const timely=eligible.length?Math.round(onTime/eligible.length*100)+"%":"—";
  const pair=[[c.late,"Quá hạn","late"],[todayCount,"Hôm nay","today"],[weekCount,"7 ngày tới","week"],[c.review,"Chờ duyệt","review"],[timely,"Đúng hạn","done"]];
  $("m130Stats").innerHTML=pair.map(x=>'<div class="m130Kpi '+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
@@ -254,7 +254,11 @@ function renderAlternative(events){
   }).join("");
   cells.push('<div class="m130CalendarDay" data-m130-date="'+date+'"><b>'+day+'</b>'+chips+'</div>');
  }
- list.innerHTML='<div class="m130CalendarWrap"><p>Chọn công việc để cập nhật. Trên máy tính có thể kéo công việc chưa hoàn thành sang ngày khác trong cùng tháng.</p><div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div></div>';
+ const agenda=events.map(o=>{
+  const st=status(o),key=esc(o.event.event_key);
+  return '<div class="m130AgendaItem"><div class="m130AgendaDate">'+fmt(dateOf(o))+'</div><button type="button" data-m130-event="'+key+'" class="m130AgendaButton '+st[1]+'"><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+st[0]+'</small></button></div>';
+ }).join("");
+ list.innerHTML='<div class="m130CalendarWrap"><p>Chọn công việc để cập nhật. Trên máy tính có thể kéo công việc chưa hoàn thành sang ngày khác trong cùng tháng.</p><div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
 }
 async function rescheduleOccurrence(key,date){
  if(busy||!canWrite()||!active())return;
