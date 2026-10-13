@@ -53,6 +53,7 @@ function ensure(){
  ['hy68Search','hy68System','hy68State'].forEach(id=>$(id).addEventListener(id==='hy68Search'?'input':'change',render));
  $('hy68Close').onclick=$('hy68Cancel').onclick=()=>{if(!isSaving)overlay.hidden=true;};
  overlay.addEventListener('click',e=>{if(e.target===overlay&&!isSaving)overlay.hidden=true;});
+ $('hy68Form').noValidate=true; // Hidden mode has required inputs; apply explicit mode-specific validation.
  $('hy68Form').onsubmit=save;
  for(const id of ['hy68Camera','hy68Gallery'])$(id).addEventListener('change',evt=>{
   const fs=[...evt.target.files].filter(f=>f.type.startsWith('image/'));newPhotos.push(...fs);
