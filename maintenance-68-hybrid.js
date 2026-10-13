@@ -20,7 +20,7 @@ function ensure(){
  const page=$('maintenancePage');if(!page)return;
  const shell=document.createElement('section');shell.id=ROOT;shell.hidden=true;shell.setAttribute('aria-label','Bảo trì thiết bị 68 PĐL');
  shell.innerHTML=
- '<div class="hy68-head"><div class="hy68-heading"><span class="hy68-eyebrow">ESTA · BẢO TRÌ THIẾT BỊ · 68 PĐL</span><h2>Bảo trì thiết bị</h2><p>Quản lý kế hoạch năm 2026 và tự bổ sung hạng mục, thiết bị khi phát sinh.</p></div><div class="hy68-actions"><button type="button" id="hy68Refresh">↻ Làm mới</button><button type="button" id="hy68Pdf">⇩ Xuất PDF</button><button type="button" id="hy68Add" class="hy68-primary">＋ Thêm hạng mục</button><button type="button" id="hy68DeviceAdd">＋ Thêm thiết bị</button></div></div>'+
+ '<div class="hy68-sandbox-notice"><strong>BẢN THỬ NGHIỆM 68 PĐL</strong><span>Giao diện chưa áp dụng vào web chính. Lưu ý: bấm Lưu sẽ ghi dữ liệu thật vào dự án 68 PĐL.</span></div><div class="hy68-head"><div class="hy68-heading"><span class="hy68-eyebrow">ESTA · BẢO TRÌ THIẾT BỊ · 68 PĐL</span><h2>Bảo trì thiết bị</h2><p>Quản lý kế hoạch năm 2026 và tự bổ sung hạng mục, thiết bị khi phát sinh.</p></div><div class="hy68-actions"><button type="button" id="hy68Refresh">↻ Làm mới</button><button type="button" id="hy68Pdf">⇩ Xuất PDF</button><button type="button" id="hy68Add" class="hy68-primary">＋ Thêm hạng mục</button><button type="button" id="hy68DeviceAdd">＋ Thêm thiết bị</button></div></div>'+
  '<div class="hy68-summary" id="hy68Summary"></div>'+
  '<div class="hy68-nav" role="tablist" aria-label="Chế độ bảo trì"><button type="button" data-hy-tab="jobs" class="active" role="tab">Công việc bảo trì</button><button type="button" data-hy-tab="year" role="tab">Lịch cả năm</button><button type="button" data-hy-tab="devices" role="tab">Thiết bị tự thêm</button></div>'+
  '<div id="hy68WorkArea">'+
@@ -263,7 +263,7 @@ async function saveEntry(){
 async function scheduleUnplanned(id){
  if(!can()||!mayEdit())return;
  const i=items.find(x=>x.id===id);if(!i)return;
- const response=prompt('Nhập ngày lập lịch trong năm 2026 (YYYY-MM-DD), hoặc để trống để chỉ chọn tháng:',YEAR+'-'+pad(month)+'-01');
+ const response=prompt('Nhập ngày cần bảo trì (YYYY-MM-DD) trong năm 2026:',YEAR+'-'+pad(month)+'-01');
  if(response===null)return;
  const date=response.trim();
  if(!/^2026-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date)return tip('Nhập ngày hợp lệ thuộc năm 2026.');
