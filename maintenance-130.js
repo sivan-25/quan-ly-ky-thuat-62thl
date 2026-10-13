@@ -220,7 +220,7 @@ function renderList(){
    return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
     '<div class="m130Date"><b>'+fmt(e.planned_date||o.scheduled).slice(0,5)+'</b><small>'+year+'</small></div>'+
     '<div class="m130EntryBody"><div class="m130Pills"><span class="m130Sys">'+esc(i.system_group)+'</span><span class="m130Badge '+st[1]+'">'+st[0]+'</span>'+(demo?'<span class="m130Sample">MẪU</span>':'')+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+'</div>'+
-    '<h4>'+esc(i.work_title)+'</h4><p>'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Hạn: '+fmt(dateOf(o))+' · Ưu tiên: '+esc(({normal:"Bình thường",high:"Cao",urgent:"Khẩn cấp"})[i.priority]||"Bình thường")+' · <strong>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</strong></p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+maintenanceEvidenceHtml(e,e.event_key)+'</div>'+
+    '<h4>'+esc(i.work_title)+'</h4><p>'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Hạn: '+fmt(dateOf(o))+' · Ưu tiên: '+esc(({normal:"Bình thường",high:"Cao",urgent:"Khẩn cấp"})[i.priority]||"Bình thường")+' · <strong>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</strong></p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+
     '<div class="m130EntryActions"><button type="button" data-m130-event="'+key+'" '+(canWrite()?"":"disabled")+'>'+(e.status==="completed"?"Xem KQ":"Ghi bảo trì")+'</button><button type="button" class="m130Edit" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'>Sửa</button></div></article>';
   }
   const done=lastCompleted(o),upcoming=nextCardDate(o);
@@ -229,8 +229,8 @@ function renderList(){
    '<div class="m130CardHead"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><div class="m130TopTags">'+(demo?'<span class="m130SampleTag">MẪU</span>':'')+'<span class="m130CardStatus '+st[1]+'">'+st[0]+'</span></div></div>'+
    '<h3>'+esc(i.work_title)+'</h3><p class="m130CardLocation">'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Lịch kỳ này: '+fmt(e.planned_date||o.scheduled)+'</p>'+
    '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+fmt(upcoming)+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
-   '<div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span><span>Trạng thái: <b>'+st[0]+'</b></span></div>'+
-   (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+maintenanceEvidenceHtml(e,e.event_key)+
+   '<div class="m130CardLower"><div class="m130CardDetails"><div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span></div>'+
+   (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+'</div>'+
    '<div class="m130CardFoot"><button type="button" class="m130RecordBtn" data-m130-event="'+record+'" '+editable+'>'+(e.status==="completed"?"✓ Xem / sửa KQ":"＋ Ghi bảo trì")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
  }).join("")||'<p class="m130Empty">Không có công việc trong tháng và bộ lọc này.</p>';
  hydrateMaintenanceEvidence();
