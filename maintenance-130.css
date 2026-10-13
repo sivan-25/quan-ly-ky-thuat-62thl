@@ -114,3 +114,10 @@
 #maint130 .m130Badge.skip{background:#e8ebee;color:#414752}
 @media(max-width:1040px){#maint130 .m130List.m130CardsMode{grid-template-columns:1fr}}
 @media(max-width:640px){#maint130 .m130ListTop{align-items:stretch;flex-wrap:wrap;gap:10px}#maint130 .m130ListTools{justify-content:space-between;width:100%}#maint130 .m130ServiceCard{padding:13px 12px}#maint130 .m130CardMetrics{padding:11px 9px;gap:5px}#maint130 .m130CardMetrics strong{font-size:13px}#maint130 .m130CardStatus{font-size:10px;padding:6px 8px}#maint130 .m130ServiceCard h3{font-size:15px}#maint130 .m130CardFoot button{font-size:11px;padding:9px 10px}#maint130 .m130CardMeta{font-size:11px}}
+
+/* Maintenance confirmation feedback and faster mobile tapping. */
+#m130Overlay .m130CompleteTip{margin:0;padding:9px 11px;border-radius:9px;background:#e3f4e9;border:1px solid #b9ddc7;color:#21613c;font-size:12px;font-weight:750;line-height:1.5}
+#maint130 .m130Months button,#maint130 .m130Year button,#maint130 .m130ViewSwitch button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#maint130 .m130Months button:focus-visible{outline:3px solid #4b92cb;outline-offset:2px}
+#maint130 .m130CardStatus.done{background:#b8f4d1;color:#06482b}
+#maint130 .m130ServiceCard.m130State-done{border-left-color:#18c478}
