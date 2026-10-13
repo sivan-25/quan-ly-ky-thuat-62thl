@@ -346,3 +346,10 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide){
  font-size:0!important;z-index:1200!important;
 }
 body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) span{font-size:20px!important}
+
+#maint130 .m130AuditButton{margin:9px 0 0;background:#411437;color:#fff9ef;border:1px solid #411437;border-radius:7px;padding:8px 12px;font-size:11px;font-weight:800;cursor:pointer}
+#maint130 #m130AuditHistory{display:grid;gap:5px;margin-top:8px}
+#maint130 .m130AuditRow{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 12px;background:#fffdfa;border:1px solid #e8d8c5;border-radius:7px;padding:7px 9px;font-size:11px}
+#maint130 .m130AuditRow b{color:#411437}
+#maint130 .m130AuditRow span{flex:1;overflow-wrap:anywhere}
+#maint130 .m130AuditRow small{color:#846f7a}
