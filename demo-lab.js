@@ -981,12 +981,9 @@ function demoBindBell(){
 document.addEventListener("click",e=>{const p=$("#demoNoticePanel");if(p&&!p.contains(e.target)&&!bell.contains(e.target))p.classList.add("hide")});
 }
 function demoEnsureAssetPassport(){
- if(!demoIs()||$("#maintenancePage")?.classList.contains("hide"))return;
- let p=$("#demoAssetPassport");
- if(!p){p=document.createElement("section");p.id="demoAssetPassport";p.className="demoAssetPassport";document.querySelector("#maintenancePage .maintenanceHero")?.insertAdjacentElement("afterend",p)}
- p.innerHTML='<div><b>Hồ sơ thiết bị liên kết & QR</b><span>Mỗi thiết bị dùng một mã cố định để mở hồ sơ, lịch sử bảo trì, sự cố và tài liệu. Mã hồ sơ được tạo theo mã dự án và thiết bị.</span></div><button class="demoBtn primary" onclick="showModule(\'documents\')">Xem hồ sơ liên kết</button>';
+ // Module linked-asset/QR promotional banner retired. Do not touch equipment records.
+ $("#demoAssetPassport")?.remove();
 }
-
 function demoSeverityClass(v){return v==="Khẩn cấp"||v==="Cao"?"red":v==="Trung bình"?"amber":"blue"}
 function demoStatusClass(v){return v==="Đã đóng"||v==="Đạt"?"green":v==="Đang xử lý"?"blue":v==="Theo dõi"||v==="Cần chú ý"?"amber":"red"}
 
