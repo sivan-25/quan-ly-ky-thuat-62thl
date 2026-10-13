@@ -155,23 +155,28 @@ function render(){
   const done=rows.filter(([,e])=>e.status==='completed').length;
   html+='<section class="hy68-group"><div class="hy68-group-head"><h3>'+esc(systemName)+'</h3><span class="hy68-group-count">'+done+'/'+rows.length+' hoàn thành</span></div><div class="hy68-group-list">';
   for(const [i,e] of rows){
-   const st=statusInfo(e);
-   const planText=e.planned_date?vi(e.planned_date):'Tháng '+pad(mon(e))+'/2026';
-   const hasFixedDate=!!e.planned_date;
+   const st=statusInfo(e),fix=!!e.planned_date,planText=fix?vi(e.planned_date):'Th'+pad(mon(e))+'/2026';
    const actual=recordedDate(e.completed_at);
    const result=String(e.result_note||'').trim();
-   const workNote=String(i.source_notes||'').trim();
+   const note=String(i.source_notes||'').trim();
    const loc=String(e.location||i.subsystem||'Chưa ghi khu vực');
-   const details=workNote&&workNote!=='0'?'<div class="hy68-task-note"><b>Ghi chú kế hoạch</b><p>'+esc(workNote)+'</p></div>':'';
-   const resultBody=result?esc(result):e.status==='completed'?'Đã ghi nhận hoàn thành, nhưng chưa có nội dung kết quả.':e.status==='skipped'?'Chưa ghi lý do.':'Chưa có kết quả được ghi nhận.';
+   const performer=String(e.completed_by||i.assigned_to||'Kỹ thuật');
+   const compactStatus=e.status==='completed'?'Hoàn thành':e.status==='skipped'?'Không thực hiện':e.needs_review?'Cần đối chiếu':'Chưa xác nhận';
+   const resultBody=result?esc(result):e.status==='completed'?'Chưa có nội dung kết quả.':e.status==='skipped'?'Chưa ghi lý do.':'Chưa cập nhật kết quả.';
+   const notes=note&&note!=='0'?'<details class="hy68-brief-note"><summary>Nội dung kế hoạch</summary><p>'+esc(note)+'</p></details>':'';
+   const subtitle=esc(loc)+' · '+esc(performer);
+   const completedAt=e.status==='completed'&&actual?'Hoàn thành: '+esc(actual):'';
+   const review=e.needs_review&&e.status==='planned'?'⚠ '+esc(e.review_note||'Đối chiếu kế hoạch gốc'):'';
+   const extra=completedAt||review;
    html+='<article class="hy68-task hy68-status-'+st.kind+'">'+
-    '<div class="hy68-date-panel"><small>'+(hasFixedDate?'NGÀY KẾ HOẠCH':'THÁNG KẾ HOẠCH')+'</small><strong>'+esc(planText)+'</strong>'+(hasFixedDate?'':'<span>Chưa ấn định ngày</span>')+'</div>'+
-    '<div class="hy68-task-main"><div class="hy68-task-headline"><div class="hy68-job"><small>CÔNG VIỆC BẢO TRÌ</small><h4>'+esc(i.work_title)+'</h4></div><strong class="hy68-big-status '+st.kind+'"><span>'+st.icon+'</span>'+st.label+'</strong></div>'+
-    '<div class="hy68-facts"><span><b>Hệ thống:</b> '+esc(systemName)+'</span><span><b>Khu vực:</b> '+esc(loc)+'</span><span><b>Phụ trách:</b> '+esc(e.completed_by||i.assigned_to||'Kỹ thuật')+'</span></div>'+
-    details+
-    '<div class="hy68-result-panel '+st.kind+'"><b>'+st.resultTitle+'</b><p>'+resultBody+'</p></div>'+
-    '<div class="hy68-task-bottom">'+(actual&&e.status==='completed'?'<span>✓ Ghi nhận hoàn thành: '+esc(actual)+'</span>':'<span>'+((e.needs_review&&e.status==='planned')?'⚠ Cần kiểm tra lại lịch gốc':'Theo dõi theo kế hoạch năm 2026')+'</span>')+
-    '<button type="button" data-hy-event="'+esc(e.id)+'" '+(mayEdit()?'':'disabled')+'>'+(mayEdit()?'Cập nhật kết quả →':'Chỉ xem')+'</button></div></div></article>';
+    '<div class="hy68-date-panel"><strong>'+esc(planText)+'</strong><small>'+(fix?'Ngày kế hoạch':'Chưa chốt ngày')+'</small></div>'+
+    '<div class="hy68-task-main"><div class="hy68-task-headline"><div class="hy68-job"><h4>'+esc(i.work_title)+'</h4><span class="hy68-subline">'+subtitle+'</span></div>'+
+    '<strong class="hy68-big-status '+st.kind+'"><span>'+st.icon+'</span>'+compactStatus+'</strong></div>'+
+    '<div class="hy68-result-panel '+st.kind+'"><b>'+(e.status==='skipped'?'Lý do:':'KQ:')+'</b><p>'+resultBody+'</p></div>'+
+    (extra?'<p class="hy68-inline-note">'+extra+'</p>':'')+
+    notes+
+    '<div class="hy68-task-bottom"><button type="button" data-hy-event="'+esc(e.id)+'" '+(mayEdit()?'':'disabled')+'>'+(mayEdit()?'Cập nhật':'Chỉ xem')+'</button></div>'+
+    '</div></article>';
   }
   html+='</div></section>';
  }
