@@ -95,7 +95,7 @@
       if(!stats)return;
       let card=stats.querySelector(".estam68Extra");
       if(!card){card=document.createElement("div");card.className="estam68Extra";card.innerHTML="<b>0</b><span>Hôm nay</span>";stats.appendChild(card);}
-      const value=[...($("ma68Content")?.querySelectorAll(".ma68Entry")||[])].filter(n=>n.querySelector("p")?.textContent.includes(new Date().toLocaleDateString("en-GB"))).length;
+      const value=Number($("maint68")?.dataset.todayCount||0);
       if(card.querySelector("b").textContent!==String(value))card.querySelector("b").textContent=String(value);
     }
     shell.querySelectorAll("[data-estam-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.estamView===view)));
