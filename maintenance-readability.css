@@ -1,0 +1,181 @@
+/* ESTA · Maintenance legibility and evidence · 2026-10-13
+   Override ONLY the maintenance project page. Keep colors meaningful on desktop/mobile. */
+#maintenancePage #demoAssetPassport{display:none!important}
+#maintenancePage #maint130 .m130List.m130CardsMode{gap:12px}
+#maintenancePage #maint130 .m130ServiceCard{
+ background:#ffffff!important;
+ color:#21354e!important;
+ border:1px solid #d7e2eb!important;
+ border-left:4px solid #7489a8!important;
+ border-radius:13px!important;
+ box-shadow:0 2px 7px rgba(30,58,94,.075)!important;
+ padding:14px!important;
+ min-width:0;
+}
+#maintenancePage #maint130 .m130ServiceCard.m130State-done{
+ background:#f3fcf7!important;border-left-color:#168451!important
+}
+#maintenancePage #maint130 .m130ServiceCard.m130State-working{
+ background:#f1f7ff!important;border-left-color:#1d70d2!important
+}
+#maintenancePage #maint130 .m130ServiceCard.m130State-late{
+ background:#fff5f5!important;border-left-color:#d5263b!important
+}
+#maintenancePage #maint130 .m130ServiceCard.m130State-planned{
+ background:#fffaf1!important;border-left-color:#d3911c!important
+}
+#maintenancePage #maint130 .m130ServiceCard.m130State-review{
+ background:#fff8e9!important;border-left-color:#af7512!important
+}
+#maintenancePage #maint130 .m130ServiceCard.m130State-postponed,
+#maintenancePage #maint130 .m130ServiceCard.m130State-cancelled{
+ background:#f7f6fa!important;border-left-color:#7f6b99!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130SystemLabel{
+ color:#345875!important;font-size:11px!important;font-weight:850!important;
+ letter-spacing:.035em!important
+}
+#maintenancePage #maint130 .m130ServiceCard h3{
+ color:#172e4d!important;font-size:16px!important;font-weight:850!important;
+ line-height:1.45!important;letter-spacing:0!important;
+ margin:9px 0 5px!important;overflow-wrap:anywhere!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardLocation{
+ color:#4a6178!important;font-size:12px!important;line-height:1.5!important;
+ margin:0 0 10px!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardMetrics{
+ background:#edf3f8!important;border:1px solid #d8e3eb!important;
+ border-radius:10px!important;padding:10px 12px!important;gap:8px!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardMetrics small{
+ color:#4b657d!important;font-size:11px!important;line-height:1.3!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardMetrics strong{
+ color:#1e3b5b!important;font-size:13px!important;line-height:1.3!important;
+ font-weight:850!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardMeta{
+ color:#415c74!important;font-size:12px!important;
+ gap:4px 16px!important;margin:10px 0!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardMeta b{
+ color:#1b3452!important;font-weight:800!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardResult{
+ background:#eaf4fb!important;border:1px solid #d3e7f2!important;
+ color:#173e60!important;border-radius:8px!important;
+ font-size:12px!important;line-height:1.55!important;
+ padding:8px 10px!important;margin:0 0 10px!important;
+ overflow-wrap:anywhere!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardResult b{color:#124c77!important}
+#maintenancePage #maint130 .m130ServiceCard .m130CardFoot{
+ border-top:1px solid #d5e3eb!important;gap:8px!important;
+ padding-top:10px!important;margin-top:auto!important;flex-wrap:wrap
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardFoot button{
+ border:1px solid #c7d5e1!important;color:#204366!important;
+ background:#fff!important;font-weight:800!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardFoot .m130RecordBtn{
+ background:#e6f3ff!important;border-color:#b2d4f1!important;color:#174f87!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardFoot .m130DeleteBtn{
+ margin-left:auto!important;color:#b32335!important;
+ background:#fff1f3!important;border-color:#efc9cd!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130SampleTag{
+ background:#57425e!important;color:#fff!important
+}
+#maintenancePage #maint130 .m130ServiceCard .m130CardStatus.done,
+#maintenancePage #maint130 .m130ServiceCard .m130CardStatus.working,
+#maintenancePage #maint130 .m130ServiceCard .m130CardStatus.late,
+#maintenancePage #maint130 .m130ServiceCard .m130CardStatus.planned,
+#maintenancePage #maint130 .m130ServiceCard .m130CardStatus.review{
+ font-size:11px!important;font-weight:850!important
+}
+#maintenancePage #maint130 .m130CompactRow{min-width:0;overflow-wrap:anywhere}
+#maintenancePage #maint130 .m130CompactRow .m130EntryBody h4,
+#maintenancePage #maint130 .m130CompactRow .m130EntryBody p{
+ color:#223a54!important
+}
+#maintenancePage #maint130 .m130CompactRow .m130Result{
+ color:#1c5a47!important;font-weight:650
+}
+/* Existing before/after images shown directly in both table and card mode. */
+#maintenancePage #maint130 .m130Evidence{
+ display:flex;align-items:flex-start;gap:7px;min-width:0;flex-wrap:wrap;
+ margin:10px 0 11px;padding:0
+}
+#maintenancePage #maint130 .m130Evidence button{
+ display:flex;flex-direction:column;gap:4px;align-items:center;
+ width:83px;min-width:0;padding:4px;border:1px solid #d0dfeb;
+ border-radius:9px;background:#fff;cursor:pointer;overflow:hidden;
+ color:#2a5077;box-shadow:0 1px 3px rgba(22,41,64,.04)
+}
+#maintenancePage #maint130 .m130Evidence button:hover{
+ border-color:#4c87c1;background:#edf7ff
+}
+#maintenancePage #maint130 .m130Evidence img{
+ display:block;width:73px;height:65px;max-width:100%;
+ object-fit:cover;border-radius:5px;background:#eaf0f7;
+ color:#4c6279;font-size:10px
+}
+#maintenancePage #maint130 .m130Evidence small{
+ max-width:100%;font-size:10px;font-weight:800;line-height:1.2;
+ white-space:nowrap;color:#2c597e
+}
+#maintenancePage #maint130 .m130Evidence .m130MoreEvidence{
+ justify-content:center;align-self:stretch;
+ width:74px;min-height:84px;font-weight:800;
+ background:#f1f6fd;color:#245885
+}
+#maintenancePage #maint130 .m130CompactRow .m130Evidence{margin:8px 0 2px}
+/* Full size gallery */
+#m130Gallery[hidden]{display:none!important}
+#m130Gallery{
+ position:fixed;inset:0;z-index:100000;
+ display:flex;align-items:center;justify-content:center;
+ padding:15px;background:rgba(11,25,43,.84)
+}
+#m130Gallery .m130GalleryPanel{
+ width:min(94vw,950px);max-height:94dvh;min-width:0;
+ padding:12px;background:#fff;border-radius:14px;
+ box-shadow:0 24px 64px rgba(0,0,0,.35);
+ display:flex;flex-direction:column;gap:10px
+}
+#m130Gallery .m130GalleryHeader{
+ display:flex;justify-content:space-between;align-items:center;gap:10px;
+ color:#173853;font-size:13px;font-weight:800
+}
+#m130Gallery .m130GalleryHeader button{
+ padding:7px 11px;border:1px solid #d2dce6;border-radius:8px;
+ background:#f1f5fa;color:#173853;cursor:pointer;font-size:16px
+}
+#m130Gallery .m130GalleryImage{
+ display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;
+ background:#172333;border-radius:8px;overflow:auto
+}
+#m130Gallery .m130GalleryImage img{
+ display:block;max-width:100%;max-height:calc(94dvh - 146px);
+ width:auto;height:auto;object-fit:contain;color:#fff
+}
+#m130Gallery .m130GalleryNav{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#m130Gallery .m130GalleryNav button{
+ padding:8px 15px;border:1px solid #bdd5e8;border-radius:8px;
+ background:#e8f3fd;color:#124e80;cursor:pointer;font-weight:800
+}
+#m130Gallery .m130GalleryNav button:disabled{opacity:.4;cursor:default}
+#m130Gallery .m130GalleryNav span{font-size:12px;color:#415e75}
+@media(max-width:640px){
+ #maintenancePage #maint130 .m130ServiceCard{padding:11px!important}
+ #maintenancePage #maint130 .m130ServiceCard h3{font-size:14px!important}
+ #maintenancePage #maint130 .m130ServiceCard .m130CardMetrics{padding:9px!important;gap:5px!important}
+ #maintenancePage #maint130 .m130ServiceCard .m130CardMetrics strong{font-size:12px!important}
+ #maintenancePage #maint130 .m130Evidence{gap:6px}
+ #maintenancePage #maint130 .m130Evidence button{width:76px}
+ #maintenancePage #maint130 .m130Evidence img{width:66px;height:59px}
+ #m130Gallery{padding:8px}
+ #m130Gallery .m130GalleryPanel{width:100%;padding:9px}
+}
