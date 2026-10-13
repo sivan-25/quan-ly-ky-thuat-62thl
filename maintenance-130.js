@@ -105,6 +105,7 @@ function ensure(){
  $("m130Reload").onclick=()=>load(true);
  $("m130Legacy").onclick=()=>{page.classList.toggle("maint130-assets-open");$("m130Legacy").setAttribute("aria-expanded",String(page.classList.contains("maint130-assets-open")));};
  ["m130Search","m130Group","m130State"].forEach(id=>$(id).addEventListener(id==="m130Search"?"input":"change",()=>renderList()));
+ root.addEventListener("keydown",ev=>{const r=ev.target.closest("[data-m130-open]");if(r&&ev.target===r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();openEvent(r.dataset.m130Open);}});
  root.addEventListener("click",ev=>{
   const v=ev.target.closest("[data-m130-view]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]");
   if(v){
@@ -166,18 +167,26 @@ function render(){
 }
 function renderList(){
  if(!show()||!ready)return;
- const subset=getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month); const q=$("m130Search").value.trim().toLocaleLowerCase("vi-VN"),g=select.value,s=$("m130State").value;
+ const subset=getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month); const q=$("m130Search").value.trim().toLocaleLowerCase("vi-VN"),g=$("m130Group").value,s=$("m130State").value;
  const visible=subset.filter(o=>(!g||o.item.system_group===g)&&(!s||(s==="planned"?o.event.status==="planned":o.event.status===s))&&(!q||[o.item.work_title,o.item.system_group,o.item.subsystem,o.item.assigned_to].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
  $("m130ListTitle").textContent="Công việc tháng "+pad(month)+"/"+year;
  $("m130ListCount").textContent=visible.length+" / "+subset.length+" công việc";
  const isCards=viewMode==="cards",list=$("m130List");
  list.classList.toggle("m130CardsMode",isCards);
+ list.classList.toggle("m130RowsMode",!isCards);
  $("maint130").querySelectorAll("[data-m130-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m130View===viewMode)));
- list.innerHTML=visible.map(o=>{
+ list.innerHTML=(isCards||!visible.length?"":'<div class="m130RowHead" aria-hidden="true"><span>Ngày</span><span>Hệ thống</span><span>Nội dung công việc</span><span>Vị trí</span><span>Chu kỳ</span><span>Trạng thái</span><span>Thao tác</span></div>')+visible.map(o=>{
   const e=o.event,i=o.item,st=status(o),key=esc(e.event_key),demo=String(i.source_notes||"").startsWith("MẪU");
   const cycle=interval(i),cycleText=cycle?cycle+" tháng":"Một lần",location=esc(i.subsystem||"Chưa ghi vị trí");
   if(!isCards){
-   return '<article class="m130Entry"><div class="m130Date"><b>'+fmt(e.planned_date||o.scheduled).slice(0,5)+'</b><small>'+year+'</small></div><div class="m130EntryBody"><div class="m130Pills"><span class="m130Sys">'+esc(i.system_group)+'</span><span class="m130Badge '+st[1]+'">'+st[0]+'</span>'+(demo?'<span class="m130Sample">MẪU</span>':'')+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+'</div><h4>'+esc(i.work_title)+'</h4><p>'+location+' · Phụ trách: '+esc(i.assigned_to||"Kỹ thuật")+'</p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div><div class="m130EntryActions"><button type="button" data-m130-event="'+key+'" '+(!canWrite()?"disabled":"")+'>Ghi bảo trì</button><button type="button" class="m130Edit" data-m130-plan="'+esc(i.id)+'" '+(!canWrite()?"disabled":"")+'>Sửa</button></div></article>';
+   return '<article class="m130WorkRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Mở công việc '+esc(i.work_title)+'">'+
+   '<div class="m130Col m130ColDate"><small>Ngày</small><b>'+fmt(e.planned_date||o.scheduled)+'</b></div>'+
+   '<div class="m130Col m130ColSystem"><small>Hệ thống</small><span>'+esc(i.system_group)+'</span></div>'+
+   '<div class="m130Col m130ColContent"><small>Nội dung</small><b>'+esc(i.work_title)+'</b>'+(demo?'<em>MẪU</em>':'')+'<p>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</p>'+(e.result_note?'<p><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+
+   '<div class="m130Col m130ColLocation"><small>Vị trí</small><span>'+location+'</span></div>'+
+   '<div class="m130Col m130ColCycle"><small>Chu kỳ</small><span>'+cycleText+'</span></div>'+
+   '<div class="m130Col m130ColStatus"><small>Trạng thái</small><span class="m130Badge '+st[1]+'">'+st[0]+'</span></div>'+
+   '<div class="m130Col m130ColActions"><small>Thao tác</small><button type="button" data-m130-event="'+key+'" '+(!canWrite()?'':'disabled')+'>'+(e.status==="completed"?'Xem KQ':'Ghi KQ')+'</button><button type="button" class="m130RowEdit" data-m130-plan="'+esc(i.id)+'" '+(!canWrite()?'':'disabled')+'>Sửa</button></div></article>';
   }
   const done=lastCompleted(o),upcoming=nextCardDate(o);
   const record=esc(e.event_key),editable=canWrite()?"":"disabled";
@@ -185,7 +194,7 @@ function renderList(){
    '<div class="m130CardHead"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><div class="m130TopTags">'+(demo?'<span class="m130SampleTag">MẪU</span>':'')+'<span class="m130CardStatus '+st[1]+'">'+st[0]+'</span></div></div>'+
    '<h3>'+esc(i.work_title)+'</h3><p class="m130CardLocation">'+location+' · Lịch kỳ này: '+fmt(e.planned_date||o.scheduled)+'</p>'+
    '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+fmt(upcoming)+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
-   '<div class="m130CardMeta"><span>Phụ trách: <b>'+esc(i.assigned_to||"Kỹ thuật")+'</b></span><span>Trạng thái: <b>'+(e.status==="completed"?"Đã hoàn thành":e.status==="skipped"?"Không thực hiện":"Đang theo dõi")+'</b></span></div>'+
+   '<div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span><span>Trạng thái: <b>'+(e.status==="completed"?"Đã hoàn thành":e.status==="skipped"?"Không thực hiện":"Đang theo dõi")+'</b></span></div>'+
    (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+
    '<div class="m130CardFoot"><button type="button" class="m130RecordBtn" data-m130-event="'+record+'" '+editable+'>'+(e.status==="completed"?"✓ Xem / sửa KQ":"＋ Ghi bảo trì")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
  }).join("")||'<p class="m130Empty">Không có công việc trong tháng và bộ lọc này.</p>';
