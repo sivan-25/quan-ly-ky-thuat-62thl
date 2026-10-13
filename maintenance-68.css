@@ -1,0 +1,56 @@
+
+#maint68[hidden],#ma68Overlay[hidden]{display:none!important}
+#maint68{color:#30483a;padding:0 0 25px}
+#maint68 .ma68Header{background:linear-gradient(110deg,#385942,#254b38);color:#fff;border-radius:16px;padding:20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+#maint68 .ma68Header small{color:#f3dcb2;font-size:11px;letter-spacing:.08em;font-weight:800}
+#maint68 .ma68Header h2{color:#fff;font-size:22px;margin:5px 0 6px}
+#maint68 .ma68Header p{color:#f6ead4;font-size:13px;margin:0;line-height:1.55}
+#maint68 .ma68Header button{border:0;border-radius:9px;background:#f4e4c6;color:#30513d;padding:10px 14px;font-weight:800;cursor:pointer}
+#maint68 .ma68Stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:13px 0}
+#maint68 .ma68Stats div{background:#fffdf8;border:1px solid #e0ddcf;border-radius:12px;padding:13px;display:flex;flex-direction:column;gap:5px}
+#maint68 .ma68Stats b{font-size:25px;color:#345742;line-height:1.1}
+#maint68 .ma68Stats span{font-size:12px;font-weight:650;color:#596c5c}
+#maint68 .ma68Months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:7px;margin:12px 0 16px}
+#maint68 .ma68Months button{display:flex;flex-direction:column;align-items:center;gap:4px;background:#faf5e8;color:#375141;border:1px solid #e0dccc;border-radius:9px;padding:10px 3px;cursor:pointer;min-width:0}
+#maint68 .ma68Months button.sel{background:#345a43;border-color:#345a43;color:white}
+#maint68 .ma68Months button b{font-size:19px}
+#maint68 .ma68Months button small{font-size:11px}
+#maint68 .ma68Filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px}
+#maint68 .ma68Filters input,#maint68 .ma68Filters select{box-sizing:border-box;min-width:0;width:100%;background:#fffcf7;color:#364f40;border:1px solid #dad7c9;border-radius:9px;padding:10px 12px;font-size:14px}
+#maint68 .ma68Info{font-size:12px;line-height:1.65;padding:10px 12px;background:#fff3da;color:#866029;border-radius:9px;margin:13px 0}
+#maint68 #ma68Content{display:grid;gap:12px}
+#maint68 .ma68Section{border:1px solid #dfd9cb;border-radius:13px;overflow:hidden;background:#fffdf6}
+#maint68 .ma68Section>header{padding:12px 15px;background:#f1ecdf;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#maint68 .ma68Section>header h3{margin:0;font-size:15px;color:#30543f;font-weight:800}
+#maint68 .ma68Section>header b{font-size:12px;color:#6b6b55}
+#maint68 .ma68Entry{padding:13px 15px;border-top:1px solid #eee9dc;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#maint68 .ma68Entry>div{min-width:0}
+#maint68 .ma68Entry small{color:#6d796e;font-size:11px}
+#maint68 .ma68Entry h4{color:#2b4236;font-size:14px;font-weight:750;margin:5px 0 8px;line-height:1.5;overflow-wrap:anywhere}
+#maint68 .ma68Entry p{color:#596c60;font-size:12px;margin:5px 0;line-height:1.5}
+#maint68 .ma68Entry button{background:#e6f0e6;color:#285a3e;border:1px solid #bdd1c3;border-radius:9px;padding:8px 11px;font-weight:750;cursor:pointer;flex-shrink:0}
+#maint68 .ma68Entry button:disabled{opacity:.45;cursor:not-allowed}
+#maint68 .ma68Badge{background:#ede7d7;color:#746851;border-radius:20px;padding:3px 7px;font-size:11px}
+#maint68 .ma68Badge.done{background:#daeee0;color:#16713d}
+#maint68 .ma68Badge.warn{background:#fff0cb;color:#995b10}
+#maint68 .ma68Entry p.ma68Warning{padding:7px 9px;background:#fff3d4;color:#8d5c18;border-radius:7px}
+#maint68 .ma68Pending{background:#fffcf4;border:1px solid #e2dacd;border-radius:12px;margin-top:15px;overflow:hidden}
+#maint68 .ma68Pending summary{padding:14px;background:#f1ebdd;cursor:pointer;color:#355242;font-size:14px;font-weight:800}
+#maint68 .ma68Empty{background:#fffcf3;border:1px dashed #d8d0bb;padding:24px;text-align:center;border-radius:10px;color:#746850}
+#ma68Overlay{position:fixed;inset:0;z-index:20000;background:rgba(23,39,29,.65);display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto;box-sizing:border-box}
+#ma68Overlay .ma68Dialog{width:min(100%,540px);max-height:calc(100dvh - 28px);overflow:auto;background:#fffcf6;color:#2e4335;padding:20px;border-radius:16px;box-shadow:0 20px 55px #0004;display:grid;gap:12px;box-sizing:border-box}
+#ma68Overlay .ma68Top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+#ma68Overlay .ma68Top h3{font-size:19px;color:#36523d;margin:0}
+#ma68Overlay .ma68Top button{font-size:24px;border:0;border-radius:8px;background:#f0e6d5;padding:4px 11px;cursor:pointer}
+#ma68Overlay .ma68Dialog label{display:grid;gap:5px;font-size:13px;font-weight:750}
+#ma68Overlay .ma68Dialog input,#ma68Overlay .ma68Dialog select,#ma68Overlay .ma68Dialog textarea{box-sizing:border-box;min-width:0;width:100%;border:1px solid #cecbbf;border-radius:9px;background:#fff;color:#253a2d;padding:10px;font:inherit;font-size:14px}
+#ma68Overlay .ma68Dialog>p{margin:0;font-size:12px;line-height:1.5}
+#ma68Overlay .ma68Warning{background:#fff1d1;padding:8px;color:#955d15;border-radius:8px}
+#ma68Overlay .ma68Actions{display:flex;gap:9px;justify-content:flex-end}
+#ma68Overlay .ma68Actions button{padding:10px 17px;border-radius:9px;border:1px solid #bec6b9;cursor:pointer;font-weight:750}
+#ma68Overlay .ma68Actions button[type=submit]{background:#345a43;color:white;border-color:#345a43}
+@media(max-width:980px){#maint68 .ma68Stats{grid-template-columns:repeat(3,minmax(0,1fr))}#maint68 .ma68Months{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:640px){#maint68 .ma68Header{padding:15px}#maint68 .ma68Header h2{font-size:20px}#maint68 .ma68Stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#maint68 .ma68Stats div{padding:10px}#maint68 .ma68Months{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}#maint68 .ma68Filters{grid-template-columns:1fr 1fr;gap:7px}#maint68 .ma68Filters input{grid-column:1/-1}#maint68 .ma68Entry{padding:11px;align-items:flex-start;gap:7px}#maint68 .ma68Entry button{padding:8px}#maint68 .ma68Section>header{padding:11px}}
+
+#maintenancePage .maintenanceStats[hidden],#maintenancePage .maintenanceHistoryCard[hidden],#maintenancePage .maintenanceBoard[hidden],#maintenancePage .maintenanceSchedule[hidden],#maintenanceExportPdf[hidden]{display:none!important}
+#maint68 .ma68HeaderActions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
