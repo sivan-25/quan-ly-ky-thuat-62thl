@@ -190,7 +190,7 @@ function alerts(){
  });
  return out.sort((a,b)=>b.sev-a.sev||String(a.date||"").localeCompare(String(b.date||"")));
 }
-function statusClass(s){return isDone({s})?"done":s==="Chờ xử lý"?"waiting":"doing"}
+function statusClass(s){return isDone({s})?"done":s==="Bắt đầu"?"start":s==="Chờ xử lý"?"waiting":"doing"}
 function warningHtml(t){const due=String(t.dueDate||""),td=todayC();if(!isDone(t)&&due&&due<td)return '<span class="ccWarn critical">Quá hạn</span>';if(!isDone(t)&&due===td)return '<span class="ccWarn high">Hôm nay</span>';if(!isDone(t)&&priorityRank(t.priority)>=3)return '<span class="ccWarn high">'+escC(t.priority)+'</span>';return '<span class="ccWarn ok">Bình thường</span>'}
 function renderFilters(){const sel=$c("#ccProjectFilter");if(!sel)return;const old=sel.value;sel.innerHTML='<option value="">Tất cả phạm vi</option>'+activeProjects().map(b=>'<option value="'+escC(b.id)+'">'+escC(b.name||b.id)+'</option>').join("")+'<option value="PERSONAL">Công việc thực hiện · Văn</option>';if([...sel.options].some(o=>o.value===old))sel.value=old}
 function renderSummary(a,t){
