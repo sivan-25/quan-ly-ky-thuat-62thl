@@ -1,0 +1,298 @@
+/* ESTA · Bảo trì thiết bị 2026-10-13 — tách biệt nghiệp vụ lưu và hiển thị */
+#app.maintenanceMode .estaTopbar {
+  background:linear-gradient(115deg,#0e3460 0%,#103b70 52%,#0c2f57 100%)!important;
+  border-bottom:1px solid rgba(255,255,255,.12)!important;
+  color:#f8fbff!important;
+}
+#app.maintenanceMode #topMaintenanceTitle h1{font-size:clamp(18px,1.8vw,27px)!important;color:#fff!important;font-weight:800!important}
+#app.maintenanceMode #topMaintenanceTitle p{display:none!important}
+#app.maintenanceMode #topMaintenanceTitle .topModuleIcon{background:rgba(64,147,219,.16)!important;color:#24d3e2!important;border:1px solid #4776a1!important}
+#app.maintenanceMode .headerTools .headerSearch{display:none!important}
+#app:not(.maintenanceMode) .estamHeaderPdf{display:none!important}
+#app .estamHeaderPdf{
+ display:inline-flex;align-items:center;justify-content:center;gap:9px;
+ min-height:40px;padding:8px 15px;color:#eff7ff;background:rgba(6,30,68,.22);
+ border:1px solid #45749d;border-radius:10px;font-size:13px;font-weight:750;cursor:pointer;
+}
+#app .estamHeaderPdf svg{width:20px;height:20px}
+#app .estamHeaderPdf:hover{background:#23517f}
+#app.maintenanceMode .peopleSettingsTopBtn{background:rgba(6,30,68,.22)!important;border-color:#45749d!important;color:#eff7ff!important}
+#maintenancePage.maintenancePage{
+ max-width:none!important;margin:0!important;padding:0 13px 25px!important;
+ background:#faf6ed!important;color:#182f4c;min-width:0;overflow-x:clip;
+}
+#maintenancePage .maintenanceHero{display:none!important}
+#maintenancePage #estaMaintenanceRedesign{display:block;min-width:0;padding-top:10px}
+#maintenancePage #estaMaintenanceRedesign *{box-sizing:border-box}
+#maintenancePage .estamSummary{
+ display:flex;align-items:center;gap:13px;min-height:111px;padding:9px 12px;
+ border-radius:14px;background:linear-gradient(95deg,#f7f0e2,#f9f5eb);
+}
+#maintenancePage .estamMonthNav{
+ display:grid;grid-template-columns:37px minmax(110px,155px) 37px;gap:5px;flex:0 0 auto;align-items:center;
+}
+#maintenancePage .estamMonthNav button{
+ min-height:43px;border-radius:10px;border:1px solid #e7e4df;
+ background:#fffefa;color:#162d53;cursor:pointer;font-weight:800;font-size:17px;
+ display:flex;align-items:center;justify-content:center;
+}
+#maintenancePage .estamMonthNav button:hover{border-color:#597fa5}
+#maintenancePage .estamMonthNav svg{width:20px;height:20px}
+#maintenancePage .estamMonthNav #estamMonth{font-size:18px;white-space:nowrap}
+#maintenancePage .estamStats{flex:1;min-width:0}
+#maintenancePage .estamStats .m130Stats,
+#maintenancePage .estamStats .ma68Stats,
+#maintenancePage .estamStats .maintenanceStats{
+ margin:0!important;padding:0!important;display:grid!important;
+ grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:9px!important;
+}
+#maintenancePage .estamStats .m130Kpi,
+#maintenancePage .estamStats .ma68Stats>div,
+#maintenancePage .estamStats .maintenanceStats>article{
+ display:flex!important;flex-direction:column!important;position:relative;justify-content:center;align-items:flex-start;
+ min-width:0!important;min-height:83px!important;margin:0!important;padding:12px 14px!important;
+ background:#fff!important;border:1px solid #e9e8e5!important;border-radius:12px!important;
+ box-shadow:0 1px 3px rgba(14,48,80,.03)!important;text-align:left!important;gap:3px!important;
+}
+#maintenancePage .estamStats .m130Kpi b,
+#maintenancePage .estamStats .ma68Stats b,
+#maintenancePage .estamStats .maintenanceStats b{
+ color:#14253e!important;font-size:27px!important;line-height:1.1!important;
+ font-weight:850!important;margin:0!important;letter-spacing:-.5px;
+}
+#maintenancePage .estamStats .m130Kpi span,
+#maintenancePage .estamStats .ma68Stats span,
+#maintenancePage .estamStats .maintenanceStats small,
+#maintenancePage .estamStats .maintenanceStats em{
+ color:#2f496d!important;font-size:12px!important;line-height:1.2!important;font-weight:700!important;letter-spacing:0!important;
+}
+#maintenancePage .estamStats .maintenanceStats em{color:#728094!important;font-size:10px!important}
+#maintenancePage .estamStats .maintenanceStats .maintStatIcon{position:absolute;right:12px;top:12px;opacity:.85;width:23px!important;height:23px!important}
+#maintenancePage .estamStats .m130Kpi::after{
+ position:absolute;right:13px;top:12px;font-size:19px;line-height:1;font-weight:800;
+}
+#maintenancePage .estamStats .m130Kpi.estamTotal::after{content:"▤";color:#537eae}
+#maintenancePage .estamStats .m130Kpi.late::after{content:"◉";color:#e42135}
+#maintenancePage .estamStats .m130Kpi.today::after{content:"▣";color:#177bea}
+#maintenancePage .estamStats .m130Kpi.week::after{content:"▣";color:#12985d}
+#maintenancePage .estamStats .m130Kpi.review::after{content:"◷";color:#a67416}
+#maintenancePage .estamStats .m130Kpi.done::after{content:"◴";color:#4979b4}
+#maintenancePage .estamStats .m130Kpi.late,
+#maintenancePage .estamStats .maintenanceStats>article:nth-child(2){background:#fff4f4!important}
+#maintenancePage .estamStats .m130Kpi.late b,
+#maintenancePage .estamStats .maintenanceStats>article:nth-child(2) b{color:#dc152e!important}
+#maintenancePage .estamStats .m130Kpi.today,
+#maintenancePage .estamStats .estamToday{background:#f0f8ff!important}
+#maintenancePage .estamStats .m130Kpi.today b,
+#maintenancePage .estamStats .estamToday b{color:#1879e8!important}
+#maintenancePage .estamStats .m130Kpi.week,
+#maintenancePage .estamStats .estamWeek{background:#edfaf3!important}
+#maintenancePage .estamStats .m130Kpi.week b,
+#maintenancePage .estamStats .estamWeek b{color:#178450!important}
+#maintenancePage .estamStats .m130Kpi.review{background:#fcf8ed!important}
+#maintenancePage .estamStats .m130Kpi.review b{color:#926816!important}
+#maintenancePage .estamStats .m130Kpi.done{background:#f1f7ff!important}
+#maintenancePage .estamStats .m130Kpi.done b{color:#346fb1!important}
+#maintenancePage .estamToolbar{
+ display:flex;align-items:center;justify-content:space-between;gap:9px;
+ background:#fffdf8;padding:11px 4px 11px 2px;margin:0 -2px 9px;border-bottom:1px solid #eee8dc;
+ min-width:0;
+}
+#maintenancePage .estamFilterArea,
+#maintenancePage .estamActionArea{display:flex;align-items:center;gap:7px;min-width:0}
+#maintenancePage .estamFilterArea{flex:1 1 auto}
+#maintenancePage .estamActionArea{flex:0 0 auto}
+#maintenancePage #estamSearch{
+ width:43px;height:43px;flex:0 0 43px;display:flex;align-items:center;justify-content:center;
+ border:1px solid #e1e5ec;border-radius:10px;background:#fff;color:#46227c;cursor:pointer;
+}
+#maintenancePage #estamSearch svg{width:21px;height:21px}
+#maintenancePage #estamSearch:hover{background:#f0f4fb}
+#maintenancePage .estamNativeFilters{display:flex;flex:1;min-width:0}
+#maintenancePage .estamNativeFilters .m130Toolbar,
+#maintenancePage .estamNativeFilters .ma68Filters,
+#maintenancePage .estamNativeFilters .inventoryToolbarActions{
+ display:flex!important;flex-wrap:nowrap;gap:8px!important;align-items:center;
+ flex:1 1 auto;min-width:0;margin:0!important;padding:0!important;
+}
+#maintenancePage .estamNativeFilters select{
+ flex:1 1 120px;min-width:84px;max-width:210px;width:auto!important;min-height:42px;
+ padding:8px 28px 8px 11px!important;border:1px solid #e1e4e9!important;
+ background:#fff!important;color:#332359!important;font-size:12px!important;
+ font-weight:700;border-radius:10px!important;cursor:pointer;
+}
+#maintenancePage #m130TypeFilter{display:none!important}
+#maintenancePage .estamNativeFilters input,
+#maintenancePage .estamNativeFilters .inventorySearch{
+ display:none!important;
+}
+#maintenancePage #estaMaintenanceRedesign.estamSearching .estamNativeFilters input[type="search"],
+#maintenancePage #estaMaintenanceRedesign.estamSearching .estamNativeFilters input#ma68Search,
+#maintenancePage #estaMaintenanceRedesign.estamSearching .estamNativeFilters .inventorySearch{
+ display:block!important;width:200px!important;min-width:130px;max-width:240px;
+ flex:0 1 200px;min-height:42px;border:1px solid #c4d4e4!important;
+ border-radius:10px;background:white!important;color:#142d55!important;padding:8px!important;
+ font-size:13px!important;
+}
+#maintenancePage #estaMaintenanceRedesign.estamSearching .estamNativeFilters .inventorySearch{position:relative!important;padding:0!important}
+#maintenancePage #estaMaintenanceRedesign.estamSearching .estamNativeFilters #maintenanceSearch{display:block!important;width:100%!important;min-height:42px!important;padding:8px 9px 8px 31px!important}
+#maintenancePage .estamViewSwitch{display:flex;flex-shrink:0;border:1px solid #eae4dc;border-radius:10px;overflow:hidden}
+#maintenancePage .estamViewSwitch button{
+ display:flex;align-items:center;gap:6px;min-height:42px;border:0;border-right:1px solid #eee9e3;
+ padding:8px 12px;color:#472765;background:#fffefa;white-space:nowrap;cursor:pointer;font-size:12px;font-weight:750;
+}
+#maintenancePage .estamViewSwitch button:last-child{border-right:0}
+#maintenancePage .estamViewSwitch svg{width:16px;height:16px}
+#maintenancePage .estamViewSwitch button[aria-pressed=true]{background:#38115b;color:white}
+#maintenancePage .estamNativeActions{display:flex;gap:7px;align-items:center}
+#maintenancePage #m130Create,
+#maintenancePage #addMaintenanceAsset{
+ display:flex;align-items:center;justify-content:center;border:1px solid #37105b!important;
+ border-radius:10px!important;background:#38115b!important;color:#fff!important;
+ min-height:43px!important;white-space:nowrap;padding:8px 14px!important;
+ font-size:12px!important;font-weight:800!important;cursor:pointer;
+}
+#maintenancePage #m130Legacy{
+ min-height:42px;padding:8px 10px!important;border-radius:10px!important;border:1px solid #e2d9e6!important;
+ color:#4d3861!important;background:#fff!important;font-size:11px!important;cursor:pointer;
+}
+#maintenancePage #maint130{margin:0!important;padding:0 0 16px!important;min-width:0}
+#maintenancePage #maint130 .m130Header,
+#maintenancePage #maint130 .m130Cal,
+#maintenancePage #maint130 .m130ListTools,
+#maintenancePage #maint130 .m130ListTop>.m130ListTools,
+#maintenancePage #maint68 .ma68Header,
+#maintenancePage #maint68 .ma68Months,
+#maintenancePage .maintenanceSchedule,
+#maintenancePage .maintenanceExamples{display:none!important}
+#maintenancePage #maint130 .m130Cal.estamMonthsOpen,
+#maintenancePage #maint68 .ma68Months.estamMonthsOpen,
+#maintenancePage .maintenanceSchedule.estamMonthsOpen{display:block!important}
+#maintenancePage #maint130 .m130ListTop{display:none!important}
+#maintenancePage #maint130 .m130Heading{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#maintenancePage #maint130 .m130Heading b{font-size:14px!important;color:#1d385c!important}
+#maintenancePage #maint130 .m130Heading small{font-size:11px!important;color:#677b91!important}
+#maintenancePage #maint130 .m130List{min-width:0}
+#maintenancePage #maint130 .m130Entry,
+#maintenancePage #maint68 .ma68Entry,
+#maintenancePage #maintenanceAssetGrid .maintenanceAssetCard{
+ border:1px solid #e0e8ed!important;border-left:4px solid #89a1b8!important;
+ border-radius:12px!important;background:#fff!important;margin-bottom:7px!important;
+ padding:10px 13px!important;box-shadow:0 1px 4px rgba(22,45,66,.04)!important;
+}
+#maintenancePage #maint130 .m130State-late{border-left-color:#dd2039!important;background:#fff7f7!important}
+#maintenancePage #maint130 .m130State-working{border-left-color:#196bdd!important;background:#f1f7ff!important}
+#maintenancePage #maint130 .m130State-done{border-left-color:#14864e!important;background:#f1fbf5!important}
+#maintenancePage #maint130 .m130State-review,
+#maintenancePage #maint130 .m130State-planned{border-left-color:#d89a2a!important;background:#fffaf0!important}
+#maintenancePage #maint130 .m130State-cancelled,
+#maintenancePage #maint130 .m130State-postponed{border-left-color:#7650a7!important}
+#maintenancePage #maint130 .m130Entry h4{font-size:14px!important;line-height:1.4!important;font-weight:850!important;color:#173554!important}
+#maintenancePage #maint130 .m130Entry p{font-size:11.5px!important;color:#44596f!important;line-height:1.6!important}
+#maintenancePage #maint130 .m130Badge.done{background:#d9f5e5!important;color:#086c39!important;border-color:#93d7ad!important}
+#maintenancePage #maint130 .m130Badge.working{background:#d7e9ff!important;color:#1259bc!important;border-color:#8eb9ea!important}
+#maintenancePage #maint130 .m130Badge.late{background:#ffe2e5!important;color:#ad0823!important;border-color:#e9a0a8!important}
+#maintenancePage #maint130 .m130Badge.planned{background:#fff0c8!important;color:#865308!important;border-color:#e8cd88!important}
+#maintenancePage #maint68{margin:0!important}
+#maintenancePage #maint68 .ma68Info{font-size:11px!important;color:#60748a!important}
+#maintenancePage #maint68 .ma68Content{min-width:0}
+#maintenancePage #maint68 .ma68Entry{display:flex;align-items:center;gap:12px}
+#maintenancePage #maint68 .ma68Entry h4{font-size:14px!important;font-weight:800!important}
+#maintenancePage #maint68 .ma68Entry p{font-size:12px!important;line-height:1.6!important}
+#maintenancePage #maintenanceAssetGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#maintenancePage[data-estam-view=rows] #maintenanceAssetGrid{grid-template-columns:1fr!important}
+#maintenancePage[data-estam-view=rows] #maintenanceAssetGrid .maintenanceAssetCard{display:grid;grid-template-columns:minmax(150px,1.2fr) minmax(130px,.9fr) minmax(220px,1.2fr) auto;gap:8px;align-items:center}
+#maintenancePage[data-estam-view=rows] #maintenanceAssetGrid .maintenanceAssetCard .maintDates{margin:0!important}
+#maintenancePage[data-estam-view=rows] #maintenanceAssetGrid .maintenanceAssetCard .maintCardActions{margin:0!important}
+#maintenancePage .maintenanceBoard{border-radius:12px!important;min-width:0!important}
+#maintenancePage .maintenanceBoard .maintenanceToolbar{display:none!important}
+#maintenancePage .maintenanceBoard .maintenanceAssetGrid{padding:11px!important}
+#maintenancePage .maintenanceHistoryCard{margin-top:14px!important}
+#maintenancePage .estamExtraView{background:#fff;border:1px solid #e5e8ed;border-radius:13px;padding:13px;min-width:0;margin-bottom:12px}
+#maintenancePage .estamExtraView[hidden]{display:none!important}
+#maintenancePage[data-estam-view=calendar] #maint68 .ma68Section,
+#maintenancePage[data-estam-view=timeline] #maint68 .ma68Section,
+#maintenancePage[data-estam-view=calendar] .maintenanceBoard,
+#maintenancePage[data-estam-view=timeline] .maintenanceBoard{display:none!important}
+#maintenancePage .estamCalendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+#maintenancePage .estamWeekday{text-align:center;color:#455d78;font-size:12px;padding:8px}
+#maintenancePage .estamDay{min-width:0;min-height:84px;border:1px solid #e7eaf1;border-radius:8px;padding:6px;background:#fbfdff}
+#maintenancePage .estamDay strong{display:block;font-size:12px;color:#2e4160;margin-bottom:3px}
+#maintenancePage .estamDay button{display:block;width:100%;margin:2px 0;border:0;border-radius:5px;padding:5px 3px;background:#eaf4ff;color:#13549d;text-align:left;font-size:10px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+#maintenancePage .estamTimeline{display:flex;flex-direction:column;gap:7px}
+#maintenancePage .estamTimeline button{border:1px solid #e6e8f1;border-left:4px solid #2772ba;border-radius:9px;display:flex;align-items:center;gap:13px;text-align:left;padding:10px;background:#fbfdff;color:#16324f;cursor:pointer}
+#maintenancePage .estamTimeline time{flex:0 0 105px;font-weight:800;font-size:12px;color:#225e98}
+#maintenancePage .estamTimeline span{display:flex;flex-direction:column;gap:3px;min-width:0}
+#maintenancePage .estamTimeline b{font-size:13px}
+#maintenancePage .estamTimeline small{font-size:11px;color:#71849a}
+#maintenancePage .estamNoDate{font-size:12px;color:#8a5b20}
+@media(max-width:1450px){
+ #maintenancePage .estamSummary{align-items:stretch}
+ #maintenancePage .estamMonthNav{grid-template-columns:32px 120px 32px}
+ #maintenancePage .estamStats .m130Kpi,
+ #maintenancePage .estamStats .ma68Stats>div,
+ #maintenancePage .estamStats .maintenanceStats>article{padding:10px 9px!important}
+ #maintenancePage .estamViewSwitch button{padding:8px 9px}
+ #maintenancePage .estamToolbar{flex-wrap:wrap}
+ #maintenancePage .estamActionArea{margin-left:auto}
+}
+@media(max-width:1050px){
+ #maintenancePage .estamSummary{flex-direction:column}
+ #maintenancePage .estamMonthNav{width:100%;grid-template-columns:37px minmax(120px,1fr) 37px}
+ #maintenancePage .estamStats .m130Stats,
+ #maintenancePage .estamStats .ma68Stats,
+ #maintenancePage .estamStats .maintenanceStats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #maintenancePage .estamNativeFilters .m130Toolbar,
+ #maintenancePage .estamNativeFilters .ma68Filters,
+ #maintenancePage .estamNativeFilters .inventoryToolbarActions{flex-wrap:wrap}
+ #maintenancePage .estamNativeFilters select{min-width:115px;max-width:none}
+ #maintenancePage .estamFilterArea{flex-basis:100%}
+ #maintenancePage .estamActionArea{flex-basis:100%;justify-content:space-between}
+ #maintenancePage[data-estam-view=rows] #maintenanceAssetGrid .maintenanceAssetCard{display:block}
+}
+@media(max-width:640px){
+ #maintenancePage.maintenancePage{padding:0 8px 76px!important}
+ #maintenancePage #estaMaintenanceRedesign{padding-top:6px}
+ #maintenancePage .estamSummary{padding:8px;gap:8px;border-radius:11px}
+ #maintenancePage .estamMonthNav button{min-height:37px}
+ #maintenancePage .estamMonthNav #estamMonth{font-size:15px}
+ #maintenancePage .estamStats .m130Stats,
+ #maintenancePage .estamStats .ma68Stats,
+ #maintenancePage .estamStats .maintenanceStats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+ #maintenancePage .estamStats .m130Kpi,
+ #maintenancePage .estamStats .ma68Stats>div,
+ #maintenancePage .estamStats .maintenanceStats>article{min-height:70px!important;padding:9px 10px!important}
+ #maintenancePage .estamStats .m130Kpi b,
+ #maintenancePage .estamStats .ma68Stats b,
+ #maintenancePage .estamStats .maintenanceStats b{font-size:23px!important}
+ #maintenancePage .estamStats .m130Kpi span,
+ #maintenancePage .estamStats .ma68Stats span,
+ #maintenancePage .estamStats .maintenanceStats small{font-size:11px!important}
+ #maintenancePage .estamToolbar{padding:7px 0;gap:7px}
+ #maintenancePage .estamFilterArea{align-items:flex-start}
+ #maintenancePage #estamSearch{width:38px;height:39px;flex-basis:38px}
+ #maintenancePage .estamNativeFilters select{flex:1 1 calc(50% - 5px);min-height:38px;min-width:0;font-size:11px!important;padding:6px 20px 6px 7px!important}
+ #maintenancePage .estamActionArea{display:flex;flex-wrap:wrap;gap:6px;width:100%}
+ #maintenancePage .estamViewSwitch{width:100%;justify-content:space-around}
+ #maintenancePage .estamViewSwitch button{flex:1;justify-content:center;min-height:38px;padding:6px;font-size:11px;gap:4px}
+ #maintenancePage .estamViewSwitch svg{width:14px;height:14px}
+ #maintenancePage .estamNativeActions{width:100%;display:flex}
+ #maintenancePage #m130Create,
+ #maintenancePage #addMaintenanceAsset{flex:1;font-size:12px!important;min-height:40px!important}
+ #maintenancePage #m130Legacy{flex:1}
+ #maintenancePage #maint130 .m130Entry{padding:9px 10px!important}
+ #maintenancePage #maint130 .m130Entry h4{font-size:13px!important}
+ #maintenancePage #maint68 .ma68Entry{flex-direction:column;align-items:stretch!important}
+ #maintenancePage #maintenanceAssetGrid{grid-template-columns:1fr!important}
+ #maintenancePage .estamDay{min-height:68px;padding:3px}
+ #maintenancePage .estamDay button{font-size:9px;padding:3px}
+ #maintenancePage .estamTimeline button{gap:6px}
+ #maintenancePage .estamTimeline time{flex-basis:80px;font-size:10px}
+ #app .estamHeaderPdf{min-width:38px;padding:7px!important}
+ #app .estamHeaderPdf span{display:none}
+}
+@media(max-width:375px){
+ #maintenancePage .estamViewSwitch span{font-size:10px}
+ #maintenancePage .estamSummary{padding:6px}
+ #maintenancePage .estamStats .m130Kpi b{font-size:21px!important}
+}
