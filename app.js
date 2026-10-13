@@ -2223,7 +2223,7 @@ function showModule(name){
    setInventoryTab("materials");
    loadInventoryData(currentBuilding.id);
  }
- if(name==="maintenance"){loadMaintenanceData(currentBuilding.id);window.mountMaintenance68?.();window.mountMaintenance130?.();}
+ if(name==="maintenance"){if(String(currentBuilding?.id)!=="130HH")loadMaintenanceData(currentBuilding.id);window.mountMaintenance68?.();window.mountMaintenance130?.();}
  if(name==="contractor"){selectedContractorId="";$("#contractorPage").classList.remove("contractorDetailMode");$("#contractorDetail").classList.add("hide");$("#contractorOverview").classList.remove("hide");loadContractorData(currentBuilding.id)}
  if(name==="construction"){selectedConstructionMaterialId="";$("#constructionMaterialPage").classList.remove("contractorDetailMode");$("#constructionDetail").classList.add("hide");$("#constructionOverview").classList.remove("hide");loadConstructionMaterialData(currentBuilding.id)}
 }
