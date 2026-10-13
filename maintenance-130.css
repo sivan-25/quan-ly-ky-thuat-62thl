@@ -353,3 +353,93 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
 #maint130 .m130AuditRow b{color:#411437}
 #maint130 .m130AuditRow span{flex:1;overflow-wrap:anywhere}
 #maint130 .m130AuditRow small{color:#846f7a}
+
+
+/* 130HH 2026-10-13: simplify service entry and show every calendar work title. */
+#maint130 .m130CalendarDay{
+  height:auto!important; min-height:108px!important;
+  overflow:visible!important;
+  align-self:stretch;
+}
+#maint130 .m130CalendarChip{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:29px;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  line-height:1.4!important;
+  padding:6px 5px!important;
+  text-align:left;
+  -webkit-line-clamp:unset!important;
+  line-clamp:unset!important;
+}
+#maint130 .m130CalendarAgenda{display:none}
+#maint130 .m130AuditPanel{
+  margin:16px 0 0;
+  padding:9px 12px;
+  border:1px solid #ead7c5;
+  border-radius:9px;
+  background:#fffaf3;
+  font-size:12px;
+  color:#69455f;
+}
+#maint130 .m130AuditPanel summary{cursor:pointer;font-size:12px;font-weight:700}
+@media(max-width:760px){
+  #maint130 .m130CalendarGrid{display:none!important}
+  #maint130 .m130CalendarAgenda{display:grid;gap:8px;min-width:0}
+  #maint130 .m130CalendarWrap{padding:10px}
+  #maint130 .m130CalendarWrap>p{margin-bottom:10px}
+  #maint130 .m130AgendaItem{
+    display:flex;
+    align-items:stretch;
+    gap:9px;
+    min-width:0;
+  }
+  #maint130 .m130AgendaDate{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:70px;
+    width:70px;
+    border-radius:8px;
+    border:1px solid #e4ceba;
+    background:#f5e8db;
+    padding:6px 4px;
+    color:#6b3d60;
+    font-size:11px;
+    font-weight:850;
+  }
+  #maint130 .m130AgendaButton{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+    border-radius:9px;
+    border:1px solid #e5cbda;
+    border-left:4px solid #84639b;
+    background:#fffaf3;
+    padding:9px 10px;
+    color:#411437;
+    text-align:left;
+    cursor:pointer;
+  }
+  #maint130 .m130AgendaButton b{
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    overflow-wrap:anywhere;
+    line-height:1.4;
+    font-size:12px;
+  }
+  #maint130 .m130AgendaButton small{color:#7a6078;font-size:10px}
+  #maint130 .m130AgendaButton.late{border-left-color:#ba4e36;background:#fff2ec}
+  #maint130 .m130AgendaButton.done{border-left-color:#25895c;background:#effaf2}
+  #maint130 .m130AgendaButton.working{border-left-color:#4d96cb}
+}
