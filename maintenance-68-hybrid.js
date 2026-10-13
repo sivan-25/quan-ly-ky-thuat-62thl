@@ -95,50 +95,91 @@ function filterItems(){
  const map=new Map(items.map(i=>[i.id,i]));
  return {map,filtered:occ.filter(e=>map.has(e.item_id))};
 }
+function recordedDate(iso){
+ if(!iso)return '';
+ const d=new Date(iso);
+ return Number.isNaN(d.getTime())?'':new Intl.DateTimeFormat('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
+}
+function statusInfo(e){
+ if(e.status==='completed')return {kind:'done',icon:'✓',label:'ĐÃ HOÀN THÀNH',resultTitle:'KẾT QUẢ THỰC HIỆN'};
+ if(e.status==='skipped')return {kind:'skip',icon:'—',label:'KHÔNG THỰC HIỆN',resultTitle:'LÝ DO KHÔNG THỰC HIỆN'};
+ if(e.needs_review)return {kind:'review',icon:'!',label:'CẦN ĐỐI CHIẾU LỊCH',resultTitle:'KẾT QUẢ THỰC HIỆN'};
+ return {kind:'pending',icon:'◷',label:'CHƯA GHI NHẬN HOÀN THÀNH',resultTitle:'KẾT QUẢ THỰC HIỆN'};
+}
 function render(){
  if(!can()||!isReady)return;
  applyLegacy();
- const allDone=occ.filter(e=>e.status==='completed').length,monthEvents=occ.filter(e=>mon(e)===month),bad=occ.filter(e=>e.needs_review&&e.status==='planned').length;
+ const view=tab==='year'?occ:occ.filter(e=>mon(e)===month);
+ const completed=view.filter(e=>e.status==='completed').length;
+ const pending=view.filter(e=>e.status==='planned').length;
+ const reviews=view.filter(e=>e.status==='planned'&&e.needs_review).length;
+ const stopped=view.filter(e=>e.status==='skipped').length;
+ const period=tab==='year'?'năm 2026':'tháng '+pad(month)+'/2026';
  $('hy68Summary').innerHTML=[
   [items.length,'Hạng mục bảo trì','docket'],
-  [occ.length,'Lượt kế hoạch 2026','calendar'],
-  [monthEvents.length,'Lượt tháng '+pad(month),'blue'],
-  [allDone,'Đã hoàn thành','green'],
-  [bad,'Cần đối chiếu','amber']
+  [view.length,'Công việc trong '+period,'calendar'],
+  [completed,'Đã hoàn thành','green'],
+  [pending,'Chưa ghi nhận hoàn thành','blue'],
+  [reviews,'Cần đối chiếu lịch','amber']
  ].map(x=>'<article class="hy68-stat '+x[2]+'"><strong>'+x[0]+'</strong><span>'+x[1]+'</span></article>').join('');
  $('hy68WorkArea').hidden=false;
  $('hy68Pdf').textContent='⇩ Xuất PDF';
  $('hy68AllYear').classList.toggle('active',tab==='year');
  $('hy68AllYear').setAttribute('aria-pressed',String(tab==='year'));
  $('hy68Months').innerHTML=Array.from({length:12},(_,j)=>{
-  const m=j+1,n=occ.filter(e=>mon(e)===m).length;
-  return '<button type="button" data-hy-month="'+m+'" class="'+(tab!=='year'&&month===m?'active':'')+'" aria-pressed="'+(tab!=='year'&&month===m)+'"><small>Th'+pad(m)+'</small><strong>'+n+'</strong></button>';
+  const m=j+1,monthList=occ.filter(e=>mon(e)===m),count=monthList.length,done=monthList.filter(e=>e.status==='completed').length;
+  return '<button type="button" data-hy-month="'+m+'" class="'+(tab!=='year'&&month===m?'active':'')+'" aria-pressed="'+(tab!=='year'&&month===m)+'"><small>Th'+pad(m)+'</small><strong>'+count+'</strong><span class="hy68-month-progress">'+(count?done+' đã xong':'Chưa có lịch')+'</span></button>';
  }).join('');
- const {map,filtered}=filterItems();
- const records=tab==='year'?filtered:filtered.filter(e=>mon(e)===month);
- let count=0;
+ const {map}=filterItems();
  const groups=new Map();
- records.forEach(e=>{const item=map.get(e.item_id);if(!groups.has(item.system_group))groups.set(item.system_group,[]);groups.get(item.system_group).push([item,e]);});
- const ordered=[...groups.keys()].sort((a,b)=>a.localeCompare(b,'vi'));
- const stateTxt=tab==='year'?'lượt trong năm':'lượt tháng '+pad(month);
- $('hy68Context').innerHTML='<strong>'+(tab==='year'?'Lịch bảo trì cả năm':'Công việc tháng '+pad(month)+'/2026')+'</strong><span>'+records.length+' '+stateTxt+' · bao gồm mọi hạng mục bảo trì'+'</span>';
- const title=d=>d.planned_date?vi(d.planned_date):'Tháng '+pad(mon(d))+' · chưa chốt ngày';
- let out='';
- for(const g of ordered){
-  const list=groups.get(g).sort((a,b)=>String(a[1].planned_date||a[1].planned_month).localeCompare(String(b[1].planned_date||b[1].planned_month)));
-  out+='<section class="hy68-group"><div class="hy68-group-head"><h3>'+esc(g)+'</h3><span>'+list.length+' lượt</span></div><div class="hy68-group-list">';
-  for(const [i,e] of list){
-   count++;
-   out+='<article class="hy68-task"><div class="hy68-task-main"><div class="hy68-task-source"><span class="hy68-place">'+esc(e.location||i.subsystem||'Chưa ghi khu vực')+'</span></div><h4>'+esc(i.work_title)+'</h4><div class="hy68-task-meta"><span>◷ '+title(e)+'</span><span>👤 '+esc(i.assigned_to||'Kỹ thuật')+'</span><b class="hy68-badge '+eClass(e)+'">'+label(e)+'</b></div>'+
-    (e.needs_review?'<p class="hy68-review">⚠ '+esc(e.review_note||'Lịch nguồn cần kiểm tra')+'</p>':'')+
-    (e.result_note?'<p class="hy68-note"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div><button type="button" data-hy-event="'+esc(e.id)+'" '+(mayEdit()?'':'disabled')+'>'+(mayEdit()?'Cập nhật':'Chỉ xem')+'</button></article>';
+ view.forEach(e=>{
+  const item=map.get(e.item_id);
+  if(!item)return;
+  if(!groups.has(item.system_group))groups.set(item.system_group,[]);
+  groups.get(item.system_group).push([item,e]);
+ });
+ const names=[...groups.keys()].sort((a,b)=>a.localeCompare(b,'vi'));
+ const percentage=view.length?Math.round(completed/view.length*100):0;
+ $('hy68Context').innerHTML=
+  '<div class="hy68-overview-title"><strong>'+esc(tab==='year'?'Tổng hợp bảo trì năm 2026':'Công việc bảo trì tháng '+pad(month)+'/2026')+'</strong>'+
+  '<span>'+view.length+' công việc · '+completed+' hoàn thành · '+(pending+stopped)+' chưa xác nhận hoàn thành</span></div>'+
+  '<div class="hy68-progress" aria-label="Tiến độ hoàn thành '+percentage+' phần trăm"><div style="width:'+percentage+'%"></div></div>'+
+  '<div class="hy68-legend"><span><i class="hy68-dot done"></i>Đã hoàn thành</span><span><i class="hy68-dot pending"></i>Chưa ghi nhận hoàn thành</span><span><i class="hy68-dot review"></i>Cần đối chiếu</span></div>'+
+  '<p class="hy68-status-explain">“Chưa ghi nhận hoàn thành” là chưa có xác nhận trên web, không khẳng định kỹ thuật chưa thực hiện thực tế.</p>';
+ let html='';
+ for(const systemName of names){
+  const rows=groups.get(systemName).sort((a,b)=>{
+   const ka=String(a[1].planned_date||a[1].planned_month),kb=String(b[1].planned_date||b[1].planned_month);
+   return ka.localeCompare(kb);
+  });
+  const done=rows.filter(([,e])=>e.status==='completed').length;
+  html+='<section class="hy68-group"><div class="hy68-group-head"><h3>'+esc(systemName)+'</h3><span class="hy68-group-count">'+done+'/'+rows.length+' hoàn thành</span></div><div class="hy68-group-list">';
+  for(const [i,e] of rows){
+   const st=statusInfo(e);
+   const planText=e.planned_date?vi(e.planned_date):'Tháng '+pad(mon(e))+'/2026';
+   const hasFixedDate=!!e.planned_date;
+   const actual=recordedDate(e.completed_at);
+   const result=String(e.result_note||'').trim();
+   const workNote=String(i.source_notes||'').trim();
+   const loc=String(e.location||i.subsystem||'Chưa ghi khu vực');
+   const details=workNote&&workNote!=='0'?'<div class="hy68-task-note"><b>Ghi chú kế hoạch</b><p>'+esc(workNote)+'</p></div>':'';
+   const resultBody=result?esc(result):e.status==='completed'?'Đã ghi nhận hoàn thành, nhưng chưa có nội dung kết quả.':e.status==='skipped'?'Chưa ghi lý do.':'Chưa có kết quả được ghi nhận.';
+   html+='<article class="hy68-task hy68-status-'+st.kind+'">'+
+    '<div class="hy68-date-panel"><small>'+(hasFixedDate?'NGÀY KẾ HOẠCH':'THÁNG KẾ HOẠCH')+'</small><strong>'+esc(planText)+'</strong>'+(hasFixedDate?'':'<span>Chưa ấn định ngày</span>')+'</div>'+
+    '<div class="hy68-task-main"><div class="hy68-task-headline"><div class="hy68-job"><small>CÔNG VIỆC BẢO TRÌ</small><h4>'+esc(i.work_title)+'</h4></div><strong class="hy68-big-status '+st.kind+'"><span>'+st.icon+'</span>'+st.label+'</strong></div>'+
+    '<div class="hy68-facts"><span><b>Hệ thống:</b> '+esc(systemName)+'</span><span><b>Khu vực:</b> '+esc(loc)+'</span><span><b>Phụ trách:</b> '+esc(e.completed_by||i.assigned_to||'Kỹ thuật')+'</span></div>'+
+    details+
+    '<div class="hy68-result-panel '+st.kind+'"><b>'+st.resultTitle+'</b><p>'+resultBody+'</p></div>'+
+    '<div class="hy68-task-bottom">'+(actual&&e.status==='completed'?'<span>✓ Ghi nhận hoàn thành: '+esc(actual)+'</span>':'<span>'+((e.needs_review&&e.status==='planned')?'⚠ Cần kiểm tra lại lịch gốc':'Theo dõi theo kế hoạch năm 2026')+'</span>')+
+    '<button type="button" data-hy-event="'+esc(e.id)+'" '+(mayEdit()?'':'disabled')+'>'+(mayEdit()?'Cập nhật kết quả →':'Chỉ xem')+'</button></div></div></article>';
   }
-  out+='</div></section>';
+  html+='</div></section>';
  }
- $('hy68List').innerHTML=out||'<div class="hy68-empty">Tháng này chưa có lịch. Hãy chọn tháng khác hoặc bấm “Thêm bảo trì”.</div>';
+ $('hy68List').innerHTML=html||'<div class="hy68-empty">Chưa có công việc trong khoảng thời gian đã chọn. Hãy chuyển tháng hoặc chọn “Thêm bảo trì”.</div>';
  const unscheduled=items.filter(i=>!occ.some(e=>e.item_id===i.id));
- $('hy68Unscheduled').innerHTML=unscheduled.length?'<details><summary>Chưa đặt lịch <b>'+unscheduled.length+' hạng mục</b></summary><div>'+unscheduled.map(i=>'<div class="hy68-unplanned"><div><b>'+esc(i.work_title)+'</b><small>'+esc(i.system_group)+'</small></div><button type="button" data-hy-unscheduled="'+esc(i.id)+'" '+(mayEdit()?'':'disabled')+'>＋ Xếp lịch</button></div>').join('')+'</div></details>':'';
+ $('hy68Unscheduled').innerHTML=unscheduled.length?'<details><summary>Hạng mục chưa xếp lịch <b>'+unscheduled.length+'</b></summary><div>'+unscheduled.map(i=>'<div class="hy68-unplanned"><div><b>'+esc(i.work_title)+'</b><small>'+esc(i.system_group)+'</small></div><button type="button" data-hy-unscheduled="'+esc(i.id)+'" '+(mayEdit()?'':'disabled')+'>＋ Xếp lịch</button></div>').join('')+'</div></details>':'';
 }
+
 function create(){
  if(!can()||!mayEdit())return tip('Tài khoản chỉ có quyền xem.');
  activeEvent='';newPhotos=[];$('hy68Form').reset();
