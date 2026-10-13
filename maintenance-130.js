@@ -148,6 +148,8 @@ function ensure(){
   const key=ev.dataTransfer.getData("text/plain");if(key)rescheduleOccurrence(key,cell.dataset.m130Date);
  });
  root.addEventListener("click",ev=>{
+  const photo=ev.target.closest("[data-m130-gallery]");
+  if(photo){showMaintenanceGallery(photo.dataset.m130Gallery,photo.dataset.m130PhotoIndex);return;}
   const v=ev.target.closest("[data-m130-view]"),l=ev.target.closest("[data-m130-layout]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]");
   if(v){
    viewMode=v.dataset.m130View==="rows"?"rows":"cards";
@@ -218,7 +220,7 @@ function renderList(){
    return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
     '<div class="m130Date"><b>'+fmt(e.planned_date||o.scheduled).slice(0,5)+'</b><small>'+year+'</small></div>'+
     '<div class="m130EntryBody"><div class="m130Pills"><span class="m130Sys">'+esc(i.system_group)+'</span><span class="m130Badge '+st[1]+'">'+st[0]+'</span>'+(demo?'<span class="m130Sample">MẪU</span>':'')+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+'</div>'+
-    '<h4>'+esc(i.work_title)+'</h4><p>'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Hạn: '+fmt(dateOf(o))+' · Ưu tiên: '+esc(({normal:"Bình thường",high:"Cao",urgent:"Khẩn cấp"})[i.priority]||"Bình thường")+' · <strong>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</strong></p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+
+    '<h4>'+esc(i.work_title)+'</h4><p>'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Hạn: '+fmt(dateOf(o))+' · Ưu tiên: '+esc(({normal:"Bình thường",high:"Cao",urgent:"Khẩn cấp"})[i.priority]||"Bình thường")+' · <strong>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</strong></p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+maintenanceEvidenceHtml(e,e.event_key)+'</div>'+
     '<div class="m130EntryActions"><button type="button" data-m130-event="'+key+'" '+(canWrite()?"":"disabled")+'>'+(e.status==="completed"?"Xem KQ":"Ghi bảo trì")+'</button><button type="button" class="m130Edit" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'>Sửa</button></div></article>';
   }
   const done=lastCompleted(o),upcoming=nextCardDate(o);
@@ -228,9 +230,10 @@ function renderList(){
    '<h3>'+esc(i.work_title)+'</h3><p class="m130CardLocation">'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Lịch kỳ này: '+fmt(e.planned_date||o.scheduled)+'</p>'+
    '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+fmt(upcoming)+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
    '<div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span><span>Trạng thái: <b>'+st[0]+'</b></span></div>'+
-   (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+
+   (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+maintenanceEvidenceHtml(e,e.event_key)+
    '<div class="m130CardFoot"><button type="button" class="m130RecordBtn" data-m130-event="'+record+'" '+editable+'>'+(e.status==="completed"?"✓ Xem / sửa KQ":"＋ Ghi bảo trì")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
  }).join("")||'<p class="m130Empty">Không có công việc trong tháng và bộ lọc này.</p>';
+ hydrateMaintenanceEvidence();
  $("m130Create").disabled=!canWrite();
 }
 function renderAlternative(events){
@@ -358,6 +361,78 @@ function localDatetime(iso){
 function recordedImages(event){
  return Array.isArray(event.image_paths)?event.image_paths.map(x=>typeof x==="string"?{kind:"after",ref:x}:x).filter(x=>x?.ref):[];
 }
+/* Render saved evidence in table and card; no uploads or database changes. */
+function maintenanceEvidenceHtml(event,key){
+ const photos=recordedImages(event);
+ if(!photos.length)return "";
+ const visible=photos.slice(0,3);
+ return '<div class="m130Evidence" aria-label="'+photos.length+' ảnh bảo trì">'+visible.map((p,index)=>
+   '<button type="button" data-m130-gallery="'+esc(key)+'" data-m130-photo-index="'+index+'" aria-label="Xem ảnh '+(p.kind==="before"?"trước":"sau")+' bảo trì '+(index+1)+'">'+
+   (typeof mediaImgHtml==="function"?mediaImgHtml(p.ref,"m130EvidenceImage"):'<span>Ảnh '+(index+1)+'</span>')+
+   '<small>'+(p.kind==="before"?"Trước":"Sau")+' '+(index+1)+'</small></button>'
+ ).join("")+(photos.length>3?'<button type="button" class="m130MoreEvidence" data-m130-gallery="'+esc(key)+'" data-m130-photo-index="3" aria-label="Xem thêm '+(photos.length-3)+' ảnh">+'+(photos.length-3)+' ảnh</button>':"")+'</div>';
+}
+let m130EvidenceObserver=null;
+function hydrateMaintenanceEvidence(){
+ const root=$("m130List");
+ if(!root||typeof hydrateMediaImages!=="function")return;
+ if(m130EvidenceObserver){m130EvidenceObserver.disconnect();m130EvidenceObserver=null;}
+ const images=[...root.querySelectorAll(".m130Evidence img[data-storage-path]")];
+ if(typeof IntersectionObserver==="undefined"){
+   hydrateMediaImages(root).catch(()=>{});
+   return;
+ }
+ m130EvidenceObserver=new IntersectionObserver(entries=>{
+   for(const entry of entries){
+     if(!entry.isIntersecting)continue;
+     m130EvidenceObserver?.unobserve(entry.target);
+     hydrateMediaImages(entry.target.parentElement||root).catch(()=>{});
+   }
+ },{rootMargin:"220px"});
+ images.forEach(img=>m130EvidenceObserver.observe(img));
+}
+let galleryKey="",galleryIndex=0;
+function closeMaintenanceGallery(){
+ const dialog=$("m130Gallery");
+ if(dialog)dialog.hidden=true;
+ galleryKey="";
+}
+function showMaintenanceGallery(key,index){
+ const event=getYearSchedule(year).find(item=>item.event.event_key===key)?.event;
+ const photos=recordedImages(event||{});
+ if(!photos.length)return;
+ galleryKey=key;galleryIndex=Math.min(Math.max(0,Number(index)||0),photos.length-1);
+ let dialog=$("m130Gallery");
+ if(!dialog){
+   dialog=document.createElement("div");
+   dialog.id="m130Gallery";
+   dialog.setAttribute("role","dialog");
+   dialog.setAttribute("aria-modal","true");
+   dialog.setAttribute("aria-label","Hình ảnh bảo trì");
+   dialog.hidden=true;
+   dialog.innerHTML='<div class="m130GalleryPanel"><div class="m130GalleryHeader"><strong id="m130GalleryTitle">Ảnh bảo trì</strong><button type="button" data-m130-gallery-close aria-label="Đóng xem ảnh">✕</button></div><div id="m130GalleryImage" class="m130GalleryImage"></div><div class="m130GalleryNav"><button type="button" data-m130-gallery-step="-1">‹ Trước</button><span id="m130GalleryCounter"></span><button type="button" data-m130-gallery-step="1">Sau ›</button></div></div>';
+   document.body.appendChild(dialog);
+   dialog.addEventListener("click",ev=>{
+     if(ev.target===dialog||ev.target.closest("[data-m130-gallery-close]")){closeMaintenanceGallery();return;}
+     const nav=ev.target.closest("[data-m130-gallery-step]");
+     if(nav)showMaintenanceGallery(galleryKey,galleryIndex+Number(nav.dataset.m130GalleryStep));
+   });
+ }
+ const photo=photos[galleryIndex];
+ $("m130GalleryTitle").textContent=(photo.kind==="before"?"Ảnh trước bảo trì":"Ảnh sau bảo trì");
+ $("m130GalleryCounter").textContent=(galleryIndex+1)+" / "+photos.length;
+ dialog.querySelector('[data-m130-gallery-step="-1"]').disabled=galleryIndex===0;
+ dialog.querySelector('[data-m130-gallery-step="1"]').disabled=galleryIndex===photos.length-1;
+ $("m130GalleryImage").innerHTML=typeof mediaImgHtml==="function"?mediaImgHtml(photo.ref,"m130GalleryPhoto"):"Không tải được hình ảnh";
+ dialog.hidden=false;
+ if(typeof hydrateMediaImages==="function")hydrateMediaImages($("m130GalleryImage")).catch(()=>{});
+}
+document.addEventListener("keydown",ev=>{
+ if($("m130Gallery")?.hidden===false&&ev.key==="Escape")closeMaintenanceGallery();
+ if($("m130Gallery")?.hidden===false&&ev.key==="ArrowLeft")showMaintenanceGallery(galleryKey,galleryIndex-1);
+ if($("m130Gallery")?.hidden===false&&ev.key==="ArrowRight")showMaintenanceGallery(galleryKey,galleryIndex+1);
+});
+
 function showImages(e){
  const box=$("m130PhotoPreview");if(!box)return;
  const photos=recordedImages(e);
