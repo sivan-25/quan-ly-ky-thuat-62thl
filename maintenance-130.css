@@ -69,3 +69,48 @@
 #m130Overlay .m130Foot [type=submit]{background:#325c43;color:white;border-color:#325c43}
 @media(max-width:980px){#maint130 .m130Stats{grid-template-columns:repeat(3,minmax(0,1fr))}#maint130 .m130Months{grid-template-columns:repeat(6,minmax(0,1fr))}}
 @media(max-width:640px){#maint130 .m130Header{padding:14px}#maint130 .m130Header h2{font-size:19px}#maint130 .m130Actions{width:100%}#maint130 .m130Actions button{flex:1;padding:9px 7px}#maint130 .m130Stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#maint130 .m130Stats>div{padding:10px}#maint130 .m130Months{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}#maint130 .m130Toolbar{grid-template-columns:1fr 1fr}#maint130 #m130Search{grid-column:1/-1}#maint130 .m130Entry{gap:8px;padding:10px;align-items:flex-start;flex-wrap:wrap}#maint130 .m130Date{min-width:45px;width:45px;padding:8px 2px}#maint130 .m130Date b{font-size:16px}#maint130 .m130EntryBody{flex:1 1 calc(100% - 58px)}#maint130 .m130EntryActions{flex-direction:row;width:100%;justify-content:flex-end}#maint130 .m130EntryActions button{flex:1;max-width:160px}#m130Overlay .m130Two{grid-template-columns:1fr}#maint130 .m130ListTop{align-items:flex-end}#maint130 .m130ListTop b{font-size:14px}}
+
+/* 130 HH hybrid view: monthly planning with detailed maintenance cards */
+#maint130 .m130ListTools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+#maint130 .m130ViewSwitch{display:flex;align-items:center;gap:2px;padding:3px;border:1px solid #d6e0d1;border-radius:10px;background:#f1f4ed}
+#maint130 .m130ViewSwitch button{border:0;border-radius:7px;background:transparent;color:#617365;padding:7px 10px;font-size:12px;font-weight:800;cursor:pointer}
+#maint130 .m130ViewSwitch button[aria-pressed="true"]{background:#325b43;color:#fff;box-shadow:0 2px 7px #254d312b}
+#maint130 .m130List.m130CardsMode{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#maint130 .m130ServiceCard{position:relative;display:flex;flex-direction:column;min-width:0;background:#111c31;border:1px solid #2a3953;border-left:4px solid #4d86da;border-radius:14px;color:#ecf3ff;padding:15px;gap:0;box-shadow:0 6px 18px #203b4b0f;overflow:hidden}
+#maint130 .m130ServiceCard.m130State-done{border-left-color:#23b984}
+#maint130 .m130ServiceCard.m130State-late{border-left-color:#efaa55}
+#maint130 .m130ServiceCard.m130State-skip{border-left-color:#9ca3b0}
+#maint130 .m130ServiceCard.m130State-ontrack{border-left-color:#37b991}
+#maint130 .m130ServiceCard.m130State-soon{border-left-color:#56a7f1}
+#maint130 .m130CardHead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;min-width:0;min-height:29px}
+#maint130 .m130SystemLabel{color:#36d7ef;font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.045em;overflow-wrap:anywhere;padding-top:5px}
+#maint130 .m130TopTags{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:wrap}
+#maint130 .m130SampleTag{display:inline-flex;border-radius:99px;padding:5px 8px;background:#384357;color:#fff3cd;font-size:10px;font-weight:800}
+#maint130 .m130CardStatus{border-radius:99px;display:inline-flex;align-items:center;font-size:11px;font-weight:850;padding:7px 9px;white-space:nowrap}
+#maint130 .m130CardStatus.done{background:#d3f6e3;color:#075c38}
+#maint130 .m130CardStatus.late{background:#ffebc8;color:#8c4310}
+#maint130 .m130CardStatus.soon{background:#dceaff;color:#214d9d}
+#maint130 .m130CardStatus.ontrack{background:#ecf8eb;color:#207848}
+#maint130 .m130CardStatus.skip{background:#eceefa;color:#444a61}
+#maint130 .m130ServiceCard h3{color:#f8fbff;font-size:16px;line-height:1.43;letter-spacing:-.012em;overflow-wrap:anywhere;font-weight:800;margin:13px 0 4px}
+#maint130 .m130CardLocation{font-size:12px;line-height:1.5;color:#92a7c8;overflow-wrap:anywhere;margin:0 0 14px}
+#maint130 .m130CardMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;min-width:0;border-radius:11px;background:#0c172b;padding:12px 11px}
+#maint130 .m130CardMetrics div{display:flex;flex-direction:column;gap:6px;min-width:0}
+#maint130 .m130CardMetrics small{font-size:11px;color:#7795c3}
+#maint130 .m130CardMetrics strong{font-size:14px;font-weight:850;color:#fff;overflow-wrap:anywhere;line-height:1.2}
+#maint130 .m130CardMeta{display:flex;gap:6px 13px;flex-wrap:wrap;align-items:center;margin:13px 0 12px;font-size:11px;color:#85a1ca;line-height:1.6}
+#maint130 .m130CardMeta b{color:#e5ecff;font-weight:800}
+#maint130 .m130CardResult{background:#1c2d40;border-radius:8px;padding:9px;color:#d5f5e4;font-size:12px;line-height:1.5;margin:0 0 12px;overflow-wrap:anywhere}
+#maint130 .m130CardFoot{display:flex;align-items:center;gap:7px;padding-top:12px;margin-top:auto;border-top:1px solid #293651}
+#maint130 .m130CardFoot button{border:1px solid #344664;border-radius:9px;padding:9px 11px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+#maint130 .m130CardFoot .m130RecordBtn{border-color:#096778;color:#3ce2ff;background:#0d2a3c}
+#maint130 .m130CardFoot .m130PlanBtn{color:#adc9f2;background:#17253a}
+#maint130 .m130CardFoot .m130DeleteBtn{margin-left:auto;color:#ffa4a4;background:#382232;border-color:#75404c;min-width:35px;font-size:18px;padding:5px 10px}
+#maint130 .m130CardFoot button:not(:disabled):hover{filter:brightness(1.18)}
+#maint130 .m130Badge.ontrack{background:#d8efdf;color:#186541}
+#maint130 .m130Badge.soon{background:#dceaff;color:#214d9d}
+#maint130 .m130Badge.late{background:#ffebc8;color:#8c4310}
+#maint130 .m130Badge.done{background:#d3f6e3;color:#075c38}
+#maint130 .m130Badge.skip{background:#e8ebee;color:#414752}
+@media(max-width:1040px){#maint130 .m130List.m130CardsMode{grid-template-columns:1fr}}
+@media(max-width:640px){#maint130 .m130ListTop{align-items:stretch;flex-wrap:wrap;gap:10px}#maint130 .m130ListTools{justify-content:space-between;width:100%}#maint130 .m130ServiceCard{padding:13px 12px}#maint130 .m130CardMetrics{padding:11px 9px;gap:5px}#maint130 .m130CardMetrics strong{font-size:13px}#maint130 .m130CardStatus{font-size:10px;padding:6px 8px}#maint130 .m130ServiceCard h3{font-size:15px}#maint130 .m130CardFoot button{font-size:11px;padding:9px 10px}#maint130 .m130CardMeta{font-size:11px}}
