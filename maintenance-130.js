@@ -162,7 +162,11 @@ function render(){
  $("m130Months").innerHTML=Array.from({length:12},(_,idx)=>{const m=idx+1,count=all.filter(o=>Number(o.scheduled.slice(5,7))===m).length;return '<button type="button" data-m130-month="'+m+'" class="'+(m===month?"sel":"")+'"><small>Th '+pad(m)+'</small><b>'+count+'</b></button>';}).join("");
  const groups=[...new Set(items.map(i=>i.system_group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi")),select=$("m130Group"),old=select.value;
  if(select.options.length!==groups.length+1||groups.some(g=>![...select.options].some(o=>o.value===g))){select.innerHTML='<option value="">Tất cả hệ thống</option>'+groups.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");select.value=old;}
- const q=$("m130Search").value.trim().toLocaleLowerCase("vi-VN"),g=select.value,s=$("m130State").value;
+ renderList();
+}
+function renderList(){
+ if(!show()||!ready)return;
+ const subset=getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month); const q=$("m130Search").value.trim().toLocaleLowerCase("vi-VN"),g=select.value,s=$("m130State").value;
  const visible=subset.filter(o=>(!g||o.item.system_group===g)&&(!s||(s==="planned"?o.event.status==="planned":o.event.status===s))&&(!q||[o.item.work_title,o.item.system_group,o.item.subsystem,o.item.assigned_to].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
  $("m130ListTitle").textContent="Công việc tháng "+pad(month)+"/"+year;
  $("m130ListCount").textContent=visible.length+" / "+subset.length+" công việc";
