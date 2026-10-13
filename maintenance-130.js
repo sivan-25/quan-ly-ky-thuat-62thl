@@ -205,12 +205,13 @@ async function load(force){
  if(ready&&!force){render();return;}
  busy=true;$("m130List").innerHTML='<p class="m130Empty">Đang tải dữ liệu bảo trì...</p>';
  try{
-  const token=centralSession.access_token,[i,e]=await Promise.all([
+  const token=centralSession.access_token,[i,e,persons]=await Promise.all([
    sbFetch("/rest/v1/esta_maintenance_plan_items?select=*&building_id=eq."+B+"&order=created_at.asc",{token}),
-   sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=*&building_id=eq."+B+"&order=planned_month.asc,planned_date.asc",{token})
+   sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=*&building_id=eq."+B+"&order=planned_month.asc,planned_date.asc",{token}),
+   sbFetch("/rest/v1/building_people?select=name&building_id=eq."+B+"&order=name.asc",{token}).catch(()=>[])
   ]);
   if(!active())return;
-  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];ready=true;render();
+  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];clearScheduleCache();renderPersonPickers();ready=true;render();
  }catch(err){$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
  finally{busy=false;}
 }
@@ -227,16 +228,18 @@ function openPlan(id){
  $("m130First").value=base?.planned_date||base?.planned_month||year+"-"+pad(month)+"-10";
  $("m130First").readOnly=!!i;
  $("m130Cycle").value=interval(i);
- $("m130Assignee").value=i?.assigned_to||"Kỹ thuật";
+ $("m130Assignee").value=i?.assigned_to&&i.assigned_to!=="Kỹ thuật"&&i.assigned_to!=="Kỹ thuật dự án"?i.assigned_to:"";
+ renderPersonPickers();
  hint();$("m130Overlay").hidden=false;
 }
 async function savePlan(ev){
  ev.preventDefault();if(busy||!active()||!canWrite())return;
- const title=$("m130Title").value.trim(),date=$("m130First").value,n=Number($("m130Cycle").value);
+ const title=$("m130Title").value.trim(),date=$("m130First").value,n=Number($("m130Cycle").value),assignee=$("m130Assignee").value.trim();
  if(!title||!date||!Number.isInteger(n)||n<0||n>120)return toast("Kiểm tra nội dung, ngày và chu kỳ (0–120 tháng).");
+ if(!assignee)return toast("Hãy chọn hoặc nhập tên kỹ thuật / người phụ trách.");
  busy=true;const btn=$("m130PlanForm").querySelector("[type=submit]");btn.disabled=true;
  try{
-  const token=centralSession.access_token,fields={work_title:title,system_group:$("m130System").value,subsystem:$("m130Location").value.trim(),assigned_to:$("m130Assignee").value.trim()||"Kỹ thuật",cadence:n?n+" tháng":"Không lặp"};
+  const token=centralSession.access_token,fields={work_title:title,system_group:$("m130System").value,subsystem:$("m130Location").value.trim(),assigned_to:assignee,cadence:n?n+" tháng":"Không lặp"};
   if(currentPlan){
    const id=currentPlan.id;
    await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:fields});
@@ -254,7 +257,7 @@ async function savePlan(ev){
    items.push(item);stored.push(occurrence);
    year=Number(date.slice(0,4));month=Number(date.slice(5,7));
   }
-  closeDialog();render();toast("✓ Đã lưu kế hoạch bảo trì");
+  clearScheduleCache();closeDialog();render();toast("✓ Đã lưu kế hoạch bảo trì");
  }catch(err){toast("Không lưu được: "+(err.message||err));}
  finally{busy=false;btn.disabled=false;}
 }
@@ -268,7 +271,8 @@ function openEvent(key){
  $("m130EventDate").value=o.event.planned_date||o.scheduled;
  $("m130EventStatus").value=o.event.status==="planned"&&String(o.event.result_note||"").trim()?"completed":o.event.status;
  $("m130ResultTip").textContent=$("m130EventStatus").value==="completed"?"✓ Lưu kết quả sẽ đánh dấu Hoàn thành.":"Nhập kết quả thực hiện để tự chuyển sang Hoàn thành.";
- $("m130Who").value=o.event.completed_by||o.item.assigned_to||"Kỹ thuật";
+ $("m130Who").value=o.event.completed_by||(personLabel(o.item.assigned_to).includes("Chưa chọn tên")?"":o.item.assigned_to)||"";
+ renderPersonPickers();
  $("m130Result").value=o.event.result_note||"";
  $("m130Overlay").hidden=false;
 }
@@ -292,7 +296,7 @@ async function saveEvent(ev){
   const confirmed={...original,...fields,id,building_id:B,item_id:o.item.id};
   if(wasVirtual)stored.push(confirmed);
   else stored=stored.map(x=>x.id===id?confirmed:x);
-  closeDialog();
+  clearScheduleCache();closeDialog();
   render();
   toast(s==="completed"?"✓ Đã lưu và đánh dấu Hoàn thành":s==="skipped"?"Đã ghi nhận không thực hiện":"Đã lưu cập nhật bảo trì");
  }catch(err){toast("Lỗi lưu kết quả: "+(err.message||err));}
@@ -309,7 +313,7 @@ async function deletePlan(id){
   const token=centralSession.access_token;
   await sbFetch('/rest/v1/esta_maintenance_plan_occurrences?building_id=eq.'+B+'&item_id=eq.'+encodeURIComponent(id),{method:"DELETE",token});
   await sbFetch('/rest/v1/esta_maintenance_plan_items?building_id=eq.'+B+'&id=eq.'+encodeURIComponent(id),{method:"DELETE",token});
-  ready=false;busy=false;await load(true);toast("Đã xóa kế hoạch bảo trì");
+  clearScheduleCache();ready=false;busy=false;await load(true);toast("Đã xóa kế hoạch bảo trì");
  }catch(err){toast("Không xóa được: "+(err.message||err));}
  finally{busy=false;}
 }
