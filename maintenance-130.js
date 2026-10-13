@@ -123,7 +123,7 @@ function ensure(){
  if(!page||!anchor)return;
  const root=document.createElement("section");root.id="maint130";
  root.innerHTML='<div class="m130Header"><div><small>ESTA · 130 HỒNG HÀ · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">↓ Xuất PDF</button></div></div>'+
- '<div class="m130Stats" id="m130Stats"></div><div class="m130StatusSummary" id="m130StatusSummary"></div><details class="m130ExtraStats"><summary>Chỉ số PM/CM · Chi phí · MTTR/MTBF</summary><div id="m130AdvancedKpis"></div></details><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
+ '<div class="m130Stats" id="m130Stats"></div><div class="m130StatusSummary" id="m130StatusSummary"></div><details class="m130ExtraStats"><summary>Chỉ số PM/CM · Chi phí · MTTR/MTBF</summary><div id="m130AdvancedKpis"></div><button type="button" id="m130AuditButton" class="m130AuditButton">Xem lịch sử chỉnh sửa / xóa</button><div id="m130AuditHistory" aria-live="polite"></div></details><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
  '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa thực hiện</option><option value="working">Đang thực hiện</option><option value="review">Chờ duyệt</option><option value="done">Hoàn thành</option><option value="late">Quá hạn</option><option value="cancelled">Hoãn / Hủy</option></select><select id="m130PriorityFilter"><option value="">Mọi ưu tiên</option><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select><select id="m130TypeFilter"><option value="">PM + CM</option><option value="PM">PM</option><option value="CM">CM</option></select><select id="m130TechnicianFilter"><option value="">Mọi KTV</option></select><select id="m130SampleFilter"><option value="all">Tất cả dữ liệu</option><option value="real">Chỉ công việc thật</option><option value="sample">Chỉ dữ liệu mẫu</option></select></div>'+
  '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><div class="m130LayoutSwitch" role="group" aria-label="Chế độ xem lịch"><button type="button" data-m130-layout="list" aria-pressed="true">Danh sách</button><button type="button" data-m130-layout="calendar" aria-pressed="false">Lịch</button><button type="button" data-m130-layout="timeline" aria-pressed="false">Timeline</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div>';
  anchor.parentNode.insertBefore(root,anchor);
@@ -136,6 +136,7 @@ function ensure(){
  $("m130Next").onclick=()=>{year=Math.min(2100,year+1);render();};
  $("m130Create").onclick=()=>openPlan();
  $("m130Pdf").onclick=exportPdf;
+ $("m130AuditButton").onclick=loadAuditHistory;
  $("m130Legacy").onclick=()=>{const opened=page.classList.toggle("maint130-assets-open");$("m130Legacy").setAttribute("aria-expanded",String(opened));if(opened&&typeof loadMaintenanceData==="function")loadMaintenanceData(B);};
  ["m130Search","m130Group","m130State","m130PriorityFilter","m130TypeFilter","m130TechnicianFilter","m130SampleFilter"].forEach(id=>$(id).addEventListener(id==="m130Search"?"input":"change",()=>{if(id==="m130SampleFilter")render();else renderList()}));
  root.addEventListener("keydown",ev=>{const r=ev.target.closest("[data-m130-open]");if(r&&ev.target===r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();openEvent(r.dataset.m130Open);}});
@@ -439,6 +440,21 @@ async function deletePlan(id){
   clearScheduleCache();render();toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
  }catch(err){toast("Không thể xóa mềm: "+(err.message||err));}
  finally{busy=false;}
+}
+async function loadAuditHistory(){
+ const box=$("m130AuditHistory");
+ if(!centralSession?.access_token)return;
+ box.innerHTML='<p>Đang lấy nhật ký thao tác...</p>';
+ try{
+  const rows=await sbFetch("/rest/v1/esta_maintenance_audit?select=action,actor_id,changed_at,old_values,new_values&building_id=eq."+B+"&order=changed_at.desc&limit=20",{token:centralSession.access_token});
+  box.innerHTML=Array.isArray(rows)&&rows.length?rows.map(r=>{
+   const n=r.new_values||{},o=r.old_values||{},name=n.work_title||o.work_title||n.event_key||o.event_key||"Công việc bảo trì";
+   const action=r.action==="soft_deleted"?"Xóa mềm":r.action==="created"?"Thêm mới":"Chỉnh sửa";
+   const actor=r.actor_id?String(r.actor_id).slice(0,8)+"…":"Hệ thống";
+   const time=r.changed_at?new Date(r.changed_at).toLocaleString("vi-VN"):"";
+   return '<div class="m130AuditRow"><b>'+action+'</b><span>'+esc(name)+'</span><small>'+esc(time)+' · Tài khoản '+esc(actor)+'</small></div>';
+  }).join(""):'<p>Chưa có nhật ký mới kể từ khi bật audit.</p>';
+ }catch(e){box.textContent="Không tải được nhật ký: "+(e.message||e);}
 }
 async function exportPdf(){
  if(!active()||!ready)return;
