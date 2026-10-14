@@ -178,7 +178,7 @@ def build_esta_completion_doc(path, payload):
     department = clean(payload.get("department"), 120) or "BỘ PHẬN KỸ THUẬT"
     issued = clean(payload.get("issued_date"), 10)
     issued_printed = ("%s/%s/%s" % (issued[8:10], issued[5:7], issued[:4])
-                      if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", issued) else "—")
+                      if re.fullmatch(r"\d{4}-\d{2}-\d{2}", issued) else "—")
     staff = clean(payload.get("staff"), 280) or "—"
     desc = clean(payload.get("repair_description"), 1000) or "—"
     participant = clean(payload.get("participant_count"), 12) or "—"
