@@ -136,3 +136,9 @@
 .cc130-photo-toggle strong{color:#411437;font-size:12.5px}
 .cc130-photo-toggle small{color:#625045;font-size:11px;line-height:1.45}
 .cc130-photo-toggle:has(input:disabled){opacity:.68;cursor:default}
+
+/* The editor preview uses the same approved ESTA logo as its generated PDF. */
+.cc130-paperhead .cc130-paperbrand{display:flex;align-items:center;gap:11px;min-width:0}
+.cc130-paperhead .cc130-paperbrand>div{display:grid;gap:4px;min-width:0}
+.cc130-preview-logo{width:42px;height:42px;object-fit:contain;flex:none;border-radius:9px}
+@media(max-width:640px){.cc130-preview-logo{width:38px;height:38px}}
