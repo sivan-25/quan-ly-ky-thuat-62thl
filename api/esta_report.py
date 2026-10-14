@@ -992,9 +992,43 @@ def generate_pdf(payload, token):
     with tempfile.TemporaryDirectory(prefix="esta_report_") as td:
         report_type = str(payload.get("report_type") or "work").lower()
         out_path = os.path.join(td, OUTPUT_NAME)
-        _prepare_signature(payload, td)
+        if report_type != "completion":
+            _prepare_signature(payload, td)
 
-        if report_type == "operations":
+        if report_type == "completion":
+            from reporting.completion_certificate import build_completion_doc
+            # Restrict this pilot to its own authenticated image storage and small inline
+            # photos. Untrusted remote hosts are never fetched by this endpoint.
+            photo_items = payload.get("photos") or []
+            if not isinstance(photo_items, list) or len(photo_items) > 60:
+                raise ValueError("Phiếu xác nhận chỉ hỗ trợ tối đa 60 ảnh")
+            candidates = []
+            unsafe = 0
+            for i, photo in enumerate(photo_items):
+                if not isinstance(photo, dict):
+                    unsafe += 1
+                    continue
+                source = str(photo.get("path") or "").strip()
+                if not source or len(source) > 1_800_000:
+                    unsafe += 1
+                    continue
+                if not (source.startswith("storage:") or
+                        source.startswith("data:image/") or
+                        source.startswith(SB_URL + "/storage/v1/object/")):
+                    unsafe += 1
+                    continue
+                candidates.append({
+                    "source": source,
+                    "id": source,
+                    "caption": str(photo.get("caption") or ("Hình %s" % (i+1)))[:85]
+                })
+            prepared, missing = pdfc.prepare_remote_images(
+                candidates, token, _download_image, source_key="source"
+            )
+            images = [item for item in prepared if item.get("prepared")]
+            missing_images = missing + unsafe
+            item_count = build_completion_doc(out_path, payload, photos=images)
+        elif report_type == "operations":
             from reporting.report_center import build_operations_doc
             ensure_fonts()
             missing_images, item_count = build_operations_doc(
