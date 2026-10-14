@@ -133,7 +133,7 @@
     syncGroupedRows();
   };
   const ensure130MoreFilters=()=>{
-    const toolbar=$("maint130")?.querySelector(".m130Toolbar");
+    const toolbar=$("m130Search")?.closest(".m130Toolbar");
     if(!toolbar||$("estam130Filters"))return;
     const panel=document.createElement("details");
     panel.id="estam130Filters";
