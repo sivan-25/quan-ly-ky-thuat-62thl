@@ -115,9 +115,18 @@
     byId("cc130Back").addEventListener("click",() => showStep("choose"));
     byId("cc130AddRow").addEventListener("click",() => appendRow({}));
     byId("cc130Rows").addEventListener("click", e => {
-      const btn = e.target.closest("[data-cc130-remove]");
-      if (!btn || byId("cc130Rows").children.length < 2) return;
-      btn.closest(".cc130-row").remove();
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const node = btn.closest(".cc130-row");
+      if (!node) return;
+      if (btn.hasAttribute("data-cc130-remove")) {
+        if (byId("cc130Rows").children.length < 2) return;
+        node.remove();
+      } else if (btn.hasAttribute("data-cc130-result")) {
+        fillTaskResult(node);
+      } else if (btn.hasAttribute("data-cc130-auto")) {
+        void fillLinkedMaterials(node);
+      }
     });
     byId("cc130Export").addEventListener("click",exportPdf);
     document.addEventListener("keydown", e => {if(e.key==="Escape" && root.classList.contains("is-open") && !busy)close();});
@@ -187,25 +196,143 @@
     byId("cc130Statement").value = "Đã hoàn thành các công việc nêu trên.";
     byId("cc130Rows").innerHTML = "";
     selectedTasks.forEach(t=>appendRow({
+      sourceTaskId: String(t.id),
       content: t.c||"", material: "", unit: "", qty: "",
       start_date: t.d||"", end_date: t.d||""
     }));
     showStep("edit");
   }
-  function appendRow(row) {
-    if(byId("cc130Rows").children.length >= 120)return;
+  // Populate only from the saved source task; the certificate is an independent, editable draft.
+  function rowHint(node, text, error=false) {
+    const hint = node.querySelector("[data-cc130-hint]");
+    if (hint) {
+      hint.textContent = text;
+      hint.classList.toggle("is-error", error);
+    }
+  }
+  function linkedTask(node) {
+    const id=String(node?.dataset.sourceTaskId||"");
+    return id ? selectedTasks.find(t=>String(t.id)===id) : null;
+  }
+  function fillTaskResult(node) {
+    const input=node.querySelector('[data-field="content"]');
+    const task=linkedTask(node);
+    const result=String(task?.result||"").trim();
+    if (!result) {
+      input.focus();
+      rowHint(node, task
+        ? "Chưa có KQ thực hiện trong công việc liên kết. Hãy nhập kết quả vào ô Nội dung công việc."
+        : "Hãy nhập trực tiếp kết quả thực hiện trong ô Nội dung công việc.", false);
+      return;
+    }
+    if (input.value.trim() && input.value.trim() !== String(task?.c||"").trim() &&
+        input.value.trim() !== result &&
+        !window.confirm("Thay nội dung hiện tại bằng KQ thực hiện đã lưu trong Công việc?")) return;
+    input.value=result.slice(0,1400);
+    input.focus();
+    rowHint(node,"Đã lấy KQ thực hiện từ công việc liên kết. Bạn có thể chỉnh sửa trước khi xuất.");
+  }
+  // Stored task materials: [{materialId,name,qty,unit}]. Never derive stock usage from notes.
+  async function resolvedMaterials(task) {
+    const items=Array.isArray(task?.materials)?task.materials:[];
+    const valid=items.map(item=>({
+      materialId:String(item?.materialId||item?.id||"").trim(),
+      name:String(item?.name||"").trim(),
+      unit:String(item?.unit||"").trim(),
+      qty:Number(item?.qty)
+    })).filter(item=>Number.isFinite(item.qty)&&item.qty>0);
+    if (!valid.length) return [];
+    if (valid.some(item=>!item.name||!item.unit) && centralSession?.access_token) {
+      const rows=await sbFetch(
+        "/rest/v1/inventory_materials?building_id=eq."+encodeURIComponent(TARGET)+"&select=id,name,unit&limit=1000",
+        {token:centralSession.access_token}
+      );
+      const catalog=new Map((Array.isArray(rows)?rows:[]).map(item=>[String(item.id),item]));
+      for (const item of valid) {
+        const entry=catalog.get(item.materialId);
+        if (!item.name) item.name=String(entry?.name||"").trim();
+        if (!item.unit) item.unit=String(entry?.unit||"").trim();
+      }
+    }
+    if(valid.some(item=>!item.name)) throw new Error("Có vật tư liên kết chưa xác định được tên. Hãy kiểm tra lại dữ liệu Công việc.");
+    // If the same material was recorded more than once, group by material ID and unit.
+    const merged=new Map();
+    for(const item of valid) {
+      const key=(item.materialId||item.name)+"|"+item.unit;
+      if(merged.has(key))merged.get(key).qty+=item.qty;
+      else merged.set(key,{...item});
+    }
+    return [...merged.values()].map(item=>({...item,qty:String(Number(item.qty.toFixed(4)))}));
+  }
+  async function fillLinkedMaterials(node) {
+    const task=linkedTask(node),button=node.querySelector("[data-cc130-auto]");
+    if (!task) {
+      rowHint(node,"Dòng tự thêm chưa liên kết với công việc. Vui lòng nhập vật tư thủ công.",true);
+      return;
+    }
+    if(button?.disabled)return;
+    const buildingId=currentBuilding?.id;
+    button.disabled=true;button.textContent="Đang lấy vật tư…";
+    try {
+      const materials=await resolvedMaterials(task);
+      if(!onProject()||currentBuilding?.id!==buildingId||!byId("cc130Rows").contains(node))
+        throw new Error("Dự án đã thay đổi, vui lòng mở lại phiếu.");
+      if(!materials.length) {
+        rowHint(node,"Công việc chưa ghi nhận vật tư sử dụng trong phần liên kết. Bạn có thể nhập thủ công.",true);
+        return;
+      }
+      const extra=[...byId("cc130Rows").querySelectorAll(".cc130-row[data-cc130-auto-generated='1']")]
+        .filter(el=>el.dataset.sourceTaskId===String(task.id));
+      if(byId("cc130Rows").children.length-extra.length+materials.length-1>120)
+        throw new Error("Phiếu chỉ hỗ trợ tối đa 120 dòng. Hãy giảm bớt công việc.");
+      const fields=["material","unit","qty"].map(x=>node.querySelector('[data-field="'+x+'"]').value.trim());
+      if ((fields.some(Boolean)||extra.length) &&
+          !window.confirm("Auto sẽ thay thế các ô vật tư hiện tại của công việc này bằng dữ liệu đã liên kết. Tiếp tục?")) return;
+      extra.forEach(el=>el.remove());
+      const field=(key,value,el=node)=>{el.querySelector('[data-field="'+key+'"]').value=value;};
+      field("material",materials[0].name);
+      field("unit",materials[0].unit);
+      field("qty",materials[0].qty);
+      let previous=node;
+      for(const item of materials.slice(1)) {
+        const child=appendRow({
+          sourceTaskId:String(task.id),autoGenerated:true,content:node.querySelector('[data-field="content"]').value.trim(),
+          material:item.name,unit:item.unit,qty:item.qty,
+          start_date:node.querySelector('[data-field="start_date"]').value,
+          end_date:node.querySelector('[data-field="end_date"]').value
+        },previous);
+        previous=child;
+      }
+      rowHint(node,"Auto: đã lấy "+materials.length+" loại vật tư và khối lượng từ Công việc. Bạn có thể sửa lại trước khi xuất.");
+    } catch(error) {
+      rowHint(node,"Không thể lấy vật tư: "+(error?.message||String(error)),true);
+    } finally {
+      if(button){button.disabled=false;button.textContent="↻ Auto vật tư";}
+    }
+  }
+  function appendRow(row,afterNode=null) {
+    if(byId("cc130Rows").children.length >= 120)return null;
     const wrapper = document.createElement("div");
     wrapper.className = "cc130-row";
+    if(row.sourceTaskId)wrapper.dataset.sourceTaskId=String(row.sourceTaskId);
+    if(row.autoGenerated)wrapper.dataset.cc130AutoGenerated="1";
     const count = byId("cc130Rows").children.length + 1;
+    const buttons = row.autoGenerated
+      ? '<span class="cc130-auto-child-note">Vật tư cùng công việc · Auto</span>'
+      : '<button type="button" data-cc130-result>↗ Nhập kết quả</button><button type="button" data-cc130-auto>↻ Auto vật tư</button>';
     wrapper.innerHTML = `
-      <div class="cc130-row-title"><strong>Công việc ${count}</strong><button type="button" data-cc130-remove aria-label="Bỏ dòng công việc">Bỏ dòng</button></div>
+      <div class="cc130-row-title"><strong>Công việc ${count}</strong>
+        <div class="cc130-row-toolbar">${buttons}<button type="button" data-cc130-remove aria-label="Bỏ dòng công việc">Bỏ dòng</button></div></div>
       <label class="cc130-cellwide">Nội dung công việc<textarea data-field="content" rows="2" maxlength="1400" required>${h(row.content)}</textarea></label>
-      <label class="cc130-cellwide">Vật tư, thiết bị thay thế<textarea data-field="material" rows="2" maxlength="1400" placeholder="Điền nếu có, không tự lấy từ ghi chú">${h(row.material)}</textarea></label>
+      <label class="cc130-cellwide">Vật tư, thiết bị thay thế<textarea data-field="material" rows="2" maxlength="1400" placeholder="Nhập thủ công hoặc bấm Auto vật tư">${h(row.material)}</textarea></label>
       <label>ĐVT<input data-field="unit" maxlength="30" placeholder="Cái / Bộ..." value="${h(row.unit)}"></label>
       <label>Số lượng<input data-field="qty" maxlength="30" placeholder="Số lượng" value="${h(row.qty)}"></label>
       <label>Ngày bắt đầu<input data-field="start_date" type="date" value="${h(row.start_date)}"></label>
-      <label>Ngày kết thúc<input data-field="end_date" type="date" value="${h(row.end_date)}"></label>`;
-    byId("cc130Rows").appendChild(wrapper);
+      <label>Ngày kết thúc<input data-field="end_date" type="date" value="${h(row.end_date)}"></label>
+      <small class="cc130-row-hint" data-cc130-hint role="status" aria-live="polite"></small>`;
+    if(afterNode?.parentNode===byId("cc130Rows"))afterNode.insertAdjacentElement("afterend",wrapper);
+    else byId("cc130Rows").appendChild(wrapper);
+    return wrapper;
   }
   function payload() {
     if(!onProject())throw new Error("Chỉ xuất phiếu trong dự án 130 HH.");
