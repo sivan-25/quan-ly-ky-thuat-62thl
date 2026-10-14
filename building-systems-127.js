@@ -107,7 +107,13 @@ function renderShell(){
  right.append(hint,overlay);
  nav.addEventListener("click",e=>{
    const btn=e.target.closest("[data-bs127-group]");if(!btn)return;
-   const group=btn.dataset.bs127Group;state.filterGroup=group;
+   const group=btn.dataset.bs127Group;
+   if(group===state.filterGroup)return;
+   if(!$("bs127Overlay").hidden){
+     if(!confirm("Bạn đang mở biểu mẫu thiết bị. Chuyển hệ thống sẽ đóng biểu mẫu đang nhập. Tiếp tục?"))return;
+     closeEditor();
+   }
+   state.filterGroup=group;
    state.openGroups.add(group);
    const filter=$("bs127FilterGroup");if(filter)filter.value=group;
    renderList();
