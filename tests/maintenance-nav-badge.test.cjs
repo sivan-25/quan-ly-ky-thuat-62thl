@@ -41,11 +41,11 @@ const events=[
 ];
 const calculate=w.__maintenanceBadgeTest.calculate;
 let result=calculate(plans,events,'2026-10-14','2026-11-13');
-assert.deepEqual(result,{count:4,critical:true},'overdue + next 30 days incl. recurring; exclude done/removed/cancelled/postponed');
+assert.deepEqual(JSON.parse(JSON.stringify(result)),{count:4,critical:true},'overdue + next 30 days incl. recurring; exclude done/removed/cancelled/postponed');
 events.push({item_id:'a',event_key:'A:2026-10',planned_month:'2026-10-01',planned_date:'2026-10-10',status:'completed'});
 result=calculate(plans,events,'2026-10-14','2026-11-13');
-assert.deepEqual(result,{count:3,critical:true},'completion immediately removes one occurrence');
-assert.deepEqual(calculate([],[],'2026-10-14','2026-11-13'),{count:0,critical:false});
+assert.deepEqual(JSON.parse(JSON.stringify(result)),{count:3,critical:true},'completion immediately removes one occurrence');
+assert.deepEqual(JSON.parse(JSON.stringify(calculate([],[],'2026-10-14','2026-11-13'))),{count:0,critical:false});
 assert.match(center,/bid==="130HH"\?Promise\.resolve\(\[\]\):sbFetch\("\/rest\/v1\/maintenance_assets/,'130HH must not read legacy assets for badge');
 assert.match(center,/window\.estaMaintenance130NavSummary/,'badge must be based on maintenance plan summary');
 assert.match(center,/window\.estaRefreshProjectNavAlerts/,'badge must expose refresh hook');
