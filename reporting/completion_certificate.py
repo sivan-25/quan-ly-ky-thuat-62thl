@@ -59,12 +59,12 @@ def validate(data):
     return period, cleaned
 
 
-def build_completion_doc(path, payload):
+def build_completion_doc(path, payload, photos=None):
     style = clean(payload.get("certificate_style") or "paper", 12).lower()
     if style not in ("paper", "esta"):
         raise ValueError("Mẫu phiếu PDF không hợp lệ")
     if style == "esta":
-        return build_esta_completion_doc(path, payload)
+        return build_esta_completion_doc(path, payload, photos=photos)
     period, rows = validate(payload)
     ensure_fonts()
     styles = {
@@ -153,6 +153,8 @@ def build_completion_doc(path, payload):
         ("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),5),
     ]))
     story.extend([statement,Spacer(1,10)])
+    append_completion_photos(story, photos, width=full, esta=False,
+                             section_style=styles["bold"])
     signatures=Table([[
         para("Đại diện BQLTN",styles["center"]),
         para("Giám sát kỹ thuật",styles["center"]),
@@ -168,7 +170,7 @@ def build_completion_doc(path, payload):
     return len(rows)
 
 
-def build_esta_completion_doc(path, payload):
+def build_esta_completion_doc(path, payload, photos=None):
     """ESTA PDF alternative; the original paper-form renderer remains available."""
     period, rows = validate(payload)
     ensure_fonts()
@@ -207,6 +209,12 @@ def build_esta_completion_doc(path, payload):
             fontSize=7.15, leading=10.2, textColor=pdfc.AUB),
         "sig": ParagraphStyle("esta_cc_sig", fontName="Mont-Bold",
             fontSize=7.3, leading=11, alignment=TA_CENTER, textColor=pdfc.AUB),
+        "official": ParagraphStyle("esta_cc_official", fontName="Mont-Bold",
+            fontSize=7.8, leading=11.3, alignment=TA_CENTER, textColor=pdfc.AUB_D),
+        "official_sub": ParagraphStyle("esta_cc_official_sub", fontName="Mont-SemiBold",
+            fontSize=7.6, leading=11, alignment=TA_CENTER, textColor=pdfc.AUB_D),
+        "official_date": ParagraphStyle("esta_cc_official_date", fontName="Mont-Italic",
+            fontSize=8.0, leading=12, alignment=TA_RIGHT, textColor=pdfc.AUB_D),
     }
 
     first, later = pdfc.make_page_fns(
@@ -233,7 +241,32 @@ def build_esta_completion_doc(path, payload):
     ])
 
     P = para
+    official = Table([
+        [
+            P(company.upper(), styles["official"]),
+            P("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", styles["official"]),
+        ],
+        [
+            P(department.upper(), styles["official_sub"]),
+            P("Độc lập - Tự do - Hạnh phúc", styles["official_sub"]),
+        ]
+    ], colWidths=[pdfc.CW * 0.425, pdfc.CW * 0.575], hAlign="LEFT")
+    official.setStyle(TableStyle([
+        ("VALIGN", (0,0),(-1,-1),"TOP"),
+        ("TOPPADDING", (0,0),(-1,-1),2),
+        ("BOTTOMPADDING", (0,0),(-1,-1),2),
+        ("LEFTPADDING", (0,0),(-1,-1),2),
+        ("RIGHTPADDING", (0,0),(-1,-1),2),
+        ("LINEBELOW", (1,1),(1,1),0.75,pdfc.COPPER),
+    ]))
+    day = issued[8:10] if issued_printed != "—" else "......"
+    mo = issued[5:7] if issued_printed != "—" else "......"
+    yr = issued[:4] if issued_printed != "—" else "......"
     story = [
+        official,
+        Spacer(1, 3*mm),
+        P("TP.HCM, ngày %s tháng %s năm %s" % (day,mo,yr), styles["official_date"]),
+        Spacer(1, 7*mm),
         P("KỸ THUẬT VẬN HÀNH  /  XÁC NHẬN CÔNG VIỆC", styles["eyebrow"]),
         Spacer(1, 3*mm),
         P("PHIẾU XÁC NHẬN HOÀN THÀNH CÔNG VIỆC", styles["title"]),
@@ -356,6 +389,8 @@ def build_esta_completion_doc(path, payload):
     disclaimer = ("Đại diện công ty đã kiểm tra tất cả tài sản trong khu vực thuê "
                   "và cam kết không thiệt hại do nhân viên kỹ thuật gây ra.")
     story.extend([P(disclaimer,styles["note"]),Spacer(1,6*mm)])
+    append_completion_photos(story, photos, width=pdfc.CW, esta=True,
+                             section_style=styles["section"])
     signatures=Table([
         [
             P("ĐẠI DIỆN BQLTN", styles["sig"]),
@@ -373,3 +408,53 @@ def build_esta_completion_doc(path, payload):
     story.append(KeepTogether([signatures]))
     doc.build(story,canvasmaker=pdfc.NumberedCanvas)
     return len(rows)
+
+
+def append_completion_photos(story, photos, width, esta, section_style):
+    """Two uncropped large images on each A4 row, one row remains indivisible."""
+    pictures = [image for image in (photos or []) if image.get("prepared")]
+    if not pictures:
+        return
+    heading = ("04  ·  HÌNH ẢNH CÔNG VIỆC THỰC HIỆN"
+               if esta else "Hình ảnh công việc thực hiện:")
+    gap = 4*mm
+    cell_width = (width-gap)/2
+    cells = []
+    for index in range(0, len(pictures), 2):
+        group = pictures[index:index+2]
+        # Maximum visual area without cropping; a row is never cut between pages.
+        required = []
+        for item in group:
+            prepared = item["prepared"]
+            natural_h = (cell_width-4) * max(1, prepared.height) / max(1, prepared.width)
+            required.append(min(89*mm, max(59*mm, natural_h)))
+        height = max(required)
+        slot_row = []
+        for i, item in enumerate(group):
+            label = str(item.get("caption") or ("Hình %d" % (index+i+1)))[:31]
+            slot_row.append(pdfc.ImageSlot(
+                width=cell_width, height=height,
+                prepared=item["prepared"], caption=label
+            ))
+            if i == 0:
+                slot_row.append("")
+        if len(group) == 1:
+            slot_row.extend(["", ""])
+        row = Table([slot_row], colWidths=[cell_width,gap,cell_width], hAlign="LEFT")
+        row.setStyle(TableStyle([
+            ("VALIGN",(0,0),(-1,-1),"TOP"),
+            ("LEFTPADDING",(0,0),(-1,-1),0),
+            ("RIGHTPADDING",(0,0),(-1,-1),0),
+            ("TOPPADDING",(0,0),(-1,-1),0),
+            ("BOTTOMPADDING",(0,0),(-1,-1),0)
+        ]))
+        cells.append(row)
+    # Keep the section label with at least one actual image.
+    story.append(KeepTogether([
+        para(heading, section_style), Spacer(1, 3*mm), cells[0]
+    ]))
+    story.append(Spacer(1, 4*mm))
+    for row in cells[1:]:
+        story.append(row)
+        story.append(Spacer(1, 4*mm))
+    story.append(Spacer(1, 4*mm))
