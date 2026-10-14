@@ -71,6 +71,9 @@ async function main() {
   assert.equal(d.getElementById("cc130Rows").children.length,2,"Auto is idempotent");
   assert.equal(d.querySelector(".cc130-signature-note"),null,"signature helper text removed");
   assert.equal(d.querySelector('input[name="cc130Style"]:checked').value,"esta","ESTA is the preview default");
+  const previewLogo=d.querySelector(".cc130-preview-logo");
+  assert.ok(previewLogo,"approved ESTA logo is in the certificate preview");
+  assert.equal(previewLogo.getAttribute("src"),"icons/icon-192.png");
   const include=d.getElementById("cc130IncludePhotos");
   assert.equal(include.checked,true,"photos included by default");
   assert.equal(include.disabled,false,"photos available");
