@@ -48,7 +48,7 @@ function render(viewMode){
   $,show:()=>true,ready:true,year:2026,month:10,viewMode,layoutMode:"list",
   scopeEvents:events=>events,getYearSchedule:()=>data,
   renderAlternative:()=>{},status:o=>states.find(s=>s[0]===o.event.status).slice(2).concat(states.find(s=>s[0]===o.event.status)[1]),
-  stateKey:()=>"",canWrite:()=>true,esc:escape,pad:n=>String(n).padStart(2,"0"),
+  stateKey:()=>"",isoToday:()=>"2026-10-14",canWrite:()=>true,esc:escape,pad:n=>String(n).padStart(2,"0"),
   interval:()=>3,cycleLabel:()=> "3 tháng",fmt:v=>/^\d{4}-\d{2}-\d{2}$/.test(v)?v.slice(8,10)+"/"+v.slice(5,7)+"/"+v.slice(0,4):(v||"—"),dateOf:o=>o.scheduled,
   personLabel:v=>v,lastCompleted:()=>"2026-09-01",nextCardDate:()=>"2027-01-01",
   maintenanceEvidenceHtml:(e,key)=>e.image_paths.length?'<div class="m130Evidence" data-evidence="'+escape(key)+'"></div>':"",
