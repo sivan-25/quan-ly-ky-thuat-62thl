@@ -71,7 +71,12 @@
           <div class="cc130-actions"><button type="button" id="cc130Next" class="cc130-primary">Tiếp tục · Xem và chỉnh sửa</button></div>
         </section>
         <section id="cc130Edit" class="cc130-step" hidden>
-          <div class="cc130-paperhead"><b>BẢN NHÁP PHIẾU XÁC NHẬN</b><span>Giữ bố cục phiếu giấy · A4</span></div>
+          <div class="cc130-paperhead"><div><small>ESTA · PHIẾU KỸ THUẬT</small><b>Kiểm tra nội dung trước khi xuất</b></div><span>130 HỒNG HÀ · A4</span></div>
+          <fieldset class="cc130-style-chooser" aria-label="Mẫu phiếu khi xuất PDF">
+            <legend>Mẫu PDF</legend>
+            <label><input type="radio" name="cc130Style" value="esta" checked><span><strong>Chuẩn ESTA</strong><small>Nền kem, tím đậm và điểm nhấn đồng · mẫu thử</small></span></label>
+            <label><input type="radio" name="cc130Style" value="paper"><span><strong>Mẫu giấy cũ</strong><small>Giữ bố cục phiếu truyền thống</small></span></label>
+          </fieldset>
           <div class="cc130-fields">
             <label>Tên đơn vị<input id="cc130Company" maxlength="120"></label>
             <label>Bộ phận<input id="cc130Department" maxlength="120"></label>
@@ -86,7 +91,6 @@
             <label>Số người tham gia<input id="cc130Participants" type="number" min="0" max="999" placeholder="Để trống nếu chưa xác định"></label>
             <label class="wide">Xác nhận công việc đã hoàn tất<textarea id="cc130Statement" maxlength="700" rows="2"></textarea></label>
           </div>
-          <div class="cc130-signature-note">Phần ký tay trong PDF: Đại diện BQLTN · Giám sát kỹ thuật · Đại diện Kỹ thuật (để trống).</div>
           <p id="cc130Message" class="cc130-message" role="status" aria-live="polite"></p>
           <div class="cc130-actions"><button type="button" id="cc130Back">Quay lại chọn việc</button><button type="button" id="cc130Export" class="cc130-primary">↓ Xuất PDF xác nhận</button></div>
         </section>
@@ -139,6 +143,8 @@
     selected.clear();
     selectedTasks = [];
     byId("cc130Month").value = isoToday().slice(0,7);
+    const esta = byId("cc130Modal").querySelector('input[name="cc130Style"][value="esta"]');
+    if (esta) esta.checked=true;
     byId("cc130Modal").querySelector('input[value="manual"]').checked = true;
     renderList();
     showStep("choose");
@@ -348,6 +354,7 @@
     if(!rows.length)throw new Error("Cần ít nhất một dòng công việc.");
     return {
       report_type:"completion", building_id:TARGET, building:"130 Hồng Hà",
+      certificate_style:byId("cc130Modal").querySelector('input[name="cc130Style"]:checked')?.value||"esta",
       company:byId("cc130Company").value.trim(), department:byId("cc130Department").value.trim(),
       issued_date:byId("cc130IssuedDate").value, period:byId("cc130Month").value,
       staff:byId("cc130Staff").value.trim(),
