@@ -3,10 +3,7 @@
   "functions": {
     "api/esta_report.py": {
       "maxDuration": 120,
-      "includeFiles": [
-        "reporting/**",
-        "icons/icon-512.png"
-      ]
+      "includeFiles": "reporting/**"
     }
   },
   "headers": [
