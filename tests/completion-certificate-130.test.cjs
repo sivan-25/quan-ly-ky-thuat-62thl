@@ -12,6 +12,7 @@ async function main() {
   w.load=()=>[
     {id:"a",d:"2026-09-10",c:"Thay đèn hành lang",s:"Đã hoàn thành",performers:["KT A"],
      result:"Đã thay đèn hành lang và kiểm tra vận hành",
+     imgs:["storage:b-3133304848/tasks/a_1.jpg","storage:b-3133304848/tasks/a_2.jpg","storage:b-3133304848/tasks/a_3.jpg"],
      materials:[{materialId:"lamp",name:"Đèn LED 15W",qty:8,unit:"Cái"},{materialId:"cable",name:"Dây điện",qty:2.5,unit:"m"}]},
     {id:"b",d:"2026-09-11",c:"Đèn toilet",s:"Hoàn thành",performers:["KT B"]},
     {id:"c",d:"2026-09-12",c:"Kiểm tra máy",s:"Đang thực hiện",performers:["KT A"]},
@@ -70,9 +71,15 @@ async function main() {
   assert.equal(d.getElementById("cc130Rows").children.length,2,"Auto is idempotent");
   assert.equal(d.querySelector(".cc130-signature-note"),null,"signature helper text removed");
   assert.equal(d.querySelector('input[name="cc130Style"]:checked').value,"esta","ESTA is the preview default");
+  const include=d.getElementById("cc130IncludePhotos");
+  assert.equal(include.checked,true,"photos included by default");
+  assert.equal(include.disabled,false,"photos available");
+  assert.match(d.getElementById("cc130PhotoSummary").textContent,/3 ảnh/);
   d.getElementById("cc130Export").click();
   await new Promise(r=>setTimeout(r,40));
   assert.equal(sent.certificate_style,"esta","new ESTA paper style sent to authenticated renderer");
+  assert.equal(sent.photos.length,3,"selected work images attached to the PDF payload");
+  assert.ok(sent.photos.every(p=>p.path.startsWith("storage:")));
   assert.equal(sent.report_type,"completion");
   assert.equal(sent.building_id,"130HH");
   assert.equal(sent.rows.length,2);
@@ -84,11 +91,13 @@ async function main() {
   assert.equal(sent.rows[1].qty,"2.5");
   assert.equal(downloads,1,"verified PDF must download");
   const paper=d.querySelector('input[name="cc130Style"][value="paper"]');
+  include.checked=false;
   paper.checked=true;
   paper.dispatchEvent(new w.Event("change",{bubbles:true}));
   d.getElementById("cc130Export").click();
   await new Promise(r=>setTimeout(r,40));
   assert.equal(sent.certificate_style,"paper","legacy paper form remains selectable");
+  assert.equal(sent.photos.length,0,"unchecked photo control must omit images");
   assert.equal(downloads,2);
   sent=null;
   d.getElementById("cc130Back").click();
@@ -98,6 +107,7 @@ async function main() {
   assert.equal(d.getElementById("cc130Next").disabled,false);
   d.getElementById("cc130Next").click();
   assert.equal(d.getElementById("cc130Rows").children.length,2,"monthly mode must include all finished September tasks");
+  assert.equal(d.getElementById("cc130IncludePhotos").checked,true,"new draft restores default image option");
   const blank=d.querySelector('#cc130Rows .cc130-row[data-source-task-id="b"]');
   blank.querySelector("[data-cc130-auto]").click();
   await new Promise(r=>setTimeout(r,20));
