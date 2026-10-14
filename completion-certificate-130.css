@@ -37,10 +37,9 @@
 .cc130-actions button,.cc130-minor{padding:10px 13px;border-radius:9px;border:1px solid #9eacb1;color:#284251;background:#fff;cursor:pointer;font-size:13px;font-weight:750}
 .cc130-actions .cc130-primary{background:#1c6267;color:#fff;border-color:#1c6267}
 .cc130-actions button:disabled{opacity:.55;cursor:not-allowed}
-.cc130-paperhead{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #bdc9c7;padding-bottom:10px;margin-bottom:14px}
-.cc130-paperhead b{font-size:14px}
-.cc130-paperhead span{font-size:11px;color:#557180}
 .cc130-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cc130-main-fields{grid-template-columns:minmax(0,1.18fr) minmax(0,1fr) minmax(150px,.86fr);gap:10px}
+.cc130-main-fields label{min-width:0}
 .cc130-fields label,.cc130-row label{font-size:12px;font-weight:750;display:flex;flex-direction:column;gap:5px;min-width:0}
 .cc130-fields label input,.cc130-row label input{width:100%}
 .cc130-fields label.wide{grid-column:1/-1}
@@ -66,9 +65,9 @@
   .cc130-modes{flex-direction:column;gap:10px}
   .cc130-filter{align-items:flex-start;flex-direction:column}
   .cc130-fields{grid-template-columns:1fr}
+  .cc130-main-fields{grid-template-columns:1fr}
   .cc130-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cc130-row .cc130-cellwide{grid-column:1/-1}
-  .cc130-paperhead{flex-direction:column;align-items:flex-start}
   .cc130-actions{display:grid;grid-template-columns:1fr}
   .cc130-actions button{min-height:44px}
 }
@@ -100,11 +99,6 @@
 .cc130-head p{color:#eee3dd}
 .cc130-x{background:#653457;border-color:#987583}
 .cc130-step h3{color:var(--cc-aub);font-size:15px}
-.cc130-paperhead{border-bottom:2px solid var(--cc-copper);padding-bottom:11px}
-.cc130-paperhead>div{display:grid;gap:4px}
-.cc130-paperhead small{font-size:10px;letter-spacing:1.25px;font-weight:850;color:var(--cc-copper)}
-.cc130-paperhead b{font-size:16px;color:var(--cc-aub)}
-.cc130-paperhead span{font-size:10px;font-weight:750;letter-spacing:.7px;color:var(--cc-stone)}
 .cc130-modes{background:#f3e7da}
 .cc130-modes input,.cc130-checkall input,.cc130-task input{accent-color:var(--cc-aub)}
 .cc130-overlay input:focus-visible,.cc130-overlay textarea:focus-visible{outline-color:var(--cc-copper)}
@@ -128,3 +122,6 @@
 .cc130-photo-toggle small{color:#625045;font-size:11px}
 .cc130-photo-toggle:has(input:disabled){opacity:.68;cursor:default}
 
+
+/* Keep the three administrative inputs on one desktop row. */
+@media (min-width:641px) and (max-width:800px){.cc130-main-fields{grid-template-columns:repeat(3,minmax(0,1fr))}}
