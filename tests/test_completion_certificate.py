@@ -1,10 +1,14 @@
 """130HH completion certificate regressions - synthetic fixtures, no personal data."""
 import re
+import io
+import base64
 import tempfile
 import unittest
 from pathlib import Path
 
 from reporting.completion_certificate import build_completion_doc, validate
+from api.esta_report import generate_pdf
+from PIL import Image as PILImage
 
 
 class CompletionCertificateTests(unittest.TestCase):
@@ -74,6 +78,56 @@ class CompletionCertificateTests(unittest.TestCase):
             payload["certificate_style"] = "unknown"
             with self.assertRaisesRegex(ValueError, "Mẫu phiếu"):
                 build_completion_doc(str(target), payload)
+
+
+    @staticmethod
+    def photo_url(size, hue):
+        output=io.BytesIO()
+        PILImage.new("RGB", size, (hue, 140, 180)).save(output,"PNG")
+        return "data:image/png;base64,"+base64.b64encode(output.getvalue()).decode("ascii")
+
+    def test_esta_images_2_per_row_even_and_odd(self):
+        landscape=self.photo_url((1200,650), 70)
+        portrait=self.photo_url((540,980), 200)
+        for count in (1, 2, 3, 7):
+            data=self.fixture()
+            data["certificate_style"]="esta"
+            data["photos"]=[
+                {"path":(landscape if index%2==0 else portrait),
+                 "caption":"CV 1 - Hình %d" % (index+1)}
+                for index in range(count)
+            ]
+            pdf, missing, task_count=generate_pdf(data,"test-image-token")
+            self.assertEqual((missing,task_count),(0,1))
+            self.assertTrue(pdf.startswith(b"%PDF-"))
+            self.assertGreaterEqual(
+                len(re.findall(rb"/Subtype\s*/Image\b",pdf)), 2 if count>=2 else 1
+            )
+            if count>=7:
+                self.assertGreaterEqual(len(re.findall(rb"/Type\s*/Page\b",pdf)),2)
+
+    def test_paper_image_gallery_and_missing_photo(self):
+        data=self.fixture()
+        data["certificate_style"]="paper"
+        data["photos"]=[
+            {"path":self.photo_url((850,480),100),"caption":"CV 1 - Hình 1"},
+            {"path":"data:image/png;base64,invalid","caption":"CV 1 - Hình 2"},
+        ]
+        pdf, missing, count=generate_pdf(data,"test-image-token")
+        self.assertEqual((missing,count),(1,1))
+        self.assertTrue(pdf.startswith(b"%PDF-"))
+        data["photos"]=[{"path":"http://169.254.169.254/latest/meta-data",
+                         "caption":"Ảnh ngoài không được phép"}]
+        pdf, missing, count=generate_pdf(data,"test-image-token")
+        self.assertEqual((missing,count),(1,1))
+        self.assertTrue(pdf.startswith(b"%PDF-"))
+
+    def test_reject_over_60_images(self):
+        data=self.fixture()
+        data["certificate_style"]="esta"
+        data["photos"]=[{"path":"storage:a"}]*61
+        with self.assertRaisesRegex(ValueError,"60 ảnh"):
+            generate_pdf(data,"test-image-token")
 
     def test_scope_validation_and_dates(self):
         payload=self.fixture()
