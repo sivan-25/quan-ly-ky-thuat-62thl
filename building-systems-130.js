@@ -85,7 +85,7 @@ function renderShell(){
  '<div id="bs130Notice" class="bs130Notice" role="status" aria-live="polite"></div><div id="bs130List" class="bs130List"></div>'+
  '<div id="bs130Overlay" class="bs130Overlay" hidden><div class="bs130Shade" data-bs-close></div><section class="bs130Dialog" role="dialog" aria-modal="true" aria-labelledby="bs130DialogTitle"><div class="bs130DialogHead"><div><small>THÔNG SỐ & HỒ SƠ</small><h3 id="bs130DialogTitle">Thêm thiết bị</h3></div><button type="button" id="bs130Close" class="bs130Close" aria-label="Đóng">×</button></div><form id="bs130Form"><div class="bs130FormBody">'+
  '<div class="bs130FormGrid"><label>Hệ thống <b>*</b><select name="system_group" id="bs130Group" required></select></label><label>Loại thiết bị <b>*</b><select name="equipment_type" id="bs130Type" required></select></label></div>'+
- '<div class="bs130FormGrid"><label>Tên / ký hiệu thiết bị<input name="name" maxlength="160" placeholder="VD: Máy bơm cấp nước số 1"></label><label>Mã thiết bị<input name="code" maxlength="80" placeholder="VD: PUMP-01"></label></div>'+
+ '<div class="bs130FormGrid"><label>Tên / ký hiệu thiết bị <b>*</b><input name="name" required maxlength="160" placeholder="VD: Máy bơm cấp nước số 1"></label><label>Mã thiết bị<input name="code" maxlength="80" placeholder="VD: PUMP-01"></label></div>'+
  '<div class="bs130FormGrid"><label>Hãng sản xuất<select name="brand" id="bs130Brand"></select><input name="brand_custom" id="bs130BrandCustom" maxlength="100" placeholder="Nhập hãng khác" hidden></label><label>Model / Serial (nếu có)<input name="model" maxlength="120" placeholder="Nhập theo tem máy"></label></div>'+
  '<div class="bs130FormGrid"><label>Vị trí<select name="location" id="bs130Location"></select><input name="location_custom" id="bs130LocationCustom" maxlength="120" placeholder="Nhập vị trí khác" hidden></label><label>Số lượng<select name="quantity" id="bs130Quantity"></select></label></div>'+
  '<div class="bs130FormSection"><span>Thông số theo loại thiết bị</span><small>Chọn theo nhãn máy, không bắt buộc điền đủ</small></div><div class="bs130FormGrid" id="bs130Specs"></div>'+
@@ -185,6 +185,7 @@ function takeForm(){
  const form=$("bs130Form"),f=new FormData(form);
  const group=String(f.get("system_group")||""),type=String(f.get("equipment_type")||"");
  if(!CATALOG[group]||!CATALOG[group].includes(type))throw Error("Hãy chọn hệ thống và loại thiết bị hợp lệ.");
+ if(!String(f.get("name")||"").trim())throw Error("Hãy nhập tên hoặc mã nhận diện thiết bị.");
  const specs={};
  $("bs130Specs").querySelectorAll("select[data-bs-spec]").forEach(el=>{
   let value=el.value;if(value==="Khác")value=String($("bs130Specs").querySelector('[data-bs-other="'+el.dataset.bsSpec+'"]')?.value||"").trim();
@@ -208,7 +209,7 @@ async function saveRow(e){
    const id=encodeURIComponent(state.editing.id);
    await sbFetch("/rest/v1/building_equipment_profiles?id=eq."+id+"&building_id=eq."+PROJECT,{method:"PATCH",token:centralSession.access_token,body:payload});
   }else await sbFetch("/rest/v1/building_equipment_profiles",{method:"POST",token:centralSession.access_token,body:payload});
-  state.busy=false;closeEditor();msg("✓ Đã lưu thông tin thiết bị.");await loadRows();
+  state.busy=false;closeEditor();state.openGroups.add(payload.system_group);msg("✓ Đã lưu thông tin thiết bị.");await loadRows();
  }catch(err){msg("Lưu thất bại: "+(err?.message||"Vui lòng thử lại."),true)}
  finally{state.busy=false;btn.disabled=false;btn.textContent="✓ Lưu thiết bị";}
 }
