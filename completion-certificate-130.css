@@ -128,3 +128,11 @@
 .cc130-row-hint{color:#665139}
 .cc130-minor{background:#f6ead8;border-color:#d1b998;color:#5d3b27}
 @media(max-width:640px){.cc130-style-chooser{grid-template-columns:1fr}}
+
+/* Optional evidence export, enabled when selected work orders contain images. */
+.cc130-photo-toggle{display:flex;align-items:flex-start;gap:11px;margin:-2px 0 16px;padding:11px 13px;border-radius:10px;border:1px solid #cdb3a1;background:#faf0e3;cursor:pointer}
+.cc130-photo-toggle input{flex:none;width:18px;height:18px;min-height:18px;margin:2px 0 0;accent-color:#411437}
+.cc130-photo-toggle span{display:grid;gap:3px;min-width:0}
+.cc130-photo-toggle strong{color:#411437;font-size:12.5px}
+.cc130-photo-toggle small{color:#625045;font-size:11px;line-height:1.45}
+.cc130-photo-toggle:has(input:disabled){opacity:.68;cursor:default}
