@@ -142,3 +142,6 @@ body.bs130ModalOpen{overflow:hidden}
  #app .bs130ProfileHead{flex-wrap:wrap}
  #app .bs130SystemHead>span:first-child{gap:4px;align-items:flex-start;flex-direction:column}
 }
+/* Required marker shares the same inline label; input remains on the following row. */
+#app .bs130FormGrid .bs130FieldLabel{display:inline-flex;flex-direction:row;align-items:baseline;gap:4px;white-space:nowrap;width:max-content;max-width:100%;font-size:inherit;line-height:1.35}
+#app .bs130FormGrid .bs130FieldLabel b{color:#b44c49;font-size:inherit;font-weight:800;line-height:inherit;flex:0 0 auto}
