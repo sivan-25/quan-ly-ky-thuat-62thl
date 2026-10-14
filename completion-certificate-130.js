@@ -235,13 +235,15 @@
   // Stored task materials: [{materialId,name,qty,unit}]. Never derive stock usage from notes.
   async function resolvedMaterials(task) {
     const items=Array.isArray(task?.materials)?task.materials:[];
+    if (!items.length) return [];
     const valid=items.map(item=>({
       materialId:String(item?.materialId||item?.id||"").trim(),
       name:String(item?.name||"").trim(),
       unit:String(item?.unit||"").trim(),
       qty:Number(item?.qty)
-    })).filter(item=>Number.isFinite(item.qty)&&item.qty>0);
-    if (!valid.length) return [];
+    }));
+    if(valid.some(item=>!Number.isFinite(item.qty)||item.qty<=0))
+      throw new Error("Một hoặc nhiều vật tư liên kết chưa có số lượng hợp lệ. Hãy kiểm tra trong Công việc trước khi Auto.");
     if (valid.some(item=>!item.name||!item.unit) && centralSession?.access_token) {
       const rows=await sbFetch(
         "/rest/v1/inventory_materials?building_id=eq."+encodeURIComponent(TARGET)+"&select=id,name,unit&limit=1000",
