@@ -439,7 +439,7 @@ def append_completion_photos(story, photos, width, esta, section_style):
             if i == 0:
                 slot_row.append("")
         if len(group) == 1:
-            slot_row.extend(["", ""])
+            slot_row.append("")
         row = Table([slot_row], colWidths=[cell_width,gap,cell_width], hAlign="LEFT")
         row.setStyle(TableStyle([
             ("VALIGN",(0,0),(-1,-1),"TOP"),
