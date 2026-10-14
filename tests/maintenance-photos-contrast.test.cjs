@@ -55,5 +55,5 @@ assert.match(demo,/function demoEnsureAssetPassport\(\)\{\s*\/\/[\s\S]*?\$\("#de
 const cssBase=html.indexOf("maintenance-redesign.css");
 const cssNew=html.indexOf("maintenance-readability.css");
 assert.ok(cssBase>0&&cssNew>cssBase,"legibility overrides load after redesign");
-assert.match(html,/maintenance-130\.js\?v=20261013-[a-z0-9-]+/i,"maintenance JS uses a versioned asset URL");
+assert.match(html,/maintenance-130\.js\?v=\d{8}-[a-z0-9-]+/i,"maintenance JS uses a versioned asset URL");
 console.log("Maintenance evidence, contrast and banner regression checks passed.");
