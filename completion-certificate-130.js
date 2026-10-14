@@ -77,6 +77,8 @@
             <label><input type="radio" name="cc130Style" value="esta" checked><span><strong>Chuẩn ESTA</strong><small>Nền kem, tím đậm và điểm nhấn đồng · mẫu thử</small></span></label>
             <label><input type="radio" name="cc130Style" value="paper"><span><strong>Mẫu giấy cũ</strong><small>Giữ bố cục phiếu truyền thống</small></span></label>
           </fieldset>
+          <label class="cc130-photo-toggle"><input id="cc130IncludePhotos" type="checkbox" checked>
+            <span><strong>Kèm hình ảnh công việc</strong><small id="cc130PhotoSummary">Ảnh từ các công việc đã chọn · 2 ảnh / dòng A4 · không cắt ảnh</small></span></label>
           <div class="cc130-fields">
             <label>Tên đơn vị<input id="cc130Company" maxlength="120"></label>
             <label>Bộ phận<input id="cc130Department" maxlength="120"></label>
@@ -196,6 +198,12 @@
     byId("cc130Department").value = "BỘ PHẬN KỸ THUẬT";
     byId("cc130IssuedDate").value = isoToday();
     byId("cc130Staff").value = names.join(", ");
+    const totalImages=selectedTasks.reduce((sum,t)=>sum+(Array.isArray(t.imgs)?t.imgs.filter(Boolean).length:0),0);
+    byId("cc130IncludePhotos").checked=true;
+    byId("cc130IncludePhotos").disabled=totalImages===0;
+    byId("cc130PhotoSummary").textContent=totalImages
+      ? totalImages+" ảnh từ "+selectedTasks.length+" công việc đã chọn · 2 ảnh / dòng A4"
+      : "Các công việc đã chọn chưa có ảnh; phiếu vẫn xuất bình thường.";
     byId("cc130Participants").value = names.length ? String(names.length) : "";
     const titles = selectedTasks.map(t=>String(t.c||"").trim()).filter(Boolean);
     byId("cc130Description").value = titles.join("; ").slice(0,1000);
@@ -352,6 +360,13 @@
       return row;
     });
     if(!rows.length)throw new Error("Cần ít nhất một dòng công việc.");
+    const photos=byId("cc130IncludePhotos").checked
+      ? selectedTasks.flatMap((task,taskIndex)=>(
+          Array.isArray(task.imgs)?task.imgs:[]
+        ).filter(ref=>typeof ref==="string"&&ref.trim()).map((ref,i)=>({
+          path:ref, caption:"CV "+(taskIndex+1)+" · Hình "+(i+1)
+        }))) : [];
+    if(photos.length>60)throw new Error("Phiếu đang có "+photos.length+" ảnh. Vui lòng chọn tối đa 60 ảnh bằng cách giảm số công việc, hoặc tắt kèm ảnh.");
     return {
       report_type:"completion", building_id:TARGET, building:"130 Hồng Hà",
       certificate_style:byId("cc130Modal").querySelector('input[name="cc130Style"]:checked')?.value||"esta",
@@ -360,7 +375,7 @@
       staff:byId("cc130Staff").value.trim(),
       repair_description:byId("cc130Description").value.trim(),
       participant_count:byId("cc130Participants").value.trim(),
-      completion_statement:byId("cc130Statement").value.trim(),rows
+      completion_statement:byId("cc130Statement").value.trim(),rows,photos
     };
   }
   async function exportPdf() {
@@ -391,7 +406,10 @@
         a.download="Phieu_xac_nhan_hoan_thanh_130HH_"+request.period.replace("-","")+".pdf";
         document.body.appendChild(a);a.click();a.remove();
         setTimeout(()=>URL.revokeObjectURL(url),60000);
-        message.textContent="Đã tạo và tải phiếu PDF. Các vị trí ký được để trống.";
+        const missing=Number(response.headers?.get("X-ESTA-Missing-Images")||0);
+        message.textContent=missing>0
+          ? "Đã xuất PDF, nhưng "+missing+" ảnh không tải được. Vui lòng kiểm tra ảnh trong Công việc."
+          : "Đã xuất phiếu PDF"+(request.photos.length?" kèm "+request.photos.length+" ảnh.":".");
       } finally {clearTimeout(timeout);}
     } catch(error) {
       message.textContent="Chưa xuất được PDF: "+(error?.name==="AbortError"?"Máy chủ phản hồi quá lâu.":error?.message||String(error));
