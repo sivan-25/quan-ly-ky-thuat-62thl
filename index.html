@@ -845,6 +845,7 @@
 <link rel="stylesheet" href="people-settings.css?v=20261012-shared01">
 <link rel="stylesheet" href="admin-task-mobile.css?v=20261013-state-colors02">
 <link rel="stylesheet" href="maintenance-68.css?v=20261013-02">
+<link rel="stylesheet" href="building-systems-130.css?v=20261014-trial01">
 <link rel="stylesheet" href="maintenance-130.css?v=20261013-simplified07">
 <link rel="stylesheet" href="maintenance-redesign.css?v=20261013-layout02"><!-- Evidence visual stylesheet intentionally after redesign -->
 <link rel="stylesheet" href="maintenance-readability.css?v=20261013-navy03">
@@ -980,6 +981,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5M9 5H5v4M19 15v4h-4"/></svg>
       <span>Bảo trì thiết bị</span>
     </button>
+    <button id="navSystems" class="hide" type="button" aria-label="Thông tin hệ thống tòa nhà"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V6l8-4 8 4v15M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2"/></svg><span>Thông tin hệ thống</span></button>
     <button id="navContractor">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg>
       <span>Nhà thầu</span>
@@ -1056,6 +1058,7 @@
     <div class="topModuleIcon maintenanceTopIcon"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5"/></svg></div>
     <div><h1>Bảo trì thiết bị</h1><p>Kế hoạch, lịch sử và nhắc hạn bảo trì</p></div>
   </div>
+  <div id="topSystemsTitle" class="topModuleTitle hide"><div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M4 21V6l8-4 8 4v15M8 10h2M14 10h2M8 14h2M14 14h2"/></svg></div><div><h1>Thông tin hệ thống tòa nhà</h1><p>130 Hồng Hà · Hồ sơ, thông số thiết bị</p></div></div>
   <div id="topContractorTitle" class="topModuleTitle contractorTopTitle hide">
     <div class="topModuleIcon contractorTopIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></div>
     <div><h1>Nhà thầu</h1><p class="buildingNameText">Dự án</p></div>
@@ -1994,6 +1997,7 @@
     </section>
   </section>
 </div>
+<div id="buildingSystemsPage" class="page hide"><div id="buildingSystems130"></div></div>
 <div id="maintenancePage" class="page maintenancePage hide">
   <section class="maintenanceHero">
     <div class="maintenanceCommandBrand">
@@ -2661,6 +2665,7 @@ document.addEventListener("click",function estaDueDatePickerClick(event){
 </script><script src="esta-mobile.js?v=20261013-dock01"></script>
 <script src="maintenance-68.js?v=20261013-03"></script>
 <script src="maintenance-130.js?v=20261013-header03"></script>
+<script src="building-systems-130.js?v=20261014-trial01"></script>
 <script src="maintenance-redesign.js?v=20261013-layout02"></script>
 <script src="pwa-register.js?v=20261012-autoupdate01"></script>
 </body></html>
