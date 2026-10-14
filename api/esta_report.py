@@ -992,9 +992,14 @@ def generate_pdf(payload, token):
     with tempfile.TemporaryDirectory(prefix="esta_report_") as td:
         report_type = str(payload.get("report_type") or "work").lower()
         out_path = os.path.join(td, OUTPUT_NAME)
-        _prepare_signature(payload, td)
+        if report_type != "completion":
+            _prepare_signature(payload, td)
 
-        if report_type == "operations":
+        if report_type == "completion":
+            from reporting.completion_certificate import build_completion_doc
+            missing_images = 0
+            item_count = build_completion_doc(out_path, payload)
+        elif report_type == "operations":
             from reporting.report_center import build_operations_doc
             ensure_fonts()
             missing_images, item_count = build_operations_doc(
