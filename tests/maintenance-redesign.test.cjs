@@ -51,6 +51,15 @@ async function fixture(id,internal,extra=""){
     d.querySelector('[data-m130-month="11"]').addEventListener("click",()=>{d.querySelector('[data-m130-month="10"]').classList.remove("sel");d.querySelector('[data-m130-month="11"]').classList.add("sel");});
     d.getElementById("estamNext").click();await wait();
     assert.equal(d.getElementById("estamMonth").textContent,"Tháng 11/2026");
+    const groupedList=d.getElementById("m130List");
+    groupedList.innerHTML='<article class="m130Entry m130CompactRow m130State-late"><time class="m130Date" datetime="2020-01-01"></time></article><article class="m130Entry m130CompactRow m130State-done"><time class="m130Date" datetime="2020-01-02"></time></article>';
+    await wait();
+    assert.equal(d.querySelectorAll(".estam130WorkGroup").length,2,"maintenance rows grouped like supplied reference");
+    assert.equal(d.querySelector(".estam130WorkGroup[data-summary-group=late] .estam130WorkCount").textContent,"1 việc");
+    d.querySelector('[data-estam130-group=late]').click();
+    assert.equal(d.querySelector(".estam130WorkGroup[data-summary-group=done]").hidden,true,"status summary filters grouped work");
+    d.querySelector('[data-estam130-group=all]').click();
+    assert.equal(d.querySelector(".estam130WorkGroup[data-summary-group=done]").hidden,false,"all restores grouped work");
     dom.window.close();
   }
   {
