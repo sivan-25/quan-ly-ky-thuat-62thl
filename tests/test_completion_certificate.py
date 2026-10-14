@@ -9,6 +9,7 @@ from pathlib import Path
 from reporting.completion_certificate import build_completion_doc, validate
 from api.esta_report import generate_pdf
 from PIL import Image as PILImage
+from reporting.esta_official_logo import OFFICIAL_LOGO_PNG
 
 
 class CompletionCertificateTests(unittest.TestCase):
@@ -52,6 +53,18 @@ class CompletionCertificateTests(unittest.TestCase):
             build_completion_doc(str(target), self.fixture(1, 100))
             self.assertTrue(target.read_bytes().startswith(b"%PDF-"))
 
+
+    def test_esta_uses_exact_approved_logo(self):
+        # This logo is the approved asset currently displayed by ESTA PWA.
+        self.assertEqual(OFFICIAL_LOGO_PNG, Path("icons/icon-192.png").read_bytes())
+        payload=self.fixture()
+        payload["certificate_style"]="esta"
+        with tempfile.TemporaryDirectory() as folder:
+            target=Path(folder)/"esta_logo.pdf"
+            build_completion_doc(str(target),payload)
+            self.assertGreaterEqual(
+                len(re.findall(rb"/Subtype\\s*/Image\\b",target.read_bytes())),1
+            )
 
     def test_esta_single_page_and_multipage(self):
         with tempfile.TemporaryDirectory() as folder:
