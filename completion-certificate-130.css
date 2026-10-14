@@ -105,14 +105,6 @@
 .cc130-paperhead small{font-size:10px;letter-spacing:1.25px;font-weight:850;color:var(--cc-copper)}
 .cc130-paperhead b{font-size:16px;color:var(--cc-aub)}
 .cc130-paperhead span{font-size:10px;font-weight:750;letter-spacing:.7px;color:var(--cc-stone)}
-.cc130-style-chooser{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 16px;border:0;padding:0;min-width:0}
-.cc130-style-chooser legend{font-size:12px;font-weight:850;color:var(--cc-aub);margin:0 0 7px}
-.cc130-style-chooser label{display:flex;gap:10px;align-items:flex-start;border:1px solid #d7c6b7;border-radius:10px;padding:10px 12px;background:#fff;cursor:pointer;min-width:0}
-.cc130-style-chooser label:has(input:checked){border-color:var(--cc-copper);background:#f9eddf;box-shadow:0 0 0 1px var(--cc-copper) inset}
-.cc130-style-chooser input{width:17px;height:17px;min-width:17px;min-height:17px;accent-color:var(--cc-aub);padding:0;margin:2px 0 0}
-.cc130-style-chooser label span{min-width:0;display:grid;gap:3px}
-.cc130-style-chooser label strong{font-size:12px;color:var(--cc-aub)}
-.cc130-style-chooser label small{font-size:10.5px;color:var(--cc-stone);line-height:1.4}
 .cc130-modes{background:#f3e7da}
 .cc130-modes input,.cc130-checkall input,.cc130-task input{accent-color:var(--cc-aub)}
 .cc130-overlay input:focus-visible,.cc130-overlay textarea:focus-visible{outline-color:var(--cc-copper)}
@@ -127,18 +119,12 @@
 .cc130-row-toolbar button[data-cc130-auto]{color:#78502b;background:#fff2df;border-color:#e3bf8f}
 .cc130-row-hint{color:#665139}
 .cc130-minor{background:#f6ead8;border-color:#d1b998;color:#5d3b27}
-@media(max-width:640px){.cc130-style-chooser{grid-template-columns:1fr}}
 
-/* Optional evidence export, enabled when selected work orders contain images. */
-.cc130-photo-toggle{display:flex;align-items:flex-start;gap:11px;margin:-2px 0 16px;padding:11px 13px;border-radius:10px;border:1px solid #cdb3a1;background:#faf0e3;cursor:pointer}
-.cc130-photo-toggle input{flex:none;width:18px;height:18px;min-height:18px;margin:2px 0 0;accent-color:#411437}
-.cc130-photo-toggle span{display:grid;gap:3px;min-width:0}
-.cc130-photo-toggle strong{color:#411437;font-size:12.5px}
-.cc130-photo-toggle small{color:#625045;font-size:11px;line-height:1.45}
+/* Minimal evidence switch: two large uncropped photos per A4 row. */
+.cc130-photo-toggle{display:flex;align-items:center;gap:9px;margin:0 0 12px;padding:8px 11px;border-radius:9px;border:1px solid #cdb3a1;background:#faf0e3;cursor:pointer}
+.cc130-photo-toggle input{flex:none;width:17px;height:17px;min-height:17px;margin:0;accent-color:#411437}
+.cc130-photo-toggle span{font-size:12px;min-width:0}
+.cc130-photo-toggle strong{color:#411437}
+.cc130-photo-toggle small{color:#625045;font-size:11px}
 .cc130-photo-toggle:has(input:disabled){opacity:.68;cursor:default}
 
-/* The editor preview uses the same approved ESTA logo as its generated PDF. */
-.cc130-paperhead .cc130-paperbrand{display:flex;align-items:center;gap:11px;min-width:0}
-.cc130-paperhead .cc130-paperbrand>div{display:grid;gap:4px;min-width:0}
-.cc130-preview-logo{width:42px;height:42px;object-fit:contain;flex:none;border-radius:9px}
-@media(max-width:640px){.cc130-preview-logo{width:38px;height:38px}}
