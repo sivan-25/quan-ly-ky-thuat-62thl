@@ -25,6 +25,15 @@ const flush=()=>new Promise(resolve=>setTimeout(resolve,0));
 (async()=>{
  w.eval(file);w.renderBuildingSystems130();await flush();
  assert.ok($("bs130Add"),"module is mounted");
+ for(const [id,label] of [["bs130Group","Hệ thống"],["bs130Type","Loại thiết bị"]]){
+   const field=$(id).closest("label");
+   const title=field.querySelector(":scope > .bs130FieldLabel");
+   assert.ok(title,"required marker stays in one inline title for "+label);
+   assert.ok(title.textContent.includes(label)&&title.textContent.includes("*"));
+   assert.equal(field.querySelector(":scope > b"),null,"no detached required star");
+ }
+ const nameField=d.querySelector('#bs130Form [name="name"]').closest("label");
+ assert.ok(nameField.querySelector(":scope > .bs130FieldLabel b"),"required name marker grouped with label");
  assert.match($("bs130List").textContent,/Chưa khai báo/);
  assert.equal($("bs130Count").textContent,"0","catalog placeholders are not saved assets");
  assert.equal(d.querySelectorAll(".bs130SystemBlock").length,9,"all system groups are prepared");
