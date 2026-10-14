@@ -69,7 +69,7 @@ function fieldsFor(group,type){
  if(group==="Điện")return /máy biến áp|máy phát|UPS/i.test(type)?["kva","volt","phase"]: /tủ|ATS|tụ|công tơ/i.test(type)?["amperage","volt","phase"]:["power","volt"];
  return ["power","volt"];
 }
-const state={rows:[],loading:false,busy:false,filterGroup:"",filterText:"",filterStatus:"",editing:null,request:0};
+const state={rows:[],loading:false,busy:false,filterGroup:"",filterText:"",filterStatus:"",editing:null,request:0,openGroups:new Set(["Điện"])};
 const active=()=>typeof currentBuilding!=="undefined"&&currentBuilding?.id===PROJECT&&typeof projectOverviewActive!=="undefined"&&projectOverviewActive;
 const writable=()=>typeof canProjectEdit==="function"&&canProjectEdit();
 const option=(values,selected="",placeholder="Chọn")=>'<option value="">'+safe(placeholder)+'</option>'+values.map(v=>'<option value="'+safe(v)+'"'+(String(v)===String(selected)?" selected":"")+'>'+safe(v)+'</option>').join("");
@@ -79,9 +79,9 @@ function renderShell(){
  const root=$("buildingSystems130");
  if(!root||root.dataset.mounted)return;
  root.dataset.mounted="1";
- root.innerHTML='<div class="bs130Intro"><div><div class="bs130Eyebrow">ESTA · 130 HỒNG HÀ · THỬ NGHIỆM</div><h2>Hồ sơ thiết bị tòa nhà</h2><p>Chọn hệ thống và loại thiết bị, điền các thông số cần thiết một lần để tra cứu lâu dài. Không liên kết lịch bảo trì.</p></div><button id="bs130Add" type="button" class="bs130Primary">＋ Thêm thiết bị</button></div>'+
+ root.innerHTML='<div class="bs130Intro"><div><div class="bs130Eyebrow">ESTA · 130 HỒNG HÀ · THỬ NGHIỆM</div><h2>Hồ sơ thiết bị tòa nhà</h2><p>Danh mục thiết bị đã chuẩn bị sẵn theo từng hệ thống. Chọn Điền thông số để khai báo và lưu. Mục “Chưa khai báo” chỉ là gợi ý, không phải thiết bị đã xác nhận có tại tòa nhà.</p></div><button id="bs130Add" type="button" class="bs130Primary">＋ Loại thiết bị khác</button></div>'+
  '<div class="bs130Metrics"><div><strong id="bs130Count">0</strong><span>Hồ sơ thiết bị</span></div><div><strong id="bs130Groups">0</strong><span>Hệ thống đã khai báo</span></div><div><strong id="bs130Units">0</strong><span>Tổng số thiết bị</span></div></div>'+
- '<div class="bs130Toolbar"><label class="bs130Search"><span>⌕</span><input id="bs130Search" type="search" placeholder="Tìm tên, hãng, mã, vị trí..." aria-label="Tìm thiết bị"></label><select id="bs130FilterGroup" aria-label="Lọc hệ thống">'+option(groups(),"","Tất cả hệ thống")+'</select><select id="bs130FilterStatus" aria-label="Lọc tình trạng">'+option(["Đang sử dụng","Dự phòng","Ngừng sử dụng"],"","Tất cả tình trạng")+'</select><button type="button" id="bs130Reload" class="bs130Light">↻ Làm mới</button></div>'+
+ '<div class="bs130Toolbar"><label class="bs130Search"><span>⌕</span><input id="bs130Search" type="search" placeholder="Tìm tên, hãng, mã, vị trí..." aria-label="Tìm thiết bị"></label><select id="bs130FilterGroup" aria-label="Lọc hệ thống">'+option(groups(),"","Tất cả hệ thống")+'</select><select id="bs130FilterStatus" aria-label="Lọc tình trạng">'+option(["Chưa khai báo","Đang sử dụng","Dự phòng","Ngừng sử dụng"],"","Tất cả trạng thái")+'</select><button type="button" id="bs130Reload" class="bs130Light">↻ Làm mới</button></div>'+
  '<div id="bs130Notice" class="bs130Notice" role="status" aria-live="polite"></div><div id="bs130List" class="bs130List"></div>'+
  '<div id="bs130Overlay" class="bs130Overlay" hidden><div class="bs130Shade" data-bs-close></div><section class="bs130Dialog" role="dialog" aria-modal="true" aria-labelledby="bs130DialogTitle"><div class="bs130DialogHead"><div><small>THÔNG SỐ & HỒ SƠ</small><h3 id="bs130DialogTitle">Thêm thiết bị</h3></div><button type="button" id="bs130Close" class="bs130Close" aria-label="Đóng">×</button></div><form id="bs130Form"><div class="bs130FormBody">'+
  '<div class="bs130FormGrid"><label>Hệ thống <b>*</b><select name="system_group" id="bs130Group" required></select></label><label>Loại thiết bị <b>*</b><select name="equipment_type" id="bs130Type" required></select></label></div>'+
@@ -105,7 +105,10 @@ function renderShell(){
  $("bs130Overlay").querySelector("[data-bs-close]").onclick=closeEditor;
  $("bs130Form").onsubmit=saveRow;
  $("bs130List").addEventListener("click",e=>{
-  const btn=e.target.closest("button[data-bs-edit],button[data-bs-delete]");if(!btn||!writable())return;
+  const toggle=e.target.closest("button[data-bs-toggle]");
+  if(toggle){const g=toggle.dataset.bsToggle;if(state.openGroups.has(g))state.openGroups.delete(g);else state.openGroups.add(g);renderList();return}
+  const btn=e.target.closest("button[data-bs-template],button[data-bs-edit],button[data-bs-delete]");if(!btn||!writable())return;
+  if(btn.hasAttribute("data-bs-template")){openTemplate(btn.dataset.bsGroup,btn.dataset.bsTemplate);return}
   const row=state.rows.find(x=>x.id===btn.dataset.bsEdit||x.id===btn.dataset.bsDelete);
   if(!row)return;
   if(btn.hasAttribute("data-bs-edit"))openEditor(row);else deleteRow(row);
@@ -166,6 +169,17 @@ function openEditor(row=null){
  document.body.classList.add("bs130ModalOpen");
  $("bs130Group").focus();
 }
+function openTemplate(group,type){
+ if(!CATALOG[group]?.includes(type)||!writable())return;
+ openEditor();
+ $("bs130Group").value=group;
+ fillTypes(type);
+ $("bs130Type").value=type;
+ fillBrands();
+ fillSpecs();
+ $("bs130DialogTitle").textContent="Điền thông số · "+type;
+ $("bs130Form").elements.namedItem("name").placeholder="VD: "+type+" số 1";
+}
 function closeEditor(){if(state.busy)return;$("bs130Overlay").hidden=true;document.body.classList.remove("bs130ModalOpen");state.editing=null;}
 function takeForm(){
  const form=$("bs130Form"),f=new FormData(form);
@@ -209,25 +223,49 @@ async function deleteRow(row){
  finally{state.busy=false}
 }
 function renderList(){
- if(!$("bs130List"))return;
- const rows=state.rows.filter(x=>(!state.filterGroup||x.system_group===state.filterGroup)&&
- (!state.filterStatus||x.status===state.filterStatus)&&
- (!state.filterText||[x.name,x.equipment_type,x.system_group,x.code,x.brand,x.model,x.location].join(" ").toLocaleLowerCase("vi").includes(state.filterText)));
- $("bs130Count").textContent=String(state.rows.length);
- $("bs130Groups").textContent=String(new Set(state.rows.map(r=>r.system_group)).size);
- $("bs130Units").textContent=String(state.rows.reduce((sum,r)=>sum+(Number(r.quantity)||0),0));
+ const list=$("bs130List");if(!list)return;
+ const all=state.rows;
+ $("bs130Count").textContent=String(all.length);
+ $("bs130Groups").textContent=String(new Set(all.map(r=>r.system_group)).size);
+ $("bs130Units").textContent=String(all.reduce((sum,r)=>sum+(Number(r.quantity)||0),0));
  $("bs130Add").hidden=!writable();
- const root=$("bs130List");
- if(state.loading){root.innerHTML='<div class="bs130Empty">Đang tải danh mục thiết bị...</div>';return}
- if(!rows.length){root.innerHTML='<div class="bs130Empty"><b>'+(state.rows.length?"Không tìm thấy thiết bị phù hợp":"Chưa có hồ sơ thiết bị")+'</b><p>'+(state.rows.length?"Thử thay đổi bộ lọc.":"Bấm “Thêm thiết bị” để khai báo thông số đầu tiên của tòa nhà 130 Hồng Hà.")+'</p></div>';return}
- root.innerHTML=rows.map(row=>{
-  const entries=Object.entries(row.specs||{}).filter(([key])=>FIELDS[key]).slice(0,5);
-  const statusCls=row.status==="Ngừng sử dụng"?"stopped":row.status==="Dự phòng"?"standby":"working";
-  return '<article class="bs130Card"><div class="bs130CardTop"><div><small>'+safe(row.system_group)+'</small><h3>'+safe(row.name||row.equipment_type)+'</h3><p>'+safe(row.equipment_type)+(row.code?' · '+safe(row.code):'')+'</p></div><span class="bs130Status '+statusCls+'">'+safe(row.status||"Chưa xác định")+'</span></div>'+
-  '<div class="bs130Info"><div><span>Hãng / Model</span><b>'+safe([row.brand,row.model].filter(Boolean).join(" · ")||"Chưa khai báo")+'</b></div><div><span>Vị trí</span><b>'+safe(row.location||"Chưa khai báo")+'</b></div><div><span>Số lượng</span><b>'+safe(row.quantity||1)+' thiết bị</b></div></div>'+
-  (entries.length?'<div class="bs130Specs">'+entries.map(([key,v])=>'<span>'+safe(FIELDS[key][0])+': <b>'+safe(v)+' '+safe(FIELDS[key][1])+'</b></span>').join("")+'</div>':'')+
-  '<div class="bs130CardFoot"><small>'+ (row.install_year?'Lắp đặt '+safe(row.install_year):"")+'</small>'+(writable()?'<div><button type="button" data-bs-edit="'+safe(row.id)+'">Sửa</button><button type="button" class="bs130Danger" data-bs-delete="'+safe(row.id)+'">Xóa</button></div>':'')+'</div></article>';
- }).join("");
+ if(state.loading){list.innerHTML='<div class="bs130Empty">Đang tải hồ sơ đã lưu...</div>';return}
+ const search=state.filterText, status=state.filterStatus;
+ const matches=row=>[row.name,row.equipment_type,row.system_group,row.code,row.brand,row.model,row.location].join(" ").toLocaleLowerCase("vi").includes(search);
+ const groupHtml=[];
+ for(const group of groups()){
+  if(state.filterGroup&&state.filterGroup!==group)continue;
+  const sections=[];
+  const groupRows=all.filter(row=>row.system_group===group);
+  for(const type of CATALOG[group]){
+   const saved=groupRows.filter(row=>row.equipment_type===type);
+   const typeMatch=(group+" "+type).toLocaleLowerCase("vi").includes(search);
+   const matchedRows=search&&!typeMatch?saved.filter(matches):saved;
+   if(search&&!typeMatch&&!matchedRows.length)continue;
+   if(status==="Chưa khai báo"&&saved.length)continue;
+   if(status&&status!=="Chưa khai báo"&&!matchedRows.some(row=>row.status===status))continue;
+   const visibleRows=status&&status!=="Chưa khai báo"?matchedRows.filter(row=>row.status===status):matchedRows;
+   const saveCount=saved.length;
+   const actions=writable()?'<button type="button" class="bs130Fill" data-bs-group="'+safe(group)+'" data-bs-template="'+safe(type)+'">'+(saveCount?"＋ Thêm cùng loại":"✎ Điền thông số")+'</button>':"";
+   const profiles=visibleRows.map(row=>{
+    const entries=Object.entries(row.specs||{}).filter(([key])=>FIELDS[key]).slice(0,6);
+    const statusCls=row.status==="Ngừng sử dụng"?"stopped":row.status==="Dự phòng"?"standby":"working";
+    return '<article class="bs130Profile"><div class="bs130ProfileHead"><div><h4>'+safe(row.name||row.equipment_type)+'</h4><small>'+safe([row.code,row.brand,row.model].filter(Boolean).join(" · ")||"Chưa nhập mã / hãng / model")+'</small></div><span class="bs130Status '+statusCls+'">'+safe(row.status||"Đang sử dụng")+'</span></div>'+
+    '<div class="bs130ProfileSpecs"><span><b>Vị trí:</b> '+safe(row.location||"—")+'</span><span><b>Số lượng:</b> '+safe(row.quantity||1)+'</span>'+
+    entries.map(([key,v])=>'<span><b>'+safe(FIELDS[key][0])+':</b> '+safe(v)+' '+safe(FIELDS[key][1])+'</span>').join("")+'</div>'+
+    (writable()?'<div class="bs130ProfileActions"><button type="button" data-bs-edit="'+safe(row.id)+'">Sửa</button><button type="button" class="bs130Danger" data-bs-delete="'+safe(row.id)+'">Xóa</button></div>':'')+'</article>';
+   }).join("");
+   const badge=saveCount?'<span class="bs130TemplateStatus saved">Đã khai báo · '+saveCount+'</span>':'<span class="bs130TemplateStatus missing">Chưa khai báo</span>';
+   sections.push('<div class="bs130Template"><div class="bs130TemplateLine"><div class="bs130TemplateTitle"><strong>'+safe(type)+'</strong>'+badge+'</div>'+actions+'</div>'+profiles+'</div>');
+  }
+  if(!sections.length)continue;
+  const expanded=Boolean(search||status||state.filterGroup||state.openGroups.has(group));
+  const declaredTypes=CATALOG[group].filter(type=>groupRows.some(r=>r.equipment_type===type)).length;
+  groupHtml.push('<section class="bs130SystemBlock"><button type="button" class="bs130SystemHead" data-bs-toggle="'+safe(group)+'" aria-expanded="'+expanded+'"><span><strong>'+safe(group)+'</strong><small>'+declaredTypes+'/'+CATALOG[group].length+' loại đã khai báo</small></span><span class="bs130Caret">'+(expanded?"−":"＋")+'</span></button>'+
+   (expanded?'<div class="bs130SystemItems">'+sections.join("")+'</div>':'')+'</section>');
+ }
+ if(!groupHtml.length){list.innerHTML='<div class="bs130Empty"><b>Không có mục phù hợp</b><p>Thử thay đổi từ khóa hoặc bộ lọc.</p></div>';return}
+ list.innerHTML='<div class="bs130CatalogIntro"><b>Danh mục khai báo sẵn</b><span>Chỉ lưu khi bạn nhập và nhấn Lưu · Các dòng chưa khai báo không được tính là thiết bị hiện hữu</span></div>'+groupHtml.join("");
 }
 async function loadRows(){
  if(!active()||!$("buildingSystems130"))return;
