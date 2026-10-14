@@ -144,6 +144,7 @@
     selected.clear();
     selectedTasks = [];
     draftVersion++;
+    byId("cc130Next").textContent="Tiếp tục · Xem và chỉnh sửa";
     byId("cc130Month").value = isoToday().slice(0,7);
     byId("cc130Modal").querySelector('input[name="cc130Mode"][value="month"]').checked = true;
     renderList();
