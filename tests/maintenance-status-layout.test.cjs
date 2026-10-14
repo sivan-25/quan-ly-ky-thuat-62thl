@@ -49,7 +49,7 @@ function render(viewMode){
   scopeEvents:events=>events,getYearSchedule:()=>data,
   renderAlternative:()=>{},status:o=>states.find(s=>s[0]===o.event.status).slice(2).concat(states.find(s=>s[0]===o.event.status)[1]),
   stateKey:()=>"",canWrite:()=>true,esc:escape,pad:n=>String(n).padStart(2,"0"),
-  interval:()=>3,cycleLabel:()=> "3 tháng",fmt:v=>v||"—",dateOf:o=>o.scheduled,
+  interval:()=>3,cycleLabel:()=> "3 tháng",fmt:v=>/^\d{4}-\d{2}-\d{2}$/.test(v)?v.slice(8,10)+"/"+v.slice(5,7)+"/"+v.slice(0,4):(v||"—"),dateOf:o=>o.scheduled,
   personLabel:v=>v,lastCompleted:()=>"2026-09-01",nextCardDate:()=>"2027-01-01",
   maintenanceEvidenceHtml:(e,key)=>e.image_paths.length?'<div class="m130Evidence" data-evidence="'+escape(key)+'"></div>':"",
   hydrateMaintenanceEvidence:()=>{hydrationCount++;}
@@ -61,7 +61,9 @@ assert.equal(d.querySelectorAll(".m130ServiceCard").length,4);
 for(const [status,key,label] of states){
  const card=d.querySelector(".m130ServiceCard.m130State-"+key);
  assert.ok(card,"missing "+status+" card");
- assert.equal(card.querySelector(".m130CardStatus").textContent,label);
+ assert.equal(card.querySelector(".m130CardStatus").textContent,"Tình trạng: "+label);
+ assert.equal(card.querySelectorAll(".m130TopTags > span").length,1,"one combined status pill on card");
+ assert.equal(card.querySelector(".m130StatusLabel").parentElement,card.querySelector(".m130CardStatus"));
  assert.equal((card.textContent.match(/Trạng thái:/g)||[]).length,0,"duplicate status: "+status);
  assert.equal(card.querySelectorAll(".m130CardMeta").length,1);
 }
@@ -73,6 +75,10 @@ render("rows");
 assert.equal(d.querySelectorAll(".m130CompactRow").length,4);
 const completedRow=d.querySelector(".m130CompactRow.m130State-done");
 assert.ok(completedRow.querySelector(":scope > .m130EntryBody"),"description is first section");
+assert.equal(completedRow.querySelector("time.m130Date").getAttribute("datetime"),"2026-10-01");
+assert.equal(completedRow.querySelector("time.m130Date b").textContent,"01/10");
+assert.equal(completedRow.querySelector("time.m130Date small").textContent,"2026");
+assert.equal(completedRow.querySelectorAll(".m130Pills > .m130Badge").length,1);
 assert.ok(completedRow.querySelector(":scope > .m130Evidence"),"evidence on same row, not nested in description");
 assert.ok(completedRow.querySelector(":scope > .m130EntryActions"));
 assert.equal(completedRow.querySelector(".m130EntryBody .m130Evidence"),null);
@@ -88,8 +94,10 @@ assert.match(css,/\.m130CardLower>\.m130Evidence/);
 assert.match(css,/\.m130CompactRow>\.m130Evidence/);
 assert.match(css,/@media\(max-width:640px\)/);
 assert.match(css,/flex-direction:column;gap:4px/);
-assert.match(css,/max-width:calc\(100% - 53px\)/);
+assert.match(css,/max-width:calc\(100% - 75px\)/);
 assert.doesNotMatch(js,/Trạng thái: <b>/,"duplicate status HTML not reintroduced");
+assert.match(css,/#154566/,"navy date background must be present");
+assert.match(css,/\.m130StatusValue/,"status must have a merged-value style");
 assert.equal((css.match(/\.m130State-done/g)||[]).length,1,"clean CSS: only one completed state rule");
 dom.window.close();
 console.log("Maintenance status colors, duplicate label and inline evidence regression tests passed.");

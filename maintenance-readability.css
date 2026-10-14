@@ -236,7 +236,22 @@
 #maintenancePage #maint130 .m130CompactRow .m130Date{
  flex:0 0 60px;min-width:0;width:60px;
 }
-#maintenancePage #maint130 .m130CompactRow .m130Date b{color:#17314b!important}
+/* Date tile: consistent navy contrast across all statuses. */
+#maintenancePage #maint130 .m130CompactRow .m130Date{
+ flex:0 0 76px;min-width:76px;width:76px;min-height:78px;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+ padding:8px 5px;background:linear-gradient(150deg,#154566,#102b48)!important;
+ border:1px solid #0e2e4d!important;border-radius:10px;
+ box-shadow:0 3px 8px rgba(16,43,72,.15);
+}
+#maintenancePage #maint130 .m130CompactRow .m130Date b{
+ color:#fff!important;font-size:21px!important;font-weight:900;
+ line-height:1.1;letter-spacing:-.025em;font-variant-numeric:tabular-nums;
+}
+#maintenancePage #maint130 .m130CompactRow .m130Date small{
+ color:#daecff!important;font-size:12px!important;font-weight:700;
+ letter-spacing:.02em;line-height:1.2;
+}
 @media(min-width:641px) and (max-width:1199px){
  #maintenancePage #maint130 .m130CompactRow>.m130Evidence{
   max-width:170px;justify-content:flex-start;
@@ -254,14 +269,15 @@
   flex-wrap:wrap!important;align-items:flex-start!important;gap:7px!important;
  }
  #maintenancePage #maint130 .m130CompactRow .m130Date{
-  flex:0 0 46px;width:46px;
+  flex:0 0 64px;min-width:64px;width:64px;min-height:70px;padding:7px 3px;
  }
+ #maintenancePage #maint130 .m130CompactRow .m130Date b{font-size:17px!important}
  #maintenancePage #maint130 .m130CompactRow>.m130EntryBody{
-  flex:1 1 calc(100% - 56px)!important;
+  flex:1 1 calc(100% - 75px)!important;
  }
  #maintenancePage #maint130 .m130CompactRow>.m130Evidence{
-  flex:1 1 calc(100% - 53px);min-width:0;max-width:calc(100% - 53px);
-  margin:1px 0 0 53px!important;justify-content:flex-start;
+  flex:1 1 calc(100% - 53px);min-width:0;max-width:calc(100% - 75px);
+  margin:1px 0 0 75px!important;justify-content:flex-start;
  }
  #maintenancePage #maint130 .m130CompactRow>.m130EntryActions{
   flex:1 1 100%;width:100%;justify-content:flex-end;
@@ -296,15 +312,20 @@
 #maintenancePage #maint130 .m130TopTags{
  flex:0 0 auto;gap:5px!important;align-items:center;
 }
-#maintenancePage #maint130 .m130StatusLabel{
- display:inline-flex;align-items:center;justify-content:center;
- min-height:25px;padding:5px 9px;border-radius:999px;
- color:#133b5b!important;background:#dce8f1!important;
- border:1px solid #b8cedf;font-size:10.5px;
- font-weight:800;line-height:1.2;white-space:nowrap;
+/* One colored pill keeps label and value together. */
+#maintenancePage #maint130 :is(.m130Badge,.m130CardStatus){
+ display:inline-flex;align-items:center;justify-content:center;gap:5px;
+ min-height:28px;padding:5px 10px!important;border-radius:999px;
+ font-size:11px;line-height:1.2;white-space:nowrap;
 }
-#maintenancePage #maint130 .m130CompactRow .m130StatusLabel{
- min-height:22px;padding:3px 8px;
+#maintenancePage #maint130 .m130StatusLabel{
+ display:inline;min-height:0;padding:0!important;margin:0;
+ border:0!important;border-radius:0;background:transparent!important;
+ color:inherit!important;font-size:inherit;font-weight:650;
+ line-height:inherit;white-space:nowrap;
+}
+#maintenancePage #maint130 .m130StatusValue{
+ color:inherit;font-weight:900;line-height:inherit;
 }
 #maintenancePage #maint130 .m130CompactRow .m130Sys{
  background:#e2ecf5!important;color:#153d5b!important;

@@ -218,15 +218,15 @@ function renderList(){
   const cycle=interval(i),cycleText=cycleLabel(cycle),location=esc(i.subsystem||"Chưa ghi vị trí");
   if(!isCards){
    return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
-    '<div class="m130Date"><b>'+fmt(e.planned_date||o.scheduled).slice(0,5)+'</b><small>'+year+'</small></div>'+
-    '<div class="m130EntryBody"><div class="m130Pills"><span class="m130Sys">'+esc(i.system_group)+'</span><span class="m130StatusLabel">Tình trạng</span><span class="m130Badge '+st[1]+'">'+st[0]+'</span>'+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+'</div>'+
+    '<time class="m130Date" datetime="'+esc(e.planned_date||o.scheduled)+'" aria-label="Ngày '+esc(fmt(e.planned_date||o.scheduled))+'"><b>'+fmt(e.planned_date||o.scheduled).slice(0,5)+'</b><small>'+String(e.planned_date||o.scheduled).slice(0,4)+'</small></time>'+
+    '<div class="m130EntryBody"><div class="m130Pills"><span class="m130Sys">'+esc(i.system_group)+'</span><span class="m130Badge '+st[1]+'"><span class="m130StatusLabel">Tình trạng:</span> <b class="m130StatusValue">'+st[0]+'</b></span>'+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+'</div>'+
     '<h4>'+esc(i.work_title)+'</h4><p>'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Hạn: '+fmt(dateOf(o))+' · Ưu tiên: '+esc(({normal:"Bình thường",high:"Cao",urgent:"Khẩn cấp"})[i.priority]||"Bình thường")+' · <strong>KT: '+esc(personLabel(e.completed_by||i.assigned_to))+'</strong></p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+
     '<div class="m130EntryActions"><button type="button" data-m130-event="'+key+'">'+(canWrite()?(e.status==="completed"?"Xem KQ":"Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130Edit" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'>Sửa</button></div></article>';
   }
   const done=lastCompleted(o),upcoming=nextCardDate(o);
   const record=esc(e.event_key),editable=canWrite()?"":"disabled";
   return '<article class="m130ServiceCard m130State-'+st[1]+'">'+
-   '<div class="m130CardHead"><div class="m130CardHeading"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><span class="m130CardLocation">'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Lịch kỳ này: '+fmt(e.planned_date||o.scheduled)+'</span></div><div class="m130TopTags"><span class="m130StatusLabel">Tình trạng</span><span class="m130CardStatus '+st[1]+'">'+st[0]+'</span></div></div>'+
+   '<div class="m130CardHead"><div class="m130CardHeading"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><span class="m130CardLocation">'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Lịch kỳ này: '+fmt(e.planned_date||o.scheduled)+'</span></div><div class="m130TopTags"><span class="m130CardStatus '+st[1]+'"><span class="m130StatusLabel">Tình trạng:</span> <b class="m130StatusValue">'+st[0]+'</b></span></div></div>'+
    '<h3>'+esc(i.work_title)+'</h3>'+
    '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+fmt(upcoming)+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
    '<div class="m130CardLower"><div class="m130CardDetails"><div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span></div>'+
