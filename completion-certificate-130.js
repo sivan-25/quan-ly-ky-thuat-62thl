@@ -360,8 +360,11 @@
       return row;
     });
     if(!rows.length)throw new Error("Cần ít nhất một dòng công việc.");
+    const includedTaskIds=new Set([...byId("cc130Rows").querySelectorAll(".cc130-row")]
+      .map(node=>String(node.dataset.sourceTaskId||"")).filter(Boolean));
     const photos=byId("cc130IncludePhotos").checked
-      ? selectedTasks.flatMap((task,taskIndex)=>(
+      ? selectedTasks.filter(task=>includedTaskIds.has(String(task.id)))
+          .flatMap((task,taskIndex)=>(
           Array.isArray(task.imgs)?task.imgs:[]
         ).filter(ref=>typeof ref==="string"&&ref.trim()).map((ref,i)=>({
           path:ref, caption:"CV "+(taskIndex+1)+" · Hình "+(i+1)
