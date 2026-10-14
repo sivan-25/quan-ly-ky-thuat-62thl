@@ -115,6 +115,13 @@ async function main() {
   assert.match(blank.querySelector("[data-cc130-hint]").textContent,/chưa ghi nhận vật tư/i);
   blank.querySelector("[data-cc130-result]").click();
   assert.equal(blank.querySelector('[data-field="content"]').value,"Đèn toilet","missing result preserves content");
+  const removed=d.querySelector('#cc130Rows .cc130-row[data-source-task-id="a"]');
+  removed.querySelector("[data-cc130-remove]").click();
+  assert.equal(d.getElementById("cc130Rows").children.length,1,"selected work removed from draft");
+  d.getElementById("cc130Export").click();
+  await new Promise(r=>setTimeout(r,40));
+  assert.equal(sent.rows.length,1,"removed work must not be printed");
+  assert.equal(sent.photos.length,0,"removed work photos must not be printed");
   w.currentBuilding={id:"127HH",name:"127 Hồng Hà"};
   d.getElementById("headerRole").textContent="KT · 127HH";
   await new Promise(r=>setTimeout(r,0));
