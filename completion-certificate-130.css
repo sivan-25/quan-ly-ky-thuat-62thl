@@ -73,3 +73,22 @@
   .cc130-actions{display:grid;grid-template-columns:1fr}
   .cc130-actions button{min-height:44px}
 }
+
+/* Two task-row shortcuts: extract saved result and recorded material usage. */
+.cc130-row-title{align-items:center;flex-wrap:wrap}
+.cc130-row-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.cc130-row-toolbar button{font:inherit;font-size:12px;font-weight:800;line-height:1.2;white-space:nowrap;border:1px solid #a1bdba;border-radius:8px;padding:7px 10px;background:#edf6f4;color:#155955;cursor:pointer}
+.cc130-row-toolbar button[data-cc130-result]{background:#e9f2fa;border-color:#a7bbd0;color:#204c70}
+.cc130-row-toolbar button[data-cc130-remove]{background:#fff4f0;border-color:#e0b7b0;color:#963f37}
+.cc130-row-toolbar button:hover{filter:brightness(.95)}
+.cc130-row-toolbar button:focus-visible{outline:2px solid #187b85;outline-offset:2px}
+.cc130-row-toolbar button:disabled{opacity:.58;cursor:wait}
+.cc130-auto-child-note{font-size:11px;font-weight:750;color:#527270}
+.cc130-row-hint{grid-column:1/-1;font-weight:650;color:#1d6358;font-size:11px;line-height:1.4}
+.cc130-row-hint:empty{display:none}
+.cc130-row-hint.is-error{color:#ad4434}
+@media(max-width:640px){
+ .cc130-row-toolbar{width:100%;justify-content:flex-start}
+ .cc130-row-toolbar button{min-height:36px}
+ .cc130-row-title{gap:8px}
+}
