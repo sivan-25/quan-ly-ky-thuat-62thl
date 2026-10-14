@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """130 Hồng Hà completion certificate, faithful to the signed paper form."""
 import re
-import os
+import io
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
@@ -13,6 +13,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, LongTable, 
 
 from reporting.pdf_common import ensure_fonts
 from reporting import pdf_common as pdfc
+from reporting.esta_official_logo import OFFICIAL_LOGO_PNG
 
 BLACK = colors.HexColor("#1e2933")
 BORDER = colors.HexColor("#66747d")
@@ -221,11 +222,9 @@ def build_esta_completion_doc(path, payload, photos=None):
     }
 
 
-    # Keep the existing ESTA PWA brand image, not a recreated/AI approximation.
-    logo_path = os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                             "..", "icons", "icon-512.png"))
-    if not os.path.isfile(logo_path):
-        raise FileNotFoundError("Không tìm thấy logo ESTA chính thức trong gói xuất PDF")
+    # Genuine ESTA PWA logo, bundled inside reporting/ for serverless compatibility.
+    # Each PDF gets a new BytesIO stream to keep rendering independent and repeatable.
+    logo_stream = io.BytesIO(OFFICIAL_LOGO_PNG)
 
     _, later = pdfc.make_page_fns(
         "PHIẾU XÁC NHẬN HOÀN THÀNH", "THÁNG " + period_printed, "130 HỒNG HÀ"
@@ -261,7 +260,7 @@ def build_esta_completion_doc(path, payload, photos=None):
     ])
 
     P = para
-    logo = Image(logo_path, width=21*mm, height=21*mm)
+    logo = Image(logo_stream, width=21*mm, height=21*mm)
     company_width = pdfc.CW*0.47
     lefthead = Table(
         [[logo, [
