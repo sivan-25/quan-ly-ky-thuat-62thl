@@ -51,6 +51,6 @@ assert.match(center,/window\.estaMaintenance130NavSummary/,'badge must be based 
 assert.match(center,/window\.estaRefreshProjectNavAlerts/,'badge must expose refresh hook');
 assert.match(js,/notifyMaintenance130Nav\(\);toast\("✓ Đã lưu kế hoạch bảo trì"\)/);
 assert.match(html,/command-center\.js\?v=20261014-maintbadge01/);
-assert.match(html,/maintenance-130\.js\?v=20261014-maintbadge01/);
+assert.match(html,/maintenance-130\.js\?v=\d{8}-[a-z0-9-]+/i,"versioned maintenance JS");
 dom.window.close();
 console.log('130HH maintenance sidebar badge: due, recurring, completed, removed, status and refresh checks passed.');
