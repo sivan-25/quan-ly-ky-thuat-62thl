@@ -358,3 +358,63 @@
   flex:1 1 100%;width:100%;display:flex;flex-direction:row;justify-content:flex-end;
  }
 }
+
+
+/* Follow-up polish: screenshot-like one-row metrics and navy controls. */
+@media(min-width:1101px){
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
+   grid-template-columns:repeat(9,minmax(0,1fr))!important;
+ }
+}
+@media(min-width:901px) and (max-width:1100px){
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
+   grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:640px){
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{
+  background:#f7fafc!important;border-bottom:1px solid #d7e2eb!important;
+  border-radius:9px;padding:10px!important;margin:8px 0 12px!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] #estamSearch{
+ display:none!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters input#m130Search{
+ display:block!important;flex:1 1 195px!important;
+ width:100%!important;min-width:155px!important;max-width:310px!important;
+ min-height:41px!important;background:#fff!important;
+ border:1px solid #cbdce8!important;color:#183c5a!important;
+ border-radius:9px!important;padding:9px 12px!important;
+ font-size:12px!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters .m130Toolbar{
+ flex-wrap:wrap!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters select{
+ color:#193f5e!important;background:#fff!important;border-color:#cfdee8!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch{
+ border:1px solid #cbdce8!important;border-radius:9px!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button{
+ background:#fff!important;color:#244967!important;
+ border-right-color:#dce6ed!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button[aria-pressed="true"]{
+ background:#133d5d!important;color:#fff!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] #m130Create{
+ background:#184d70!important;border-color:#184d70!important;
+}
+@media(max-width:640px){
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{
+  padding:9px!important;margin:7px 0 9px!important;
+ }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters input#m130Search{
+  max-width:none!important;flex:1 1 100%!important;
+ }
+}
