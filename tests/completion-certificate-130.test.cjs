@@ -88,7 +88,7 @@ async function main() {
   assert.equal(d.getElementById("cc130Next").disabled,false);
   d.getElementById("cc130Next").click();
   assert.equal(d.getElementById("cc130Rows").children.length,2,"monthly mode must include all finished September tasks");
-  const blank=d.querySelectorAll("#cc130Rows .cc130-row")[1];
+  const blank=d.querySelector('#cc130Rows .cc130-row[data-source-task-id="b"]');
   blank.querySelector("[data-cc130-auto]").click();
   await new Promise(r=>setTimeout(r,20));
   assert.equal(blank.querySelector('[data-field="material"]').value,"","no linked material never invents quantity");
