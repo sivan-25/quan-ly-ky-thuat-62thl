@@ -132,6 +132,28 @@
     });
     syncGroupedRows();
   };
+  const ensure130MoreFilters=()=>{
+    const toolbar=$("maint130")?.querySelector(".m130Toolbar");
+    if(!toolbar||$("estam130Filters"))return;
+    const panel=document.createElement("details");
+    panel.id="estam130Filters";
+    panel.className="estam130Filters";
+    panel.innerHTML='<summary title="Bộ lọc bổ sung" aria-label="Bộ lọc bổ sung"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg></summary><div class="estam130ExtraFilters"></div>';
+    toolbar.appendChild(panel);
+    const content=panel.querySelector(".estam130ExtraFilters");
+    ["m130State","m130PriorityFilter","m130TypeFilter","m130TechnicianFilter","m130SampleFilter"].forEach(id=>{
+      const element=$(id);
+      if(element)content.appendChild(element);
+    });
+    const timeline=document.createElement("button");
+    timeline.type="button";
+    timeline.className="estam130TimelineAction";
+    timeline.textContent="Xem Timeline";
+    timeline.onclick=()=>{panel.open=false;setView("timeline");};
+    content.appendChild(timeline);
+    const legacy=$("m130Legacy");
+    if(legacy)content.appendChild(legacy);
+  };
   shell.addEventListener("click",event=>{
     const groupButton=event.target.closest("[data-estam130-group]");
     if(!groupButton||mode!=="130")return;
@@ -184,7 +206,8 @@
   function refreshHeader(){
     if(!active())return;
     const label=pad(selectedMonth())+"/"+selectedYear();
-    if($("estamMonth").textContent!==label)$("estamMonth").textContent=label;
+    const monthLabel=mode==="130"?"Tháng "+label:label;
+    if($("estamMonth").textContent!==monthLabel)$("estamMonth").textContent=monthLabel;
     if(mode==="130"){
       const stats=$("m130Stats");
       if(!stats)return;
@@ -255,7 +278,7 @@
       const filters=mode==="130"?$("maint130")?.querySelector(".m130Toolbar"):mode==="68"?$("maint68")?.querySelector(".ma68Filters"):page.querySelector(".maintenanceBoard .inventoryToolbarActions");
       move(stats,$("estamStats"));move(filters,$("estamNativeFilters"));
       const actions=$("estamNativeActions");
-      if(mode==="130"){move($("m130Create"),actions);move($("m130Legacy"),actions);originalPress('[data-m130-layout="list"]');originalPress('[data-m130-view="rows"]');}
+      if(mode==="130"){move($("m130Create"),actions);ensure130MoreFilters();originalPress('[data-m130-layout="list"]');originalPress('[data-m130-view="rows"]');}
       else if(mode==="standard")move($("addMaintenanceAsset"),actions);
       const pdf=mode==="130"?$("m130Pdf"):mode==="68"?$("ma68Pdf"):$("maintenanceExportPdf");
       const topBtn=$("estamHeaderPdf");

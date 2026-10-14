@@ -1,420 +1,383 @@
-/* ESTA 130 HH · Month & KPI visual refresh (presentation only).
-   Scoped to the selected maintenance project; no changes to other projects. */
+/* ESTA | Bảo trì 130 Hồng Hà — bố cục bám sát hình mẫu, navy / xanh đen.
+   Chỉ áp dụng trên 130 HH; các dự án khác giữ nguyên. */
+#maintenancePage.maint130-mode{
+ --m130-ink:#163854;
+ --m130-navy:#173e5c;
+ --m130-blue:#225e89;
+ --m130-surface:#f5efe4;
+ --m130-white:#fffaf2;
+ color:var(--m130-ink);
+ background:#f5f0e7!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"]{padding-top:10px}
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
-  display:grid!important;
-  grid-template-columns:minmax(218px,238px) minmax(0,1fr)!important;
-  align-items:stretch!important;gap:11px!important;
-  min-height:0;padding:11px!important;
-  background:#f2f2ec!important;border:1px solid #e3e7e6;
-  border-radius:16px!important;
+ display:grid!important;grid-template-columns:270px minmax(0,1fr)!important;
+ grid-template-rows:46px minmax(97px,auto)!important;gap:0 31px!important;
+ min-height:157px!important;padding:20px 5px 13px!important;margin:0!important;
+ background:transparent!important;border:0!important;border-top:2px solid #4f7996!important;
+ border-radius:0!important;box-shadow:none!important;align-items:stretch!important;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{
-  position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) 36px;
-  align-items:end;gap:6px;width:100%;min-height:108px;
-  padding:39px 10px 11px;background:#fff;
-  border:1px solid #dce5eb;border-radius:13px;
-  box-shadow:0 2px 8px rgba(25,52,77,.045);
+ grid-area:1/1/2/2!important;max-width:235px!important;width:100%!important;
+ display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px!important;
+ min-height:0!important;padding:0!important;gap:6px!important;
+ background:none!important;border:0!important;border-radius:0!important;
+ box-shadow:none!important;align-items:center!important;
 }
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav::before{
-  content:"KẾ HOẠCH THÁNG";position:absolute;top:15px;left:15px;
-  color:#667d91;font-size:10px;font-weight:850;line-height:1;
-  letter-spacing:.075em;pointer-events:none;
-}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav::before{content:none!important;display:none!important}
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav button{
-  min-width:0;min-height:45px;height:45px;margin:0;
-  border:1px solid #dce6ed;border-radius:9px;
-  background:#f7fafc;color:#173e61;
-  box-shadow:none;font-size:15px;transition:background .16s,border-color .16s;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav button:hover{
-  background:#e9f2fa;border-color:#a9c4d9;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav button:focus-visible{
-  outline:3px solid #569fce;outline-offset:2px;
+ display:flex!important;align-items:center;justify-content:center;
+ width:100%;height:42px!important;min-height:42px!important;
+ padding:0!important;margin:0!important;border:1px solid #cbd8df!important;
+ border-radius:10px!important;background:#fffaf2!important;
+ color:#143a58!important;box-shadow:none!important;font-weight:800!important;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav #estamMonth{
-  background:#f0f5fa;border-color:#cddde8;
-  color:#143b60;font-size:19px!important;letter-spacing:-.03em;
-  font-weight:900;font-variant-numeric:tabular-nums;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+ color:#183b59!important;font-size:16px!important;letter-spacing:-.02em;
+ white-space:nowrap;font-weight:850!important;
 }
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats{
-  min-width:0;display:flex;align-items:stretch;
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav button:is(:hover,:focus-visible){
+ border-color:#3174a4!important;background:#e9f3fa!important;
 }
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Stats{
-  width:100%;margin:0!important;display:grid!important;
-  grid-template-columns:repeat(6,minmax(0,1fr))!important;
-  align-items:stretch;gap:8px!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi{
-  --kpi-accent:#254b71;--kpi-tint:#edf3fa;
-  position:relative;display:flex!important;flex-direction:column!important;
-  justify-content:center!important;align-items:flex-start!important;
-  gap:3px!important;min-width:0;min-height:108px!important;
-  margin:0!important;padding:12px 11px 11px 13px!important;
-  border:1px solid #e2e8ec!important;border-left:3px solid var(--kpi-accent)!important;
-  border-radius:12px!important;background:#fff!important;
-  box-shadow:0 2px 8px rgba(25,52,77,.04)!important;
-  transition:box-shadow .16s ease;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi:hover{
-  box-shadow:0 3px 12px rgba(25,52,77,.09)!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi::after{content:none!important}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi.late{
-  --kpi-accent:#c62946;--kpi-tint:#fff0f2;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi.today{
-  --kpi-accent:#176bc2;--kpi-tint:#eaf3ff;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi.week{
-  --kpi-accent:#128253;--kpi-tint:#eaf8f0;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi.review{
-  --kpi-accent:#9b6b17;--kpi-tint:#fcf4e6;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi.done{
-  --kpi-accent:#356ea8;--kpi-tint:#eff5fc;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi > b{
-  color:var(--kpi-accent)!important;font-size:29px!important;
-  line-height:1.1!important;font-weight:900!important;
-  letter-spacing:-.045em;font-variant-numeric:tabular-nums;
-  padding-right:31px;max-width:100%;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi > span{
-  color:#193854!important;font-size:12px!important;
-  font-weight:850!important;line-height:1.2!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi .estamKpiDetail{
-  display:block;max-width:100%;margin-top:2px;
-  color:#61758b;font-size:10px;font-weight:550;line-height:1.3;
-  overflow-wrap:anywhere;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi .estamKpiIcon{
-  display:flex;align-items:center;justify-content:center;
-  position:absolute;right:9px;top:9px;width:29px;height:29px;
-  border-radius:9px;background:var(--kpi-tint);color:var(--kpi-accent);
-  font-style:normal;pointer-events:none;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamKpiIcon svg{
-  width:17px;height:17px;stroke-width:1.9;
-}
-@media(max-width:1400px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
-   grid-template-columns:1fr!important;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{
-   min-height:0;max-width:100%;padding:8px 10px 8px 158px;
-   grid-template-columns:36px minmax(108px,176px) 36px;align-items:center;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav::before{
-   top:50%;transform:translateY(-50%);left:17px;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi{
-   min-height:100px!important;
- }
-}
-@media(max-width:980px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Stats{
-   grid-template-columns:repeat(3,minmax(0,1fr))!important;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{
-   grid-template-columns:36px minmax(108px,1fr) 36px;
- }
-}
-@media(max-width:640px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
-   padding:8px!important;gap:8px!important;border-radius:12px!important;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{
-   padding:32px 8px 8px;min-height:85px;
-   grid-template-columns:37px minmax(0,1fr) 37px;gap:6px;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav::before{
-   transform:none;top:12px;left:12px;font-size:9px;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav button{
-   min-height:40px;height:40px;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav #estamMonth{font-size:17px!important}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Stats{
-   grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi{
-   min-height:100px!important;padding:11px 10px!important;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi > b{font-size:27px!important}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi > span{font-size:12px!important}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi .estamKpiDetail{font-size:10px}
-}
-@media(max-width:360px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi .estamKpiIcon{
-   width:26px;height:26px;right:7px;top:8px;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats .m130Kpi > b{font-size:25px!important}
-}
-
-
-/* ESTA · 130HH maintenance · condensed executive view, navy/blue-black palette.
-   Project-scoped overrides: other maintenance projects retain their current UI. */
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
-  grid-template-columns:minmax(230px,270px) minmax(0,1fr)!important;
-  grid-template-rows:auto 1fr;column-gap:20px!important;row-gap:2px!important;
-  align-items:stretch!important;background:#eef3f6!important;
-  border:1px solid #d3e1e9!important;border-top:2px solid #23668d!important;
-  padding:15px 19px!important;border-radius:15px!important;
-  box-shadow:0 4px 13px rgba(17,48,74,.045);
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{
-  grid-area:1/1/2/2;min-height:0!important;
-  padding:0!important;border:0!important;border-radius:0!important;
-  background:transparent!important;box-shadow:none!important;
-  display:grid!important;grid-template-columns:41px minmax(0,1fr) 41px;
-  align-items:center!important;gap:6px!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav::before{display:none!important}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav button{
-  height:40px;min-height:40px;border-radius:9px;color:#193d5b;
-  border:1px solid #c8d7e2;background:#fff;box-shadow:none;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav #estamMonth{
-  background:#f7fafc!important;font-size:16px!important;
-  letter-spacing:-.02em;color:#173c5e!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats{display:none!important}
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead{
-  grid-area:2/1/3/2;display:flex;align-items:center;gap:9px;min-width:0;
-  padding-top:9px;color:#213e58;
+ grid-area:2/1/3/2!important;display:flex!important;align-items:center!important;
+ justify-content:flex-start!important;gap:12px!important;min-width:0;padding:0!important;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead strong{
-  font-size:clamp(58px,6vw,85px);line-height:.95;font-weight:900;
-  color:#143754;letter-spacing:-.09em;font-variant-numeric:tabular-nums;
+ font-size:clamp(70px,7.5vw,94px)!important;line-height:.94!important;
+ font-weight:950!important;letter-spacing:-.085em;color:#133953!important;
+ font-variant-numeric:tabular-nums;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead span{
-  font-size:12px;line-height:1.35;color:#526e83;font-weight:720;
+ max-width:108px;font-size:12px!important;font-weight:700!important;
+ line-height:1.45!important;color:#45617a!important;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Overview{
-  grid-area:1/2/3/3;display:flex;flex-direction:column;justify-content:center;
-  min-width:0;gap:12px;padding:9px 0;
+ grid-area:1/2/3/3!important;display:flex;flex-direction:column;
+ justify-content:flex-end!important;gap:12px!important;padding:29px 0 5px!important;
+ min-width:0;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Progress{
-  width:100%;height:18px;display:flex;overflow:hidden;gap:3px;
-  border-radius:5px;background:#dbe6ed;
+ display:flex;gap:3px;width:100%;height:20px!important;min-height:20px;
+ overflow:hidden;border-radius:4px;background:#e2e7e8!important;
 }
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130BarSegment{
-  min-width:3px;border-radius:3px;
-}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130BarSegment{min-width:2px;border-radius:4px}
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130BarEmpty{
-  flex:1;text-align:center;font-size:10px;color:#58748a;line-height:18px;
+ display:flex;align-items:center;justify-content:center;flex:1;color:#587286;font-size:11px;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
-  display:grid;grid-template-columns:repeat(8,minmax(0,1fr));
-  min-width:0;align-items:stretch;gap:4px;
+ display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr))!important;
+ align-items:stretch!important;gap:3px!important;min-width:0;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric,
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime{
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
-  min-width:0;min-height:49px;padding:5px 5px 4px;
-  border:1px solid transparent;border-bottom:2px solid transparent;
-  background:transparent;color:#23425e;text-align:left;border-radius:6px;
+ display:flex!important;flex-direction:column!important;justify-content:flex-start!important;
+ align-items:flex-start!important;gap:1px!important;
+ min-height:53px!important;min-width:0;padding:4px 4px 5px!important;margin:0!important;
+ border:0!important;border-radius:3px!important;background:transparent!important;
+ box-shadow:none!important;text-align:left!important;color:#23435b!important;
 }
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric{
-  cursor:pointer;transition:background .15s ease,border-color .15s ease;
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric{cursor:pointer}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[aria-pressed="true"]{
+ background:transparent!important;border-bottom:2px solid #237aa3!important;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric:hover{
-  background:#dfeaf2;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[aria-pressed="true"]{
-  border-bottom-color:#21648e;background:#dceaf3;
+ background:#dfeaf1!important;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric:focus-visible{
-  outline:2px solid #1777b6;outline-offset:1px;
+ outline:2px solid #227aaa!important;outline-offset:1px!important;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric b,
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime b{
-  color:#173954;font-size:22px;font-weight:900;line-height:1.1;
-  font-variant-numeric:tabular-nums;
+ color:#173954!important;font-size:25px!important;font-weight:900!important;
+ line-height:1.1!important;font-variant-numeric:tabular-nums!important;
 }
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="late"] b{color:#bd3348}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="today"] b{color:#206eaf}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="week"] b{color:#237f98}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="done"] b{color:#23805f}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="review"] b{color:#9b6a27}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="late"] b{color:#b82e46!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="today"] b{color:#1d75b4!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="week"] b{color:#237e9a!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="done"] b{color:#197952!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric[data-estam130-group="review"] b{color:#946d2e!important}
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric span,
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime span{
-  color:#344f69;line-height:1.22;font-size:10px;font-weight:700;
-  margin-top:3px;overflow-wrap:anywhere;
+ color:#26455e!important;font-size:11px!important;font-weight:700!important;
+ line-height:1.2!important;white-space:normal;overflow-wrap:normal;
 }
 #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime{
-  border-left:1px solid #cbdce7;padding-left:10px;border-radius:0;
+ border-left:1px solid #ccdadf!important;border-radius:0!important;
+ padding-left:13px!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamStats{display:none!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;margin:3px 0 15px!important;padding:5px 2px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamFilterArea{
+ display:flex!important;align-items:center;gap:0!important;flex:1 1 auto!important;
+ min-width:0!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] #estamSearch{display:none!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters{display:flex;min-width:0;width:100%}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters .m130Toolbar{
+ display:flex!important;align-items:center!important;flex-wrap:nowrap!important;
+ gap:11px!important;min-width:0!important;width:100%!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters input#m130Search{
+ display:block!important;flex:0 1 375px!important;width:100%!important;
+ min-width:145px!important;max-width:375px!important;
+ height:44px!important;min-height:44px!important;
+ border:1px solid #cddbdc!important;border-radius:10px!important;
+ background:#fffaf2!important;color:#203e55!important;padding:9px 14px!important;
+ font-size:13px!important;font-weight:500!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters #m130Group{
+ display:block!important;flex:0 1 180px!important;min-width:124px!important;
+ max-width:180px!important;width:180px!important;height:44px!important;
+ padding:8px 27px 8px 12px!important;border-radius:10px!important;
+ background:#fffaf2!important;border:1px solid #cddbdc!important;
+ color:#214561!important;font-size:12px!important;font-weight:750!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Filters{
+ position:relative;flex:0 0 38px;min-width:38px;width:38px;
+ align-self:center;color:#24506d;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Filters summary{
+ list-style:none;display:flex;align-items:center;justify-content:center;
+ width:38px;height:44px;border:1px solid #d0dce4;border-radius:9px;
+ background:#fffaf2;cursor:pointer;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Filters summary::-webkit-details-marker{display:none}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Filters summary svg{width:19px;height:19px}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130ExtraFilters{
+ position:absolute;z-index:2200;top:calc(100% + 6px);right:0;
+ width:min(285px,80vw);padding:11px;border:1px solid #bed2df;
+ border-radius:11px;background:#fff;box-shadow:0 10px 26px rgba(16,48,79,.15);
+ display:grid;gap:8px;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Filters:not([open]) .estam130ExtraFilters{display:none!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130ExtraFilters select,
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130ExtraFilters button{
+ display:block!important;min-width:0!important;max-width:none!important;
+ width:100%!important;min-height:38px!important;
+ border:1px solid #d2dfe9!important;border-radius:8px!important;
+ padding:8px!important;background:#f8fbfe!important;color:#244a67!important;
+ font-size:12px!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch{
+ display:flex!important;overflow:hidden;flex-shrink:0;
+ border:1px solid #cbd9e4!important;border-radius:9px!important;
+ background:#fffaf2!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button{
+ min-height:44px!important;height:44px!important;padding:8px 12px!important;
+ border:0!important;border-right:1px solid #d9e2e9!important;
+ color:#1f405b!important;background:transparent!important;
+ font-size:12px!important;font-weight:800!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button:last-child{border-right:0!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button[aria-pressed="true"]{
+ background:#173d5d!important;color:#fff!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch [data-estam-view="timeline"]{display:none!important}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamActionArea{
+ display:flex;align-items:center;gap:11px!important;flex:0 0 auto!important;
+}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeActions{display:flex;gap:6px}
+#maintenancePage #estaMaintenanceRedesign[data-kind="130"] #m130Create{
+ display:inline-flex!important;min-height:44px!important;height:44px!important;
+ white-space:nowrap;padding:9px 16px!important;border-radius:9px!important;
+ border:1px solid #1b4d70!important;background:#1b4d70!important;
+ color:#fff!important;font-size:12px!important;font-weight:850!important;
 }
 #maintenancePage.maint130-mode #maint130 .m130List.m130RowsMode{
-  display:flex!important;flex-direction:column;gap:12px;
-  background:transparent;
+ display:flex!important;flex-direction:column!important;gap:0!important;
+ min-width:0!important;margin-top:4px!important;background:transparent!important;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkGroup{
-  display:flex;flex-direction:column;min-width:0;
-  border:1px solid #d3e0e9;border-radius:12px;overflow:hidden;
-  background:#fbfdff;
+ display:flex!important;flex-direction:column!important;min-width:0!important;
+ margin:0 0 13px!important;border:1px solid #d9e2e8!important;
+ border-top:2px solid #346784!important;border-radius:13px!important;
+ overflow:hidden!important;background:#fffaf2!important;
+ box-shadow:none!important;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkGroup[hidden]{display:none!important}
 #maintenancePage.maint130-mode #maint130 .estam130WorkHeading{
-  display:flex;align-items:center;gap:11px;min-height:43px;
-  padding:10px 16px;background:#e7f0f6;
-  border-bottom:1px solid #d4e0e9;color:#164064;
+ display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 23px!important;
+ border-bottom:1px solid #d7e2e8!important;background:#e4eef5!important;
+ color:#164461!important;
 }
-#maintenancePage.maint130-mode #maint130 .estam130WorkHeading b{
-  font-size:13px;font-weight:850;
-}
+#maintenancePage.maint130-mode #maint130 .estam130WorkHeading b{font-size:13px!important;font-weight:900!important}
 #maintenancePage.maint130-mode #maint130 .estam130WorkCount{
-  font-size:11px;font-weight:650;color:#426784;
+ color:#48667f!important;font-size:11px!important;font-weight:600!important;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkGroup[data-summary-group="late"] .estam130WorkHeading{
-  background:#fce9ec;color:#a62c43;border-color:#eed2d9;
+ background:#f8e4e5!important;border-color:#e7d2d7!important;color:#af3048!important;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkGroup[data-summary-group="done"] .estam130WorkHeading{
-  background:#e7f6ef;color:#156b48;border-color:#cce7dc;
-}
-#maintenancePage.maint130-mode #maint130 .estam130WorkGroup[data-summary-group="today"] .estam130WorkHeading{
-  background:#e7f1fb;color:#1e64a6;
+ background:#e5f3e9!important;border-color:#c8e0d2!important;color:#1d794e!important;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkItems{
-  display:flex;flex-direction:column;min-width:0;gap:0;
+ display:flex!important;flex-direction:column!important;gap:0!important;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow{
-  display:flex!important;min-width:0;align-items:center!important;
-  margin:0!important;padding:12px 16px!important;
-  border:0!important;border-bottom:1px solid #dde6ee!important;
-  border-left:0!important;border-radius:0!important;
-  background:#fff!important;box-shadow:none!important;
-  gap:14px!important;
+ display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+ gap:17px!important;min-height:110px;margin:0!important;
+ padding:15px 23px!important;border:0!important;border-radius:0!important;
+ border-bottom:1px solid #e4e3dc!important;background:#fffaf2!important;
+ box-shadow:none!important;cursor:pointer;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow:last-child{
-  border-bottom:0!important;
+ border-bottom:0!important;
 }
 #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow:hover{
-  background:#f2f7fc!important;
+ background:#f3f8fb!important;
 }
-#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130EntryBody h4{
-  color:#18334d!important;font-size:14px!important;font-weight:850!important;
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Date{
+ display:flex!important;flex:0 0 62px!important;min-width:62px!important;
+ width:62px!important;min-height:64px!important;height:64px!important;
+ padding:7px 3px!important;border:0!important;border-radius:13px!important;
+ justify-content:center!important;align-items:center!important;gap:1px!important;
+ background:#1c5579!important;box-shadow:none!important;
 }
-#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130EntryBody p{
-  color:#536d83!important;
+#maintenancePage.maint130-mode #maint130 .m130CompactRow.m130State-late .m130Date{background:#b52e43!important}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow.m130State-done .m130Date{background:#26815b!important}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Date b{
+ color:#fff!important;font-size:27px!important;line-height:1.08!important;
+ font-weight:900!important;
 }
-#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130EntryActions button:first-child{
-  background:#143d5d!important;border-color:#143d5d!important;
-  color:#fff!important;border-radius:9px;
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Date small{
+ color:#f8fcff!important;font-size:10px!important;font-weight:800!important;
 }
-#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130EntryActions .m130Edit{
-  background:#edf4f9!important;border:1px solid #bdcfdd!important;
-  color:#194665!important;border-radius:9px;
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryBody{
+ flex:1 1 auto!important;min-width:0!important;align-self:center!important;
 }
-@media(max-width:1450px){
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Pills{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+ gap:7px!important;margin-bottom:3px!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Pills .m130Badge,
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Pills .m130Sys{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ padding:4px 10px!important;min-height:20px!important;border-radius:99px!important;
+ border:1px solid #c3d6e2!important;font-size:10px!important;font-weight:800!important;
+ line-height:1.15!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Pills .m130Badge.late{
+ color:#aa263e!important;background:#fde2e4!important;border-color:#f5cdd4!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Pills .m130Badge.done{
+ color:#1b774c!important;background:#e2f3e8!important;border-color:#c5e3d1!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Pills .m130Sys{
+ background:#f7f8fa!important;color:#28536e!important;
+ border-color:#bad0db!important;min-width:115px!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Cycle{
+ background:transparent!important;color:#556d7c!important;
+ font-size:10px!important;font-weight:650!important;padding:0!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryBody h4{
+ margin:3px 0 3px!important;font-size:14px!important;font-weight:850!important;
+ line-height:1.4!important;color:#193a54!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130ShortMeta{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+ gap:5px 16px!important;margin:3px 0 0!important;color:#52697c!important;
+ font-size:11px!important;line-height:1.45!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:flex-end!important;gap:8px!important;margin-left:auto!important;
+ flex:0 0 auto!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions button:first-child{
+ min-width:119px;min-height:44px!important;padding:9px 13px!important;
+ border:1px solid #1a4a6c!important;border-radius:10px!important;
+ color:#fff!important;background:#1a4a6c!important;font-size:12px!important;
+ font-weight:850!important;white-space:nowrap!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions .m130Edit{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:42px!important;min-width:42px!important;height:44px!important;
+ padding:8px!important;border:1px solid #cbd9de!important;
+ border-radius:10px!important;background:#fffaf2!important;
+ color:#214962!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Edit svg{width:18px;height:18px}
+#maintenancePage.maint130-mode #maint130 .m130EntryActions button:disabled{
+ opacity:.45!important;cursor:not-allowed!important;
+}
+@media(max-width:1180px){
  #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
-  grid-template-columns:235px minmax(0,1fr)!important;
+  grid-template-columns:225px minmax(0,1fr)!important;column-gap:18px!important;
  }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
-  grid-template-columns:repeat(4,minmax(0,1fr));
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime{
-  border-left:0;padding-left:5px;
- }
-}
-@media(max-width:900px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:auto auto auto;gap:7px!important;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{grid-area:1/1/2/2;max-width:280px}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead{grid-area:2/1/3/2;padding:0}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Overview{grid-area:3/1/4/2;padding:3px 0}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead strong{font-size:61px}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
-}
-@media(max-width:640px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
-  padding:11px!important;gap:8px!important;
- }
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{max-width:100%}
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead strong{font-size:53px}
  #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric b,
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime b{font-size:19px}
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime b{font-size:22px!important}
  #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric span,
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime span{font-size:10px}
- #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow{
-  flex-wrap:wrap!important;align-items:flex-start!important;gap:8px!important;padding:11px!important;
- }
- #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130Date{
-  flex:0 0 64px!important;width:64px!important;
- }
- #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130EntryBody{
-  flex:1 1 calc(100% - 74px)!important;min-width:0;
- }
- #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130Evidence{
-  margin-left:0!important;max-width:100%!important;
-  flex:1 1 100%!important;
- }
- #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130EntryActions{
-  flex:1 1 100%;width:100%;display:flex;flex-direction:row;justify-content:flex-end;
- }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime span{font-size:10px!important}
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{flex-wrap:wrap!important}
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamActionArea{margin-left:auto}
 }
-
-
-/* Follow-up polish: screenshot-like one-row metrics and navy controls. */
-@media(min-width:1101px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
-   grid-template-columns:repeat(9,minmax(0,1fr))!important;
+@media(max-width:960px){
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
+  grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto auto!important;
+  row-gap:8px!important;padding:12px 4px!important;
  }
-}
-@media(min-width:901px) and (max-width:1100px){
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{grid-area:1/1/2/2!important}
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead{grid-area:2/1/3/2!important}
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Overview{
+  grid-area:3/1/4/2!important;padding:0!important;
+ }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead strong{font-size:65px!important}
  #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
-   grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
  }
 }
 @media(max-width:640px){
- #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
-   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
+  padding:12px 3px!important;
  }
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{
-  background:#f7fafc!important;border-bottom:1px solid #d7e2eb!important;
-  border-radius:9px;padding:10px!important;margin:8px 0 12px!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] #estamSearch{
- display:none!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters input#m130Search{
- display:block!important;flex:1 1 195px!important;
- width:100%!important;min-width:155px!important;max-width:310px!important;
- min-height:41px!important;background:#fff!important;
- border:1px solid #cbdce8!important;color:#183c5a!important;
- border-radius:9px!important;padding:9px 12px!important;
- font-size:12px!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters .m130Toolbar{
- flex-wrap:wrap!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters select{
- color:#193f5e!important;background:#fff!important;border-color:#cfdee8!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch{
- border:1px solid #cbdce8!important;border-radius:9px!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button{
- background:#fff!important;color:#244967!important;
- border-right-color:#dce6ed!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button[aria-pressed="true"]{
- background:#133d5d!important;color:#fff!important;
-}
-#maintenancePage #estaMaintenanceRedesign[data-kind="130"] #m130Create{
- background:#184d70!important;border-color:#184d70!important;
-}
-@media(max-width:640px){
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead strong{font-size:56px!important}
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
  #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{
-  padding:9px!important;margin:7px 0 9px!important;
+  gap:9px!important;flex-direction:column!important;align-items:stretch!important;
+ }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters .m130Toolbar{
+  flex-wrap:wrap!important;
  }
  #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters input#m130Search{
   max-width:none!important;flex:1 1 100%!important;
+ }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters #m130Group{
+  flex:1 1 auto!important;max-width:none!important;width:auto!important;
+ }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamActionArea{
+  width:100%!important;justify-content:space-between!important;flex-wrap:wrap;
+ }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button{
+  min-height:41px!important;height:41px!important;padding:7px 9px!important;
+ }
+ #maintenancePage #estaMaintenanceRedesign[data-kind="130"] #m130Create{
+  min-height:41px!important;height:41px!important;padding:7px 11px!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .estam130WorkHeading{padding:10px 13px!important}
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow{
+  flex-wrap:wrap!important;padding:12px!important;gap:9px!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Date{
+  flex:0 0 59px!important;min-width:59px!important;width:59px!important;
+  min-height:61px!important;height:61px!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryBody{
+  flex:1 1 calc(100% - 70px)!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .m130CompactRow>.m130Evidence{
+  margin:0!important;flex:1 1 100%!important;max-width:100%!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions{
+  flex:1 1 100%!important;width:100%!important;justify-content:flex-end!important;
  }
 }

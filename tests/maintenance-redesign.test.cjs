@@ -23,7 +23,7 @@ async function fixture(id,internal,extra=""){
   {
     const {w,d,dom}=await fixture("130HH",m130);
     assert.equal(d.querySelector(".estamStats .m130Kpi.estamTotal b").textContent,"20");
-    assert.equal(d.querySelector(".estamMonthNav #estamMonth").textContent,"10/2026");
+    assert.equal(d.querySelector(".estamMonthNav #estamMonth").textContent,"Tháng 10/2026");
     assert.equal(d.querySelectorAll(".estamStats .m130Kpi").length,6,"all six KPIs shown");
     assert.equal(d.querySelectorAll(".estamStats .m130Kpi .estamKpiIcon svg").length,6,"all KPI icons use consistent SVG");
     assert.equal(d.querySelectorAll(".estamStats .m130Kpi .estamKpiDetail").length,6,"all KPI descriptions visible");
@@ -35,6 +35,10 @@ async function fixture(id,internal,extra=""){
     assert.equal(d.querySelector(".estam130Metric.estam130All b").textContent,"20");
     assert.equal(d.querySelector(".m130Kpi.late .estamKpiDetail").textContent,"Cần ưu tiên xử lý");
     assert.ok(d.querySelector("#estamNativeFilters #m130Search"));
+    assert.ok(d.querySelector("#estam130Filters #m130State"),"additional status filter preserved");
+    assert.ok(d.querySelector("#estam130Filters #m130TechnicianFilter"),"technician filter preserved");
+    assert.ok(d.querySelector("#estam130Filters #m130Legacy"),"legacy equipment action preserved");
+    assert.ok(d.querySelector("#estam130Filters .estam130TimelineAction"),"timeline remains available");
     assert.ok(d.querySelector("#estamNativeActions #m130Create"));
     let exported=0,calendar=0,rows=0;
     d.getElementById("m130Pdf").addEventListener("click",()=>exported++);
@@ -46,7 +50,7 @@ async function fixture(id,internal,extra=""){
     d.querySelector('[data-estam-view="rows"]').click();assert.ok(rows>=1,"list view delegates");
     d.querySelector('[data-m130-month="11"]').addEventListener("click",()=>{d.querySelector('[data-m130-month="10"]').classList.remove("sel");d.querySelector('[data-m130-month="11"]').classList.add("sel");});
     d.getElementById("estamNext").click();await wait();
-    assert.equal(d.getElementById("estamMonth").textContent,"11/2026");
+    assert.equal(d.getElementById("estamMonth").textContent,"Tháng 11/2026");
     dom.window.close();
   }
   {
