@@ -63,7 +63,7 @@ class CompletionCertificateTests(unittest.TestCase):
             target=Path(folder)/"esta_logo.pdf"
             build_completion_doc(str(target),payload)
             self.assertGreaterEqual(
-                len(re.findall(rb"/Subtype\\s*/Image\\b",target.read_bytes())),1
+                len(re.findall(rb"/Subtype\s*/Image\b",target.read_bytes())),1
             )
 
     def test_esta_single_page_and_multipage(self):
