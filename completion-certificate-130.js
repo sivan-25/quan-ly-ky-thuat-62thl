@@ -20,7 +20,7 @@
     ? t.performers.map(x=>String(x||"").trim()).filter(Boolean)
     : String(t.a||t.performer||"").split(",").map(x=>x.trim()).filter(Boolean);
   let selected = new Set();
-  let scope = "manual";
+  let scope = "month";
   let selectedTasks = [];
   let busy = false;
   function renderButton() {
@@ -59,8 +59,8 @@
         </header>
         <section id="cc130Choose" class="cc130-step">
           <div class="cc130-modes" role="group" aria-label="Chọn cách lấy công việc">
-            <label><input type="radio" name="cc130Mode" value="manual" checked> Chọn từng công việc</label>
-            <label><input type="radio" name="cc130Mode" value="month"> Tự lấy công việc theo tháng</label>
+            <label><input type="radio" name="cc130Mode" value="month" checked> Auto · công việc hoàn thành theo tháng</label>
+            <label><input type="radio" name="cc130Mode" value="manual"> Chọn thủ công</label>
           </div>
           <div class="cc130-filter"><label>Tháng xác nhận
             <input type="month" id="cc130Month"></label>
@@ -71,19 +71,13 @@
           <div class="cc130-actions"><button type="button" id="cc130Next" class="cc130-primary">Tiếp tục · Xem và chỉnh sửa</button></div>
         </section>
         <section id="cc130Edit" class="cc130-step" hidden>
-          <div class="cc130-paperhead"><div class="cc130-paperbrand"><img src="icons/icon-192.png" alt="Logo ESTA chính thức" class="cc130-preview-logo"><div><small>ESTA · PHIẾU KỸ THUẬT</small><b>Kiểm tra nội dung trước khi xuất</b></div></div><span>130 HỒNG HÀ · A4</span></div>
-          <fieldset class="cc130-style-chooser" aria-label="Mẫu phiếu khi xuất PDF">
-            <legend>Mẫu PDF</legend>
-            <label><input type="radio" name="cc130Style" value="esta" checked><span><strong>Chuẩn ESTA</strong><small>Nền kem, tím đậm và điểm nhấn đồng · mẫu thử</small></span></label>
-            <label><input type="radio" name="cc130Style" value="paper"><span><strong>Mẫu giấy cũ</strong><small>Giữ bố cục phiếu truyền thống</small></span></label>
-          </fieldset>
+          <div class="cc130-paperhead"><div><small>PHIẾU XÁC NHẬN · 130 HỒNG HÀ</small><b>Kiểm tra nội dung trước khi xuất</b></div><span>A4 · CHUẨN ESTA</span></div>
           <label class="cc130-photo-toggle"><input id="cc130IncludePhotos" type="checkbox" checked>
-            <span><strong>Kèm hình ảnh công việc</strong><small id="cc130PhotoSummary">Ảnh từ các công việc đã chọn · 2 ảnh / dòng A4 · không cắt ảnh</small></span></label>
+            <span><strong>Kèm ảnh · 2 ảnh/dòng A4</strong> <small id="cc130PhotoSummary"></small></span></label>
           <div class="cc130-fields">
             <label>Tên đơn vị<input id="cc130Company" maxlength="120"></label>
             <label>Bộ phận<input id="cc130Department" maxlength="120"></label>
             <label>Ngày lập phiếu<input id="cc130IssuedDate" type="date"></label>
-            <label>Nhân viên thực hiện<input id="cc130Staff" maxlength="280"></label>
             <label class="wide">Nội dung công việc cần sửa chữa<textarea id="cc130Description" maxlength="1000" rows="2"></textarea></label>
           </div>
           <h3>Danh sách công việc và vật tư thay thế</h3>
@@ -141,13 +135,11 @@
   function open() {
     if (!onProject()) return;
     modal();
-    scope = "manual";
+    scope = "month";
     selected.clear();
     selectedTasks = [];
     byId("cc130Month").value = isoToday().slice(0,7);
-    const esta = byId("cc130Modal").querySelector('input[name="cc130Style"][value="esta"]');
-    if (esta) esta.checked=true;
-    byId("cc130Modal").querySelector('input[value="manual"]').checked = true;
+    byId("cc130Modal").querySelector('input[name="cc130Mode"][value="month"]').checked = true;
     renderList();
     showStep("choose");
     byId("cc130Modal").classList.add("is-open");
@@ -197,13 +189,12 @@
     byId("cc130Company").value = "BQLTN LE HOLDING";
     byId("cc130Department").value = "BỘ PHẬN KỸ THUẬT";
     byId("cc130IssuedDate").value = isoToday();
-    byId("cc130Staff").value = names.join(", ");
     const totalImages=selectedTasks.reduce((sum,t)=>sum+(Array.isArray(t.imgs)?t.imgs.filter(Boolean).length:0),0);
     byId("cc130IncludePhotos").checked=true;
     byId("cc130IncludePhotos").disabled=totalImages===0;
     byId("cc130PhotoSummary").textContent=totalImages
-      ? totalImages+" ảnh từ "+selectedTasks.length+" công việc đã chọn · 2 ảnh / dòng A4"
-      : "Các công việc đã chọn chưa có ảnh; phiếu vẫn xuất bình thường.";
+      ? "("+totalImages+" ảnh)"
+      : "(chưa có ảnh)";
     byId("cc130Participants").value = names.length ? String(names.length) : "";
     const titles = selectedTasks.map(t=>String(t.c||"").trim()).filter(Boolean);
     byId("cc130Description").value = titles.join("; ").slice(0,1000);
@@ -372,10 +363,10 @@
     if(photos.length>60)throw new Error("Phiếu đang có "+photos.length+" ảnh. Vui lòng chọn tối đa 60 ảnh bằng cách giảm số công việc, hoặc tắt kèm ảnh.");
     return {
       report_type:"completion", building_id:TARGET, building:"130 Hồng Hà",
-      certificate_style:byId("cc130Modal").querySelector('input[name="cc130Style"]:checked')?.value||"esta",
+      certificate_style:"esta",
       company:byId("cc130Company").value.trim(), department:byId("cc130Department").value.trim(),
       issued_date:byId("cc130IssuedDate").value, period:byId("cc130Month").value,
-      staff:byId("cc130Staff").value.trim(),
+      staff:"", // Tên kỹ thuật trên bản in luôn để trống, ghi tay.
       repair_description:byId("cc130Description").value.trim(),
       participant_count:byId("cc130Participants").value.trim(),
       completion_statement:byId("cc130Statement").value.trim(),rows,photos
