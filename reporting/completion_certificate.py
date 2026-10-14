@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """130 Hồng Hà completion certificate, faithful to the signed paper form."""
 import re
+import os
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
@@ -8,7 +9,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, LongTable, Table, TableStyle, KeepTogether, BaseDocTemplate, Frame, PageTemplate
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, LongTable, Table, TableStyle, KeepTogether, BaseDocTemplate, Frame, PageTemplate, Image
 
 from reporting.pdf_common import ensure_fonts
 from reporting import pdf_common as pdfc
@@ -190,7 +191,9 @@ def build_esta_completion_doc(path, payload, photos=None):
         "eyebrow": ParagraphStyle("esta_cc_eyebrow", fontName="Mont-Bold",
             fontSize=7.1, leading=10, textColor=pdfc.COPPER, spaceAfter=0),
         "title": ParagraphStyle("esta_cc_title", fontName="Mont-Bold",
-            fontSize=15, leading=20, textColor=pdfc.AUB),
+            fontSize=14.6, leading=20, alignment=TA_CENTER, textColor=pdfc.AUB),
+        "month": ParagraphStyle("esta_cc_month", fontName="Mont-SemiBold",
+            fontSize=9.4, leading=13, alignment=TA_CENTER, textColor=pdfc.STONE),
         "body": ParagraphStyle("esta_cc_body", fontName="Mont",
             fontSize=8.5, leading=12.8, textColor=pdfc.AUB_D),
         "meta_label": ParagraphStyle("esta_cc_meta_label", fontName="Mont-Bold",
@@ -217,59 +220,96 @@ def build_esta_completion_doc(path, payload, photos=None):
             fontSize=8.0, leading=12, alignment=TA_RIGHT, textColor=pdfc.AUB_D),
     }
 
-    first, later = pdfc.make_page_fns(
+
+    # Keep the existing ESTA PWA brand image, not a recreated/AI approximation.
+    logo_path = os.path.normpath(os.path.join(os.path.dirname(__file__),
+                                             "..", "icons", "icon-512.png"))
+    if not os.path.isfile(logo_path):
+        raise FileNotFoundError("Không tìm thấy logo ESTA chính thức trong gói xuất PDF")
+
+    _, later = pdfc.make_page_fns(
         "PHIẾU XÁC NHẬN HOÀN THÀNH", "THÁNG " + period_printed, "130 HỒNG HÀ"
     )
+    def first_page(canvas, document):
+        canvas.saveState()
+        canvas.setFillColor(pdfc.PALE)
+        canvas.rect(0, 0, pdfc.PW, pdfc.PH, stroke=0, fill=1)
+        canvas.setFillColor(pdfc.AUB)
+        canvas.rect(0, pdfc.PH-3*mm, pdfc.PW, 3*mm, stroke=0, fill=1)
+        canvas.setFillColor(pdfc.COPPER)
+        canvas.rect(0, pdfc.PH-4*mm, pdfc.PW, 1*mm, stroke=0, fill=1)
+        canvas.restoreState()
+
     doc = BaseDocTemplate(
         path, pagesize=A4,
         title="ESTA - Phiếu xác nhận hoàn thành công việc - 130 HH",
         author="ESTA Property Management",
         subject="Xác nhận hoàn thành công việc",
         leftMargin=pdfc.MX, rightMargin=pdfc.MX,
-        topMargin=45*mm, bottomMargin=22*mm,
+        topMargin=17*mm, bottomMargin=22*mm,
     )
-    first_frame = Frame(pdfc.MX, 22*mm, pdfc.CW, pdfc.PH - 45*mm - 22*mm,
+    first_frame = Frame(pdfc.MX, 22*mm, pdfc.CW, pdfc.PH-17*mm-22*mm,
                         id="esta_cc_first", leftPadding=0, rightPadding=0,
                         topPadding=0, bottomPadding=0)
-    later_frame = Frame(pdfc.MX, 22*mm, pdfc.CW, pdfc.PH - 18*mm - 22*mm,
+    later_frame = Frame(pdfc.MX, 22*mm, pdfc.CW, pdfc.PH-18*mm-22*mm,
                         id="esta_cc_later", leftPadding=0, rightPadding=0,
                         topPadding=0, bottomPadding=0)
     doc.addPageTemplates([
-        PageTemplate(id="esta_cc_cover", frames=[first_frame], onPage=first,
+        PageTemplate(id="esta_cc_cover", frames=[first_frame], onPage=first_page,
                      autoNextPageTemplate="esta_cc_next"),
         PageTemplate(id="esta_cc_next", frames=[later_frame], onPage=later),
     ])
 
     P = para
-    official = Table([
-        [
+    logo = Image(logo_path, width=21*mm, height=21*mm)
+    company_width = pdfc.CW*0.47
+    lefthead = Table(
+        [[logo, [
             P(company.upper(), styles["official"]),
-            P("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", styles["official"]),
-        ],
-        [
-            P(department.upper(), styles["official_sub"]),
-            P("Độc lập - Tự do - Hạnh phúc", styles["official_sub"]),
-        ]
-    ], colWidths=[pdfc.CW * 0.425, pdfc.CW * 0.575], hAlign="LEFT")
+            Spacer(1, 2*mm),
+            P(department.upper(), styles["official_sub"])
+        ]]],
+        colWidths=[22*mm, company_width-22*mm], hAlign="LEFT"
+    )
+    lefthead.setStyle(TableStyle([
+        ("VALIGN", (0,0),(-1,-1), "MIDDLE"),
+        ("LEFTPADDING", (0,0),(-1,-1), 0),
+        ("RIGHTPADDING", (0,0),(-1,-1), 1),
+        ("TOPPADDING", (0,0),(-1,-1), 0),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 0),
+    ]))
+    national = Table([
+        [P("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", styles["official"])],
+        [P("Độc lập - Tự do - Hạnh phúc", styles["official_sub"])],
+    ], colWidths=[pdfc.CW-company_width])
+    national.setStyle(TableStyle([
+        ("VALIGN", (0,0),(-1,-1), "MIDDLE"),
+        ("LEFTPADDING", (0,0),(-1,-1), 0),
+        ("RIGHTPADDING", (0,0),(-1,-1), 0),
+        ("TOPPADDING", (0,0),(-1,-1), 2),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 2),
+        ("LINEBELOW", (0,1),(0,1),0.8,pdfc.COPPER),
+    ]))
+    official = Table([[lefthead, national]],
+                     colWidths=[company_width, pdfc.CW-company_width], hAlign="LEFT")
     official.setStyle(TableStyle([
-        ("VALIGN", (0,0),(-1,-1),"TOP"),
-        ("TOPPADDING", (0,0),(-1,-1),2),
-        ("BOTTOMPADDING", (0,0),(-1,-1),2),
-        ("LEFTPADDING", (0,0),(-1,-1),2),
-        ("RIGHTPADDING", (0,0),(-1,-1),2),
-        ("LINEBELOW", (1,1),(1,1),0.75,pdfc.COPPER),
+        ("VALIGN", (0,0),(-1,-1), "MIDDLE"),
+        ("LEFTPADDING", (0,0),(-1,-1), 0),
+        ("RIGHTPADDING", (0,0),(-1,-1), 0),
+        ("TOPPADDING", (0,0),(-1,-1), 0),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 0),
     ]))
     day = issued[8:10] if issued_printed != "—" else "......"
     mo = issued[5:7] if issued_printed != "—" else "......"
     yr = issued[:4] if issued_printed != "—" else "......"
     story = [
         official,
-        Spacer(1, 3*mm),
+        Spacer(1, 2*mm),
         P("TP.HCM, ngày %s tháng %s năm %s" % (day,mo,yr), styles["official_date"]),
         Spacer(1, 7*mm),
-        P("KỸ THUẬT VẬN HÀNH  /  XÁC NHẬN CÔNG VIỆC", styles["eyebrow"]),
-        Spacer(1, 3*mm),
         P("PHIẾU XÁC NHẬN HOÀN THÀNH CÔNG VIỆC", styles["title"]),
+        Spacer(1, 1*mm),
+        P("THÁNG " + period_printed, styles["month"]),
         Spacer(1, 2*mm),
     ]
     divider = pdfc.COPPER
@@ -282,23 +322,17 @@ def build_esta_completion_doc(path, payload, photos=None):
         [
             P("DỰ ÁN", styles["meta_label"]),
             P("130 Hồng Hà", styles["meta_value"]),
-            P("THÁNG XÁC NHẬN", styles["meta_label"]),
-            P(period_printed, styles["meta_value"]),
-        ],
-        [
-            P("ĐƠN VỊ", styles["meta_label"]),
-            P(company, styles["meta_value"]),
             P("NGÀY LẬP", styles["meta_label"]),
             P(issued_printed, styles["meta_value"]),
         ],
         [
-            P("BỘ PHẬN", styles["meta_label"]),
-            P(department, styles["meta_value"]),
-            P("SỐ CÔNG VIỆC", styles["meta_label"]),
-            P(str(len(rows)), styles["meta_value"]),
+            P("NHÂN VIÊN THỰC HIỆN", styles["meta_label"]),
+            P(staff, styles["meta_value"]),
+            P("SỐ NGƯỜI", styles["meta_label"]),
+            P(participant, styles["meta_value"]),
         ],
     ]
-    meta = Table(details, colWidths=[24*mm, 65*mm, 27*mm, pdfc.CW-116*mm],
+    meta = Table(details, colWidths=[35*mm, 58*mm, 28*mm, pdfc.CW-121*mm],
                  hAlign="LEFT")
     meta.setStyle(TableStyle([
         ("BACKGROUND", (0,0),(-1,-1), pdfc.CREAM_L),
@@ -315,8 +349,6 @@ def build_esta_completion_doc(path, payload, photos=None):
         Spacer(1, 2.5*mm),
     ])
     about = Table([
-        [P("NHÂN VIÊN THỰC HIỆN", styles["meta_label"])],
-        [P(staff, styles["body"])],
         [P("NỘI DUNG CÔNG VIỆC CẦN SỬA CHỮA", styles["meta_label"])],
         [P(desc, styles["body"])],
     ], colWidths=[pdfc.CW])
@@ -333,13 +365,14 @@ def build_esta_completion_doc(path, payload, photos=None):
         P("02  ·  DANH SÁCH CÔNG VIỆC VÀ VẬT TƯ THAY THẾ", styles["section"]),
         Spacer(1, 2.2*mm),
     ])
-    table_header=["NỘI DUNG CÔNG VIỆC", "VẬT TƯ / THIẾT BỊ", "ĐVT",
+    table_header=["STT", "NỘI DUNG CÔNG VIỆC", "VẬT TƯ / THIẾT BỊ", "ĐVT",
                   "SL", "BẮT ĐẦU", "KẾT THÚC"]
     data=[[P(h,styles["tablehead"]) for h in table_header]]
     def date_fmt(iso):
         return iso[8:10] + "/" + iso[5:7] + "/" + iso[:4] if iso else "—"
-    for row in rows:
+    for i, row in enumerate(rows, 1):
         data.append([
+            P(str(i),styles["tabletext"]),
             P(row["content"],styles["tablebold"]),
             P(row["material"] or "—",styles["tabletext"]),
             P(row["unit"] or "—",styles["tabletext"]),
@@ -347,7 +380,7 @@ def build_esta_completion_doc(path, payload, photos=None):
             P(date_fmt(row["start"]),styles["tabletext"]),
             P(date_fmt(row["end"]),styles["tabletext"]),
         ])
-    cols=[48*mm,46*mm,12*mm,12*mm,28*mm,28*mm]
+    cols=[10*mm,41*mm,43*mm,11*mm,11*mm,29*mm,29*mm]
     table=LongTable(data,colWidths=cols,repeatRows=1,
                     hAlign="LEFT",splitByRow=1,splitInRow=1)
     tstyles=[
@@ -367,8 +400,10 @@ def build_esta_completion_doc(path, payload, photos=None):
         tstyles.append(("BACKGROUND",(0,r),(-1,r),pdfc.PALE if r%2 else pdfc.CREAM_L))
     table.setStyle(TableStyle(tstyles))
     story.extend([table, Spacer(1, 6*mm)])
+    append_completion_photos(story, photos, width=pdfc.CW, esta=True,
+                             section_style=styles["section"])
     story.extend([
-        P("03  ·  KIỂM TRA VÀ XÁC NHẬN HOÀN THÀNH",styles["section"]),
+        P(("04" if photos else "03") + "  ·  BÁO CÁO KIỂM TRA & CÔNG VIỆC THỰC HIỆN", styles["section"]),
         Spacer(1, 2.3*mm),
     ])
     verdict = Table([
@@ -388,9 +423,12 @@ def build_esta_completion_doc(path, payload, photos=None):
     story.extend([verdict,Spacer(1,2.5*mm)])
     disclaimer = ("Đại diện công ty đã kiểm tra tất cả tài sản trong khu vực thuê "
                   "và cam kết không thiệt hại do nhân viên kỹ thuật gây ra.")
-    story.extend([P(disclaimer,styles["note"]),Spacer(1,6*mm)])
-    append_completion_photos(story, photos, width=pdfc.CW, esta=True,
-                             section_style=styles["section"])
+    story.extend([
+        P(("05" if photos else "04") + "  ·  CAM KẾT", styles["section"]),
+        Spacer(1, 2*mm),
+        P(disclaimer,styles["note"]),
+        Spacer(1,6*mm)
+    ])
     signatures=Table([
         [
             P("ĐẠI DIỆN BQLTN", styles["sig"]),
@@ -415,7 +453,7 @@ def append_completion_photos(story, photos, width, esta, section_style):
     pictures = [image for image in (photos or []) if image.get("prepared")]
     if not pictures:
         return
-    heading = ("04  ·  HÌNH ẢNH CÔNG VIỆC THỰC HIỆN"
+    heading = ("03  ·  HÌNH ẢNH CÔNG VIỆC THỰC HIỆN"
                if esta else "Hình ảnh công việc thực hiện:")
     gap = 4*mm
     cell_width = (width-gap)/2
