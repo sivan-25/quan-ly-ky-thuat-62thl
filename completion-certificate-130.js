@@ -71,7 +71,7 @@
           <div class="cc130-actions"><button type="button" id="cc130Next" class="cc130-primary">Tiếp tục · Xem và chỉnh sửa</button></div>
         </section>
         <section id="cc130Edit" class="cc130-step" hidden>
-          <div class="cc130-paperhead"><div><small>ESTA · PHIẾU KỸ THUẬT</small><b>Kiểm tra nội dung trước khi xuất</b></div><span>130 HỒNG HÀ · A4</span></div>
+          <div class="cc130-paperhead"><div class="cc130-paperbrand"><img src="icons/icon-192.png" alt="Logo ESTA chính thức" class="cc130-preview-logo"><div><small>ESTA · PHIẾU KỸ THUẬT</small><b>Kiểm tra nội dung trước khi xuất</b></div></div><span>130 HỒNG HÀ · A4</span></div>
           <fieldset class="cc130-style-chooser" aria-label="Mẫu phiếu khi xuất PDF">
             <legend>Mẫu PDF</legend>
             <label><input type="radio" name="cc130Style" value="esta" checked><span><strong>Chuẩn ESTA</strong><small>Nền kem, tím đậm và điểm nhấn đồng · mẫu thử</small></span></label>
