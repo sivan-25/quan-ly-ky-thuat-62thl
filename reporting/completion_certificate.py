@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """130 Hồng Hà completion certificate, faithful to the signed paper form."""
 import re
-import io
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
@@ -9,11 +8,10 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, LongTable, Table, TableStyle, KeepTogether, BaseDocTemplate, Frame, PageTemplate, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, LongTable, Table, TableStyle, KeepTogether, BaseDocTemplate, Frame, PageTemplate
 
 from reporting.pdf_common import ensure_fonts
 from reporting import pdf_common as pdfc
-from reporting.esta_official_logo import OFFICIAL_LOGO_PNG
 
 BLACK = colors.HexColor("#1e2933")
 BORDER = colors.HexColor("#66747d")
@@ -62,7 +60,7 @@ def validate(data):
 
 
 def build_completion_doc(path, payload, photos=None):
-    style = clean(payload.get("certificate_style") or "paper", 12).lower()
+    style = clean(payload.get("certificate_style") or "esta", 12).lower()
     if style not in ("paper", "esta"):
         raise ValueError("Mẫu phiếu PDF không hợp lệ")
     if style == "esta":
@@ -105,7 +103,7 @@ def build_completion_doc(path, payload, photos=None):
     mm_y,mm_m=period.split("-")
     story.extend([para("PHIẾU XÁC NHẬN HOÀN THÀNH CÔNG VIỆC THÁNG %s/%s"%(mm_m,mm_y),styles["title"]), Spacer(1,8)])
     story.extend([para("Dự án: 130 Hồng Hà", styles["bold"]), Spacer(1,5)])
-    story.extend([para("Nhân viên thực hiện: "+(clean(payload.get("staff"),280) or "................................"), styles["text"]),Spacer(1,12)])
+    story.extend([para("Nhân viên thực hiện: ........................................................", styles["text"]),Spacer(1,12)])
     story.extend([para("Nội dung công việc cần sửa chữa:", styles["bold"]), Spacer(1,2)])
     desc=clean(payload.get("repair_description"),1000) or ".................................................................................................."
     story.extend([para(desc,styles["text"]),Spacer(1,12)])
@@ -183,7 +181,7 @@ def build_esta_completion_doc(path, payload, photos=None):
     issued = clean(payload.get("issued_date"), 10)
     issued_printed = ("%s/%s/%s" % (issued[8:10], issued[5:7], issued[:4])
                       if re.fullmatch(r"\d{4}-\d{2}-\d{2}", issued) else "—")
-    staff = clean(payload.get("staff"), 280) or "—"
+    staff = "................................................"  # Luôn dành chỗ ghi tên kỹ thuật bằng tay
     desc = clean(payload.get("repair_description"), 1000) or "—"
     participant = clean(payload.get("participant_count"), 12) or "—"
     statement = clean(payload.get("completion_statement"), 700) or "Đã hoàn thành các công việc nêu trên."
@@ -222,10 +220,7 @@ def build_esta_completion_doc(path, payload, photos=None):
     }
 
 
-    # Genuine ESTA PWA logo, bundled inside reporting/ for serverless compatibility.
-    # Each PDF gets a new BytesIO stream to keep rendering independent and repeatable.
-    logo_stream = io.BytesIO(OFFICIAL_LOGO_PNG)
-
+    # Logo-free official header: the same ESTA palette with administrative typography.
     _, later = pdfc.make_page_fns(
         "PHIẾU XÁC NHẬN HOÀN THÀNH", "THÁNG " + period_printed, "130 HỒNG HÀ"
     )
@@ -260,22 +255,17 @@ def build_esta_completion_doc(path, payload, photos=None):
     ])
 
     P = para
-    logo = Image(logo_stream, width=21*mm, height=21*mm)
     company_width = pdfc.CW*0.47
-    lefthead = Table(
-        [[logo, [
-            P(company.upper(), styles["official"]),
-            Spacer(1, 2*mm),
-            P(department.upper(), styles["official_sub"])
-        ]]],
-        colWidths=[22*mm, company_width-22*mm], hAlign="LEFT"
-    )
+    lefthead = Table([
+        [P(company.upper(), styles["official"])],
+        [P(department.upper(), styles["official_sub"])],
+    ], colWidths=[company_width], hAlign="LEFT")
     lefthead.setStyle(TableStyle([
         ("VALIGN", (0,0),(-1,-1), "MIDDLE"),
         ("LEFTPADDING", (0,0),(-1,-1), 0),
-        ("RIGHTPADDING", (0,0),(-1,-1), 1),
-        ("TOPPADDING", (0,0),(-1,-1), 0),
-        ("BOTTOMPADDING", (0,0),(-1,-1), 0),
+        ("RIGHTPADDING", (0,0),(-1,-1), 2),
+        ("TOPPADDING", (0,0),(-1,-1), 2),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 2),
     ]))
     national = Table([
         [P("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", styles["official"])],
