@@ -85,5 +85,11 @@ async function fixture(id,internal,extra=""){
   assert.match(scopedCss,/\[data-kind="130"\]/,"KPI redesign scoped to 130HH");
   assert.match(scopedCss,/@media\(max-width:640px\)/,"mobile layout provided");
   assert.match(scopedCss,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,"two-column mobile KPI grid");
+  const layout=fs.readFileSync(path.join(__dirname,"..","maintenance-130-summary.css"),"utf8");
+  assert.match(layout,/grid-template-columns:270px minmax\(0,1fr\)/,"monthly summary matches left-total/right-progress layout");
+  assert.match(layout,/\.estam130WorkItems \.m130CompactRow/,"maintenance rows displayed inside grouped panels");
+  assert.match(layout,/\.m130CompactRow\.m130State-late \.m130Date/,"overdue date tiles have distinct colors");
+  assert.match(layout,/\.estam130ExtraFilters/,"advanced filters remain reachable");
+  assert.match(layout,/\.estamViewSwitch \[data-estam-view="timeline"\]/,"timeline hidden from three-option main toolbar");
   console.log("maintenance redesign smoke tests passed (130 HH / 68 PĐL / standard)");
 })().catch(e=>{console.error(e);process.exitCode=1;});
