@@ -153,8 +153,6 @@ def build_completion_doc(path, payload, photos=None):
         ("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),5),
     ]))
     story.extend([statement,Spacer(1,10)])
-    append_completion_photos(story, photos, width=full, esta=False,
-                             section_style=styles["bold"])
     signatures=Table([[
         para("Đại diện BQLTN",styles["center"]),
         para("Giám sát kỹ thuật",styles["center"]),
@@ -162,6 +160,10 @@ def build_completion_doc(path, payload, photos=None):
     ],[Spacer(1,23*mm),Spacer(1,23*mm),Spacer(1,23*mm)]],colWidths=[full/3]*3)
     signatures.setStyle(TableStyle([("VALIGN",(0,0),(-1,-1),"TOP"),("ALIGN",(0,0),(-1,-1),"CENTER")]))
     story.append(KeepTogether([signatures]))
+    # Visual evidence follows the signature block on the final pages.
+    story.append(Spacer(1,6*mm))
+    append_completion_photos(story, photos, width=full, esta=False,
+                             section_style=styles["bold"])
     def footer(canvas, document):
         canvas.setFont("Mont",7.2)
         canvas.setFillColor(BORDER)
@@ -389,10 +391,8 @@ def build_esta_completion_doc(path, payload, photos=None):
         tstyles.append(("BACKGROUND",(0,r),(-1,r),pdfc.PALE if r%2 else pdfc.CREAM_L))
     table.setStyle(TableStyle(tstyles))
     story.extend([table, Spacer(1, 6*mm)])
-    append_completion_photos(story, photos, width=pdfc.CW, esta=True,
-                             section_style=styles["section"])
     story.extend([
-        P(("04" if photos else "03") + "  ·  BÁO CÁO KIỂM TRA & CÔNG VIỆC THỰC HIỆN", styles["section"]),
+        P("03  ·  BÁO CÁO KIỂM TRA & CÔNG VIỆC THỰC HIỆN", styles["section"]),
         Spacer(1, 2.3*mm),
     ])
     verdict = Table([
@@ -413,7 +413,7 @@ def build_esta_completion_doc(path, payload, photos=None):
     disclaimer = ("Đại diện công ty đã kiểm tra tất cả tài sản trong khu vực thuê "
                   "và cam kết không thiệt hại do nhân viên kỹ thuật gây ra.")
     story.extend([
-        P(("05" if photos else "04") + "  ·  CAM KẾT", styles["section"]),
+        P("04  ·  CAM KẾT", styles["section"]),
         Spacer(1, 2*mm),
         P(disclaimer,styles["note"]),
         Spacer(1,6*mm)
@@ -433,6 +433,10 @@ def build_esta_completion_doc(path, payload, photos=None):
         ("TOPPADDING",(0,0),(-1,-1),6),
     ]))
     story.append(KeepTogether([signatures]))
+    # Evidence images must come after the signature section, not before it.
+    story.append(Spacer(1,6*mm))
+    append_completion_photos(story, photos, width=pdfc.CW, esta=True,
+                             section_style=styles["section"])
     doc.build(story,canvasmaker=pdfc.NumberedCanvas)
     return len(rows)
 
@@ -442,7 +446,7 @@ def append_completion_photos(story, photos, width, esta, section_style):
     pictures = [image for image in (photos or []) if image.get("prepared")]
     if not pictures:
         return
-    heading = ("03  ·  HÌNH ẢNH CÔNG VIỆC THỰC HIỆN"
+    heading = ("05  ·  HÌNH ẢNH CÔNG VIỆC THỰC HIỆN"
                if esta else "Hình ảnh công việc thực hiện:")
     gap = 4*mm
     cell_width = (width-gap)/2
