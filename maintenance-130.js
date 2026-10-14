@@ -52,14 +52,14 @@ function nextCardDate(o){
  if(o.event.status==="completed")return interval(o.item)?addMonths(o.scheduled,interval(o.item)):"";
  return o.event.planned_date||o.scheduled;
 }
-function schedule(y){
+function schedule(y,sourceItems=items,sourceStored=stored){
  const targetYear=Number(y),result=[],known=new Map(),first=new Map();
- for(const e of stored){
+ for(const e of sourceStored){
   known.set(e.event_key,e);
   const prev=first.get(e.item_id);
   if(!prev||String(e.planned_month)<String(prev.planned_month))first.set(e.item_id,e);
  }
- for(const i of items){
+ for(const i of sourceItems){
   if(i.deleted_at)continue;
   const base=first.get(i.id);if(!base)continue;
   const origin=String(base.planned_date||String(base.planned_month).slice(0,7)+"-01");
@@ -102,6 +102,30 @@ function countsFor(events){
  for(const o of events)counts[stateKey(o)]+=1;
  return counts;
 }
+/* The 130HH sidebar badge shares the same recurrence calculation as the maintenance page.
+   It counts unfinished occurrences from January of the current year through the next 30 days. */
+function maintenance130DueSummary(planItems,occurrences,todayDate,throughDate){
+ const startYear=Number(String(todayDate).slice(0,4)),endYear=Number(String(throughDate).slice(0,4));
+ if(!Number.isInteger(startYear)||!Number.isInteger(endYear)||endYear<startYear)return {count:0,critical:false};
+ const scheduleRows=[];
+ for(let yearValue=startYear;yearValue<=Math.min(endYear,startYear+1);yearValue++){
+  scheduleRows.push(...schedule(yearValue,planItems,occurrences));
+ }
+ const actionable=scheduleRows.filter(o=>{
+  if(["completed","cancelled","skipped","postponed"].includes(String(o.event.status||"planned")))return false;
+  const due=dateOf(o);
+  return due>=String(startYear)+"-01-01"&&due<=throughDate;
+ });
+ return {count:actionable.length,critical:actionable.some(o=>dateOf(o)<todayDate)};
+}
+window.estaMaintenance130NavSummary=async function({today:todayDate,soon:throughDate,token}){
+ const [plans,occurrences]=await Promise.all([
+  sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,plan_code,cadence,deleted_at,work_title&building_id=eq."+B,{token}),
+  sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=item_id,event_key,planned_month,planned_date,due_date,status&building_id=eq."+B,{token})
+ ]);
+ return maintenance130DueSummary(Array.isArray(plans)?plans:[],Array.isArray(occurrences)?occurrences:[],todayDate,throughDate);
+};
+function notifyMaintenance130Nav(){window.estaRefreshProjectNavAlerts?.();}
 function kpiHtml(events){
  const c=countsFor(events),today=isoToday(),weekEnd=new Date(today+"T12:00:00");
  weekEnd.setDate(weekEnd.getDate()+7);
@@ -280,7 +304,7 @@ async function rescheduleOccurrence(key,date){
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{planned_date:date,due_date:date,updated_at:new Date().toISOString()}});
    stored=stored.map(e=>e.id===id?{...e,planned_date:date,due_date:date}:e);
   }
-  clearScheduleCache();render();toast("Đã đổi lịch sang "+fmt(date));
+  clearScheduleCache();render();notifyMaintenance130Nav();toast("Đã đổi lịch sang "+fmt(date));
  }catch(err){toast("Không đổi được lịch: "+(err.message||err));}
  finally{busy=false;}
 }
@@ -349,7 +373,7 @@ async function savePlan(ev){
    items.push(item);stored.push(occurrence);
    year=Number(date.slice(0,4));month=Number(date.slice(5,7));
   }
-  clearScheduleCache();closeDialog();render();toast("✓ Đã lưu kế hoạch bảo trì");
+  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();toast("✓ Đã lưu kế hoạch bảo trì");
  }catch(err){toast("Không lưu được: "+(err.message||err));}
  finally{busy=false;btn.disabled=false;}
 }
@@ -494,7 +518,7 @@ async function saveEvent(ev){
   }
   const next={...old,...fields,id,item_id:o.item.id,building_id:B};
   if(wasVirtual)stored.push(next);else stored=stored.map(x=>x.id===id?next:x);
-  clearScheduleCache();closeDialog();render();
+  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();
   toast(statusValue==="completed"?"✓ Hoàn thành đã lưu đủ minh chứng":statusValue==="awaiting_approval"?"Đã chuyển Chờ duyệt":"✓ Đã lưu tiến độ bảo trì");
   if(statusValue==="completed"&&resultCode==="fail")toast("Lưu ý: kết quả KHÔNG ĐẠT. Cần xử lý tiếp.");
  }catch(err){toast("Chưa lưu được: "+(err.message||err));}
@@ -509,7 +533,7 @@ async function deletePlan(id){
   const deleted_at=new Date().toISOString(),token=centralSession.access_token;
   await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Ẩn theo xác nhận trên giao diện bảo trì 130 HH"}});
   items=items.map(x=>x.id===id?{...x,deleted_at}:x);
-  clearScheduleCache();render();toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
+  clearScheduleCache();render();notifyMaintenance130Nav();toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
  }catch(err){toast("Không thể xóa mềm: "+(err.message||err));}
  finally{busy=false;}
 }
