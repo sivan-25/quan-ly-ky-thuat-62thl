@@ -48,6 +48,33 @@ class CompletionCertificateTests(unittest.TestCase):
             build_completion_doc(str(target), self.fixture(1, 100))
             self.assertTrue(target.read_bytes().startswith(b"%PDF-"))
 
+
+    def test_esta_single_page_and_multipage(self):
+        with tempfile.TemporaryDirectory() as folder:
+            for count, length in ((1, 0), (26, 12)):
+                payload = self.fixture(count, length)
+                payload["certificate_style"] = "esta"
+                target = Path(folder) / ("esta_%d.pdf" % count)
+                self.assertEqual(build_completion_doc(str(target), payload), count)
+                content = target.read_bytes()
+                self.assertTrue(content.startswith(b"%PDF-"))
+                self.assertGreater(len(content), 5000)
+                self.assertGreaterEqual(
+                    len(re.findall(rb"/Type\\s*/Page\\b", content)),
+                    2 if count > 1 else 1
+                )
+
+    def test_esta_long_row_and_style_validation(self):
+        with tempfile.TemporaryDirectory() as folder:
+            payload = self.fixture(1, 100)
+            payload["certificate_style"] = "esta"
+            target = Path(folder) / "longrow_esta.pdf"
+            build_completion_doc(str(target), payload)
+            self.assertTrue(target.read_bytes().startswith(b"%PDF-"))
+            payload["certificate_style"] = "unknown"
+            with self.assertRaisesRegex(ValueError, "Mẫu phiếu"):
+                build_completion_doc(str(target), payload)
+
     def test_scope_validation_and_dates(self):
         payload=self.fixture()
         payload["building_id"] = "127HH"
