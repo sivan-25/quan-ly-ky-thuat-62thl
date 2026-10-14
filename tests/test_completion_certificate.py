@@ -60,7 +60,7 @@ class CompletionCertificateTests(unittest.TestCase):
                 self.assertTrue(content.startswith(b"%PDF-"))
                 self.assertGreater(len(content), 5000)
                 self.assertGreaterEqual(
-                    len(re.findall(rb"/Type\\s*/Page\\b", content)),
+                    len(re.findall(rb"/Type\s*/Page\b", content)),
                     2 if count > 1 else 1
                 )
 
