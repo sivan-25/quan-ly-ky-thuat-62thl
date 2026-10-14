@@ -24,6 +24,11 @@ async function fixture(id,internal,extra=""){
     const {w,d,dom}=await fixture("130HH",m130);
     assert.equal(d.querySelector(".estamStats .m130Kpi.estamTotal b").textContent,"20");
     assert.equal(d.querySelector(".estamMonthNav #estamMonth").textContent,"10/2026");
+    assert.equal(d.querySelectorAll(".estamStats .m130Kpi").length,6,"all six KPIs shown");
+    assert.equal(d.querySelectorAll(".estamStats .m130Kpi .estamKpiIcon svg").length,6,"all KPI icons use consistent SVG");
+    assert.equal(d.querySelectorAll(".estamStats .m130Kpi .estamKpiDetail").length,6,"all KPI descriptions visible");
+    assert.equal(d.querySelector(".estamTotal .estamKpiDetail").textContent,"Công việc trong tháng");
+    assert.equal(d.querySelector(".m130Kpi.late .estamKpiDetail").textContent,"Cần ưu tiên xử lý");
     assert.ok(d.querySelector("#estamNativeFilters #m130Search"));
     assert.ok(d.querySelector("#estamNativeActions #m130Create"));
     let exported=0,calendar=0,rows=0;
@@ -49,6 +54,7 @@ async function fixture(id,internal,extra=""){
     assert.ok(chip,"68 PĐL calendar displays dated maintenance");
     chip.click();assert.equal(opened,1,"calendar click delegates to native form");
     assert.ok(d.querySelector(".estamStats .ma68Stats"));
+    assert.equal(d.querySelectorAll(".estamKpiDetail").length,0,"other projects have unchanged KPI markup");
     dom.window.close();
   }
   {
@@ -65,5 +71,9 @@ async function fixture(id,internal,extra=""){
     assert.ok(d.querySelector("#estamNativeActions #addMaintenanceAsset"));
     dom.window.close();
   }
+  const scopedCss=fs.readFileSync(path.join(__dirname,"..","maintenance-130-summary.css"),"utf8");
+  assert.match(scopedCss,/\[data-kind="130"\]/,"KPI redesign scoped to 130HH");
+  assert.match(scopedCss,/@media\(max-width:640px\)/,"mobile layout provided");
+  assert.match(scopedCss,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,"two-column mobile KPI grid");
   console.log("maintenance redesign smoke tests passed (130 HH / 68 PĐL / standard)");
 })().catch(e=>{console.error(e);process.exitCode=1;});

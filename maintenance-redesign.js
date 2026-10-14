@@ -15,7 +15,13 @@
     list:'<path d="M8 6h12M8 12h12M8 18h12M3 6h1M3 12h1M3 18h1"/>',
     cards:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
     calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/>',
-    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/>'
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/>',
+    stack:'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+    alert:'<path d="M12 3 2.5 20h19L12 3z"/><path d="M12 9v5M12 17h.01"/>',
+    date:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 15h3"/>',
+    upcoming:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M9 15l2 2 4-4"/>',
+    approval:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5M12 12l3 2"/>',
+    target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="m10 12 1.6 1.7L15 10"/>'
   })[name]||"";
   const svg=name=>'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+icon(name)+'</svg>';
   const head=page.querySelector(".maintenanceHero");
@@ -77,6 +83,33 @@
       if(!total){total=document.createElement("div");total.className="m130Kpi estamTotal";total.innerHTML='<b>—</b><span>Tổng</span>';stats.prepend(total);}
       const match=$("m130ListCount")?.textContent.match(/\/\s*(\d+)/);
       if(match&&total.querySelector("b").textContent!==match[1])total.querySelector("b").textContent=match[1];
+      // Presentation-only decorations: KPI values continue to come from the native module.
+      const designs={
+        estamTotal:["Công việc trong tháng","stack"],
+        late:["Cần ưu tiên xử lý","alert"],
+        today:["Đến lịch hôm nay","date"],
+        week:["Sắp đến hạn","upcoming"],
+        review:["Đang chờ xác nhận","approval"],
+        done:["Tỷ lệ hoàn thành đúng hạn","target"]
+      };
+      for(const card of stats.querySelectorAll(".m130Kpi")){
+        const key=Object.keys(designs).find(k=>card.classList.contains(k));
+        if(!key)continue;
+        const [description,iconName]=designs[key];
+        if(!card.querySelector(".estamKpiIcon")){
+          const decoration=document.createElement("i");
+          decoration.className="estamKpiIcon";
+          decoration.setAttribute("aria-hidden","true");
+          decoration.innerHTML=svg(iconName);
+          card.appendChild(decoration);
+        }
+        if(!card.querySelector(".estamKpiDetail")){
+          const detail=document.createElement("small");
+          detail.className="estamKpiDetail";
+          detail.textContent=description;
+          card.appendChild(detail);
+        }
+      }
     } else if(mode==="standard"){
       const stats=page.querySelector(".maintenanceStats");
       if(!stats)return;
