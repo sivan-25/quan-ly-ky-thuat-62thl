@@ -8,9 +8,10 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, LongTable, Table, TableStyle, KeepTogether
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, LongTable, Table, TableStyle, KeepTogether, BaseDocTemplate, Frame, PageTemplate
 
 from reporting.pdf_common import ensure_fonts
+from reporting import pdf_common as pdfc
 
 BLACK = colors.HexColor("#1e2933")
 BORDER = colors.HexColor("#66747d")
@@ -59,6 +60,11 @@ def validate(data):
 
 
 def build_completion_doc(path, payload):
+    style = clean(payload.get("certificate_style") or "paper", 12).lower()
+    if style not in ("paper", "esta"):
+        raise ValueError("Mẫu phiếu PDF không hợp lệ")
+    if style == "esta":
+        return build_esta_completion_doc(path, payload)
     period, rows = validate(payload)
     ensure_fonts()
     styles = {
@@ -159,4 +165,211 @@ def build_completion_doc(path, payload):
         canvas.setFillColor(BORDER)
         canvas.drawRightString(A4[0]-15*mm, 10*mm, "Trang %s"%document.page)
     doc.build(story,onFirstPage=footer,onLaterPages=footer)
+    return len(rows)
+
+
+def build_esta_completion_doc(path, payload):
+    """ESTA PDF alternative; the original paper-form renderer remains available."""
+    period, rows = validate(payload)
+    ensure_fonts()
+    year, month = period.split("-")
+    period_printed = "%s/%s" % (month, year)
+    company = clean(payload.get("company"), 120) or "BQLTN LE HOLDING"
+    department = clean(payload.get("department"), 120) or "BỘ PHẬN KỸ THUẬT"
+    issued = clean(payload.get("issued_date"), 10)
+    issued_printed = ("%s/%s/%s" % (issued[8:10], issued[5:7], issued[:4])
+                      if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", issued) else "—")
+    staff = clean(payload.get("staff"), 280) or "—"
+    desc = clean(payload.get("repair_description"), 1000) or "—"
+    participant = clean(payload.get("participant_count"), 12) or "—"
+    statement = clean(payload.get("completion_statement"), 700) or "Đã hoàn thành các công việc nêu trên."
+
+    styles = {
+        "eyebrow": ParagraphStyle("esta_cc_eyebrow", fontName="Mont-Bold",
+            fontSize=7.1, leading=10, textColor=pdfc.COPPER, spaceAfter=0),
+        "title": ParagraphStyle("esta_cc_title", fontName="Mont-Bold",
+            fontSize=15, leading=20, textColor=pdfc.AUB),
+        "body": ParagraphStyle("esta_cc_body", fontName="Mont",
+            fontSize=8.5, leading=12.8, textColor=pdfc.AUB_D),
+        "meta_label": ParagraphStyle("esta_cc_meta_label", fontName="Mont-Bold",
+            fontSize=6.6, leading=9, textColor=pdfc.STONE),
+        "meta_value": ParagraphStyle("esta_cc_meta_value", fontName="Mont-SemiBold",
+            fontSize=8, leading=11, textColor=pdfc.AUB),
+        "section": ParagraphStyle("esta_cc_section", fontName="Mont-Bold",
+            fontSize=9, leading=13, textColor=pdfc.AUB),
+        "note": ParagraphStyle("esta_cc_note", fontName="Mont",
+            fontSize=7.4, leading=11.3, textColor=pdfc.STONE),
+        "tablehead": ParagraphStyle("esta_cc_th", fontName="Mont-Bold",
+            fontSize=6.55, leading=9.0, alignment=TA_CENTER, textColor=pdfc.PALE),
+        "tabletext": ParagraphStyle("esta_cc_td", fontName="Mont",
+            fontSize=7.15, leading=10.2, textColor=pdfc.AUB_D),
+        "tablebold": ParagraphStyle("esta_cc_tb", fontName="Mont-SemiBold",
+            fontSize=7.15, leading=10.2, textColor=pdfc.AUB),
+        "sig": ParagraphStyle("esta_cc_sig", fontName="Mont-Bold",
+            fontSize=7.3, leading=11, alignment=TA_CENTER, textColor=pdfc.AUB),
+    }
+
+    first, later = pdfc.make_page_fns(
+        "PHIẾU XÁC NHẬN HOÀN THÀNH", "THÁNG " + period_printed, "130 HỒNG HÀ"
+    )
+    doc = BaseDocTemplate(
+        path, pagesize=A4,
+        title="ESTA - Phiếu xác nhận hoàn thành công việc - 130 HH",
+        author="ESTA Property Management",
+        subject="Xác nhận hoàn thành công việc",
+        leftMargin=pdfc.MX, rightMargin=pdfc.MX,
+        topMargin=45*mm, bottomMargin=22*mm,
+    )
+    first_frame = Frame(pdfc.MX, 22*mm, pdfc.CW, pdfc.PH - 45*mm - 22*mm,
+                        id="esta_cc_first", leftPadding=0, rightPadding=0,
+                        topPadding=0, bottomPadding=0)
+    later_frame = Frame(pdfc.MX, 22*mm, pdfc.CW, pdfc.PH - 18*mm - 22*mm,
+                        id="esta_cc_later", leftPadding=0, rightPadding=0,
+                        topPadding=0, bottomPadding=0)
+    doc.addPageTemplates([
+        PageTemplate(id="esta_cc_cover", frames=[first_frame], onPage=first,
+                     autoNextPageTemplate="esta_cc_next"),
+        PageTemplate(id="esta_cc_next", frames=[later_frame], onPage=later),
+    ])
+
+    P = para
+    story = [
+        P("KỸ THUẬT VẬN HÀNH  /  XÁC NHẬN CÔNG VIỆC", styles["eyebrow"]),
+        Spacer(1, 3*mm),
+        P("PHIẾU XÁC NHẬN HOÀN THÀNH CÔNG VIỆC", styles["title"]),
+        Spacer(1, 2*mm),
+    ]
+    divider = pdfc.COPPER
+    from reportlab.platypus import HRFlowable
+    story.extend([
+        HRFlowable(width="100%", thickness=1.5, color=divider,
+                   spaceBefore=2, spaceAfter=10),
+    ])
+    details = [
+        [
+            P("DỰ ÁN", styles["meta_label"]),
+            P("130 Hồng Hà", styles["meta_value"]),
+            P("THÁNG XÁC NHẬN", styles["meta_label"]),
+            P(period_printed, styles["meta_value"]),
+        ],
+        [
+            P("ĐƠN VỊ", styles["meta_label"]),
+            P(company, styles["meta_value"]),
+            P("NGÀY LẬP", styles["meta_label"]),
+            P(issued_printed, styles["meta_value"]),
+        ],
+        [
+            P("BỘ PHẬN", styles["meta_label"]),
+            P(department, styles["meta_value"]),
+            P("SỐ CÔNG VIỆC", styles["meta_label"]),
+            P(str(len(rows)), styles["meta_value"]),
+        ],
+    ]
+    meta = Table(details, colWidths=[24*mm, 65*mm, 27*mm, pdfc.CW-116*mm],
+                 hAlign="LEFT")
+    meta.setStyle(TableStyle([
+        ("BACKGROUND", (0,0),(-1,-1), pdfc.CREAM_L),
+        ("BOX",(0,0),(-1,-1),0.65,pdfc.TAUPE),
+        ("LINEBELOW",(0,0),(-1,-2),0.25,pdfc.TAUPE),
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("TOPPADDING",(0,0),(-1,-1),6),
+        ("BOTTOMPADDING",(0,0),(-1,-1),6),
+        ("LEFTPADDING",(0,0),(-1,-1),7),
+    ]))
+    story.extend([meta, Spacer(1, 5*mm)])
+    story.extend([
+        P("01  ·  NỘI DUNG XÁC NHẬN", styles["section"]),
+        Spacer(1, 2.5*mm),
+    ])
+    about = Table([
+        [P("NHÂN VIÊN THỰC HIỆN", styles["meta_label"])],
+        [P(staff, styles["body"])],
+        [P("NỘI DUNG CÔNG VIỆC CẦN SỬA CHỮA", styles["meta_label"])],
+        [P(desc, styles["body"])],
+    ], colWidths=[pdfc.CW])
+    about.setStyle(TableStyle([
+        ("BACKGROUND", (0,0),(-1,-1), pdfc.PALE),
+        ("BOX",(0,0),(-1,-1),0.65,pdfc.TAUPE),
+        ("LINEBELOW",(0,1),(-1,1),0.35,pdfc.TAUPE),
+        ("TOPPADDING",(0,0),(-1,-1),4.3),
+        ("BOTTOMPADDING",(0,0),(-1,-1),4.3),
+        ("LEFTPADDING",(0,0),(-1,-1),8),
+    ]))
+    story.extend([about, Spacer(1, 6*mm)])
+    story.extend([
+        P("02  ·  DANH SÁCH CÔNG VIỆC VÀ VẬT TƯ THAY THẾ", styles["section"]),
+        Spacer(1, 2.2*mm),
+    ])
+    table_header=["NỘI DUNG CÔNG VIỆC", "VẬT TƯ / THIẾT BỊ", "ĐVT",
+                  "SL", "BẮT ĐẦU", "KẾT THÚC"]
+    data=[[P(h,styles["tablehead"]) for h in table_header]]
+    def date_fmt(iso):
+        return iso[8:10] + "/" + iso[5:7] + "/" + iso[:4] if iso else "—"
+    for row in rows:
+        data.append([
+            P(row["content"],styles["tablebold"]),
+            P(row["material"] or "—",styles["tabletext"]),
+            P(row["unit"] or "—",styles["tabletext"]),
+            P(row["qty"] or "—",styles["tabletext"]),
+            P(date_fmt(row["start"]),styles["tabletext"]),
+            P(date_fmt(row["end"]),styles["tabletext"]),
+        ])
+    cols=[48*mm,46*mm,12*mm,12*mm,28*mm,28*mm]
+    table=LongTable(data,colWidths=cols,repeatRows=1,
+                    hAlign="LEFT",splitByRow=1,splitInRow=1)
+    tstyles=[
+        ("BACKGROUND",(0,0),(-1,0),pdfc.AUB),
+        ("VALIGN",(0,0),(-1,-1),"TOP"),
+        ("BOX",(0,0),(-1,-1),0.7,pdfc.TAUPE),
+        ("LINEBELOW",(0,1),(-1,-1),0.35,pdfc.TAUPE),
+        ("LINEAFTER",(0,0),(-2,-1),0.3,pdfc.TAUPE),
+        ("TOPPADDING",(0,0),(-1,0),8),
+        ("BOTTOMPADDING",(0,0),(-1,0),8),
+        ("TOPPADDING",(0,1),(-1,-1),6.5),
+        ("BOTTOMPADDING",(0,1),(-1,-1),6.5),
+        ("LEFTPADDING",(0,0),(-1,-1),4),
+        ("RIGHTPADDING",(0,0),(-1,-1),4),
+    ]
+    for r in range(1,len(data)):
+        tstyles.append(("BACKGROUND",(0,r),(-1,r),pdfc.PALE if r%2 else pdfc.CREAM_L))
+    table.setStyle(TableStyle(tstyles))
+    story.extend([table, Spacer(1, 6*mm)])
+    story.extend([
+        P("03  ·  KIỂM TRA VÀ XÁC NHẬN HOÀN THÀNH",styles["section"]),
+        Spacer(1, 2.3*mm),
+    ])
+    verdict = Table([
+        [P("SỐ NGƯỜI THAM GIA", styles["meta_label"]),
+         P("KẾT QUẢ XÁC NHẬN", styles["meta_label"])],
+        [P(participant, styles["meta_value"]), P(statement,styles["body"])],
+    ], colWidths=[pdfc.CW*0.24,pdfc.CW*0.76])
+    verdict.setStyle(TableStyle([
+        ("BOX",(0,0),(-1,-1),0.65,pdfc.TAUPE),
+        ("BACKGROUND",(0,0),(-1,-1),pdfc.PALE),
+        ("VALIGN",(0,0),(-1,-1),"TOP"),
+        ("LINEAFTER",(0,0),(0,-1),0.5,pdfc.TAUPE),
+        ("TOPPADDING",(0,0),(-1,-1),6),
+        ("BOTTOMPADDING",(0,0),(-1,-1),6),
+        ("LEFTPADDING",(0,0),(-1,-1),7),
+    ]))
+    story.extend([verdict,Spacer(1,2.5*mm)])
+    disclaimer = ("Đại diện công ty đã kiểm tra tất cả tài sản trong khu vực thuê "
+                  "và cam kết không thiệt hại do nhân viên kỹ thuật gây ra.")
+    story.extend([P(disclaimer,styles["note"]),Spacer(1,6*mm)])
+    signatures=Table([
+        [
+            P("ĐẠI DIỆN BQLTN", styles["sig"]),
+            P("GIÁM SÁT KỸ THUẬT", styles["sig"]),
+            P("ĐẠI DIỆN KỸ THUẬT", styles["sig"]),
+        ],
+        [Spacer(1,24*mm), Spacer(1,24*mm), Spacer(1,24*mm)],
+    ], colWidths=[pdfc.CW/3]*3)
+    signatures.setStyle(TableStyle([
+        ("LINEABOVE",(0,0),(-1,0),0.9,pdfc.COPPER),
+        ("VALIGN",(0,0),(-1,-1),"TOP"),
+        ("ALIGN",(0,0),(-1,-1),"CENTER"),
+        ("TOPPADDING",(0,0),(-1,-1),6),
+    ]))
+    story.append(KeepTogether([signatures]))
+    doc.build(story,canvasmaker=pdfc.NumberedCanvas)
     return len(rows)
