@@ -97,3 +97,48 @@ body.bs130ModalOpen{overflow:hidden}
  #app .bs130DialogFoot{padding:10px 14px}
  #app .bs130DialogFoot button{flex:1;padding-inline:6px}
 }
+
+/* V2 · Prepared catalog: nine concise groups, expandable list with empty templates. */
+#app .bs130List{display:flex;flex-direction:column;gap:9px;min-width:0}
+#app .bs130CatalogIntro{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:4px 2px 6px;color:#41695b}
+#app .bs130CatalogIntro b{font-size:15px;color:#1c5147}
+#app .bs130CatalogIntro span{font-size:12px;color:#778e80}
+#app .bs130SystemBlock{min-width:0;background:#fff;border:1px solid #d9e6de;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(23,61,45,.035)}
+#app .bs130SystemHead{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:14px;width:100%;border:0;background:#f1f6ef;color:#214f44;padding:15px 18px;cursor:pointer}
+#app .bs130SystemHead:hover{background:#eaf2ea}
+#app .bs130SystemHead>span:first-child{display:flex;align-items:center;gap:12px;min-width:0;flex-wrap:wrap}
+#app .bs130SystemHead strong{font-size:15px;font-weight:850;color:#183e37}
+#app .bs130SystemHead small{font-size:11px;color:#718979;font-weight:700}
+#app .bs130Caret{display:grid;place-items:center;width:26px;height:26px;flex:0 0 26px;border:1px solid #c7dccc;border-radius:7px;color:#317363;background:#fff;font-size:18px}
+#app .bs130SystemItems{padding:0 15px 5px}
+#app .bs130Template{border-bottom:1px solid #e9f0eb;min-width:0}
+#app .bs130Template:last-child{border-bottom:0}
+#app .bs130TemplateLine{padding:10px 2px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#app .bs130TemplateTitle{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+#app .bs130TemplateTitle strong{font-size:13px;font-weight:770;color:#2b5146;overflow-wrap:anywhere}
+#app .bs130TemplateStatus{display:inline-flex;align-items:center;border-radius:6px;font-size:11px;font-weight:750;padding:4px 7px;white-space:nowrap}
+#app .bs130TemplateStatus.missing{background:#f2f3ef;color:#89958b;border:1px solid #e2e5de}
+#app .bs130TemplateStatus.saved{background:#e1f4e8;color:#26734f;border:1px solid #c9e6d5}
+#app .bs130Fill{border:1px solid #b8d8c9;background:#eff8f2;color:#176249;font-size:12px;font-weight:800;border-radius:8px;padding:9px 12px;cursor:pointer;white-space:nowrap}
+#app .bs130Fill:hover{background:#ddf0e4}
+#app .bs130Profile{margin:0 2px 12px 20px;background:#fbfdf9;border:1px solid #dbe8de;border-left:3px solid #4b9b72;border-radius:9px;padding:12px}
+#app .bs130ProfileHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+#app .bs130ProfileHead h4{font-size:13px;margin:0 0 3px;color:#285246;font-weight:800}
+#app .bs130ProfileHead small{font-size:11px;color:#7d9184}
+#app .bs130ProfileSpecs{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:10px}
+#app .bs130ProfileSpecs>span{background:#f0f5ed;border:1px solid #e2ebe0;color:#547267;padding:5px 8px;border-radius:6px;font-size:11px;overflow-wrap:anywhere}
+#app .bs130ProfileSpecs b{color:#365c4e}
+#app .bs130ProfileActions{display:flex;justify-content:flex-end;gap:6px;margin-top:9px}
+#app .bs130ProfileActions button{border:1px solid #b7d6c8;background:#eef7f1;color:#216449;border-radius:7px;padding:6px 11px;font-weight:750;cursor:pointer;font-size:12px}
+#app .bs130ProfileActions .bs130Danger{color:#9f403a;background:#fff6f5;border-color:#edceca}
+@media(max-width:640px){
+ #app .bs130SystemHead{padding:13px 12px}
+ #app .bs130SystemItems{padding-inline:10px}
+ #app .bs130TemplateLine{gap:6px}
+ #app .bs130TemplateTitle{align-items:flex-start;flex-direction:column;gap:5px}
+ #app .bs130TemplateTitle strong{font-size:12px}
+ #app .bs130Fill{font-size:11px;padding:8px 9px;flex:0 0 auto}
+ #app .bs130Profile{margin-left:5px;padding:10px}
+ #app .bs130ProfileHead{flex-wrap:wrap}
+ #app .bs130SystemHead>span:first-child{gap:4px;align-items:flex-start;flex-direction:column}
+}
