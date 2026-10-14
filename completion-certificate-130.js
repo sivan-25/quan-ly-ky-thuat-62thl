@@ -23,6 +23,7 @@
   let scope = "month";
   let selectedTasks = [];
   let busy = false;
+  let draftVersion = 0; // Ignore stale auto-fill responses after closing/reopening the form.
   function renderButton() {
     const host = document.querySelector("#workPage .workTableMeta");
     if (!host) return;
@@ -71,10 +72,9 @@
           <div class="cc130-actions"><button type="button" id="cc130Next" class="cc130-primary">Tiếp tục · Xem và chỉnh sửa</button></div>
         </section>
         <section id="cc130Edit" class="cc130-step" hidden>
-          <div class="cc130-paperhead"><div><small>PHIẾU XÁC NHẬN · 130 HỒNG HÀ</small><b>Kiểm tra nội dung trước khi xuất</b></div><span>A4 · CHUẨN ESTA</span></div>
           <label class="cc130-photo-toggle"><input id="cc130IncludePhotos" type="checkbox" checked>
             <span><strong>Kèm ảnh · 2 ảnh/dòng A4</strong> <small id="cc130PhotoSummary"></small></span></label>
-          <div class="cc130-fields">
+          <div class="cc130-fields cc130-main-fields">
             <label>Tên đơn vị<input id="cc130Company" maxlength="120"></label>
             <label>Bộ phận<input id="cc130Department" maxlength="120"></label>
             <label>Ngày lập phiếu<input id="cc130IssuedDate" type="date"></label>
@@ -138,6 +138,7 @@
     scope = "month";
     selected.clear();
     selectedTasks = [];
+    draftVersion++;
     byId("cc130Month").value = isoToday().slice(0,7);
     byId("cc130Modal").querySelector('input[name="cc130Mode"][value="month"]').checked = true;
     renderList();
@@ -147,6 +148,7 @@
   }
   function close() {
     if(busy) return;
+    draftVersion++;
     byId("cc130Modal")?.classList.remove("is-open");
   }
   function showStep(name) {
@@ -180,11 +182,20 @@
       </label>`).join("") : '<p class="cc130-empty">Không có công việc Hoàn thành trong tháng này.</p>';
     updateCount();
   }
-  function next() {
+  async function next() {
     if (!onProject()) {close(); return;}
+    const nextButton=byId("cc130Next");
+    if(nextButton.disabled)return;
+    const version=++draftVersion;
+    nextButton.disabled=true;
+    nextButton.textContent="Đang tự điền vật tư…";
     const shown = displayed();
     selectedTasks = shown.filter(t => scope==="month" || selected.has(String(t.id)));
-    if (!selectedTasks.length) return;
+    if (!selectedTasks.length) {
+      nextButton.textContent="Tiếp tục · Xem và chỉnh sửa";
+      updateCount();
+      return;
+    }
     const names = [...new Set(selectedTasks.flatMap(performer))];
     byId("cc130Company").value = "BQLTN LE HOLDING";
     byId("cc130Department").value = "BỘ PHẬN KỸ THUẬT";
@@ -200,12 +211,22 @@
     byId("cc130Description").value = titles.join("; ").slice(0,1000);
     byId("cc130Statement").value = "Đã hoàn thành các công việc nêu trên.";
     byId("cc130Rows").innerHTML = "";
-    selectedTasks.forEach(t=>appendRow({
+    const nodes=selectedTasks.map(t=>appendRow({
       sourceTaskId: String(t.id),
       content: t.c||"", material: "", unit: "", qty: "",
       start_date: t.d||"", end_date: t.d||""
-    }));
-    showStep("edit");
+    })).filter(Boolean);
+    try {
+      // Each selected task loads ONLY its own recorded linked materials.
+      // Failures leave editable blank fields and never invent stock quantities.
+      await Promise.all(nodes.map(node=>fillLinkedMaterials(node,{automatic:true})));
+      if (version === draftVersion && onProject()) showStep("edit");
+    } finally {
+      if(version === draftVersion) {
+        nextButton.textContent="Tiếp tục · Xem và chỉnh sửa";
+        updateCount();
+      }
+    }
   }
   // Populate only from the saved source task; the certificate is an independent, editable draft.
   function rowHint(node, text, error=false) {
@@ -271,7 +292,7 @@
     }
     return [...merged.values()].map(item=>({...item,qty:String(Number(item.qty.toFixed(4)))}));
   }
-  async function fillLinkedMaterials(node) {
+  async function fillLinkedMaterials(node,{automatic=false}={}) {
     const task=linkedTask(node),button=node.querySelector("[data-cc130-auto]");
     if (!task) {
       rowHint(node,"Dòng tự thêm chưa liên kết với công việc. Vui lòng nhập vật tư thủ công.",true);
@@ -285,7 +306,7 @@
       if(!onProject()||currentBuilding?.id!==buildingId||!byId("cc130Rows").contains(node))
         throw new Error("Dự án đã thay đổi, vui lòng mở lại phiếu.");
       if(!materials.length) {
-        rowHint(node,"Công việc chưa ghi nhận vật tư sử dụng trong phần liên kết. Bạn có thể nhập thủ công.",true);
+        rowHint(node,"Chưa có vật tư liên kết. Bạn có thể nhập thủ công.",!automatic);
         return;
       }
       const extra=[...byId("cc130Rows").querySelectorAll(".cc130-row[data-cc130-auto-generated='1']")]
@@ -293,7 +314,7 @@
       if(byId("cc130Rows").children.length-extra.length+materials.length-1>120)
         throw new Error("Phiếu chỉ hỗ trợ tối đa 120 dòng. Hãy giảm bớt công việc.");
       const fields=["material","unit","qty"].map(x=>node.querySelector('[data-field="'+x+'"]').value.trim());
-      if ((fields.some(Boolean)||extra.length) &&
+      if (!automatic && (fields.some(Boolean)||extra.length) &&
           !window.confirm("Auto sẽ thay thế các ô vật tư hiện tại của công việc này bằng dữ liệu đã liên kết. Tiếp tục?")) return;
       extra.forEach(el=>el.remove());
       const field=(key,value,el=node)=>{el.querySelector('[data-field="'+key+'"]').value=value;};
