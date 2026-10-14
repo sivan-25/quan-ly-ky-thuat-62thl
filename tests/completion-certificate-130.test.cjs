@@ -68,8 +68,11 @@ async function main() {
   firstRow.querySelector("[data-cc130-auto]").click();
   await new Promise(r=>setTimeout(r,20));
   assert.equal(d.getElementById("cc130Rows").children.length,2,"Auto is idempotent");
+  assert.equal(d.querySelector(".cc130-signature-note"),null,"signature helper text removed");
+  assert.equal(d.querySelector('input[name="cc130Style"]:checked').value,"esta","ESTA is the preview default");
   d.getElementById("cc130Export").click();
   await new Promise(r=>setTimeout(r,40));
+  assert.equal(sent.certificate_style,"esta","new ESTA paper style sent to authenticated renderer");
   assert.equal(sent.report_type,"completion");
   assert.equal(sent.building_id,"130HH");
   assert.equal(sent.rows.length,2);
@@ -80,6 +83,13 @@ async function main() {
   assert.equal(sent.rows[1].unit,"m");
   assert.equal(sent.rows[1].qty,"2.5");
   assert.equal(downloads,1,"verified PDF must download");
+  const paper=d.querySelector('input[name="cc130Style"][value="paper"]');
+  paper.checked=true;
+  paper.dispatchEvent(new w.Event("change",{bubbles:true}));
+  d.getElementById("cc130Export").click();
+  await new Promise(r=>setTimeout(r,40));
+  assert.equal(sent.certificate_style,"paper","legacy paper form remains selectable");
+  assert.equal(downloads,2);
   sent=null;
   d.getElementById("cc130Back").click();
   const automatic=d.querySelector('input[name="cc130Mode"][value="month"]');
