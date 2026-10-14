@@ -1,12 +1,13 @@
 """130HH completion certificate regressions - synthetic fixtures, no personal data."""
 import re
+import inspect
 import io
 import base64
 import tempfile
 import unittest
 from pathlib import Path
 
-from reporting.completion_certificate import build_completion_doc, validate
+from reporting.completion_certificate import build_completion_doc, build_esta_completion_doc, validate
 from api.esta_report import generate_pdf
 from PIL import Image as PILImage
 
@@ -97,6 +98,17 @@ class CompletionCertificateTests(unittest.TestCase):
         output=io.BytesIO()
         PILImage.new("RGB", size, (hue, 140, 180)).save(output,"PNG")
         return "data:image/png;base64,"+base64.b64encode(output.getvalue()).decode("ascii")
+
+    def test_esta_places_images_after_three_signature_slots(self):
+        # Guard flowable order: three official signature fields precede the
+        # two-up photographic evidence, not the other way around.
+        source = inspect.getsource(build_esta_completion_doc)
+        self.assertLess(
+            source.index("story.append(KeepTogether([signatures]))"),
+            source.rindex("append_completion_photos(story, photos, width=pdfc.CW")
+        )
+        self.assertIn('P("03  ·  BÁO CÁO KIỂM TRA', source)
+        self.assertIn('P("04  ·  CAM KẾT', source)
 
     def test_esta_images_2_per_row_even_and_odd(self):
         landscape=self.photo_url((1200,650), 70)
