@@ -31,6 +31,115 @@
     '<div class="estamToolbar"><div class="estamFilterArea"><button type="button" class="estamSearchBtn" id="estamSearch" aria-label="Mở ô tìm kiếm" aria-expanded="false" title="Tìm bảo trì">'+svg("search")+'</button><div id="estamNativeFilters" class="estamNativeFilters"></div></div><div class="estamActionArea"><div class="estamViewSwitch" role="group" aria-label="Kiểu hiển thị"><button type="button" data-estam-view="rows">'+svg("list")+'<span>Bảng</span></button><button type="button" data-estam-view="cards">'+svg("cards")+'<span>Thẻ</span></button><button type="button" data-estam-view="calendar">'+svg("calendar")+'<span>Lịch</span></button><button type="button" data-estam-view="timeline">'+svg("clock")+'<span>Timeline</span></button></div><div id="estamNativeActions" class="estamNativeActions"></div></div></div>'+
     '<div id="estamExtraView" class="estamExtraView" hidden></div>';
   head?.insertAdjacentElement("afterend",shell);
+  // ESTA 130HH executive summary and grouped maintenance rows (read-only presentation).
+  const groupConfig=[
+    {id:"late",label:"Quá hạn",color:"#bd3348"},
+    {id:"today",label:"Hôm nay",color:"#206eaf"},
+    {id:"week",label:"7 ngày tới",color:"#237f98"},
+    {id:"later",label:"Sau đó",color:"#54728f"},
+    {id:"review",label:"Chờ duyệt",color:"#b37b28"},
+    {id:"done",label:"Hoàn thành",color:"#23805f"},
+    {id:"paused",label:"Hoãn / Hủy",color:"#748090"}
+  ];
+  let quickGroup="all";
+  const overviewGroup=element=>{
+    if(element.classList.contains("m130State-done"))return "done";
+    if(element.classList.contains("m130State-review"))return "review";
+    if(element.classList.contains("m130State-cancelled")||element.classList.contains("m130State-postponed"))return "paused";
+    const due=element.querySelector("time.m130Date")?.getAttribute("datetime")?.slice(0,10)||"";
+    const current=today(),soon=new Date(current+"T12:00:00");
+    soon.setDate(soon.getDate()+7);
+    const limit=soon.getFullYear()+"-"+pad(soon.getMonth()+1)+"-"+pad(soon.getDate());
+    return due<current?"late":due===current?"today":due<=limit?"week":"later";
+  };
+  const syncGroupedRows=()=>{
+    if(mode!=="130"||view!=="rows")return;
+    const list=$("m130List");
+    if(!list)return;
+    const loose=[...list.children].filter(el=>el.classList.contains("m130CompactRow"));
+    if(loose.length){
+      const sections=new Map();
+      for(const row of loose){
+        const key=overviewGroup(row);
+        let container=sections.get(key);
+        if(!container){
+          const group=document.createElement("section");
+          group.className="estam130WorkGroup";
+          group.dataset.summaryGroup=key;
+          const heading=document.createElement("header");
+          heading.className="estam130WorkHeading";
+          const name=groupConfig.find(g=>g.id===key)?.label||"Công việc";
+          heading.innerHTML='<b>'+escapeHtml(name)+'</b><span class="estam130WorkCount"></span>';
+          const content=document.createElement("div");
+          content.className="estam130WorkItems";
+          group.append(heading,content);
+          list.appendChild(group);
+          sections.set(key,content);
+          container=content;
+        }
+        container.appendChild(row);
+      }
+      for(const [key,content] of sections){
+        const count=content.children.length;
+        content.parentElement.querySelector(".estam130WorkCount").textContent=count+" việc";
+      }
+      const blocks=[...list.querySelectorAll(":scope > .estam130WorkGroup")];
+      blocks.sort((a,b)=>groupConfig.findIndex(g=>g.id===a.dataset.summaryGroup)-groupConfig.findIndex(g=>g.id===b.dataset.summaryGroup));
+      blocks.forEach(group=>list.appendChild(group));
+    }
+    list.querySelectorAll(":scope > .estam130WorkGroup").forEach(section=>{
+      section.hidden=quickGroup!=="all"&&section.dataset.summaryGroup!==quickGroup;
+    });
+  };
+  const refresh130Overview=stats=>{
+    const container=shell.querySelector(".estamSummary");
+    if(!container)return;
+    let totalEl=container.querySelector(".estam130Lead");
+    let panel=container.querySelector(".estam130Overview");
+    if(!totalEl){
+      totalEl=document.createElement("div");totalEl.className="estam130Lead";
+      container.appendChild(totalEl);
+    }
+    if(!panel){
+      panel=document.createElement("div");panel.className="estam130Overview";
+      container.appendChild(panel);
+    }
+    let raw={};
+    try{raw=JSON.parse(stats.dataset.monthOverview||"{}")}catch(_){}
+    const total=Number.isFinite(Number(raw.total))?Number(raw.total):Number(stats.querySelector(".estamTotal b")?.textContent)||0;
+    const data=raw.counts||{};
+    const pct=String(raw.onTime??stats.querySelector(".m130Kpi.done b")?.textContent??"—");
+    const signature=JSON.stringify({total,data,pct,period:pad(selectedMonth())+"/"+selectedYear()});
+    if(panel.dataset.signature!==signature){
+      totalEl.innerHTML='<strong>'+total+'</strong><span>đầu việc bảo trì<br>trong tháng</span>';
+      const occupied=groupConfig.filter(g=>Number(data[g.id]||0)>0);
+      const segments=occupied.map(g=>{
+        const n=Number(data[g.id]||0);
+        return '<div class="estam130BarSegment" style="flex:'+n+';background:'+g.color+'" title="'+escapeHtml(g.label)+': '+n+' việc"></div>';
+      }).join("");
+      const buttons=groupConfig.map(g=>{
+        const n=Number(data[g.id]||0);
+        return '<button type="button" class="estam130Metric" data-estam130-group="'+g.id+'" aria-pressed="false"><b>'+n+'</b><span>'+escapeHtml(g.label)+'</span></button>';
+      }).join("");
+      panel.innerHTML='<div class="estam130Progress" role="img" aria-label="Phân bổ '+total+' công việc bảo trì">'+(segments||'<span class="estam130BarEmpty">Chưa có công việc</span>')+'</div>'+
+        '<div class="estam130Metrics"><button type="button" class="estam130Metric estam130All" data-estam130-group="all" aria-pressed="true"><b>'+total+'</b><span>Tất cả</span></button>'+buttons+
+        '<div class="estam130OnTime"><b>'+escapeHtml(pct)+'</b><span>Đúng hạn</span></div></div>';
+      panel.dataset.signature=signature;
+    }
+    panel.querySelectorAll("[data-estam130-group]").forEach(button=>{
+      const selected=button.dataset.estam130Group===quickGroup;
+      button.setAttribute("aria-pressed",String(selected));
+    });
+    syncGroupedRows();
+  };
+  shell.addEventListener("click",event=>{
+    const groupButton=event.target.closest("[data-estam130-group]");
+    if(!groupButton||mode!=="130")return;
+    const next=groupButton.dataset.estam130Group;
+    quickGroup=quickGroup===next&&next!=="all"?"all":next;
+    if(view!=="rows")setView("rows");
+    refreshHeader();
+  });
   const origins=new Map();
   let mode="",view="rows", extraEntries=[], queued=false, ready=false;
   const autoMonth=new Set();
@@ -92,6 +201,7 @@
         review:["Đang chờ xác nhận","approval"],
         done:["Tỷ lệ hoàn thành đúng hạn","target"]
       };
+      refresh130Overview(stats);
       for(const card of stats.querySelectorAll(".m130Kpi")){
         const key=Object.keys(designs).find(k=>card.classList.contains(k));
         if(!key)continue;
@@ -137,7 +247,7 @@
     if(!active())return;
     const target=currentMode();
     if(target!==mode){
-      restore();mode=target;view="rows";
+      restore();mode=target;view="rows";quickGroup="all";
       shell.dataset.kind=mode;
       page.dataset.estamKind=mode;
       page.dataset.estamView=view;
@@ -166,6 +276,7 @@
     view=next;
     page.dataset.estamView=next;
     if(mode==="130"){
+      if(next!=="rows")quickGroup="all";
       if(next==="rows"||next==="cards"){
         originalPress('[data-m130-layout="list"]');
         originalPress('[data-m130-view="'+next+'"]');
@@ -249,7 +360,7 @@
   const init=()=>{
     if(ready)return;ready=true;
     wire();
-    ["m130Stats","m130Months","m130ListCount","ma68Stats","ma68Months","ma68Content","maintenanceMonthStrip","maintenanceAssetGrid","maintAssetCount"].forEach(monitor);
+    ["m130Stats","m130Months","m130ListCount","m130List","ma68Stats","ma68Months","ma68Content","maintenanceMonthStrip","maintenanceAssetGrid","maintAssetCount"].forEach(monitor);
     new MutationObserver(schedule).observe(page,{attributes:true,attributeFilter:["class"]});
     schedule();
   };

@@ -126,6 +126,23 @@ window.estaMaintenance130NavSummary=async function({today:todayDate,soon:through
  return maintenance130DueSummary(Array.isArray(plans)?plans:[],Array.isArray(occurrences)?occurrences:[],todayDate,throughDate);
 };
 function notifyMaintenance130Nav(){window.estaRefreshProjectNavAlerts?.();}
+function maintenance130Buckets(events,today=isoToday()){
+ const weekEnd=new Date(today+"T12:00:00");
+ weekEnd.setDate(weekEnd.getDate()+7);
+ const upcoming=weekEnd.getFullYear()+"-"+pad(weekEnd.getMonth()+1)+"-"+pad(weekEnd.getDate());
+ const counts={late:0,today:0,week:0,later:0,done:0,review:0,paused:0};
+ for(const item of events){
+  const state=stateKey(item),due=dateOf(item);
+  if(state==="done")counts.done++;
+  else if(state==="review")counts.review++;
+  else if(["cancelled","postponed"].includes(state))counts.paused++;
+  else if(due<today)counts.late++;
+  else if(due===today)counts.today++;
+  else if(due<=upcoming)counts.week++;
+  else counts.later++;
+ }
+ return {total:events.length,counts};
+}
 function kpiHtml(events){
  const c=countsFor(events),today=isoToday(),weekEnd=new Date(today+"T12:00:00");
  weekEnd.setDate(weekEnd.getDate()+7);
@@ -135,7 +152,10 @@ function kpiHtml(events){
  const onTime=eligible.filter(o=>String(o.event.completed_at||o.event.finished_at).slice(0,10)<=dateOf(o)).length;
  const timely=eligible.length?Math.round(onTime/eligible.length*100)+"%":"—";
  const pair=[[c.late,"Quá hạn","late"],[todayCount,"Hôm nay","today"],[weekCount,"7 ngày tới","week"],[c.review,"Chờ duyệt","review"],[timely,"Đúng hạn","done"]];
- $("m130Stats").innerHTML=pair.map(x=>'<div class="m130Kpi '+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
+ const stats=$("m130Stats");
+ stats.innerHTML=pair.map(x=>'<div class="m130Kpi '+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
+ stats.dataset.monthOverview=JSON.stringify({...maintenance130Buckets(events,today),onTime:timely});
+
 }
 
 function ensure(){

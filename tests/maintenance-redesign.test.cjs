@@ -28,6 +28,11 @@ async function fixture(id,internal,extra=""){
     assert.equal(d.querySelectorAll(".estamStats .m130Kpi .estamKpiIcon svg").length,6,"all KPI icons use consistent SVG");
     assert.equal(d.querySelectorAll(".estamStats .m130Kpi .estamKpiDetail").length,6,"all KPI descriptions visible");
     assert.equal(d.querySelector(".estamTotal .estamKpiDetail").textContent,"Công việc trong tháng");
+    assert.ok(d.querySelector(".estam130Overview"),"summary panel added on 130HH");
+    assert.ok(d.querySelector(".estam130Lead strong"),"large total visible");
+    assert.equal(d.querySelectorAll("[data-estam130-group]").length,8,"seven exclusive categories and all-filter");
+    assert.ok(d.querySelector(".estam130Progress"),"progress summary shown");
+    assert.equal(d.querySelector(".estam130Metric.estam130All b").textContent,"20");
     assert.equal(d.querySelector(".m130Kpi.late .estamKpiDetail").textContent,"Cần ưu tiên xử lý");
     assert.ok(d.querySelector("#estamNativeFilters #m130Search"));
     assert.ok(d.querySelector("#estamNativeActions #m130Create"));
@@ -54,6 +59,7 @@ async function fixture(id,internal,extra=""){
     assert.ok(chip,"68 PĐL calendar displays dated maintenance");
     chip.click();assert.equal(opened,1,"calendar click delegates to native form");
     assert.ok(d.querySelector(".estamStats .ma68Stats"));
+    assert.equal(d.querySelector(".estam130Overview"),null,"130-only summary must not appear on 68HH project");
     assert.equal(d.querySelectorAll(".estamKpiDetail").length,0,"other projects have unchanged KPI markup");
     dom.window.close();
   }
