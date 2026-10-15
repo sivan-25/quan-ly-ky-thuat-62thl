@@ -1,0 +1,117 @@
+/* ESTA Bản nâng cấp — modern equipment form and project-specific register */
+#app.estaUpgradeMode #updateAssetsPage.uePage{background:#eee9dd!important;min-width:0}
+#app.estaUpgradeMode #updateAssetsPage.uePage *{box-sizing:border-box}
+#app.estaUpgradeMode .ueHero{
+ display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+ background:linear-gradient(115deg,#143547,#2c594b)!important;color:#fff!important;
+ border:1px solid #456f60;border-radius:13px;padding:18px 20px;margin-bottom:12px;
+}
+#app.estaUpgradeMode .ueEyebrow{display:block;color:#bfded5;font-size:11px;font-weight:800;letter-spacing:.09em;margin-bottom:7px}
+#app.estaUpgradeMode .ueHero h1{font-size:21px!important;line-height:1.25;margin:0 0 5px;color:#fff!important}
+#app.estaUpgradeMode .ueHero p{margin:0;font-size:12px!important;color:#e3f1e8!important}
+#app.estaUpgradeMode .ueHeroButtons{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#app.estaUpgradeMode .ueBtnPrimary,body.estaUpgradeMode .ueBtnPrimary{
+ display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;
+ padding:8px 13px;border:1px solid #1c5263!important;border-radius:8px!important;
+ background:#173b51!important;color:white!important;font-size:13px;font-weight:750;
+ box-shadow:none!important;cursor:pointer;white-space:nowrap;
+}
+#app.estaUpgradeMode .ueHero .ueBtnPrimary{background:#e3efe7!important;color:#153b31!important;border-color:#d2e8d8!important}
+#app.estaUpgradeMode .ueBtnSecondary,body.estaUpgradeMode .ueBtnSecondary{
+ display:inline-flex;align-items:center;justify-content:center;min-height:38px;
+ padding:8px 12px;border:1px solid #cddad3!important;border-radius:8px!important;
+ background:#f7f9f5!important;color:#19493e!important;font-size:13px;font-weight:700;cursor:pointer;
+}
+#app.estaUpgradeMode .ueHero .ueBtnSecondary{background:#31594d!important;color:#fff!important;border-color:#739688!important}
+#app.estaUpgradeMode .ueBtnPrimary:disabled,body.estaUpgradeMode .ueBtnPrimary:disabled{opacity:.45;cursor:not-allowed}
+#app.estaUpgradeMode .ueStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 12px}
+#app.estaUpgradeMode .ueStats>div{
+ display:flex;flex-direction:column;gap:4px;background:#fffdf8!important;border:1px solid #d7dfdb!important;
+ border-radius:11px;padding:13px 15px;box-shadow:0 2px 7px rgba(15,38,42,.04);
+}
+#app.estaUpgradeMode .ueStats small{color:#617980;font-weight:700;font-size:12px}
+#app.estaUpgradeMode .ueStats b{color:#173b51;font-size:23px;line-height:1.1;font-variant-numeric:tabular-nums}
+#app.estaUpgradeMode .uePanel{background:#fffdf8!important;border:1px solid #d7dfdb!important;border-radius:12px;overflow:hidden}
+#app.estaUpgradeMode .uePanelHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #dce6df}
+#app.estaUpgradeMode .uePanelHead h2{color:#183d4e;font-size:16px;margin:0 0 4px}
+#app.estaUpgradeMode .uePanelHead p{color:#657a7c;font-size:12px;margin:0}
+#app.estaUpgradeMode .uePanelHead strong{color:#2a6c5e;font-size:12px;white-space:nowrap}
+#app.estaUpgradeMode .ueFilters{display:grid;grid-template-columns:minmax(200px,1fr) minmax(155px,195px) minmax(150px,180px);gap:8px;padding:10px 14px;border-bottom:1px solid #e2e9e3}
+#app.estaUpgradeMode .ueFilters :is(input,select){background:#fffefa!important;border:1px solid #cbd9d2!important;height:38px!important;width:100%;border-radius:8px!important;color:#173b51!important;min-width:0;padding:0 10px;font-size:13px}
+#app.estaUpgradeMode .ueSearch{display:flex;align-items:center;position:relative;min-width:0}
+#app.estaUpgradeMode .ueSearch>span{position:absolute;left:12px;z-index:1;font-size:21px;line-height:1;color:#527b70}
+#app.estaUpgradeMode .ueSearch input{padding-left:36px!important}
+#app.estaUpgradeMode .ueListHead,#app.estaUpgradeMode .ueItem{
+ display:grid;grid-template-columns:minmax(220px,2.3fr) minmax(120px,1.2fr) minmax(130px,1.3fr) minmax(100px,1fr) 46px minmax(105px,1.05fr) 13px;
+ gap:10px;align-items:center;width:100%;text-align:left;
+}
+#app.estaUpgradeMode .ueListHead{padding:10px 15px;background:#e4eee8!important;color:#355f58;font-size:11px;font-weight:800;letter-spacing:.015em}
+#app.estaUpgradeMode .ueItem{
+ padding:12px 15px;background:#fffdf8!important;border:0!important;border-radius:0!important;
+ color:#243f46!important;font-size:12px;cursor:pointer;border-bottom:1px solid #e5ebe5!important;min-height:68px;
+}
+#app.estaUpgradeMode .ueItem:hover{background:#f1f7f2!important}
+#app.estaUpgradeMode .ueItem:last-child{border-bottom:0!important}
+#app.estaUpgradeMode .ueItemId{display:flex;align-items:center;gap:9px;min-width:0}
+#app.estaUpgradeMode .ueItemId>span:last-child{min-width:0}
+#app.estaUpgradeMode .ueItemId strong{display:block;font-weight:800;font-size:13px;color:#183b51;line-height:1.4;overflow-wrap:anywhere}
+#app.estaUpgradeMode .ueItemId small{display:block;color:#728587;font-size:11px;margin-top:3px;overflow-wrap:anywhere}
+#app.estaUpgradeMode .ueItemGlyph{width:33px;height:33px;display:grid;place-items:center;flex:none;border-radius:9px;background:#e3eee8;color:#2c705c;font-size:16px}
+#app.estaUpgradeMode .ueItemGroup{font-weight:650;color:#355e58}
+#app.estaUpgradeMode .ueItemModel,#app.estaUpgradeMode .ueItemPlace{overflow-wrap:anywhere;color:#60767c}
+#app.estaUpgradeMode .ueItemQty{font-weight:800;text-align:center}
+#app.estaUpgradeMode .ueArrow{font-size:22px;color:#839998}
+#app.estaUpgradeMode .ueState{display:inline-flex;justify-content:center;align-items:center;text-align:center;border-radius:7px;padding:6px 8px;font-weight:800;font-size:11px;min-width:0;white-space:normal}
+#app.estaUpgradeMode .ueGood{background:#deeee3;color:#136043}
+#app.estaUpgradeMode .ueWarn{background:#fff0cf;color:#865817}
+#app.estaUpgradeMode .ueStopped{background:#edf0ef;color:#65757a}
+#app.estaUpgradeMode .ueEmpty{padding:35px 22px;text-align:center;color:#61767a}
+#app.estaUpgradeMode .ueEmpty b{display:block;color:#214c51;font-size:15px}
+#app.estaUpgradeMode .ueEmpty p{max-width:540px;margin:8px auto 0;font-size:13px;line-height:1.6}
+#app.estaUpgradeMode .ueError{margin:8px 15px;padding:10px;background:#fbe3e0;color:#8b2d38;border-radius:7px;font-size:12px}
+#app.estaUpgradeMode .ueSourceNote{margin:10px 3px;color:#72837e;font-size:11px}
+body.estaUpgradeMode .ueOverlay[hidden]{display:none!important}
+body.estaUpgradeMode .ueOverlay{position:fixed;inset:0;z-index:200000;display:flex;justify-content:center;align-items:center;padding:14px;background:rgba(9,31,36,.65)}
+body.estaUpgradeMode .ueDialog{width:min(740px,100%);max-height:min(90vh,850px);display:flex;flex-direction:column;overflow:hidden;background:#fffdf8;border:1px solid #b5cec4;border-radius:14px;box-shadow:0 25px 70px rgba(10,30,34,.28)}
+body.estaUpgradeMode .ueDialog>header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;background:#eaf0e8;border-bottom:1px solid #cfdfd6}
+body.estaUpgradeMode .ueDialog>header small{display:block;font-size:10px;color:#2a6c5e;font-weight:800;letter-spacing:.06em}
+body.estaUpgradeMode .ueDialog>header h2{margin:3px 0 0;font-size:18px;color:#173b51}
+body.estaUpgradeMode .ueDialog>header>button{background:transparent;border:0;font-size:28px;color:#1e4552;cursor:pointer}
+body.estaUpgradeMode .ueDialog form{min-height:0;display:flex;flex-direction:column;overflow:hidden}
+body.estaUpgradeMode .ueFormBody{overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:17px}
+body.estaUpgradeMode .ueFormBody label{display:flex;flex-direction:column;gap:5px;min-width:0;font-size:12px;font-weight:750;color:#294b51}
+body.estaUpgradeMode .ueFormBody label.ueFull{grid-column:1/-1}
+body.estaUpgradeMode .ueFormBody :is(input,textarea,select){width:100%;min-width:0;min-height:39px;border:1px solid #c9d7ce!important;border-radius:8px!important;background:#fffefa!important;color:#173b51!important;padding:9px 10px;font-size:13px}
+body.estaUpgradeMode .ueFormBody textarea{resize:vertical;min-height:66px;line-height:1.5}
+body.estaUpgradeMode .ueDialog footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:13px 17px;border-top:1px solid #d9e4dc;background:#f8f6ee}
+body.estaUpgradeMode .ueDialog footer .ueDelete{margin-right:auto;border:0;background:none;color:#a7363d;font-size:12px;font-weight:750;cursor:pointer}
+body.estaUpgradeMode .ueFormBody :is(input,select,textarea):focus-visible{outline:2px solid #218a72;outline-offset:2px}
+@media(max-width:960px){
+ #app.estaUpgradeMode .ueListHead{display:none}
+ #app.estaUpgradeMode .ueItem{grid-template-columns:minmax(170px,2fr) minmax(100px,1fr) minmax(100px,1fr) auto;gap:10px}
+ #app.estaUpgradeMode .ueItemGroup,#app.estaUpgradeMode .ueItemPlace,#app.estaUpgradeMode .ueItemQty{display:none}
+ #app.estaUpgradeMode .ueArrow{display:none}
+}
+@media(max-width:640px){
+ #app.estaUpgradeMode .ueHero{padding:13px;gap:12px}
+ #app.estaUpgradeMode .ueHero h1{font-size:18px!important}
+ #app.estaUpgradeMode .ueHeroButtons{width:100%}
+ #app.estaUpgradeMode .ueHeroButtons button{flex:1}
+ #app.estaUpgradeMode .ueStats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #app.estaUpgradeMode .ueStats>div{padding:11px}
+ #app.estaUpgradeMode .ueStats b{font-size:21px}
+ #app.estaUpgradeMode .uePanelHead{padding:12px;align-items:start}
+ #app.estaUpgradeMode .uePanelHead p{font-size:11px}
+ #app.estaUpgradeMode .ueFilters{grid-template-columns:repeat(2,minmax(0,1fr));padding:9px;gap:7px}
+ #app.estaUpgradeMode .ueSearch{grid-column:1/-1}
+ #app.estaUpgradeMode .ueFilters :is(input,select){font-size:16px!important}
+ #app.estaUpgradeMode .ueItem{grid-template-columns:minmax(0,1fr) auto;gap:7px;padding:11px}
+ #app.estaUpgradeMode .ueItemModel,#app.estaUpgradeMode .ueItemGroup,#app.estaUpgradeMode .ueItemPlace,#app.estaUpgradeMode .ueItemQty{display:none}
+ #app.estaUpgradeMode .ueState{max-width:110px}
+ body.estaUpgradeMode .ueOverlay{padding:6px;align-items:flex-end}
+ body.estaUpgradeMode .ueDialog{width:100%;max-height:calc(100dvh - 12px);border-radius:13px 13px 9px 9px}
+ body.estaUpgradeMode .ueFormBody{grid-template-columns:1fr;gap:9px;padding:11px}
+ body.estaUpgradeMode .ueFormBody label.ueFull{grid-column:auto}
+ body.estaUpgradeMode .ueFormBody :is(input,select,textarea){font-size:16px!important}
+ body.estaUpgradeMode .ueDialog footer{padding:10px}
+}
