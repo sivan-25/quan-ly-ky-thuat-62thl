@@ -69,7 +69,7 @@ function schedule(y,sourceItems=items,sourceStored=stored){
   // Imported Excel plans can contain explicit records for each month without a day.
   // They must be kept intact; only single-anchor plans use generated recurrence.
   const explicit=grouped.get(i.id)||[];
-  if(explicit.length>1){
+  if(explicit.length>1&&!interval(i)){
    for(const e of explicit){
     const date=String(e.planned_date||e.planned_month).slice(0,10);
     if(Number(date.slice(0,4))===targetYear)
