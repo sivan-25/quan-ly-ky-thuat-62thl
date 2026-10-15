@@ -62,25 +62,21 @@ async function fixture(id,internal,extra=""){
     assert.equal(d.querySelector(".estam130WorkGroup[data-summary-group=done]").hidden,false,"all restores grouped work");
     dom.window.close();
   }
-  {
-    const stats=Array.from({length:5},(_,i)=>'<div><b>'+i+'</b><span>Nhóm '+i+'</span></div>').join("");
-    const m68='<section id="maint68"><div class="ma68Header"><button id="ma68Pdf">PDF</button></div><div id="ma68Stats" class="ma68Stats">'+stats+'</div><div id="ma68Months"><button data-m="9">9</button><button data-m="10" class="sel">10</button><button data-m="11">11</button></div><div class="ma68Filters"><input id="ma68Search"><select id="ma68Group"><option value="">Hệ thống</option></select><select id="ma68Filter"><option value="">Trạng thái</option></select></div><div id="ma68Content"><section class="ma68Section"><article class="ma68Entry"><div><small>PCCC</small><h4>Thử chuông báo cháy</h4><p>13/10/2026 · Hoàn thành</p></div><button type="button" data-e="plan1">Cập nhật</button></article></section></div></section>';
-    const {dom,d}=await fixture("68PĐL",m68);
-    let opened=0;d.querySelector("[data-e=plan1]").addEventListener("click",()=>opened++);
-    d.querySelector("[data-estam-view=calendar]").click();
-    const chip=d.querySelector("#estamExtraView [data-estam-open]");
-    assert.ok(chip,"68 PĐL calendar displays dated maintenance");
-    chip.click();assert.equal(opened,1,"calendar click delegates to native form");
-    assert.ok(d.querySelector(".estamStats .ma68Stats"));
-    assert.equal(d.querySelector(".estam130Overview"),null,"130-only summary must not appear on 68HH project");
-    assert.equal(d.querySelectorAll(".estamKpiDetail").length,0,"other projects have unchanged KPI markup");
+  for(const buildingId of ["68PĐL","127HH","62THL"]){
+    const {dom,d}=await fixture(buildingId,m130);
+    assert.ok(d.querySelector(".estam130Overview"),"shared 130HH overview rendered: "+buildingId);
+    assert.equal(d.querySelector(".estamStats .m130Kpi.estamTotal b").textContent,"20");
+    assert.ok(d.querySelector("#estamNativeActions #m130Create"),"shared add action: "+buildingId);
+    assert.ok(d.querySelector("#estam130Filters #m130State"),"shared filters: "+buildingId);
+    const pdf=d.querySelector("#estamHeaderPdf");
+    assert.ok(pdf&&!pdf.disabled,"shared PDF action: "+buildingId);
     dom.window.close();
   }
   {
     const current=new Date(),year=current.getFullYear(),month=String(current.getMonth()+1).padStart(2,"0");
     const date=year+"-"+month+"-13";
     const standard='<section class="maintenanceStats"><article><b id="maintAssetCount">1</b></article><article><b id="maintOverdueCount">0</b></article><article><b id="maintDueSoonCount">1</b></article><article><b id="maintDoneYearCount">0</b></article></section><section class="maintenanceSchedule"><div id="maintenanceMonthStrip"><button data-maint-month="'+current.getMonth()+'" >Trước</button><button class="active" data-maint-month="'+(current.getMonth()+1)+'">Tháng</button></div></section><section class="maintenanceBoard"><div class="maintenanceToolbar"><div class="inventoryToolbarActions"><div class="inventorySearch"><input id="maintenanceSearch"></div><select id="maintenanceSystemFilter"><option value="">Hệ thống</option></select><select id="maintenanceDueFilter"><option value="">Lịch</option></select></div></div><div id="maintenanceAssetGrid"></div><button id="addMaintenanceAsset">Thêm thiết bị</button></section><button id="maintenanceExportPdf">PDF</button>';
-    const {dom,w,d}=await fixture("62THL",standard);
+    const {dom,w,d}=await fixture("Demo",standard);
     w.maintenanceAssets=[{id:"asset1",name:"AHU tầng 1",system_type:"HVAC",next_due_date:date}];
     w.maintenanceProjectedDates=()=>[date];
     let opened=0;w.openMaintenanceRecord=()=>opened++;
@@ -100,5 +96,5 @@ async function fixture(id,internal,extra=""){
   assert.match(layout,/\.m130CompactRow\.m130State-late \.m130Date/,"overdue date tiles have distinct colors");
   assert.match(layout,/\.estam130ExtraFilters/,"advanced filters remain reachable");
   assert.match(layout,/\.estamViewSwitch \[data-estam-view="timeline"\]/,"timeline hidden from three-option main toolbar");
-  console.log("maintenance redesign smoke tests passed (130 HH / 68 PĐL / standard)");
+  console.log("maintenance redesign smoke tests passed (4 projects / demo legacy)");
 })().catch(e=>{console.error(e);process.exitCode=1;});
