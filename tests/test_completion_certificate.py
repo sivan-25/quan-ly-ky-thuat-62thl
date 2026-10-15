@@ -1,4 +1,4 @@
-"""130HH completion certificate regressions - synthetic fixtures, no personal data."""
+"""Shared completion certificate regressions - synthetic fixtures, no personal data."""
 import re
 import inspect
 import io
@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reporting.completion_certificate import build_completion_doc, build_esta_completion_doc, validate
+from reporting.completion_certificate import build_completion_doc, build_esta_completion_doc, validate, project_name
 from api.esta_report import generate_pdf
 from PIL import Image as PILImage
 
@@ -153,10 +153,30 @@ class CompletionCertificateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"60 ảnh"):
             generate_pdf(data,"test-image-token")
 
+    def test_four_projects_render_with_their_own_names(self):
+        projects = {
+            "130HH": "130 Hồng Hà",
+            "127HH": "127 Hồng Hà",
+            "62THL": "62 Trần Huy Liệu",
+            "68PĐL": "68 Phan Đăng Lưu",
+        }
+        for building_id, expected_name in projects.items():
+            with self.subTest(building_id=building_id):
+                payload = self.fixture()
+                payload["building_id"] = building_id
+                payload["building"] = "Wrong building label from client"
+                self.assertEqual(project_name(payload), expected_name)
+                with tempfile.TemporaryDirectory() as folder:
+                    target = Path(folder) / "certificate.pdf"
+                    count = build_completion_doc(str(target), payload)
+                    self.assertEqual(count, 1)
+                    self.assertTrue(target.read_bytes().startswith(b"%PDF-"))
+                    self.assertGreater(len(target.read_bytes()), 5000)
+
     def test_scope_validation_and_dates(self):
         payload=self.fixture()
-        payload["building_id"] = "127HH"
-        with self.assertRaisesRegex(ValueError,"130 HH"):
+        payload["building_id"] = "UNSUPPORTED"
+        with self.assertRaisesRegex(ValueError,"không hỗ trợ"):
             validate(payload)
         payload=self.fixture()
         payload["rows"][0]["end_date"]="2026-09-01"
