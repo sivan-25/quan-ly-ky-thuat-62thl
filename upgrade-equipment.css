@@ -120,3 +120,54 @@ body.estaUpgradeMode .ueFormBody :is(input,select,textarea):focus-visible{outlin
 body:not(.estaUpgradeMode) .ueOverlay{display:none!important}
 /* NANGCAP uses the standalone up-to-date register; keep legacy toggle out of the way. */
 #app.estaUpgradeMode #m130Legacy{display:none!important}
+
+
+/* Bản nâng cấp: 44 mẫu / 9 hệ thống, đồng bộ xanh rêu & kem ESTA */
+#app.estaUpgradeMode .ueStats em{font-style:normal;font-size:10px;color:#6c817d;line-height:1.45}
+#app.estaUpgradeMode .ueSystemPanel{background:#fffdf8;border:1px solid #d6e0d9;border-radius:12px;margin:0 0 12px;padding:14px 16px}
+#app.estaUpgradeMode .ueSystemPanel header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+#app.estaUpgradeMode .ueSystemPanel h2{margin:0;font-size:15px;color:#173f4b}
+#app.estaUpgradeMode .ueSystemPanel p{margin:0;color:#617772;font-size:12px}
+#app.estaUpgradeMode .ueSystemGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#app.estaUpgradeMode .ueSystemChip{padding:10px 9px!important;display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;min-height:68px;text-align:left;border:1px solid #d5e2d9!important;background:#f7f8f2!important;color:#264c4c!important;border-radius:9px!important;cursor:pointer}
+#app.estaUpgradeMode .ueSystemChip b{font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+#app.estaUpgradeMode .ueSystemChip span{font-size:11px;color:#708680}
+#app.estaUpgradeMode .ueSystemChip:hover{border-color:#77a491!important;background:#eaf3eb!important}
+#app.estaUpgradeMode .ueSystemChip.active{border-color:#315f51!important;background:#28594d!important;color:#fff!important;box-shadow:inset 0 0 0 1px #517968}
+#app.estaUpgradeMode .ueSystemChip.active span{color:#d8e7dd!important}
+#app.estaUpgradeMode .ueVirtual .ueItemGlyph{background:#ecf0e8;color:#52796d}
+#app.estaUpgradeMode .ueVirtual .ueItemId strong{font-weight:700}
+#app.estaUpgradeMode .ueVirtual .ueState{background:#eef1eb;color:#54736b}
+#app.estaUpgradeMode .ueCritical{background:#fde4e0;color:#a32d31}
+body.estaUpgradeMode .ueDialog{max-height:min(94dvh,940px)}
+body.estaUpgradeMode .ueFormNotice{font-size:12px;line-height:1.5;margin:0;border:1px solid #d5e2d6;border-radius:8px;background:#edf4ed;padding:10px 11px;color:#31554b}
+body.estaUpgradeMode .ueAdvancedSpecs{border-top:1px solid #dce7dc;padding-top:12px}
+body.estaUpgradeMode .ueAdvancedSpecs h3,body.estaUpgradeMode .ueInspection h3{margin:0 0 10px;color:#183f4e;font-size:14px}
+body.estaUpgradeMode .ueAdvancedSpecs:empty{display:none}
+body.estaUpgradeMode .ueInspectGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+body.estaUpgradeMode .ueInspectGrid label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:750;color:#294b51;min-width:0}
+body.estaUpgradeMode .ueInspectGrid label.ueFull{grid-column:1/-1}
+body.estaUpgradeMode .ueInspectGrid :is(input,textarea,select){border:1px solid #cbd9d1!important;border-radius:8px!important;background:#fffdf9!important;color:#173b51!important;padding:9px;width:100%;min-width:0;min-height:39px}
+body.estaUpgradeMode .ueInspection{border-top:1px solid #dce7dc;padding-top:14px}
+body.estaUpgradeMode .ueInspection[hidden]{display:none!important}
+body.estaUpgradeMode .ueInspection>p{color:#58736d;font-size:12px;margin:0 0 12px}
+body.estaUpgradeMode .ueInspection>button{margin:10px 0 12px}
+body.estaUpgradeMode .ueInspection h4{font-size:13px;color:#173b51;margin:10px 0}
+body.estaUpgradeMode .ueHistoryItem{padding:11px 12px;border:1px solid #d7e3da;border-radius:8px;background:#f7faf5;margin-bottom:8px}
+body.estaUpgradeMode .ueHistoryItem strong{color:#21493f;font-size:12px}
+body.estaUpgradeMode .ueHistoryItem small{display:block;font-size:11px;color:#73857f;margin:4px 0}
+body.estaUpgradeMode .ueHistoryItem p{margin:5px 0;color:#365652;font-size:12px;white-space:pre-wrap}
+body.estaUpgradeMode .ueHistoryPhotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+body.estaUpgradeMode .ueHistoryPhotos img{width:100%;max-height:190px;object-fit:contain;background:#fff;border:1px solid #dce5dc;border-radius:7px}
+@media(max-width:1100px){#app.estaUpgradeMode .ueSystemGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){
+ #app.estaUpgradeMode .ueSystemPanel{padding:11px}
+ #app.estaUpgradeMode .ueSystemGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #app.estaUpgradeMode .ueSystemChip{min-height:60px;padding:9px!important}
+ #app.estaUpgradeMode .ueHeroButtons{flex-wrap:wrap}
+ #app.estaUpgradeMode .ueHeroButtons button{flex:1 1 30%;min-width:0;padding:7px!important;font-size:12px!important}
+ body.estaUpgradeMode .ueInspectGrid{grid-template-columns:1fr;gap:9px}
+ body.estaUpgradeMode .ueInspectGrid label.ueFull{grid-column:auto}
+ body.estaUpgradeMode .ueInspectGrid :is(input,select,textarea){font-size:16px!important}
+ body.estaUpgradeMode .ueHistoryPhotos img{max-height:150px}
+}

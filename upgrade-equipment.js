@@ -7,23 +7,70 @@
 const BID="NANGCAP",TABLE="building_equipment_profiles_nangcap";
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-const groups=[
- ["Điều hòa & Thông gió","HVAC",["Chiller","AHU","FCU","Điều hòa âm trần","Điều hòa treo tường","Quạt hút","Quạt cấp gió","Jetfan","Khác"]],
- ["Điện & Chiếu sáng","ĐIỆN",["Tủ điện","Máy biến áp","Máy phát điện","UPS","ATS","Đèn chiếu sáng","Công tơ","Khác"]],
- ["Phòng cháy chữa cháy","PCCC",["Bơm chữa cháy","Tủ trung tâm báo cháy","Đầu báo","Đầu phun","Họng nước","Bình chữa cháy","Quạt hút khói","Khác"]],
- ["Cấp thoát nước","NƯỚC",["Bơm nước","Bồn nước","Van","Đồng hồ nước","Bơm thoát nước","Xử lý nước thải","Khác"]],
- ["Thang máy","THANG MÁY",["Thang hành khách","Thang hàng","Tủ điều khiển","Khác"]],
- ["Camera & An ninh","AN NINH",["Camera","Đầu ghi","Kiểm soát cửa","Barrier","Khác"]],
- ["Hệ thống khác","KHÁC",["Thiết bị khác"]]
+const G=[
+ ["pccc","PCCC",30,[
+ ["Bơm chữa cháy điện","Phòng bơm","bom_dien"],["Bơm bù áp (Jockey)","Phòng bơm","bom_jockey"],["Bơm chữa cháy diesel","Phòng bơm","bom_diesel"],["Tủ trung tâm báo cháy","Phòng điều khiển","bao_chay"],["Họng nước chữa cháy vách tường","Các tầng","hong_nuoc"],["Bình chữa cháy xách tay","Các tầng","binh_cc"],["Hệ thống sprinkler","Các tầng","sprinkler"],["Đèn exit và chiếu sáng sự cố","Thang thoát hiểm","den_exit"],["Quạt tăng áp cầu thang","Mái","quat_tang_ap"]]],
+ ["dien","Điện (MSB)",30,[["Tủ điện tổng MSB","Phòng MSB","msb"],["Máy biến áp","Phòng máy biến áp","mba"],["Tủ tụ bù","Phòng MSB","tu_bu"],["Tủ ATS","Phòng MSB","ats"],["Tủ điện tầng","Các tầng","tu_tang"]]],
+ ["mpd","Máy phát điện",14,[["Máy phát điện dự phòng","Phòng máy phát","mpd"],["Bồn dầu DO","Phòng máy phát","bon_dau"],["Ắc quy khởi động","Phòng máy phát","ac_quy"]]],
+ ["hvac","Điều hòa (HVAC)",30,[["Chiller","Phòng chiller","chiller"],["Tháp giải nhiệt","Mái","thap"],["AHU","Phòng AHU","ahu"],["FCU","Các tầng","fcu"],["Quạt thông gió và hút khói","Mái / hầm","quat"]]],
+ ["tm","Thang máy",30,[["Thang máy số 1","Giếng thang","thang"],["Thang máy số 2","Giếng thang","thang"],["Thang hàng / cứu hỏa","Giếng thang","thang"],["Bộ cứu hộ tự động (ARD)","Phòng máy thang","ard"]]],
+ ["bom","Bơm & cấp thoát nước",30,[["Bơm tăng áp","Phòng bơm","bom"],["Bồn nước mái","Mái","bon"],["Bồn nước ngầm","Tầng hầm","bon"],["Bơm thoát nước hầm","Tầng hầm","bom_thoat"],["Hệ thống xử lý nước thải","Tầng hầm","xlnt"]]],
+ ["cam","Camera & An ninh",30,[["Đầu ghi hình NVR","Phòng an ninh","nvr"],["Camera hành lang và thang","Các tầng","camera"],["Kiểm soát ra vào","Sảnh","acs"],["Barrier bãi xe","Cổng xe","barrier"]]],
+ ["cs","Chiếu sáng & Điện nhẹ",30,[["Chiếu sáng khu vực chung","Các tầng","den"],["Chiếu sáng ngoại thất","Mặt ngoài","den"],["Hệ thống âm thanh thông báo","Các tầng","am_thanh"],["Mạng và wifi khu vực chung","Phòng kỹ thuật","mang"]]],
+ ["kc","Kết cấu & Xây dựng",90,[["Mái và chống thấm","Mái","mai"],["Mặt dựng và kính","Mặt ngoài","mat_dung"],["Sàn và tường tầng hầm","Tầng hầm","ham"],["Cửa thoát hiểm","Các tầng","cua"],["Lan can và tay vịn","Các tầng","lan_can"]]]
 ];
+const F={
+ bom_dien:"cs|Công suất|kW;ll|Lưu lượng|m³/h;ca|Cột áp|bar;da|Điện áp|V;dong|Dòng định mức|A;kd|Áp suất khởi động|bar;dung|Áp suất dừng|bar",
+ bom_jockey:"cs|Công suất|kW;ll|Lưu lượng|m³/h;ca|Cột áp|bar;kd|Áp suất khởi động|bar",
+ bom_diesel:"cs|Công suất|kW;ll|Lưu lượng|m³/h;ca|Cột áp|bar;hdc|Hãng động cơ;mdc|Model động cơ;bon|Dung tích dầu|lít",
+ bao_chay:"zone|Số zone;loop|Số loop;nguon|Nguồn cấp|V;aq|Ắc quy|Ah",
+ msb:"da|Điện áp|V;dong|Dòng định mức|A;icu|Icu|kA;cb|CB tổng",
+ mba:"cs|Công suất|kVA;so|Điện áp sơ cấp|kV;thu|Điện áp thứ cấp|V;loai|Loại MBA",
+ tu_bu:"cs|Tổng công suất bù|kVAr;cap|Số cấp bù;cos|Cos φ mục tiêu",
+ ats:"dong|Dòng định mức|A;tg|Thời gian chuyển nguồn|giây",
+ mpd:"kva|Công suất|kVA;kw|Công suất|kW;hz|Tần số|Hz;bon|Dung tích dầu|lít;gio|Giờ chạy|giờ",
+ chiller:"rt|Công suất lạnh|RT;kw|Điện tiêu thụ|kW;gas|Môi chất lạnh;cop|COP / IPLV",
+ thap:"rt|Công suất giải nhiệt|RT;ll|Lưu lượng nước|m³/h",
+ ahu:"gio|Lưu lượng gió|m³/h;lanh|Công suất lạnh|kW",
+ fcu:"lanh|Công suất lạnh|kW;gio|Lưu lượng gió|m³/h",
+ thang:"tt|Tải trọng|kg;ng|Số người;vt|Tốc độ|m/s;dd|Số điểm dừng;kdinh|Hạn kiểm định",
+ bon:"dt|Dung tích|m³;vl|Vật liệu;kt|Kích thước|m",
+ xlnt:"cs|Công suất xử lý|m³/ngày;cn|Công nghệ xử lý",
+ nvr:"kenh|Số kênh;hdd|Ổ cứng|TB;ngay|Lưu trữ|ngày",
+ camera:"sl|Số lượng;pg|Độ phân giải|MP;loai|Loại camera",
+ den:"loai|Loại đèn;sl|Số lượng;cs|Công suất đèn|W",
+ mai:"dt|Diện tích|m²;vl|Vật liệu chống thấm"
+};
+
+const groups=G.map(g=>[g[1],g[0],g[3].map(x=>x[0]).concat(["Khác"])]);
+const SEEDS=G.flatMap(g=>g[3].map((x,i)=>({
+ id:"sample:"+g[0]+":"+i,seedKey:g[0]+":"+i,name:x[0],equipment_type:x[0],system_group:g[1],
+ location:x[1],_technicalType:x[2],_cadence:g[2],status:"",quantity:1,
+ virtual:true,specs:{_estaUpgrade:{seedKey:g[0]+":"+i,verified:false,condition:"chua",history:[]}}
+})));
+const CONDITIONS={mau:"Mẫu chưa xác minh",unverified:"Chưa xác minh",chua:"Chưa kiểm tra",tot:"Tốt",theodoi:"Cần theo dõi",hu:"Hư hỏng",sua:"Đang sửa"};
+const metaOf=x=>x?.specs?._estaUpgrade||{};
+const realRows=()=>items.filter(x=>!x.virtual);
+function catalog(){
+ const keys=new Set(items.map(x=>metaOf(x).seedKey).filter(Boolean));
+ return items.concat(SEEDS.filter(x=>!keys.has(x.seedKey)));
+}
+function conditionOf(x){
+ if(x.virtual)return "mau";
+ const meta=metaOf(x);
+ return !meta.verified?"unverified":meta.condition||"chua";
+}
+const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
+
 const statuses=["Đang sử dụng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
-let items=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null;
-const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID;
-const allowed=()=>active()&&!!centralSession?.access_token&&["admin","editor"].includes(String(currentBuilding?.role||"").toLowerCase());
+let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="";
+const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
+const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
 const gopts=()=>groups.map(g=>g[0]);
 const safeQty=n=>Number.isFinite(+n)?Math.max(1,Math.floor(Number(n))):1;
-const eqCount=()=>items.reduce((n,x)=>n+safeQty(x.quantity),0);
+const eqCount=()=>items.filter(x=>metaOf(x).verified).reduce((n,x)=>n+safeQty(x.quantity),0);
+
 const label=x=>x?.name||x?.equipment_type||"Chưa đặt tên";
 const isPresent=()=>active()&&!!$("updateAssetsPage")&&!$("updateAssetsPage").classList.contains("hide");
 async function load(force=false){
@@ -36,137 +83,262 @@ async function load(force=false){
    const result=await sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token});
    if(!active())return;
    items=Array.isArray(result)?result:[];error="";fetchedAt=Date.now();
+   sbFetch("/rest/v1/maintenance_assets?building_id=eq.NANGCAP&select=id,name,code,location&order=name.asc",{token:centralSession?.access_token}).then(a=>{if(active())linkedAssets=Array.isArray(a)?a:[]}).catch(()=>{linkedAssets=[]});
   }catch(e){if(active())error=e?.message||"Không tải được danh mục thiết bị.";}
   finally{loading=null;if(isPresent())render($("updateAssetsPage"),true);}
  })();
  return loading;
 }
+
 function currentRows(){
  const q=search.trim().toLocaleLowerCase("vi-VN");
- return items.filter(x=>(!group||x.system_group===group)&&(!status||x.status===status)&&(!q||[x.name,x.code,x.system_group,x.equipment_type,x.brand,x.model,x.location].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
+ return catalog().filter(x=>(!group||x.system_group===group)&&(!status||conditionOf(x)===status)&&
+  (!q||[x.name,x.code,x.system_group,x.equipment_type,x.brand,x.model,x.location].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
 }
 function list(){
  const host=$("ueRows"),counter=$("ueResultCount");
  if(!host)return;
  const rows=currentRows();
- if(counter)counter.textContent=rows.length+" / "+items.length+" hồ sơ";
- if(!rows.length){
-  host.innerHTML='<div class="ueEmpty"><b>'+(items.length?'Không có thiết bị phù hợp bộ lọc.':'Chưa có hồ sơ thiết bị cho Bản nâng cấp.')+'</b><p>'+(items.length?'Thử xóa từ khóa hoặc thay bộ lọc.':'Dữ liệu công việc được lấy từ 62 Trần Huy Liệu, còn hồ sơ thiết bị mới chưa được nhập. Bấm “Thêm thiết bị” để chọn danh mục có sẵn và điền thông tin.')+'</p></div>';
-  return;
- }
+ if(counter)counter.textContent=rows.length+" / "+catalog().length+" hạng mục";
+ document.querySelectorAll("#updateAssetsPage [data-ue-group]").forEach(b=>b.classList.toggle("active",b.dataset.ueGroup===group));
+ if(!rows.length){host.innerHTML='<div class="ueEmpty"><b>Không có thiết bị phù hợp.</b><p>Thử đổi nhóm hệ thống, trạng thái hoặc nội dung tìm kiếm.</p></div>';return}
  host.innerHTML=rows.map(x=>{
-  const warn=x.status==="Cần theo dõi"||x.status==="Đang sửa chữa";
-  const stopped=x.status==="Ngừng sử dụng";
-  const spec=x.specs||{},code=x.code||"—";
-  return '<button type="button" class="ueItem" data-ue-id="'+esc(x.id)+'">'+
-   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">⚙</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(code)+' · '+esc(x.equipment_type||x.system_group)+'</small></span></div>'+
-   '<span class="ueItemGroup">'+esc(x.system_group||"Chưa phân nhóm")+'</span>'+
-   '<span class="ueItemModel">'+esc([x.brand,x.model].filter(Boolean).join(" / ")||"—")+'</span>'+
+  const c=conditionOf(x),virt=!!x.virtual;
+  return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+'" data-ue-id="'+esc(x.id)+'">'+
+   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(x.code|| (virt?'Mẫu thiết bị · Bấm để tạo hồ sơ':'Hồ sơ đã lưu'))+'</small></span></div>'+
+   '<span class="ueItemGroup">'+esc(x.system_group)+'</span>'+
+   '<span class="ueItemModel">'+esc([x.brand,x.model].filter(Boolean).join(" / ")||"Chưa cập nhật")+'</span>'+
    '<span class="ueItemPlace">'+esc(x.location||"—")+'</span>'+
-   '<span class="ueItemQty">'+safeQty(x.quantity)+'</span>'+
-   '<span class="ueState '+(stopped?'ueStopped':warn?'ueWarn':'ueGood')+'">'+esc(x.status||"Đang sử dụng")+'</span>'+
+   '<span class="ueItemQty">'+(virt?'—':safeQty(x.quantity))+'</span>'+
+   '<span class="ueState '+(["hu","sua"].includes(c)?"ueCritical":c==="theodoi"?"ueWarn":c==="tot"?"ueGood":"ueStopped")+'">'+esc(CONDITIONS[c]||x.status||"—")+'</span>'+
    '<span class="ueArrow">›</span></button>';
  }).join("");
  host.querySelectorAll("[data-ue-id]").forEach(btn=>btn.onclick=()=>openForm(btn.dataset.ueId));
 }
 function render(page,skipLoad=false){
  if(!active()||!page)return;
- const operational=items.filter(x=>x.status==="Đang sử dụng").length;
- const watch=items.filter(x=>["Cần theo dõi","Đang sửa chữa"].includes(x.status)).length;
+ const count=catalog().length,verified=items.filter(x=>metaOf(x).verified);
+ const alerts=verified.filter(x=>["hu","sua","theodoi"].includes(conditionOf(x)));
  page.classList.add("uePage");
  page.innerHTML=
-  '<section class="ueHero"><div><span class="ueEyebrow">ESTA · BUILDING SYSTEM PROFILE</span><h1>Thông tin hệ thống tòa nhà</h1><p>Hồ sơ thiết bị dễ tìm, dễ nhập và sử dụng riêng trong Bản nâng cấp.</p></div><div class="ueHeroButtons"><button type="button" class="ueBtnSecondary" id="ueRefresh">↻ Cập nhật</button><button type="button" class="ueBtnPrimary" id="ueAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div></section>'+
-  '<section class="ueStats"><div><small>Hồ sơ thiết bị</small><b>'+items.length+'</b></div><div><small>Tổng số lượng</small><b>'+eqCount()+'</b></div><div><small>Đang sử dụng</small><b>'+operational+'</b></div><div><small>Cần xử lý</small><b>'+watch+'</b></div></section>'+
-  '<section class="uePanel"><header class="uePanelHead"><div><h2>Danh mục thiết bị</h2><p>Chọn nhóm hệ thống, tên thiết bị, hãng và điền thông số phù hợp.</p></div><strong id="ueResultCount"></strong></header>'+
-  '<div class="ueFilters"><label class="ueSearch"><span>⌕</span><input id="ueSearch" type="search" placeholder="Tìm tên, mã, hãng, vị trí..." value="'+esc(search)+'" autocomplete="off"></label><select id="ueGroup" aria-label="Nhóm hệ thống"><option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select><select id="ueStatus" aria-label="Tình trạng"><option value="">Mọi tình trạng</option>'+opt(statuses,status)+'</select></div>'+
+  '<section class="ueHero"><div><span class="ueEyebrow">ESTA · QUẢN LÝ HỆ THỐNG KỸ THUẬT</span><h1>Thông tin hệ thống tòa nhà</h1><p>44 danh mục có sẵn · 9 hệ thống · Hồ sơ, thông số và lịch sử kiểm tra thiết bị.</p></div><div class="ueHeroButtons"><button type="button" class="ueBtnSecondary" id="ueRefresh">↻ Làm mới</button><button type="button" class="ueBtnSecondary" id="uePrint">↓ PDF ESTA</button><button type="button" class="ueBtnPrimary" id="ueAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div></section>'+
+  '<section class="ueStats"><div><small>Danh mục có sẵn</small><b>'+SEEDS.length+'</b><em>Mẫu chưa xác minh</em></div><div><small>Hồ sơ đã lưu</small><b>'+items.length+'</b><em>Dữ liệu dự án</em></div><div><small>Đã xác minh</small><b>'+verified.length+'</b><em>'+eqCount()+' thiết bị thực tế</em></div><div><small>Cần theo dõi</small><b>'+alerts.length+'</b><em>Chỉ tính hồ sơ xác minh</em></div></section>'+
+  '<section class="ueSystemPanel"><header><h2>9 nhóm hệ thống</h2><p>Chọn nhóm để xem thiết bị mẫu hoặc hồ sơ đã lưu.</p></header><div class="ueSystemGrid">'+
+  '<button type="button" data-ue-group="" class="ueSystemChip'+(!group?' active':'')+'"><b>Tất cả</b><span>'+count+' mục</span></button>'+
+  G.map((g,i)=>'<button type="button" data-ue-group="'+esc(g[1])+'" class="ueSystemChip'+(group===g[1]?' active':'')+'"><b>'+esc(g[1])+'</b><span>'+groupCount(g[1])+' mục</span></button>').join("")+
+  '</div></section>'+
+  '<section class="uePanel"><header class="uePanelHead"><div><h2>Danh mục thiết bị kỹ thuật</h2><p>Nhấn vào thiết bị để điền thông số, xác minh, ghi kiểm tra hoặc chụp ảnh.</p></div><strong id="ueResultCount"></strong></header>'+
+  '<div class="ueFilters"><label class="ueSearch"><span>⌕</span><input id="ueSearch" type="search" placeholder="Tìm tên, mã, hãng, vị trí..." value="'+esc(search)+'" autocomplete="off"></label><select id="ueGroup" aria-label="Nhóm hệ thống"><option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select><select id="ueStatus" aria-label="Tình trạng"><option value="">Mọi tình trạng</option>'+Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div>'+
   (error?'<p class="ueError" role="alert">'+esc(error)+'</p>':'')+
   '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Hãng / Model</span><span>Vị trí</span><span>SL</span><span>Tình trạng</span><span></span></div><div id="ueRows" class="ueRows"></div></section>'+
-  '<p class="ueSourceNote">Nguồn dữ liệu: dự án NANGCAP, lưu độc lập. Không tự sao chép hồ sơ thiết bị của tòa nhà khác.</p>';
- $("ueRefresh").onclick=()=>{fetchedAt=0;load(true);};
+  '<p class="ueSourceNote">44 dòng là mẫu tham khảo, không phải 44 thiết bị đang hoạt động. Dữ liệu chỉ ghi nhận sau khi Lưu và xác minh tại dự án Bản nâng cấp.</p>';
+ $("ueRefresh").onclick=()=>{fetchedAt=0;load(true)};
+ $("uePrint").onclick=printReport;
  $("ueAdd").onclick=()=>openForm();
  $("ueSearch").oninput=e=>{search=e.target.value;list()};
  $("ueGroup").onchange=e=>{group=e.target.value;list()};
  $("ueStatus").onchange=e=>{status=e.target.value;list()};
+ page.querySelectorAll("[data-ue-group]").forEach(b=>b.onclick=()=>{group=b.dataset.ueGroup;$("ueGroup").value=group;list()});
  list();
  if(!skipLoad&&!fetchedAt)load();
 }
+
+
 function ensureDialog(){
  if(dialog?.isConnected)return dialog;
- dialog=document.createElement("div");
- dialog.id="ueOverlay";dialog.className="ueOverlay";dialog.hidden=true;
+ dialog=document.createElement("div");dialog.id="ueOverlay";dialog.className="ueOverlay";dialog.hidden=true;
  dialog.innerHTML='<div class="ueDialog" role="dialog" aria-modal="true" aria-labelledby="ueModalHeading">'+
- '<header><div><small>ESTA · THÔNG TIN THIẾT BỊ</small><h2 id="ueModalHeading">Thêm thiết bị</h2></div><button type="button" id="ueClose" aria-label="Đóng">×</button></header>'+
+ '<header><div><small>ESTA · HỒ SƠ HỆ THỐNG KỸ THUẬT</small><h2 id="ueModalHeading">Hồ sơ thiết bị</h2></div><button type="button" id="ueClose" aria-label="Đóng">×</button></header>'+
  '<form id="ueForm"><div class="ueFormBody">'+
+ '<p id="ueFormNotice" class="ueFull ueFormNotice"></p>'+
  '<label>Nhóm hệ thống *<select name="system_group" id="ueEditGroup" required>'+opt(gopts(),"")+'</select></label>'+
  '<label>Loại thiết bị *<select name="equipment_type" id="ueEditType" required></select></label>'+
- '<label class="ueFull">Tên thiết bị *<input name="name" maxlength="140" placeholder="Ví dụ: Máy lạnh âm trần khu vực sảnh" required></label>'+
- '<label>Mã thiết bị<input name="code" maxlength="80" placeholder="HVAC-001"></label>'+
- '<label>Vị trí lắp đặt<input name="location" maxlength="140" placeholder="Tầng / phòng / khu vực"></label>'+
- '<label>Hãng sản xuất<input name="brand" list="ueBrands" maxlength="120" placeholder="Chọn hoặc nhập hãng"></label>'+
- '<label>Model<input name="model" maxlength="120" placeholder="Mã model"></label>'+
- '<label>Số lượng *<input name="quantity" type="number" min="1" step="1" required value="1"></label>'+
- '<label>Tình trạng<select name="status">'+opt(statuses,"Đang sử dụng")+'</select></label>'+
- '<label>Năm lắp đặt<input name="install_year" type="number" min="1950" max="2100" placeholder="Năm"></label>'+
- '<label>Công suất / thông số<input name="capacity" maxlength="120" placeholder="VD: 2.5 HP, 220 V"></label>'+
+ '<label class="ueFull">Tên thiết bị *<input name="name" maxlength="140" required></label>'+
+ '<label>Mã thiết bị<input name="code" maxlength="80" placeholder="Ví dụ: HVAC-001"></label>'+
+ '<label>Vị trí lắp đặt<input name="location" maxlength="140"></label>'+
+ '<label>Hãng sản xuất<input name="brand" list="ueBrands" maxlength="120"></label>'+
+ '<label>Model<input name="model" maxlength="120"></label>'+
+ '<label>Số lượng *<input name="quantity" type="number" min="1" max="500" step="1" required value="1"></label>'+
+ '<label>Trạng thái hoạt động<select name="status">'+opt(statuses,"Đang sử dụng")+'</select></label>'+
+ '<label>Năm lắp đặt<input name="install_year" type="number" min="1950" max="2100"></label>'+
+ '<label>Xác minh thực tế<select name="verified"><option value="0">Chưa xác minh thiết bị</option><option value="1">Đã kiểm tra xác minh tại tòa nhà</option></select></label>'+
+ '<label class="ueFull">Liên kết hồ sơ Bảo trì<select name="linkedAsset" id="ueLinkedAsset"><option value="">Chưa liên kết</option></select></label>'+
+ '<label>Công suất / thông số<input name="capacity" maxlength="120"></label>'+
  '<label>Số serial<input name="serial" maxlength="140"></label>'+
- '<label class="ueFull">Ghi chú<textarea name="note" rows="2" maxlength="2500" placeholder="Thông tin bổ sung, tình trạng hoặc bảo hành..."></textarea></label>'+
- '<datalist id="ueBrands"><option value="Daikin"><option value="Mitsubishi"><option value="Panasonic"><option value="KONE"><option value="Schneider"><option value="LS"><option value="Grundfos"><option value="Nagakawa"><option value="Kruger"><option value="Siemens"></datalist></div>'+
- '<footer><button type="button" class="ueBtnSecondary" id="ueCancel">Hủy</button><button type="button" class="ueDelete" id="ueDelete" hidden>Xóa thiết bị</button><button type="submit" class="ueBtnPrimary" id="ueSubmit">Lưu thiết bị</button></footer></form></div>';
+ '<section id="ueAdvancedSpecs" class="ueFull ueAdvancedSpecs"></section>'+
+ '<label class="ueFull">Ghi chú<textarea name="note" rows="2" maxlength="2500"></textarea></label>'+
+ '<datalist id="ueBrands"><option value="Daikin"><option value="Mitsubishi"><option value="Panasonic"><option value="KONE"><option value="Schneider"><option value="LS"><option value="Grundfos"><option value="Nagakawa"><option value="Kruger"><option value="Siemens"></datalist>'+
+ '<section id="ueInspection" class="ueFull ueInspection" hidden><h3>Kiểm tra & lịch sử tình trạng</h3><p>Chụp ảnh, ghi thông số và lưu minh chứng theo từng lần kiểm tra.</p>'+
+ '<div class="ueInspectGrid"><label>Ngày kiểm tra<input type="date" name="checkDate"></label>'+
+ '<label>Tình trạng<select name="checkCondition">'+Object.entries(CONDITIONS).filter(([k])=>["chua","tot","theodoi","hu","sua"].includes(k)).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join("")+'</select></label>'+
+ '<label>Người thực hiện<input name="checkBy" maxlength="120"></label>'+
+ '<label>Ảnh minh chứng<input type="file" name="checkPhotos" accept="image/*" multiple></label>'+
+ '<label class="ueFull">Ghi chú / Thông số đo<textarea name="checkNote" rows="2" maxlength="1500"></textarea></label></div>'+
+ '<button type="button" id="ueCheckSave" class="ueBtnPrimary">✓ Lưu lần kiểm tra</button>'+
+ '<h4>Lịch sử kiểm tra</h4><div id="ueHistory"></div></section>'+
+ '</div><footer><button type="button" class="ueBtnSecondary" id="ueCancel">Hủy</button>'+
+ '<button type="button" class="ueDelete" id="ueDelete" hidden>Xóa hồ sơ</button>'+
+ '<button type="submit" class="ueBtnPrimary" id="ueSubmit">Lưu hồ sơ thiết bị</button></footer></form></div>';
  document.body.append(dialog);
  $("ueClose").onclick=closeForm;$("ueCancel").onclick=closeForm;
  dialog.onclick=e=>{if(e.target===dialog)closeForm()};
- $("ueEditGroup").onchange=()=>fillTypes();
- $("ueForm").onsubmit=save;
- $("ueDelete").onclick=remove;
+ $("ueEditGroup").onchange=()=>{editingType="";fillTypes();fillAdvanced()};
+ $("ueEditType").onchange=()=>{editingType=seedTypeFromForm();fillAdvanced()};
+ $("ueForm").onsubmit=save;$("ueDelete").onclick=remove;
+ $("ueCheckSave").onclick=saveCheck;
  return dialog;
 }
+function seedTypeFromForm(){
+ const name=$("ueEditType").value;
+ return SEEDS.find(x=>x.system_group===$("ueEditGroup").value&&x.equipment_type===name)?._technicalType||"";
+}
+function advancedFields(type){
+ return (F[type]||"").split(";").filter(Boolean).map(v=>{const p=v.split("|");return {key:p[0],title:p[1],unit:p[2]||""}});
+}
+function fillAdvanced(values={}){
+ const type=editingType||seedTypeFromForm();
+ const fields=advancedFields(type);
+ $("ueAdvancedSpecs").innerHTML=fields.length?'<h3>Thông số kỹ thuật riêng</h3><div class="ueInspectGrid">'+fields.map(f=>'<label>'+esc(f.title)+(f.unit?" ("+esc(f.unit)+")":"")+'<input name="sp_'+esc(f.key)+'" value="'+esc(values[f.key]||"")+'" maxlength="160"></label>').join("")+'</div>':'';
+ if(!allowed())$("ueAdvancedSpecs").querySelectorAll("input").forEach(x=>x.disabled=true);
+}
+function renderHistory(x){
+ const host=$("ueHistory"),hist=metaOf(x).history||[];
+ if(!hist.length){host.innerHTML='<p>Chưa có lần kiểm tra được ghi nhận.</p>';return}
+ host.innerHTML=hist.slice().reverse().map(h=>
+ '<article class="ueHistoryItem"><strong>'+esc(h.date)+' · '+esc(CONDITIONS[h.condition]||"Chưa kiểm tra")+'</strong>'+
+ '<small>'+esc(h.by||"")+'</small><p>'+esc(h.note||"")+'</p>'+
+ '<div class="ueHistoryPhotos">'+(h.photos||[]).slice(0,8).map(ref=>'<img alt="Ảnh kiểm tra thiết bị" data-ue-image="'+esc(ref)+'">').join("")+'</div></article>').join("");
+ host.querySelectorAll("img[data-ue-image]").forEach(async image=>{
+  try{if(typeof mediaObjectUrl==="function"){const u=await mediaObjectUrl(image.dataset.ueImage);if(image.isConnected)image.src=u}}
+  catch(e){image.alt="Không mở được hình"}
+ });
+}
+
 function fillTypes(desired=""){
  const g=groups.find(x=>x[0]===$("ueEditGroup").value);
  const el=$("ueEditType"),types=g?.[2]||["Khác"];
  el.innerHTML=opt(types,desired);
  if(desired&&!types.includes(desired))el.appendChild(new Option(desired,desired,true,true));
 }
+
 function openForm(id=""){
  if(!active())return;
  const existing=items.find(x=>String(x.id)===String(id));
- if(id&&!existing)return;
- editId=existing?.id||null;
+ const sample=SEEDS.find(x=>x.id===id);
+ if(id&&!existing&&!sample)return;
+ const selected=existing||sample||null;
+ editId=existing?.id||null;editingSeed=selected?.seedKey||metaOf(selected).seedKey||"";
+ editingType=selected?._technicalType||metaOf(selected).technicalType||"";
  const d=ensureDialog(),form=$("ueForm");
- form.reset();
- $("ueModalHeading").textContent=existing?"Chi tiết thiết bị":"Thêm thiết bị";
- const values=existing||{system_group:gopts()[0],equipment_type:groups[0][2][0],quantity:1,status:statuses[0]};
+ form.reset();$("ueModalHeading").textContent=existing?"Chi tiết & kiểm tra thiết bị":sample?"Tạo hồ sơ từ mẫu":"Thêm thiết bị";
+ const values=selected||{system_group:gopts()[0],equipment_type:groups[0][2][0],quantity:1,status:statuses[0]};
  for(const [key,value] of Object.entries(values)){
   const input=form.elements.namedItem(key);
   if(input&&typeof value!=="object")input.value=value??"";
  }
- $("ueEditGroup").value=values.system_group||gopts()[0];
- fillTypes(values.equipment_type);
- const specs=values.specs||{};
+ $("ueEditGroup").value=values.system_group||gopts()[0];fillTypes(values.equipment_type);
+ const specs=values.specs||{},meta=metaOf(values);
  form.elements.namedItem("capacity").value=specs.capacity||"";
  form.elements.namedItem("serial").value=specs.serial||"";
+ form.elements.namedItem("verified").value=meta.verified?"1":"0";
+ $("ueLinkedAsset").innerHTML='<option value="">Chưa liên kết</option>'+
+ linkedAssets.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.code||a.name)+' · '+esc(a.name)+'</option>').join("");
+ $("ueLinkedAsset").value=meta.linkedAsset||"";
+ fillAdvanced(specs);
+ $("ueFormNotice").textContent=sample?"Đây là mẫu tham khảo, chưa phải thiết bị thực tế. Hãy điền thông số và xác minh trước khi dùng cho báo cáo vận hành.":
+ existing?"Hồ sơ đã lưu. Bạn có thể cập nhật thông tin, ghi lần kiểm tra và lưu ảnh minh chứng.":"Chỉ tạo hồ sơ thực tế khi đã kiểm tra thiết bị tại tòa nhà.";
+ $("ueInspection").hidden=!existing;
+ if(existing){
+  form.elements.namedItem("checkDate").value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+  form.elements.namedItem("checkBy").value=String(currentAccount?.display_name||currentAccount?.username||"");
+  renderHistory(existing);
+ }
  const mayEdit=allowed();
  form.querySelectorAll("input,select,textarea").forEach(el=>el.disabled=!mayEdit);
  $("ueDelete").hidden=!mayEdit||!existing;
- $("ueSubmit").hidden=!mayEdit;
+ $("ueSubmit").hidden=!mayEdit;$("ueCheckSave").hidden=!mayEdit;
  d.hidden=false;
 }
-function closeForm(){if(dialog)dialog.hidden=true;editId=null}
+function closeForm(){if(dialog)dialog.hidden=true;editId=null;editingSeed="";editingType=""}
+
+
 async function save(e){
  e.preventDefault();if(!allowed())return;
  const form=e.currentTarget,button=$("ueSubmit");if(button.disabled)return;
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
  const year=Number(field("install_year"));
- const payload={building_id:BID,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),status:field("status"),install_year:year||null,note:field("note"),specs:{capacity:field("capacity"),serial:field("serial")}};
+ const old=items.find(x=>x.id===editId),oldMeta=metaOf(old);
+ const type=editingType||seedTypeFromForm();
+ const specs={...old?.specs,capacity:field("capacity"),serial:field("serial")};
+ advancedFields(type).forEach(f=>{specs[f.key]=field("sp_"+f.key)});
+ const asset=field("linkedAsset");
+ if(asset&&!linkedAssets.some(x=>x.id===asset))return alert("Thiết bị bảo trì liên kết không hợp lệ");
+ specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],condition:oldMeta.condition||"chua"};
+ const payload={building_id:BID,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
+ location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),
+ status:field("status"),install_year:year||null,note:field("note"),specs};
  if(!payload.name||!payload.equipment_type||!payload.system_group)return;
  button.disabled=true;button.textContent="Đang lưu...";
  try{
-  const path=editId?"/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(editId)+"&building_id=eq."+BID:"/rest/v1/"+TABLE;
+  const id=editId||crypto.randomUUID();
+  if(!editId)payload.id=id;
+  const path=editId?"/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID:"/rest/v1/"+TABLE;
   await sbFetch(path,{method:editId?"PATCH":"POST",token:centralSession.access_token,body:payload});
-  closeForm();fetchedAt=0;await load(true);
-  if(typeof toast==="function")toast("Đã lưu hồ sơ thiết bị.");
- }catch(err){if(typeof toast==="function")toast(err.message||"Không lưu được hồ sơ.");else alert(err.message||"Không lưu được hồ sơ.");}
- finally{button.disabled=false;button.textContent="Lưu thiết bị";}
+  fetchedAt=0;await load(true);openForm(id);
+  if(typeof toast==="function")toast("Đã lưu hồ sơ thiết bị Bản nâng cấp.");
+ }catch(err){if(typeof toast==="function")toast(err.message||"Không lưu được hồ sơ.");else alert(err.message||"Không lưu được hồ sơ.")}
+ finally{button.disabled=false;button.textContent="Lưu hồ sơ thiết bị";}
 }
+async function saveCheck(){
+ if(!active()||!allowed()||!editId)return;
+ const item=items.find(x=>x.id===editId),form=$("ueForm"),button=$("ueCheckSave");
+ if(!item||button.disabled)return;
+ const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
+ const date=field("checkDate"),by=field("checkBy"),condition=field("checkCondition");
+ if(!date||!by||!["chua","tot","theodoi","hu","sua"].includes(condition))return alert("Vui lòng nhập ngày, tình trạng và người kiểm tra.");
+ const files=[...form.elements.namedItem("checkPhotos").files];
+ if(files.length>6||files.some(f=>!f.type.startsWith("image/")||f.size>12*1024*1024))return alert("Chỉ chọn tối đa 6 ảnh, mỗi ảnh không quá 12 MB.");
+ button.disabled=true;button.textContent="Đang lưu lần kiểm tra...";
+ try{
+  const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,BID):[];
+  const meta=metaOf(item);
+  const history=[...(meta.history||[]),{date,by,condition,note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()}];
+  await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+BID,{
+   method:"PATCH",token:centralSession.access_token,
+   body:{specs:{...item.specs,_estaUpgrade:{...meta,history,condition,lastCheck:date}}}
+  });
+  fetchedAt=0;await load(true);openForm(item.id);
+  if(typeof toast==="function")toast("Đã lưu lịch sử kiểm tra và hình ảnh.");
+ }catch(err){if(typeof toast==="function")toast(err.message||"Không lưu được kết quả kiểm tra.");else alert(err.message)}
+ finally{button.disabled=false;button.textContent="✓ Lưu lần kiểm tra"}
+}
+async function printReport(){
+ if(!active())return;
+ const rows=currentRows(),verified=rows.filter(x=>!x.virtual&&metaOf(x).verified);
+ const win=window.open("","_blank");if(!win){alert("Trình duyệt đang chặn cửa sổ in.");return}
+ const escPrint=esc;
+ const parts=[];
+ for(const x of verified){
+  const latest=(metaOf(x).history||[]).slice(-1)[0];if(!latest?.photos?.length)continue;
+  const urls=await Promise.all(latest.photos.slice(0,6).map(async ref=>{try{return await mediaObjectUrl(ref)}catch{return ""}}));
+  parts.push('<section class="proof"><h3>'+escPrint(x.name)+' · '+escPrint(latest.date)+'</h3><div class="photos">'+
+   urls.filter(Boolean).map(u=>'<img src="'+escPrint(u)+'">').join("")+'</div></section>');
+ }
+ const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - Bản nâng cấp - Hệ thống kỹ thuật</title>'+
+ '<style>@page{size:A4;margin:13mm}body{font:12px Arial,sans-serif;color:#243b44}header{border-bottom:2px solid #214a43;padding-bottom:9px}h1{font-size:19px}h2{font-size:14px;margin-top:17px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #bdc9c4;padding:7px;text-align:left}th{background:#e8f0ea}tr{break-inside:avoid}.notice{font-size:11px;color:#546c66}.proof{break-inside:avoid}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.photos img{max-width:100%;max-height:76mm;object-fit:contain;border:1px solid #d3dcda}footer{display:flex;justify-content:space-between;margin-top:27mm;break-inside:avoid}</style></head><body>'+
+ '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: Bản nâng cấp · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
+ '<p class="notice">'+rows.length+' hạng mục theo bộ lọc · '+verified.length+' hồ sơ thực tế đã xác minh. Các mẫu chưa xác minh không được tính là thiết bị đang vận hành.</p>'+
+ '<table><thead><tr><th>STT</th><th>Thiết bị</th><th>Nhóm hệ thống</th><th>Vị trí</th><th>Trạng thái</th><th>Kiểm tra</th></tr></thead><tbody>'+
+ rows.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escPrint(x.name)+'</td><td>'+escPrint(x.system_group)+'</td><td>'+escPrint(x.location||"—")+'</td><td>'+
+ escPrint(CONDITIONS[conditionOf(x)]||"—")+'</td><td>'+escPrint(metaOf(x).lastCheck||"—")+'</td></tr>').join("")+
+ '</tbody></table><h2>HÌNH ẢNH KIỂM TRA (HỒ SƠ XÁC MINH)</h2>'+parts.join("")+
+ '<footer><div>Người lập phiếu<br><br><br>________________</div><div>Kỹ thuật xác nhận<br><br><br>________________</div></footer></body></html>';
+ win.document.open();win.document.write(html);win.document.close();
+ let printed=false;const trigger=()=>{if(printed||win.closed)return;printed=true;win.focus();win.print()};
+ win.addEventListener("load",trigger,{once:true});
+ setTimeout(trigger,1500);
+}
+
 async function remove(){
  if(!editId||!allowed())return;
  const existing=items.find(x=>x.id===editId);
