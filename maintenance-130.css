@@ -443,3 +443,14 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
   #maint130 .m130AgendaButton.done{border-left-color:#25895c;background:#effaf2}
   #maint130 .m130AgendaButton.working{border-left-color:#4d96cb}
 }
+
+/* ESTA shared maintenance: preserve imported plans with no dated occurrence. */
+#maint130 .m130Unscheduled{margin-top:12px;border:1px solid #d5cba9;border-radius:12px;background:#fffaf0;overflow:hidden}
+#maint130 .m130Unscheduled>summary{cursor:pointer;padding:12px 14px;color:#5d542e;font-weight:750;font-size:13px}
+#maint130 .m130UnscheduledList{border-top:1px solid #e6dbc2}
+#maint130 .m130UnscheduledList>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-top:1px solid #f0e7d6}
+#maint130 .m130UnscheduledList>div:first-child{border-top:0}
+#maint130 .m130UnscheduledList>div>span{min-width:0;font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+#maint130 .m130UnscheduledList button{background:#315f4a;border:0;border-radius:8px;padding:8px 12px;color:white;font-weight:700;cursor:pointer;flex-shrink:0}
+#maint130 .m130UnscheduledList button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:640px){#maint130 .m130UnscheduledList>div{align-items:flex-start}#maint130 .m130UnscheduledList button{font-size:12px}}
