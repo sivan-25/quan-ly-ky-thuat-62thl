@@ -115,3 +115,8 @@ body.estaUpgradeMode .ueFormBody :is(input,select,textarea):focus-visible{outlin
  body.estaUpgradeMode .ueFormBody :is(input,select,textarea){font-size:16px!important}
  body.estaUpgradeMode .ueDialog footer{padding:10px}
 }
+
+/* Prevent detached dialogs from showing when switching to another project. */
+body:not(.estaUpgradeMode) .ueOverlay{display:none!important}
+/* NANGCAP uses the standalone up-to-date register; keep legacy toggle out of the way. */
+#app.estaUpgradeMode #m130Legacy{display:none!important}
