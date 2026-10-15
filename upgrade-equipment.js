@@ -1,10 +1,10 @@
 /* ESTA | NANGCAP - unified building equipment register.
  * Isolated from the four operating projects and their maintenance schedules.
- * Data: public.building_equipment_profiles, building_id = NANGCAP.
+ * Data: public.building_equipment_profiles_nangcap, building_id = NANGCAP.
  */
 (()=>{
 "use strict";
-const BID="NANGCAP",TABLE="building_equipment_profiles";
+const BID="NANGCAP",TABLE="building_equipment_profiles_nangcap";
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const groups=[
