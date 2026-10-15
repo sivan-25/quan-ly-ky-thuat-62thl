@@ -64,7 +64,7 @@ const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
 let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="";
-const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID;
+const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
 const gopts=()=>groups.map(g=>g[0]);
@@ -182,7 +182,7 @@ function ensureDialog(){
  document.body.append(dialog);
  $("ueClose").onclick=closeForm;$("ueCancel").onclick=closeForm;
  dialog.onclick=e=>{if(e.target===dialog)closeForm()};
- $("ueEditGroup").onchange=()=>{fillTypes();fillAdvanced()};
+ $("ueEditGroup").onchange=()=>{editingType="";fillTypes();fillAdvanced()};
  $("ueEditType").onchange=()=>{editingType=seedTypeFromForm();fillAdvanced()};
  $("ueForm").onsubmit=save;$("ueDelete").onclick=remove;
  $("ueCheckSave").onclick=saveCheck;
@@ -249,7 +249,7 @@ function openForm(id=""){
  existing?"Hồ sơ đã lưu. Bạn có thể cập nhật thông tin, ghi lần kiểm tra và lưu ảnh minh chứng.":"Chỉ tạo hồ sơ thực tế khi đã kiểm tra thiết bị tại tòa nhà.";
  $("ueInspection").hidden=!existing;
  if(existing){
-  form.elements.namedItem("checkDate").value=new Date().toLocaleDateString("en-CA");
+  form.elements.namedItem("checkDate").value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
   form.elements.namedItem("checkBy").value=String(currentAccount?.display_name||currentAccount?.username||"");
   renderHistory(existing);
  }
@@ -334,8 +334,9 @@ async function printReport(){
  '</tbody></table><h2>HÌNH ẢNH KIỂM TRA (HỒ SƠ XÁC MINH)</h2>'+parts.join("")+
  '<footer><div>Người lập phiếu<br><br><br>________________</div><div>Kỹ thuật xác nhận<br><br><br>________________</div></footer></body></html>';
  win.document.open();win.document.write(html);win.document.close();
- win.addEventListener("load",()=>{win.focus();win.print()},{once:true});
- setTimeout(()=>{if(!win.closed){win.focus();win.print()}},1400);
+ let printed=false;const trigger=()=>{if(printed||win.closed)return;printed=true;win.focus();win.print()};
+ win.addEventListener("load",trigger,{once:true});
+ setTimeout(trigger,1500);
 }
 
 async function remove(){
