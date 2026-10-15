@@ -1,9 +1,9 @@
 (function(){
 "use strict";
-const PROJECT_IDS=new Set(["130HH","127HH","62THL","68PĐL"]);
+const PROJECT_IDS=new Set(["130HH","127HH","62THL","68PĐL","NANGCAP"]);
 let B="130HH";
 const $=id=>document.getElementById(id);
-const projectLabel=()=>({"130HH":"130 Hồng Hà","127HH":"127 Hồng Hà","62THL":"62 Trần Huy Liệu","68PĐL":"68 Phan Đăng Lưu"})[B]||B;
+const projectLabel=()=>({"130HH":"130 Hồng Hà","127HH":"127 Hồng Hà","62THL":"62 Trần Huy Liệu","68PĐL":"68 Phan Đăng Lưu","NANGCAP":"Bản nâng cấp"})[B]||B;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const now=new Date();
 const viewKey=()=>"esta.maintenance."+B+".view";
