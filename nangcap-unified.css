@@ -240,3 +240,40 @@ body.estaUpgradeMode{background:#eee9dd}
 #app.estaUpgradeMode .estaTopbar{min-height:52px!important}
 #app.estaUpgradeMode :is(input,select,textarea){font-size:16px!important}
 }
+
+/* Mobile task editor is portalled to document.body, outside #app. */
+@media screen {
+body.estaUpgradeMode :is(.workEditDrawerCard,.demoDrawerCard,.ccModalCard,.pendingPhotoViewerCard){
+  background:#fffdf8!important;
+  color:#112e42!important;
+  border:1px solid #d7dfdb!important;
+  border-radius:13px!important;
+  box-shadow:0 15px 35px rgba(16,42,45,.18)!important;
+}
+body.estaUpgradeMode #workEditDrawer .workEntryCard{
+  background:#fffdf8!important;
+  border:1px solid #d7dfdb!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+body.estaUpgradeMode #workEditDrawer .workEntryHeader{
+  background:#f6f0e4!important;
+  padding:10px 12px!important;
+  border-bottom:1px solid #d7dfdb!important;
+}
+body.estaUpgradeMode #workEditDrawer #taskForm.workEntryForm{
+  padding:11px!important;gap:9px!important;
+}
+body.estaUpgradeMode #workEditDrawer #taskForm :is(input,textarea,select,.peopleSelectBtn){
+  background:#fffefa!important;
+  border:1px solid #cbd7d3!important;
+  color:#112e42!important;
+  border-radius:9px!important;
+}
+body.estaUpgradeMode #workEditDrawer #taskForm :is(.workSave,#saveBtn){
+  background:#173b51!important;
+  color:white!important;
+  border:1px solid #173b51!important;
+  box-shadow:none!important;
+}
+}
