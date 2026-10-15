@@ -1,0 +1,147 @@
+/* ESTA 130HH · Building Systems / equipment inventory (isolated stylesheet) */
+#app #buildingSystemsPage{color:#163b45;min-width:0;overflow-x:clip}
+#app .bs130Intro{display:flex;align-items:center;justify-content:space-between;gap:18px;border-radius:17px;border:1px solid #d5e0d6;background:linear-gradient(125deg,#e5ebde,#faf8ed);padding:22px 24px;margin:4px 0 16px}
+#app .bs130Eyebrow{font-size:10px;font-weight:850;letter-spacing:1.45px;color:#426e5d}
+#app .bs130Intro h2{font-size:24px;line-height:1.2;color:#153d3c;margin:6px 0 8px;letter-spacing:-.5px}
+#app .bs130Intro p{font-size:13px;line-height:1.6;color:#62766c;margin:0;max-width:720px}
+#app .bs130Primary{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;background:#164f48;color:#fff;border:1px solid #164f48;border-radius:10px;padding:11px 16px;font-weight:780;font-size:13px;cursor:pointer;min-height:40px}
+#app .bs130Primary:hover{background:#0e3b36}
+#app .bs130Primary:disabled{opacity:.58;cursor:wait}
+#app .bs130Light{border:1px solid #cbdad3;background:#fff;color:#31544c;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:700}
+#app .bs130Metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+#app .bs130Metrics>div{border:1px solid #dce6df;border-radius:12px;background:#fffdf7;padding:15px 18px;display:flex;align-items:center;gap:14px}
+#app .bs130Metrics strong{font-size:27px;color:#1c5951;line-height:1;font-variant-numeric:tabular-nums}
+#app .bs130Metrics span{font-size:12px;color:#687d75;font-weight:650}
+#app .bs130Toolbar{display:grid;grid-template-columns:minmax(220px,1fr) minmax(170px,220px) minmax(170px,220px) auto;gap:9px;margin-bottom:13px}
+#app .bs130Toolbar .bs130Search{display:flex;align-items:center;gap:7px;padding:0 12px;background:#fff;border:1px solid #d2dfd9;border-radius:10px}
+#app .bs130Search span{font-size:23px;color:#718c7f}
+#app .bs130Toolbar input,#app .bs130Toolbar select{width:100%;min-width:0;min-height:42px;color:#204d48;border:1px solid #d2dfd9;border-radius:10px;background:#fff;padding:0 11px;font:inherit;font-size:13px}
+#app .bs130Toolbar input{border:none;outline:none;padding:0}
+#app .bs130Notice{font-size:13px;line-height:1.4;min-height:0;margin:0 0 9px;font-weight:700}
+#app .bs130Notice:empty{display:none}
+#app .bs130Notice.error{padding:11px 14px;border-radius:10px;background:#fff0ed;border:1px solid #e9b6a7;color:#a03a2b}
+#app .bs130Notice.ok{padding:11px 14px;border-radius:10px;background:#edf7ee;border:1px solid #bcdabe;color:#236347}
+#app .bs130List{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#app .bs130Empty{grid-column:1/-1;padding:42px 15px;text-align:center;border:1px dashed #cbd9d1;border-radius:14px;background:#fffdf9;color:#70847a}
+#app .bs130Empty b{display:block;font-size:17px;color:#365c4f;margin-bottom:4px}
+#app .bs130Empty p{margin:5px 0 0;font-size:13px}
+#app .bs130Card{min-width:0;background:#fff;border:1px solid #d8e4df;border-radius:13px;padding:17px 18px;box-shadow:0 3px 12px rgba(27,67,52,.035);display:flex;flex-direction:column;gap:12px}
+#app .bs130CardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#app .bs130CardTop>div{min-width:0}
+#app .bs130CardTop small{display:block;color:#3b8270;font-size:10px;font-weight:850;letter-spacing:.4px;margin-bottom:6px}
+#app .bs130CardTop h3{margin:0 0 4px;font-size:17px;font-weight:810;line-height:1.25;overflow-wrap:anywhere;color:#173e3e}
+#app .bs130CardTop p{color:#69847c;font-size:12px;margin:0;overflow-wrap:anywhere}
+#app .bs130Status{padding:6px 9px;white-space:nowrap;border-radius:7px;font-size:11px;font-weight:780}
+#app .bs130Status.working{background:#e0f3e7;color:#19734f}
+#app .bs130Status.standby{background:#fff0cd;color:#91610b}
+#app .bs130Status.stopped{background:#fbe2e2;color:#a03e3e}
+#app .bs130Info{display:grid;grid-template-columns:1.1fr 1fr auto;gap:12px;border-block:1px solid #ebf0ec;padding:11px 0}
+#app .bs130Info>div{min-width:0}
+#app .bs130Info span{display:block;color:#81948a;font-size:10px;margin-bottom:4px}
+#app .bs130Info b{font-size:12px;font-weight:750;color:#31544c;overflow-wrap:anywhere}
+#app .bs130Specs{display:flex;gap:6px;flex-wrap:wrap}
+#app .bs130Specs>span{background:#f0f5f1;border:1px solid #e0eae3;padding:5px 9px;border-radius:7px;color:#60766c;font-size:11px}
+#app .bs130Specs b{color:#2b5144}
+#app .bs130CardFoot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;min-height:24px;gap:10px}
+#app .bs130CardFoot small{color:#819188;font-size:11px}
+#app .bs130CardFoot>div{margin-left:auto;display:flex;gap:8px}
+#app .bs130CardFoot button{border:1px solid #b7d6c8;background:#eff8f3;color:#246b53;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}
+#app .bs130CardFoot .bs130Danger{border-color:#ead5d4;background:#fff7f6;color:#af504d}
+#app .bs130Overlay:not([hidden]){position:fixed;inset:0;z-index:30000;display:grid;place-items:center;padding:14px}
+#app .bs130Overlay[hidden]{display:none!important}
+#app .bs130Shade{position:absolute;inset:0;background:rgba(7,27,29,.64)}
+#app .bs130Dialog{position:relative;display:flex;flex-direction:column;max-height:calc(100dvh - 30px);width:min(790px,100%);background:#fcfdf9;border:1px solid #d6e4de;border-radius:17px;box-shadow:0 22px 75px rgba(0,0,0,.24);overflow:hidden}
+#app .bs130DialogHead{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e3eae5;background:#ecf2e8}
+#app .bs130DialogHead small{font-size:10px;letter-spacing:1.2px;font-weight:800;color:#668274}
+#app .bs130DialogHead h3{font-size:19px;margin:3px 0 0;color:#174e44}
+#app .bs130Close{cursor:pointer;border:1px solid #c3d6cc;background:#fff;border-radius:9px;width:34px;height:34px;font-size:23px;color:#365c4e}
+#app #bs130Form{display:flex;min-height:0;flex-direction:column}
+#app .bs130FormBody{overflow-y:auto;padding:19px 22px;display:grid;gap:12px}
+#app .bs130FormGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#app .bs130FormGrid label,#app .bs130Full{font-size:12px;color:#466c60;font-weight:740;min-width:0;display:flex;flex-direction:column;gap:5px}
+#app .bs130FormGrid label b{color:#ae574b}
+#app .bs130FormGrid label small{font-weight:500;font-size:10px}
+#app .bs130FormBody select,#app .bs130FormBody input,#app .bs130FormBody textarea{width:100%;max-width:100%;min-width:0;min-height:39px;border:1px solid #cbdcd3;border-radius:9px;background:white;color:#26483f;padding:8px 10px;font-size:13px;font-family:inherit;box-sizing:border-box;outline:0}
+#app .bs130FormBody select:focus,#app .bs130FormBody input:focus,#app .bs130FormBody textarea:focus{border-color:#27806a;box-shadow:0 0 0 3px rgba(39,128,106,.12)}
+#app .bs130FormBody input[hidden]{display:none!important}
+#app .bs130FormSection{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #dce8dc;margin-top:4px;padding-bottom:6px}
+#app .bs130FormSection span{font-size:13px;font-weight:860;color:#244f46}
+#app .bs130FormSection small{font-size:11px;color:#7a9688}
+#app .bs130DialogFoot{display:flex;gap:10px;justify-content:flex-end;padding:12px 22px;border-top:1px solid #e3ece4;background:#fff}
+body.bs130ModalOpen{overflow:hidden}
+@media(max-width:900px){#app .bs130List{grid-template-columns:1fr}}
+@media(max-width:760px){
+ #app #buildingSystemsPage{padding-left:0!important;padding-right:0!important}
+ #app .bs130Intro{padding:15px;align-items:stretch;flex-direction:column;gap:12px;border-radius:12px}
+ #app .bs130Intro h2{font-size:20px}
+ #app .bs130Intro p{font-size:12px}
+ #app .bs130Primary{width:100%}
+ #app .bs130Metrics{gap:6px}
+ #app .bs130Metrics>div{padding:11px 7px;flex-direction:column;gap:5px;text-align:center}
+ #app .bs130Metrics strong{font-size:22px}
+ #app .bs130Metrics span{font-size:10px}
+ #app .bs130Toolbar{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #app .bs130Toolbar .bs130Search{grid-column:1/-1}
+ #app .bs130Toolbar select,#app .bs130Toolbar .bs130Light{min-width:0;width:100%;font-size:12px}
+ #app .bs130Card{padding:13px}
+ #app .bs130CardTop h3{font-size:15px}
+ #app .bs130Info{grid-template-columns:1fr 1fr 64px;gap:6px}
+ #app .bs130Info b{font-size:11px}
+ #app .bs130Status{font-size:10px}
+ #app .bs130Dialog{max-height:calc(100dvh - 12px);width:100%;border-radius:12px}
+ #app .bs130Overlay:not([hidden]){padding:6px}
+ #app .bs130DialogHead{padding:12px 14px}
+ #app .bs130FormBody{padding:12px 14px;gap:10px}
+ #app .bs130FormGrid{gap:9px}
+ #app .bs130FormSection{align-items:flex-start;flex-direction:column;gap:3px}
+ #app .bs130DialogFoot{padding:10px 14px}
+ #app .bs130DialogFoot button{flex:1;padding-inline:6px}
+}
+
+/* V2 · Prepared catalog: nine concise groups, expandable list with empty templates. */
+#app .bs130List{display:flex;flex-direction:column;gap:9px;min-width:0}
+#app .bs130CatalogIntro{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:4px 2px 6px;color:#41695b}
+#app .bs130CatalogIntro b{font-size:15px;color:#1c5147}
+#app .bs130CatalogIntro span{font-size:12px;color:#778e80}
+#app .bs130SystemBlock{min-width:0;background:#fff;border:1px solid #d9e6de;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(23,61,45,.035)}
+#app .bs130SystemHead{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:14px;width:100%;border:0;background:#f1f6ef;color:#214f44;padding:15px 18px;cursor:pointer}
+#app .bs130SystemHead:hover{background:#eaf2ea}
+#app .bs130SystemHead>span:first-child{display:flex;align-items:center;gap:12px;min-width:0;flex-wrap:wrap}
+#app .bs130SystemHead strong{font-size:15px;font-weight:850;color:#183e37}
+#app .bs130SystemHead small{font-size:11px;color:#718979;font-weight:700}
+#app .bs130Caret{display:grid;place-items:center;width:26px;height:26px;flex:0 0 26px;border:1px solid #c7dccc;border-radius:7px;color:#317363;background:#fff;font-size:18px}
+#app .bs130SystemItems{padding:0 15px 5px}
+#app .bs130Template{border-bottom:1px solid #e9f0eb;min-width:0}
+#app .bs130Template:last-child{border-bottom:0}
+#app .bs130TemplateLine{padding:10px 2px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#app .bs130TemplateTitle{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+#app .bs130TemplateTitle strong{font-size:13px;font-weight:770;color:#2b5146;overflow-wrap:anywhere}
+#app .bs130TemplateStatus{display:inline-flex;align-items:center;border-radius:6px;font-size:11px;font-weight:750;padding:4px 7px;white-space:nowrap}
+#app .bs130TemplateStatus.missing{background:#f2f3ef;color:#89958b;border:1px solid #e2e5de}
+#app .bs130TemplateStatus.saved{background:#e1f4e8;color:#26734f;border:1px solid #c9e6d5}
+#app .bs130Fill{border:1px solid #b8d8c9;background:#eff8f2;color:#176249;font-size:12px;font-weight:800;border-radius:8px;padding:9px 12px;cursor:pointer;white-space:nowrap}
+#app .bs130Fill:hover{background:#ddf0e4}
+#app .bs130Profile{margin:0 2px 12px 20px;background:#fbfdf9;border:1px solid #dbe8de;border-left:3px solid #4b9b72;border-radius:9px;padding:12px}
+#app .bs130ProfileHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+#app .bs130ProfileHead h4{font-size:13px;margin:0 0 3px;color:#285246;font-weight:800}
+#app .bs130ProfileHead small{font-size:11px;color:#7d9184}
+#app .bs130ProfileSpecs{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:10px}
+#app .bs130ProfileSpecs>span{background:#f0f5ed;border:1px solid #e2ebe0;color:#547267;padding:5px 8px;border-radius:6px;font-size:11px;overflow-wrap:anywhere}
+#app .bs130ProfileSpecs b{color:#365c4e}
+#app .bs130ProfileActions{display:flex;justify-content:flex-end;gap:6px;margin-top:9px}
+#app .bs130ProfileActions button{border:1px solid #b7d6c8;background:#eef7f1;color:#216449;border-radius:7px;padding:6px 11px;font-weight:750;cursor:pointer;font-size:12px}
+#app .bs130ProfileActions .bs130Danger{color:#9f403a;background:#fff6f5;border-color:#edceca}
+@media(max-width:640px){
+ #app .bs130SystemHead{padding:13px 12px}
+ #app .bs130SystemItems{padding-inline:10px}
+ #app .bs130TemplateLine{gap:6px}
+ #app .bs130TemplateTitle{align-items:flex-start;flex-direction:column;gap:5px}
+ #app .bs130TemplateTitle strong{font-size:12px}
+ #app .bs130Fill{font-size:11px;padding:8px 9px;flex:0 0 auto}
+ #app .bs130Profile{margin-left:5px;padding:10px}
+ #app .bs130ProfileHead{flex-wrap:wrap}
+ #app .bs130SystemHead>span:first-child{gap:4px;align-items:flex-start;flex-direction:column}
+}
+/* Required marker shares the same inline label; input remains on the following row. */
+#app .bs130FormGrid .bs130FieldLabel{display:inline-flex;flex-direction:row;align-items:baseline;gap:4px;white-space:nowrap;width:max-content;max-width:100%;font-size:inherit;line-height:1.35}
+#app .bs130FormGrid .bs130FieldLabel b{color:#b44c49;font-size:inherit;font-weight:800;line-height:inherit;flex:0 0 auto}

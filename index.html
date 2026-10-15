@@ -845,6 +845,8 @@
 <link rel="stylesheet" href="inventory-mobile-no-scroll.css?v=20261012-noscroll02">
 <link rel="stylesheet" href="people-settings.css?v=20261012-shared01">
 <link rel="stylesheet" href="admin-task-mobile.css?v=20261013-state-colors02">
+<link rel="stylesheet" href="building-systems-130.css?v=20261015-pilot01">
+<link rel="stylesheet" href="building-systems-127.css?v=20261015-pilot01">
 <link rel="stylesheet" href="maintenance-68.css?v=20261013-02">
 <link rel="stylesheet" href="maintenance-130.css?v=20261013-simplified07">
 <link rel="stylesheet" href="maintenance-redesign.css?v=20261013-layout02"><!-- Evidence visual stylesheet intentionally after redesign -->
@@ -982,6 +984,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5M9 5H5v4M19 15v4h-4"/></svg>
       <span>Bảo trì thiết bị</span>
     </button>
+    <button id="navSystems" class="hide" type="button" aria-label="Thông tin hệ thống tòa nhà"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V6l8-4 8 4v15M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2"/></svg><span>Thông tin hệ thống</span></button>
     <button id="navContractor">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg>
       <span>Nhà thầu</span>
@@ -1058,6 +1061,7 @@
     <div class="topModuleIcon maintenanceTopIcon"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5"/></svg></div>
     <div><h1>Bảo trì thiết bị</h1><p>Kế hoạch, lịch sử và nhắc hạn bảo trì</p></div>
   </div>
+  <div id="topSystemsTitle" class="topModuleTitle hide"><div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M4 21V6l8-4 8 4v15M8 10h2M14 10h2M8 14h2M14 14h2"/></svg></div><div><h1>Thông tin hệ thống tòa nhà</h1><p>Hồ sơ thiết bị theo dự án</p></div></div>
   <div id="topContractorTitle" class="topModuleTitle contractorTopTitle hide">
     <div class="topModuleIcon contractorTopIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></div>
     <div><h1>Nhà thầu</h1><p class="buildingNameText">Dự án</p></div>
@@ -1996,6 +2000,8 @@
     </section>
   </section>
 </div>
+<div id="buildingSystemsPage" class="page hide"><div id="buildingSystems130"></div></div>
+<div id="buildingSystems127Page" class="page hide"><div id="buildingSystems127"></div></div>
 <div id="maintenancePage" class="page maintenancePage hide">
   <section class="maintenanceHero">
     <div class="maintenanceCommandBrand">
@@ -2642,7 +2648,7 @@
   </div>
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261015-supervision-caption01"></script><script src="completion-certificate-130.js?v=20261014-05"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261015-systems-pilot01"></script><script src="completion-certificate-130.js?v=20261014-05"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261007-pdf-compact01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261013-noqr01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261015-supervision-caption01"></script><script src="admin-work-editor.js?v=20261011-adminedit01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261006-single-result01"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
@@ -2663,6 +2669,8 @@ document.addEventListener("click",function estaDueDatePickerClick(event){
 </script><script src="esta-mobile.js?v=20261013-dock01"></script>
 <script src="maintenance-68.js?v=20261013-03"></script>
 <script src="maintenance-130.js?v=20261014-reference01"></script>
+<script src="building-systems-130.js?v=20261015-pilot01"></script>
+<script src="building-systems-127.js?v=20261015-pilot01"></script>
 <script src="maintenance-redesign.js?v=20261014-reference01"></script>
 <script src="pwa-register.js?v=20261012-autoupdate01"></script>
 </body></html>
