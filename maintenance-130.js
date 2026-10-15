@@ -1,11 +1,14 @@
 (function(){
 "use strict";
-const B="130HH", $=id=>document.getElementById(id);
+const PROJECT_IDS=new Set(["130HH","127HH","62THL","68PĐL"]);
+let B="130HH";
+const $=id=>document.getElementById(id);
+const projectLabel=()=>({"130HH":"130 Hồng Hà","127HH":"127 Hồng Hà","62THL":"62 Trần Huy Liệu","68PĐL":"68 Phan Đăng Lưu"})[B]||B;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const now=new Date();
-const VIEW_KEY="esta.maintenance.130HH.view";
+const viewKey=()=>"esta.maintenance."+B+".view";
 function readView(){
- try{const v=localStorage.getItem(VIEW_KEY);if(v==="cards"||v==="rows")return v;}catch(_){}
+ try{const v=localStorage.getItem(viewKey());if(v==="cards"||v==="rows")return v;}catch(_){}
  return typeof window!=="undefined"&&window.matchMedia?.("(max-width:640px)")?.matches?"rows":"cards";
 }
 let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list";
@@ -118,10 +121,11 @@ function maintenance130DueSummary(planItems,occurrences,todayDate,throughDate){
  });
  return {count:actionable.length,critical:actionable.some(o=>dateOf(o)<todayDate)};
 }
-window.estaMaintenance130NavSummary=async function({today:todayDate,soon:throughDate,token}){
+window.estaMaintenance130NavSummary=async function({today:todayDate,soon:throughDate,token,buildingId}){
+ const target=PROJECT_IDS.has(String(buildingId||""))?String(buildingId):B;
  const [plans,occurrences]=await Promise.all([
-  sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,plan_code,cadence,deleted_at,work_title&building_id=eq."+B,{token}),
-  sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=item_id,event_key,planned_month,planned_date,due_date,status&building_id=eq."+B,{token})
+  sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,plan_code,cadence,deleted_at,work_title&building_id=eq."+target,{token}),
+  sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=item_id,event_key,planned_month,planned_date,due_date,status&building_id=eq."+target,{token})
  ]);
  return maintenance130DueSummary(Array.isArray(plans)?plans:[],Array.isArray(occurrences)?occurrences:[],todayDate,throughDate);
 };
@@ -163,7 +167,7 @@ function ensure(){
  const page=$("maintenancePage"),anchor=page?.querySelector(".maintenanceSchedule");
  if(!page||!anchor)return;
  const root=document.createElement("section");root.id="maint130";
- root.innerHTML='<div class="m130Header"><div><small>ESTA · 130 HỒNG HÀ · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">↓ Xuất PDF</button></div></div>'+
+ root.innerHTML='<div class="m130Header"><div><small>ESTA · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">↓ Xuất PDF</button></div></div>'+
  '<div class="m130Stats" id="m130Stats"></div><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
  '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa thực hiện</option><option value="working">Đang thực hiện</option><option value="review">Chờ duyệt</option><option value="done">Hoàn thành</option><option value="late">Quá hạn</option><option value="cancelled">Hoãn / Hủy</option></select><select id="m130PriorityFilter"><option value="">Mọi ưu tiên</option><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select><select id="m130TypeFilter"><option value="">PM + CM</option><option value="PM">PM</option><option value="CM">CM</option></select><select id="m130TechnicianFilter"><option value="">Mọi KTV</option></select><select id="m130SampleFilter"><option value="all">Tất cả dữ liệu</option><option value="real">Chỉ công việc thật</option><option value="sample">Chỉ dữ liệu mẫu</option></select></div>'+
  '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><div class="m130LayoutSwitch" role="group" aria-label="Chế độ xem lịch"><button type="button" data-m130-layout="list" aria-pressed="true">Danh sách</button><button type="button" data-m130-layout="calendar" aria-pressed="false">Lịch</button><button type="button" data-m130-layout="timeline" aria-pressed="false">Timeline</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div><details class="m130AuditPanel"><summary>Nhật ký chỉnh sửa / xóa</summary><button type="button" id="m130AuditButton" class="m130AuditButton">Xem nhật ký</button><div id="m130AuditHistory" aria-live="polite"></div></details>';
@@ -197,7 +201,7 @@ function ensure(){
   const v=ev.target.closest("[data-m130-view]"),l=ev.target.closest("[data-m130-layout]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]");
   if(v){
    viewMode=v.dataset.m130View==="rows"?"rows":"cards";
-   try{localStorage.setItem(VIEW_KEY,viewMode)}catch(_){}
+   try{localStorage.setItem(viewKey(),viewMode)}catch(_){}
    renderList();
   }
   else if(l){layoutMode=l.dataset.m130Layout==="calendar"?"calendar":l.dataset.m130Layout==="timeline"?"timeline":"list";renderList();}
@@ -331,6 +335,7 @@ async function rescheduleOccurrence(key,date){
 async function load(force){
  if(!show()||busy||!centralSession?.access_token)return;
  if(ready&&!force){render();return;}
+ const requestBuilding=B;
  busy=true;$("m130List").innerHTML='<p class="m130Empty">Đang tải dữ liệu bảo trì...</p>';
  try{
   const token=centralSession.access_token,[i,e,persons]=await Promise.all([
@@ -338,10 +343,10 @@ async function load(force){
    sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=*&building_id=eq."+B+"&order=planned_month.asc,planned_date.asc",{token}),
    sbFetch("/rest/v1/building_people?select=name&building_id=eq."+B+"&order=name.asc",{token}).catch(()=>[])
   ]);
-  if(!active())return;
+  if(!active()||B!==requestBuilding)return;
   items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();
  }catch(err){$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
- finally{busy=false;}
+ finally{if(B===requestBuilding)busy=false;}
 }
 function closeDialog(){$("m130Overlay").hidden=true;currentPlan=null;currentEvent=null;}
 function openPlan(id){
@@ -381,8 +386,8 @@ async function savePlan(ev){
    await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:fields});
    items=items.map(x=>x.id===id?{...x,...fields}:x);
   }else{
-   const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code="130HH-USER-"+id.slice(0,13);
-   const item={id,building_id:B,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Bổ sung từ trang Bảo trì 130 HH",...fields};
+   const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code=B+"-USER-"+id.slice(0,13);
+   const item={id,building_id:B,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Bổ sung từ trang Bảo trì ESTA",...fields};
    await sbFetch("/rest/v1/esta_maintenance_plan_items",{method:"POST",token,body:item});
    const occurrence={id:eventId,item_id:id,building_id:B,event_key:code+":"+date.slice(0,7),planned_month:monthISO(date),planned_date:date,status:"planned",source_kind:"year",location:fields.subsystem};
    try{await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:occurrence});}
@@ -551,7 +556,7 @@ async function deletePlan(id){
  busy=true;
  try{
   const deleted_at=new Date().toISOString(),token=centralSession.access_token;
-  await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Ẩn theo xác nhận trên giao diện bảo trì 130 HH"}});
+  await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Ẩn theo xác nhận trên giao diện bảo trì ESTA"}});
   items=items.map(x=>x.id===id?{...x,deleted_at}:x);
   clearScheduleCache();render();notifyMaintenance130Nav();toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
  }catch(err){toast("Không thể xóa mềm: "+(err.message||err));}
@@ -578,8 +583,24 @@ async function exportPdf(){
  const list=scopeEvents(getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month));
  if(!list.length)return toast("Không có công việc để xuất.");
  const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,fmt(o.event.planned_date||o.scheduled),status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
- try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ 130 HH",tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_130HH_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed").length,label:"HOÀN THÀNH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
+ try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ "+projectLabel().toUpperCase(),tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_"+B+"_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed").length,label:"HOÀN THÀNH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
 }
-window.mountMaintenance130=()=>{if(active())load();else show();};
+window.mountMaintenance130=()=>{
+ const next=String(typeof currentBuilding!=="undefined"?(currentBuilding?.id||""):"");
+ if(!PROJECT_IDS.has(next)){show();return;}
+ if(next!==B){
+  B=next;items=[];stored=[];people=[];ready=false;busy=false;currentEvent=null;currentPlan=null;
+  year=new Date().getFullYear();month=new Date().getMonth()+1;viewMode=readView();layoutMode="list";
+  clearScheduleCache();
+  const overlay=$("m130Overlay");if(overlay)overlay.hidden=true;
+  const page=$("maintenancePage");page?.classList.remove("maint130-assets-open");
+  ["m130Search","m130Group","m130State","m130PriorityFilter","m130TypeFilter","m130TechnicianFilter","m130SampleFilter"].forEach(id=>{
+   const el=$(id);if(!el)return;if(el.tagName==="SELECT")el.selectedIndex=0;else el.value="";
+  });
+ }
+ const head=$("maint130")?.querySelector(".m130Header small");
+ if(head)head.textContent="ESTA · "+projectLabel().toUpperCase()+" · QUẢN LÝ BẢO TRÌ";
+ load();
+};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{ensure();show();},{once:true});else{ensure();show();}
 })();
