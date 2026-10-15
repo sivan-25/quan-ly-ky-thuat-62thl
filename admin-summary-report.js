@@ -41,17 +41,20 @@
   const scope = (v) => String(v || "").toUpperCase() === "68PDL" ? "68PĐL" : String(v||"").toUpperCase();
   const within = (v) => !!day(v) && day(v)>=state.from && day(v)<=state.to;
   const include = (dateValue,isOpen,dueDate="") => within(dateValue) || within(dueDate) || (!!isOpen && !!day(dueDate) && day(dueDate)<state.from) || (!!isOpen && !!day(dateValue) && day(dateValue)<state.from);
+  // Pending but not-yet-due work is a PLAN, not an overdue incident.
   function severity(x) {
-    const due=day(x.due);
-    if(x.open && due && due<today()) return 0;
-    if(x.open && (priority(x.priority)>=3 || /Hỏng|Không đạt|Cần khắc phục/.test(x.status||""))) return 1;
-    if(x.open && (priority(x.priority)>=2 || due===today())) return 2;
-    if(x.open) return 3;
-    return 4;
+    const due=day(x.due),now=today();
+    if(!x.open)return 4;
+    if(due && due<now)return 0;
+    if(priority(x.priority)>=3 || /Hỏng|Không đạt|Cần khắc phục/.test(x.status||""))return 1;
+    if(due && due>now)return 3;
+    return 2;
   }
+  const severityLabel=x=>["Quá hạn","Khẩn cấp / cần can thiệp","Chưa xử lý","Kế hoạch chưa đến hạn","Hoàn thành / ghi nhận"][severity(x)];
   function record(cat,proj,content,when,status,detail,opts={}) {
     const open = opts.open === undefined ? !finished(status) : !!opts.open;
-    return {cat,proj,content:String(content || "—"),when:day(when)||"",due:day(opts.due)||"",status:String(status || "—"),detail:String(detail||"—"),priority:opts.priority||"",open,photos:arr(opts.photos)};
+    return {cat,proj,content:String(content || "—"),when:day(when)||"",due:day(opts.due)||"",status:String(status || "—"),detail:String(detail||"—"),priority:opts.priority||"",open,photos:arr(opts.photos),
+      owner:String(opts.owner||""),cause:String(opts.cause||""),plan:String(opts.plan||""),source:String(opts.source||"Dự án ghi nhận")};
   }
   function eligibleRow(r) {return state.projects.has(scope(r?.building?.id));}
   function buildRecords() {
@@ -65,20 +68,23 @@
         if(!include(start,!done,due))continue;
         push("work",name,t.c||"Công việc kỹ thuật",start,t.s||"Chưa thực hiện",
           [t.t,t.a||arr(t.performers).join(", "),t.n,t.result].filter(Boolean).join(" · "),
-          {due,priority:t.priority,open:!done,photos:t.imgs});
+          {due,priority:t.priority,open:!done,photos:t.imgs,
+           owner:arr(t.performers).join(", ")||t.a||"",cause:t.cause||"",plan:t.solution||t.actionPlan||t.result||"",
+           source:t.dispatchedByAdmin===true||t.dispatchGroupId?"Admin giao dự án":"Dự án ghi nhận"});
       }
       if(selected.has("incident")) for(const x of arr(ops.incidents)) {
         const open=x.status!=="Đã đóng";
         if(!include(x.detected_at,open))continue;
         push("incident",name,[x.incident_code,x.symptom||x.area||"Sự cố"].filter(Boolean).join(" · "),x.detected_at,
           x.status||"Chưa xử lý",[x.cause&&"Nguyên nhân: "+x.cause,x.solution&&"Hướng xử lý: "+x.solution].filter(Boolean).join(" · "),
-          {priority:x.severity,open,photos:[...arr(x.before_images),...arr(x.after_images)]});
+          {priority:x.severity,open,photos:[...arr(x.before_images),...arr(x.after_images)],
+           owner:x.assignee||"",cause:x.cause||"",plan:x.solution||"",source:"Sự cố dự án"});
       }
       if(selected.has("inspection")) for(const x of arr(ops.inspections)) {
         const open=!finished(x.result_status);
         if(!include(x.inspection_date,open))continue;
         push("inspection",name,[x.inspection_code,x.template_name||"Kiểm tra"].filter(Boolean).join(" · "),x.inspection_date,
-          x.result_status||"Chưa có kết quả",x.recommendation||"—",{open});
+          x.result_status||"Chưa có kết quả",x.recommendation||"—",{open,plan:x.recommendation||"",source:"Checklist dự án"});
       }
       if(selected.has("energy")) {
         const grouped=new Map();
@@ -114,7 +120,7 @@
           if(!bad || !due || due>state.to)continue;
           push("maintenance",name,[a.code,a.name||"Thiết bị"].filter(Boolean).join(" · "),due,
             a.status==="Hỏng"?"Hỏng":"Bảo trì quá hạn",[a.system_type,a.location,a.assigned_to].filter(Boolean).join(" · "),
-            {due,priority:a.status==="Hỏng"?"Khẩn cấp":"Cao",open:true});
+            {due,priority:a.status==="Hỏng"?"Khẩn cấp":"Cao",open:true,owner:a.assigned_to||"",source:"Lịch bảo trì thiết bị"});
         }
         for(const x of arr(state.extra[bid]?.maintenance_records)) {
           if(!within(x.service_date))continue;
@@ -122,7 +128,7 @@
           const status=x.result_status||"Đã bảo trì";
           push("maintenance",name,(asset?.name||x.maintenance_type||"Nhật ký bảo trì"),x.service_date,status,
             [x.work_done,x.note,x.performer].filter(Boolean).join(" · "),
-            {open:!finished(status),photos:x.images});
+            {open:!finished(status),photos:x.images,owner:x.performer||"",plan:x.work_done||"",source:"Nhật ký bảo trì"});
         }
       }
       if(selected.has("materials")) {
@@ -143,13 +149,14 @@
         const status=t.condition_status||"Chưa cập nhật",bad=!finished(status);
         push("tools",name,[t.name,t.brand].filter(Boolean).join(" · ")||"Dụng cụ",state.to,status,
           [t.qty!==undefined?"Số lượng: "+fmt(t.qty)+" "+(t.unit||""):"",t.location,t.keeper,t.note,"Tình trạng tại ngày lập"].filter(Boolean).join(" · "),
-          {open:bad});
+          {open:bad,owner:t.keeper||"",source:"Danh mục dụng cụ"});
       }
       if(selected.has("contractor")) for(const j of arr(ops.contractor_jobs)) {
         const open=!finished(j.status);
         if(!include(j.work_date,open))continue;
         push("contractor",name,j.work_content||"Công việc nhà thầu",j.work_date,j.status||"Chờ xử lý",
-          [j.completed_date&&"Hoàn thành: "+vn(j.completed_date),j.cause,j.solution].filter(Boolean).join(" · "),{open});
+          [j.completed_date&&"Hoàn thành: "+vn(j.completed_date),j.cause,j.solution].filter(Boolean).join(" · "),
+          {open,cause:j.cause||"",plan:j.solution||"",source:"Công việc nhà thầu"});
       }
     }
     if(selected.has("work")) for(const t of state.personal) {
@@ -157,7 +164,8 @@
       if(!include(start,!done,due))continue;
       push("work","Admin · Cá nhân",t.title||"Công việc Admin",start,t.status||"Đang thực hiện",
         [t.assignee,t.notes,t.task_type].filter(Boolean).join(" · "),
-        {open:!done,due,priority:t.priority,photos:t.image_paths});
+        {open:!done,due,priority:t.priority,photos:t.image_paths,
+         owner:t.assignee||"Admin",cause:t.cause||"",plan:t.solution||t.action_plan||"",source:"Admin · Công việc cá nhân"});
     }
     out.sort((a,b)=>severity(a)-severity(b)||String(a.due||a.when).localeCompare(String(b.due||b.when))||String(a.proj).localeCompare(String(b.proj)));
     return out;
@@ -220,7 +228,8 @@
       renderResults();return false;
     } finally {if(request===state.request){state.loading=false;updateButtons();}}
   }
-  function selectedCount(records){return records.filter(r=>r.open).length;}
+  function selectedCount(records){return records.filter(r=>r.open && severity(r)<3).length;}
+  function priorityItems(records){return records.filter(r=>r.open&&severity(r)<3).slice(0,6);}
   function updateButtons() {
     const button=$("#asExport"),reload=$("#asRefresh");
     if(button)button.disabled=state.loading||state.busy||!state.loaded||!state.categories.size||!state.projects.size||!!Object.keys(state.errors).length;
@@ -233,16 +242,18 @@
     if(kpi)kpi.innerHTML=[
       ["DỰ ÁN",state.projects.size],
       ["HẠNG MỤC",state.categories.size],
-      ["BẢN GHI",records.length],
-      ["CHƯA XỬ LÝ",selectedCount(records)]
+      ["QUÁ HẠN",records.filter(r=>severity(r)===0).length],
+      ["CẦN XỬ LÝ",selectedCount(records)]
     ].map(([name,value])=>'<div><span>'+name+'</span><strong>'+value+'</strong></div>').join("");
     const hint=$("#asPreviewHint");
-    if(hint)hint.textContent=state.loaded?"Thứ tự: quá hạn → khẩn cấp → chưa xử lý → hoàn thành. "+records.length+" bản ghi.":"Nhấn Làm mới dữ liệu để xem trước.";
+    if(hint)hint.textContent=state.loaded?"Thứ tự: quá hạn → khẩn cấp → chưa xử lý → kế hoạch chưa đến hạn → hoàn thành. "+records.length+" bản ghi.":"Nhấn Làm mới dữ liệu để xem trước.";
+    const focus=$("#asPriorityRows"),focusEmpty=$("#asPriorityEmpty");
+    if(focus){const items=priorityItems(records);focus.innerHTML=items.map((r,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(r.content)+'</b><small>'+esc(r.proj)+' · '+esc(r.source)+'</small></td><td>'+esc(r.owner||"Chưa cập nhật")+'</td><td>'+esc(r.cause||"Chưa cập nhật")+'</td><td>'+esc(r.plan||"Chưa cập nhật")+'</td><td>'+esc(vn(r.due))+'</td></tr>').join("");if(focusEmpty)focusEmpty.textContent=state.loaded&&!items.length?"Không có công việc ưu tiên cần xử lý trong phạm vi đã chọn.":"";}
     const body=$("#asRows");
     if(body)body.innerHTML=!state.loaded?'<tr><td colspan="6">Chưa có dữ liệu để xem trước.</td></tr>':!records.length?'<tr><td colspan="6">Không có bản ghi phù hợp với phạm vi và hạng mục đã chọn.</td></tr>':records.slice(0,150).map((r,i)=>{
       const label=categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat;
       const warn=severity(r)<3;
-      return '<tr><td>'+Number(i+1)+'</td><td>'+esc(label)+'</td><td>'+esc(r.proj)+'</td><td><b>'+esc(r.content)+'</b><small>'+esc(r.detail)+'</small></td><td>'+esc(vn(r.when))+(r.due?'<small>Hạn: '+esc(vn(r.due))+'</small>':"")+'</td><td><span class="'+(r.open?(warn?"as-danger":"as-pending"):"as-done")+'">'+esc(r.status)+'</span></td></tr>';
+      return '<tr><td>'+Number(i+1)+'</td><td>'+esc(label)+'</td><td>'+esc(r.proj)+'<small>'+esc(r.source)+'</small></td><td><b>'+esc(r.content)+'</b><small>'+esc(r.detail)+'</small></td><td>'+esc(vn(r.when))+(r.due?'<small>Hạn: '+esc(vn(r.due))+'</small>':"")+'</td><td><span class="'+(severity(r)<2?"as-danger":severity(r)===2?"as-pending":severity(r)===3?"as-planned":"as-done")+'">'+esc(severityLabel(r))+'</span><small>'+esc(r.status)+'</small></td></tr>';
     }).join("");
     const trunc=$("#asTrunc");if(trunc)trunc.textContent=records.length>150?"Đang xem 150/"+records.length+" bản ghi; PDF sẽ chứa toàn bộ (tối đa 1.500).":"";
     updateButtons();
@@ -288,9 +299,10 @@
         if(photos.length>=180)break;
       }
       const rows=records.map((r,i)=>[
-        String(i+1),categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat,r.proj,r.content,
+        String(i+1),categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat,r.proj+"\n"+r.source,r.content,
         vn(r.when)+(r.due?" · Hạn "+vn(r.due):""),
-        (severity(r)===0?"QUÁ HẠN · ":severity(r)===1?"ƯU TIÊN GẤP · ":"")+r.status,r.detail
+        severityLabel(r)+" · "+r.status,
+        [r.owner&&"Phụ trách: "+r.owner,r.cause&&"Nguyên nhân: "+r.cause,r.plan&&"Hướng xử lý / KQ: "+r.plan,r.detail].filter(Boolean).join("\n")
       ]);
       if(typeof window.exportGenericEstaPdf!=="function")throw new Error("Bộ tạo PDF ESTA chưa sẵn sàng.");
       const success=await window.exportGenericEstaPdf({
@@ -300,6 +312,7 @@
         tableLabel:"DANH SÁCH HẠNG MỤC ĐÃ CHỌN",
         subtitle:"Bốn dự án và công việc riêng Admin (khi chọn Công việc) · "+selectedNames.join(" / "),
         periodLabel:"Từ "+vn(state.from)+" đến "+vn(state.to),
+        priorityItems:priorityItems(records).map(r=>({project:r.proj,source:r.source,title:r.content,status:severityLabel(r),owner:r.owner||"Chưa cập nhật",cause:r.cause||"Chưa cập nhật",plan:r.plan||"Chưa cập nhật",due:r.due?vn(r.due):"Chưa có hạn"})),
         columns:[
           {label:"STT",weight:0.34},{label:"Hạng mục",weight:0.95},{label:"Dự án / Nguồn",weight:1.2},
           {label:"Nội dung",weight:2.5},{label:"Ngày / Hạn",weight:1.1},
@@ -307,9 +320,9 @@
         ],rows,photos,
         summaries:[
           {label:"TỔNG BẢN GHI",value:String(records.length),dark:true},
-          {label:"CHƯA XỬ LÝ",value:String(selectedCount(records))},
-          {label:"HOÀN THÀNH / GHI NHẬN",value:String(records.length-selectedCount(records))},
-          {label:"HẠNG MỤC",value:String(selectedNames.length)}
+          {label:"QUÁ HẠN",value:String(records.filter(r=>severity(r)===0).length)},
+          {label:"CẦN XỬ LÝ",value:String(selectedCount(records))},
+          {label:"KẾ HOẠCH CHƯA ĐẾN HẠN",value:String(records.filter(r=>severity(r)===3).length)}
         ],
         filename:"ESTA_BaoCaoGiamSatKyThuat_"+state.from+"_"+state.to+".pdf"
       });
@@ -355,6 +368,9 @@
       '#estaAdminSummaryPage td span.as-danger{color:#9b2936;font-weight:700}'+
       '#estaAdminSummaryPage td span.as-pending{color:#9b642a;font-weight:700}'+
       '#estaAdminSummaryPage td span.as-done{color:#287350;font-weight:700}'+
+      '#estaAdminSummaryPage td span.as-planned{color:#436da0;font-weight:700}'+
+      '#estaAdminSummaryPage .asPriorityCard{border-left:4px solid #af6d35;background:#fff9f0}'+
+      '#estaAdminSummaryPage .asPriorityCard h3{color:#875025}'+
       '#estaAdminSummaryPage .asHint{font-size:11px;color:#6c776b;margin:8px 0}'+
       '#navAdminSummary,#asTopShortcut{display:inline-flex;align-items:center;gap:8px}'+
       '#asTopShortcut{white-space:nowrap;border:1px solid #7a987e;background:#e5efdf;color:#295041;border-radius:9px;padding:9px 10px;font-size:12px;font-weight:700;cursor:pointer}'+
@@ -366,7 +382,8 @@
       '<div class="asCard"><h3>1. Kỳ báo cáo</h3><div class="asActions" role="group" aria-label="Lựa chọn kỳ báo cáo"><button id="asWeek" class="asBtn asPeriod active" type="button">Theo tuần</button><button id="asMonthApply" class="asBtn asPeriod" type="button">Theo tháng</button><button id="asCustom" class="asBtn asPeriod" type="button">Từ ngày đến ngày</button></div><div class="asDateFields"><label>Chọn tháng<input id="asMonth" type="month" aria-label="Tháng báo cáo"></label><label>Từ ngày<input id="asFrom" type="date"></label><label>Đến ngày<input id="asTo" type="date"></label></div><div class="asActions"><button id="asRefresh" class="asBtn" type="button">↻ Làm mới dữ liệu</button><span class="asHint" id="asPeriodSummary"></span></div></div>'+
       '<div class="asGrid"><div class="asCard"><h3>2. Chọn dự án</h3><div class="asActions"><button class="asBtn" data-as-project-all="1">Chọn cả 4</button><button class="asBtn" data-as-project-all="0">Bỏ chọn</button></div><div class="asChecks" id="asProjectList"></div><p class="asHint">Công việc riêng của Admin đi kèm khi tích “Công việc”, kể cả không liên kết dự án.</p></div>'+
       '<div class="asCard"><h3>3. Chọn hạng mục cần xuất PDF</h3><div class="asActions"><button class="asBtn" data-as-cat-all="1">Chọn tất cả</button><button class="asBtn" data-as-cat-all="0">Bỏ chọn</button></div><div class="asChecks" id="asCategoryList"></div></div></div>'+
-      '<div class="asCard"><h3>4. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><div class="asActions"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button></div><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Phan. Dữ liệu các dự án được giữ độc lập.</p></div>';
+      '<div class="asCard asPriorityCard"><h3>4. Công việc cần ưu tiên xử lý</h3><p class="asHint">Chỉ hiển thị việc quá hạn, khẩn cấp hoặc cần xử lý ngay. Không tính các việc chưa đến hạn.</p><div class="asTable"><table><thead><tr><th>#</th><th>Công việc / Nguồn</th><th>Người phụ trách</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hạn dự kiến</th></tr></thead><tbody id="asPriorityRows"></tbody></table></div><p class="asHint" id="asPriorityEmpty"></p></div>'+ 
+      '<div class="asCard"><h3>5. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><div class="asActions"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button></div><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Phan. Dữ liệu các dự án được giữ độc lập.</p></div>';
     home.appendChild(view);
     $("#asFrom").value=state.from;$("#asTo").value=state.to;$("#asMonth").value=today().slice(0,7);updatePeriodUI("week");
     const nav=$("#navAdmin");
