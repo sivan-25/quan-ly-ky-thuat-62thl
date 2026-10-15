@@ -51,6 +51,29 @@ w.sbFetch=async(url,opt={})=>{
  assert.equal(calls.length,before,'not enabled for Demo');
  w.currentBuilding={id:'130HH'};w.renderBuildingSystems();await flush();
  assert.equal($('bsysCount').textContent,'1','130 data persists independently');
+ // Deferred writes from one building cannot close or change another building's editor.
+ const originalFetch=w.sbFetch;
+ let release;
+ w.sbFetch=async (url,opt={})=>{
+   if(opt.method==='POST'&&opt.body?.building_id==='62THL'){
+     return new Promise(resolve=>{release=()=>resolve(null);});
+   }
+   return originalFetch(url,opt);
+ };
+ editable=true;
+ w.currentBuilding={id:'62THL',name:'62 Trần Huy Liệu'};w.renderBuildingSystems();await flush();
+ d.querySelector('[data-bs-template="Tủ điện MSB"]').click();
+ $('bsysForm').elements.namedItem('name').value='Hồ sơ đang lưu';
+ $('bsysForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+ await flush();
+ assert.equal(typeof release,'function','62 update is waiting');
+ w.currentBuilding={id:'68PĐL',name:'68 Phan Đăng Lưu'};w.renderBuildingSystems();await flush();
+ d.querySelector('[data-bs-template="Tủ điện MSB"]').click();
+ assert.equal($('bsysOverlay').hidden,false);
+ release();await flush();await flush();
+ assert.equal($('bsysOverlay').hidden,false,'late 62 save cannot close 68 editor');
+ assert.equal($('bsysCount').textContent,'1','late save does not leak records');
+ w.sbFetch=originalFetch;
  console.log('PASS shared building systems: 4 projects, one UI, same workflow, isolated CRUD, switching, viewer');
  dom.window.close();
 })().catch(e=>{console.error(e);dom.window.close();process.exitCode=1;});

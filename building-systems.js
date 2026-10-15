@@ -232,7 +232,7 @@ function takeForm(){
 }
 async function saveRow(e){
  e.preventDefault();if(state.busy||!active()||!writable())return;
- const btn=$("bsysSave");
+ const btn=$("bsysSave"),savingProject=PROJECT;
  let payload;try{payload=takeForm()}catch(err){msg(err.message,true);return}
  state.busy=true;btn.disabled=true;btn.textContent="Đang lưu...";
  try{
@@ -241,19 +241,21 @@ async function saveRow(e){
    const id=encodeURIComponent(state.editing.id);
    await sbFetch(profileEndpoint()+"?id=eq."+id+"&building_id=eq."+PROJECT,{method:"PATCH",token:centralSession.access_token,body:payload});
   }else await sbFetch(profileEndpoint(),{method:"POST",token:centralSession.access_token,body:payload});
+  if(savingProject!==PROJECT)return; // Never close/overwrite a different project's editor.
   state.busy=false;closeEditor();state.openGroups.add(payload.system_group);msg("✓ Đã lưu thông tin thiết bị.");await loadRows();
- }catch(err){msg("Lưu thất bại: "+(err?.message||"Vui lòng thử lại."),true)}
- finally{state.busy=false;btn.disabled=false;btn.textContent="✓ Lưu thiết bị";}
+ }catch(err){if(savingProject===PROJECT)msg("Lưu thất bại: "+(err?.message||"Vui lòng thử lại."),true)}
+ finally{if(savingProject===PROJECT){state.busy=false;btn.disabled=false;btn.textContent="✓ Lưu thiết bị";}}
 }
 async function deleteRow(row){
  if(!active()||!writable()||state.busy)return;
  if(!confirm('Xóa hồ sơ "'+(row.name||row.equipment_type)+'"? Thao tác này không xóa lịch bảo trì.'))return;
+ const deletingProject=PROJECT;
  state.busy=true;
  try{
   await sbFetch(profileEndpoint()+"?id=eq."+encodeURIComponent(row.id)+"&building_id=eq."+PROJECT,{method:"DELETE",token:centralSession.access_token});
-  msg("Đã xóa hồ sơ thiết bị.");await loadRows();
- }catch(err){msg("Không xóa được: "+err.message,true)}
- finally{state.busy=false}
+  if(deletingProject===PROJECT){msg("Đã xóa hồ sơ thiết bị.");await loadRows();}
+ }catch(err){if(deletingProject===PROJECT)msg("Không xóa được: "+err.message,true)}
+ finally{if(deletingProject===PROJECT)state.busy=false}
 }
 function renderList(){
  const list=$("bsysList");if(!list)return;

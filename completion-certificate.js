@@ -41,7 +41,11 @@
       host.appendChild(btn);
     }
     btn.hidden = !onProject();
-    if (byId("cc130Modal")?.classList.contains("is-open") && (!onProject() || openedProject!==projectId())) close();
+    if (byId("cc130Modal")?.classList.contains("is-open") && (!onProject() || openedProject!==projectId())){
+      // A previous project's draft must never survive switching buildings.
+      if(busy){draftVersion++;byId("cc130Modal").classList.remove("is-open");}
+      else close();
+    }
   }
   function modal() {
     if (byId("cc130Modal")) return byId("cc130Modal");
@@ -230,7 +234,7 @@
       // Each selected task loads ONLY its own recorded linked materials.
       // Failures leave editable blank fields and never invent stock quantities.
       await Promise.all(nodes.map(node=>fillLinkedMaterials(node,{automatic:true})));
-      if (version === draftVersion && onProject()) showStep("edit");
+      if (version === draftVersion && onProject() && openedProject===projectId()) showStep("edit");
     } finally {
       if(version === draftVersion) {
         nextButton.textContent="Tiếp tục · Xem và chỉnh sửa";
@@ -425,6 +429,8 @@
           body:JSON.stringify(request),signal:controller.signal
         });
         const blob=await readVerifiedEstaPdf(response);
+        if(request.building_id!==projectId()||openedProject!==projectId())
+          throw new Error("Dự án đã thay đổi trong lúc xuất PDF; phiếu cũ sẽ không được tải.");
         const url=URL.createObjectURL(blob);
         const a=document.createElement("a");
         a.href=url;
