@@ -68,7 +68,7 @@
             <span id="cc130SelectionCount" aria-live="polite"></span></div>
           <div id="cc130ManualActions"><label class="cc130-checkall"><input type="checkbox" id="cc130SelectAll"> Chọn tất cả công việc đang hiển thị</label></div>
           <div id="cc130Tasks" class="cc130-tasklist"></div>
-          <p class="cc130-help">Chỉ hiển thị công việc có trạng thái Hoàn thành. Thay đổi trên phiếu không sửa dữ liệu Công việc gốc.</p>
+          <p id="cc130Help" class="cc130-help">Auto tích sẵn công việc hoàn thành trong tháng. Bấm vào dòng để chọn hoặc bỏ chọn. Thao tác trên phiếu không sửa dữ liệu Công việc gốc.</p>
           <div class="cc130-actions"><button type="button" id="cc130Next" class="cc130-primary">Tiếp tục · Xem và chỉnh sửa</button></div>
         </section>
         <section id="cc130Edit" class="cc130-step" hidden>
@@ -97,9 +97,14 @@
     root.querySelectorAll('input[name="cc130Mode"]').forEach(el => el.addEventListener("change", e => {
       scope = e.target.value;
       selected.clear();
+      if (scope === "month") displayed().forEach(t => selected.add(String(t.id)));
       renderList();
     }));
-    byId("cc130Month").addEventListener("change", renderList);
+    byId("cc130Month").addEventListener("change", () => {
+      selected.clear();
+      if (scope === "month") displayed().forEach(t => selected.add(String(t.id)));
+      renderList();
+    });
     byId("cc130SelectAll").addEventListener("change", e => {
       const visible = displayed();
       visible.forEach(t => e.target.checked ? selected.add(String(t.id)) : selected.delete(String(t.id)));
@@ -108,7 +113,11 @@
     byId("cc130Tasks").addEventListener("change", e => {
       if (!e.target.matches('input[data-cc130-id]')) return;
       const id = e.target.dataset.cc130Id;
-      if(e.target.checked) selected.add(id); else selected.delete(id);
+      if (e.target.checked) selected.add(id); else selected.delete(id);
+      const row = e.target.closest(".cc130-task");
+      row?.classList.toggle("is-selected", e.target.checked);
+      const marker = row?.querySelector(".cc130-task-status");
+      if (marker) marker.textContent = e.target.checked ? "✓ Đã chọn" : "Chưa chọn";
       updateCount();
     });
     byId("cc130Next").addEventListener("click",next);
@@ -147,6 +156,7 @@
     byId("cc130Next").textContent="Tiếp tục · Xem và chỉnh sửa";
     byId("cc130Month").value = isoToday().slice(0,7);
     byId("cc130Modal").querySelector('input[name="cc130Mode"][value="month"]').checked = true;
+    displayed().forEach(t => selected.add(String(t.id)));
     renderList();
     showStep("choose");
     byId("cc130Modal").classList.add("is-open");
@@ -169,7 +179,7 @@
   }
   function updateCount() {
     const visible = displayed();
-    const count = scope==="month" ? visible.length : visible.filter(t=>selected.has(String(t.id))).length;
+    const count = visible.filter(t=>selected.has(String(t.id))).length;
     byId("cc130SelectionCount").textContent = "Đã chọn " + count + " / " + visible.length + " công việc hoàn thành";
     byId("cc130Next").disabled = count === 0;
     const all = byId("cc130SelectAll");
@@ -180,12 +190,19 @@
     const list = displayed();
     const automatic = scope==="month";
     byId("cc130ManualActions").hidden = automatic;
-    byId("cc130Tasks").innerHTML = list.length ? list.map(t => `
-      <label class="cc130-task">
-        <input type="checkbox" data-cc130-id="${h(t.id)}" ${automatic||selected.has(String(t.id))?"checked":""} ${automatic?"disabled":""}>
+    byId("cc130Help").textContent = automatic
+      ? "Auto tích sẵn công việc hoàn thành trong tháng. Bấm vào dòng để chọn hoặc bỏ chọn. Thao tác trên phiếu không sửa dữ liệu Công việc gốc."
+      : "Bấm vào dòng để tích chọn công việc cần đưa vào phiếu. Chỉ hiển thị công việc Hoàn thành; không sửa dữ liệu Công việc gốc.";
+    byId("cc130Tasks").innerHTML = list.length ? list.map(t => {
+      const checked = selected.has(String(t.id));
+      return `
+      <label class="cc130-task${checked ? " is-selected" : ""}">
+        <input type="checkbox" data-cc130-id="${h(t.id)}" ${checked ? "checked" : ""}>
         <span><b>${h(t.c||"Công việc kỹ thuật")}</b>
         <small>${h(t.d||"Không có ngày")} · ${h(performer(t).join(", ")||"Chưa ghi người thực hiện")}</small></span>
-      </label>`).join("") : '<p class="cc130-empty">Không có công việc Hoàn thành trong tháng này.</p>';
+        <em class="cc130-task-status" aria-hidden="true">${checked ? "✓ Đã chọn" : "Chưa chọn"}</em>
+      </label>`;
+    }).join("") : '<p class="cc130-empty">Không có công việc Hoàn thành trong tháng này.</p>';
     updateCount();
   }
   async function next() {
@@ -196,7 +213,7 @@
     nextButton.disabled=true;
     nextButton.textContent="Đang tự điền vật tư…";
     const shown = displayed();
-    selectedTasks = shown.filter(t => scope==="month" || selected.has(String(t.id)));
+    selectedTasks = shown.filter(t => selected.has(String(t.id)));
     if (!selectedTasks.length) {
       nextButton.textContent="Tiếp tục · Xem và chỉnh sửa";
       updateCount();

@@ -125,3 +125,28 @@
 
 /* Keep the three administrative inputs on one desktop row. */
 @media (min-width:641px) and (max-width:800px){.cc130-main-fields{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* 130 HH: keep task selection unmistakable and clickable in Auto and Manual modes. */
+#cc130Tasks .cc130-task{align-items:center;min-height:59px;border-left:3px solid transparent;transition:background-color .12s}
+#cc130Tasks .cc130-task.is-selected{background:#f9edf3;border-left-color:#411437}
+#cc130Tasks .cc130-task input[type="checkbox"]{
+  appearance:none;-webkit-appearance:none;display:block;flex:0 0 22px;
+  width:22px;height:22px;min-width:22px;min-height:22px;
+  margin:0;border:2px solid #7b6372;border-radius:6px;
+  background:#fff;cursor:pointer;
+}
+#cc130Tasks .cc130-task input[type="checkbox"]:checked{
+  border-color:#411437;
+  background:#411437 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4 10l4 4 8-8' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/17px 17px no-repeat;
+}
+#cc130Tasks .cc130-task input[type="checkbox"]:focus-visible{outline:3px solid #a46427;outline-offset:3px}
+#cc130Tasks .cc130-task-status{
+  flex:none;align-self:center;margin-left:auto;padding:4px 8px;
+  font-style:normal;font-size:11px;font-weight:800;white-space:nowrap;
+  color:#615b5f;background:#f3f0ee;border-radius:999px;
+}
+#cc130Tasks .cc130-task.is-selected .cc130-task-status{color:#411437;background:#e9d7e3}
+@media(max-width:640px){
+ #cc130Tasks .cc130-task{gap:8px;padding:10px 9px}
+ #cc130Tasks .cc130-task-status{padding:4px 6px;font-size:10px}
+}
