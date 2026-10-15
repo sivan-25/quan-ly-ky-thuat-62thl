@@ -1,4 +1,4 @@
-/* 130 HH completion-certificate pilot: visually scoped, no changes to existing tables. */
+/* Shared completion certificate for 62/68/127/130; visually scoped to modal. */
 #cc130Launch.cc130-launch{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:#1d4c57;border:1px solid #497d78;color:#fff7e7;border-radius:9px;padding:8px 11px;font-weight:750;font-size:13px;cursor:pointer;white-space:nowrap}
 #cc130Launch.cc130-launch:hover{background:#24606a}
 #cc130Launch[hidden]{display:none!important}

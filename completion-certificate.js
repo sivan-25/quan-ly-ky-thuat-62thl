@@ -1,9 +1,10 @@
-/* Trial module: Phiếu xác nhận hoàn thành công việc, exclusively 130 HH.
+/* Shared ESTA completion certificate: one UI and PDF flow for four buildings.
  * Reads the current project's cached/synced tasks. Never writes tasks or Supabase.
  */
 (() => {
   "use strict";
-  const TARGET = "130HH";
+  const PROJECTS = new Set(["62THL","68PĐL","127HH","130HH"]);
+  const projectId = () => String(currentBuilding?.id||"");
   const byId = id => document.getElementById(id);
   const h = v => String(v == null ? "" : v).replace(/[&<>"']/g, ch =>
     ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
@@ -12,7 +13,7 @@
     return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
   };
   const eligible = t => ["Đã hoàn thành", "Hoàn thành"].includes(String(t?.s || "").trim());
-  const onProject = () => typeof currentBuilding !== "undefined" && currentBuilding?.id === TARGET;
+  const onProject = () => typeof currentBuilding !== "undefined" && PROJECTS.has(projectId());
   const tasks = () => onProject() && typeof load === "function"
     ? load().filter(eligible).sort((a,b)=>String(b.d||"").localeCompare(String(a.d||"")))
     : [];
@@ -23,6 +24,7 @@
   let scope = "month";
   let selectedTasks = [];
   let busy = false;
+  let openedProject = "";
   let draftVersion = 0; // Ignore stale auto-fill responses after closing/reopening the form.
   function renderButton() {
     const host = document.querySelector("#workPage .workTableMeta");
@@ -39,7 +41,7 @@
       host.appendChild(btn);
     }
     btn.hidden = !onProject();
-    if (!onProject() && byId("cc130Modal")?.classList.contains("is-open")) close();
+    if (byId("cc130Modal")?.classList.contains("is-open") && (!onProject() || openedProject!==projectId())) close();
   }
   function modal() {
     if (byId("cc130Modal")) return byId("cc130Modal");
@@ -52,7 +54,7 @@
     root.innerHTML = `
       <div class="cc130-dialog">
         <header class="cc130-head">
-          <div><small>130 HỒNG HÀ · BỘ PHẬN KỸ THUẬT</small>
+          <div><small id="cc130ProjectLabel">BỘ PHẬN KỸ THUẬT</small>
             <h2 id="cc130Title">Phiếu xác nhận hoàn thành công việc</h2>
             <p>Chọn công việc đã hoàn thành, kiểm tra nội dung rồi xuất PDF khổ A4 để ký tay.</p>
           </div>
@@ -140,6 +142,8 @@
   function open() {
     if (!onProject()) return;
     modal();
+    openedProject=projectId();
+    byId("cc130ProjectLabel").textContent=String(currentBuilding?.name||openedProject).toLocaleUpperCase("vi-VN")+" · BỘ PHẬN KỸ THUẬT";
     scope = "month";
     selected.clear();
     selectedTasks = [];
@@ -278,7 +282,7 @@
       throw new Error("Một hoặc nhiều vật tư liên kết chưa có số lượng hợp lệ. Hãy kiểm tra trong Công việc trước khi Auto.");
     if (valid.some(item=>!item.name||!item.unit) && centralSession?.access_token) {
       const rows=await sbFetch(
-        "/rest/v1/inventory_materials?building_id=eq."+encodeURIComponent(TARGET)+"&select=id,name,unit&limit=1000",
+        "/rest/v1/inventory_materials?building_id=eq."+encodeURIComponent(projectId())+"&select=id,name,unit&limit=1000",
         {token:centralSession.access_token}
       );
       const catalog=new Map((Array.isArray(rows)?rows:[]).map(item=>[String(item.id),item]));
@@ -369,7 +373,7 @@
     return wrapper;
   }
   function payload() {
-    if(!onProject())throw new Error("Chỉ xuất phiếu trong dự án 130 HH.");
+    if(!onProject()||openedProject!==projectId())throw new Error("Dự án đã thay đổi; hãy mở lại phiếu xác nhận.");
     const rows = [...byId("cc130Rows").querySelectorAll(".cc130-row")].map(node => {
       const get = key => node.querySelector('[data-field="'+key+'"]').value.trim();
       const row={content:get("content"),material:get("material"),unit:get("unit"),qty:get("qty"),start_date:get("start_date"),end_date:get("end_date")};
@@ -389,7 +393,7 @@
         }))) : [];
     if(photos.length>60)throw new Error("Phiếu đang có "+photos.length+" ảnh. Vui lòng chọn tối đa 60 ảnh bằng cách giảm số công việc, hoặc tắt kèm ảnh.");
     return {
-      report_type:"completion", building_id:TARGET, building:"130 Hồng Hà",
+      report_type:"completion", building_id:projectId(), building:currentBuilding?.name||projectId(),
       certificate_style:"esta",
       company:byId("cc130Company").value.trim(), department:byId("cc130Department").value.trim(),
       issued_date:byId("cc130IssuedDate").value, period:byId("cc130Month").value,
@@ -411,7 +415,7 @@
       button.textContent="Đang tạo PDF…";
       message.textContent="Đang tạo phiếu; vui lòng chờ.";
       await ensureCentralSessionFresh();
-      if(!onProject())throw new Error("Dự án đã thay đổi, vui lòng mở lại phiếu.");
+      if(!onProject()||openedProject!==projectId())throw new Error("Dự án đã thay đổi, vui lòng mở lại phiếu.");
       const controller=new AbortController();
       const timeout=setTimeout(()=>controller.abort(),115000);
       let response;
@@ -424,7 +428,7 @@
         const url=URL.createObjectURL(blob);
         const a=document.createElement("a");
         a.href=url;
-        a.download="Phieu_xac_nhan_hoan_thanh_130HH_"+request.period.replace("-","")+".pdf";
+        a.download="Phieu_xac_nhan_hoan_thanh_"+request.building_id+"_"+request.period.replace("-","")+".pdf";
         document.body.appendChild(a);a.click();a.remove();
         setTimeout(()=>URL.revokeObjectURL(url),60000);
         const missing=Number(response.headers?.get("X-ESTA-Missing-Images")||0);
@@ -434,7 +438,7 @@
       } finally {clearTimeout(timeout);}
     } catch(error) {
       message.textContent="Chưa xuất được PDF: "+(error?.name==="AbortError"?"Máy chủ phản hồi quá lâu.":error?.message||String(error));
-      console.warn("ESTA 130HH completion certificate",error);
+      console.warn("ESTA completion certificate",error);
     } finally {
       busy=false;
       button.disabled=false;
@@ -450,7 +454,7 @@
     if(page)new MutationObserver(renderButton).observe(page,{attributes:true,attributeFilter:["class"]});
     document.addEventListener("click",()=>setTimeout(renderButton,0),true);
   }
-  window.ESTA130Completion = {open,isEnabled:onProject,eligibleTasks:tasks};
+  window.ESTACompletion = {open,isEnabled:onProject,eligibleTasks:tasks};
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
   else init();
 })();

@@ -24,3 +24,7 @@ Phase 1 stages only equipment screen navigation and existing pilot modules. All 
 - 127HH continues using existing `building_equipment_profiles_127`; 130HH, 62THL, 68PĐL use `building_equipment_profiles`, always filtering by `building_id`.
 - Supabase RLS policy expansion for 62THL and 68PĐL is **STAGED ONLY**, not applied before a verified independent backup. Until then, their test preview writes may be rejected.
 - Maintenance/certificate/other screens remain separate pending scope-safe refactor. No production release yet.
+
+
+## Shared completion certificate
+The user-approved completion certificate now has one client-side module and one stylesheet for all four project IDs (62THL, 68PĐL, 127HH, 130HH), preserving the existing 130HH workflow. Server-side PDF validator/headers are project-aware. The certificate is read-only with respect to source tasks/material stock, and only the approved project is displayed/exported. Automated PDF + frontend regressions apply. Production main unchanged pending rollout gates.

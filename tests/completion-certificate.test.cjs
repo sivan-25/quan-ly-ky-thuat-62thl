@@ -1,4 +1,4 @@
-/* Synthetic browser regression for the 130 HH completion-certificate pilot. */
+/* All-project offline completion-certificate regression. */
 const fs = require("node:fs");
 const assert = require("node:assert/strict");
 const {JSDOM} = require("jsdom");
@@ -8,7 +8,7 @@ async function main() {
     url: "http://localhost/", runScripts: "outside-only"
   });
   const w=dom.window, d=w.document;
-  w.currentBuilding={id:"62THL",name:"62 Trần Huy Liệu"};
+  w.currentBuilding={id:"DEMO",name:"Demo"};
   w.load=()=>[
     {id:"a",d:"2026-09-10",c:"Thay đèn hành lang",s:"Đã hoàn thành",performers:["KT A"],
      result:"Đã thay đèn hành lang và kiểm tra vận hành",
@@ -30,11 +30,11 @@ async function main() {
   w.HTMLAnchorElement.prototype.click=function(){downloads++;};
   const originalTimeout=w.setTimeout.bind(w);
   w.setTimeout=(fn,delay,...args)=>delay>=60000 ? 0 : originalTimeout(fn,delay,...args);
-  w.eval(fs.readFileSync("completion-certificate-130.js","utf8"));
+  w.eval(fs.readFileSync("completion-certificate.js","utf8"));
   d.dispatchEvent(new w.Event("DOMContentLoaded"));
   const btn=d.getElementById("cc130Launch");
   assert.ok(btn,"certificate action should be attached on work page");
-  assert.equal(btn.hidden,true,"other projects must not show the action");
+  assert.equal(btn.hidden,true,"Demo must not show the action");
   w.currentBuilding={id:"130HH",name:"130 Hồng Hà"};
   d.getElementById("headerRole").textContent="KT · 130HH";
   await new Promise(r=>setTimeout(r,0));
@@ -135,12 +135,31 @@ async function main() {
   await new Promise(r=>setTimeout(r,40));
   assert.equal(sent.rows.length,1,"removed work must not be printed");
   assert.equal(sent.photos.length,0,"removed work photos must not be printed");
+  // Switching between supported buildings must close the old draft to prevent cross-building exports.
   w.currentBuilding={id:"127HH",name:"127 Hồng Hà"};
   d.getElementById("headerRole").textContent="KT · 127HH";
   await new Promise(r=>setTimeout(r,0));
-  assert.equal(btn.hidden,true,"other projects stay unchanged");
+  assert.equal(btn.hidden,false,"127 supports identical certificate UI");
   assert.equal(d.getElementById("cc130Modal").classList.contains("is-open"),false);
-  console.log("PASS 130 HH completion certificate: compact editor, material autofill, task removal, editable fields, 2 row actions, PDF and project isolation");
+  for(const [id,name] of [["127HH","127 Hồng Hà"],["62THL","62 Trần Huy Liệu"],["68PĐL","68 Phan Đăng Lưu"]]){
+    w.currentBuilding={id,name};
+    d.getElementById("headerRole").textContent="KT · "+id;
+    await new Promise(r=>setTimeout(r,0));
+    assert.equal(btn.hidden,false,"certificate available on "+id);
+    btn.click();
+    assert.match(d.getElementById("cc130ProjectLabel").textContent,new RegExp(id==="68PĐL"?"68 PHAN":id==="62THL"?"62 TRẦN":"127 HỒNG"));
+    const month=d.getElementById("cc130Month");month.value="2026-09";month.dispatchEvent(new w.Event("change",{bubbles:true}));
+    d.getElementById("cc130Next").click();await new Promise(r=>setTimeout(r,35));
+    d.getElementById("cc130Export").click();await new Promise(r=>setTimeout(r,40));
+    assert.equal(sent.building_id,id,"PDF must use current project "+id);
+    assert.equal(sent.building,name,"building label is always current project");
+    d.getElementById("cc130Close").click();
+  }
+  w.currentBuilding={id:"DEMO",name:"Demo"};
+  d.getElementById("headerRole").textContent="KT · DEMO";
+  await new Promise(r=>setTimeout(r,0));
+  assert.equal(btn.hidden,true);
+  console.log("PASS 4-project completion certificate: compact editor, material autofill, task removal, editable fields, 2 row actions, PDF and project isolation");
   dom.window.close();
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});
