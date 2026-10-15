@@ -247,6 +247,21 @@
     const trunc=$("#asTrunc");if(trunc)trunc.textContent=records.length>150?"Đang xem 150/"+records.length+" bản ghi; PDF sẽ chứa toàn bộ (tối đa 1.500).":"";
     updateButtons();
   }
+  function updatePeriodUI(kind) {
+    for(const [id,type] of [["asWeek","week"],["asMonthApply","month"],["asCustom","custom"]]){
+      const el=$("#"+id);if(el){el.classList.toggle("active",type===kind);el.setAttribute("aria-pressed",String(type===kind));}
+    }
+    const text=$("#asPeriodSummary");if(text)text.textContent="Kỳ đang chọn: "+vn(state.from)+" – "+vn(state.to);
+  }
+  function applyMonth() {
+    const value=$("#asMonth")?.value||"";
+    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(value))return setMessage("Vui lòng chọn tháng hợp lệ.",true);
+    const [year,month]=value.split("-").map(Number);
+    const last=new Date(Date.UTC(year,month,0)).getUTCDate();
+    state.from=value+"-01";state.to=value+"-"+String(last).padStart(2,"0");
+    $("#asFrom").value=state.from;$("#asTo").value=state.to;
+    updatePeriodUI("month");renderResults();
+  }
   function renderSelectors() {
     const projects=$("#asProjectList"),cats=$("#asCategoryList");
     if(!projects||!cats)return;
@@ -319,6 +334,8 @@
       '#estaAdminSummaryPage .asActions{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:12px 0}'+
       '#estaAdminSummaryPage .asDateFields{display:flex;flex-wrap:wrap;gap:12px}'+
       '#estaAdminSummaryPage .asDateFields label{display:grid;gap:5px;min-width:150px;flex:1;color:#637264;font-size:12px}'+
+      '#estaAdminSummaryPage .asPeriod.active{background:#315b4b;color:#fff;border-color:#315b4b}'+
+      '#estaAdminSummaryPage .asDateFields input[type=month]{padding:10px;border:1px solid #d6d8d0;border-radius:8px;max-width:100%;font:inherit}'+
       '#estaAdminSummaryPage input[type=date]{padding:10px;border:1px solid #d6d8d0;border-radius:8px;max-width:100%;font:inherit}'+
       '#estaAdminSummaryPage .asGrid{display:grid;grid-template-columns:1fr 1.5fr;gap:14px}'+
       '#estaAdminSummaryPage .asChecks{display:grid;grid-template-columns:1fr 1fr;gap:9px}'+
@@ -346,12 +363,12 @@
     document.head.appendChild(css);
     const view=document.createElement("section");view.id="estaAdminSummaryPage";
     view.innerHTML='<div class="asHead"><div><h2>Báo cáo tổng hợp</h2><p class="asSub">ESTA · Báo cáo Giám sát Kỹ thuật · Bốn dự án và công việc riêng Admin</p></div><button id="asBack" class="asBtn" type="button">← Tổng quan Admin</button></div>'+
-      '<div class="asCard"><h3>1. Kỳ báo cáo</h3><div class="asDateFields"><label>Từ ngày<input id="asFrom" type="date"></label><label>Đến ngày<input id="asTo" type="date"></label></div><div class="asActions"><button id="asWeek" class="asBtn" type="button">Tuần hiện tại · Thứ Hai–Chủ nhật</button><button id="asRefresh" class="asBtn" type="button">↻ Làm mới dữ liệu</button></div></div>'+
+      '<div class="asCard"><h3>1. Kỳ báo cáo</h3><div class="asActions" role="group" aria-label="Lựa chọn kỳ báo cáo"><button id="asWeek" class="asBtn asPeriod active" type="button">Theo tuần</button><button id="asMonthApply" class="asBtn asPeriod" type="button">Theo tháng</button><button id="asCustom" class="asBtn asPeriod" type="button">Từ ngày đến ngày</button></div><div class="asDateFields"><label>Chọn tháng<input id="asMonth" type="month" aria-label="Tháng báo cáo"></label><label>Từ ngày<input id="asFrom" type="date"></label><label>Đến ngày<input id="asTo" type="date"></label></div><div class="asActions"><button id="asRefresh" class="asBtn" type="button">↻ Làm mới dữ liệu</button><span class="asHint" id="asPeriodSummary"></span></div></div>'+
       '<div class="asGrid"><div class="asCard"><h3>2. Chọn dự án</h3><div class="asActions"><button class="asBtn" data-as-project-all="1">Chọn cả 4</button><button class="asBtn" data-as-project-all="0">Bỏ chọn</button></div><div class="asChecks" id="asProjectList"></div><p class="asHint">Công việc riêng của Admin đi kèm khi tích “Công việc”, kể cả không liên kết dự án.</p></div>'+
       '<div class="asCard"><h3>3. Chọn hạng mục cần xuất PDF</h3><div class="asActions"><button class="asBtn" data-as-cat-all="1">Chọn tất cả</button><button class="asBtn" data-as-cat-all="0">Bỏ chọn</button></div><div class="asChecks" id="asCategoryList"></div></div></div>'+
       '<div class="asCard"><h3>4. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><div class="asActions"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button></div><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Phan. Dữ liệu các dự án được giữ độc lập.</p></div>';
     home.appendChild(view);
-    $("#asFrom").value=state.from;$("#asTo").value=state.to;
+    $("#asFrom").value=state.from;$("#asTo").value=state.to;$("#asMonth").value=today().slice(0,7);updatePeriodUI("week");
     const nav=$("#navAdmin");
     if(nav && !$("#navAdminSummary")){
       const b=document.createElement("button");b.id="navAdminSummary";b.type="button";b.hidden=true;
@@ -366,7 +383,9 @@
     view.addEventListener("click",e=>{
       const target=e.target;
       if(target.closest("#asBack")){close();return;}
-      if(target.closest("#asWeek")){[state.from,state.to]=mondayToSunday();$("#asFrom").value=state.from;$("#asTo").value=state.to;fetchData();return;}
+      if(target.closest("#asWeek")){[state.from,state.to]=mondayToSunday();$("#asFrom").value=state.from;$("#asTo").value=state.to;updatePeriodUI("week");fetchData();return;}
+      if(target.closest("#asMonthApply")){applyMonth();return;}
+      if(target.closest("#asCustom")){updatePeriodUI("custom");$("#asFrom")?.focus();return;}
       if(target.closest("#asRefresh")){fetchData();return;}
       if(target.closest("#asExport")){exportPDF();return;}
       const pa=target.closest("[data-as-project-all]");
@@ -379,8 +398,9 @@
       if(target.id==="asFrom"||target.id==="asTo"){
         const from=$("#asFrom").value,to=$("#asTo").value;
         if(!/^\d{4}-\d{2}-\d{2}$/.test(from)||!/^\d{4}-\d{2}-\d{2}$/.test(to)||from>to){setMessage("Ngày kết thúc phải từ ngày bắt đầu trở đi.",true);return;}
-        state.from=from;state.to=to;renderResults();return;
+        state.from=from;state.to=to;updatePeriodUI("custom");renderResults();return;
       }
+      if(target.id==="asMonth"){applyMonth();return;}
       if(target.dataset.asProject){if(target.checked)state.projects.add(target.dataset.asProject);else state.projects.delete(target.dataset.asProject);fetchData();return;}
       if(target.dataset.asCategory){if(target.checked)state.categories.add(target.dataset.asCategory);else state.categories.delete(target.dataset.asCategory);fetchData();return;}
     });
