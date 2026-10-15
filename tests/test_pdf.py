@@ -13,7 +13,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from api.esta_report import generate_pdf, _prepare_generic_data, story_generic
-from reportlab.platypus import Table
+from reportlab.platypus import KeepTogether, Table
 from reporting.report_center import _prepare_photo
 from reporting.pdf_common import ImageSlot
 from reporting import pdf_common as pdfc
@@ -366,11 +366,11 @@ class ReportTests(unittest.TestCase):
             self.assertTrue(prepared['hide_building'])
             self.assertEqual(prepared['signature_position'], 'supervision')
             signature = next(x for x in story_generic(prepared)
-                             if isinstance(x, list) and len(x) == 2
-                             and isinstance(x[-1], Table))
-            self.assertEqual(signature[-1]._cellvalues[0][1].text, 'GIÁM SÁT KỸ THUẬT')
-            self.assertEqual(signature[-1]._cellvalues[2][1].text, 'Sĩ Văn')
-            self.assertEqual(signature[-1]._cellvalues[2][0], '')
+                             if isinstance(x, KeepTogether))
+            signature_table = next(x for x in signature._content if isinstance(x, Table))
+            self.assertEqual(signature_table._cellvalues[0][1].text, 'GIÁM SÁT KỸ THUẬT')
+            self.assertEqual(signature_table._cellvalues[2][1].text, 'Sĩ Văn')
+            self.assertEqual(signature_table._cellvalues[2][0], '')
             metadata = next(x for x in story_generic(prepared) if isinstance(x, Table) and len(x._cellvalues) == 2)
             self.assertEqual(metadata._cellvalues[0][0].text, 'HẠNG MỤC')
             self.assertEqual(metadata._cellvalues[0][1].text, 'THEO DÕI CÔNG VIỆC GIÁM SÁT KỸ THUẬT')

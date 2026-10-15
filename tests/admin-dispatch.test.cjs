@@ -146,7 +146,8 @@ async function main() {
   assert.equal(pdfCalls[1].hideBuilding,true);
   assert.equal(pdfCalls[1].building,'');
   assert.equal(pdfCalls[1].signaturePosition,'supervision');
-  assert.deepEqual(pdfCalls[1].signer,{name:'Sĩ Văn',image_data_url:''});
+  assert.equal(pdfCalls[1].signer.name,'Sĩ Văn');
+  assert.equal(pdfCalls[1].signer.image_data_url,'');
   visible()[0].click();
   assert.equal(q('#ccDispatchHeading').textContent,'Chỉnh sửa công việc thực hiện');
   assert.equal(q('#ccDispatchTitle').value,personal[0].title);
