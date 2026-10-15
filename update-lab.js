@@ -3,7 +3,7 @@
 
 const UPDATE_ID="UPDATE";
 const DEMO_ID="DEMO";
-const LIVE_MOBILE_NAV_PROJECTS=new Set(["127HH","130HH","62THL","68PDL"]);
+const LIVE_MOBILE_NAV_PROJECTS=new Set(["127HH","130HH","62THL","68PDL","NANGCAP"]);
 const SLA_RULES={
  Critical:{response:5,target:30,label:"Critical"},
  High:{response:15,target:120,label:"High"},
