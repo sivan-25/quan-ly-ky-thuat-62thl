@@ -176,7 +176,7 @@
   };
   const currentMode=()=>{
     const b=typeof currentBuilding==="undefined"?"":String(currentBuilding?.id||"");
-    return b==="130HH"?"130":b==="68PĐL"?"68":"standard";
+    return ["130HH","127HH","62THL","68PĐL"].includes(b)?"130":"standard";
   };
   const active=()=>!page.classList.contains("hide")&&app.classList.contains("maintenanceMode");
   const selectedMonth=()=>{
