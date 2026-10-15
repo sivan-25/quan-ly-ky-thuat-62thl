@@ -156,7 +156,9 @@ class CompletionCertificateTests(unittest.TestCase):
     def test_scope_validation_and_dates(self):
         payload=self.fixture()
         payload["building_id"] = "127HH"
-        with self.assertRaisesRegex(ValueError,"130 HH"):
+        self.assertEqual(validate(payload)[0], payload["period"])
+        payload["building_id"] = "DEMO"
+        with self.assertRaisesRegex(ValueError,"không hỗ trợ"):
             validate(payload)
         payload=self.fixture()
         payload["rows"][0]["end_date"]="2026-09-01"
