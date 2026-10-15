@@ -796,7 +796,7 @@ async function renderAdminHomeOverview(){
  if(!currentAccount?.is_admin)return;
  try{
    const result=await sbFetch("/functions/v1/admin-overview",{method:"POST",token:centralSession.access_token,body:{}});
-   const rows=Array.isArray(result?.rows)?result.rows:[];
+   const rows=(Array.isArray(result?.rows)?result.rows:[]).filter(r=>String(r?.building?.id||"")!=="NANGCAP");
    const tasks=[],energy=[];let electricTotal=0,waterTotal=0,solarTotal=0,hasElectric=false,hasWater=false,hasSolar=false;
 
    rows.forEach(({building:b,snapshot:s})=>{
