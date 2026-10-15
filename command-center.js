@@ -628,7 +628,7 @@ async function updateProjectNavAlerts(){
   const [incidents,inspections,assets,materials,tx,jobs]=await Promise.all([
    sbFetch("/rest/v1/incidents?building_id=eq."+b+"&select=id,severity,status",{token:centralSession.access_token}),
    sbFetch("/rest/v1/inspections?building_id=eq."+b+"&select=id,result_status",{token:centralSession.access_token}),
-   bid==="130HH"?Promise.resolve([]):sbFetch("/rest/v1/maintenance_assets?building_id=eq."+b+"&select=id,status,next_due_date",{token:centralSession.access_token}),
+   ["130HH","127HH","62THL","68PĐL"].includes(bid)?Promise.resolve([]):sbFetch("/rest/v1/maintenance_assets?building_id=eq."+b+"&select=id,status,next_due_date",{token:centralSession.access_token}),
    sbFetch("/rest/v1/inventory_materials?building_id=eq."+b+"&select=id,min_qty,opening_qty,tracking_start_date,created_at",{token:centralSession.access_token}),
    sbFetch("/rest/v1/inventory_material_transactions?building_id=eq."+b+"&select=material_id,tx_type,qty,tx_date",{token:centralSession.access_token}),
    sbFetch("/rest/v1/contractor_jobs?building_id=eq."+b+"&select=id,status",{token:centralSession.access_token})
@@ -651,10 +651,10 @@ async function updateProjectNavAlerts(){
   // 130HH uses scheduled maintenance jobs rather than the legacy equipment registry.
   // Keep the badge empty if its data cannot be verified; do not show a stale legacy count.
   let maintenance130=null;
-  if(bid==="130HH"){
+  if(["130HH","127HH","62THL","68PĐL"].includes(bid)){
    try{
     if(typeof window.estaMaintenance130NavSummary!=="function")throw Error("130HH maintenance source unavailable");
-    maintenance130=await window.estaMaintenance130NavSummary({today:td,soon,token:centralSession.access_token});
+    maintenance130=await window.estaMaintenance130NavSummary({today:td,soon,token:centralSession.access_token,buildingId:bid});
    }catch(err){console.warn("130HH maintenance badge could not be loaded",err)}
    if(seq!==navAlertSeq||String(currentBuilding?.id||"")!==bid)return;
   }
@@ -678,7 +678,7 @@ async function updateProjectNavAlerts(){
   setNavBadge("navWork",work,work?"high":"normal","công việc chưa hoàn thành");
   setNavBadge("navIncident",incident,incidentCritical?"critical":incident?"high":"normal","sự cố/defect đang mở");
   setNavBadge("navInspection",inspection,inspection?"high":"normal","checklist cần chú ý hoặc khắc phục");
-  if(bid==="130HH")setNavBadge("navMaintenance",maintenance130?.count||0,maintenance130?.critical?"critical":maintenance130?.count?"high":"normal","công việc bảo trì chưa hoàn thành đã đến hạn hoặc đến hạn trong 30 ngày (tính từ đầu năm)");
+  if(["130HH","127HH","62THL","68PĐL"].includes(bid))setNavBadge("navMaintenance",maintenance130?.count||0,maintenance130?.critical?"critical":maintenance130?.count?"high":"normal","công việc bảo trì chưa hoàn thành đã đến hạn hoặc đến hạn trong 30 ngày (tính từ đầu năm)");
   else setNavBadge("navMaintenance",maintenance,maintenanceCritical?"critical":maintenance?"high":"normal","thiết bị hỏng, quá hạn hoặc đến hạn trong 30 ngày");
   setNavBadge("navInventory",inventory,inventoryCritical?"critical":inventory?"high":"normal","vật tư hết hoặc dưới mức tồn tối thiểu");
   setNavBadge("navContractor",contractor,contractor?"normal":"normal","công việc nhà thầu chưa hoàn thành");
