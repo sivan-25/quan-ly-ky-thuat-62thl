@@ -1,0 +1,56 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{JSDOM}=require('jsdom');
+const root=path.join(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const js=read('building-systems.js'),css=read('building-systems.css'),app=read('app.js'),html=read('index.html');
+new Function(js);
+assert.match(css,/max-width:640px/);assert.match(css,/\.bsysSplit/);
+assert.equal((html.match(/src="building-systems\.js\?/g)||[]).length,1);
+assert.equal((html.match(/href="building-systems\.css\?/g)||[]).length,1);
+assert.doesNotMatch(html,/building-systems-(127|130)\./);
+assert.doesNotMatch(app,/renderBuildingSystems(127|130)/);
+const dom=new JSDOM('<!doctype html><div id="app"><div id="buildingSystemsBody"></div></div>',{url:'https://esta.test/',runScripts:'outside-only'});
+const w=dom.window,d=w.document,$=id=>d.getElementById(id),flush=()=>new Promise(ok=>setTimeout(ok,0));
+w.currentBuilding={id:'127HH',name:'127 Hồng Hà'};w.projectOverviewActive=true;
+w.centralSession={access_token:'fixture'};w.toast=()=>{};w.confirm=()=>true;
+let editable=true;w.canProjectEdit=()=>editable;
+const data=new Map([['127HH',[]],['130HH',[]],['62THL',[]],['68PĐL',[]]]);
+const calls=[];
+w.sbFetch=async(url,opt={})=>{
+ const table=url.split('?')[0].split('/').pop();
+ const project=opt.body?.building_id||new URLSearchParams(url.split('?')[1]||'').get('building_id')?.slice(3)||w.currentBuilding.id;
+ assert.equal(table,project==='127HH'?'building_equipment_profiles_127':'building_equipment_profiles');
+ const values=data.get(project);assert.ok(values,'project must be authorized');
+ calls.push({url,opt,project});
+ if(opt.method==='POST')values.unshift({...opt.body,id:project+'-1'});
+ if(opt.method==='PATCH')Object.assign(values[0],opt.body);
+ if(opt.method==='DELETE')values.length=0;
+ return url.includes('select=*')?[...values]:null;
+};
+(async()=>{
+ w.eval(js);
+ for(const project of ['127HH','130HH','62THL','68PĐL']){
+   w.currentBuilding={id:project,name:project+' site'};
+   w.renderBuildingSystems();await flush();
+   assert.equal(d.querySelectorAll('.bsysQuickGroup').length,9,'all nine groups available');
+   assert.equal($('bsysCount').textContent,'0','record counts are scoped');
+   assert.match($('bsysEyebrow').textContent,new RegExp(project));
+   d.querySelector('[data-bs-template="Tủ điện MSB"]').click();
+   assert.equal($('bsysOverlay').hidden,false);
+   $('bsysForm').elements.namedItem('name').value='MSB '+project;
+   $('bsysForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+   await flush();await flush();
+   assert.equal(data.get(project)[0].building_id,project);
+   assert.equal($('bsysCount').textContent,'1');
+ }
+ w.currentBuilding={id:'127HH',name:'127 Hồng Hà'};w.renderBuildingSystems();await flush();
+ assert.match($('bsysList').textContent,/MSB 127HH/);
+ assert.doesNotMatch($('bsysList').textContent,/MSB 62THL/);
+ editable=false;w.renderBuildingSystems();await flush();
+ assert.equal(d.querySelector('[data-bs-edit]'),null,'viewer never gets editing controls');
+ const before=calls.length;w.currentBuilding={id:'DEMO'};w.renderBuildingSystems();await flush();
+ assert.equal(calls.length,before,'not enabled for Demo');
+ w.currentBuilding={id:'130HH'};w.renderBuildingSystems();await flush();
+ assert.equal($('bsysCount').textContent,'1','130 data persists independently');
+ console.log('PASS shared building systems: 4 projects, one UI, same workflow, isolated CRUD, switching, viewer');
+ dom.window.close();
+})().catch(e=>{console.error(e);dom.window.close();process.exitCode=1;});

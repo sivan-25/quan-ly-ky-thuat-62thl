@@ -17,3 +17,10 @@ User approved exactly eight improvements: maintenance calendars/cycles/status, e
 - Database and production remain untouched by this phase-one branch.
 ## Progress
 Phase 1 stages only equipment screen navigation and existing pilot modules. All other approved improvements remain pending until test/acceptance gates.
+
+
+## Shared building systems: four-project consolidation
+- One shared `building-systems.js` and `building-systems.css`; duplicate 127HH/130HH modules removed on feature branch. Four projects share identical UI, fields and workflows.
+- 127HH continues using existing `building_equipment_profiles_127`; 130HH, 62THL, 68PĐL use `building_equipment_profiles`, always filtering by `building_id`.
+- Supabase RLS policy expansion for 62THL and 68PĐL is **STAGED ONLY**, not applied before a verified independent backup. Until then, their test preview writes may be rejected.
+- Maintenance/certificate/other screens remain separate pending scope-safe refactor. No production release yet.

@@ -1,0 +1,235 @@
+/* ESTA 127HH · Building Systems / equipment inventory (isolated stylesheet) */
+#app #buildingSystemsPage{color:#163b45;min-width:0;overflow-x:clip}
+#app .bsysIntro{display:flex;align-items:center;justify-content:space-between;gap:18px;border-radius:17px;border:1px solid #d5e0d6;background:linear-gradient(125deg,#e5ebde,#faf8ed);padding:22px 24px;margin:4px 0 16px}
+#app .bsysEyebrow{font-size:10px;font-weight:850;letter-spacing:1.45px;color:#426e5d}
+#app .bsysIntro h2{font-size:24px;line-height:1.2;color:#153d3c;margin:6px 0 8px;letter-spacing:-.5px}
+#app .bsysIntro p{font-size:13px;line-height:1.6;color:#62766c;margin:0;max-width:720px}
+#app .bsysPrimary{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;background:#164f48;color:#fff;border:1px solid #164f48;border-radius:10px;padding:11px 16px;font-weight:780;font-size:13px;cursor:pointer;min-height:40px}
+#app .bsysPrimary:hover{background:#0e3b36}
+#app .bsysPrimary:disabled{opacity:.58;cursor:wait}
+#app .bsysLight{border:1px solid #cbdad3;background:#fff;color:#31544c;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:700}
+#app .bsysMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+#app .bsysMetrics>div{border:1px solid #dce6df;border-radius:12px;background:#fffdf7;padding:15px 18px;display:flex;align-items:center;gap:14px}
+#app .bsysMetrics strong{font-size:27px;color:#1c5951;line-height:1;font-variant-numeric:tabular-nums}
+#app .bsysMetrics span{font-size:12px;color:#687d75;font-weight:650}
+#app .bsysToolbar{display:grid;grid-template-columns:minmax(220px,1fr) minmax(170px,220px) minmax(170px,220px) auto;gap:9px;margin-bottom:13px}
+#app .bsysToolbar .bsysSearch{display:flex;align-items:center;gap:7px;padding:0 12px;background:#fff;border:1px solid #d2dfd9;border-radius:10px}
+#app .bsysSearch span{font-size:23px;color:#718c7f}
+#app .bsysToolbar input,#app .bsysToolbar select{width:100%;min-width:0;min-height:42px;color:#204d48;border:1px solid #d2dfd9;border-radius:10px;background:#fff;padding:0 11px;font:inherit;font-size:13px}
+#app .bsysToolbar input{border:none;outline:none;padding:0}
+#app .bsysNotice{font-size:13px;line-height:1.4;min-height:0;margin:0 0 9px;font-weight:700}
+#app .bsysNotice:empty{display:none}
+#app .bsysNotice.error{padding:11px 14px;border-radius:10px;background:#fff0ed;border:1px solid #e9b6a7;color:#a03a2b}
+#app .bsysNotice.ok{padding:11px 14px;border-radius:10px;background:#edf7ee;border:1px solid #bcdabe;color:#236347}
+#app .bsysList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#app .bsysEmpty{grid-column:1/-1;padding:42px 15px;text-align:center;border:1px dashed #cbd9d1;border-radius:14px;background:#fffdf9;color:#70847a}
+#app .bsysEmpty b{display:block;font-size:17px;color:#365c4f;margin-bottom:4px}
+#app .bsysEmpty p{margin:5px 0 0;font-size:13px}
+#app .bsysCard{min-width:0;background:#fff;border:1px solid #d8e4df;border-radius:13px;padding:17px 18px;box-shadow:0 3px 12px rgba(27,67,52,.035);display:flex;flex-direction:column;gap:12px}
+#app .bsysCardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#app .bsysCardTop>div{min-width:0}
+#app .bsysCardTop small{display:block;color:#3b8270;font-size:10px;font-weight:850;letter-spacing:.4px;margin-bottom:6px}
+#app .bsysCardTop h3{margin:0 0 4px;font-size:17px;font-weight:810;line-height:1.25;overflow-wrap:anywhere;color:#173e3e}
+#app .bsysCardTop p{color:#69847c;font-size:12px;margin:0;overflow-wrap:anywhere}
+#app .bsysStatus{padding:6px 9px;white-space:nowrap;border-radius:7px;font-size:11px;font-weight:780}
+#app .bsysStatus.working{background:#e0f3e7;color:#19734f}
+#app .bsysStatus.standby{background:#fff0cd;color:#91610b}
+#app .bsysStatus.stopped{background:#fbe2e2;color:#a03e3e}
+#app .bsysInfo{display:grid;grid-template-columns:1.1fr 1fr auto;gap:12px;border-block:1px solid #ebf0ec;padding:11px 0}
+#app .bsysInfo>div{min-width:0}
+#app .bsysInfo span{display:block;color:#81948a;font-size:10px;margin-bottom:4px}
+#app .bsysInfo b{font-size:12px;font-weight:750;color:#31544c;overflow-wrap:anywhere}
+#app .bsysSpecs{display:flex;gap:6px;flex-wrap:wrap}
+#app .bsysSpecs>span{background:#f0f5f1;border:1px solid #e0eae3;padding:5px 9px;border-radius:7px;color:#60766c;font-size:11px}
+#app .bsysSpecs b{color:#2b5144}
+#app .bsysCardFoot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;min-height:24px;gap:10px}
+#app .bsysCardFoot small{color:#819188;font-size:11px}
+#app .bsysCardFoot>div{margin-left:auto;display:flex;gap:8px}
+#app .bsysCardFoot button{border:1px solid #b7d6c8;background:#eff8f3;color:#246b53;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}
+#app .bsysCardFoot .bsysDanger{border-color:#ead5d4;background:#fff7f6;color:#af504d}
+#app .bsysOverlay:not([hidden]){position:fixed;inset:0;z-index:30000;display:grid;place-items:center;padding:14px}
+#app .bsysOverlay[hidden]{display:none!important}
+#app .bsysShade{position:absolute;inset:0;background:rgba(7,27,29,.64)}
+#app .bsysDialog{position:relative;display:flex;flex-direction:column;max-height:calc(100dvh - 30px);width:min(790px,100%);background:#fcfdf9;border:1px solid #d6e4de;border-radius:17px;box-shadow:0 22px 75px rgba(0,0,0,.24);overflow:hidden}
+#app .bsysDialogHead{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e3eae5;background:#ecf2e8}
+#app .bsysDialogHead small{font-size:10px;letter-spacing:1.2px;font-weight:800;color:#668274}
+#app .bsysDialogHead h3{font-size:19px;margin:3px 0 0;color:#174e44}
+#app .bsysClose{cursor:pointer;border:1px solid #c3d6cc;background:#fff;border-radius:9px;width:34px;height:34px;font-size:23px;color:#365c4e}
+#app #bsysForm{display:flex;min-height:0;flex-direction:column}
+#app .bsysFormBody{overflow-y:auto;padding:19px 22px;display:grid;gap:12px}
+#app .bsysFormGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#app .bsysFormGrid label,#app .bsysFull{font-size:12px;color:#466c60;font-weight:740;min-width:0;display:flex;flex-direction:column;gap:5px}
+#app .bsysFormGrid label b{color:#ae574b}
+#app .bsysFormGrid label small{font-weight:500;font-size:10px}
+#app .bsysFormBody select,#app .bsysFormBody input,#app .bsysFormBody textarea{width:100%;max-width:100%;min-width:0;min-height:39px;border:1px solid #cbdcd3;border-radius:9px;background:white;color:#26483f;padding:8px 10px;font-size:13px;font-family:inherit;box-sizing:border-box;outline:0}
+#app .bsysFormBody select:focus,#app .bsysFormBody input:focus,#app .bsysFormBody textarea:focus{border-color:#27806a;box-shadow:0 0 0 3px rgba(39,128,106,.12)}
+#app .bsysFormBody input[hidden]{display:none!important}
+#app .bsysFormSection{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #dce8dc;margin-top:4px;padding-bottom:6px}
+#app .bsysFormSection span{font-size:13px;font-weight:860;color:#244f46}
+#app .bsysFormSection small{font-size:11px;color:#7a9688}
+#app .bsysDialogFoot{display:flex;gap:10px;justify-content:flex-end;padding:12px 22px;border-top:1px solid #e3ece4;background:#fff}
+body.bsysModalOpen{overflow:hidden}
+@media(max-width:900px){#app .bsysList{grid-template-columns:1fr}}
+@media(max-width:760px){
+ #app #buildingSystemsPage{padding-left:0!important;padding-right:0!important}
+ #app .bsysIntro{padding:15px;align-items:stretch;flex-direction:column;gap:12px;border-radius:12px}
+ #app .bsysIntro h2{font-size:20px}
+ #app .bsysIntro p{font-size:12px}
+ #app .bsysPrimary{width:100%}
+ #app .bsysMetrics{gap:6px}
+ #app .bsysMetrics>div{padding:11px 7px;flex-direction:column;gap:5px;text-align:center}
+ #app .bsysMetrics strong{font-size:22px}
+ #app .bsysMetrics span{font-size:10px}
+ #app .bsysToolbar{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #app .bsysToolbar .bsysSearch{grid-column:1/-1}
+ #app .bsysToolbar select,#app .bsysToolbar .bsysLight{min-width:0;width:100%;font-size:12px}
+ #app .bsysCard{padding:13px}
+ #app .bsysCardTop h3{font-size:15px}
+ #app .bsysInfo{grid-template-columns:1fr 1fr 64px;gap:6px}
+ #app .bsysInfo b{font-size:11px}
+ #app .bsysStatus{font-size:10px}
+ #app .bsysDialog{max-height:calc(100dvh - 12px);width:100%;border-radius:12px}
+ #app .bsysOverlay:not([hidden]){padding:6px}
+ #app .bsysDialogHead{padding:12px 14px}
+ #app .bsysFormBody{padding:12px 14px;gap:10px}
+ #app .bsysFormGrid{gap:9px}
+ #app .bsysFormSection{align-items:flex-start;flex-direction:column;gap:3px}
+ #app .bsysDialogFoot{padding:10px 14px}
+ #app .bsysDialogFoot button{flex:1;padding-inline:6px}
+}
+
+/* V2 · Prepared catalog: nine concise groups, expandable list with empty templates. */
+#app .bsysList{display:flex;flex-direction:column;gap:9px;min-width:0}
+#app .bsysCatalogIntro{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:4px 2px 6px;color:#41695b}
+#app .bsysCatalogIntro b{font-size:15px;color:#1c5147}
+#app .bsysCatalogIntro span{font-size:12px;color:#778e80}
+#app .bsysSystemBlock{min-width:0;background:#fff;border:1px solid #d9e6de;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(23,61,45,.035)}
+#app .bsysSystemHead{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:14px;width:100%;border:0;background:#f1f6ef;color:#214f44;padding:15px 18px;cursor:pointer}
+#app .bsysSystemHead:hover{background:#eaf2ea}
+#app .bsysSystemHead>span:first-child{display:flex;align-items:center;gap:12px;min-width:0;flex-wrap:wrap}
+#app .bsysSystemHead strong{font-size:15px;font-weight:850;color:#183e37}
+#app .bsysSystemHead small{font-size:11px;color:#718979;font-weight:700}
+#app .bsysCaret{display:grid;place-items:center;width:26px;height:26px;flex:0 0 26px;border:1px solid #c7dccc;border-radius:7px;color:#317363;background:#fff;font-size:18px}
+#app .bsysSystemItems{padding:0 15px 5px}
+#app .bsysTemplate{border-bottom:1px solid #e9f0eb;min-width:0}
+#app .bsysTemplate:last-child{border-bottom:0}
+#app .bsysTemplateLine{padding:10px 2px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#app .bsysTemplateTitle{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+#app .bsysTemplateTitle strong{font-size:13px;font-weight:770;color:#2b5146;overflow-wrap:anywhere}
+#app .bsysTemplateStatus{display:inline-flex;align-items:center;border-radius:6px;font-size:11px;font-weight:750;padding:4px 7px;white-space:nowrap}
+#app .bsysTemplateStatus.missing{background:#f2f3ef;color:#89958b;border:1px solid #e2e5de}
+#app .bsysTemplateStatus.saved{background:#e1f4e8;color:#26734f;border:1px solid #c9e6d5}
+#app .bsysFill{border:1px solid #b8d8c9;background:#eff8f2;color:#176249;font-size:12px;font-weight:800;border-radius:8px;padding:9px 12px;cursor:pointer;white-space:nowrap}
+#app .bsysFill:hover{background:#ddf0e4}
+#app .bsysProfile{margin:0 2px 12px 20px;background:#fbfdf9;border:1px solid #dbe8de;border-left:3px solid #4b9b72;border-radius:9px;padding:12px}
+#app .bsysProfileHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+#app .bsysProfileHead h4{font-size:13px;margin:0 0 3px;color:#285246;font-weight:800}
+#app .bsysProfileHead small{font-size:11px;color:#7d9184}
+#app .bsysProfileSpecs{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:10px}
+#app .bsysProfileSpecs>span{background:#f0f5ed;border:1px solid #e2ebe0;color:#547267;padding:5px 8px;border-radius:6px;font-size:11px;overflow-wrap:anywhere}
+#app .bsysProfileSpecs b{color:#365c4e}
+#app .bsysProfileActions{display:flex;justify-content:flex-end;gap:6px;margin-top:9px}
+#app .bsysProfileActions button{border:1px solid #b7d6c8;background:#eef7f1;color:#216449;border-radius:7px;padding:6px 11px;font-weight:750;cursor:pointer;font-size:12px}
+#app .bsysProfileActions .bsysDanger{color:#9f403a;background:#fff6f5;border-color:#edceca}
+@media(max-width:640px){
+ #app .bsysSystemHead{padding:13px 12px}
+ #app .bsysSystemItems{padding-inline:10px}
+ #app .bsysTemplateLine{gap:6px}
+ #app .bsysTemplateTitle{align-items:flex-start;flex-direction:column;gap:5px}
+ #app .bsysTemplateTitle strong{font-size:12px}
+ #app .bsysFill{font-size:11px;padding:8px 9px;flex:0 0 auto}
+ #app .bsysProfile{margin-left:5px;padding:10px}
+ #app .bsysProfileHead{flex-wrap:wrap}
+ #app .bsysSystemHead>span:first-child{gap:4px;align-items:flex-start;flex-direction:column}
+}
+/* Required marker shares the same inline label; input remains on the following row. */
+#app .bsysFormGrid .bsysFieldLabel{display:inline-flex;flex-direction:row;align-items:baseline;gap:4px;white-space:nowrap;width:max-content;max-width:100%;font-size:inherit;line-height:1.35}
+#app .bsysFormGrid .bsysFieldLabel b{color:#b44c49;font-size:inherit;font-weight:800;line-height:inherit;flex:0 0 auto}
+
+
+/* 127 Hồng Hà · V2 layout intentionally distinct from untouched 130HH version */
+#app #buildingSystems127Page{min-width:0;overflow-x:clip}
+#app .bsysIntro{margin-top:0;padding:18px 21px;border-radius:14px;background:linear-gradient(112deg,#e7f0e4,#f8f6e9 72%);border-color:#c8ddd0;align-items:center}
+#app .bsysIntro h2{font-size:22px;letter-spacing:-.55px}
+#app .bsysIntro p{max-width:760px}
+#app .bsysTrialTag{padding:8px 11px;border:1px solid #adccb6;background:#fffdfa;border-radius:8px;font-size:10px;font-weight:900;letter-spacing:1px;color:#397359;white-space:nowrap}
+#app .bsysMetrics{margin-bottom:12px;gap:9px}
+#app .bsysMetrics>div{background:#fdfcf7;padding:12px 15px}
+#app .bsysMetrics strong{font-size:25px}
+#app .bsysToolbar{grid-template-columns:minmax(180px,1fr) 188px auto;margin-bottom:13px}
+#app #bsysFilterGroup{display:none!important}
+#app .bsysQuickGroups{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:4px 0 14px}
+#app .bsysQuickGroup{display:flex;align-items:center;gap:8px;min-width:0;padding:11px;border:1px solid #dae6dc;border-radius:11px;background:#fffef9;cursor:pointer;text-align:left;color:#406358;transition:background .13s,border-color .13s}
+#app .bsysQuickGroup:hover{background:#eef7ed}
+#app .bsysQuickGroup.active{background:#e3f0e8;border-color:#65a083;box-shadow:inset 0 0 0 1px #89b99a}
+#app .bsysQuickGroup>span{flex:0 0 27px;display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#edf4ec;color:#2c7760;font-size:17px}
+#app .bsysQuickGroup b{min-width:0;overflow-wrap:anywhere;font-size:11.6px;line-height:1.25;font-weight:800}
+#app .bsysQuickGroup small{margin-left:auto;white-space:nowrap;font-size:10px;color:#839b8b;font-weight:650}
+#app .bsysQuickGroup.active>span{background:#d1e6d6;color:#14684f}
+#app .bsysSplit{display:grid;grid-template-columns:minmax(285px,.9fr) minmax(0,1.4fr);align-items:start;gap:14px;margin-bottom:24px}
+#app .bsysCatalog,#app .bsysDock{min-width:0;border:1px solid #d6e2da;border-radius:13px;background:#fffdfa;overflow:hidden;box-shadow:0 4px 15px rgba(32,72,48,.035)}
+#app .bsysCatalog{padding:5px 13px 11px}
+#app .bsysDock{position:relative}
+#app .bsysDockHint{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:335px;padding:35px;color:#6e8377}
+#app .bsysDockHint[hidden]{display:none!important}
+#app .bsysDockMark{display:grid;place-items:center;width:56px;height:56px;background:#eaf4eb;color:#3d8469;font-size:28px;border-radius:16px;margin-bottom:18px}
+#app .bsysDockHint b{font-size:18px;color:#27594b;margin-bottom:7px}
+#app .bsysDockHint p{font-size:13px;max-width:340px;line-height:1.7;margin:0 0 15px}
+#app .bsysDockHint>span{font-size:11px;background:#f0f5ef;border-radius:7px;padding:6px 10px;color:#7a8f81}
+#app #bsysList{display:flex;flex-direction:column;gap:4px;min-width:0}
+#app #bsysList .bsysSystemBlock{border:0;background:transparent;box-shadow:none}
+#app #bsysList .bsysSystemHead{display:none!important}
+#app #bsysList .bsysSystemItems{padding:0}
+#app #bsysList .bsysTemplateLine{min-height:54px;gap:8px;padding:9px 1px}
+#app #bsysList .bsysTemplateTitle{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+#app #bsysList .bsysTemplateTitle strong{font-size:12px;font-weight:790;line-height:1.3;color:#244c3e}
+#app #bsysList .bsysTemplateStatus{font-size:10px;padding:3px 6px}
+#app #bsysList .bsysFill{font-size:11px;padding:7px 8px;border-radius:7px;flex:0 0 auto}
+#app #bsysList .bsysProfile{margin:0 0 10px 0;padding:9px}
+#app #bsysList .bsysProfileSpecs{gap:4px}
+#app #bsysList .bsysProfileSpecs>span{font-size:10px}
+#app #bsysOverlay[hidden]{display:none!important}
+#app #bsysOverlay:not([hidden]){position:relative!important;inset:auto!important;z-index:auto!important;display:block!important;padding:0!important;max-height:none!important;transform:none!important}
+#app #bsysOverlay .bsysShade{display:none!important}
+#app #bsysOverlay .bsysDialog{position:relative!important;width:100%!important;max-height:none!important;min-height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fffdfa}
+#app #bsysOverlay .bsysDialogHead{padding:14px 17px;background:#eff6ed}
+#app #bsysOverlay .bsysDialogHead h3{font-size:16px}
+#app #bsysOverlay .bsysFormBody{padding:13px 16px;overflow:visible!important;gap:10px}
+#app #bsysOverlay .bsysFormBody select,#app #bsysOverlay .bsysFormBody input{height:39px;min-height:39px;font-size:12px}
+#app #bsysOverlay .bsysFormGrid{gap:10px}
+#app #bsysOverlay .bsysFormSection span{font-size:12px}
+#app #bsysOverlay .bsysFormSection small{font-size:10px}
+#app #bsysOverlay .bsysDialogFoot{padding:11px 16px;background:#f9fcf8}
+#app #bsysOverlay .bsysPrimary{padding:9px 14px}
+#app #bsysOverlay .bsysFieldLabel{display:inline-flex!important;flex-direction:row!important;align-items:baseline!important;gap:4px!important;white-space:nowrap!important;width:max-content;max-width:100%;line-height:1.4}
+#app #bsysOverlay .bsysFieldLabel b{display:inline-block!important;flex:0 0 auto!important;font-weight:800!important;color:#b44c49!important}
+body.bsysEditing{overflow:auto!important}
+@media(max-width:1200px){
+ #app .bsysQuickGroups{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #app .bsysSplit{grid-template-columns:minmax(260px,.9fr) minmax(0,1fr);gap:10px}
+ #app #bsysOverlay .bsysFormGrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:930px){
+ #app .bsysSplit{grid-template-columns:1fr}
+ #app .bsysCatalog{padding:5px 13px}
+ #app .bsysDockHint{min-height:180px;padding:22px}
+ #app #bsysList .bsysTemplateLine{min-height:48px}
+}
+@media(max-width:640px){
+ #app .bsysIntro{padding:13px;flex-direction:row;flex-wrap:wrap}
+ #app .bsysTrialTag{font-size:9px;padding:6px 9px}
+ #app .bsysQuickGroups{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #app .bsysQuickGroup{padding:9px;gap:6px}
+ #app .bsysQuickGroup b{font-size:10.5px}
+ #app .bsysQuickGroup small{font-size:9px}
+ #app .bsysToolbar{grid-template-columns:minmax(0,1fr) auto}
+ #app .bsysToolbar .bsysSearch{grid-column:1/-1}
+ #app .bsysSplit{gap:10px}
+ #app .bsysMetrics{gap:6px}
+ #app .bsysMetrics>div{padding:9px 5px}
+ #app #bsysOverlay .bsysFormGrid{grid-template-columns:1fr!important;gap:9px}
+ #app #bsysOverlay .bsysDialogHead{padding:12px 13px}
+ #app #bsysOverlay .bsysFormBody{padding:12px 13px}
+ #app #bsysOverlay .bsysDialogFoot{padding:10px 13px}
+ #app #bsysOverlay .bsysPrimary{width:auto}
+}
