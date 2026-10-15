@@ -46,11 +46,11 @@ events.push({item_id:'a',event_key:'A:2026-10',planned_month:'2026-10-01',planne
 result=calculate(plans,events,'2026-10-14','2026-11-13');
 assert.deepEqual(JSON.parse(JSON.stringify(result)),{count:3,critical:true},'completion immediately removes one occurrence');
 assert.deepEqual(JSON.parse(JSON.stringify(calculate([],[],'2026-10-14','2026-11-13'))),{count:0,critical:false});
-assert.match(center,/bid==="130HH"\?Promise\.resolve\(\[\]\):sbFetch\("\/rest\/v1\/maintenance_assets/,'130HH must not read legacy assets for badge');
+assert.match(center,/\["130HH","127HH","62THL","68PĐL"\]\.includes\(bid\)\?Promise\.resolve\(\[\]\):sbFetch\("\/rest\/v1\/maintenance_assets/,'4 projects use maintenance plan badge rather than legacy assets');
 assert.match(center,/window\.estaMaintenance130NavSummary/,'badge must be based on maintenance plan summary');
 assert.match(center,/window\.estaRefreshProjectNavAlerts/,'badge must expose refresh hook');
 assert.match(js,/notifyMaintenance130Nav\(\);toast\("✓ Đã lưu kế hoạch bảo trì"\)/);
 assert.match(html,/command-center\.js\?v=\d{8}-[a-z0-9-]+/i,"versioned Admin command-center JS");
 assert.match(html,/maintenance-130\.js\?v=\d{8}-[a-z0-9-]+/i,"versioned maintenance JS");
 dom.window.close();
-console.log('130HH maintenance sidebar badge: due, recurring, completed, removed, status and refresh checks passed.');
+console.log('4-project maintenance sidebar badge: due, recurring, completed, removed, status and refresh checks passed.');
