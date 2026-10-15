@@ -1,0 +1,242 @@
+/* ESTA | BẢN NÂNG CẤP — single scoped design system.
+   Activated only when the NANGCAP project is open.
+   Never style Admin overview or the four operating projects. */
+@media screen {
+#app.estaUpgradeMode{
+  --upgrade-bg:#eee9dd;
+  --upgrade-paper:#fffdf8;
+  --upgrade-cream:#f6f0e4;
+  --upgrade-line:#d7dfdb;
+  --upgrade-navy:#173b51;
+  --upgrade-deep:#112e42;
+  --upgrade-olive:#28483e;
+  --upgrade-teal:#1e736b;
+  --upgrade-muted:#647b82;
+  --upgrade-green:#19704b;
+  --upgrade-red:#ae363c;
+  --upgrade-amber:#98621d;
+  --u-navy:var(--upgrade-navy);
+  --u-navy-2:var(--upgrade-deep);
+  --u-bg:var(--upgrade-bg);
+  --esta-navy:var(--upgrade-navy);
+  --esta-bg:var(--upgrade-bg);
+  --esta-card:var(--upgrade-paper);
+  --esta-border:var(--upgrade-line);
+  --esta-text:var(--upgrade-deep);
+  --esta-muted:var(--upgrade-muted);
+  color:var(--upgrade-deep);
+  background:var(--upgrade-bg)!important;
+  font-family:Inter,system-ui,sans-serif;
+}
+body.estaUpgradeMode{background:#eee9dd}
+#app.estaUpgradeMode .estaSidebar{
+  background:var(--upgrade-olive)!important;
+  border-color:#3a594c!important;
+  box-shadow:6px 0 22px rgba(15,38,30,.07);
+}
+#app.estaUpgradeMode .estaSidebar,
+#app.estaUpgradeMode .estaSidebar .estaBrand,
+#app.estaUpgradeMode .estaSidebar .estaNav button{color:#eff6ef!important}
+#app.estaUpgradeMode .estaSidebar .estaNav button.active,
+#app.estaUpgradeMode .estaSidebar .estaNav button[aria-current="page"]{
+  background:#e7eee5!important;color:#1d483c!important;border-color:#afc9be!important;
+}
+#app.estaUpgradeMode .estaSidebar .estaNav button:not(.active):hover{
+  background:#3a6254!important;
+}
+#app.estaUpgradeMode .estaTopbar{
+  background:var(--upgrade-deep)!important;
+  color:#f2f6f2!important;
+  border-bottom:1px solid #3a626d!important;
+  box-shadow:none!important;
+}
+#app.estaUpgradeMode .estaTopbar h1,
+#app.estaUpgradeMode .estaTopbar p,
+#app.estaUpgradeMode .estaTopbar .topModuleTitle,
+#app.estaUpgradeMode .estaTopbar .topModuleTitle *{color:#f6f8f6!important}
+#app.estaUpgradeMode main,
+#app.estaUpgradeMode .mainContent,
+#app.estaUpgradeMode .page,
+#app.estaUpgradeMode .homeDashboard{
+  background:var(--upgrade-bg)!important;
+}
+#app.estaUpgradeMode .page{min-width:0!important;max-width:100%!important}
+#app.estaUpgradeMode .page > section,
+#app.estaUpgradeMode .page > div{max-width:100%}
+#app.estaUpgradeMode :is(.homeWelcome,.opsHero,.maintenanceHero,.contractorIntro,.demoHero,.adminHero){
+  background:linear-gradient(110deg,#173c50 0%,#28554b 100%)!important;
+  color:#f4f7f1!important;
+  border:1px solid #497066!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+#app.estaUpgradeMode :is(.homeWelcome,.opsHero,.maintenanceHero,.contractorIntro,.demoHero,.adminHero) :is(h1,h2,h3,p,small){
+  color:#f4f7f1!important;
+}
+#app.estaUpgradeMode :is(.pageHead,.proPageHead,.energyHead,.inventoryCommand,.maintenanceCommandBrand,.rc-heading){
+  border-color:var(--upgrade-line)!important;
+  border-radius:12px!important;
+}
+#app.estaUpgradeMode :is(.homePanel,.opsPanel,.ccPanel,.premiumTableCard,.workEntryCard,.energyCard,
+  .energyTableCard,.inventoryTableCard,.inventoryWorkspace,.inventorySection,.inventoryMaterialsPane,
+  .maintenanceBoard,.maintenanceSchedule,.contractorCard,.contractorDetail,.demoPanel,.rc-card,
+  .m130Entry,.m130ServiceCard,.m130List,.m130Cal,.m130Dialog,.settingsRow,
+  .inventoryCommand,.workFilterBar,.workTableCard,.tableTop,.ccTable,.demoTableWrap){
+  border:1px solid var(--upgrade-line)!important;
+  background:var(--upgrade-paper)!important;
+  border-radius:12px!important;
+  box-shadow:0 2px 9px rgba(20,51,56,.035)!important;
+}
+#app.estaUpgradeMode :is(.homePanelHead,.opsPanelHead,.workEntryHeader,.tableTop,
+  .energyTableTop,.inventorySectionHead,.maintenanceToolbar,.maintenanceScheduleHead,
+  .m130Header,.m130Toolbar,.demoPanelHead,.rc-heading){
+  background:var(--upgrade-cream)!important;
+  border-color:var(--upgrade-line)!important;
+  color:var(--upgrade-deep)!important;
+}
+#app.estaUpgradeMode :is(.homePanelHead,.opsPanelHead,.workEntryHeader,.tableTop,
+  .energyTableTop,.inventorySectionHead,.maintenanceToolbar,.maintenanceScheduleHead,
+  .m130Header,.m130Toolbar,.demoPanelHead) :is(h1,h2,h3,b){
+  color:var(--upgrade-navy)!important;
+}
+#app.estaUpgradeMode :is(.homeKpis,.opsKpiGrid,.stats,.inventoryStats,.maintenanceStats,.m130Stats){
+  gap:9px!important;
+}
+#app.estaUpgradeMode :is(.kpiCard,.opsKpi,.stats article,.inventoryStat,.maintStat,.m130Kpi){
+  border:1px solid var(--upgrade-line)!important;
+  border-radius:10px!important;
+  background:var(--upgrade-paper)!important;
+  box-shadow:none!important;
+  padding:11px 13px!important;
+}
+#app.estaUpgradeMode :is(.page,.homeDashboard) :is(h1,h2,h3){letter-spacing:-.015em}
+#app.estaUpgradeMode :is(.page,.homeDashboard) :is(p,small,.muted){
+  line-height:1.5;
+}
+#app.estaUpgradeMode :is(.workEntryCard,.energyCard,.inventoryWorkspace,.maintenanceBoard,.demoPanel){
+  margin-bottom:11px!important;
+}
+#app.estaUpgradeMode :is(button,.btn,.primary,.demoBtn,.ccBtn,.m130Edit){
+  border-radius:9px!important;
+  transition:background-color .14s ease,border-color .14s ease!important;
+}
+#app.estaUpgradeMode :is(button.primary,.btn.primary,.demoBtn.primary,.ccBtn.primary,
+  .workSave,#saveBtn,#energySaveBtn,.workFormActions button[type="submit"]){
+  background:var(--upgrade-navy)!important;
+  border:1px solid var(--upgrade-navy)!important;
+  color:white!important;
+  box-shadow:none!important;
+}
+#app.estaUpgradeMode :is(.danger,button.danger,.miniDanger){
+  color:var(--upgrade-red)!important;
+}
+#app.estaUpgradeMode :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.peopleSelectBtn){
+  background:#fffefa!important;
+  color:var(--upgrade-deep)!important;
+  border:1px solid #cbd7d3!important;
+  border-radius:9px!important;
+  box-shadow:none!important;
+  font-family:inherit;
+  font-size:max(13px,1em);
+}
+#app.estaUpgradeMode :is(input,select,textarea,button):focus-visible{
+  outline:2px solid #2d9987!important;outline-offset:2px!important;
+}
+#app.estaUpgradeMode :is(input,select,textarea):focus{
+  border-color:#2b8f81!important;
+  box-shadow:0 0 0 2px rgba(43,143,129,.13)!important;
+}
+#app.estaUpgradeMode :is(.workEntryForm,.energyForm,.m130Dialog form,.demoForm){
+  gap:10px!important;
+}
+#app.estaUpgradeMode :is(.workField,.energyForm label,.m130Dialog label,.demoForm label)>span:first-child{
+  color:#375560!important;
+  font-size:12px!important;font-weight:700!important;
+}
+#app.estaUpgradeMode #workPage .workEntryHeader{min-height:55px!important;padding:10px 13px!important}
+#app.estaUpgradeMode #workPage #taskForm.workEntryForm{padding:12px 13px!important;gap:9px!important}
+#app.estaUpgradeMode #workPage .workEntryHeader h2{font-size:16px!important}
+#app.estaUpgradeMode #workPage #taskForm :is(input,select,.peopleSelectBtn,.imageActionBtn){
+  min-height:38px!important;max-height:none!important;height:38px!important;
+  font-size:12px!important;
+}
+#app.estaUpgradeMode #workPage #taskForm textarea{
+  min-height:38px!important;padding:9px 11px!important;
+  font-size:13px!important;line-height:1.4!important;
+}
+#app.estaUpgradeMode :is(table,.ccTable,.demoTable,.energyHistoryTable,.materialInventoryTable){
+  width:100%;border-collapse:separate;border-spacing:0;
+}
+#app.estaUpgradeMode :is(table,.ccTable,.demoTable,.energyHistoryTable) th{
+  background:#e5eee9!important;color:var(--upgrade-navy)!important;
+  font-weight:750!important;font-size:12px!important;
+  padding:10px!important;
+}
+#app.estaUpgradeMode :is(table,.ccTable,.demoTable,.energyHistoryTable) td{
+  border-bottom:1px solid #e3eae5!important;color:#263e46!important;
+  padding:9px 10px!important;vertical-align:middle;
+}
+#app.estaUpgradeMode :is(table,.ccTable,.demoTable,.energyHistoryTable) tbody tr:hover{
+  background:#f2f7f2!important;
+}
+#app.estaUpgradeMode :is(.statusBadge.done,.badge.done,.homeStatus.done,.m130Badge.done,.m130State-done,.maintResult.good){
+  background:#d9eee2!important;color:#155d3d!important;border-color:#a8d6b8!important;
+}
+#app.estaUpgradeMode :is(.statusBadge.doing,.badge.doing,.homeStatus.doing,.m130Badge.soon){
+  background:#dbe9f4!important;color:#184f82!important;border-color:#a7c4dc!important;
+}
+#app.estaUpgradeMode :is(.statusBadge.waiting,.badge.waiting,.homeStatus.waiting,.m130Badge.skip){
+  background:#fff0d1!important;color:#805012!important;border-color:#e8cc91!important;
+}
+#app.estaUpgradeMode :is(.m130Badge.late,.maintDue.overdue,.opsCritical,.badge.overdue){
+  background:#fbe0df!important;color:#9f2e35!important;border-color:#eab6b7!important;
+}
+#app.estaUpgradeMode :is(.workEntryCard,.m130Entry,.proTaskCard,.opsTaskRow,.homeTaskRow){
+  font-size:13px!important;
+}
+#app.estaUpgradeMode :is(.workEntryCard,.m130Entry,.proTaskCard,.opsTaskRow,.homeTaskRow) :is(h2,h3,h4){
+  font-size:15px!important;line-height:1.35!important;
+}
+#app.estaUpgradeMode :is(.workEditDrawerCard,.demoDrawerCard,.ccModalCard,.m130Dialog,.modalCard){
+  border-radius:14px!important;
+  border:1px solid var(--upgrade-line)!important;
+  background:var(--upgrade-paper)!important;
+  box-shadow:0 14px 34px rgba(12,37,42,.18)!important;
+}
+#app.estaUpgradeMode :is(.workEditDrawerCard,.demoDrawerCard,.ccModalCard,.m130Dialog,.modalCard) :is(header,.modalHead){
+  background:var(--upgrade-cream)!important;
+}
+#app.estaUpgradeMode .estaBottomNav{
+  background:#24483e!important;border-top:1px solid #5d7869!important;
+}
+#app.estaUpgradeMode .estaBottomNav button{color:#ebf3ed!important}
+#app.estaUpgradeMode .estaBottomNav button[aria-current="page"],
+#app.estaUpgradeMode .estaBottomNav button.active{
+  background:#e6f0e9!important;color:#1e5042!important;
+}
+}
+@media screen and (max-width:760px){
+#app.estaUpgradeMode .page{padding:10px!important}
+#app.estaUpgradeMode :is(.homeKpis,.opsKpiGrid,.stats,.inventoryStats,.maintenanceStats){
+  gap:7px!important;
+}
+#app.estaUpgradeMode :is(.homePanel,.opsPanel,.ccPanel,.workEntryCard,.energyCard,.inventoryWorkspace,.maintenanceBoard,.demoPanel){
+  margin-bottom:9px!important;
+}
+#app.estaUpgradeMode :is(.homeWelcome,.opsHero,.maintenanceHero,.contractorIntro,.demoHero){
+  padding:12px!important;border-radius:10px!important;
+}
+#app.estaUpgradeMode :is(.workEntryForm,.energyForm){gap:9px!important}
+#app.estaUpgradeMode #workPage #taskForm.workEntryForm{padding:10px!important}
+#app.estaUpgradeMode :is(.homePanel,.opsPanel,.demoPanel,.m130Entry){
+  min-width:0!important;
+}
+#app.estaUpgradeMode :is(.homePanel,.opsPanel,.demoPanel,.m130Entry) :is(p,span,b,small){
+  overflow-wrap:anywhere;
+}
+#app.estaUpgradeMode :is(.workEditDrawerCard,.demoDrawerCard,.ccModalCard,.m130Dialog){
+  max-width:calc(100vw - 14px)!important;
+}
+#app.estaUpgradeMode .estaTopbar{min-height:52px!important}
+#app.estaUpgradeMode :is(input,select,textarea){font-size:16px!important}
+}
