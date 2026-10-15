@@ -849,7 +849,7 @@
 <link rel="stylesheet" href="maintenance-redesign.css?v=20261013-layout02"><!-- Evidence visual stylesheet intentionally after redesign -->
 <link rel="stylesheet" href="maintenance-readability.css?v=20261014-unified01">
 <link rel="stylesheet" href="maintenance-130-summary.css?v=20261014-reference02">
-<link rel="stylesheet" href="technical-systems-130.css?v=20261015-preview01">
+<link rel="stylesheet" href="technical-systems-nangcap.css?v=20261015-nangcap01">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -1059,7 +1059,7 @@
     <div class="topModuleIcon maintenanceTopIcon"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3 3 3-3 3M13.5 7.5 4 17v3h3l9.5-9.5"/></svg></div>
     <div><h1>Bảo trì thiết bị</h1><p>Kế hoạch, lịch sử và nhắc hạn bảo trì</p></div>
   </div>
-  <div id="topSystemInfoTitle" class="topModuleTitle hide"><div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V5h12v15M9 9h2M13 9h2"/></svg></div><div><h1>Thông tin hệ thống tòa nhà</h1><p>130 Hồng Hà · Hồ sơ kỹ thuật và theo dõi tình trạng</p></div></div>
+  <div id="topSystemInfoTitle" class="topModuleTitle hide"><div class="topModuleIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V5h12v15M9 9h2M13 9h2"/></svg></div><div><h1>Thông tin hệ thống tòa nhà</h1><p>Bản nâng cấp · Hồ sơ kỹ thuật và theo dõi tình trạng</p></div></div>
   <div id="topContractorTitle" class="topModuleTitle contractorTopTitle hide">
     <div class="topModuleIcon contractorTopIcon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2M13 12h2M9 16h6"/></svg></div>
     <div><h1>Nhà thầu</h1><p class="buildingNameText">Dự án</p></div>
@@ -1998,15 +1998,15 @@
     </section>
   </section>
 </div>
-<div id="systemInfoPage" class="page hide" aria-label="Thông tin hệ thống tòa nhà 130 Hồng Hà">
- <section class="ts130Hero"><div><small>ESTA · 130 HỒNG HÀ</small><h2>Thông tin hệ thống tòa nhà</h2><p>Hồ sơ thiết bị · Theo dõi tình trạng · Lịch sử kiểm tra</p></div><div class="ts130Actions"><button type="button" id="ts130Refresh">Làm mới</button><button type="button" id="ts130Print">In / lưu PDF A4</button></div></section>
- <div id="ts130Notice" role="status">Danh sách 44 mẫu thiết bị đang được chuẩn bị.</div>
- <section id="ts130Summary" class="ts130Summary" aria-label="Tổng hợp tình trạng"></section>
- <div class="ts130Layout"><nav id="ts130Groups" class="ts130Groups" aria-label="Nhóm hệ thống kỹ thuật"></nav>
- <div class="ts130Main"><div class="ts130Toolbar"><input id="ts130Search" type="search" aria-label="Tìm thiết bị" placeholder="Tìm tên, vị trí, mã thiết bị..."><select id="ts130Status" aria-label="Lọc tình trạng">
- <option value="all">Tất cả tình trạng</option><option value="unverified">Chưa xác minh</option><option value="chua">Chưa kiểm tra</option><option value="tot">Tốt</option><option value="theodoi">Cần theo dõi</option><option value="hu">Hư hỏng</option><option value="sua">Đang sửa</option></select><span id="ts130Count"></span></div><div id="ts130List" class="ts130List"></div></div></div>
+<div id="systemInfoPage" class="page hide" aria-label="Thông tin hệ thống tòa nhà Bản nâng cấp">
+ <section class="tsUpgradeHero"><div><small>ESTA · BẢN NÂNG CẤP</small><h2>Thông tin hệ thống tòa nhà</h2><p>Hồ sơ thiết bị · Theo dõi tình trạng · Lịch sử kiểm tra</p></div><div class="tsUpgradeActions"><button type="button" id="tsUpgradeRefresh">Làm mới</button><button type="button" id="tsUpgradePrint">In / lưu PDF A4</button></div></section>
+ <div id="tsUpgradeNotice" role="status">Danh sách 44 mẫu thiết bị đang được chuẩn bị.</div>
+ <section id="tsUpgradeSummary" class="tsUpgradeSummary" aria-label="Tổng hợp tình trạng"></section>
+ <div class="tsUpgradeLayout"><nav id="tsUpgradeGroups" class="tsUpgradeGroups" aria-label="Nhóm hệ thống kỹ thuật"></nav>
+ <div class="tsUpgradeMain"><div class="tsUpgradeToolbar"><input id="tsUpgradeSearch" type="search" aria-label="Tìm thiết bị" placeholder="Tìm tên, vị trí, mã thiết bị..."><select id="tsUpgradeStatus" aria-label="Lọc tình trạng">
+ <option value="all">Tất cả tình trạng</option><option value="unverified">Chưa xác minh</option><option value="chua">Chưa kiểm tra</option><option value="tot">Tốt</option><option value="theodoi">Cần theo dõi</option><option value="hu">Hư hỏng</option><option value="sua">Đang sửa</option></select><span id="tsUpgradeCount"></span></div><div id="tsUpgradeList" class="tsUpgradeList"></div></div></div>
  </div>
-<div id="ts130Backdrop" hidden></div><aside id="ts130Drawer" hidden aria-label="Hồ sơ chi tiết thiết bị"></aside>
+<div id="tsUpgradeBackdrop" hidden></div><aside id="tsUpgradeDrawer" hidden aria-label="Hồ sơ chi tiết thiết bị"></aside>
 <div id="maintenancePage" class="page maintenancePage hide">
   <section class="maintenanceHero">
     <div class="maintenanceCommandBrand">
@@ -2653,7 +2653,7 @@
   </div>
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261015-shared-maint01"></script><script src="completion-certificate-130.js?v=20261015-all04"></script><script src="technical-systems-130.js?v=20261015-preview01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261015-shared-maint01"></script><script src="completion-certificate-130.js?v=20261015-all04"></script><script src="technical-systems-nangcap.js?v=20261015-nangcap01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261007-pdf-compact01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261001-68dualEVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261013-noqr01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261015-shared-maint01"></script><script src="admin-work-editor.js?v=20261011-adminedit01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261006-single-result01"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
