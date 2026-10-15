@@ -123,11 +123,21 @@ def _signed_kt_kst(data):
         sig.hAlign="CENTER"
     sig_name=S("sig_name",fontName="Mont-Bold",fontSize=8,leading=10,textColor=AUB,alignment=1)
     sig_head=S("sig_head",fontName="Mont-Bold",fontSize=7,leading=10,textColor=AUB,alignment=1)
-    t=Table([
-        [P("KỸ THUẬT (KT)",sig_head),P("KIỂM SOÁT / GIÁM SÁT (KST)",sig_head)],
-        [sig,""],
-        [P(name,sig_name),""]
-    ],colWidths=[CW/2]*2,rowHeights=[None,20*mm,None])
+    if data.get("signature_position") == "supervision":
+        # The Admin supervision report is signed in the supervisory column,
+        # while the normal ESTA project signature layout remains unchanged.
+        signature_rows=[
+            [P("KỸ THUẬT (KT)",sig_head),P("GIÁM SÁT KỸ THUẬT",sig_head)],
+            ["",sig],
+            ["",P(name,sig_name)]
+        ]
+    else:
+        signature_rows=[
+            [P("KỸ THUẬT (KT)",sig_head),P("KIỂM SOÁT / GIÁM SÁT (KST)",sig_head)],
+            [sig,""],
+            [P(name,sig_name),""]
+        ]
+    t=Table(signature_rows,colWidths=[CW/2]*2,rowHeights=[None,20*mm,None])
     t.setStyle(TableStyle([
         ("LINEABOVE",(0,0),(-1,0),1.5,COPPER),
         ("ALIGN",(0,0),(-1,-1),"CENTER"),
@@ -760,6 +770,7 @@ def _prepare_generic_data(payload, token, temp_dir):
         "subtitle":str(payload.get("subtitle") or ""),
         "kt_signer_name":str(payload.get("kt_signer_name") or ""),
         "kt_signature_path":str(payload.get("_kt_signature_path") or ""),
+        "signature_position":"supervision" if payload.get("signature_position") == "supervision" else "technical",
         "columns":clean_columns,
         "rows":clean_rows,
         "summaries":clean_summaries,

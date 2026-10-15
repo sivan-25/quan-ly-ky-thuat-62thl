@@ -1903,6 +1903,7 @@ async function exportGenericEstaPdf(config={}){
    report_type:"generic",
    building:String(config.hideBuilding===true?"":(config.building||currentBuilding?.name||"[CẦN BỔ SUNG]")),
    hide_building:config.hideBuilding===true,
+   signature_position:config.signaturePosition==="supervision"?"supervision":"technical",
    report_date:new Date().toLocaleDateString("vi-VN"),
    period_label:String(config.periodLabel||"THEO DỮ LIỆU HIỆN TẠI"),
    title:String(config.title||"BÁO CÁO KỸ THUẬT"),

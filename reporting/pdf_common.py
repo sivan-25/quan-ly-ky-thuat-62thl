@@ -23,11 +23,13 @@ from typing import Any, Callable, Iterable, Optional
 from PIL import Image as PILImage, ImageOps
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas as rl_canvas
-from reportlab.platypus import Flowable, Table, TableStyle
+from reportlab.platypus import Flowable, Paragraph, Table, TableStyle
+from xml.sax.saxutils import escape as xml_escape
 
 # ESTA corporate palette
 AUB = colors.HexColor("#411437")
@@ -358,6 +360,19 @@ class ImageSlot(Flowable):
         self.height = height
         self.prepared = prepared
         self.caption = str(caption or "")
+        # A single drawString did not wrap, so captions crossed into adjacent
+        # image columns. Reserve the exact space needed for every line.
+        ensure_fonts()
+        self._caption_paragraph = Paragraph(
+            xml_escape(self.caption).replace("\n", "<br/>"),
+            ParagraphStyle(
+                "EstaImageCaption", fontName="Mont-Light",
+                fontSize=6.6, leading=9.1, textColor=STONE,
+                splitLongWords=1, wordWrap="LTR",
+            ),
+        )
+        self._caption_paragraph.wrap(max(1, width - 4), 10000)
+        self.CAPTION_H = max(10, self._caption_paragraph.height + 5)
 
     def wrap(self, availWidth, availHeight):
         return self.width, self.height + self.CAPTION_H
@@ -390,9 +405,7 @@ class ImageSlot(Flowable):
                 mask="auto",
             )
 
-        c.setFillColor(STONE)
-        c.setFont("Mont-Light", 6.6)
-        c.drawString(1, 2.5, self.caption[:120])
+        self._caption_paragraph.drawOn(c, 2, 2.5)
 
 
 def image_grid(

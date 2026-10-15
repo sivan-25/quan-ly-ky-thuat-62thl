@@ -267,6 +267,7 @@ async function exportAdminAssignedPdf(){
   const success=await window.exportGenericEstaPdf({
    building:"",hideBuilding:true,title:"BÁO CÁO CÔNG VIỆC",
    sectionLabel:"THEO DÕI CÔNG VIỆC GIÁM SÁT KỸ THUẬT",
+   signaturePosition:"supervision",signer:{name:"Sĩ Văn",image_data_url:""},
    tableLabel:"DANH SÁCH CÔNG VIỆC ĐÃ CHỌN",
    subtitle:"Phạm vi: "+byScope.join(" · ")+" · "+selected.length+" công việc",
    periodLabel:period,columns,rows,summaries,photos,

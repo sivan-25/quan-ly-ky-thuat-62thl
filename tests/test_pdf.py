@@ -114,6 +114,28 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(missing, len(items))
         self.assertTrue(all(x['prepared'] is None for x in prepared))
 
+    def test_photo_captions_wrap_without_clipping_or_overlap(self):
+        # Images in a 3-column row must wrap Vietnamese captions inside their
+        # own allocated cell instead of painting over the next photo.
+        source = '68 PĐL · Điện lưới EVN bị mất đột ngột vào lúc 22h45. '
+        caption = source * 8
+        slot = ImageSlot(width=145, height=90, caption=caption)
+        self.assertEqual(slot.caption, caption)
+        self.assertGreater(slot.CAPTION_H, 40)
+        self.assertEqual(slot.wrap(145, 800), (145, 90 + slot.CAPTION_H))
+        self.assertLessEqual(slot._caption_paragraph.width, 141)
+        self.assertGreaterEqual(slot.CAPTION_H - slot._caption_paragraph.height, 5)
+        long_word = 'X' * 350
+        unbroken = ImageSlot(width=145, height=90, caption=long_word)
+        self.assertEqual(unbroken.caption, long_word)
+        self.assertGreater(unbroken.CAPTION_H, 15)
+        # The row uses the highest caption without moving images out of cells.
+        valid = [{'prepared': pdfc.ProcessedImage(b'a', 50, 50), 'caption': text}
+                 for text in (caption, 'Hình 2', long_word)]
+        row = pdfc.image_grid(valid, cols=3)[0]
+        self.assertEqual(len(row._cellvalues[0]), 5)
+        self.assertLessEqual(sum(row._colWidths), pdfc.CW + 0.01)
+
     def test_work_many_photos_paginate_without_losing_or_cropping_images(self):
         # Production failure: 18 photos in one work item formed a 934pt cell
         # that could not fit the 725pt A4 frame. Cover every project and a
@@ -311,7 +333,8 @@ class ReportTests(unittest.TestCase):
             'report_date': '10/10/2026',
             'period_label': 'TỪ 05/10/2026 ĐẾN 10/10/2026',
             'subtitle': 'Phạm vi: 62 THL · Cá nhân · Văn · 2 công việc',
-            'kt_signer_name': 'Kỹ thuật kiểm thử',
+            'kt_signer_name': 'Sĩ Văn',
+            'signature_position': 'supervision',
             'columns': [
                 {'label': 'STT', 'weight': .35},
                 {'label': 'Dự án / Nguồn', 'weight': .95},
@@ -341,6 +364,13 @@ class ReportTests(unittest.TestCase):
             prepared = _prepare_generic_data({**payload, 'photos': []}, '', tmp)
             self.assertEqual(prepared['building'], '')
             self.assertTrue(prepared['hide_building'])
+            self.assertEqual(prepared['signature_position'], 'supervision')
+            signature = next(x for x in story_generic(prepared)
+                             if isinstance(x, list) and len(x) == 2
+                             and isinstance(x[-1], Table))
+            self.assertEqual(signature[-1]._cellvalues[0][1].text, 'GIÁM SÁT KỸ THUẬT')
+            self.assertEqual(signature[-1]._cellvalues[2][1].text, 'Sĩ Văn')
+            self.assertEqual(signature[-1]._cellvalues[2][0], '')
             metadata = next(x for x in story_generic(prepared) if isinstance(x, Table) and len(x._cellvalues) == 2)
             self.assertEqual(metadata._cellvalues[0][0].text, 'HẠNG MỤC')
             self.assertEqual(metadata._cellvalues[0][1].text, 'THEO DÕI CÔNG VIỆC GIÁM SÁT KỸ THUẬT')
