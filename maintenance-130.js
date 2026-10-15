@@ -330,7 +330,7 @@ function renderAlternative(events){
  const cells=Array.from({length:offset},()=>'<div class="m130CalendarBlank"></div>');
  for(let day=1;day<=days;day++){
   const date=year+"-"+pad(month)+"-"+pad(day);
-  const chips=events.filter(o=>dateOf(o)===date).map(o=>{
+  const chips=events.filter(o=>!isMonthOnly(o)&&dateOf(o)===date).map(o=>{
    const key=esc(o.event.event_key),st=stateKey(o);
    return '<button type="button" draggable="'+(canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'">'+esc(o.item.work_title)+'</button>';
   }).join("");
