@@ -8,6 +8,7 @@
     "130HH": {name:"130 Hồng Hà", code:"130HH"},
     "127HH": {name:"127 Hồng Hà", code:"127HH"},
     "62THL": {name:"62 Trần Huy Liệu", code:"62THL"},
+    "NANGCAP": {name:"Bản nâng cấp", code:"NANGCAP"},
     "68PĐL": {name:"68 Phan Đăng Lưu", code:"68PDL"},
     "68PDL": {name:"68 Phan Đăng Lưu", code:"68PDL"}
   });
