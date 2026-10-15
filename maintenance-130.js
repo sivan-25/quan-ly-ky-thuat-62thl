@@ -302,6 +302,16 @@ function renderList(){
    (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+'</div>'+
    '<div class="m130CardFoot"><button type="button" class="m130RecordBtn" data-m130-event="'+record+'">'+(canWrite()?(e.status==="completed"?"✓ Xem / sửa KQ":"＋ Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
  }).join("")||'<p class="m130Empty">Không có công việc trong tháng và bộ lọc này.</p>';
+ const scheduledItems=new Set(stored.map(e=>e.item_id));
+ const missing=items.filter(i=>!i.deleted_at&&!scheduledItems.has(i.id))
+  .filter(i=>(!g||i.system_group===g)&&(!q||[i.work_title,i.system_group,i.subsystem].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
+ if(missing.length){
+  const panel=document.createElement("details");panel.className="m130Unscheduled";
+  panel.innerHTML='<summary>'+missing.length+' hạng mục chưa có lịch cụ thể · Nhấn để xem và đặt ngày</summary><div class="m130UnscheduledList">'+missing.map(i=>
+   '<div><span>'+esc(i.system_group)+' · '+esc(i.work_title)+'</span><button type="button" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'>Đặt lịch</button></div>'
+  ).join("")+'</div>';
+  list.appendChild(panel);
+ }
  hydrateMaintenanceEvidence();
  $("m130Create").disabled=!canWrite();
 }
@@ -383,7 +393,7 @@ function openPlan(id){
  $("m130WorkType").value=i?.work_type||"PM";
  $("m130Priority").value=i?.priority||"normal";
  $("m130First").value=base?.planned_date||base?.planned_month||year+"-"+pad(month)+"-10";
- $("m130First").readOnly=!!i;
+ $("m130First").readOnly=!!i&&!!base;
  const currentCycle=interval(i),cycleSelect=$("m130Cycle");
  cycleSelect.querySelectorAll("option[data-m130-legacy]").forEach(option=>option.remove());
  if(i&&!Array.from(cycleSelect.options).some(opt=>Number(opt.value)===currentCycle)){
@@ -406,6 +416,11 @@ async function savePlan(ev){
    const id=currentPlan.id;
    await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:fields});
    items=items.map(x=>x.id===id?{...x,...fields}:x);
+   if(!stored.some(e=>e.item_id===id)){
+    const occurrence={id:crypto.randomUUID(),item_id:id,building_id:B,event_key:currentPlan.plan_code+":"+date.slice(0,7),planned_month:monthISO(date),planned_date:date,status:"planned",source_kind:"year",location:fields.subsystem};
+    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:occurrence});
+    stored.push(occurrence);
+   }
   }else{
    const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code=B+"-USER-"+id.slice(0,13);
    const item={id,building_id:B,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Bổ sung từ trang Bảo trì ESTA",...fields};
