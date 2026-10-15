@@ -512,7 +512,7 @@ function setupMobilePeopleSheets(){
   }
  });
  function arrange(){
-  const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
+  const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"]);
   const projectId=String(currentBuilding?.id||"").trim().toUpperCase();
   const compactProject=media.matches&&projectOverviewActive&&
     (sharedCompactProjects.has(projectId)||(!["DEMO","UPDATE"].includes(projectId)&&!!projectId));
@@ -533,7 +533,7 @@ function setupMobilePeopleSheets(){
  }
  syncMobilePeopleLayout=arrange;
  function syncCompactPeopleSize(){
-  const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
+  const sharedCompactProjects=new Set(["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"]);
   const projectId=String(currentBuilding?.id||"").trim().toUpperCase();
   if(!media.matches||!projectOverviewActive||["DEMO","UPDATE"].includes(projectId)||!projectId)return;
   const tile=document.querySelector("#workChoices-type .workChoiceTile");
@@ -857,6 +857,9 @@ function renderHomeDashboard(){
  $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
 }
 function syncOverviewNavigation(){
+ const upgrade=projectOverviewActive&&String(currentBuilding?.id||"")==="NANGCAP";
+ document.getElementById("app")?.classList.toggle("estaUpgradeMode",upgrade);
+ document.body.classList.toggle("estaUpgradeMode",upgrade);
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
  $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
@@ -1146,7 +1149,7 @@ function restoreDraft(){
  }catch(e){}
 }
 let existingTaskImages=[],removedTaskImageRefs=[],pendingTaskFiles=[],pendingPreviewUrls=[],pendingTaskPhotoMeta=[];
-const PHOTO_ANNOTATOR_PROJECT_IDS=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
+const PHOTO_ANNOTATOR_PROJECT_IDS=new Set(["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"]);
 function photoAnnotator130Enabled(buildingId=currentBuilding?.id){
  return PHOTO_ANNOTATOR_PROJECT_IDS.has(String(buildingId||"").trim().toUpperCase())&&!!window.PhotoAnnotator?.open;
 }
@@ -1230,11 +1233,11 @@ $("#closeWorkEditDrawer")?.addEventListener("click",()=>resetForm());
 $("#workEditDrawer")?.addEventListener("click",e=>{if(e.target.closest("[data-close-work-editor]"))resetForm()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#workEditDrawer")?.classList.contains("hide"))resetForm()});
 function usesSingleTaskResult(){
- return ["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""));
+ return ["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"].includes(String(currentBuilding?.id||""));
 }
 
 function sync130QuickCompletion(){
- const active=["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
+ const active=["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
  let field=document.getElementById("task130ResultField");
  if(!field){
   field=document.createElement("div");field.id="task130ResultField";field.className="work130QuickResult hide";
@@ -1484,10 +1487,10 @@ $("#taskForm").onsubmit=async e=>{
    toast("Cần nhập ghi chú trước khi hoàn thành công việc");
    return;
  }
- if(["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))&&$("#status").value==="Đã hoàn thành"&&window.matchMedia("(max-width:640px)").matches&&!document.getElementById("task130Result")?.value.trim()){
+ if(["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"].includes(String(currentBuilding?.id||""))&&$("#status").value==="Đã hoàn thành"&&window.matchMedia("(max-width:640px)").matches&&!document.getElementById("task130Result")?.value.trim()){
    toast("Vui lòng nhập KQ thực hiện");document.getElementById("task130Result")?.focus();return;
  }
- const quick130=["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
+ const quick130=["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
  const btn=$("#saveBtn"),quickBtn=quick130?document.getElementById("task130QuickSave"):null;
  if(btn.disabled)return;
  btn.disabled=true;
@@ -1499,7 +1502,7 @@ $("#taskForm").onsubmit=async e=>{
    const files=[...pendingTaskFiles];
    const removedRefs=[...removedTaskImageRefs];
    const imgs=editId?[...existingTaskImages]:(Array.isArray(old?.imgs)?[...old.imgs]:[]);
-   const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),result:["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))?(document.getElementById("task130Result")?.value.trim()||old?.result||""):(old?.result||""),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
+   const obj={...taskDispatchMetadata(old),id,d:$("#date").value,c:$("#content").value.trim(),t:$("#type").value,s:$("#status").value,n:$("#note").value.trim(),result:["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"].includes(String(currentBuilding?.id||""))?(document.getElementById("task130Result")?.value.trim()||old?.result||""):(old?.result||""),a:taskSelectedPeople.join(", "),performers:[...taskSelectedPeople],imgs,i:imgs.length};
    a=editId?a.map(x=>x.id===editId?obj:x):[...a,obj];
    localStorage.setItem(storageKey,JSON.stringify(a));
    // On 130 HH mobile, wait for remote acknowledgement before displaying success.
@@ -2225,7 +2228,7 @@ function showModule(name){
    setInventoryTab("materials");
    loadInventoryData(currentBuilding.id);
  }
- if(name==="maintenance"){if(!["130HH","127HH","62THL","68PĐL"].includes(String(currentBuilding?.id||"")))loadMaintenanceData(currentBuilding.id);window.mountMaintenance130?.();}
+ if(name==="maintenance"){if(!["130HH","127HH","62THL","68PĐL","NANGCAP"].includes(String(currentBuilding?.id||"")))loadMaintenanceData(currentBuilding.id);window.mountMaintenance130?.();}
  if(name==="contractor"){selectedContractorId="";$("#contractorPage").classList.remove("contractorDetailMode");$("#contractorDetail").classList.add("hide");$("#contractorOverview").classList.remove("hide");loadContractorData(currentBuilding.id)}
  if(name==="construction"){selectedConstructionMaterialId="";$("#constructionMaterialPage").classList.remove("contractorDetailMode");$("#constructionDetail").classList.add("hide");$("#constructionOverview").classList.remove("hide");loadConstructionMaterialData(currentBuilding.id)}
 }
