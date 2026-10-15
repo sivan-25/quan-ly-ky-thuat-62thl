@@ -1916,6 +1916,7 @@ async function exportGenericEstaPdf(config={}){
    columns:Array.isArray(config.columns)?config.columns:[],
    rows:Array.isArray(config.rows)?config.rows:[],
    summaries:Array.isArray(config.summaries)?config.summaries:[],
+   priority_items:Array.isArray(config.priorityItems)?config.priorityItems:[],
     photos:Array.isArray(config.photos)?config.photos:[],
    ...pdfSignaturePayload(signer)
  };
