@@ -877,6 +877,7 @@ function syncOverviewNavigation(){
 
 }
 function showHome(){
+ $("#topSystemInfoTitle")?.classList.add("hide");
  $("#systemInfoPage")?.classList.add("hide");
  $("#navSystemInfo")?.classList.remove("active");
  window.resetTechnicalSystemsUpgrade?.();
@@ -999,6 +1000,7 @@ async function enterProject(building,{target="home"}={}){
 }
 function openAdminPortal(){
  rememberAdminProject();
+ $("#topSystemInfoTitle")?.classList.add("hide");
  $("#systemInfoPage")?.classList.add("hide");
  $("#navSystemInfo")?.classList.remove("active");
  closeWorkFilter();
