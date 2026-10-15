@@ -265,8 +265,8 @@ async function exportAdminAssignedPdf(){
  try{
   if(includePhotos&&photos.length===180)toast("PDF chỉ kèm tối đa 180 hình đầu tiên theo thứ tự công việc");
   const success=await window.exportGenericEstaPdf({
-   building:"TỔNG QUAN ADMIN",title:"BÁO CÁO CÔNG VIỆC ADMIN GIAO",
-   sectionLabel:"THEO DÕI CÔNG VIỆC ADMIN",
+   building:"",hideBuilding:true,title:"BÁO CÁO CÔNG VIỆC",
+   sectionLabel:"THEO DÕI CÔNG VIỆC GIÁM SÁT KỸ THUẬT",
    tableLabel:"DANH SÁCH CÔNG VIỆC ĐÃ CHỌN",
    subtitle:"Phạm vi: "+byScope.join(" · ")+" · "+selected.length+" công việc",
    periodLabel:period,columns,rows,summaries,photos,

@@ -1901,7 +1901,8 @@ async function exportGenericEstaPdf(config={}){
  if(!signer)return false;
  const payload={
    report_type:"generic",
-   building:String(config.building||currentBuilding?.name||"[CẦN BỔ SUNG]"),
+   building:String(config.hideBuilding===true?"":(config.building||currentBuilding?.name||"[CẦN BỔ SUNG]")),
+   hide_building:config.hideBuilding===true,
    report_date:new Date().toLocaleDateString("vi-VN"),
    period_label:String(config.periodLabel||"THEO DỮ LIỆU HIỆN TẠI"),
    title:String(config.title||"BÁO CÁO KỸ THUẬT"),

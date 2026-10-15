@@ -607,17 +607,30 @@ def story_generic(data):
         P(_generic_text(title),ST["h1"]),
         HRFlowable(width="100%",thickness=1.5,color=COPPER,spaceBefore=5,spaceAfter=8)
     ]
-    meta=Table([
-        [P("TÒA NHÀ",ST["lbl"]),P(_generic_text(data.get("building") or "—"),ST["val"]),
-         P("NGÀY BÁO CÁO",ST["lbl"]),P(_generic_text(data.get("report_date") or "—"),ST["val"])],
-        [P("HẠNG MỤC",ST["lbl"]),P(_generic_text(section),ST["val"]),
-         P("KỲ BÁO CÁO",ST["lbl"]),P(_generic_text(period),ST["val"])]
-    ],colWidths=[28*mm,59*mm,28*mm,CW-115*mm])
-    meta.setStyle(TableStyle([
+    hide_building=data.get("hide_building") is True
+    if hide_building:
+        # This Admin report spans projects, so it has no single building.
+        meta_rows=[
+            [P("HẠNG MỤC",ST["lbl"]),P(_generic_text(section),ST["val"]), "", ""],
+            [P("NGÀY BÁO CÁO",ST["lbl"]),P(_generic_text(data.get("report_date") or "—"),ST["val"]),
+             P("KỲ BÁO CÁO",ST["lbl"]),P(_generic_text(period),ST["val"])]
+        ]
+    else:
+        meta_rows=[
+            [P("TÒA NHÀ",ST["lbl"]),P(_generic_text(data.get("building") or "—"),ST["val"]),
+             P("NGÀY BÁO CÁO",ST["lbl"]),P(_generic_text(data.get("report_date") or "—"),ST["val"])],
+            [P("HẠNG MỤC",ST["lbl"]),P(_generic_text(section),ST["val"]),
+             P("KỲ BÁO CÁO",ST["lbl"]),P(_generic_text(period),ST["val"])]
+        ]
+    meta=Table(meta_rows,colWidths=[28*mm,59*mm,28*mm,CW-115*mm])
+    meta_styles=[
         ("VALIGN",(0,0),(-1,-1),"MIDDLE"),("LINEBELOW",(0,0),(-1,-1),.4,TAUPE),
         ("TOPPADDING",(0,0),(-1,-1),3.5),("BOTTOMPADDING",(0,0),(-1,-1),3.5),
         ("LEFTPADDING",(0,0),(-1,-1),0),("RIGHTPADDING",(0,0),(-1,-1),6)
-    ]))
+    ]
+    if hide_building:
+        meta_styles.append(("SPAN",(1,0),(3,0)))
+    meta.setStyle(TableStyle(meta_styles))
     story += [meta,Spacer(1,10)]
     if subtitle:
         story += [P(_generic_text(subtitle),ST["note"]),Spacer(1,8)]
@@ -737,7 +750,8 @@ def _prepare_generic_data(payload, token, temp_dir):
     prepared_photos,missing=pdfc.prepare_remote_images(photo_items,token,_download_image,source_key="source")
 
     return {
-        "building":str(payload.get("building") or "[CẦN BỔ SUNG]"),
+        "building":"" if payload.get("hide_building") is True else str(payload.get("building") or "[CẦN BỔ SUNG]"),
+        "hide_building":payload.get("hide_building") is True,
         "report_date":str(payload.get("report_date") or ""),
         "period_label":str(payload.get("period_label") or "THEO DỮ LIỆU HIỆN TẠI"),
         "title":str(payload.get("title") or "BÁO CÁO KỸ THUẬT"),

@@ -12,7 +12,8 @@ from unittest.mock import patch
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from api.esta_report import generate_pdf
+from api.esta_report import generate_pdf, _prepare_generic_data, story_generic
+from reportlab.platypus import Table
 from reporting.report_center import _prepare_photo
 from reporting.pdf_common import ImageSlot
 from reporting import pdf_common as pdfc
@@ -302,9 +303,10 @@ class ReportTests(unittest.TestCase):
         # Same seven-column payload produced by the Admin task selection UI.
         payload = {
             'report_type': 'generic',
-            'building': 'TỔNG QUAN ADMIN',
-            'title': 'BÁO CÁO CÔNG VIỆC ADMIN GIAO',
-            'section_label': 'THEO DÕI CÔNG VIỆC ADMIN',
+            'building': '',
+            'hide_building': True,
+            'title': 'BÁO CÁO CÔNG VIỆC',
+            'section_label': 'THEO DÕI CÔNG VIỆC GIÁM SÁT KỸ THUẬT',
             'table_label': 'DANH SÁCH CÔNG VIỆC ĐÃ CHỌN',
             'report_date': '10/10/2026',
             'period_label': 'TỪ 05/10/2026 ĐẾN 10/10/2026',
@@ -335,6 +337,18 @@ class ReportTests(unittest.TestCase):
             ],
             'photos': [{'ref': photo((640, 480)), 'caption': '62 THL · Ảnh xác nhận'}],
         }
+        with tempfile.TemporaryDirectory() as tmp:
+            prepared = _prepare_generic_data({**payload, 'photos': []}, '', tmp)
+            self.assertEqual(prepared['building'], '')
+            self.assertTrue(prepared['hide_building'])
+            metadata = next(x for x in story_generic(prepared) if isinstance(x, Table) and len(x._cellvalues) == 2)
+            self.assertEqual(metadata._cellvalues[0][0].text, 'HẠNG MỤC')
+            self.assertEqual(metadata._cellvalues[0][1].text, 'THEO DÕI CÔNG VIỆC GIÁM SÁT KỸ THUẬT')
+            self.assertEqual(metadata._cellvalues[1][0].text, 'NGÀY BÁO CÁO')
+            self.assertEqual(metadata._cellvalues[1][2].text, 'KỲ BÁO CÁO')
+            old_layout = {**prepared, 'hide_building': False, 'building': '62 THL'}
+            old_meta = next(x for x in story_generic(old_layout) if isinstance(x, Table) and len(x._cellvalues) == 2)
+            self.assertEqual(old_meta._cellvalues[0][0].text, 'TÒA NHÀ')
         raw, missing, count = generate_pdf(payload, '')
         self.assertTrue(raw.startswith(b'%PDF'))
         self.assertEqual((missing, count), (0, 2))

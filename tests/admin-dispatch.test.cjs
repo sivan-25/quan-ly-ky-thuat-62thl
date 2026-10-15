@@ -141,7 +141,10 @@ async function main() {
   assert.equal(pdfCalls.length,2);
   assert.equal(pdfCalls[1].rows.length,1);
   assert.equal(pdfCalls[1].rows[0][1],'Cá nhân · Văn');
-  assert.ok(pdfCalls[1].title.includes('ADMIN'));
+  assert.equal(pdfCalls[1].title,'BÁO CÁO CÔNG VIỆC');
+  assert.equal(pdfCalls[1].sectionLabel,'THEO DÕI CÔNG VIỆC GIÁM SÁT KỸ THUẬT');
+  assert.equal(pdfCalls[1].hideBuilding,true);
+  assert.equal(pdfCalls[1].building,'');
   visible()[0].click();
   assert.equal(q('#ccDispatchHeading').textContent,'Chỉnh sửa công việc thực hiện');
   assert.equal(q('#ccDispatchTitle').value,personal[0].title);
