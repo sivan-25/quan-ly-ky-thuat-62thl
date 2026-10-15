@@ -13,11 +13,11 @@ const TASK_PAGE_SIZE=20,ALERT_PAGE_SIZE=6,ACTIVITY_PAGE_SIZE=6;
 const globalScope=()=>typeof isAdminOverview==="function"&&isAdminOverview();
 const $c=s=>document.querySelector(s);
 const escC=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const shortProjectName=id=>({"62THL":"62 THL","68PĐL":"68 PĐL","68PDL":"68 PĐL","127HH":"127 HH","130HH":"130 HH","399CH":"399 CH"})[String(id)]||String(id||"—");
+const shortProjectName=id=>({"62THL":"62 THL","68PĐL":"68 PĐL","68PDL":"68 PĐL","127HH":"127 HH","130HH":"130 HH","399CH":"399 CH","NANGCAP":"Bản nâng cấp"})[String(id)]||String(id||"—");
 const todayC=()=>typeof today==="function"?today():new Date().toLocaleDateString("en-CA");
 const fmtC=d=>{if(!d)return "—";const x=String(d).slice(0,10);try{return new Date(x+"T00:00:00").toLocaleDateString("vi-VN")}catch(_){return x}};
 const accountProjects=()=>{const list=Array.isArray(currentAccount?.buildings)?currentAccount.buildings:[];const real=list.filter(x=>x?.id&&x.id!=="DEMO");return real.length?real:list.filter(x=>x?.id)};
-const activeProjects=()=>accountProjects().filter(x=>String(x?.id||"").trim().toUpperCase()!=="UPDATE");
+const activeProjects=()=>accountProjects().filter(x=>!["UPDATE","NANGCAP"].includes(String(x?.id||"").trim().toUpperCase()));
 const activeIds=()=>new Set(activeProjects().map(x=>String(x.id)));
 const activeRows=()=>{const ids=activeIds();return rows.filter(r=>ids.has(String(r?.building?.id||"")))};
 const isDone=t=>["Đã hoàn thành","Hoàn thành"].includes(String(t?.s||""));
@@ -385,7 +385,7 @@ async function openAlert(buildingId,module,refId,taskId){if(module==="work")retu
 let ccDispatchFiles=[],ccDispatchPreviewUrls=[],ccDispatchPhotoMeta=[];
 function ccDispatch130Selected(){
  const m=$c("#ccDispatchModal");if(!m)return false;
- const live=new Set(["62THL","68PĐL","68PDL","127HH","130HH"]);
+ const live=new Set(["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"]);
  return [...m.querySelectorAll('[name="ccTarget"]:checked')].some(x=>live.has(String(x.value||"").trim().toUpperCase()));
 }
 function ccPhotoResultFile(result,sourceFile){
@@ -628,7 +628,7 @@ async function updateProjectNavAlerts(){
   const [incidents,inspections,assets,materials,tx,jobs]=await Promise.all([
    sbFetch("/rest/v1/incidents?building_id=eq."+b+"&select=id,severity,status",{token:centralSession.access_token}),
    sbFetch("/rest/v1/inspections?building_id=eq."+b+"&select=id,result_status",{token:centralSession.access_token}),
-   ["130HH","127HH","62THL","68PĐL"].includes(bid)?Promise.resolve([]):sbFetch("/rest/v1/maintenance_assets?building_id=eq."+b+"&select=id,status,next_due_date",{token:centralSession.access_token}),
+   ["130HH","127HH","62THL","68PĐL","NANGCAP"].includes(bid)?Promise.resolve([]):sbFetch("/rest/v1/maintenance_assets?building_id=eq."+b+"&select=id,status,next_due_date",{token:centralSession.access_token}),
    sbFetch("/rest/v1/inventory_materials?building_id=eq."+b+"&select=id,min_qty,opening_qty,tracking_start_date,created_at",{token:centralSession.access_token}),
    sbFetch("/rest/v1/inventory_material_transactions?building_id=eq."+b+"&select=material_id,tx_type,qty,tx_date",{token:centralSession.access_token}),
    sbFetch("/rest/v1/contractor_jobs?building_id=eq."+b+"&select=id,status",{token:centralSession.access_token})
@@ -651,7 +651,7 @@ async function updateProjectNavAlerts(){
   // 130HH uses scheduled maintenance jobs rather than the legacy equipment registry.
   // Keep the badge empty if its data cannot be verified; do not show a stale legacy count.
   let maintenance130=null;
-  if(["130HH","127HH","62THL","68PĐL"].includes(bid)){
+  if(["130HH","127HH","62THL","68PĐL","NANGCAP"].includes(bid)){
    try{
     if(typeof window.estaMaintenance130NavSummary!=="function")throw Error("130HH maintenance source unavailable");
     maintenance130=await window.estaMaintenance130NavSummary({today:td,soon,token:centralSession.access_token,buildingId:bid});
@@ -678,7 +678,7 @@ async function updateProjectNavAlerts(){
   setNavBadge("navWork",work,work?"high":"normal","công việc chưa hoàn thành");
   setNavBadge("navIncident",incident,incidentCritical?"critical":incident?"high":"normal","sự cố/defect đang mở");
   setNavBadge("navInspection",inspection,inspection?"high":"normal","checklist cần chú ý hoặc khắc phục");
-  if(["130HH","127HH","62THL","68PĐL"].includes(bid))setNavBadge("navMaintenance",maintenance130?.count||0,maintenance130?.critical?"critical":maintenance130?.count?"high":"normal","công việc bảo trì chưa hoàn thành đã đến hạn hoặc đến hạn trong 30 ngày (tính từ đầu năm)");
+  if(["130HH","127HH","62THL","68PĐL","NANGCAP"].includes(bid))setNavBadge("navMaintenance",maintenance130?.count||0,maintenance130?.critical?"critical":maintenance130?.count?"high":"normal","công việc bảo trì chưa hoàn thành đã đến hạn hoặc đến hạn trong 30 ngày (tính từ đầu năm)");
   else setNavBadge("navMaintenance",maintenance,maintenanceCritical?"critical":maintenance?"high":"normal","thiết bị hỏng, quá hạn hoặc đến hạn trong 30 ngày");
   setNavBadge("navInventory",inventory,inventoryCritical?"critical":inventory?"high":"normal","vật tư hết hoặc dưới mức tồn tối thiểu");
   setNavBadge("navContractor",contractor,contractor?"normal":"normal","công việc nhà thầu chưa hoàn thành");
