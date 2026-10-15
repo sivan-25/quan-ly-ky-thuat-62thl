@@ -58,6 +58,7 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
   assert.ok(selectedMonth,"month navigation exists: "+building);
   assert.ok(d.querySelector("#m130Pdf"),"shared PDF exists: "+building);
   if(building==="68PĐL"){
+   page.querySelector('[data-m130-view="rows"]').click();
    assert.match(page.querySelector("#m130List").textContent,/Chưa ấn định ngày/,"do not invent 68 PĐL dates");
    assert.equal(page.querySelector(".m130Date b").textContent,"—","undated maintenance date tile");
    assert.equal(d.querySelector('[data-m130-month="1"] b').textContent,"1","imported January occurrence retained");
