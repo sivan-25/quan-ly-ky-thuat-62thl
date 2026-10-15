@@ -659,6 +659,8 @@ function updateApplyMode(){
  $("#updateCommandCenter")?.classList.toggle("hide",!on);
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on||!updateIsSandbox());
+ const equipmentNavLabel=$("#navUpdateAssets span");
+ if(equipmentNavLabel)equipmentNavLabel.textContent=updateScopeId()==="NANGCAP"?"Thông tin hệ thống":"Tài sản & Thiết bị";
  const mobileNavOn=updateMobileNavAllowed();
  $("#updateMobileNav")?.classList.toggle("hide",!mobileNavOn);
  $("#updateMobileNav")?.classList.toggle("liveProjectMobileNav",mobileNavOn&&!updateIsSandbox());
@@ -760,8 +762,9 @@ function updateShowStandalone(name){
  page.classList.remove("hide");
  $("#navUpdate"+id)?.classList.add("active");
  $("#app").classList.add("updateStandaloneMode","updateProjectMode");
- updateSetTop({assets:"Tài sản & Thiết bị",team:"Nhân sự kỹ thuật",shift:"Ca trực & Bàn giao",cost:"Chi phí & KPI"}[name]);
+ updateSetTop(name==="assets"&&updateScopeId()==="NANGCAP"?"Thông tin hệ thống tòa nhà":{assets:"Tài sản & Thiết bị",team:"Nhân sự kỹ thuật",shift:"Ca trực & Bàn giao",cost:"Chi phí & KPI"}[name]);
  setMobileMenuOpen(false,true);
+ if(name==="assets"&&updateScopeId()==="NANGCAP"&&window.estaUpgradeAssets?.render){window.estaUpgradeAssets.render(page);return;}
 
  // Render immediately from the current cache so a navigation click never waits on network.
  if(updateState.loaded)updateRenderStandaloneNow(name);
@@ -891,6 +894,7 @@ function updateOpenHealth(){
 
 function updateRenderAssets(filterCode=""){
  const page=$("#updateAssetsPage");if(!page)return;
+ if(updateScopeId()==="NANGCAP"&&window.estaUpgradeAssets?.render){window.estaUpgradeAssets.render(page);return;}
  const systems=updateState.systems.filter(s=>updateState.assets.some(a=>a.system_code===s.code));
  page.innerHTML=
   '<section class="updateModuleHero"><div><span>ASSET REGISTRY</span><h1>Tài sản & Thiết bị</h1><p>Cây tài sản liên kết Work Order, PM, sự cố, meter, chi phí, bảo hành và QR.</p></div><div class="updateModuleHeroStats"><b>'+updateState.assets.length+'</b><span>thiết bị</span><b>'+updateState.assets.filter(a=>a.criticality==="A").length+'</b><span>Critical A</span></div></section>'+
@@ -1506,6 +1510,7 @@ if(updatePrevAdminCard){
  };
 }
 window.estaCloseProjectOverlays=()=>{
+ window.estaUpgradeAssets?.close?.();
  updateCloseAssetDrawer();updateCloseNotificationCenter();updateStopScanner();
  ["updateHealthModal","updateAiModal","updateScannerModal","updateQuickModal"].forEach(updateCloseModal);
 };
