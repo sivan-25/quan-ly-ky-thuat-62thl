@@ -413,7 +413,7 @@ document.getElementById("task130Result")?.addEventListener("input",event=>{
  if(lower)lower.value=event.target.value;
 });
 function demo130MobileQuick(){
- return ["62THL","68PĐL","68PDL","127HH","130HH"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
+ return ["62THL","68PĐL","68PDL","127HH","130HH","NANGCAP"].includes(String(currentBuilding?.id||""))&&window.matchMedia("(max-width:640px)").matches;
 }
 function demo130MissingNotice(message,el){
  if(!demo130MobileQuick()){toast(message);return}
