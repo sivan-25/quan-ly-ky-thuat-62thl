@@ -56,14 +56,27 @@ function nextCardDate(o){
  return o.event.planned_date||o.scheduled;
 }
 function schedule(y,sourceItems=items,sourceStored=stored){
- const targetYear=Number(y),result=[],known=new Map(),first=new Map();
+ const targetYear=Number(y),result=[],known=new Map(),first=new Map(),grouped=new Map();
  for(const e of sourceStored){
+  if(!grouped.has(e.item_id))grouped.set(e.item_id,[]);
+  grouped.get(e.item_id).push(e);
   known.set(e.event_key,e);
   const prev=first.get(e.item_id);
   if(!prev||String(e.planned_month)<String(prev.planned_month))first.set(e.item_id,e);
  }
  for(const i of sourceItems){
   if(i.deleted_at)continue;
+  // Imported Excel plans can contain explicit records for each month without a day.
+  // They must be kept intact; only single-anchor plans use generated recurrence.
+  const explicit=grouped.get(i.id)||[];
+  if(explicit.length>1){
+   for(const e of explicit){
+    const date=String(e.planned_date||e.planned_month).slice(0,10);
+    if(Number(date.slice(0,4))===targetYear)
+      result.push({item:i,event:e,virtual:false,scheduled:date});
+   }
+   continue;
+  }
   const base=first.get(i.id);if(!base)continue;
   const origin=String(base.planned_date||String(base.planned_month).slice(0,7)+"-01");
   if(!/^\d{4}-\d{2}-\d{2}$/.test(origin))continue;
@@ -82,7 +95,15 @@ function schedule(y,sourceItems=items,sourceStored=stored){
 }
 const isoToday=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
 const demo=i=>String(i?.source_notes||"").startsWith("MẪU");
-const dateOf=o=>String(o.event.due_date||o.event.planned_date||o.scheduled).slice(0,10);
+const isMonthOnly=o=>!o.virtual&&!o.event.planned_date&&!o.event.due_date;
+const dateOf=o=>{
+ if(isMonthOnly(o)){
+  const ym=String(o.event.planned_month||o.scheduled).slice(0,7),[y,m]=ym.split("-").map(Number);
+  if(Number.isInteger(y)&&Number.isInteger(m)&&m>=1&&m<=12)return ym+"-"+pad(new Date(Date.UTC(y,m,0)).getUTCDate());
+ }
+ return String(o.event.due_date||o.event.planned_date||o.scheduled).slice(0,10);
+};
+const shownDate=o=>isMonthOnly(o)?"Chưa ấn định ngày":fmt(o.event.planned_date||o.event.due_date||o.scheduled);
 function stateKey(o){
  const st=String(o.event.status||"planned");
  if(st==="completed")return "done";
@@ -263,10 +284,10 @@ function renderList(){
  if(layoutMode!=="list"){renderAlternative(visible);return;}
  list.innerHTML=visible.map(o=>{
   const e=o.event,i=o.item,st=status(o),key=esc(e.event_key);
-  const cycle=interval(i),cycleText=cycleLabel(cycle),location=esc(i.subsystem||"Chưa ghi vị trí");
+  const cycle=interval(i),cycleText=cycle?cycleLabel(cycle):(i.cadence||"1 lần"),location=esc(i.subsystem||"Chưa ghi vị trí");
   if(!isCards){
    return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
-    '<time class="m130Date" datetime="'+esc(dateOf(o))+'" aria-label="Ngày '+esc(fmt(dateOf(o)))+'"><b>'+esc(dateOf(o).slice(8,10))+'</b><small>Th'+esc(dateOf(o).slice(5,7))+'</small></time>'+
+    '<time class="m130Date" datetime="'+esc(isMonthOnly(o)?"":dateOf(o))+'" aria-label="'+esc(isMonthOnly(o)?"Chưa ấn định ngày trong tháng":"Ngày "+fmt(dateOf(o)))+'"><b>'+esc(isMonthOnly(o)?"—":dateOf(o).slice(8,10))+'</b><small>Th'+esc(dateOf(o).slice(5,7))+'</small></time>'+
     '<div class="m130EntryBody"><div class="m130Pills"><span class="m130Badge '+st[1]+'" aria-label="Tình trạng: '+esc(st[0])+'"><b class="m130StatusValue">'+esc(st[1]==="late"?"Quá hạn "+Math.max(1,Math.round((Date.parse(isoToday()+"T12:00:00")-Date.parse(dateOf(o)+"T12:00:00"))/86400000))+" ngày":st[0])+'</b></span><span class="m130Sys">'+esc(i.system_group)+'</span>'+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+'</div>'+
     '<h4>'+esc(i.work_title)+'</h4><p class="m130ShortMeta"><span class="m130MetaLocation">⌖ '+location+'</span><span class="m130MetaPerson">♙ '+esc(personLabel(e.completed_by||i.assigned_to))+'</span>'+(i.asset_code?'<span class="m130MetaCode">· '+esc(i.asset_code)+'</span>':'')+'</p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+
     '<div class="m130EntryActions"><button type="button" data-m130-event="'+key+'">'+(canWrite()?(e.status==="completed"?"Xem KQ":"Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130Edit" aria-label="Sửa kế hoạch '+esc(i.work_title)+'" title="Sửa kế hoạch" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16z"/></svg></button></div></article>';
@@ -274,9 +295,9 @@ function renderList(){
   const done=lastCompleted(o),upcoming=nextCardDate(o);
   const record=esc(e.event_key),editable=canWrite()?"":"disabled";
   return '<article class="m130ServiceCard m130State-'+st[1]+'">'+
-   '<div class="m130CardHead"><div class="m130CardHeading"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><span class="m130CardLocation">'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Lịch kỳ này: '+fmt(e.planned_date||o.scheduled)+'</span></div><div class="m130TopTags"><span class="m130CardStatus '+st[1]+'"><span class="m130StatusLabel">Tình trạng:</span> <b class="m130StatusValue">'+st[0]+'</b></span></div></div>'+
+   '<div class="m130CardHead"><div class="m130CardHeading"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><span class="m130CardLocation">'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Lịch kỳ này: '+shownDate(o)+'</span></div><div class="m130TopTags"><span class="m130CardStatus '+st[1]+'"><span class="m130StatusLabel">Tình trạng:</span> <b class="m130StatusValue">'+st[0]+'</b></span></div></div>'+
    '<h3>'+esc(i.work_title)+'</h3>'+
-   '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+fmt(upcoming)+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
+   '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+(isMonthOnly(o)?shownDate(o):fmt(upcoming))+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
    '<div class="m130CardLower"><div class="m130CardDetails"><div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span></div>'+
    (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+'</div>'+
    '<div class="m130CardFoot"><button type="button" class="m130RecordBtn" data-m130-event="'+record+'">'+(canWrite()?(e.status==="completed"?"✓ Xem / sửa KQ":"＋ Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
@@ -290,7 +311,7 @@ function renderAlternative(events){
  if(layoutMode==="timeline"){
   list.innerHTML='<div class="m130Timeline">'+events.map(o=>{
    const st=status(o),key=esc(o.event.event_key);
-   return '<button type="button" data-m130-event="'+key+'" class="m130TimelineItem '+st[1]+'"><time>'+fmt(dateOf(o))+'</time><span><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+esc(personLabel(o.event.completed_by||o.item.assigned_to))+'</small></span><em>'+st[0]+'</em></button>';
+   return '<button type="button" data-m130-event="'+key+'" class="m130TimelineItem '+st[1]+'"><time>'+shownDate(o)+'</time><span><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+esc(personLabel(o.event.completed_by||o.item.assigned_to))+'</small></span><em>'+st[0]+'</em></button>';
   }).join("")+'</div>';
   return;
  }
@@ -307,7 +328,7 @@ function renderAlternative(events){
  }
  const agenda=events.map(o=>{
   const st=status(o),key=esc(o.event.event_key);
-  return '<div class="m130AgendaItem"><div class="m130AgendaDate">'+fmt(dateOf(o))+'</div><button type="button" data-m130-event="'+key+'" class="m130AgendaButton '+st[1]+'"><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+st[0]+'</small></button></div>';
+  return '<div class="m130AgendaItem"><div class="m130AgendaDate">'+shownDate(o)+'</div><button type="button" data-m130-event="'+key+'" class="m130AgendaButton '+st[1]+'"><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+st[0]+'</small></button></div>';
  }).join("");
  list.innerHTML='<div class="m130CalendarWrap"><div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
 }
@@ -488,8 +509,8 @@ function openEvent(key){
  currentEvent=o;const e=o.event;
  $("m130ModalTitle").textContent=(canWrite()?"":"Xem kết quả · ")+o.item.work_title;
  $("m130PlanForm").hidden=true;$("m130EventForm").hidden=false;
- $("m130EventInfo").textContent=o.item.system_group+" · "+(o.item.subsystem||"")+" · Chu kỳ: "+cycleLabel(interval(o.item));
- $("m130EventDate").value=e.planned_date||o.scheduled;
+ $("m130EventInfo").textContent=o.item.system_group+" · "+(o.item.subsystem||"")+" · Chu kỳ: "+(o.item.cadence||cycleLabel(interval(o.item)));
+ $("m130EventDate").value=e.planned_date||(o.virtual?o.scheduled:"");
  $("m130EventStatus").value=e.status==="completed"?"completed":(["cancelled","postponed","skipped"].includes(e.status)?"cancelled":"in_progress");
  $("m130Who").value=e.completed_by||(personLabel(o.item.assigned_to).includes("Chưa chọn tên")?"":o.item.assigned_to)||"";
  renderPersonPickers();
@@ -582,7 +603,7 @@ async function exportPdf(){
  if(typeof window.exportGenericEstaPdf!=="function")return toast("Chức năng PDF chưa sẵn sàng.");
  const list=scopeEvents(getYearSchedule(year).filter(o=>Number(o.scheduled.slice(5,7))===month));
  if(!list.length)return toast("Không có công việc để xuất.");
- const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,fmt(o.event.planned_date||o.scheduled),status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
+ const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,shownDate(o),status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
  try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ "+projectLabel().toUpperCase(),tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_"+B+"_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed").length,label:"HOÀN THÀNH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
 }
 window.mountMaintenance130=()=>{
