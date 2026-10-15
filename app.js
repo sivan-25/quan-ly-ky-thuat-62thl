@@ -863,6 +863,7 @@ function syncOverviewNavigation(){
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
  $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
+ $("#navSystemInfo")?.classList.toggle("hide",!project||String(currentBuilding?.id||"")!=="NANGCAP");
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
  $("#navProjectOverview").classList.toggle("hide",!admin||!project);
  const quick=$("#quickReturnAdmin");
@@ -876,6 +877,9 @@ function syncOverviewNavigation(){
 
 }
 function showHome(){
+ $("#systemInfoPage")?.classList.add("hide");
+ $("#navSystemInfo")?.classList.remove("active");
+ window.resetTechnicalSystemsUpgrade?.();
  closeWorkFilter();
  syncOverviewNavigation();
  $("#homePage").classList.remove("hide");
@@ -920,7 +924,7 @@ function applyBuildingUI(){
 let projectOpenSeq=0;
 let lastAdminProject=null;
 function activeProjectModule(){
- const pageNames={work:"workPage",energy:"energyPage",inventory:"inventoryPage",maintenance:"maintenancePage",contractor:"contractorPage",construction:"constructionMaterialPage"};
+ const pageNames={work:"workPage",energy:"energyPage",inventory:"inventoryPage",maintenance:"maintenancePage",systems:"systemInfoPage",contractor:"contractorPage",construction:"constructionMaterialPage"};
  for(const [name,id] of Object.entries(pageNames))if($("#"+id)&&!$("#"+id).classList.contains("hide"))return name;
  return "home";
 }
@@ -943,6 +947,7 @@ async function returnToLastAdminProject(){
 
 function closeProjectOverlays(){
  try{restoreWorkEntryCard()}catch(e){}
+ window.resetTechnicalSystemsUpgrade?.();
  ["demoIncidentModal","demoChecklistModal","technicalDocumentModal","demoTaskDrawer","ccDispatchModal","viewer","peopleManagerModal"].forEach(id=>$("#"+id)?.classList.add("hide"));
  closePeopleMenus();
  window.estaCloseProjectOverlays?.();
@@ -963,6 +968,7 @@ function prepareProjectContext(building){
  $("#technicalDocumentProgress")?.classList.add("hide");
 
  currentBuilding={...building};
+ $("#navSystemInfo")?.classList.toggle("hide",String(building?.id||"")!=="NANGCAP");
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
  if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
@@ -993,6 +999,8 @@ async function enterProject(building,{target="home"}={}){
 }
 function openAdminPortal(){
  rememberAdminProject();
+ $("#systemInfoPage")?.classList.add("hide");
+ $("#navSystemInfo")?.classList.remove("active");
  closeWorkFilter();
  if(!currentAccount?.is_admin)return;
  projectOpenSeq+=1;
@@ -2203,11 +2211,13 @@ function sync68EnergyTabs(){
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
+ if(name==="systems"&&(!projectOverviewActive||String(currentBuilding?.id||"")!=="NANGCAP")){toast("Chỉ sử dụng tại dự án Bản nâng cấp");return}
+ if(name!=="systems")window.resetTechnicalSystemsUpgrade?.();
  if(typeof energyManageReset==="function")energyManageReset();
  closeWorkFilter();
- const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
- const tops={work:"#topWorkTitle",energy:"#topEnergyTitle",inventory:"#topInventoryTitle",maintenance:"#topMaintenanceTitle",contractor:"#topContractorTitle",construction:"#topConstructionTitle"};
- const navs={work:"#navWork",energy:"#navEnergy",inventory:"#navInventory",maintenance:"#navMaintenance",contractor:"#navContractor",construction:"#navConstruction"};
+ const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",systems:"#systemInfoPage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
+ const tops={work:"#topWorkTitle",energy:"#topEnergyTitle",inventory:"#topInventoryTitle",maintenance:"#topMaintenanceTitle",systems:"#topSystemInfoTitle",contractor:"#topContractorTitle",construction:"#topConstructionTitle"};
+ const navs={work:"#navWork",energy:"#navEnergy",inventory:"#navInventory",maintenance:"#navMaintenance",systems:"#navSystemInfo",contractor:"#navContractor",construction:"#navConstruction"};
  $("#homePage").classList.add("hide");$("#adminPage").classList.add("hide");
  Object.values(pages).forEach(s=>$(s)?.classList.add("hide"));
  $("#workHero").classList.add("hide");$("#energyHero").classList.add("hide");
@@ -2220,6 +2230,7 @@ function showModule(name){
  $("#app").classList.add(name+"Mode");
  setMobileMenuOpen(false,true);
  if(name==="energy")renderEnergy();
+ if(name==="systems")window.mountTechnicalSystemsUpgrade?.();
  if(name==="inventory"){
    const now=new Date();
    inventoryActiveMonth="all";
@@ -2240,6 +2251,7 @@ $("#navWork").onclick=()=>showModule("work");
 $("#navEnergy").onclick=()=>showModule("energy");
 $("#navInventory").onclick=()=>showModule("inventory");
 $("#navMaintenance").onclick=()=>showModule("maintenance");
+$("#navSystemInfo").onclick=()=>showModule("systems");
 $("#navContractor").onclick=()=>showModule("contractor");
 if($("#navConstruction"))$("#navConstruction").onclick=()=>showModule("construction");
 $("#homeViewAllTasks").onclick=()=>$("#navWork").classList.contains("hide")?toast("Hãy mở một dự án trước"):showModule("work");
