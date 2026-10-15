@@ -126,7 +126,7 @@
 /* Keep the three administrative inputs on one desktop row. */
 @media (min-width:641px) and (max-width:800px){.cc130-main-fields{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-/* 130 HH: keep task selection unmistakable and clickable in Auto and Manual modes. */
+/* Shared projects: keep task selection unmistakable in Auto and Manual modes. */
 #cc130Tasks .cc130-task{align-items:center;min-height:59px;border-left:3px solid transparent;transition:background-color .12s}
 #cc130Tasks .cc130-task.is-selected{background:#f9edf3;border-left-color:#411437}
 #cc130Tasks .cc130-task input[type="checkbox"]{

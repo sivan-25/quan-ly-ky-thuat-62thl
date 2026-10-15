@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""130 Hồng Hà completion certificate, faithful to the signed paper form."""
+"""Shared building completion certificate, faithful to the signed paper form."""
 import re
 from xml.sax.saxutils import escape
 
@@ -17,6 +17,22 @@ BLACK = colors.HexColor("#1e2933")
 BORDER = colors.HexColor("#66747d")
 LIGHT = colors.HexColor("#f3f5f7")
 
+# Server-owned project labels ensure a client cannot print a mismatched building name.
+PROJECT_LABELS = {
+    "130HH": "130 Hồng Hà",
+    "127HH": "127 Hồng Hà",
+    "62THL": "62 Trần Huy Liệu",
+    "68PĐL": "68 Phan Đăng Lưu",
+    "68PDL": "68 Phan Đăng Lưu",
+}
+
+
+def project_name(data):
+    building_id = str(data.get("building_id") or "").strip()
+    if building_id not in PROJECT_LABELS:
+        raise ValueError("Phiếu xác nhận không hỗ trợ dự án này")
+    return PROJECT_LABELS[building_id]
+
 
 def clean(value, maximum=1000):
     return str(value if value is not None else "").strip()[:maximum]
@@ -27,8 +43,7 @@ def para(value, style):
 
 
 def validate(data):
-    if str(data.get("building_id") or "").upper() != "130HH":
-        raise ValueError("Mẫu phiếu này hiện chỉ thử nghiệm tại dự án 130 HH")
+    project_name(data)
     period = clean(data.get("period"), 7)
     if not re.fullmatch(r"20\d{2}-(0[1-9]|1[0-2])", period):
         raise ValueError("Tháng xác nhận không hợp lệ")
@@ -66,6 +81,7 @@ def build_completion_doc(path, payload, photos=None):
     if style == "esta":
         return build_esta_completion_doc(path, payload, photos=photos)
     period, rows = validate(payload)
+    building_name = project_name(payload)
     ensure_fonts()
     styles = {
         "small": ParagraphStyle("cc_small", fontName="Mont", fontSize=8.0, leading=11, textColor=BLACK),
@@ -79,7 +95,7 @@ def build_completion_doc(path, payload, photos=None):
     }
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=15*mm, rightMargin=15*mm,
                             topMargin=14*mm, bottomMargin=16*mm,
-                            title="Phiếu xác nhận hoàn thành công việc - 130 HH",
+                            title="Phiếu xác nhận hoàn thành công việc - " + building_name,
                             author="Bộ phận Kỹ thuật")
     full = doc.width
     story = []
@@ -102,7 +118,7 @@ def build_completion_doc(path, payload, photos=None):
     story.extend([para("TP.HCM, " + printed, styles["right"]), Spacer(1,12)])
     mm_y,mm_m=period.split("-")
     story.extend([para("PHIẾU XÁC NHẬN HOÀN THÀNH CÔNG VIỆC THÁNG %s/%s"%(mm_m,mm_y),styles["title"]), Spacer(1,8)])
-    story.extend([para("Dự án: 130 Hồng Hà", styles["bold"]), Spacer(1,5)])
+    story.extend([para("Dự án: " + building_name, styles["bold"]), Spacer(1,5)])
     story.extend([para("Nhân viên thực hiện: ........................................................", styles["text"]),Spacer(1,12)])
     story.extend([para("Nội dung công việc cần sửa chữa:", styles["bold"]), Spacer(1,2)])
     desc=clean(payload.get("repair_description"),1000) or ".................................................................................................."
@@ -175,6 +191,7 @@ def build_completion_doc(path, payload, photos=None):
 def build_esta_completion_doc(path, payload, photos=None):
     """ESTA PDF alternative; the original paper-form renderer remains available."""
     period, rows = validate(payload)
+    building_name = project_name(payload)
     ensure_fonts()
     year, month = period.split("-")
     period_printed = "%s/%s" % (month, year)
@@ -224,7 +241,7 @@ def build_esta_completion_doc(path, payload, photos=None):
 
     # Logo-free official header: the same ESTA palette with administrative typography.
     _, later = pdfc.make_page_fns(
-        "PHIẾU XÁC NHẬN HOÀN THÀNH", "THÁNG " + period_printed, "130 HỒNG HÀ"
+        "PHIẾU XÁC NHẬN HOÀN THÀNH", "THÁNG " + period_printed, building_name.upper()
     )
     def first_page(canvas, document):
         canvas.saveState()
@@ -238,7 +255,7 @@ def build_esta_completion_doc(path, payload, photos=None):
 
     doc = BaseDocTemplate(
         path, pagesize=A4,
-        title="ESTA - Phiếu xác nhận hoàn thành công việc - 130 HH",
+        title="ESTA - Phiếu xác nhận hoàn thành công việc - " + building_name,
         author="ESTA Property Management",
         subject="Xác nhận hoàn thành công việc",
         leftMargin=pdfc.MX, rightMargin=pdfc.MX,
@@ -312,7 +329,7 @@ def build_esta_completion_doc(path, payload, photos=None):
     details = [
         [
             P("DỰ ÁN", styles["meta_label"]),
-            P("130 Hồng Hà", styles["meta_value"]),
+            P(building_name, styles["meta_value"]),
             P("NGÀY LẬP", styles["meta_label"]),
             P(issued_printed, styles["meta_value"]),
         ],
