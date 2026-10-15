@@ -19,6 +19,10 @@ const data=Object.fromEntries(projects.map(b=>{
   people:[{name:"Kỹ thuật "+b}]
  }];
 }));
+// 68 PĐL has imported schedules with explicit month-only records and plans without a date.
+data["68PĐL"].events[0].planned_date=null;
+data["68PĐL"].events.push({...data["68PĐL"].events[0],id:"68PĐL-january",event_key:"68PĐL-TEST:"+year+"-01",planned_month:year+"-01-01"});
+data["68PĐL"].plans.push({...data["68PĐL"].plans[0],id:"68PĐL-pending",plan_code:"68PĐL-PENDING",work_title:"Hạng mục chưa có lịch"});
 w.currentBuilding={id:"130HH"};
 w.centralSession={access_token:"fixture"};
 w.toast=()=>{};
@@ -53,6 +57,12 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
   const selectedMonth=d.getElementById("m130Months").querySelector(".sel");
   assert.ok(selectedMonth,"month navigation exists: "+building);
   assert.ok(d.querySelector("#m130Pdf"),"shared PDF exists: "+building);
+  if(building==="68PĐL"){
+   assert.match(page.querySelector("#m130List").textContent,/Chưa ấn định ngày/,"do not invent 68 PĐL dates");
+   assert.equal(page.querySelector(".m130Date b").textContent,"—","undated maintenance date tile");
+   assert.equal(d.querySelector('[data-m130-month="1"] b').textContent,"1","imported January occurrence retained");
+   assert.ok(page.querySelector(".m130Unscheduled summary"),"unscheduled legacy plans discoverable");
+  }
  }
  assert.equal(d.querySelectorAll("#maint130").length,1,"single shared DOM; no duplicate maintenance pages");
  for(const building of projects){
