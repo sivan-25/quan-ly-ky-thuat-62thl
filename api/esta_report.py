@@ -669,7 +669,29 @@ def story_generic(data):
             if ci==0: ks.append(("BACKGROUND",(ci,0),(ci,0),AUB))
             else: ks += [("BACKGROUND",(ci,0),(ci,0),CREAM_L),("LINEABOVE",(ci,0),(ci,0),2,COPPER)]
         k.setStyle(TableStyle(ks))
-        story += [k,Spacer(1,14)]
+        story += [k,Spacer(1,12)]
+
+    # Executive decision panel is opt-in: existing per-building PDFs stay intact.
+    priority_items=(data.get("priority_items") or [])[:6]
+    if priority_items:
+        story += [P("CÔNG VIỆC CẦN ƯU TIÊN XỬ LÝ",ST["sec"]),Spacer(1,4)]
+        small=S("supervision_priority",fontSize=7.0,leading=9.7,textColor=AUB)
+        muted=S("supervision_priority_muted",fontSize=6.8,leading=9.3,textColor=STONE)
+        priority_rows=[[P(h,ST["th"]) for h in ["ƯU TIÊN / DỰ ÁN","NỘI DUNG / PHỤ TRÁCH","NGUYÊN NHÂN / HƯỚNG XỬ LÝ","HẠN"]]]
+        for x in priority_items:
+            a=_generic_text(x.get("status") or "")+"<br/>"+_generic_text(x.get("project") or "")+"<br/>"+_generic_text(x.get("source") or "")
+            b=_generic_text(x.get("title") or "")+"<br/>Phụ trách: "+_generic_text(x.get("owner") or "Chưa cập nhật")
+            d="Nguyên nhân: "+_generic_text(x.get("cause") or "Chưa cập nhật")+"<br/>Hướng xử lý: "+_generic_text(x.get("plan") or "Chưa cập nhật")
+            priority_rows.append([P(a,small),P(b,small),P(d,muted),P(_generic_text(x.get("due") or "—"),small)])
+        widths=[35*mm,52*mm,68*mm,CW-155*mm]
+        pr=Table(priority_rows,colWidths=widths,repeatRows=1,splitByRow=1,splitInRow=1)
+        pr.setStyle(TableStyle([
+            ("BACKGROUND",(0,0),(-1,0),AUB),("BACKGROUND",(0,1),(-1,-1),CREAM_L),
+            ("LINEBELOW",(0,1),(-1,-1),.45,TAUPE),("VALIGN",(0,0),(-1,-1),"TOP"),
+            ("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),5),
+            ("LEFTPADDING",(0,0),(-1,-1),5),("RIGHTPADDING",(0,0),(-1,-1),4)
+        ]))
+        story += [pr,Spacer(1,12)]
 
     story += [P(_generic_text(table_label.upper()),ST["sec"]),Spacer(1,4)]
     head=[P(_generic_text(c.get("label") or ""),ST["th"]) for c in columns]
@@ -720,6 +742,14 @@ def _prepare_generic_data(payload, token, temp_dir):
     columns=payload.get("columns") or []
     rows=payload.get("rows") or []
     summaries=payload.get("summaries") or []
+    raw_priority=payload.get("priority_items") or []
+    if not isinstance(raw_priority,list) or len(raw_priority)>6:
+        raise ValueError("Danh sách công việc ưu tiên không hợp lệ")
+    clean_priority=[]
+    for item in raw_priority:
+        if not isinstance(item,dict): continue
+        clean_priority.append({key:str(item.get(key) or "")[:350] for key in
+          ("project","source","title","status","owner","cause","plan","due")})
     if not isinstance(columns,list) or not columns or len(columns)>12:
         raise ValueError("Cột báo cáo không hợp lệ")
     if not isinstance(rows,list) or len(rows)>1500:
@@ -774,6 +804,7 @@ def _prepare_generic_data(payload, token, temp_dir):
         "columns":clean_columns,
         "rows":clean_rows,
         "summaries":clean_summaries,
+        "priority_items":clean_priority,
         "photos":[x for x in prepared_photos if x.get("prepared")],
         "_missing_images":missing
     }
