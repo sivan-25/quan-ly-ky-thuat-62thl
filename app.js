@@ -1617,6 +1617,17 @@ function taskNoteSummaryHtml(x){
  const note=String(x.n||"").trim()||"—",result=String(x.result||"").trim()||"—";
  return '<span class="taskNoteSummary"><span class="taskNoteLine"><span class="taskNoteLabel">Ghi chú: </span>'+esc(note)+'</span><span class="taskNoteLine"><span class="taskNoteLabel">KQ: </span>'+esc(result)+'</span></span>';
 }
+function estaPriorityStar(x){
+ const marked=x.supervisorStarred===true;
+ return '<button type="button" class="estaPriorityStar'+(marked?' is-marked':'')+'" title="'+(marked?'Bỏ đánh dấu ưu tiên':'Đánh dấu ưu tiên')+'" aria-label="'+(marked?'Bỏ đánh dấu ưu tiên':'Đánh dấu ưu tiên')+'" aria-pressed="'+marked+'" '+(!currentAccount?.is_admin?'disabled':'')+' onclick="event.stopPropagation();toggleEstaPriorityStar('+JSON.stringify(String(x.id))+')">★</button>';
+}
+window.toggleEstaPriorityStar=async function(id){
+ if(!currentAccount?.is_admin){toast("Chỉ Admin được đánh dấu ưu tiên");return;}
+ const all=load(),task=all.find(x=>String(x.id)===String(id));if(!task)return;
+ const previous=task.supervisorStarred===true;task.supervisorStarred=!previous;save(all);render();
+ try{await syncTaskRecord("upsert_task",task);await syncProjectSnapshot();toast(task.supervisorStarred?"Đã đánh dấu ưu tiên":"Đã bỏ ưu tiên");}
+ catch(err){task.supervisorStarred=previous;save(all);render();toast("Không lưu được đánh dấu. Vui lòng thử lại.");console.error(err);}
+};
 function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div class="thumbs" onclick="viewImages('+x.id+')">'+x.imgs.slice(0,3).map(v=>mediaImgHtml(v)).join("")+(x.imgs.length>3?'<span class="thumbMore">+'+(x.imgs.length-3)+'</span>':'')+'</div>'}function render(){
  const all=load(),a=filtered(),td=today();
  $("#statToday").textContent=all.filter(x=>x.d===td).length;
@@ -1630,7 +1641,7 @@ function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div 
    card.setAttribute("aria-pressed",String(active));
  });
  $("#empty").classList.toggle("hide",a.length>0);
- $("#tbody").innerHTML=a.map((x,i)=>'<tr><td class="sttCell">'+workRowCheckbox(x)+(i+1)+'</td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"—"))+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
+ $("#tbody").innerHTML=a.map((x,i)=>'<tr><td class="sttCell">'+workRowCheckbox(x)+'<span class="estaStarStack">'+estaPriorityStar(x)+'<span>'+(i+1)+'</span></span></td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"—"))+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
  $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard">'+workRowCheckbox(x)+'<div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"Không có ghi chú"))+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
  hydrateMediaImages($("#tbody"));
  syncWorkSelection();
