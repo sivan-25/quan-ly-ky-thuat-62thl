@@ -38,7 +38,7 @@ assert($(".ueRefDetails [data-ue-edit]"),"virtual form shortcut available");
 const markup=page.innerHTML;scope.currentBuilding={id:"127HH",role:"admin"};
 dom.window.estaUpgradeAssets.render(page,true);
 assert(page.classList.contains("ueSnapshot"),"127HH must reuse identical register layout");
-assert.equal($("#ueRows .ueRefRow").length,44,"project switch resets to its own 44 built-in definitions");
+assert.equal(page.querySelectorAll("#ueRows .ueRefRow").length,44,"project switch resets to its own 44 built-in definitions");
 assert.equal($("#ueSearch").value,"","search must not leak across projects");
 assert.equal($("#ueGroup").value,"","system filter must not leak across projects");
 assert.notEqual(page.innerHTML,markup,"switching projects resets stale filters");
