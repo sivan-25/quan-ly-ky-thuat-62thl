@@ -54,8 +54,8 @@ const page=dom.window.document.getElementById("updateAssetsPage");
  assert(css.includes(".estaTechnicalAssetsMode"),"new technical page should have screenshot-style CSS");
  assert(parityCss.includes("#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode)"),"technical page must use exactly the same root theme selectors as Bản nâng cấp");
  assert(parityCss.includes("body:is(.estaUpgradeMode,.estaTechnicalAssetsMode)"),"portal dialogs must use exactly the same theme");
- assert(!/#app\\.estaUpgradeMode\\b|body\\.estaUpgradeMode\\b/.test(parityCss),"no orphan NANGCAP-only theme selectors permitted");
- assert((parityCss.match(/#app:is\\(\\.estaUpgradeMode,\\.estaTechnicalAssetsMode\\)/g)||[]).length>=70,"the complete shared theme, not a partial imitation, must be reused");
+ assert(!parityCss.includes("#app.estaUpgradeMode")&&!parityCss.includes("body.estaUpgradeMode"),"no orphan NANGCAP-only theme selectors permitted");
+ assert(parityCss.split("#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode)").length-1>=70,"the complete shared theme, not a partial imitation, must be reused");
  for(const rule of [".estaSidebar",".estaTopbar",".page","input:not([type=\"checkbox\"])"]){
   assert(parityCss.includes(rule),"shared project design is missing "+rule);
  }
