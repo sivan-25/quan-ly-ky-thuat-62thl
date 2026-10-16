@@ -477,3 +477,19 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
   #maint130 .m130CalendarAgenda{margin-top:12px}
   #maint130 .m130AgendaButton b{font-size:13px!important;line-height:1.5}
 }
+
+
+/* ESTA 2026-10-16 | Native date-picker and multi-select maintenance technicians. */
+#m130Overlay #m130First,
+#m130Overlay #m130EventDate{cursor:pointer;min-height:49px;touch-action:manipulation;color-scheme:light}
+#m130Overlay #m130First::-webkit-calendar-picker-indicator,
+#m130Overlay #m130EventDate::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.95}
+#m130Overlay .m130PersonCount{display:block;font-size:11px;line-height:1.3;color:#756077;font-weight:650;margin-top:-5px}
+#m130Overlay .m130PersonQuick{margin-top:-1px}
+#m130Overlay .m130PersonQuick button.selected,
+#m130Overlay .m130PersonQuick button[aria-pressed="true"]{background:#411437!important;border-color:#411437!important;color:#fff9ef!important;box-shadow:0 0 0 1px #411437}
+#m130Overlay .m130PersonQuick button:focus-visible{outline:2px solid #257b9a;outline-offset:2px}
+@media(max-width:640px){
+ #m130Overlay #m130First,#m130Overlay #m130EventDate{min-height:48px;font-size:16px}
+ #m130Overlay .m130PersonQuick button{padding:8px 11px;min-height:36px}
+}
