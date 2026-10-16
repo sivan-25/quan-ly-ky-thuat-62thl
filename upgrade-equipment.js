@@ -249,7 +249,8 @@ function ensureDialog(){
  '<label>Tình trạng<select name="checkCondition">'+Object.entries(CONDITIONS).filter(([k])=>["chua","tot","theodoi","hu","sua"].includes(k)).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join("")+'</select></label>'+
  '<label>Người thực hiện<input name="checkBy" maxlength="120"></label>'+
  '<label>Ảnh minh chứng<input type="file" name="checkPhotos" accept="image/*" multiple></label>'+
- '<label class="ueFull">Ghi chú / Thông số đo<textarea name="checkNote" rows="2" maxlength="1500"></textarea></label></div>'+
+ '<label class="ueFull">Thông số đo (nếu có)<input name="checkReading" maxlength="300" placeholder="Ví dụ: áp suất 5,2 bar; nhiệt độ 38°C"></label>'+ 
+ '<label class="ueFull">Ghi chú / Kết quả xử lý<textarea name="checkNote" rows="2" maxlength="1500"></textarea></label></div>'+
  '<button type="button" id="ueCheckSave" class="ueBtnPrimary">✓ Lưu lần kiểm tra</button>'+
  '<h4>Lịch sử kiểm tra</h4><div id="ueHistory"></div></section>'+
  '</div><footer><button type="button" class="ueBtnSecondary" id="ueCancel">Hủy</button>'+
@@ -301,7 +302,7 @@ function renderHistory(x){
  if(!hist.length){host.innerHTML='<p>Chưa có lần kiểm tra được ghi nhận.</p>';return}
  host.innerHTML=hist.slice().reverse().map(h=>
  '<article class="ueHistoryItem"><strong>'+esc(h.date)+' · '+esc(CONDITIONS[h.condition]||"Chưa kiểm tra")+'</strong>'+
- '<small>'+esc(h.by||"")+'</small><p>'+esc(h.note||"")+'</p>'+
+ '<small>'+esc(h.by||"")+'</small>'+(h.reading?'<p><b>Thông số đo:</b> '+esc(h.reading)+'</p>':'')+'<p>'+esc(h.note||"")+'</p>'+
  '<div class="ueHistoryPhotos">'+(h.photos||[]).slice(0,8).map(ref=>'<img alt="Ảnh kiểm tra thiết bị" data-ue-image="'+esc(ref)+'">').join("")+'</div></article>').join("");
  host.querySelectorAll("img[data-ue-image]").forEach(async image=>{
   try{if(typeof mediaObjectUrl==="function"){const u=await mediaObjectUrl(image.dataset.ueImage);if(image.isConnected)image.src=u}}
@@ -403,7 +404,7 @@ async function saveCheck(){
  try{
   const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,BID):[];
   const meta=metaOf(item);
-  const history=[...(meta.history||[]),{date,by,condition,note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()}].sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.createdAt).localeCompare(String(b.createdAt))).slice(-100); const latest=history.at(-1);
+  const history=[...(meta.history||[]),{date,by,condition,reading:field("checkReading"),note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()}].sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.createdAt).localeCompare(String(b.createdAt))).slice(-100); const latest=history.at(-1);
   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+BID,{
    method:"PATCH",token:centralSession.access_token,
    body:{specs:{...item.specs,_estaUpgrade:{...meta,history,condition:latest.condition,lastCheck:latest.date}}}
