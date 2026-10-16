@@ -1619,7 +1619,8 @@ function taskNoteSummaryHtml(x){
 }
 function estaPriorityStar(x){
  const marked=x.supervisorStarred===true;
- return '<button type="button" class="estaPriorityStar'+(marked?' is-marked':'')+'" title="'+(marked?'Bỏ đánh dấu ưu tiên':'Đánh dấu ưu tiên')+'" aria-label="'+(marked?'Bỏ đánh dấu ưu tiên':'Đánh dấu ưu tiên')+'" aria-pressed="'+marked+'" '+(!currentAccount?.is_admin?'disabled':'')+' onclick="event.stopPropagation();toggleEstaPriorityStar('+JSON.stringify(String(x.id))+')">★</button>';
+ const label=marked?"Bỏ đánh dấu ưu tiên":"Đánh dấu ưu tiên";
+ return '<button type="button" class="estaPriorityStar'+(marked?' is-marked':'')+'" data-star-task="'+esc(x.id)+'" title="'+label+'" aria-label="'+label+'" aria-pressed="'+marked+'"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 2.4 15.02 8.5l6.73.98-4.87 4.75 1.15 6.7L12 17.77l-6.03 3.16 1.15-6.7-4.87-4.75 6.73-.98Z" fill="currentColor"/></svg></button>';
 }
 window.toggleEstaPriorityStar=async function(id){
  if(!currentAccount?.is_admin){toast("Chỉ Admin được đánh dấu ưu tiên");return;}
@@ -1628,6 +1629,12 @@ window.toggleEstaPriorityStar=async function(id){
  try{await syncTaskRecord("upsert_task",task);await syncProjectSnapshot();toast(task.supervisorStarred?"Đã đánh dấu ưu tiên":"Đã bỏ ưu tiên");}
  catch(err){task.supervisorStarred=previous;save(all);render();toast("Không lưu được đánh dấu. Vui lòng thử lại.");console.error(err);}
 };
+document.addEventListener("click",event=>{
+ const button=event.target.closest?.("[data-star-task]");
+ if(!button)return;
+ event.preventDefault();event.stopPropagation();
+ toggleEstaPriorityStar(button.dataset.starTask);
+});
 function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div class="thumbs" onclick="viewImages('+x.id+')">'+x.imgs.slice(0,3).map(v=>mediaImgHtml(v)).join("")+(x.imgs.length>3?'<span class="thumbMore">+'+(x.imgs.length-3)+'</span>':'')+'</div>'}function render(){
  const all=load(),a=filtered(),td=today();
  $("#statToday").textContent=all.filter(x=>x.d===td).length;
