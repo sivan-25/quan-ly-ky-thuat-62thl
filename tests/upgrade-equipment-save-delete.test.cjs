@@ -77,6 +77,29 @@ async function main(){
  assert.equal(database.size,1);
  assert.equal([...database.values()][0].brand,"Daikin");
 
+
+ // End-to-end inspection: saving a result verifies the profile and schedules its next check.
+ const checkForm=$("#ueForm");
+ checkForm.elements.namedItem("checkDate").value="2026-10-15";
+ checkForm.elements.namedItem("checkBy").value="Văn";
+ checkForm.elements.namedItem("checkCondition").value="tot";
+ await $("#ueCheckSave").onclick();
+ const stored=[...database.values()][0];
+ assert.equal(stored.specs._estaUpgrade.verified,true,"a completed check verifies the device");
+ assert.equal(stored.specs._estaUpgrade.lastCheck,"2026-10-15","latest check stored");
+ assert.equal(stored.specs._estaUpgrade.history.length,1,"first check retained");
+ assert.equal($("#ueFormError").hidden,true,"successful check shows no error");
+ // Backdated checks must persist even when the latest check date is newer.
+ checkForm.elements.namedItem("checkDate").value="2026-10-10";
+ checkForm.elements.namedItem("checkBy").value="Văn";
+ checkForm.elements.namedItem("checkCondition").value="theodoi";
+ await $("#ueCheckSave").onclick();
+ const checked=[...database.values()][0].specs._estaUpgrade;
+ assert.equal(checked.history.length,2,"backdated check not discarded");
+ assert.equal(checked.lastCheck,"2026-10-15","older check does not overwrite latest date");
+ assert.equal(checked.condition,"tot","latest status preserved");
+ assert.equal($("#ueFormError").hidden,true,"backdated saving is confirmed");
+
  // Delete a saved built-in item, confirm it stays absent across reloads.
  await clickDelete();
  assert.equal(rows().length,43,"deleted predefined item must not reappear");

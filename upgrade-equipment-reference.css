@@ -232,3 +232,90 @@
  #app.estaUpgradeMode #updateAssetsPage .ueRefRowActions button{width:100%;white-space:normal}
  #app.estaUpgradeMode #updateAssetsPage .ueRefRowActions button:only-child{grid-column:1/-1}
 }
+
+
+/* 2026-10-16 | NANGCAP complete form alignment review.
+   Every field of a two-column row stretches to the same height, with inputs
+   anchored to the row baseline. Works for wrapped Vietnamese captions. */
+body.estaUpgradeMode .ueDialog .ueFormBody > label:not(.ueFull),
+body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecSection .ueInspectGrid > label.ueSpecField,
+body.estaUpgradeMode .ueDialog .ueInspection .ueInspectGrid > label{
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:flex-end!important;
+ align-self:stretch!important;
+ height:100%;
+ min-width:0;
+ gap:6px;
+ line-height:1.4;
+}
+body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecSection .ueInspectGrid{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ column-gap:12px!important;
+ row-gap:12px!important;
+ align-items:stretch!important;
+}
+body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecFieldLabel{
+ display:block;
+ min-height:2.8em;
+ font-size:12px;
+ line-height:1.4;
+ font-weight:700;
+ color:#411437;
+ overflow-wrap:break-word;
+}
+body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecField > input,
+body.estaUpgradeMode .ueDialog .ueInspection .ueInspectGrid > label > :is(input,select,textarea),
+body.estaUpgradeMode .ueDialog .ueFormBody > label:not(.ueFull) > :is(input,select,textarea){
+ margin-top:auto!important;
+ flex-shrink:0!important;
+ width:100%;
+ min-width:0!important;
+}
+body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecField > input{
+ height:45px!important;
+ min-height:45px!important;
+ max-height:45px;
+ padding:9px 12px!important;
+ border-radius:10px!important;
+ font-size:13px!important;
+}
+body.estaUpgradeMode .ueDialog .ueSpecSection .ueInspectGrid{
+ align-items:stretch!important;
+}
+body.estaUpgradeMode .ueDialog .ueSpecSection .ueInspectGrid > label{
+ min-width:0;
+}
+body.estaUpgradeMode .ueDialog .ueSpecSection .ueInspectGrid :is(input,select,textarea){
+ box-sizing:border-box;
+ max-width:100%;
+}
+body.estaUpgradeMode .ueDialog .ueFormBody > label:not(.ueFull) > :is(input,select){
+ min-height:42px!important;
+}
+body.estaUpgradeMode .ueDialog .ueSpecSection .ueInspectGrid .ueFull{
+ grid-column:1/-1;
+}
+body.estaUpgradeMode .ueDialog .ueSpecSection summary{
+ min-height:48px;
+}
+body.estaUpgradeMode .ueDialog .ueSpecSection summary span{
+ white-space:nowrap;
+}
+body.estaUpgradeMode .ueDialog .ueFormBody label :is(input,select,textarea):focus-visible{
+ outline:2px solid #a46427!important;
+ outline-offset:2px;
+}
+@media(max-width:700px){
+ body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecSection .ueInspectGrid{
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:10px!important;
+ }
+ body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecFieldLabel{
+  min-height:0;
+ }
+ body.estaUpgradeMode .ueDialog .ueAdvancedSpecs .ueSpecField > input{
+  font-size:16px!important;
+ }
+}

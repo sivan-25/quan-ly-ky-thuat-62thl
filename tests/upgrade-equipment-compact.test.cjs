@@ -8,6 +8,11 @@ const js=fs.readFileSync(path.join(root,"upgrade-equipment.js"),"utf8");
 assert(/upgrade-equipment-reference\.css\?v=20261016-[\w-]+/.test(html));
 assert(/upgrade-equipment\.js\?v=20261016-[\w-]+/.test(html));
 assert(html.indexOf("upgrade-equipment-compact.css?v")<html.indexOf("upgrade-equipment-reference.css?v"),"reference stylesheet must load last");
+const formCss=css;
+for(const token of [".ueSpecFieldLabel","align-items:stretch!important","margin-top:auto!important","grid-template-columns:repeat(2,minmax(0,1fr))!important","@media(max-width:700px)"])assert(formCss.includes(token),"missing form alignment rule: "+token);
+assert(js.includes('class="ueSpecField"'),"all advanced spec controls need aligned field wrappers");
+assert(js.includes('values?.[f.key]??""'),"numeric 0 values must remain visible when reopening saved fields");
+
 for(const marker of [".ueRefColHead",".ueRefRow",".ueRefState",".ueRefFacts",".ueRefDetails","@media(max-width:540px)"])assert(css.includes(marker),"missing reference style "+marker);
 const dom=new JSDOM("<div id='updateAssetsPage'></div>",{url:"https://example.test"});
 const scope={document:dom.window.document,window:dom.window,currentBuilding:{id:"NANGCAP",role:"admin"},projectOverviewActive:true,centralSession:{access_token:"fixture"},currentAccount:{is_admin:true}};
