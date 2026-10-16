@@ -16,7 +16,7 @@ const row={
 const scope={window:dom.window,document:dom.window.document,currentBuilding:{id:"NANGCAP",role:"editor"},projectOverviewActive:true,
  centralSession:{access_token:"fixture"},currentAccount:{is_admin:true},sbFetch:async p=>p.includes("maintenance_assets")?[]:[row]};
 new vm.Script(js).runInNewContext(scope);
-const $=s=>page.querySelector(s);
+const $=s=>dom.window.document.querySelector(s);
 (async()=>{
  dom.window.estaUpgradeAssets.render(page,true);
  await dom.window.estaUpgradeAssets.refresh();
