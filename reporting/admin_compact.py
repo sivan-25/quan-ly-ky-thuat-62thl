@@ -11,7 +11,7 @@ from reportlab.platypus import HRFlowable, Paragraph, Spacer, Table, TableStyle
 from reporting import pdf_common as pdfc
 
 
-def _style(name, font="Mont", size=7.2, leading=10, color=None):
+def _style(name, font="Mont", size=6.8, leading=9.4, color=None):
     return ParagraphStyle(name, fontName=font, fontSize=size,
                           leading=leading, textColor=color or pdfc.AUB,
                           splitLongWords=1)
@@ -41,9 +41,18 @@ def photo_state(code, label=""):
 
 
 class StatusImageSlot(pdfc.ImageSlot):
-    """ImageSlot plus a crisp status border and small corner badge."""
+    """ImageSlot plus a compact status border and small corner badge."""
+    BADGE_FONT_SIZE = 5.8
+    BADGE_HEIGHT = 12.5
     def __init__(self, width, height, prepared=None, caption="", status_code="unknown", status_label=""):
         super().__init__(width, height, prepared=prepared, caption=caption)
+        # Override only this report\'s captions; other ESTA PDFs are untouched.
+        self._caption_paragraph = Paragraph(
+            xml_escape(self.caption).replace("\\n", "<br/>"),
+            _style("adminImageCaption", "Mont-Light", 6.0, 8.2, pdfc.STONE)
+        )
+        self._caption_paragraph.wrap(max(1, width - 4), 10000)
+        self.CAPTION_H = max(9, self._caption_paragraph.height + 4)
         self.status_code, self.status_label, self.status_color, self.status_background, self.status_text = photo_state(
             status_code, status_label
         )
@@ -56,17 +65,17 @@ class StatusImageSlot(pdfc.ImageSlot):
             # Match status colors to the adjacent table without tinting the photo itself.
             y = self.CAPTION_H
             canvas.setStrokeColor(self.status_color)
-            canvas.setLineWidth(2)
+            canvas.setLineWidth(1.3)
             canvas.rect(1, y + 1, self.width - 2, self.height - 2, stroke=1, fill=0)
-            badge_h, font_size = 15, 7
-            badge_w = min(self.width - 14, pdfmetrics.stringWidth(self.status_label, "Mont-Bold", font_size) + 18)
+            badge_h, font_size = self.BADGE_HEIGHT, self.BADGE_FONT_SIZE
+            badge_w = min(self.width - 12, pdfmetrics.stringWidth(self.status_label, "Mont-Bold", font_size) + 14)
             x = self.width - badge_w - 6
             by = y + self.height - badge_h - 6
             canvas.setFillColor(self.status_color)
             canvas.roundRect(x, by, badge_w, badge_h, 4, stroke=0, fill=1)
             canvas.setFillColor(self.status_text)
             canvas.setFont("Mont-Bold", font_size)
-            canvas.drawCentredString(x + badge_w / 2, by + 4.3, self.status_label)
+            canvas.drawCentredString(x + badge_w / 2, by + 3.5, self.status_label)
         finally:
             canvas.restoreState()
 
@@ -109,20 +118,20 @@ def story(data):
     aub, copper, pale = pdfc.AUB, pdfc.COPPER, pdfc.PALE
     body = _style("adminBody")
     strong = _style("adminStrong", "Mont-SemiBold")
-    subtle = _style("adminSubtle", "Mont", 6.9, 9.4, pdfc.STONE)
-    head = _style("adminHead", "Mont-Bold", 6.6, 9.0, pale)
-    label = _style("adminLabel", "Mont-Bold", 6.3, 8.5, pdfc.STONE)
-    value = _style("adminValue", "Mont-Bold", 8, 11)
-    section = _style("adminSection", "Mont-Bold", 9.2, 12)
-    title = _style("adminTitle", "Mont-Bold", 18, 23)
+    subtle = _style("adminSubtle", "Mont", 6.4, 8.9, pdfc.STONE)
+    head = _style("adminHead", "Mont-Bold", 6.1, 8.5, pale)
+    label = _style("adminLabel", "Mont-Bold", 6.0, 8.1, pdfc.STONE)
+    value = _style("adminValue", "Mont-Bold", 7.4, 10)
+    section = _style("adminSection", "Mont-Bold", 8.5, 11.2)
+    title = _style("adminTitle", "Mont-Bold", 16, 21)
     kpi_num = [
-        _style("adminNumDark", "Mont-XBold", 23, 26, pale),
-        _style("adminNumRed", "Mont-XBold", 23, 26, colors.HexColor("#B4434B")),
-        _style("adminNumOrange", "Mont-XBold", 23, 26, colors.HexColor("#9B621B")),
-        _style("adminNumBlue", "Mont-XBold", 23, 26, colors.HexColor("#2A687C")),
+        _style("adminNumDark", "Mont-XBold", 20, 23, pale),
+        _style("adminNumRed", "Mont-XBold", 20, 23, colors.HexColor("#B4434B")),
+        _style("adminNumOrange", "Mont-XBold", 20, 23, colors.HexColor("#9B621B")),
+        _style("adminNumBlue", "Mont-XBold", 20, 23, colors.HexColor("#2A687C")),
     ]
-    kpi_label = _style("adminKpiLabel", "Mont-Bold", 6.5, 9, pdfc.STONE)
-    kpi_label_dark = _style("adminKpiLabelDark", "Mont-Bold", 6.5, 9, pale)
+    kpi_label = _style("adminKpiLabel", "Mont-Bold", 6.1, 8.5, pdfc.STONE)
+    kpi_label_dark = _style("adminKpiLabelDark", "Mont-Bold", 6.1, 8.5, pale)
 
     def p(text, style=body):
         content = xml_escape(str(text if text is not None else "—"))

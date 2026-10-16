@@ -485,6 +485,30 @@ class ReportTests(unittest.TestCase):
         self.assertTrue(raw.startswith(b"%PDF"))
         self.assertEqual((missing, count), (0, 2))
 
+    def test_admin_pdf_typography_is_compact(self):
+        """Only Admin summary PDF uses these smaller A4 text sizes."""
+        from reporting.admin_compact import StatusImageSlot, story as compact_story
+        from reporting.pdf_common import ProcessedImage
+        slot = StatusImageSlot(220, 140, caption="68 PĐL · Kiểm tra bơm PCCC",
+                               status_code="done")
+        self.assertLess(slot.BADGE_FONT_SIZE, 7)
+        self.assertLess(slot._caption_paragraph.style.fontSize, 6.6)
+        self.assertLess(slot.BADGE_HEIGHT, 15)
+        payload = {
+            "title": "BÁO CÁO GIÁM SÁT KỸ THUẬT",
+            "report_date": "16/10/2026", "period_label": "Tuần 42",
+            "summaries": [{"value": "2", "label": "TỔNG BẢN GHI"}],
+            "columns": [{"label": x} for x in
+                ("STT", "Dự án", "Nội dung", "Ngày", "Trạng thái", "Ghi chú")],
+            "rows": [["1", "68 PĐL", "Kiểm tra", "16/10", "Hoàn thành", "Vũ"]],
+        }
+        out = compact_story(payload)
+        self.assertLess(out[0].style.fontSize, 18)
+        tables = [x for x in out if isinstance(x, Table)]
+        self.assertTrue(any(row[0].style.fontSize < 7.2
+                            for t in tables for row in t._cellvalues[1:]
+                            if isinstance(row[0], type(out[0]))))
+
     def test_original_work_energy_tools_renderers(self):
         samples = [
             {'report_type':'work','tasks':[{'title':'Dữ liệu thử','status':'Hoàn thành','date':'01/09/2026','assignee':'Kiểm thử'}]},
