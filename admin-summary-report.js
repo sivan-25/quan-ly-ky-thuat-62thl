@@ -335,6 +335,7 @@
     if(!home||$("#estaAdminSummaryPage"))return;
     const css=document.createElement("style");css.id="estaAdminSummaryStyles";
     css.textContent='#homePage.estaAdminSummaryOpen>:not(#estaAdminSummaryPage){display:none!important}#homePage.estaAdminSummaryOpen{display:block!important;visibility:visible!important;opacity:1!important;min-height:60vh!important}#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:1}' +
+      '#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{position:fixed!important;top:62px!important;left:var(--sidebar-width, 263px)!important;right:0!important;bottom:0!important;width:auto!important;max-width:none!important;height:auto!important;overflow-y:auto!important;display:block!important;z-index:850!important;margin:0!important;border-radius:0!important}@media(max-width:768px){#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{left:0!important;top:62px!important;bottom:55px!important}}'+
       '#estaAdminSummaryPage{background:#f2eddf;color:#34463b;border:1px solid #ddd5be;border-radius:16px;padding:20px;margin:0 0 20px;font-family:Inter,Arial,sans-serif}'+
       '#estaAdminSummaryPage *{box-sizing:border-box}#estaAdminSummaryPage h2,#estaAdminSummaryPage h3,#estaAdminSummaryPage p{margin:0}'+
       '#estaAdminSummaryPage .asHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}'+
