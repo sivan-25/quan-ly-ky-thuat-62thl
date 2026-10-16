@@ -7,6 +7,7 @@ let demoCache={loaded:false,buildingId:"",incidents:[],inspections:[],documents:
 let demoSelectedIncident="",demoSelectedInspection="",demoSelectedDocument="",demoIncidentFilter="";
 const demoIs=()=>!!currentBuilding?.id&&!$("#navWork")?.classList.contains("hide");
 const demoUsesUpdatedOpsUI=()=>demoIs()&&String(currentBuilding?.id||"")!==DEMO_ID;
+const demoPriorityVi=p=>{const raw=String(p??"").trim();return ({critical:"Khẩn cấp",high:"Cao",medium:"Trung bình",low:"Thấp"})[raw.toLowerCase()]||(raw||"Trung bình")};
 const originalAdminProjectCard=adminProjectCard;
 adminProjectCard=function(b,index=0){
  const html=originalAdminProjectCard(b,index);
@@ -576,7 +577,7 @@ function demoFillWorkLinks(x){
  const workResult=String(x.result||"").trim();
  const inheritedCause=linkedIncident?demoCauseValue(linkedIncident.cause):"";
  const inheritedResult=String(linkedIncident?.solution||"").trim();
- $("#demoTaskPriority")&&($("#demoTaskPriority").value=x.priority||"Trung bình");
+ const prSelect=$("#demoTaskPriority");if(prSelect){const raw=x.priority||"Trung bình";prSelect.value=[...prSelect.options].some(o=>o.value===raw)?raw:demoPriorityVi(raw)}
  $("#demoTaskDue")&&($("#demoTaskDue").value=(x.dueDateExplicit||x.dueDate&&x.dueDate!==x.d)?x.dueDate:"");
  $("#demoTaskAsset")&&($("#demoTaskAsset").value=x.assetId||"");
  $("#demoTaskIncident")&&($("#demoTaskIncident").value=x.incidentCode||"");
@@ -896,7 +897,7 @@ window.demoOpenTaskDrawer=id=>{
  ].filter(Boolean).join("");
  dr.innerHTML='<div class="demoDrawerCard"><div class="demoDrawerHead"><div><span class="demoPill blue">CÔNG VIỆC</span><h2>'+esc(x.c)+'</h2></div><button class="demoDrawerClose" onclick="document.querySelector(\'#demoTaskDrawer\').classList.add(\'hide\')">×</button></div>'+
  '<div class="demoTabs demoTaskTabs"><button type="button" class="active" aria-selected="true" data-demo-task-tab="info">Thông tin</button><button type="button" aria-selected="false" data-demo-task-tab="links">Liên kết</button><button type="button" aria-selected="false" data-demo-task-tab="cost">Vật tư & chi phí</button><button type="button" aria-selected="false" data-demo-task-tab="images">Hình ảnh'+((x.imgs||[]).length?' ('+(x.imgs||[]).length+')':'')+'</button><button type="button" aria-selected="false" data-demo-task-tab="log">Nhật ký</button></div>'+
- '<div class="demoTaskTabPanel active" data-demo-task-panel="info"><div class="demoTaskDetailGrid"><div><small>Trạng thái</small><b>'+esc(x.s)+'</b></div><div><small>Ưu tiên</small><b>'+esc(x.priority||"Trung bình")+'</b></div><div><small>Bắt đầu</small><b>'+esc(demoFormatDate(x.d))+'</b></div><div><small>Hạn hoàn thành</small><b>'+esc((x.dueDateExplicit||x.dueDate&&x.dueDate!==x.d)?demoFormatDate(x.dueDate):"Chưa đặt hạn")+'</b></div><div><small>Người thực hiện</small><b>'+esc(x.a||"—")+'</b></div><div><small>Loại</small><b>'+esc(x.t||"Hằng ngày")+'</b></div></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(demoCauseValue(x.cause)||"—")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div><div class="demoTaskManageBox"><span>THAO TÁC CÔNG VIỆC</span><div class="demoTaskManageActions"><button type="button" class="demoTaskManageEdit" onclick="demoEditTaskFromDrawer(\''+x.id+'\')"><b>✎</b><span>Chỉnh sửa công việc</span></button><button type="button" class="demoTaskManageDelete" onclick="demoDeleteTaskFromDrawer(\''+x.id+'\')"><b>×</b><span>Xóa công việc</span></button></div></div></div>'+
+ '<div class="demoTaskTabPanel active" data-demo-task-panel="info"><div class="demoTaskDetailGrid"><div><small>Trạng thái</small><b>'+esc(x.s)+'</b></div><div><small>Ưu tiên</small><b>'+esc(demoPriorityVi(x.priority))+'</b></div><div><small>Bắt đầu</small><b>'+esc(demoFormatDate(x.d))+'</b></div><div><small>Hạn hoàn thành</small><b>'+esc((x.dueDateExplicit||x.dueDate&&x.dueDate!==x.d)?demoFormatDate(x.dueDate):"Chưa đặt hạn")+'</b></div><div><small>Người thực hiện</small><b>'+esc(x.a||"—")+'</b></div><div><small>Loại</small><b>'+esc(x.t||"Hằng ngày")+'</b></div></div><div class="demoDetailSection"><span>NGUYÊN NHÂN</span><p>'+esc(demoCauseValue(x.cause)||"—")+'</p></div><div class="demoDetailSection"><span>HƯỚNG XỬ LÝ / KẾT QUẢ</span><p>'+esc(x.result||"Chưa có kết quả")+'</p></div><div class="demoTaskManageBox"><span>THAO TÁC CÔNG VIỆC</span><div class="demoTaskManageActions"><button type="button" class="demoTaskManageEdit" onclick="demoEditTaskFromDrawer(\''+x.id+'\')"><b>✎</b><span>Chỉnh sửa công việc</span></button><button type="button" class="demoTaskManageDelete" onclick="demoDeleteTaskFromDrawer(\''+x.id+'\')"><b>×</b><span>Xóa công việc</span></button></div></div></div>'+
  '<div class="demoTaskTabPanel" data-demo-task-panel="links" hidden><div class="demoTaskLinkCards"><div><small>Thiết bị</small><b>'+esc(asset?asset.code+" · "+asset.name:"—")+'</b></div><div><small>Sự cố / Defect</small><b>'+esc(inc?demoIncidentVisibleRef(inc):(x.incidentCode||"—"))+'</b></div><div><small>Checklist</small><b>'+esc(x.inspectionCode||"—")+'</b></div><div><small>Nhà thầu</small><b>'+esc(con?.name||"—")+'</b></div></div><div class="demoTaskTabActions">'+(linkedActions||'<span class="demoTaskEmpty">Chưa có liên kết để mở.</span>')+'</div></div>'+
  '<div class="demoTaskTabPanel" data-demo-task-panel="cost" hidden><div class="demoDetailSection"><span>VẬT TƯ ĐÃ SỬ DỤNG</span><div class="demoTaskCostList">'+(materialRows||'<div class="demoTaskEmpty">Chưa ghi nhận vật tư.</div>')+'</div></div><div class="demoDetailSection"><span>CHI PHÍ</span><p>'+(inc&&Number(inc.cost||0)>0?Number(inc.cost||0).toLocaleString("vi-VN")+'đ · '+esc(demoUseIncidentStartDate()?("Ghi nhận "+demoIncidentVisibleRef(inc)):("Theo sự cố "+inc.incident_code)):'Chưa ghi nhận chi phí.')+'</p></div></div>'+
  '<div class="demoTaskTabPanel" data-demo-task-panel="images" hidden><div class="demoTaskImageGrid">'+(imageRows||'<div class="demoTaskEmpty">Công việc này chưa có hình ảnh.</div>')+'</div></div>'+
@@ -1664,7 +1665,7 @@ async function demoExportIncidentsEstaPdf(){
  const data=rows.map(x=>{
    const r=[useStartDate?demoIncidentVisibleRef(x):(x.incident_code||"—"),x.area||"—",x.symptom||"—"];
    if(hasCause)r.push(demoCauseValue(x.cause)||"—");
-   r.push(x.severity||"—",x.status||"—");
+   r.push(x.severity?demoPriorityVi(x.severity):"—",x.status||"—");
    return r;
  });
  let photoNo=0;

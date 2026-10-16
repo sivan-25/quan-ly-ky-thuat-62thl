@@ -7,6 +7,7 @@ const now=()=>new Date().toLocaleDateString("en-CA");
 const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const isAdminTask=t=>t?.dispatchedByAdmin===true||!!String(t?.dispatchGroupId||"").trim();
 const done=t=>["Đã hoàn thành","Hoàn thành"].includes(String(t?.s||""));
+const priorityVi=p=>{const raw=String(p??"").trim();return ({critical:"Khẩn cấp",high:"Cao",medium:"Trung bình",low:"Thấp","khẩn cấp":"Khẩn cấp",cao:"Cao","trung bình":"Trung bình","thấp":"Thấp"})[raw.toLocaleLowerCase("vi-VN")]||(raw||"Trung bình")};
 const projectTitle=id=>({"62THL":"62 THL","68PĐL":"68 PĐL","68PDL":"68 PĐL","127HH":"127 HH","130HH":"130 HH","399CH":"399 CH"})[id]||id;
 function error(text){const el=$("ccWeError");if(el){el.textContent=text||"";el.classList.toggle("hide",!text)}}
 function ui(){
@@ -97,7 +98,7 @@ async function open(buildingId,taskId){
   const fill={
    ccWeContent:task.c||"",ccWeAssigned:d(task.dispatchedAt)||d(task.d)||now(),
    ccWeStart:d(task.d)||now(),ccWeDue:d(task.dueDate)||d(task.d)||now(),
-   ccWeType:task.t||"Hằng ngày",ccWePriority:task.priority||"Trung bình",
+   ccWeType:task.t||"Hằng ngày",ccWePriority:priorityVi(task.priority),
    ccWeStatus:task.s||"Đang thực hiện",ccWeAssignee:task.a||"",
    ccWeNote:task.n||"",ccWeResult:task.result||""
   };
@@ -117,7 +118,7 @@ async function save(e){
  const values={
   c:$("ccWeContent").value.trim(),d:$("ccWeStart").value,
   dueDate:$("ccWeDue").value,t:$("ccWeType").value,
-  priority:$("ccWePriority").value,s:$("ccWeStatus").value,
+  priority:priorityVi(before.priority)===$("ccWePriority").value?(before.priority||$("ccWePriority").value):$("ccWePriority").value,s:$("ccWeStatus").value,
   a:$("ccWeAssignee").value.trim(),n:$("ccWeNote").value.trim(),
   result:$("ccWeResult").value.trim()
  },assigned=$("ccWeAssigned").value;

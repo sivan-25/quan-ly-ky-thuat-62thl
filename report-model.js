@@ -27,7 +27,8 @@
   const inRange = (v, range) => !!v && day(v) >= range.from && day(v) <= range.to;
   const complete = (v) => ["Đã hoàn thành", "Hoàn thành", "Đã đóng", "Đạt", "Tốt", "Đang hoạt động"].includes(v);
   function status(v) {
-    const value = text(v);
+    const raw = text(v);
+    const value = ({critical:"Khẩn cấp",high:"Cao",medium:"Trung bình",low:"Thấp"})[raw.toLocaleLowerCase("vi-VN")] || raw;
     const tone = complete(value) ? "good" : ["Không đạt", "Cần khắc phục", "Hỏng", "Khẩn cấp", "Cao", "Quá hạn"].includes(value) ? "danger" : ["Cần chú ý", "Theo dõi", "Chờ xử lý", "Tạm dừng", "Ngừng sử dụng", "Cần sửa chữa", "Sắp đến hạn", "Trung bình"].includes(value) ? "watch" : value === "—" ? "muted" : "info";
     return { text: value, tone };
   }

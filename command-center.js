@@ -21,7 +21,8 @@ const activeProjects=()=>accountProjects().filter(x=>!["UPDATE","NANGCAP"].inclu
 const activeIds=()=>new Set(activeProjects().map(x=>String(x.id)));
 const activeRows=()=>{const ids=activeIds();return rows.filter(r=>ids.has(String(r?.building?.id||"")))};
 const isDone=t=>["Đã hoàn thành","Hoàn thành"].includes(String(t?.s||""));
-const priorityRank=p=>p==="Khẩn cấp"?4:p==="Cao"?3:p==="Trung bình"?2:1;
+const priorityVi=p=>{const raw=String(p??"").trim();return ({critical:"Khẩn cấp",high:"Cao",medium:"Trung bình",low:"Thấp","khẩn cấp":"Khẩn cấp",cao:"Cao","trung bình":"Trung bình","thấp":"Thấp"})[raw.toLocaleLowerCase("vi-VN")]||(raw||"Trung bình")};
+const priorityRank=p=>({"Khẩn cấp":4,"Cao":3,"Trung bình":2,"Thấp":1})[priorityVi(p)]||1;
 function syncAdminHeader(){
  const topState=$c("#ccTopDataState"),oldState=$c("#ccDataState");
  if(topState&&oldState){topState.textContent=oldState.textContent;topState.classList.toggle("offline",oldState.classList.contains("offline"))}
@@ -186,12 +187,12 @@ function alerts(){
   const due=String(t.end_date||""),title=t.title||"Công việc cá nhân",bid="PERSONAL",bn="Công việc thực hiện";
   if(due&&due<td)out.push({sev:3,bid,bn,module:"work",taskId:t.id,title:"Công việc cá nhân quá hạn",detail:title,tag:"Quá hạn",date:due});
   else if(due===td)out.push({sev:2,bid,bn,module:"work",taskId:t.id,title:"Công việc cá nhân đến hạn",detail:title,tag:"Hôm nay",date:due});
-  else if(priorityRank(t.priority)>=3)out.push({sev:t.priority==="Khẩn cấp"?3:2,bid,bn,module:"work",taskId:t.id,title:"Công việc cá nhân ưu tiên",detail:title,tag:t.priority,date:due||t.start_date});
+  else if(priorityRank(t.priority)>=3)out.push({sev:priorityRank(t.priority)===4?3:2,bid,bn,module:"work",taskId:t.id,title:"Công việc cá nhân ưu tiên",detail:title,tag:priorityVi(t.priority),date:due||t.start_date});
  });
  return out.sort((a,b)=>b.sev-a.sev||String(a.date||"").localeCompare(String(b.date||"")));
 }
 function statusClass(s){return isDone({s})?"done":s==="Bắt đầu"?"start":s==="Chờ xử lý"?"waiting":"doing"}
-function warningHtml(t){const due=String(t.dueDate||""),td=todayC();if(!isDone(t)&&due&&due<td)return '<span class="ccWarn critical">Quá hạn</span>';if(!isDone(t)&&due===td)return '<span class="ccWarn high">Hôm nay</span>';if(!isDone(t)&&priorityRank(t.priority)>=3)return '<span class="ccWarn high">'+escC(t.priority)+'</span>';return '<span class="ccWarn ok">Bình thường</span>'}
+function warningHtml(t){const due=String(t.dueDate||""),td=todayC();if(!isDone(t)&&due&&due<td)return '<span class="ccWarn critical">Quá hạn</span>';if(!isDone(t)&&due===td)return '<span class="ccWarn high">Hôm nay</span>';if(!isDone(t)&&priorityRank(t.priority)>=3)return '<span class="ccWarn high">'+escC(priorityVi(t.priority))+'</span>';return '<span class="ccWarn ok">Bình thường</span>'}
 function renderFilters(){const sel=$c("#ccProjectFilter");if(!sel)return;const old=sel.value;sel.innerHTML='<option value="">Tất cả phạm vi</option>'+activeProjects().map(b=>'<option value="'+escC(b.id)+'">'+escC(b.name||b.id)+'</option>').join("")+'<option value="PERSONAL">Công việc thực hiện · Văn</option>';if([...sel.options].some(o=>o.value===old))sel.value=old}
 function renderSummary(a,t){
  const box=$c("#ccSummary");if(!box)return;
@@ -251,7 +252,7 @@ async function exportAdminAssignedPdf(){
   String(i+1),t.personalWork?"Cá nhân · Văn":shortProjectName(t._buildingId),
   String(t.c||"Công việc kỹ thuật"),
   fmtC(t.d)+(t.dueDate?" · Hạn "+fmtC(t.dueDate):""),
-  String(t.s||"Đang thực hiện")+(t.priority?" · "+t.priority:""),
+  String(t.s||"Đang thực hiện")+(t.priority?" · "+priorityVi(t.priority):""),
   String(t.a||"—"),pdfNoteForTask(t)
  ]);
  const byScope=[...new Set(selected.map(t=>t.personalWork?"Cá nhân · Văn":shortProjectName(t._buildingId)))];
@@ -284,7 +285,7 @@ function renderLists(){
  $c("#ccAllTaskCount").textContent=allTasks.length;
  $c("#ccTaskTitle").textContent=taskScope==="admin"?"Công việc Admin đã giao":"Công việc toàn hệ thống";
  document.querySelectorAll("[data-cc-scope]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.ccScope===taskScope)));
- let tasks=(taskScope==="admin"?adminTasks:allTasks).filter(t=>(!project||String(t._buildingId)===project)&&(!status||(status==="overdue"?isOverdue(t):status==="Đã hoàn thành"?isDone(t):String(t.s||"Đang thực hiện")===status))&&(!priority||String(t.priority||"Trung bình")===priority)&&(!q||[t.c,t.n,t.a,t._buildingName,t._buildingId,t.dispatchGroupId].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
+ let tasks=(taskScope==="admin"?adminTasks:allTasks).filter(t=>(!project||String(t._buildingId)===project)&&(!status||(status==="overdue"?isOverdue(t):status==="Đã hoàn thành"?isDone(t):String(t.s||"Đang thực hiện")===status))&&(!priority||priorityVi(t.priority)===priority)&&(!q||[t.c,t.n,t.a,t._buildingName,t._buildingId,t.dispatchGroupId].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
  tasks.sort((a,b)=>{if(taskScope==="admin")return String(b.dispatchedAt||b.d||"").localeCompare(String(a.dispatchedAt||a.d||""))||Number(b.id||0)-Number(a.id||0);const ac=isDone(a)?1:0,bc=isDone(b)?1:0;if(ac!==bc)return ac-bc;const ad=String(a.dueDate||"9999-12-31"),bd=String(b.dueDate||"9999-12-31");return ad.localeCompare(bd)||Number(b.id||0)-Number(a.id||0)});
  const validPdfKeys=new Set(adminTasks.map(pdfTaskKey));
  for(const key of pdfSelectedKeys)if(!validPdfKeys.has(key))pdfSelectedKeys.delete(key);
@@ -295,7 +296,7 @@ function renderLists(){
  const printBtn=$c("#ccPrintSelected");if(printBtn){printBtn.disabled=!pdfSelectedKeys.size||pdfExportBusy;printBtn.textContent=pdfExportBusy?"Đang xuất PDF…":"📄 Xuất PDF ("+pdfSelectedKeys.size+")"}
  syncAdminHeader();
  taskPage=Math.max(1,Math.min(taskPage,Math.ceil(tasks.length/TASK_PAGE_SIZE)));
- const body=$c("#ccTaskBody");if(body)body.innerHTML=tasks.length?tasks.slice((taskPage-1)*TASK_PAGE_SIZE,taskPage*TASK_PAGE_SIZE).map(t=>'<tr tabindex="0" aria-label="Mở công việc" data-cc-task data-admin-assigned="'+(isAdminTask(t)?"true":"false")+'" data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'"><td data-label="Chọn" class="ccPdfSelectCell">'+(isAdminTask(t)?'<input type="checkbox" data-cc-pdf-select="'+escC(pdfTaskKey(t))+'" aria-label="Chọn in PDF công việc '+escC(t.c||"")+'" '+(pdfSelectedKeys.has(pdfTaskKey(t))?'checked':'')+'>':'')+'</td><td data-label="Dự án"><span class="ccProjectTag">'+escC(shortProjectName(t._buildingId))+'</span></td><td data-label="Công việc"><b>'+escC(t.c||"Công việc kỹ thuật")+'</b>'+(t.personalWork?'<small>Công việc thực hiện · Văn'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':isAdminTask(t)?'<small>Admin giao'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':(t.n?'<small>'+escC(t.n)+'</small>':""))+(isAdminTask(t)&&!t.personalWork?'<button class="ccAdminTaskEdit" type="button" data-cc-edit data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'" aria-label="Chỉnh sửa công việc Admin đã giao">✎ Chỉnh sửa</button>':'')+'</td><td data-label="Trạng thái"><span class="ccStatus '+statusClass(t.s)+'">'+escC(t.s||"Đang thực hiện")+'</span></td><td data-label="Mức độ"><span class="ccPriority p'+priorityRank(t.priority)+'">'+escC(t.priority||"Trung bình")+'</span></td><td data-label="Người thực hiện">'+escC(t.a||"—")+'</td><td data-label="Hạn">'+fmtC(t.dueDate||"")+'</td><td data-label="Cảnh báo">'+warningHtml(t)+'</td></tr>').join(""):'<tr><td colspan="8" class="ccEmptyCell">'+(taskScope==="admin"&&!adminTasks.length?"Chưa có công việc Admin đã giao. Nhấn ＋ Giao công việc để bắt đầu.":"Không có công việc phù hợp với bộ lọc.")+'</td></tr>';
+ const body=$c("#ccTaskBody");if(body)body.innerHTML=tasks.length?tasks.slice((taskPage-1)*TASK_PAGE_SIZE,taskPage*TASK_PAGE_SIZE).map(t=>'<tr tabindex="0" aria-label="Mở công việc" data-cc-task data-admin-assigned="'+(isAdminTask(t)?"true":"false")+'" data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'"><td data-label="Chọn" class="ccPdfSelectCell">'+(isAdminTask(t)?'<input type="checkbox" data-cc-pdf-select="'+escC(pdfTaskKey(t))+'" aria-label="Chọn in PDF công việc '+escC(t.c||"")+'" '+(pdfSelectedKeys.has(pdfTaskKey(t))?'checked':'')+'>':'')+'</td><td data-label="Dự án"><span class="ccProjectTag">'+escC(shortProjectName(t._buildingId))+'</span></td><td data-label="Công việc"><b>'+escC(t.c||"Công việc kỹ thuật")+'</b>'+(t.personalWork?'<small>Công việc thực hiện · Văn'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':isAdminTask(t)?'<small>Admin giao'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':(t.n?'<small>'+escC(t.n)+'</small>':""))+(isAdminTask(t)&&!t.personalWork?'<button class="ccAdminTaskEdit" type="button" data-cc-edit data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'" aria-label="Chỉnh sửa công việc Admin đã giao">✎ Chỉnh sửa</button>':'')+'</td><td data-label="Trạng thái"><span class="ccStatus '+statusClass(t.s)+'">'+escC(t.s||"Đang thực hiện")+'</span></td><td data-label="Mức độ"><span class="ccPriority p'+priorityRank(t.priority)+'">'+escC(priorityVi(t.priority))+'</span></td><td data-label="Người thực hiện">'+escC(t.a||"—")+'</td><td data-label="Hạn">'+fmtC(t.dueDate||"")+'</td><td data-label="Cảnh báo">'+warningHtml(t)+'</td></tr>').join(""):'<tr><td colspan="8" class="ccEmptyCell">'+(taskScope==="admin"&&!adminTasks.length?"Chưa có công việc Admin đã giao. Nhấn ＋ Giao công việc để bắt đầu.":"Không có công việc phù hợp với bộ lọc.")+'</td></tr>';
  const meta=$c("#ccTaskMeta");if(meta)meta.textContent=tasks.length+" công việc · "+tasks.filter(t=>t.s==="Đang thực hiện").length+" đang làm · "+tasks.filter(isDone).length+" hoàn thành · "+tasks.filter(t=>t.s==="Chờ xử lý").length+" chờ xử lý · "+tasks.filter(isOverdue).length+" quá hạn";
  let list=alerts().filter(a=>(!project||a.bid===project)&&(!q||[a.title,a.detail,a.bn,a.bid].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
  pager("ccTaskPager","task",taskPage,tasks.length,TASK_PAGE_SIZE);
@@ -558,7 +559,7 @@ function openDispatchPersonal(id){
  m.querySelector("#ccDispatchPersonal").checked=true;
  m.querySelector("#ccDispatchTitle").value=task.title||"";
  m.querySelector("#ccDispatchType").value=task.task_type||"Hằng ngày";
- m.querySelector("#ccDispatchPriority").value=task.priority||"Trung bình";
+ m.querySelector("#ccDispatchPriority").value=priorityVi(task.priority);
  m.querySelector("#ccDispatchStart").value=task.start_date||todayC();
  m.querySelector("#ccDispatchDue").value=task.end_date||todayC();
  m.querySelector("#ccDispatchPersonalStatus").value=task.status||"Đang thực hiện";
@@ -602,8 +603,10 @@ async function submitDispatch(e){
   if(personal){
    if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
    const id=personalEditId||crypto.randomUUID();
+   const originalPersonal=personalEditId?personalTasks.find(t=>String(t.id)===String(personalEditId)):null;
+   const selectedPriority=m.querySelector("#ccDispatchPriority").value;
    const refs=ccDispatchFiles.length?await uploadMediaFiles(ccDispatchFiles,"tasks",id,null,"ADMIN-PERSONAL"):[];
-   const row={title,task_type:m.querySelector("#ccDispatchType").value,priority:m.querySelector("#ccDispatchPriority").value,start_date:start,end_date:due,assignee:"Văn",status:m.querySelector("#ccDispatchPersonalStatus").value,notes:m.querySelector("#ccDispatchNote").value.trim(),image_paths:[...personalExistingImages,...refs]};
+   const row={title,task_type:m.querySelector("#ccDispatchType").value,priority:originalPersonal&&priorityVi(originalPersonal.priority)===selectedPriority?(originalPersonal.priority||selectedPriority):selectedPriority,start_date:start,end_date:due,assignee:"Văn",status:m.querySelector("#ccDispatchPersonalStatus").value,notes:m.querySelector("#ccDispatchNote").value.trim(),image_paths:[...personalExistingImages,...refs]};
    if(personalEditId)await sbFetch("/rest/v1/admin_personal_tasks?id=eq."+encodeURIComponent(id),{method:"PATCH",token:centralSession.access_token,body:row});
    else await sbFetch("/rest/v1/admin_personal_tasks",{method:"POST",token:centralSession.access_token,body:{...row,id}});
    toast(personalEditId?"Đã cập nhật công việc cá nhân":"Đã lưu công việc thực hiện của Văn");

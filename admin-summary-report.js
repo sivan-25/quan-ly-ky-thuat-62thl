@@ -10,7 +10,7 @@
   const fmt = (v) => num(v).toLocaleString("vi-VN", {maximumFractionDigits:2});
   const today = () => window.ESTAReportModel?.localDay?.() || new Date().toLocaleDateString("en-CA");
   const finished = (v) => ["Đã hoàn thành","Hoàn thành","Đã đóng","Đạt","Tốt","Đang sử dụng","Đang hoạt động","Đã xử lý","Bình thường"].includes(String(v || ""));
-  const priority = (v) => ({"Khẩn cấp":3,"Cao":2,"Trung bình":1})[String(v||"")] || 0;
+  const priority = (v) => ({"khẩn cấp":3,"critical":3,"cao":2,"high":2,"trung bình":1,"medium":1})[String(v||"").trim().toLocaleLowerCase("vi-VN")] || 0;
   const projectSpecs = [["62THL","62 Trần Huy Liệu"],["68PĐL","68 Phan Đăng Lưu"],["127HH","127 Hồng Hà"],["130HH","130 Hồng Hà"]];
   const categorySpecs = [
     ["work","Công việc","Gồm công việc Admin giao và công việc Admin không gắn dự án"],
