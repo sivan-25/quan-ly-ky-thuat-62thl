@@ -115,7 +115,7 @@ const SEEDS=G.flatMap(g=>g[3].map((x,i)=>({
  location:x[1],_technicalType:x[2],_cadence:g[2],status:"",quantity:1,
  virtual:true,specs:{_estaUpgrade:{seedKey:g[0]+":"+i,verified:false,condition:"chua",history:[]}}
 })));
-const CONDITIONS={mau:"Chưa cập nhật",unverified:"Chưa cập nhật",chua:"Chưa kiểm tra",tot:"Tốt",theodoi:"Cần theo dõi",hu:"Hư hỏng",sua:"Đang sửa",quahan:"Quá hạn kiểm tra"};
+const CONDITIONS={mau:"Chưa cập nhật",unverified:"Đã lưu",chua:"Chưa kiểm tra",tot:"Tốt",theodoi:"Cần theo dõi",hu:"Hư hỏng",sua:"Đang sửa",quahan:"Quá hạn kiểm tra"};
 const metaOf=x=>x?.specs?._estaUpgrade||{};
 const realRows=()=>items.filter(x=>!x.virtual&&!metaOf(x).archived);
 function catalog(){
@@ -204,7 +204,7 @@ function list(){
  host.innerHTML=rows.map(x=>{
   const c=conditionOf(x),virt=!!x.virtual,due=inspectionDue(x),overdue=isDue(x),meta=metaOf(x);
   const latest=meta.lastCheck||meta.history?.at(-1)?.date||"";
-  const detail=[x.code|| (virt?"Chưa cập nhật":"Chưa có mã"),[x.brand,x.model].filter(Boolean).join(" / "),!virt?"SL: "+safeQty(x.quantity):""].filter(Boolean).join(" · ");
+  const detail=[x.code|| (virt?"Chưa cập nhật":"Đã lưu · Chưa có mã"),[x.brand,x.model].filter(Boolean).join(" / "),!virt?"SL: "+safeQty(x.quantity):""].filter(Boolean).join(" · ");
   return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="Xem hồ sơ '+esc(label(x))+'">'+
    '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(detail)+'</small></span></div>'+
    '<span class="ueItemGroup">'+esc(x.system_group)+'</span>'+
@@ -279,9 +279,9 @@ function ensureDialog(){
  if(dialog?.isConnected)return dialog;
  dialog=document.createElement("div");dialog.id="ueOverlay";dialog.className="ueOverlay";dialog.hidden=true;
  dialog.innerHTML='<div class="ueDialog" role="dialog" aria-modal="true" aria-labelledby="ueModalHeading">'+
- '<header><div><small>ESTA · HỒ SƠ HỆ THỐNG KỸ THUẬT</small><h2 id="ueModalHeading">Hồ sơ thiết bị</h2></div><button type="button" id="ueClose" aria-label="Đóng">×</button></header>'+
+ '<header><div><small>ESTA · HỒ SƠ HỆ THỐNG KỸ THUẬT</small><h2 id="ueModalHeading">Hồ sơ thiết bị</h2><span id="ueSaveFlag" class="ueSaveFlag">Chưa lưu</span></div><button type="button" id="ueClose" aria-label="Đóng">×</button></header>'+
  '<form id="ueForm"><div class="ueFormBody">'+
- '<p id="ueFormNotice" class="ueFull ueFormNotice"></p><p id="ueFormError" class="ueFull ueFormError" role="alert" hidden></p>'+
+ '<p id="ueFormNotice" class="ueFull ueFormNotice"></p>'+
  '<label>Nhóm hệ thống *<select name="system_group" id="ueEditGroup" required>'+opt(gopts(),"")+'</select></label>'+
  '<label>Loại thiết bị *<select name="equipment_type" id="ueEditType" required></select></label>'+
  '<label class="ueFull">Tên thiết bị *<input name="name" maxlength="140" required></label>'+
@@ -310,7 +310,7 @@ function ensureDialog(){
  '<label class="ueFull">Ghi chú / Kết quả xử lý<textarea name="checkNote" rows="2" maxlength="1500"></textarea></label></div>'+
  '<button type="button" id="ueCheckSave" class="ueBtnPrimary">✓ Lưu lần kiểm tra</button>'+
  '<h4>Lịch sử kiểm tra</h4><div id="ueHistory"></div></section>'+
- '</div><footer><button type="button" class="ueBtnSecondary" id="ueCancel">Hủy</button>'+
+ '</div><footer><div id="ueFormError" class="ueFormError" role="alert" aria-live="assertive" hidden></div><button type="button" class="ueBtnSecondary" id="ueCancel">Hủy</button>'+
  '<button type="button" class="ueDelete" id="ueDelete" hidden>🗑 Xóa thiết bị</button>'+
  '<button type="submit" class="ueBtnPrimary" id="ueSubmit">Lưu hồ sơ thiết bị</button></footer></form></div>';
  document.body.append(dialog);
@@ -384,6 +384,7 @@ function openForm(id=""){
  editingType=selected?._technicalType||metaOf(selected).technicalType||"";
  const d=ensureDialog(),form=$("ueForm");
  form.reset();$("ueModalHeading").textContent=existing?"Chi tiết & kiểm tra thiết bị":sample?"Cập nhật thông tin thiết bị":"Thêm thiết bị";
+ $("ueSaveFlag").textContent=existing?"✓ Đã lưu":"Chưa lưu";$("ueSaveFlag").classList.toggle("is-saved",!!existing);
  const values=selected||{system_group:gopts()[0],equipment_type:groups[0][2][0],quantity:1,status:statuses[0]};
  for(const [key,value] of Object.entries(values)){
   const input=form.elements.namedItem(key);
@@ -424,8 +425,8 @@ function closeForm(){if(dialog)dialog.hidden=true;editId=null;editingSeed="";edi
 
 function formError(message){
  const target=$("ueFormError");
- if(target){target.hidden=false;target.textContent=String(message||"Không thực hiện được thao tác.")}
- if(typeof toast==="function")toast(String(message||"Không thực hiện được thao tác."));
+ if(target){target.hidden=false;target.textContent="⚠ "+String(message||"Không thực hiện được thao tác.")}
+ else alert(String(message||"Không thực hiện được thao tác."));
 }
 async function getSaved(id){
  const rows=await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID+"&select=id,name,code,status,specs&limit=1",{token:centralSession?.access_token});
