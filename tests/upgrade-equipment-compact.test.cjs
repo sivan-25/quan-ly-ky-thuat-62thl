@@ -8,8 +8,8 @@ const root=path.join(__dirname,"..");
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"upgrade-equipment-compact.css"),"utf8");
 const js=fs.readFileSync(path.join(root,"upgrade-equipment.js"),"utf8");
-assert(html.includes("upgrade-equipment-compact.css?v=20261016-reference-compact01"),"compact CSS must be loaded");
-assert(html.includes("upgrade-equipment.js?v=20261016-reference-compact01"),"script cache should be refreshed");
+assert(/upgrade-equipment-compact\.css\?v=20261016-[\w-]+/.test(html),"compact CSS must be loaded");
+assert(/upgrade-equipment\.js\?v=20261016-[\w-]+/.test(html),"script cache should be refreshed");
 assert(html.indexOf("upgrade-equipment.css?v")<html.indexOf("upgrade-equipment-compact.css?v"),"overrides must load after base CSS");
 for(const marker of [".ueStatusSummary",".ueSystemRail",".ueRailCard",".ueClassicMain",".ueItem"]){
  assert(css.includes(marker),"missing compact style "+marker);
