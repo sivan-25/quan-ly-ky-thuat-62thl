@@ -22,7 +22,7 @@ new vm.Script(js).runInNewContext(scope);
 const $=s=>page.querySelector(s);
 (async()=>{
  dom.window.estaUpgradeAssets.render(page,true);
- assert(!$(".ueListHead").textContent.includes("Tình trạng"),"condition column must be absent");
+ assert.equal($(".ueListHead"),null,"redundant table header removed");
  assert($("#ueStatus"),"status filter remains");
  const summary=$("#ueStatusSummary"),toggle=$("#ueSummaryToggle");
  toggle.click();assert(summary.classList.contains("ueCollapsed"),"collapse KPI");
@@ -53,11 +53,15 @@ const $=s=>page.querySelector(s);
  assert.equal(detail.hidden,true,"saved specifications hidden by default");
  assert.equal(rowButton.getAttribute("aria-expanded"),"false","row starts collapsed");
  assert.equal(rowButton.querySelector(".ueItemSpecifications"),null,"details not inside row control");
+ assert.equal(rowButton.querySelector(".ueItemDate"),null,"blank date columns removed");
+ assert.equal(rowButton.querySelector(".ueItemGroup"),null,"repeated system column removed");
+ assert(rowButton.querySelector(".ueItemPlace").textContent.includes("Phòng bơm"),"location stays visible");
+ assert(!rowButton.textContent.includes("Grundfos"),"brand hidden before opening");
  rowButton.click();
  assert.equal(detail.hidden,false,"click opens equipment details");
  assert.equal(rowButton.getAttribute("aria-expanded"),"true");
  for(const expected of ["Grundfos","NK 150","11 kW","Công suất động cơ","45 m³/h",
-  "Nhà thầu A","Áp lực thử","8 bar","SER123","Kiểm tra định kỳ","Văn","6 bar","PCCC-01"]){
+  "Nhà thầu A","Áp lực thử","8 bar","SER123","Kiểm tra định kỳ","Văn","6 bar","PCCC-01","10/10/2026"]){
   assert(detail.textContent.includes(expected),"missing detail: "+expected);
  }
  assert(detail.querySelector("[data-ue-edit]"),"edit action within expanded equipment details");

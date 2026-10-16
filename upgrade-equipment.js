@@ -222,6 +222,8 @@ function equipmentDetails(x){
  add("location","Vị trí",x.location);
  add("note","Ghi chú",x.note);
  add("interval","Chu kỳ kiểm tra",meta.interval,"ngày");
+ add("lastCheck","Kiểm tra gần nhất",meta.lastCheck||meta.history?.at(-1)?.date,"@");
+ add("nextCheck","Hạn kiểm tra tiếp theo",inspectionDue(x),"@");
  add("verified","Xác minh",meta.verified?"Đã xác minh":"Chưa xác minh");
  if(meta.linkedAsset){
   const linked=linkedAssets.find(a=>String(a.id)===String(meta.linkedAsset));
@@ -249,18 +251,15 @@ function list(){
  if(!rows.length){host.innerHTML='<div class="ueEmpty"><b>Không có thiết bị phù hợp.</b><p>Thử đổi nhóm hệ thống, tình trạng hoặc từ khóa tìm kiếm.</p><button type="button" class="ueBtnSecondary" id="ueClearFilter">Bỏ bộ lọc</button></div>';
   $("ueClearFilter").onclick=()=>{search="";group="";status="";render($("updateAssetsPage"),true)};return}
  host.innerHTML=rows.map(x=>{
-  const virt=!!x.virtual,due=inspectionDue(x),overdue=isDue(x),meta=metaOf(x);
-  const latest=meta.lastCheck||meta.history?.at(-1)?.date||"";
+  const virt=!!x.virtual,overdue=isDue(x);
   const expanded=!virt&&expandedDeviceId===String(x.id);
-  const subtitle=virt?"Bấm để nhập thông tin":x.code?"Mã: "+x.code+" · Bấm để xem chi tiết":"Bấm để xem thông tin đã lưu";
+  // Only useful context is visible before opening the saved profile.
+  const subtitle=[!group?x.system_group:"",x.code?"Mã: "+x.code:virt?"Chưa nhập thông tin":""].filter(Boolean).join(" · ");
   const detailId="ueDetail-"+String(x.id);
-  return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+(expanded?' ueItemExpanded':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="'+(virt?'Nhập hồ sơ ':'Xem thông tin ') +esc(label(x))+'"'+(virt?'':' aria-expanded="'+expanded+'" aria-controls="'+esc(detailId)+'"')+'>'+
-   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(subtitle)+'</small></span></div>'+
-   '<span class="ueItemGroup">'+esc(x.system_group)+'</span>'+
-   '<span class="ueItemDate"><small class="ueMobileLabel">Kiểm tra</small>'+viDate(latest)+'</span>'+
-   '<span class="ueItemDue'+(overdue?' ueDateOverdue':'')+'"><small class="ueMobileLabel">Hạn kế tiếp</small>'+viDate(due)+(overdue?'<em>Quá hạn</em>':'')+'</span>'+
-   '<span class="ueItemPlace">'+esc(x.location||"—")+'</span><span class="ueArrow">'+(expanded?'⌃':'⌄')+'</span>'+
-   '</button>'+
+  return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+(expanded?' ueItemExpanded':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="'+(virt?'Nhập hồ sơ ':'Xem thông tin ')+esc(label(x))+'"'+(virt?'':' aria-expanded="'+expanded+'"'+' aria-controls="'+esc(detailId)+'"')+'>'+
+   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong>'+(subtitle?'<small>'+esc(subtitle)+'</small>':'')+'</span></div>'+
+   '<span class="ueItemPlace">'+(x.location?'<span aria-hidden="true">⌖</span> '+esc(x.location):'')+'</span>'+
+   '<span class="ueArrow" aria-hidden="true">'+(expanded?'⌃':'⌄')+'</span></button>'+
    (virt?'':'<div class="ueItemDetails" id="'+esc(detailId)+'"'+(expanded?'':' hidden')+'>'+
       equipmentDetails(x)+
       '<div class="ueInlineActions"><button type="button" class="ueInlineEdit" data-ue-edit="'+esc(x.id)+'">✎ Xem / chỉnh sửa hồ sơ</button></div></div>');
@@ -295,8 +294,8 @@ function render(page,skipLoad=false){
  const pieces=["tot","theodoi","hu","sua","chua"].map(k=>stats[k]?'<i style="flex:'+stats[k]+';background:'+statusDefs.find(x=>x[0]===k)[2]+'"></i>':"").join("");
  const iconMark='<svg width="45" height="45" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="6.4" stroke-linecap="round" aria-hidden="true"><path d="M24 5v38 M7.5 14.5l33 19 M7.5 33.5l33-19"/></svg>';
  const groupLabel=group||"Tất cả hệ thống";
- const description=group?('Danh mục '+group+' · Bấm vào thiết bị để xem và cập nhật hồ sơ.'):
-  "Chọn một hệ thống bên trái, rồi bấm vào tên thiết bị để xem toàn bộ thông số.";
+ const description=group?('Thiết bị thuộc '+group+' · Bấm từng thiết bị để mở thông số.'):
+  "Chọn hệ thống, sau đó bấm vào thiết bị để xem thông số và chỉnh sửa.";
  const line='9 hệ thống · '+catalog().length+' hạng mục · '+realRows().length+' thiết bị đã lưu';
  page.classList.add("uePage","ueClassic");
  page.innerHTML=
@@ -334,8 +333,7 @@ function render(page,skipLoad=false){
       '<select id="ueStatus" aria-label="Lọc tình trạng"><option value="">Mọi tình trạng</option>'+
         Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div></div>'+
    (error?'<p class="ueError" role="alert">Không tải được dữ liệu: '+esc(error)+' — Các hạng mục có sẵn vẫn hiển thị. Dữ liệu đã lưu chưa được xác nhận.</p>':'')+
-    '<div class="uePanel"><div class="uePanelHead"><div><h3>Danh mục thiết bị</h3><p>Chọn thiết bị để cập nhật thông số hoặc ghi kết quả kiểm tra.</p></div><strong id="ueResultCount"></strong></div>'+
-      '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Kiểm tra gần nhất</span><span>Hạn kế tiếp</span><span>Vị trí</span><span></span></div>'+
+    '<div class="uePanel"><div class="uePanelHead"><div><h3>Danh sách thiết bị</h3><p>Bấm vào thiết bị để mở thông số; chỉnh sửa trong phần chi tiết.</p></div><strong id="ueResultCount"></strong></div>'+
       '<div id="ueRows" class="ueRows"></div></div>'+
     '<p class="ueSourceNote">Danh mục có sẵn để nhập thông tin thiết bị. Chỉ những hồ sơ đã lưu và xác minh mới được đưa vào báo cáo.</p>'+
    '</section></div></div>';
