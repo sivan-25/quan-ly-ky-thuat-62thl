@@ -510,7 +510,18 @@ function ensureDispatch(){
    updateDispatchMode();
  });
  m.querySelector("#ccDispatchDeletePersonal").addEventListener("click",deletePersonalTask);
-m.querySelector("#ccDispatchCameraBtn").addEventListener("click",()=>openDispatchDirectCamera());m.querySelector("#ccDispatchLibraryBtn").addEventListener("click",()=>{const input=m.querySelector("#ccDispatchImages");input.value="";input.click()});m.querySelector("#ccDispatchCamera").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera"),forceAnnotate:true})});m.querySelector("#ccDispatchImages").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera")})});m.querySelector("#ccDispatchForm").addEventListener("submit",submitDispatch);return m;
+m.querySelector("#ccDispatchCameraBtn").addEventListener("click",()=>openDispatchDirectCamera());m.querySelector("#ccDispatchLibraryBtn").addEventListener("click",()=>{const input=m.querySelector("#ccDispatchImages");input.value="";input.click()});m.querySelector("#ccDispatchCamera").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera"),forceAnnotate:true})});m.querySelector("#ccDispatchImages").addEventListener("change",async e=>{const files=[...e.target.files];e.target.value="";await addDispatchMedia(files,{retakeInput:m.querySelector("#ccDispatchCamera")})});const form=m.querySelector("#ccDispatchForm");
+ const resetSaved=()=>{if(m.querySelector("#ccDispatchSave").classList.contains("ccDispatchSaved"))setDispatchSaved()};
+ form.addEventListener("input",resetSaved);
+ form.addEventListener("change",resetSaved);
+ form.addEventListener("submit",submitDispatch);return m;
+}
+function setDispatchSaved(saved=false){
+ const m=$c("#ccDispatchModal"),btn=m?.querySelector("#ccDispatchSave");
+ if(!btn)return;
+ const personal=m.querySelector("#ccDispatchPersonal")?.checked;
+ btn.classList.toggle("ccDispatchSaved",saved);
+ btn.textContent=saved?(personal?"✓ Đã lưu":"✓ Đã giao"):(personal?(personalEditId?"Lưu thay đổi":"Lưu công việc"):"Giao công việc");
 }
 function updateDispatchMode(){
  const m=$c("#ccDispatchModal");if(!m||!m.querySelector("#ccDispatchPersonal"))return;
@@ -532,7 +543,7 @@ function updateDispatchMode(){
  m.querySelector("#ccDispatchTargetsHeading").textContent=personal?"Công việc thực hiện · không thuộc dự án":"Dự án nhận việc *";
  m.querySelector("#ccDispatchPersonalStatusWrap").classList.toggle("hide",!personal);
  m.querySelector("#ccDispatchDeletePersonal").classList.toggle("hide",!personalEditId);
- m.querySelector("#ccDispatchSave").textContent=personal?(personalEditId?"Lưu thay đổi":"Lưu công việc"):"Giao công việc";
+ setDispatchSaved();
  if(personal)assignee.value="Văn";
  assignee.readOnly=personal;
  m.querySelector("#ccDispatchAll").disabled=personal||!!personalEditId;
@@ -596,12 +607,12 @@ async function submitDispatch(e){
    if(personalEditId)await sbFetch("/rest/v1/admin_personal_tasks?id=eq."+encodeURIComponent(id),{method:"PATCH",token:centralSession.access_token,body:row});
    else await sbFetch("/rest/v1/admin_personal_tasks",{method:"POST",token:centralSession.access_token,body:{...row,id}});
    toast(personalEditId?"Đã cập nhật công việc cá nhân":"Đã lưu công việc thực hiện của Văn");
-   if(!personalEditId){m.querySelector("#ccDispatchTitle").value="";m.querySelector("#ccDispatchTitle").focus();personalExistingImages=[]}
-   clearDispatchMedia();renderDispatchMedia();taskScope="admin";taskPage=1;
+   if(!personalEditId){m.querySelector("#ccDispatchTitle").value="";m.querySelector("#ccDispatchTitle").focus();m.querySelector("#ccDispatchNote").value="";personalExistingImages=[]}
+   clearDispatchMedia();renderDispatchMedia();setDispatchSaved(true);taskScope="admin";taskPage=1;
    ["#ccProjectFilter","#ccStatusFilter","#ccPriorityFilter","#ccSearch"].forEach(x=>{const control=$c(x);if(control)control.value=""});
    await loadCenter(true);return;
   }
-  const files=[...ccDispatchFiles],photoMeta=[...ccDispatchPhotoMeta];const results=await Promise.allSettled(targets.map(async(buildingId,i)=>{const id=base+i,is130=String(buildingId||"").trim().toUpperCase()==="130HH";const projectFiles=files.map((file,index)=>is130?file:(photoMeta[index]?.originalFile||file));const refs=projectFiles.length?await uploadMediaFiles(projectFiles,"tasks",id,null,buildingId):[];const obj={id,d:start,c:title,t:m.querySelector("#ccDispatchType").value,s:"Đang thực hiện",n:m.querySelector("#ccDispatchNote").value.trim(),a:assignee,performers:[assignee],imgs:refs,i:refs.length,priority:m.querySelector("#ccDispatchPriority").value,dueDate:due,dueDateExplicit:true,assetId:"",incidentCode:"",inspectionCode:"",contractorId:"",materials:[],cause:"",result:"",dispatchGroupId:group,dispatchedByAdmin:true,dispatchedAt:new Date().toISOString()};return syncTaskRecord("upsert_task",obj,buildingId)}));const ok=results.filter(x=>x.status==="fulfilled").length,fail=results.length-ok;if(!ok)throw new Error("Không thể giao công việc xuống dự án");if(!fail){const titleInput=m.querySelector("#ccDispatchTitle");if(titleInput.value.trim()===title){titleInput.value="";titleInput.focus()}clearDispatchMedia()}toast(fail?"Đã giao "+ok+" dự án · "+fail+" dự án chưa đồng bộ":"Đã giao công việc xuống "+ok+" dự án"+(files.length?" kèm "+files.length+" hình":""));taskScope="admin";taskPage=1;["#ccProjectFilter","#ccStatusFilter","#ccPriorityFilter","#ccSearch"].forEach(id=>{const control=$c(id);if(control)control.value=""});await loadCenter(true)}catch(err){console.warn(err);toast(err?.message||"Không thể giao công việc")}finally{btn.disabled=false}
+  const files=[...ccDispatchFiles],photoMeta=[...ccDispatchPhotoMeta];const results=await Promise.allSettled(targets.map(async(buildingId,i)=>{const id=base+i,is130=String(buildingId||"").trim().toUpperCase()==="130HH";const projectFiles=files.map((file,index)=>is130?file:(photoMeta[index]?.originalFile||file));const refs=projectFiles.length?await uploadMediaFiles(projectFiles,"tasks",id,null,buildingId):[];const obj={id,d:start,c:title,t:m.querySelector("#ccDispatchType").value,s:"Đang thực hiện",n:m.querySelector("#ccDispatchNote").value.trim(),a:assignee,performers:[assignee],imgs:refs,i:refs.length,priority:m.querySelector("#ccDispatchPriority").value,dueDate:due,dueDateExplicit:true,assetId:"",incidentCode:"",inspectionCode:"",contractorId:"",materials:[],cause:"",result:"",dispatchGroupId:group,dispatchedByAdmin:true,dispatchedAt:new Date().toISOString()};return syncTaskRecord("upsert_task",obj,buildingId)}));const ok=results.filter(x=>x.status==="fulfilled").length,fail=results.length-ok;if(!ok)throw new Error("Không thể giao công việc xuống dự án");if(!fail){const titleInput=m.querySelector("#ccDispatchTitle");if(titleInput.value.trim()===title){titleInput.value="";titleInput.focus()}m.querySelector("#ccDispatchNote").value="";clearDispatchMedia();setDispatchSaved(true)}toast(fail?"Đã giao "+ok+" dự án · "+fail+" dự án chưa đồng bộ":"Đã giao công việc xuống "+ok+" dự án"+(files.length?" kèm "+files.length+" hình":""));taskScope="admin";taskPage=1;["#ccProjectFilter","#ccStatusFilter","#ccPriorityFilter","#ccSearch"].forEach(id=>{const control=$c(id);if(control)control.value=""});await loadCenter(true)}catch(err){console.warn(err);toast(err?.message||"Không thể giao công việc")}finally{btn.disabled=false}
 }
 
 let navAlertSeq=0,navAlertTimer=0;

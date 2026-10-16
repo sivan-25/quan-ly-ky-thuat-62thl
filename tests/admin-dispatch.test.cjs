@@ -16,7 +16,7 @@ async function main() {
   rows[2].snapshot.tasks = [task(77,{dispatchedByAdmin:true,dispatchedAt:'2026-10-05T09:00:00Z',dueDate:'2026-10-04'})];
   rows[4].snapshot.tasks = [task(500,{dispatchedByAdmin:true})];
   rows[5].snapshot.tasks = [task(600,{dispatchedByAdmin:true})];
-  let fail=false, requests=0, opened=null, edited=null, timer, personal=[],pdfCalls=[];
+  let fail=false, failDispatch=false, requests=0, opened=null, edited=null, timer, personal=[],pdfCalls=[];
   Object.assign(w, {
     currentAccount:{is_admin:true,buildings:projects},currentBuilding:{id:''},projectOverviewActive:false,projectOpenSeq:0,
     centralSession:{access_token:'ISOLATED-TEST'},today:()=> '2026-10-05',
@@ -37,7 +37,7 @@ async function main() {
     },
     enterProject:async(building)=>{opened=building.id;w.currentBuilding=building;w.projectOverviewActive=true;w.projectOpenSeq++;q('#workPage').classList.remove('hide');return true},
     load:()=>rows.find(r=>r.building.id===w.currentBuilding.id)?.snapshot.tasks||[],editTask:id=>{edited=id},
-    syncTaskRecord:async(action,item,buildingId)=>{rows.find(r=>r.building.id===buildingId).snapshot.tasks.push(item);return {item}}
+    syncTaskRecord:async(action,item,buildingId)=>{if(failDispatch)throw Error("Simulated dispatch failure");rows.find(r=>r.building.id===buildingId).snapshot.tasks.push(item);return {item}}
   });
   w.exportGenericEstaPdf=async config=>{pdfCalls.push(config);return true};
   w.console.warn=()=>{};
@@ -106,11 +106,26 @@ async function main() {
   fail=true;await w.estaCommandCenterRefresh();assert.match(q('#ccLoadMessage').textContent,/Chưa làm mới/);assert.equal(q('#ccAdminTaskCount').textContent,'24');fail=false;
   q('#ccDispatch').click();q('[name="ccTarget"][value="130HH"]').checked=true;
   q('#ccDispatchTitle').value='Việc mới từ Admin';q('#ccDispatchStart').value='2026-10-05';q('#ccDispatchDue').value='2026-10-05';
+  q('#ccDispatchNote').value='Cần xác nhận sơn toàn bộ màu khác';
   q('#ccDispatchForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));await next();await next();
   assert.equal(q('#ccDispatchModal').classList.contains('hide'),false);
   assert.equal(q('#ccStatusFilter').value,'');assert.equal(q('#ccAdminTaskCount').textContent,'25');
   assert.equal(visible()[0].dataset.building,'130HH');
   const dispatched=rows[3].snapshot.tasks[0];assert.equal(dispatched.dispatchedByAdmin,true);assert.equal(dispatched.dueDateExplicit,true);assert.ok(dispatched.dispatchGroupId);
+  assert.equal(dispatched.n,'Cần xác nhận sơn toàn bộ màu khác','Saved work retains original note');
+  assert.equal(q('#ccDispatchNote').value,'','Input note clears after successful dispatch');
+  assert.equal(q('#ccDispatchSave').textContent,'✓ Đã giao');
+  assert.ok(q('#ccDispatchSave').classList.contains('ccDispatchSaved'));
+  q('#ccDispatchTitle').value='Việc giao tiếp theo';
+  q('#ccDispatchTitle').dispatchEvent(new w.Event('input',{bubbles:true}));
+  assert.equal(q('#ccDispatchSave').textContent,'Giao công việc');
+  q('#ccDispatchNote').value='Ghi chú cần giữ khi lưu lỗi';
+  failDispatch=true;
+  q('#ccDispatchForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  await next();await next();
+  assert.equal(q('#ccDispatchNote').value,'Ghi chú cần giữ khi lưu lỗi','Failed dispatch preserves draft');
+  assert.equal(q('#ccDispatchSave').textContent,'Giao công việc','Failed dispatch cannot show success');
+  failDispatch=false;
   q('#ccDispatchModal [data-cc-close]').click();assert.equal(q('#ccDispatchModal').classList.contains('hide'),true);
 
   // A personal work entry is stored separately, yet visible in the same Admin list.
@@ -126,11 +141,15 @@ async function main() {
   q('#ccDispatchStart').value='2026-10-05';
   q('#ccDispatchDue').value='2026-10-05';
   q('#ccDispatchPersonalStatus').value='Hoàn thành';
+  q('#ccDispatchNote').value='Ghi chú công việc cá nhân';
   q('#ccDispatchForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
   await next();await next();
   assert.equal(personal.length,1);
   assert.equal(personal[0].assignee,'Văn');
   assert.equal(personal[0].status,'Hoàn thành');
+  assert.equal(personal[0].notes,'Ghi chú công việc cá nhân');
+  assert.equal(q('#ccDispatchNote').value,'');
+  assert.equal(q('#ccDispatchSave').textContent,'✓ Đã lưu');
   assert.equal(rows.reduce((n,r)=>n+(r.snapshot.tasks||[]).length,0),28,'Personal work must not touch a project snapshot');
   assert.equal(q('#ccAdminTaskCount').textContent,'26');
   assert.equal(q('#ccAllTaskCount').textContent,'27');
