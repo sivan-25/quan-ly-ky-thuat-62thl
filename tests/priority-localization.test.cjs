@@ -22,4 +22,6 @@ assert.match(edit,/ccWePriority:priorityVi\(task\.priority\)/,'Admin edit dropdo
 assert.match(edit,/priorityVi\(before\.priority\)===/,'Unchanged old values are preserved on edit');
 const report=require('../report-model.js');
 for(const [value,expected] of [['High','Cao'],['Medium','Trung bình'],['Low','Thấp'],['Critical','Khẩn cấp']])assert.equal(report.status(value).text,expected);
-console.log('ESTA priority localization passed: table, filter, warning, form, PDF, report, old data.');
+const style=src('command-center.css');
+for(const [rank,back] of [['p1','#e3f2e8'],['p2','#fff0da'],['p3','#fbe5e5'],['p4','#f7dada']])assert.ok(style.includes('.ccPriority.'+rank+'{background:'+back),'Priority badge '+rank+' color');
+console.log('ESTA priority localization passed: table, filter, warning, form, PDF, report, old data and badge colors.');
