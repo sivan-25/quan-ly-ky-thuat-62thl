@@ -20,4 +20,6 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      - name: Verify Admin dispatch
+        run: node --check command-center.js && node tests/admin-dispatch.test.cjs
       - run: npm test
