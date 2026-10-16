@@ -306,14 +306,24 @@
         for(const x of r.photos) {
           if(photos.length>=180)break;
           const ref=typeof x==="string"?x:String(x?.ref||x?.path||"");
-          if(ref)photos.push({ref,caption:shortProject(r.proj)+" · "+r.content});
+          if(ref){
+            const code=severity(r)===0?"overdue":severity(r)===1?"urgent":severity(r)===3?"planned":
+              severity(r)===4?"done":/đang thực hiện/i.test(r.status)?"progress":"pending";
+            photos.push({
+              ref,caption:shortProject(r.proj)+" · "+r.content,
+              status_code:code,
+              status_label:code==="done"?"Hoàn thành":code==="overdue"?"Quá hạn":
+                code==="urgent"?"Cần xử lý":code==="progress"?"Đang thực hiện":
+                code==="planned"?"Chưa đến hạn":"Chưa hoàn thành"
+            });
+          }
         }
         if(photos.length>=180)break;
       }
       const rows=records.map((r,i)=>{
         const label=categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat;
         const rawParts=String(r.detail||"").split(" · ").map(x=>x.trim()).filter(Boolean);
-        const note=rawParts.filter(x=>!["—","Ok","OK",r.owner,r.status,r.cause,r.plan].includes(x)).join(" · ");
+        const note=rawParts.filter(x=>!["—","Ok","OK",r.owner,r.status,r.cause,r.plan].includes(x) && !/^hằng ngày$/i.test(x)).join(" · ");
         const details=[
           r.owner||"",
           r.cause && !/^(ok|chưa cập nhật)$/i.test(r.cause)?"NN: "+r.cause:"",

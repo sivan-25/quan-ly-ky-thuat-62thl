@@ -443,6 +443,48 @@ class ReportTests(unittest.TestCase):
         self.assertTrue(raw.startswith(b'%PDF'))
         self.assertEqual((missing, count), (0, 2))
 
+    def test_admin_status_images_show_actual_work_state(self):
+        from reporting.admin_compact import StatusImageSlot, photo_state, status_photo_grid
+        finished = photo_state("done")
+        in_progress = photo_state("progress")
+        unknown = photo_state("invalid-or-missing")
+        self.assertEqual(finished[1], "Hoàn thành")
+        self.assertEqual(in_progress[1], "Đang thực hiện")
+        self.assertEqual(unknown[0:2], ("unknown", "Chưa cập nhật"))
+        self.assertNotEqual(finished[2], in_progress[2])
+        base = {
+            "report_type": "generic", "hide_building": True,
+            "title": "BÁO CÁO GIÁM SÁT KỸ THUẬT",
+            "kt_signer_name": "Sĩ Văn", "signature_position": "supervision",
+            "columns": [
+                {"label": "STT"}, {"label": "Dự án"}, {"label": "Nội dung công việc"},
+                {"label": "Ngày"}, {"label": "Trạng thái"}, {"label": "Phụ trách / Ghi chú"}
+            ],
+            "rows": [
+                ["1", "68 PĐL", "Xử lý bồn rửa", "16/10/2026", "Hoàn thành", "Vũ"],
+                ["2", "62 THL", "Đóng trần thạch cao", "16/10/2026", "Đang thực hiện", "Thành Đạt"]
+            ],
+            "photos": [
+                {"ref": photo((640, 480)), "caption": "68 PĐL · Xử lý bồn rửa",
+                 "status_code": "done", "status_label": "Hoàn thành"},
+                {"ref": photo((480, 640)), "caption": "62 THL · Đóng trần",
+                 "status_code": "progress", "status_label": "Đang thực hiện"}
+            ]
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            prepared = _prepare_generic_data(base, "", tmp)
+            self.assertEqual([p["status_code"] for p in prepared["photos"]],
+                             ["done", "progress"])
+            photo_rows = status_photo_grid(prepared["photos"], pdfc.CW)
+            self.assertEqual(len(photo_rows), 1)
+            slots = [x for x in photo_rows[0]._cellvalues[0] if isinstance(x, StatusImageSlot)]
+            self.assertEqual([x.status_label for x in slots],
+                             ["Hoàn thành", "Đang thực hiện"])
+            self.assertNotEqual(slots[0].status_color, slots[1].status_color)
+        raw, missing, count = generate_pdf(base, "")
+        self.assertTrue(raw.startswith(b"%PDF"))
+        self.assertEqual((missing, count), (0, 2))
+
     def test_original_work_energy_tools_renderers(self):
         samples = [
             {'report_type':'work','tasks':[{'title':'Dữ liệu thử','status':'Hoàn thành','date':'01/09/2026','assignee':'Kiểm thử'}]},

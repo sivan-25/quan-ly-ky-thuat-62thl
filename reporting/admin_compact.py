@@ -5,6 +5,7 @@ from xml.sax.saxutils import escape as xml_escape
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import HRFlowable, Paragraph, Spacer, Table, TableStyle
 
 from reporting import pdf_common as pdfc
@@ -14,6 +15,91 @@ def _style(name, font="Mont", size=7.2, leading=10, color=None):
     return ParagraphStyle(name, fontName=font, fontSize=size,
                           leading=leading, textColor=color or pdfc.AUB,
                           splitLongWords=1)
+
+
+
+# Print-only status indicator. It does not edit or approve the source work record.
+PHOTO_STATES = {
+    "done": ("Hoàn thành", "#287A4C", "#E2F1E6", "#FFFFFF"),
+    "progress": ("Đang thực hiện", "#BE751B", "#FFF0D7", "#FFFFFF"),
+    "pending": ("Chưa hoàn thành", "#B04B4B", "#F9E4E4", "#FFFFFF"),
+    "overdue": ("Quá hạn", "#AC3042", "#FADEE2", "#FFFFFF"),
+    "urgent": ("Cần xử lý", "#AC3042", "#FADEE2", "#FFFFFF"),
+    "planned": ("Chưa đến hạn", "#3B718C", "#E7F1FA", "#FFFFFF"),
+    "unknown": ("Chưa cập nhật", "#7B817F", "#ECEDED", "#FFFFFF"),
+}
+
+
+def photo_state(code, label=""):
+    """Strict status palette with no inferred completion for missing statuses."""
+    code = str(code or "unknown").lower()
+    if code not in PHOTO_STATES:
+        code = "unknown"
+    default, stroke, background, foreground = PHOTO_STATES[code]
+    # Labels are known UI words; never put untrusted arbitrary text in the badge.
+    return code, default, colors.HexColor(stroke), colors.HexColor(background), colors.HexColor(foreground)
+
+
+class StatusImageSlot(pdfc.ImageSlot):
+    """ImageSlot plus a crisp status border and small corner badge."""
+    def __init__(self, width, height, prepared=None, caption="", status_code="unknown", status_label=""):
+        super().__init__(width, height, prepared=prepared, caption=caption)
+        self.status_code, self.status_label, self.status_color, self.status_background, self.status_text = photo_state(
+            status_code, status_label
+        )
+
+    def draw(self):
+        super().draw()
+        canvas = self.canv
+        canvas.saveState()
+        try:
+            # Match status colors to the adjacent table without tinting the photo itself.
+            y = self.CAPTION_H
+            canvas.setStrokeColor(self.status_color)
+            canvas.setLineWidth(2)
+            canvas.rect(1, y + 1, self.width - 2, self.height - 2, stroke=1, fill=0)
+            badge_h, font_size = 15, 7
+            badge_w = min(self.width - 14, pdfmetrics.stringWidth(self.status_label, "Mont-Bold", font_size) + 18)
+            x = self.width - badge_w - 6
+            by = y + self.height - badge_h - 6
+            canvas.setFillColor(self.status_color)
+            canvas.roundRect(x, by, badge_w, badge_h, 4, stroke=0, fill=1)
+            canvas.setFillColor(self.status_text)
+            canvas.setFont("Mont-Bold", font_size)
+            canvas.drawCentredString(x + badge_w / 2, by + 4.3, self.status_label)
+        finally:
+            canvas.restoreState()
+
+
+def status_photo_grid(items, available_width, cols=2, cell_height=56*mm, gap=pdfc.IMAGE_GAP):
+    """Split photos into independent printable rows for pagination."""
+    photos = [item for item in items if item and item.get("prepared")]
+    rows = []
+    for offset in range(0, len(photos), cols):
+        group = photos[offset:offset + cols]
+        cell_width = (available_width - gap * (len(group) - 1)) / len(group)
+        cells, widths = [], []
+        for i, photo in enumerate(group):
+            if i:
+                cells.append("")
+                widths.append(gap)
+            cells.append(StatusImageSlot(
+                cell_width, cell_height,
+                prepared=photo["prepared"], caption=photo.get("caption") or "",
+                status_code=photo.get("status_code"),
+                status_label=photo.get("status_label")
+            ))
+            widths.append(cell_width)
+        row = Table([cells], colWidths=widths, hAlign="LEFT")
+        row.setStyle(TableStyle([
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0)
+        ]))
+        rows.append(row)
+    return rows
 
 
 def story(data):
@@ -172,7 +258,7 @@ def story(data):
     if photos:
         story.extend([Spacer(1, 10), p("03  HÌNH ẢNH CÔNG VIỆC", section), Spacer(1, 5)])
         # Each photo is kept intact. Captions are short; no "Ảnh trích".
-        for row in pdfc.image_grid(photos, width, cols=2,
-                                   cell_height=56 * mm, gap=pdfc.IMAGE_GAP):
+        for row in status_photo_grid(photos, width, cols=2,
+                                     cell_height=56 * mm, gap=pdfc.IMAGE_GAP):
             story.extend([row, Spacer(1, 4)])
     return story

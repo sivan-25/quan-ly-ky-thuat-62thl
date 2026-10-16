@@ -791,6 +791,10 @@ def _prepare_generic_data(payload, token, temp_dir):
                 photo_items.append({
                     "source":source,
                     "caption":str(item.get("caption") or ("Hình %d"%i)),
+                    # Status belongs to the associated work record; never derive
+                    # completion solely from photo content or upload date.
+                    "status_code":str(item.get("status_code") or "unknown").lower()[:24],
+                    "status_label":str(item.get("status_label") or "")[:50],
                     "id":str(item.get("id") or source)
                 })
     prepared_photos,missing=pdfc.prepare_remote_images(photo_items,token,_download_image,source_key="source")
