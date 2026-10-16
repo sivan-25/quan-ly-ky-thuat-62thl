@@ -52,6 +52,8 @@ search.value="AHU";search.oninput({target:search});
 assert.equal($$("#ueRows .ueItem").length,1,"search must filter list");
 assert($(".ueItemId strong").textContent.includes("AHU"));
 
+const currentMarkup=page.innerHTML;
 scope.currentBuilding={id:"130HH"};
-assert(!dom.window.estaUpgradeAssets.render(page,true),"NANGCAP page must not be active in 130HH");
+dom.window.estaUpgradeAssets.render(page,true);
+assert.equal(page.innerHTML,currentMarkup,"NANGCAP page must never rerender for 130HH");
 console.log("Compact NANGCAP visual structure and filters: PASS (9 systems, 44 templates, status row, sidebar, search, responsive CSS).");
