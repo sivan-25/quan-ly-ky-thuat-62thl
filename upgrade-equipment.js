@@ -237,7 +237,7 @@ function render(page,skipLoad=false){
    '<div class="ueSummaryStates">'+statusDefs.map(([k,t,c])=>{
      const val=k===""?overview.count:stats[k];
      return '<button type="button" class="ueSummaryState'+(status===k?' active':'')+'" data-ue-status-chip="'+k+'" aria-pressed="'+(status===k)+'"><b style="color:'+c+'">'+val+'</b><span>'+t+'</span></button>';
-   }).join("")+'</div><div class="ueSummaryCaption">'+esc(line)+'</div></div></section>'+
+   }).join("")+'</div></div><div class="ueSummaryCaption">'+esc(line)+'</div></section>'+
   '<div class="ueClassicGrid"><nav class="ueSystemRail" aria-label="Danh sách hệ thống kỹ thuật">'+
     '<button type="button" data-ue-group="" class="ueRailCard'+(!group?' active':'')+'" aria-pressed="'+(!group)+'">'+UE_ALL_ICON+
       '<span class="ueRailText"><b>Tất cả hệ thống</b><small>'+items.length+' thiết bị · '+SEEDS.length+' mẫu</small></span><span class="ueRailBar"></span></button>'+
