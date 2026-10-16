@@ -47,12 +47,26 @@ const $=s=>page.querySelector(s);
  assert($("#ueSystemRail").classList.contains("ueCollapsed"),"state survives data refresh");
  $("#ueRailToggle").click();
  await dom.window.estaUpgradeAssets.refresh();
- const detail=page.querySelector('[data-ue-id="'+row.id+'"] .ueItemSpecifications');
- assert(detail,"saved details shown inline");
+ const rowButton=page.querySelector('[data-ue-id="'+row.id+'"]');
+ const detail=page.querySelector('#ueDetail-'+row.id);
+ assert(detail,"saved details available in accordion");
+ assert.equal(detail.hidden,true,"saved specifications hidden by default");
+ assert.equal(rowButton.getAttribute("aria-expanded"),"false","row starts collapsed");
+ assert.equal(rowButton.querySelector(".ueItemSpecifications"),null,"details not inside row control");
+ rowButton.click();
+ assert.equal(detail.hidden,false,"click opens equipment details");
+ assert.equal(rowButton.getAttribute("aria-expanded"),"true");
  for(const expected of ["Grundfos","NK 150","11 kW","Công suất động cơ","45 m³/h",
   "Nhà thầu A","Áp lực thử","8 bar","SER123","Kiểm tra định kỳ","Văn","6 bar","PCCC-01"]){
   assert(detail.textContent.includes(expected),"missing detail: "+expected);
  }
+ assert(detail.querySelector("[data-ue-edit]"),"edit action within expanded equipment details");
+ rowButton.click();
+ assert.equal(detail.hidden,true,"second click collapses equipment details");
+ rowButton.click();
+ detail.querySelector("[data-ue-edit]").click();
+ assert.equal($("#ueModalHeading").textContent,"Chi tiết & kiểm tra thiết bị","edit button opens existing modal");
+ assert.equal($("#ueForm").elements.namedItem("brand").value,"Grundfos","edit form retains saved fields");
  $("#ueSummaryToggle").click();
  await dom.window.estaUpgradeAssets.refresh();
  assert($("#ueStatusSummary").classList.contains("ueCollapsed"),"collapse remains after refresh");

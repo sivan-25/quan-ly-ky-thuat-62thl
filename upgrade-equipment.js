@@ -131,7 +131,7 @@ function conditionOf(x){
 const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
-let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",summaryCollapsed=false,systemsCollapsed=false;
+let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",summaryCollapsed=false,systemsCollapsed=false,expandedDeviceId="";
 try{systemsCollapsed=window.localStorage.getItem("esta:nangcap:systemsCollapsed")==="1"}catch{}
 const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
@@ -251,16 +251,42 @@ function list(){
  host.innerHTML=rows.map(x=>{
   const virt=!!x.virtual,due=inspectionDue(x),overdue=isDue(x),meta=metaOf(x);
   const latest=meta.lastCheck||meta.history?.at(-1)?.date||"";
-  const subtitle=virt?"Bấm để nhập thông tin":x.code?"Mã: "+x.code:"Bấm để xem / chỉnh sửa hồ sơ";
-  return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="Xem hồ sơ '+esc(label(x))+'">'+
+  const expanded=!virt&&expandedDeviceId===String(x.id);
+  const subtitle=virt?"Bấm để nhập thông tin":x.code?"Mã: "+x.code+" · Bấm để xem chi tiết":"Bấm để xem thông tin đã lưu";
+  const detailId="ueDetail-"+String(x.id);
+  return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+(expanded?' ueItemExpanded':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="'+(virt?'Nhập hồ sơ ':'Xem thông tin ') +esc(label(x))+'"'+(virt?'':' aria-expanded="'+expanded+'" aria-controls="'+esc(detailId)+'"')+'>'+
    '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(subtitle)+'</small></span></div>'+
    '<span class="ueItemGroup">'+esc(x.system_group)+'</span>'+
    '<span class="ueItemDate"><small class="ueMobileLabel">Kiểm tra</small>'+viDate(latest)+'</span>'+
    '<span class="ueItemDue'+(overdue?' ueDateOverdue':'')+'"><small class="ueMobileLabel">Hạn kế tiếp</small>'+viDate(due)+(overdue?'<em>Quá hạn</em>':'')+'</span>'+
-   '<span class="ueItemPlace">'+esc(x.location||"—")+'</span><span class="ueArrow">›</span>'+
-   equipmentDetails(x)+'</button>';
+   '<span class="ueItemPlace">'+esc(x.location||"—")+'</span><span class="ueArrow">'+(expanded?'⌃':'⌄')+'</span>'+
+   '</button>'+
+   (virt?'':'<div class="ueItemDetails" id="'+esc(detailId)+'"'+(expanded?'':' hidden')+'>'+
+      equipmentDetails(x)+
+      '<div class="ueInlineActions"><button type="button" class="ueInlineEdit" data-ue-edit="'+esc(x.id)+'">✎ Xem / chỉnh sửa hồ sơ</button></div></div>');
  }).join("");
- host.querySelectorAll("[data-ue-id]").forEach(btn=>btn.onclick=()=>openForm(btn.dataset.ueId));
+ const setExpanded=(btn,open)=>{
+  if(!btn)return;
+  btn.classList.toggle("ueItemExpanded",open);
+  btn.setAttribute("aria-expanded",String(open));
+  const panel=btn.nextElementSibling;
+  if(panel?.classList.contains("ueItemDetails"))panel.hidden=!open;
+  const arrow=btn.querySelector(".ueArrow");
+  if(arrow)arrow.textContent=open?"⌃":"⌄";
+ };
+ host.querySelectorAll("[data-ue-id]").forEach(btn=>btn.onclick=()=>{
+  const id=btn.dataset.ueId;
+  const record=rows.find(x=>String(x.id)===id);
+  if(record?.virtual){openForm(id);return;}
+  if(expandedDeviceId&&expandedDeviceId!==id){
+   const previous=[...host.querySelectorAll("[data-ue-id]")].find(other=>other.dataset.ueId===expandedDeviceId);
+   setExpanded(previous,false);
+  }
+  const open=expandedDeviceId!==id;
+  expandedDeviceId=open?id:"";
+  setExpanded(btn,open);
+ });
+ host.querySelectorAll("[data-ue-edit]").forEach(btn=>btn.onclick=()=>openForm(btn.dataset.ueEdit));
 }
 function render(page,skipLoad=false){
  if(!active()||!page)return;
