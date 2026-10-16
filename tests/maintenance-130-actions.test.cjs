@@ -143,6 +143,7 @@ const ready=()=>new Promise(resolve=>setTimeout(resolve,0));
  // A planned event can move to the selected date and its scheduling keys follow.
  const upcoming={...fixture.event,id:"occ2",status:"planned",planned_date:"2026-10-02",due_date:"2026-10-02",completed_by:"",result_note:"",image_paths:[]};
  w.__maintenance130UiTest.seed({...fixture.item,id:"plan2",plan_code:"130HH-TEST-2",assigned_to:"Văn"}, {...upcoming,item_id:"plan2",event_key:"130HH-TEST-2:2026-10"});
+ d.querySelector('[data-m130-layout="list"]').click();
  d.querySelector('[data-m130-view="cards"]').click();
  d.querySelector(".m130ServiceCard [data-m130-plan]").click();
  $("m130First").value="2026-10-11";
