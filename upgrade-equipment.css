@@ -171,3 +171,111 @@ body.estaUpgradeMode .ueHistoryPhotos img{width:100%;max-height:190px;object-fit
  body.estaUpgradeMode .ueInspectGrid :is(input,select,textarea){font-size:16px!important}
  body.estaUpgradeMode .ueHistoryPhotos img{max-height:150px}
 }
+
+
+/* 2026-10-16: Refined NANGCAP system information, isolated from other projects. */
+#app.estaUpgradeMode #updateAssetsPage .ueHero{
+  padding:16px 19px!important;min-height:0;
+  background:linear-gradient(112deg,#173d4c 0%,#284c42 100%)!important;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueHero h1{font-size:22px!important;letter-spacing:-.025em}
+#app.estaUpgradeMode #updateAssetsPage .ueStats>div{padding:11px 14px}
+#app.estaUpgradeMode #updateAssetsPage .ueStats b{font-size:25px}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemPanel{padding:12px 14px}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemGrid{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemChip{min-height:61px;padding:9px 10px!important}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemChip b{font-size:12.5px}
+#app.estaUpgradeMode #updateAssetsPage .ueListHead,
+#app.estaUpgradeMode #updateAssetsPage .ueItem{
+  grid-template-columns:minmax(200px,2.2fr) minmax(105px,.95fr) minmax(116px,1fr)
+  minmax(105px,.9fr) minmax(105px,.9fr) minmax(95px,.9fr) 16px;
+  gap:11px;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueListHead{background:#e3eee7!important;color:#315447}
+#app.estaUpgradeMode #updateAssetsPage .ueItem{min-height:62px;padding:10px 15px}
+#app.estaUpgradeMode #updateAssetsPage .ueItemId strong{font-size:14.5px;font-weight:800;line-height:1.35}
+#app.estaUpgradeMode #updateAssetsPage .ueItemId small{font-size:11px}
+#app.estaUpgradeMode #updateAssetsPage .ueItemDate,
+#app.estaUpgradeMode #updateAssetsPage .ueItemDue{font-size:12.5px;font-weight:650;color:#2b5051;font-variant-numeric:tabular-nums}
+#app.estaUpgradeMode #updateAssetsPage .ueItemDue.ueDateOverdue{color:#ad323a;font-weight:850}
+#app.estaUpgradeMode #updateAssetsPage .ueItemDue em{
+  display:block;margin-top:3px;font-size:10px;font-style:normal;font-weight:850;color:#ad323a;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueOverdue{box-shadow:inset 3px 0 #cd5052}
+#app.estaUpgradeMode #updateAssetsPage .ueItem .ueMobileLabel{display:none}
+#app.estaUpgradeMode #updateAssetsPage .ueQuickState{
+ display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 11px;
+ border-bottom:1px solid #e1e9e3;background:#fffdf8;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueQuickState button{
+ min-height:32px;padding:5px 11px;border-radius:9px;
+ background:#f0f4ec;color:#395c54;border:1px solid #dbe5db;
+ cursor:pointer;font-size:11.5px;font-weight:750;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueQuickState button.active{
+ background:#245848;color:#fff;border-color:#245848;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueQuickState button:hover:not(.active){background:#e5eee4}
+#app.estaUpgradeMode #updateAssetsPage .ueItem:focus-visible,
+#app.estaUpgradeMode #updateAssetsPage .ueQuickState button:focus-visible{
+ outline:2px solid #146f65;outline-offset:-2px;
+}
+body.estaUpgradeMode .ueAdvancedSpecs{
+ display:flex;flex-direction:column;gap:9px;margin-top:4px;
+}
+body.estaUpgradeMode .ueSpecSection{
+ border:1px solid #dbe5dc;background:#fcfdf9;border-radius:9px;padding:0;
+}
+body.estaUpgradeMode .ueSpecSection summary{
+ display:flex;justify-content:space-between;align-items:center;gap:10px;
+ padding:12px;cursor:pointer;color:#1b4c45;font-size:13px;font-weight:800;
+ list-style:none;
+}
+body.estaUpgradeMode .ueSpecSection summary::-webkit-details-marker{display:none}
+body.estaUpgradeMode .ueSpecSection summary:after{content:"⌄";font-size:17px;line-height:1}
+body.estaUpgradeMode .ueSpecSection[open] summary{border-bottom:1px solid #e1ebe2}
+body.estaUpgradeMode .ueSpecSection[open] summary:after{content:"⌃"}
+body.estaUpgradeMode .ueSpecSection summary span{margin-left:auto;font-size:10px;font-weight:650;color:#71867d}
+body.estaUpgradeMode .ueSpecSection .ueInspectGrid{padding:12px}
+body.estaUpgradeMode .ueDialog footer{position:relative;z-index:1;flex-wrap:wrap}
+@media(max-width:1150px){
+ #app.estaUpgradeMode #updateAssetsPage .ueListHead{display:none!important}
+ #app.estaUpgradeMode #updateAssetsPage .ueItem{
+  grid-template-columns:minmax(180px,2fr) minmax(110px,1fr) minmax(108px,1fr) minmax(98px,.9fr);
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueItemGroup,
+ #app.estaUpgradeMode #updateAssetsPage .ueItemPlace,
+ #app.estaUpgradeMode #updateAssetsPage .ueArrow{display:none}
+ #app.estaUpgradeMode #updateAssetsPage .ueSystemGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ #app.estaUpgradeMode #updateAssetsPage .ueHero{padding:14px!important}
+ #app.estaUpgradeMode #updateAssetsPage .ueHero h1{font-size:19px!important}
+ #app.estaUpgradeMode #updateAssetsPage .ueStats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #app.estaUpgradeMode #updateAssetsPage .ueSystemGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #app.estaUpgradeMode #updateAssetsPage .ueItem{
+  grid-template-columns:minmax(0,1fr) auto!important;gap:6px 10px;
+  padding:12px!important;align-items:center;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueItemId{grid-column:1/-1;grid-row:1}
+ #app.estaUpgradeMode #updateAssetsPage .ueItemDate{
+  display:block;grid-column:1;grid-row:2;font-size:12px;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueItem .ueMobileLabel{
+  display:inline;margin-right:6px;color:#6b817b;font-weight:600;font-size:11px;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueItem .ueState{
+  grid-column:2;grid-row:2;max-width:none;font-size:11px;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueItemDue{
+  display:block;grid-column:1/-1;grid-row:3;font-size:12px;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueItemDue em{display:inline;margin-left:7px}
+ #app.estaUpgradeMode #updateAssetsPage .ueItemGroup,
+ #app.estaUpgradeMode #updateAssetsPage .ueItemPlace,
+ #app.estaUpgradeMode #updateAssetsPage .ueArrow{display:none}
+ #app.estaUpgradeMode #updateAssetsPage .ueQuickState{padding:0 10px 10px}
+ #app.estaUpgradeMode #updateAssetsPage .ueQuickState button{padding:5px 9px}
+ body.estaUpgradeMode .ueSpecSection .ueInspectGrid{grid-template-columns:1fr}
+ body.estaUpgradeMode .ueFormBody{gap:9px}
+}
