@@ -6,6 +6,8 @@ const root=path.join(__dirname,"..");
 const js=fs.readFileSync(path.join(root,"upgrade-equipment.js"),"utf8");
 const routes=fs.readFileSync(path.join(root,"update-lab.js"),"utf8");
 const css=fs.readFileSync(path.join(root,"upgrade-equipment-reference.css"),"utf8");
+const parityCss=fs.readFileSync(path.join(root,"nangcap-unified.css"),"utf8");
+const pageHtml=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const dbSql=fs.readFileSync(path.join(root,"migrations/technical_systems_four_projects.sql"),"utf8");
 const ids=["NANGCAP","68PĐL","62THL","127HH","130HH"];
 const dom=new JSDOM("<div id='updateAssetsPage'></div>",{url:"https://example.test"});
@@ -50,6 +52,15 @@ const page=dom.window.document.getElementById("updateAssetsPage");
  assert(routes.includes('updateShowTechnicalEquipment(page)'),"technical page route must use shared component");
  assert(routes.includes('document.body.classList.remove("estaTechnicalAssetsMode")'),"non-technical pages must not inherit technical styling");
  assert(css.includes(".estaTechnicalAssetsMode"),"new technical page should have screenshot-style CSS");
+ assert(parityCss.includes("#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode)"),"technical page must use exactly the same root theme selectors as Bản nâng cấp");
+ assert(parityCss.includes("body:is(.estaUpgradeMode,.estaTechnicalAssetsMode)"),"portal dialogs must use exactly the same theme");
+ assert(!parityCss.includes("#app.estaUpgradeMode")&&!parityCss.includes("body.estaUpgradeMode"),"no orphan NANGCAP-only theme selectors permitted");
+ assert(parityCss.split("#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode)").length-1>=70,"the complete shared theme, not a partial imitation, must be reused");
+ for(const rule of [".estaSidebar",".estaTopbar",".page","input:not([type=\"checkbox\"])"]){
+  assert(parityCss.includes(rule),"shared project design is missing "+rule);
+ }
+ assert(pageHtml.includes("nangcap-unified.css?v=20261016-technical-parity01"),"browsers must load the corrected styles, not a cached variant");
+ assert(routes.includes('if(!on||$("#updateAssetsPage")?.classList.contains("hide"))'),"shared theme must be turned off after leaving the technical page");
  assert(dbSql.includes("private.can_access_building(building_id,true)"),"database must isolate writes by assigned building");
  for(const id of ids)assert(dbSql.includes("'"+id+"'"),id+" must have its own database scope");
  state.id="UPDATE";

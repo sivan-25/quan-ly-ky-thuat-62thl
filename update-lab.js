@@ -652,6 +652,11 @@ function updateArrangeSidebar(on){
 function updateApplyMode(){
  updateInjectShell();
  const on=updateIs()&&($("#adminPage")?.classList.contains("hide")??true);
+ // Shared NANGCAP theme is active only while the technical equipment page is visible.
+ if(!on||$("#updateAssetsPage")?.classList.contains("hide")){
+  $("#app")?.classList.remove("estaTechnicalAssetsMode");
+  document.body.classList.remove("estaTechnicalAssetsMode");
+ }
  if(on)updateEnsureStateScope();
  updateArrangeSidebar(on);
  updateArrangeWorkStats(on);
