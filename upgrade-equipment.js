@@ -42,6 +42,73 @@ const F={
  mai:"dt|Diện tích|m²;vl|Vật liệu chống thấm"
 };
 
+
+/* Danh mục thông số đầy đủ đối chiếu với tài liệu HTML ESTA người vận hành cung cấp.
+   Giữ keys hiện hữu để không mất thông số đã nhập trong hồ sơ cũ. */
+const FULL_FIELDS={
+ bom_dien:"cs|Công suất động cơ|kW;ll|Lưu lượng định mức|m³/h;ca|Cột áp định mức|bar;da|Điện áp|V;dong|Dòng định mức|A;td|Tốc độ|vòng/phút;kd|Áp suất khởi động|bar;dung|Áp suất dừng|bar;dn|Đường kính ống hút / đẩy|DN;cdk|Chế độ điều khiển",
+ bom_jockey:"cs|Công suất động cơ|kW;ll|Lưu lượng định mức|m³/h;ca|Cột áp định mức|bar;da|Điện áp|V;dong|Dòng định mức|A;kd|Áp suất khởi động|bar;dung|Áp suất dừng|bar;bt|Bình tích áp|lít",
+ bom_diesel:"cs|Công suất động cơ|kW;hp|Công suất động cơ|HP;ll|Lưu lượng định mức|m³/h;ca|Cột áp định mức|bar;td|Tốc độ|vòng/phút;hdc|Hãng động cơ;mdc|Model động cơ;bon|Dung tích bồn dầu|lít;tt|Mức tiêu thụ nhiên liệu|lít/giờ;aq|Ắc quy khởi động (số bình / dung lượng);kd|Áp suất khởi động|bar",
+ bao_chay:"zone|Số zone / kênh;loop|Số loop;nguon|Nguồn cấp|V;aq|Ắc quy dự phòng|Ah;dau|Số đầu báo kết nối;gt|Giao thức / chuẩn;mc|Số module điều khiển",
+ hong_nuoc:"sl|Số lượng họng;dk|Đường kính van / vòi|DN;cd|Chiều dài vòi|m;ap|Áp suất làm việc|bar;tang|Các tầng lắp đặt",
+ binh_cc:"loai|Loại (bột ABC, CO₂…);sl|Số lượng;kl|Khối lượng mỗi bình|kg;nap|Hạn nạp / kiểm định|@",
+ sprinkler:"dau|Số đầu phun;nhiet|Nhiệt độ kích hoạt|°C;van|Số van báo động;vung|Vùng bảo vệ;ap|Áp suất làm việc|bar",
+ den_exit:"sl|Số lượng;cs|Công suất mỗi đèn|W;tg|Thời gian dự phòng|phút;pin|Loại pin / ắc quy",
+ quat_tang_ap:"cs|Công suất|kW;ll|Lưu lượng|m³/h;ap|Áp suất|Pa;da|Điện áp|V;dong|Dòng định mức|A;td|Tốc độ|vòng/phút;kv|Khu vực phục vụ",
+ msb:"da|Điện áp định mức|V;dong|Dòng định mức|A;icu|Dòng cắt ngắn mạch Icu|kA;ngan|Số ngăn tủ;cb|CB tổng (loại / dòng);ip|Cấp bảo vệ IP;do|Thiết bị đo đếm",
+ mba:"cs|Công suất|kVA;so|Điện áp sơ cấp|kV;thu|Điện áp thứ cấp|V;loai|Loại (dầu / khô);dd|Tổ đấu dây;nd|Ngưỡng cảnh báo nhiệt độ|°C;tl|Trọng lượng|kg",
+ tu_bu:"cs|Tổng công suất bù|kVAr;cap|Số cấp bù;cos|Cos φ mục tiêu;da|Điện áp|V;dk|Bộ điều khiển",
+ ats:"dong|Dòng định mức|A;da|Điện áp|V;tg|Thời gian chuyển nguồn|giây;loai|Loại (CB / contactor);cd|Chế độ vận hành",
+ tu_tang:"dong|Dòng định mức|A;cb|CB tổng (loại / dòng);sl|Số MCB / MCCB;tang|Tầng cấp điện",
+ mpd:"kva|Công suất|kVA;kw|Công suất|kW;da|Điện áp|V;hz|Tần số|Hz;td|Tốc độ|vòng/phút;hdc|Hãng động cơ;mdc|Model động cơ;tt|Tiêu thụ nhiên liệu (75% tải)|lít/giờ;bon|Dung tích bồn dầu|lít;gio|Số giờ chạy tích lũy|giờ;ct|Chu kỳ chạy thử|ngày",
+ bon_dau:"dt|Dung tích|lít;vl|Vật liệu;muc|Mức dầu hiện tại|lít;bom|Bơm cấp dầu",
+ ac_quy:"da|Điện áp|V;dl|Dung lượng|Ah;sb|Số bình;loai|Loại ắc quy;thay|Ngày thay gần nhất|@",
+ chiller:"rt|Công suất lạnh|RT;kw|Công suất điện|kW;gas|Môi chất lạnh;cop|COP / IPLV;ll|Lưu lượng nước lạnh|m³/h;nv|Nhiệt độ nước vào|°C;nr|Nhiệt độ nước ra|°C;da|Điện áp|V;mn|Số máy nén",
+ thap:"rt|Công suất giải nhiệt|RT;ll|Lưu lượng nước|m³/h;quat|Công suất mỗi quạt|kW;sq|Số quạt;nv|Nhiệt độ nước vào|°C;nr|Nhiệt độ nước ra|°C",
+ ahu:"gio|Lưu lượng gió|m³/h;quat|Công suất quạt|kW;lanh|Công suất lạnh|kW;kv|Khu vực phục vụ;loc|Loại / kích thước lọc;bt|Biến tần",
+ fcu:"lanh|Công suất lạnh|kW;gio|Lưu lượng gió|m³/h;sl|Số lượng;tang|Tầng lắp đặt",
+ quat:"cs|Công suất|kW;ll|Lưu lượng|m³/h;ap|Áp suất|Pa;da|Điện áp|V;td|Tốc độ|vòng/phút;kv|Khu vực phục vụ",
+ thang:"tt|Tải trọng|kg;ng|Số người;vt|Tốc độ|m/s;dd|Số điểm dừng;ht|Hành trình|m;mt|Công suất motor|kW;loai|Loại (MRL / có phòng máy);dk|Hãng bộ điều khiển;kdinh|Hạn kiểm định|@",
+ ard:"cs|Công suất|kVA;da|Điện áp|V;tg|Thời gian cứu hộ|giây;aq|Ắc quy;thang|Thang đi kèm",
+ bom:"cs|Công suất|kW;ll|Lưu lượng|m³/h;ca|Cột áp|bar;da|Điện áp|V;dong|Dòng định mức|A;td|Tốc độ|vòng/phút;sb|Số bơm (chạy / dự phòng);bt|Biến tần;btap|Bình tích áp|lít",
+ bon:"dt|Dung tích|m³;vl|Vật liệu;kt|Kích thước (D×R×C)|m;ng|Số ngăn;phao|Phao / cảm biến mực nước;vs|Ngày vệ sinh gần nhất|@",
+ bom_thoat:"cs|Công suất|kW;ll|Lưu lượng|m³/h;ca|Cột áp|m;loai|Loại (chìm / cạn);sb|Số bơm;phao|Phao điều khiển",
+ xlnt:"cs|Công suất xử lý|m³/ngày;cn|Công nghệ xử lý;sb|Số bơm / máy thổi khí;tc|Tiêu chuẩn xả thải",
+ nvr:"kenh|Số kênh;hdd|Dung lượng ổ cứng|TB;ngay|Số ngày lưu trữ|ngày;ip|Địa chỉ IP;raid|Cấu hình RAID;nguon|Nguồn cấp|V",
+ camera:"sl|Số lượng;pg|Độ phân giải|MP;loai|Loại (dome / bullet / PTZ);poe|Cấp nguồn (PoE…);kv|Khu vực lắp đặt",
+ acs:"cua|Số cửa / điểm kiểm soát;the|Loại thẻ;pm|Phần mềm quản lý;ndp|Nguồn dự phòng",
+ barrier:"loai|Loại barrier;tg|Thời gian mở|giây;cd|Chiều dài thanh chắn|m;cs|Công suất|W;da|Điện áp|V",
+ den:"loai|Loại đèn;sl|Số lượng;cs|Công suất mỗi đèn|W;tong|Tổng công suất|kW;dk|Điều khiển (tay / timer / BMS)",
+ am_thanh:"cs|Công suất ampli|W;loa|Số loa;vung|Số vùng;pccc|Kết nối báo cháy",
+ mang:"ap|Số access point;sw|Số switch;bw|Băng thông|Mbps;nm|Nhà cung cấp mạng",
+ mai:"dt|Diện tích|m²;vl|Vật liệu chống thấm;tc|Ngày thi công|@;bhct|Bảo hành chống thấm đến|@",
+ mat_dung:"dt|Diện tích|m²;vl|Vật liệu;kinh|Loại kính;day|Độ dày kính|mm",
+ ham:"dt|Diện tích|m²;tai|Tải trọng sàn|kN/m²;tang|Số tầng hầm;ct|Giải pháp chống thấm",
+ cua:"sl|Số lượng;loai|Loại cửa;lua|Giới hạn chịu lửa|phút;dong|Cơ cấu đóng cửa",
+ lan_can:"cd|Tổng chiều dài|m;vl|Vật liệu;cao|Chiều cao|mm"
+};
+const EXTRA_PROFILE="xuatxu|Xuất xứ;nam|Năm sản xuất";
+const INSTALL_FIELDS="lap|Ngày lắp đặt|@;bh|Hết hạn bảo hành|@;nhathau|Nhà thầu lắp đặt;dvbt|Đơn vị bảo trì;lienhe|Liên hệ bảo trì (SĐT)";
+const parseFieldSpec=s=>String(s||"").split(";").filter(Boolean).map(x=>{const [key,title,unit=""]=x.split("|");return {key,title,unit}});
+function extraFields(){return parseFieldSpec(EXTRA_PROFILE)}
+function installFields(){return parseFieldSpec(INSTALL_FIELDS)}
+function inspectionDue(x){
+ const meta=metaOf(x),last=meta.lastCheck||meta.history?.at(-1)?.date;
+ if(!last||!meta.verified||x.virtual)return "";
+ const days=Math.max(1,Number(meta.interval)||G.find(g=>g[1]===x.system_group)?.[2]||30);
+ const d=new Date(last+"T12:00:00Z");
+ if(Number.isNaN(d.getTime()))return "";
+ d.setUTCDate(d.getUTCDate()+days);
+ return d.toISOString().slice(0,10);
+}
+function viDate(date){
+ if(!date)return "—";
+ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+ return m?m[3]+"/"+m[2]+"/"+m[1]:String(date);
+}
+function isDue(x){const due=inspectionDue(x),today=new Date().toLocaleDateString("en-CA");return !!due&&due<today}
+function conditionRank(x){const c=conditionOf(x);return ({hu:0,sua:1,theodoi:2,chua:3,tot:4,unverified:5,mau:6})[c]??7}
+
 const groups=G.map(g=>[g[1],g[0],g[3].map(x=>x[0]).concat(["Khác"])]);
 const SEEDS=G.flatMap(g=>g[3].map((x,i)=>({
  id:"sample:"+g[0]+":"+i,seedKey:g[0]+":"+i,name:x[0],equipment_type:x[0],system_group:g[1],
@@ -160,7 +227,8 @@ function ensureDialog(){
  '<label>Model<input name="model" maxlength="120"></label>'+
  '<label>Số lượng *<input name="quantity" type="number" min="1" max="500" step="1" required value="1"></label>'+
  '<label>Trạng thái hoạt động<select name="status">'+opt(statuses,"Đang sử dụng")+'</select></label>'+
- '<label>Năm lắp đặt<input name="install_year" type="number" min="1950" max="2100"></label>'+
+ '<label>Năm lắp đặt<input name="install_year" type="number" min="1950" max="2100"></label>'+ 
+ '<label>Chu kỳ kiểm tra (ngày)<input name="inspectionInterval" type="number" min="1" max="3650" value="30"></label>'+
  '<label>Xác minh thực tế<select name="verified"><option value="0">Chưa xác minh thiết bị</option><option value="1">Đã kiểm tra xác minh tại tòa nhà</option></select></label>'+
  '<label class="ueFull">Liên kết hồ sơ Bảo trì<select name="linkedAsset" id="ueLinkedAsset"><option value="">Chưa liên kết</option></select></label>'+
  '<label>Công suất / thông số<input name="capacity" maxlength="120"></label>'+
@@ -182,8 +250,8 @@ function ensureDialog(){
  document.body.append(dialog);
  $("ueClose").onclick=closeForm;$("ueCancel").onclick=closeForm;
  dialog.onclick=e=>{if(e.target===dialog)closeForm()};
- $("ueEditGroup").onchange=()=>{editingType="";fillTypes();fillAdvanced()};
- $("ueEditType").onchange=()=>{editingType=seedTypeFromForm();fillAdvanced()};
+ $("ueEditGroup").onchange=()=>{editingType="";fillTypes();fillAdvanced(collectAdvanced())};
+ $("ueEditType").onchange=()=>{editingType=seedTypeFromForm();fillAdvanced(collectAdvanced())};
  $("ueForm").onsubmit=save;$("ueDelete").onclick=remove;
  $("ueCheckSave").onclick=saveCheck;
  return dialog;
@@ -193,12 +261,21 @@ function seedTypeFromForm(){
  return SEEDS.find(x=>x.system_group===$("ueEditGroup").value&&x.equipment_type===name)?._technicalType||"";
 }
 function advancedFields(type){
- return (F[type]||"").split(";").filter(Boolean).map(v=>{const p=v.split("|");return {key:p[0],title:p[1],unit:p[2]||""}});
+ return parseFieldSpec(FULL_FIELDS[type]||F[type]||"");
+}
+function fieldInputs(fields,values){
+ return fields.map(f=>'<label>'+esc(f.title)+(f.unit&&f.unit!=="@"?" ("+esc(f.unit)+")":"")+
+ '<input name="sp_'+esc(f.key)+'" type="'+(f.unit==="@"?"date":"text")+'" value="'+esc(values[f.key]||"")+'" maxlength="160"></label>').join("");
+}
+function collectAdvanced(){
+ const values={};$("ueAdvancedSpecs")?.querySelectorAll('[name^="sp_"]').forEach(i=>values[i.name.slice(3)]=i.value);return values;
 }
 function fillAdvanced(values={}){
  const type=editingType||seedTypeFromForm();
- const fields=advancedFields(type);
- $("ueAdvancedSpecs").innerHTML=fields.length?'<h3>Thông số kỹ thuật riêng</h3><div class="ueInspectGrid">'+fields.map(f=>'<label>'+esc(f.title)+(f.unit?" ("+esc(f.unit)+")":"")+'<input name="sp_'+esc(f.key)+'" value="'+esc(values[f.key]||"")+'" maxlength="160"></label>').join("")+'</div>':'';
+ const fields=advancedFields(type),profiles=extraFields(),warranty=installFields();
+ const block=(title,arr)=>arr.length?'<section class="ueSpecSection"><h3>'+esc(title)+'</h3><div class="ueInspectGrid">'+fieldInputs(arr,values)+'</div></section>':"";
+ $("ueAdvancedSpecs").innerHTML=block("Thông số kỹ thuật · "+$("ueEditType").value,fields)+
+ block("Xuất xứ & nhận dạng",profiles)+block("Lắp đặt · bảo hành · nhà thầu",warranty);
  if(!allowed())$("ueAdvancedSpecs").querySelectorAll("input").forEach(x=>x.disabled=true);
 }
 function renderHistory(x){
@@ -241,6 +318,7 @@ function openForm(id=""){
  form.elements.namedItem("capacity").value=specs.capacity||"";
  form.elements.namedItem("serial").value=specs.serial||"";
  form.elements.namedItem("verified").value=meta.verified?"1":"0";
+ form.elements.namedItem("inspectionInterval").value=meta.interval||G.find(g=>g[1]===values.system_group)?.[2]||30;
  $("ueLinkedAsset").innerHTML='<option value="">Chưa liên kết</option>'+
  linkedAssets.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.code||a.name)+' · '+esc(a.name)+'</option>').join("");
  $("ueLinkedAsset").value=meta.linkedAsset||"";
@@ -270,10 +348,11 @@ async function save(e){
  const old=items.find(x=>x.id===editId),oldMeta=metaOf(old);
  const type=editingType||seedTypeFromForm();
  const specs={...old?.specs,capacity:field("capacity"),serial:field("serial")};
- advancedFields(type).forEach(f=>{specs[f.key]=field("sp_"+f.key)});
+ [...advancedFields(type),...extraFields(),...installFields()].forEach(f=>{specs[f.key]=field("sp_"+f.key)});
  const asset=field("linkedAsset");
  if(asset&&!linkedAssets.some(x=>x.id===asset))return alert("Thiết bị bảo trì liên kết không hợp lệ");
- specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],condition:oldMeta.condition||"chua"};
+ const interval=Math.min(3650,Math.max(1,Number(field("inspectionInterval"))||G.find(g=>g[1]===field("system_group"))?.[2]||30));
+ specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,condition:oldMeta.condition||"chua"};
  const payload={building_id:BID,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
  location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),
  status:field("status"),install_year:year||null,note:field("note"),specs};
@@ -302,7 +381,7 @@ async function saveCheck(){
  try{
   const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,BID):[];
   const meta=metaOf(item);
-  const history=[...(meta.history||[]),{date,by,condition,note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()}];
+  const history=[...(meta.history||[]),{date,by,condition,note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()}].slice(-100);
   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+BID,{
    method:"PATCH",token:centralSession.access_token,
    body:{specs:{...item.specs,_estaUpgrade:{...meta,history,condition,lastCheck:date}}}
