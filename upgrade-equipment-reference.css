@@ -319,3 +319,46 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog .ueFormBody label :
   font-size:16px!important;
  }
 }
+
+/* Restored technical navigation rail; shared identically by NANGCAP and four buildings. */
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefLayout{
+ display:grid!important;
+ grid-template-columns:minmax(195px,220px) minmax(0,1fr)!important;
+ align-items:start;
+ gap:12px;
+ min-width:0;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefMain{
+ min-width:0;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefLayout .ueSystemRail{
+ display:flex!important;
+ flex-direction:column!important;
+ gap:6px!important;
+ padding:35px 8px 8px!important;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefLayout .ueRailCard{
+ width:100%;text-align:left;cursor:pointer;
+ min-height:52px!important;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefLayout .ueRailCard:focus-visible{
+ outline:2px solid #a46427!important;outline-offset:2px;
+}
+@media(max-width:1000px){
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefLayout{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefLayout .ueSystemRail{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  padding:29px 7px 7px!important;
+ }
+}
+@media(max-width:640px){
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefLayout .ueSystemRail{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefSurface{
+  padding:9px 7px 15px!important;
+ }
+}
