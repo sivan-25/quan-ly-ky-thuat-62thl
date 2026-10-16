@@ -246,7 +246,7 @@
       ["CẦN XỬ LÝ",selectedCount(records)]
     ].map(([name,value])=>'<div><span>'+name+'</span><strong>'+value+'</strong></div>').join("");
     const hint=$("#asPreviewHint");
-    if(hint)hint.textContent=state.loaded?"Thứ tự: quá hạn → khẩn cấp → chưa xử lý → kế hoạch chưa đến hạn → hoàn thành. "+records.length+" bản ghi.":"Nhấn Làm mới dữ liệu để xem trước.";
+    if(hint)hint.textContent=state.loaded?"Thứ tự: công việc có sao vàng → quá hạn → khẩn cấp → chưa xử lý → kế hoạch chưa đến hạn → hoàn thành. "+records.length+" bản ghi.":"Nhấn Làm mới dữ liệu để xem trước.";
     const focus=$("#asPriorityRows"),focusEmpty=$("#asPriorityEmpty");
     if(focus){const items=priorityItems(records);focus.innerHTML=items.map((r,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(r.content)+'</b><small>'+esc(r.proj)+' · '+esc(r.source)+'</small></td><td>'+esc(r.owner||"Chưa cập nhật")+'</td><td>'+esc(r.cause||"Chưa cập nhật")+'</td><td>'+esc(r.plan||"Chưa cập nhật")+'</td><td>'+esc(vn(r.due))+'</td></tr>').join("");if(focusEmpty)focusEmpty.textContent=state.loaded&&!items.length?"Không có công việc ưu tiên cần xử lý trong phạm vi đã chọn.":"";}
     const body=$("#asRows");
