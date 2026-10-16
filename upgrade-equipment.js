@@ -106,7 +106,7 @@ function viDate(date){
  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
  return m?m[3]+"/"+m[2]+"/"+m[1]:String(date);
 }
-function isDue(x){const due=inspectionDue(x),today=new Date().toLocaleDateString("en-CA");return !!due&&due<today}
+function isDue(x){const due=inspectionDue(x),d=new Date(),today=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");return !!due&&due<today}
 function conditionRank(x){const c=conditionOf(x);return ({hu:0,sua:1,theodoi:2,chua:3,tot:4,unverified:5,mau:6})[c]??7}
 
 const groups=G.map(g=>[g[1],g[0],g[3].map(x=>x[0]).concat(["Khác"])]);
@@ -115,7 +115,7 @@ const SEEDS=G.flatMap(g=>g[3].map((x,i)=>({
  location:x[1],_technicalType:x[2],_cadence:g[2],status:"",quantity:1,
  virtual:true,specs:{_estaUpgrade:{seedKey:g[0]+":"+i,verified:false,condition:"chua",history:[]}}
 })));
-const CONDITIONS={mau:"Mẫu chưa xác minh",unverified:"Chưa xác minh",chua:"Chưa kiểm tra",tot:"Tốt",theodoi:"Cần theo dõi",hu:"Hư hỏng",sua:"Đang sửa"};
+const CONDITIONS={mau:"Mẫu tham khảo",unverified:"Chưa xác minh",chua:"Chưa kiểm tra",tot:"Tốt",theodoi:"Cần theo dõi",hu:"Hư hỏng",sua:"Đang sửa",quahan:"Quá hạn kiểm tra"};
 const metaOf=x=>x?.specs?._estaUpgrade||{};
 const realRows=()=>items.filter(x=>!x.virtual);
 function catalog(){
@@ -129,7 +129,7 @@ function conditionOf(x){
 }
 const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
-const statuses=["Đang sử dụng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
+const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
 let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="";
 const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
@@ -159,45 +159,51 @@ async function load(force=false){
 
 function currentRows(){
  const q=search.trim().toLocaleLowerCase("vi-VN");
- return catalog().filter(x=>(!group||x.system_group===group)&&(!status||conditionOf(x)===status)&&
-  (!q||[x.name,x.code,x.system_group,x.equipment_type,x.brand,x.model,x.location].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
+ return catalog().filter(x=>(!group||x.system_group===group)&&(!status||(status==="quahan"?isDue(x):conditionOf(x)===status))&&
+  (!q||[x.name,x.code,x.system_group,x.equipment_type,x.brand,x.model,x.location,x.note].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
 }
 function list(){
  const host=$("ueRows"),counter=$("ueResultCount");
  if(!host)return;
- const rows=currentRows();
+ const rows=currentRows().slice().sort((a,b)=>conditionRank(a)-conditionRank(b)||Number(isDue(b))-Number(isDue(a))||label(a).localeCompare(label(b),"vi"));
  if(counter)counter.textContent=rows.length+" / "+catalog().length+" hạng mục";
  document.querySelectorAll("#updateAssetsPage [data-ue-group]").forEach(b=>b.classList.toggle("active",b.dataset.ueGroup===group));
- if(!rows.length){host.innerHTML='<div class="ueEmpty"><b>Không có thiết bị phù hợp.</b><p>Thử đổi nhóm hệ thống, trạng thái hoặc nội dung tìm kiếm.</p></div>';return}
+ document.querySelectorAll("#updateAssetsPage [data-ue-status-chip]").forEach(b=>{
+  const selected=b.dataset.ueStatusChip===status;b.classList.toggle("active",selected);b.setAttribute("aria-pressed",String(selected));
+ });
+ if(!rows.length){host.innerHTML='<div class="ueEmpty"><b>Không có thiết bị phù hợp.</b><p>Thử đổi nhóm hệ thống, tình trạng hoặc từ khóa tìm kiếm.</p><button type="button" class="ueBtnSecondary" id="ueClearFilter">Bỏ bộ lọc</button></div>';
+  $("ueClearFilter").onclick=()=>{search="";group="";status="";render($("updateAssetsPage"),true)};return}
  host.innerHTML=rows.map(x=>{
-  const c=conditionOf(x),virt=!!x.virtual;
-  return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+'" data-ue-id="'+esc(x.id)+'">'+
-   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(x.code|| (virt?'Mẫu thiết bị · Bấm để tạo hồ sơ':'Hồ sơ đã lưu'))+'</small></span></div>'+
+  const c=conditionOf(x),virt=!!x.virtual,due=inspectionDue(x),overdue=isDue(x),meta=metaOf(x);
+  const latest=meta.lastCheck||meta.history?.at(-1)?.date||"";
+  const detail=[x.code|| (virt?"Mẫu · Chưa tạo hồ sơ":"Chưa có mã"),[x.brand,x.model].filter(Boolean).join(" / "),!virt?"SL: "+safeQty(x.quantity):""].filter(Boolean).join(" · ");
+  return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="Xem hồ sơ '+esc(label(x))+'">'+
+   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(detail)+'</small></span></div>'+
    '<span class="ueItemGroup">'+esc(x.system_group)+'</span>'+
-   '<span class="ueItemModel">'+esc([x.brand,x.model].filter(Boolean).join(" / ")||"Chưa cập nhật")+'</span>'+
-   '<span class="ueItemPlace">'+esc(x.location||"—")+'</span>'+
-   '<span class="ueItemQty">'+(virt?'—':safeQty(x.quantity))+'</span>'+
-   '<span class="ueState '+(["hu","sua"].includes(c)?"ueCritical":c==="theodoi"?"ueWarn":c==="tot"?"ueGood":"ueStopped")+'">'+esc(CONDITIONS[c]||x.status||"—")+'</span>'+
-   '<span class="ueArrow">›</span></button>';
+   '<span class="ueState '+(["hu","sua"].includes(c)?"ueCritical":c==="theodoi"?"ueWarn":c==="tot"?"ueGood":"ueStopped")+'">'+esc(CONDITIONS[c]||"Chưa kiểm tra")+'</span>'+
+   '<span class="ueItemDate"><small class="ueMobileLabel">Kiểm tra</small>'+viDate(latest)+'</span>'+
+   '<span class="ueItemDue'+(overdue?' ueDateOverdue':'')+'"><small class="ueMobileLabel">Hạn kế tiếp</small>'+viDate(due)+(overdue?'<em>Quá hạn</em>':'')+'</span>'+
+   '<span class="ueItemPlace">'+esc(x.location||"—")+'</span><span class="ueArrow">›</span></button>';
  }).join("");
  host.querySelectorAll("[data-ue-id]").forEach(btn=>btn.onclick=()=>openForm(btn.dataset.ueId));
 }
 function render(page,skipLoad=false){
  if(!active()||!page)return;
  const count=catalog().length,verified=items.filter(x=>metaOf(x).verified);
- const alerts=verified.filter(x=>["hu","sua","theodoi"].includes(conditionOf(x)));
+ const alerts=verified.filter(x=>["hu","sua","theodoi"].includes(conditionOf(x))||isDue(x));
  page.classList.add("uePage");
  page.innerHTML=
-  '<section class="ueHero"><div><span class="ueEyebrow">ESTA · QUẢN LÝ HỆ THỐNG KỸ THUẬT</span><h1>Thông tin hệ thống tòa nhà</h1><p>44 danh mục có sẵn · 9 hệ thống · Hồ sơ, thông số và lịch sử kiểm tra thiết bị.</p></div><div class="ueHeroButtons"><button type="button" class="ueBtnSecondary" id="ueRefresh">↻ Làm mới</button><button type="button" class="ueBtnSecondary" id="uePrint">↓ PDF ESTA</button><button type="button" class="ueBtnPrimary" id="ueAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div></section>'+
-  '<section class="ueStats"><div><small>Danh mục có sẵn</small><b>'+SEEDS.length+'</b><em>Mẫu chưa xác minh</em></div><div><small>Hồ sơ đã lưu</small><b>'+items.length+'</b><em>Dữ liệu dự án</em></div><div><small>Đã xác minh</small><b>'+verified.length+'</b><em>'+eqCount()+' thiết bị thực tế</em></div><div><small>Cần theo dõi</small><b>'+alerts.length+'</b><em>Chỉ tính hồ sơ xác minh</em></div></section>'+
+  '<section class="ueHero"><div><span class="ueEyebrow">ESTA · BẢN NÂNG CẤP</span><h1>Thông tin hệ thống tòa nhà</h1><p>9 hệ thống · 44 thiết bị mẫu · Tra cứu thông số và lịch sử kiểm tra</p></div><div class="ueHeroButtons"><button type="button" class="ueBtnSecondary" id="ueRefresh">↻ Làm mới</button><button type="button" class="ueBtnSecondary" id="uePrint">↓ In / PDF</button><button type="button" class="ueBtnPrimary" id="ueAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div></section>'+
+  '<section class="ueStats"><div><small>Danh mục có sẵn</small><b>'+SEEDS.length+'</b><em>Mẫu chưa xác minh</em></div><div><small>Hồ sơ đã lưu</small><b>'+items.length+'</b><em>Dữ liệu dự án</em></div><div><small>Đã xác minh</small><b>'+verified.length+'</b><em>'+eqCount()+' thiết bị thực tế</em></div><div><small>Cần chú ý / quá hạn</small><b>'+alerts.length+'</b><em>Chỉ tính thiết bị đã xác minh</em></div></section>'+
   '<section class="ueSystemPanel"><header><h2>9 nhóm hệ thống</h2><p>Chọn nhóm để xem thiết bị mẫu hoặc hồ sơ đã lưu.</p></header><div class="ueSystemGrid">'+
   '<button type="button" data-ue-group="" class="ueSystemChip'+(!group?' active':'')+'"><b>Tất cả</b><span>'+count+' mục</span></button>'+
   G.map((g,i)=>'<button type="button" data-ue-group="'+esc(g[1])+'" class="ueSystemChip'+(group===g[1]?' active':'')+'"><b>'+esc(g[1])+'</b><span>'+groupCount(g[1])+' mục</span></button>').join("")+
   '</div></section>'+
   '<section class="uePanel"><header class="uePanelHead"><div><h2>Danh mục thiết bị kỹ thuật</h2><p>Nhấn vào thiết bị để điền thông số, xác minh, ghi kiểm tra hoặc chụp ảnh.</p></div><strong id="ueResultCount"></strong></header>'+
-  '<div class="ueFilters"><label class="ueSearch"><span>⌕</span><input id="ueSearch" type="search" placeholder="Tìm tên, mã, hãng, vị trí..." value="'+esc(search)+'" autocomplete="off"></label><select id="ueGroup" aria-label="Nhóm hệ thống"><option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select><select id="ueStatus" aria-label="Tình trạng"><option value="">Mọi tình trạng</option>'+Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div>'+
+  '<div class="ueFilters"><label class="ueSearch"><span>⌕</span><input id="ueSearch" type="search" placeholder="Tìm tên, mã, hãng, vị trí, ghi chú..." value="'+esc(search)+'" autocomplete="off"></label><select id="ueGroup" aria-label="Nhóm hệ thống"><option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select><select id="ueStatus" aria-label="Tình trạng"><option value="">Mọi tình trạng</option>'+Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div>'+
   (error?'<p class="ueError" role="alert">'+esc(error)+'</p>':'')+
-  '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Hãng / Model</span><span>Vị trí</span><span>SL</span><span>Tình trạng</span><span></span></div><div id="ueRows" class="ueRows"></div></section>'+
+  '<div class="ueQuickState" aria-label="Lọc nhanh theo tình trạng">'+[['','Tất cả'],['hu','Hư hỏng'],['sua','Đang sửa'],['theodoi','Theo dõi'],['quahan','Quá hạn'],['tot','Tốt'],['chua','Chưa kiểm tra']].map(([k,t])=>'<button type="button" data-ue-status-chip="'+k+'" aria-pressed="'+(status===k)+'">'+t+'</button>').join('')+'</div>'+ 
+ '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Tình trạng</span><span>Kiểm tra gần nhất</span><span>Hạn kế tiếp</span><span>Vị trí</span><span></span></div><div id="ueRows" class="ueRows"></div></section>'+
   '<p class="ueSourceNote">44 dòng là mẫu tham khảo, không phải 44 thiết bị đang hoạt động. Dữ liệu chỉ ghi nhận sau khi Lưu và xác minh tại dự án Bản nâng cấp.</p>';
  $("ueRefresh").onclick=()=>{fetchedAt=0;load(true)};
  $("uePrint").onclick=printReport;
@@ -206,6 +212,7 @@ function render(page,skipLoad=false){
  $("ueGroup").onchange=e=>{group=e.target.value;list()};
  $("ueStatus").onchange=e=>{status=e.target.value;list()};
  page.querySelectorAll("[data-ue-group]").forEach(b=>b.onclick=()=>{group=b.dataset.ueGroup;$("ueGroup").value=group;list()});
+ page.querySelectorAll("[data-ue-status-chip]").forEach(b=>b.onclick=()=>{status=status===b.dataset.ueStatusChip&&status?"":b.dataset.ueStatusChip;$("ueStatus").value=status;list()});
  list();
  if(!skipLoad&&!fetchedAt)load();
 }
@@ -381,10 +388,10 @@ async function saveCheck(){
  try{
   const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,BID):[];
   const meta=metaOf(item);
-  const history=[...(meta.history||[]),{date,by,condition,note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()}].slice(-100);
+  const history=[...(meta.history||[]),{date,by,condition,note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()}].sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.createdAt).localeCompare(String(b.createdAt))).slice(-100); const latest=history.at(-1);
   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+BID,{
    method:"PATCH",token:centralSession.access_token,
-   body:{specs:{...item.specs,_estaUpgrade:{...meta,history,condition,lastCheck:date}}}
+   body:{specs:{...item.specs,_estaUpgrade:{...meta,history,condition:latest.condition,lastCheck:latest.date}}}
   });
   fetchedAt=0;await load(true);openForm(item.id);
   if(typeof toast==="function")toast("Đã lưu lịch sử kiểm tra và hình ảnh.");
@@ -393,7 +400,7 @@ async function saveCheck(){
 }
 async function printReport(){
  if(!active())return;
- const rows=currentRows(),verified=rows.filter(x=>!x.virtual&&metaOf(x).verified);
+ const rows=currentRows().filter(x=>!x.virtual&&metaOf(x).verified),verified=rows;
  const win=window.open("","_blank");if(!win){alert("Trình duyệt đang chặn cửa sổ in.");return}
  const escPrint=esc;
  const parts=[];
@@ -406,16 +413,17 @@ async function printReport(){
  const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - Bản nâng cấp - Hệ thống kỹ thuật</title>'+
  '<style>@page{size:A4;margin:13mm}body{font:12px Arial,sans-serif;color:#243b44}header{border-bottom:2px solid #214a43;padding-bottom:9px}h1{font-size:19px}h2{font-size:14px;margin-top:17px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #bdc9c4;padding:7px;text-align:left}th{background:#e8f0ea}tr{break-inside:avoid}.notice{font-size:11px;color:#546c66}.proof{break-inside:avoid}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.photos img{max-width:100%;max-height:76mm;object-fit:contain;border:1px solid #d3dcda}footer{display:flex;justify-content:space-between;margin-top:27mm;break-inside:avoid}</style></head><body>'+
  '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: Bản nâng cấp · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
- '<p class="notice">'+rows.length+' hạng mục theo bộ lọc · '+verified.length+' hồ sơ thực tế đã xác minh. Các mẫu chưa xác minh không được tính là thiết bị đang vận hành.</p>'+
- '<table><thead><tr><th>STT</th><th>Thiết bị</th><th>Nhóm hệ thống</th><th>Vị trí</th><th>Trạng thái</th><th>Kiểm tra</th></tr></thead><tbody>'+
+ '<p class="notice">'+verified.length+' hồ sơ đã xác minh theo bộ lọc. Mẫu và thiết bị chưa xác minh không xuất hiện trong báo cáo.</p>'+
+ '<table><thead><tr><th>STT</th><th>Thiết bị</th><th>Nhóm hệ thống</th><th>Vị trí</th><th>Tình trạng</th><th>Kiểm tra</th><th>Hạn kế tiếp</th></tr></thead><tbody>'+
  rows.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escPrint(x.name)+'</td><td>'+escPrint(x.system_group)+'</td><td>'+escPrint(x.location||"—")+'</td><td>'+
- escPrint(CONDITIONS[conditionOf(x)]||"—")+'</td><td>'+escPrint(metaOf(x).lastCheck||"—")+'</td></tr>').join("")+
+ escPrint(CONDITIONS[conditionOf(x)]||"—")+'</td><td>'+escPrint(viDate(metaOf(x).lastCheck))+'</td><td>'+escPrint(viDate(inspectionDue(x)))+'</td></tr>').join("")+
  '</tbody></table><h2>HÌNH ẢNH KIỂM TRA (HỒ SƠ XÁC MINH)</h2>'+parts.join("")+
  '<footer><div>Người lập phiếu<br><br><br>________________</div><div>Kỹ thuật xác nhận<br><br><br>________________</div></footer></body></html>';
  win.document.open();win.document.write(html);win.document.close();
  let printed=false;const trigger=()=>{if(printed||win.closed)return;printed=true;win.focus();win.print()};
  win.addEventListener("load",trigger,{once:true});
- setTimeout(trigger,1500);
+ Promise.all([...win.document.images].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve}))).then(trigger);
+ setTimeout(trigger,4500);
 }
 
 async function remove(){
