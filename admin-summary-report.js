@@ -54,7 +54,7 @@
   function record(cat,proj,content,when,status,detail,opts={}) {
     const open = opts.open === undefined ? !finished(status) : !!opts.open;
     return {cat,proj,content:String(content || "—"),when:day(when)||"",due:day(opts.due)||"",status:String(status || "—"),detail:String(detail||"—"),priority:opts.priority||"",open,photos:arr(opts.photos),
-      owner:String(opts.owner||""),cause:String(opts.cause||""),plan:String(opts.plan||""),source:String(opts.source||"Dự án ghi nhận")};
+      owner:String(opts.owner||""),cause:String(opts.cause||""),plan:String(opts.plan||""),starred:opts.starred===true,source:String(opts.source||"Dự án ghi nhận")};
   }
   function eligibleRow(r) {return state.projects.has(scope(r?.building?.id));}
   function buildRecords() {
@@ -68,7 +68,7 @@
         if(!include(start,!done,due))continue;
         push("work",name,t.c||"Công việc kỹ thuật",start,t.s||"Chưa thực hiện",
           [t.t,t.a||arr(t.performers).join(", "),t.n,t.result].filter(Boolean).join(" · "),
-          {due,priority:t.priority,open:!done,photos:t.imgs,
+          {due,priority:t.priority,starred:t.supervisorStarred===true,open:!done,photos:t.imgs,
            owner:arr(t.performers).join(", ")||t.a||"",cause:t.cause||"",plan:t.solution||t.actionPlan||t.result||"",
            source:t.dispatchedByAdmin===true||t.dispatchGroupId?"Admin giao dự án":"Dự án ghi nhận"});
       }
@@ -167,7 +167,7 @@
         {open:!done,due,priority:t.priority,photos:t.image_paths,
          owner:t.assignee||"Admin",cause:t.cause||"",plan:t.solution||t.action_plan||"",source:"Admin · Công việc cá nhân"});
     }
-    out.sort((a,b)=>severity(a)-severity(b)||String(a.due||a.when).localeCompare(String(b.due||b.when))||String(a.proj).localeCompare(String(b.proj)));
+    out.sort((a,b)=>Number(b.starred)-Number(a.starred)||severity(a)-severity(b)||String(a.due||a.when).localeCompare(String(b.due||b.when))||String(a.proj).localeCompare(String(b.proj)));
     return out;
   }
   const safeSource = async(path,token) => {
