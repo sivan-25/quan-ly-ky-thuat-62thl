@@ -131,7 +131,8 @@ function conditionOf(x){
 const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
-let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",summaryCollapsed=false;
+let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",summaryCollapsed=false,systemsCollapsed=false;
+try{systemsCollapsed=window.localStorage.getItem("esta:nangcap:systemsCollapsed")==="1"}catch{}
 const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
@@ -288,7 +289,10 @@ function render(page,skipLoad=false){
      const val=k===""?overview.count:stats[k];
      return '<button type="button" class="ueSummaryState'+(status===k?' active':'')+'" data-ue-status-chip="'+k+'" aria-pressed="'+(status===k)+'"><b style="color:'+c+'">'+val+'</b><span>'+t+'</span></button>';
    }).join("")+'</div></div><div class="ueSummaryCaption">'+esc(line)+'</div></div></section>'+
-  '<div class="ueClassicGrid"><nav class="ueSystemRail" aria-label="Danh sách hệ thống kỹ thuật">'+
+  '<div class="ueClassicGrid'+(systemsCollapsed?' ueRailCollapsed':'')+'"><nav id="ueSystemRail" class="ueSystemRail'+(systemsCollapsed?' ueCollapsed':'')+'" aria-label="Danh sách hệ thống kỹ thuật">'+
+    '<button type="button" id="ueRailToggle" class="ueRailToggle" aria-controls="ueRailOptions" aria-expanded="'+(!systemsCollapsed)+'" aria-label="'+(systemsCollapsed?'Mở rộng danh sách hệ thống':'Thu gọn danh sách hệ thống')+'" title="'+(systemsCollapsed?'Mở rộng hệ thống':'Thu gọn hệ thống')+'">'+(systemsCollapsed?'›':'‹')+'</button>'+
+    '<span class="ueRailCompactLabel">Hệ thống · '+esc(group||'Tất cả hệ thống')+'</span>'+
+    '<div id="ueRailOptions" class="ueRailOptions"'+(systemsCollapsed?' aria-hidden="true"':'')+'>'+
     '<button type="button" data-ue-group="" class="ueRailCard'+(!group?' active':'')+'" aria-pressed="'+(!group)+'">'+UE_ALL_ICON+
       '<span class="ueRailText"><b>Tất cả hệ thống</b><small>'+catalog().length+' hạng mục · '+realRows().length+' đã lưu</small></span><span class="ueRailBar"></span></button>'+
     G.map(g=>{const c=ueSystemCounts(g),total=c.size;
@@ -296,7 +300,7 @@ function render(page,skipLoad=false){
       return '<button type="button" data-ue-group="'+esc(g[1])+'" class="ueRailCard'+(group===g[1]?' active':'')+'" aria-pressed="'+(group===g[1])+'">'+
        ueIcon(UE_SYSTEM_ICONS[g[0]])+'<span class="ueRailText"><b>'+esc(g[1])+'</b><small>'+catalog().filter(x=>x.system_group===g[1]).length+' hạng mục · '+total+' đã lưu</small></span>'+
        '<span class="ueRailBar">'+bars+'</span></button>';
-     }).join("")+'</nav>'+
+     }).join("")+'</div></nav>'+
    '<section class="ueClassicMain"><div class="ueMainHead"><div><h2>'+esc(groupLabel)+'</h2><p>'+esc(description)+'</p></div>'+
      '<div class="ueMainTools"><label class="ueSearch"><span aria-hidden="true">⌕</span><input id="ueSearch" type="search" placeholder="Tìm theo tên, vị trí, ghi chú" value="'+esc(search)+'" autocomplete="off" aria-label="Tìm thiết bị"></label>'+
       '<select id="ueGroup" aria-label="Chọn hệ thống">'+
@@ -317,6 +321,19 @@ function render(page,skipLoad=false){
   button.setAttribute("aria-expanded",String(!summaryCollapsed));
   button.setAttribute("aria-label",summaryCollapsed?"Mở rộng thống kê":"Thu gọn thống kê");
   button.title=summaryCollapsed?"Mở rộng":"Thu gọn";
+ };
+ $("ueRailToggle").onclick=()=>{
+  systemsCollapsed=!systemsCollapsed;
+  const rail=$("ueSystemRail"),grid=rail.closest(".ueClassicGrid"),options=$("ueRailOptions"),button=$("ueRailToggle");
+  grid.classList.toggle("ueRailCollapsed",systemsCollapsed);
+  rail.classList.toggle("ueCollapsed",systemsCollapsed);
+  button.textContent=systemsCollapsed?"›":"‹";
+  button.setAttribute("aria-expanded",String(!systemsCollapsed));
+  button.setAttribute("aria-label",systemsCollapsed?"Mở rộng danh sách hệ thống":"Thu gọn danh sách hệ thống");
+  button.title=systemsCollapsed?"Mở rộng hệ thống":"Thu gọn hệ thống";
+  if(systemsCollapsed)options.setAttribute("aria-hidden","true");
+  else options.removeAttribute("aria-hidden");
+  try{window.localStorage.setItem("esta:nangcap:systemsCollapsed",systemsCollapsed?"1":"0")}catch{}
  };
  $("ueRefresh").onclick=()=>{fetchedAt=0;load(true)};
  $("uePrint").onclick=printReport;

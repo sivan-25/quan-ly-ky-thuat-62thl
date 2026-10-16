@@ -565,3 +565,106 @@ body.estaUpgradeMode .ueDialog footer .ueDelete[hidden]{
  #app.estaUpgradeMode #updateAssetsPage .ueItemSpecifications{grid-column:1/-1;grid-row:4;padding:3px 0 0!important}
  #app.estaUpgradeMode #updateAssetsPage .ueSpecPill{font-size:10px;padding:3px 6px}
 }
+
+
+/* ESTA NANGCAP / compactible system navigation and conspicuous bronze toggles */
+#app.estaUpgradeMode #updateAssetsPage .ueSystemRail{
+ position:relative;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueRailOptions{
+ display:contents;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueRailCompactLabel{
+ display:none;
+ color:#411437;
+ font-size:11px;
+ line-height:1.3;
+ font-weight:800;
+ min-width:0;
+ overflow-wrap:anywhere;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueRailToggle,
+#app.estaUpgradeMode #updateAssetsPage .ueSummaryToggle{
+ display:grid!important;
+ place-items:center!important;
+ position:absolute;
+ top:6px;
+ right:7px;
+ z-index:4;
+ width:30px!important;
+ height:30px!important;
+ min-width:30px!important;
+ min-height:30px!important;
+ padding:0!important;
+ color:#fffaf2!important;
+ background:#a46427!important;
+ border:1px solid #874b16!important;
+ border-radius:8px!important;
+ box-shadow:0 1px 3px rgba(65,20,55,.22);
+ font-family:Arial,sans-serif!important;
+ font-size:25px!important;
+ line-height:1!important;
+ font-weight:800!important;
+ cursor:pointer;
+ transition:background .15s ease,box-shadow .15s ease;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueRailToggle:hover,
+#app.estaUpgradeMode #updateAssetsPage .ueSummaryToggle:hover{
+ background:#78400f!important;
+ box-shadow:0 2px 7px rgba(65,20,55,.25);
+}
+#app.estaUpgradeMode #updateAssetsPage .ueRailToggle:focus-visible,
+#app.estaUpgradeMode #updateAssetsPage .ueSummaryToggle:focus-visible{
+ outline:3px solid #411437!important;
+ outline-offset:2px!important;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueSummaryCaption{
+ padding-right:40px!important;
+}
+/* Desktop: remove the unused side width instead of merely hiding the cards. */
+#app.estaUpgradeMode #updateAssetsPage .ueClassicGrid.ueRailCollapsed{
+ grid-template-columns:54px minmax(0,1fr)!important;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemRail.ueCollapsed{
+ display:flex!important;
+ flex-direction:column!important;
+ min-height:52px!important;
+ width:54px;
+ max-width:100%;
+ padding:0!important;
+ margin:0!important;
+ border-radius:10px!important;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemRail.ueCollapsed:before{
+ display:none!important;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemRail.ueCollapsed .ueRailOptions{
+ display:none!important;
+}
+#app.estaUpgradeMode #updateAssetsPage .ueSystemRail.ueCollapsed .ueRailToggle{
+ top:10px!important;
+ right:50%!important;
+ transform:translateX(50%);
+}
+@media(max-width:1190px){
+ /* On tablets/mobile the collapsed rail becomes one short horizontal bar. */
+ #app.estaUpgradeMode #updateAssetsPage .ueClassicGrid.ueRailCollapsed{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueSystemRail.ueCollapsed{
+  width:100%;
+  max-width:100%;
+  min-height:45px!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  padding:6px 46px 6px 12px!important;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueSystemRail.ueCollapsed .ueRailCompactLabel{
+  display:block;
+ }
+ #app.estaUpgradeMode #updateAssetsPage .ueSystemRail.ueCollapsed .ueRailToggle{
+  top:6px!important;
+  right:7px!important;
+  transform:none;
+ }
+}
