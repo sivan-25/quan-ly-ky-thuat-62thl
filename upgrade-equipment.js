@@ -503,8 +503,8 @@ function formError(message){
  if(target){target.hidden=false;target.textContent="⚠ "+String(message||"Không thực hiện được thao tác.")}
  else alert(String(message||"Không thực hiện được thao tác."));
 }
-async function getSaved(id){
- const rows=await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID+"&select=*&limit=1",{token:centralSession?.access_token});
+async function getSaved(id,building=currentEquipmentProjectId()){
+ const rows=await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+building+"&select=*&limit=1",{token:centralSession?.access_token});
  return Array.isArray(rows)?rows[0]||null:null;
 }
 async function save(e){
