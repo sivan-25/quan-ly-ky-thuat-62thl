@@ -308,7 +308,7 @@
       const success=await window.exportGenericEstaPdf({
         building:"",hideBuilding:true,title:"BÁO CÁO GIÁM SÁT KỸ THUẬT",
         sectionLabel:"BÁO CÁO TỔNG HỢP · ESTA",
-        signaturePosition:"supervision",signer:{name:"Sĩ Phan",image_data_url:""},
+        signaturePosition:"supervision",signer:{name:"Sĩ Văn",image_data_url:""},
         tableLabel:"DANH SÁCH HẠNG MỤC ĐÃ CHỌN",
         subtitle:"Bốn dự án và công việc riêng Admin (khi chọn Công việc) · "+selectedNames.join(" / "),
         periodLabel:"Từ "+vn(state.from)+" đến "+vn(state.to),
@@ -346,7 +346,7 @@
       '#estaAdminSummaryPage button:disabled{opacity:.5;cursor:not-allowed}'+
       '#estaAdminSummaryPage .asCard{background:#fffdf8;border:1px solid #ded8c6;border-radius:12px;padding:16px;margin-bottom:14px}'+
       '#estaAdminSummaryPage .asCard h3{font-size:15px;color:#315347;margin-bottom:11px}'+
-      '#estaAdminSummaryPage .asActions{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:12px 0}'+
+      '#estaAdminSummaryPage .asHeadButtons{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}#estaAdminSummaryPage .asHeadButtons .asPrimary{white-space:nowrap;min-width:160px}#estaAdminSummaryPage .asActions{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:12px 0}'+
       '#estaAdminSummaryPage .asDateFields{display:flex;flex-wrap:wrap;gap:12px}'+
       '#estaAdminSummaryPage .asDateFields label{display:grid;gap:5px;min-width:150px;flex:1;color:#637264;font-size:12px}'+
       '#estaAdminSummaryPage .asPeriod.active{background:#315b4b;color:#fff;border-color:#315b4b}'+
@@ -380,12 +380,12 @@
       '@media(max-width:740px){#estaAdminSummaryPage{padding:11px}#estaAdminSummaryPage .asGrid{grid-template-columns:1fr}#estaAdminSummaryPage .asChecks{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asKpis{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asHead{align-items:flex-start}#estaAdminSummaryPage h2{font-size:19px}}';
     document.head.appendChild(css);
     const view=document.createElement("section");view.id="estaAdminSummaryPage";view.hidden=true;
-    view.innerHTML='<div class="asHead"><div><h2>Báo cáo tổng hợp</h2><p class="asSub">ESTA · Báo cáo Giám sát Kỹ thuật · Bốn dự án và công việc riêng Admin</p></div><button id="asBack" class="asBtn" type="button">← Tổng quan Admin</button></div>'+
+    view.innerHTML='<div class="asHead"><div><h2>Báo cáo tổng hợp</h2><p class="asSub">ESTA · Báo cáo Giám sát Kỹ thuật · Bốn dự án và công việc riêng Admin</p></div><div class="asHeadButtons"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button><button id="asBack" class="asBtn" type="button">← Tổng quan Admin</button></div></div>'+
       '<div class="asCard"><h3>1. Kỳ báo cáo</h3><div class="asActions" role="group" aria-label="Lựa chọn kỳ báo cáo"><button id="asWeek" class="asBtn asPeriod active" type="button">Theo tuần</button><button id="asMonthApply" class="asBtn asPeriod" type="button">Theo tháng</button><button id="asCustom" class="asBtn asPeriod" type="button">Từ ngày đến ngày</button></div><div class="asDateFields"><label>Chọn tháng<input id="asMonth" type="month" aria-label="Tháng báo cáo"></label><label>Từ ngày<input id="asFrom" type="date"></label><label>Đến ngày<input id="asTo" type="date"></label></div><div class="asActions"><button id="asRefresh" class="asBtn" type="button">↻ Làm mới dữ liệu</button><span class="asHint" id="asPeriodSummary"></span></div></div>'+
       '<div class="asGrid"><div class="asCard"><h3>2. Chọn dự án</h3><div class="asActions"><button class="asBtn" data-as-project-all="1">Chọn cả 4</button><button class="asBtn" data-as-project-all="0">Bỏ chọn</button></div><div class="asChecks" id="asProjectList"></div><p class="asHint">Công việc riêng của Admin đi kèm khi tích “Công việc”, kể cả không liên kết dự án.</p></div>'+
       '<div class="asCard"><h3>3. Chọn hạng mục cần xuất PDF</h3><div class="asActions"><button class="asBtn" data-as-cat-all="1">Chọn tất cả</button><button class="asBtn" data-as-cat-all="0">Bỏ chọn</button></div><div class="asChecks" id="asCategoryList"></div></div></div>'+
       '<div class="asCard asPriorityCard"><h3>4. Công việc cần ưu tiên xử lý</h3><p class="asHint">Chỉ hiển thị việc quá hạn, khẩn cấp hoặc cần xử lý ngay. Không tính các việc chưa đến hạn.</p><div class="asTable"><table><thead><tr><th>#</th><th>Công việc / Nguồn</th><th>Người phụ trách</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hạn dự kiến</th></tr></thead><tbody id="asPriorityRows"></tbody></table></div><p class="asHint" id="asPriorityEmpty"></p></div>'+ 
-      '<div class="asCard"><h3>5. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><div class="asActions"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button></div><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Phan. Dữ liệu các dự án được giữ độc lập.</p></div>';
+      '<div class="asCard"><h3>5. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Văn. Dữ liệu các dự án được giữ độc lập.</p></div>';
     document.body.appendChild(view);
     $("#asFrom").value=state.from;$("#asTo").value=state.to;$("#asMonth").value=today().slice(0,7);updatePeriodUI("week");
     const nav=$("#navAdmin");
