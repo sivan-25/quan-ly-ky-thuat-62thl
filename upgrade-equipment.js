@@ -4,7 +4,10 @@
  */
 (()=>{
 "use strict";
-const BID="NANGCAP",TABLE="building_equipment_profiles_nangcap";
+const TABLE="building_equipment_profiles_nangcap";
+const EQUIPMENT_PROJECTS=new Set(["NANGCAP","68PĐL","62THL","127HH","130HH"]);
+const currentEquipmentProjectId=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"");
+const projectDisplayName=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.name||currentBuilding?.id||"Dự án":"Dự án");
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const G=[
@@ -132,7 +135,16 @@ const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
 let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
-const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
+let scopedBuildingId="";
+function ensureScope(){
+ const id=currentEquipmentProjectId();
+ if(scopedBuildingId!==id){
+  closeForm();scopedBuildingId=id;items=[];linkedAssets=[];fetchedAt=0;loading=null;
+  error="";search="";group="";status="";expandedDeviceId="";
+ }
+ return id;
+}
+const active=()=>EQUIPMENT_PROJECTS.has(currentEquipmentProjectId())&&typeof projectOverviewActive!=="undefined"&&projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
 const gopts=()=>groups.map(g=>g[0]);
@@ -143,17 +155,19 @@ const label=x=>x?.name||x?.equipment_type||"Chưa đặt tên";
 const isPresent=()=>active()&&!!$("updateAssetsPage")&&!$("updateAssetsPage").classList.contains("hide");
 async function load(force=false){
  if(!active())return;
+ const building=ensureScope();
  if(loading)return loading;
  if(!force&&fetchedAt&&Date.now()-fetchedAt<20000)return;
- const building=BID;
  loading=(async()=>{
   try{
    const result=await sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token});
-   if(!active())return;
+   if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
    items=Array.isArray(result)?result:[];error="";fetchedAt=Date.now();
-   sbFetch("/rest/v1/maintenance_assets?building_id=eq.NANGCAP&select=id,name,code,location&order=name.asc",{token:centralSession?.access_token}).then(a=>{if(active())linkedAssets=Array.isArray(a)?a:[]}).catch(()=>{linkedAssets=[]});
-  }catch(e){if(active())error=e?.message||"Không tải được danh mục thiết bị.";}
-  finally{loading=null;if(isPresent())render($("updateAssetsPage"),true);}
+   sbFetch("/rest/v1/maintenance_assets?building_id=eq."+encodeURIComponent(building)+"&select=id,name,code,location&order=name.asc",{token:centralSession?.access_token})
+    .then(a=>{if(active()&&scopedBuildingId===building)linkedAssets=Array.isArray(a)?a:[]})
+    .catch(()=>{if(scopedBuildingId===building)linkedAssets=[]});
+  }catch(e){if(active()&&scopedBuildingId===building)error=e?.message||"Không tải được danh mục thiết bị.";}
+  finally{if(scopedBuildingId===building){loading=null;if(isPresent())render($("updateAssetsPage"),true);}}
  })();
  return loading;
 }
@@ -300,6 +314,7 @@ function list(){
 /* Reference layout applies only when the current building is NANGCAP. */
 function render(page,skipLoad=false){
  if(!active()||!page)return;
+ ensureScope();
  page.classList.remove("ueClassic");
  page.classList.add("uePage","ueSnapshot");
  page.innerHTML=
