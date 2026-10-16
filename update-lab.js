@@ -3,6 +3,7 @@
 
 const UPDATE_ID="UPDATE";
 const DEMO_ID="DEMO";
+const TECHNICAL_INFO_PROJECTS=new Set(["NANGCAP","68PĐL","62THL","127HH","130HH"]);
 const LIVE_MOBILE_NAV_PROJECTS=new Set(["127HH","130HH","62THL","68PDL","NANGCAP"]);
 const SLA_RULES={
  Critical:{response:5,target:30,label:"Critical"},
@@ -660,7 +661,7 @@ function updateApplyMode(){
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.toggle("hide",!on));
  $("#updateTrialRibbon")?.classList.toggle("hide",!on||!updateIsSandbox());
  const equipmentNavLabel=$("#navUpdateAssets span");
- if(equipmentNavLabel)equipmentNavLabel.textContent=updateScopeId()==="NANGCAP"?"Thông tin hệ thống":"Tài sản & Thiết bị";
+ if(equipmentNavLabel)equipmentNavLabel.textContent=TECHNICAL_INFO_PROJECTS.has(updateScopeId())?"Thông tin hệ thống":"Tài sản & Thiết bị";
  const mobileNavOn=updateMobileNavAllowed();
  $("#updateMobileNav")?.classList.toggle("hide",!mobileNavOn);
  $("#updateMobileNav")?.classList.toggle("liveProjectMobileNav",mobileNavOn&&!updateIsSandbox());
@@ -696,6 +697,9 @@ function updateApplyMode(){
 }
 function updateHideStandalonePages(){
  document.querySelectorAll(".updateOpsPage").forEach(x=>x.classList.add("hide"));
+ $("#app")?.classList.remove("estaTechnicalAssetsMode");
+ document.body.classList.remove("estaTechnicalAssetsMode");
+ window.estaUpgradeAssets?.close?.();
  document.querySelectorAll(".updateOnlyNav").forEach(x=>x.classList.remove("active"));
  $("#topUpdateTitle")?.classList.add("hide");
  $("#app")?.classList.remove("updateStandaloneMode");
@@ -745,6 +749,14 @@ function updateSetTop(title,subtitle){
   const p=t.querySelector("p");if(p)p.textContent=subtitle||(updateIsSandbox()?"UPDATE · THỬ NGHIỆM":updateProjectName());
  }
 }
+function updateShowTechnicalEquipment(page){
+ if(!TECHNICAL_INFO_PROJECTS.has(updateScopeId())||!window.estaUpgradeAssets?.render)return false;
+ const useSharedStyling=updateScopeId()!=="NANGCAP";
+ $("#app")?.classList.toggle("estaTechnicalAssetsMode",useSharedStyling);
+ document.body.classList.toggle("estaTechnicalAssetsMode",useSharedStyling);
+ window.estaUpgradeAssets.render(page);
+ return true;
+}
 function updateShowStandalone(name){
  if(!updateIs())return;
  if(["team","shift","cost"].includes(name)){showHome();return}
@@ -762,9 +774,9 @@ function updateShowStandalone(name){
  page.classList.remove("hide");
  $("#navUpdate"+id)?.classList.add("active");
  $("#app").classList.add("updateStandaloneMode","updateProjectMode");
- updateSetTop(name==="assets"&&updateScopeId()==="NANGCAP"?"Thông tin hệ thống tòa nhà":{assets:"Tài sản & Thiết bị",team:"Nhân sự kỹ thuật",shift:"Ca trực & Bàn giao",cost:"Chi phí & KPI"}[name]);
+ updateSetTop(name==="assets"&&TECHNICAL_INFO_PROJECTS.has(updateScopeId())?"Thông tin hệ thống tòa nhà":{assets:"Tài sản & Thiết bị",team:"Nhân sự kỹ thuật",shift:"Ca trực & Bàn giao",cost:"Chi phí & KPI"}[name]);
  setMobileMenuOpen(false,true);
- if(name==="assets"&&updateScopeId()==="NANGCAP"&&window.estaUpgradeAssets?.render){window.estaUpgradeAssets.render(page);return;}
+ if(name==="assets"&&updateShowTechnicalEquipment(page))return;
 
  // Render immediately from the current cache so a navigation click never waits on network.
  if(updateState.loaded)updateRenderStandaloneNow(name);
@@ -894,7 +906,7 @@ function updateOpenHealth(){
 
 function updateRenderAssets(filterCode=""){
  const page=$("#updateAssetsPage");if(!page)return;
- if(updateScopeId()==="NANGCAP"&&window.estaUpgradeAssets?.render){window.estaUpgradeAssets.render(page);return;}
+ if(updateShowTechnicalEquipment(page))return;
  const systems=updateState.systems.filter(s=>updateState.assets.some(a=>a.system_code===s.code));
  page.innerHTML=
   '<section class="updateModuleHero"><div><span>ASSET REGISTRY</span><h1>Tài sản & Thiết bị</h1><p>Cây tài sản liên kết Work Order, PM, sự cố, meter, chi phí, bảo hành và QR.</p></div><div class="updateModuleHeroStats"><b>'+updateState.assets.length+'</b><span>thiết bị</span><b>'+updateState.assets.filter(a=>a.criticality==="A").length+'</b><span>Critical A</span></div></section>'+
