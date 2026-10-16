@@ -26,8 +26,10 @@ assert(src.includes('class="ueRefColHead"'),"reference headings required");
 assert(src.includes('class="ueRefDetails"'),"accordion must be present");
 assert(src.includes("data-ue-check"),"inspection shortcut required");
 assert(src.includes("data-ue-edit"),"edit shortcut required");
-assert(src.includes('building_id=eq."+BID'),"data writes must remain project scoped");
+assert(src.includes('building_id=eq."+building'),"data reads and writes must remain project scoped");
 assert(src.includes("filter(x=>!x.virtual&&metaOf(x).verified)"),"PDF only verified devices");
 scope.currentBuilding={id:"130HH"};
-assert.equal(p.active(),false,"never enable on the other four projects");
-console.log("ESTA NANGCAP register: 9 systems, 44 templates, 40 types, screenshot table, records and isolation PASS");
+assert.equal(p.active(),true,"130HH must share technical information page");
+for(const id of ["62THL","68PĐL","127HH","NANGCAP"]){scope.currentBuilding={id};assert.equal(p.active(),true,id+" must be supported")}
+scope.currentBuilding={id:"UPDATE"};assert.equal(p.active(),false,"other sandbox pages must remain unchanged");
+console.log("ESTA shared technical register: 5 projects, 9 systems, 44 templates, 40 types, scoped records PASS");

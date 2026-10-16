@@ -4,7 +4,10 @@
  */
 (()=>{
 "use strict";
-const BID="NANGCAP",TABLE="building_equipment_profiles_nangcap";
+const TABLE="building_equipment_profiles_nangcap";
+const EQUIPMENT_PROJECTS=new Set(["NANGCAP","68PĐL","62THL","127HH","130HH"]);
+const currentEquipmentProjectId=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"");
+const projectDisplayName=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.name||currentBuilding?.id||"Dự án":"Dự án");
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const G=[
@@ -132,7 +135,16 @@ const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
 let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
-const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
+let scopedBuildingId="";
+function ensureScope(){
+ const id=currentEquipmentProjectId();
+ if(scopedBuildingId!==id){
+  closeForm();scopedBuildingId=id;items=[];linkedAssets=[];fetchedAt=0;loading=null;
+  error="";search="";group="";status="";expandedDeviceId="";
+ }
+ return id;
+}
+const active=()=>EQUIPMENT_PROJECTS.has(currentEquipmentProjectId())&&typeof projectOverviewActive!=="undefined"&&projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
 const gopts=()=>groups.map(g=>g[0]);
@@ -143,17 +155,19 @@ const label=x=>x?.name||x?.equipment_type||"Chưa đặt tên";
 const isPresent=()=>active()&&!!$("updateAssetsPage")&&!$("updateAssetsPage").classList.contains("hide");
 async function load(force=false){
  if(!active())return;
+ const building=ensureScope();
  if(loading)return loading;
  if(!force&&fetchedAt&&Date.now()-fetchedAt<20000)return;
- const building=BID;
  loading=(async()=>{
   try{
    const result=await sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token});
-   if(!active())return;
+   if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
    items=Array.isArray(result)?result:[];error="";fetchedAt=Date.now();
-   sbFetch("/rest/v1/maintenance_assets?building_id=eq.NANGCAP&select=id,name,code,location&order=name.asc",{token:centralSession?.access_token}).then(a=>{if(active())linkedAssets=Array.isArray(a)?a:[]}).catch(()=>{linkedAssets=[]});
-  }catch(e){if(active())error=e?.message||"Không tải được danh mục thiết bị.";}
-  finally{loading=null;if(isPresent())render($("updateAssetsPage"),true);}
+   sbFetch("/rest/v1/maintenance_assets?building_id=eq."+encodeURIComponent(building)+"&select=id,name,code,location&order=name.asc",{token:centralSession?.access_token})
+    .then(a=>{if(active()&&scopedBuildingId===building)linkedAssets=Array.isArray(a)?a:[]})
+    .catch(()=>{if(scopedBuildingId===building)linkedAssets=[]});
+  }catch(e){if(active()&&scopedBuildingId===building)error=e?.message||"Không tải được danh mục thiết bị.";}
+  finally{if(scopedBuildingId===building){loading=null;if(isPresent())render($("updateAssetsPage"),true);}}
  })();
  return loading;
 }
@@ -300,6 +314,7 @@ function list(){
 /* Reference layout applies only when the current building is NANGCAP. */
 function render(page,skipLoad=false){
  if(!active()||!page)return;
+ ensureScope();
  page.classList.remove("ueClassic");
  page.classList.add("uePage","ueSnapshot");
  page.innerHTML=
@@ -488,13 +503,14 @@ function formError(message){
  if(target){target.hidden=false;target.textContent="⚠ "+String(message||"Không thực hiện được thao tác.")}
  else alert(String(message||"Không thực hiện được thao tác."));
 }
-async function getSaved(id){
- const rows=await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID+"&select=*&limit=1",{token:centralSession?.access_token});
+async function getSaved(id,building=currentEquipmentProjectId()){
+ const rows=await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+building+"&select=*&limit=1",{token:centralSession?.access_token});
  return Array.isArray(rows)?rows[0]||null:null;
 }
 async function save(e){
  e.preventDefault();
- if(!allowed())return formError("Bạn không có quyền lưu thiết bị tại Bản nâng cấp.");
+ if(!allowed())return formError("Bạn không có quyền lưu thiết bị tại dự án này.");
+ const building=currentEquipmentProjectId();
  const form=e.currentTarget,button=$("ueSubmit");if(button.disabled)return;
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
  const year=Number(field("install_year"));
@@ -507,7 +523,7 @@ async function save(e){
  const custom=[...form.querySelectorAll(".ueCustomRow")].map(r=>({key:r.querySelector('[name="customKey"]').value.trim(),value:r.querySelector('[name="customValue"]').value.trim()})).filter(c=>c.key&&c.value);
  const interval=Math.min(3650,Math.max(1,Number(field("inspectionInterval"))||G.find(g=>g[1]===field("system_group"))?.[2]||30));
  specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,custom,archived:false,condition:oldMeta.condition||"chua"};
- const payload={building_id:BID,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
+ const payload={building_id:building,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
  location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),
  status:field("status")||statuses[0],install_year:year||null,note:field("note"),specs};
  if(!payload.name||!payload.equipment_type||!payload.system_group)return formError("Vui lòng điền tên thiết bị, loại và hệ thống.");
@@ -516,9 +532,9 @@ async function save(e){
  try{
   const id=editId||crypto.randomUUID();
   if(!editId)payload.id=id;
-  const path=editId?"/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID:"/rest/v1/"+TABLE;
+  const path=editId?"/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+building:"/rest/v1/"+TABLE;
   await sbFetch(path,{method:editId?"PATCH":"POST",token:centralSession.access_token,body:payload});
-  const persisted=await getSaved(id);
+  const persisted=await getSaved(id,building);
   const baseFields=["name","equipment_type","system_group","brand","model","code","location","note","quantity","status","install_year"];
   const specFields=["capacity","serial",...advancedFields(type).map(f=>f.key),...extraFields().map(f=>f.key),...installFields().map(f=>f.key)];
   const matches=!!persisted&&!metaOf(persisted).archived&&
@@ -526,6 +542,7 @@ async function save(e){
    specFields.every(k=>String(persisted.specs?.[k]??"")===String(specs[k]??""))&&
    !!metaOf(persisted).verified===!!specs._estaUpgrade.verified;
   if(!matches)throw new Error("Máy chủ chưa xác nhận đầy đủ thông số đã lưu. Vui lòng kiểm tra lại.");
+  if(currentEquipmentProjectId()!==building)return;
   fetchedAt=0;await load(true);
   if(error)throw new Error("Đã ghi dữ liệu nhưng chưa tải lại được. Vui lòng bấm Làm mới.");
   openForm(id);
@@ -535,6 +552,7 @@ async function save(e){
 }
 async function saveCheck(){
  if(!active()||!allowed()||!editId)return;
+ const building=currentEquipmentProjectId();
  const item=items.find(x=>x.id===editId),form=$("ueForm"),button=$("ueCheckSave");
  if(!item||button.disabled)return;
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
@@ -545,17 +563,18 @@ async function saveCheck(){
  if(files.length>6||files.some(f=>!f.type.startsWith("image/")||f.size>12*1024*1024))return formError("Chỉ chọn tối đa 6 ảnh, mỗi ảnh không quá 12 MB.");
  button.disabled=true;button.textContent="Đang lưu lần kiểm tra...";
  try{
-  const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,BID):[];
+  const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,building):[];
   const meta=metaOf(item);
   const entry={date,by,condition,reading:field("checkReading"),note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()};
   // Keep the newly recorded check even when it is older than the last 100 entries.
   const history=[...(meta.history||[]).slice(-99),entry].sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.createdAt).localeCompare(String(b.createdAt))); const latest=history.at(-1);
-  await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+BID,{
+  await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+building,{
    method:"PATCH",token:centralSession.access_token,
    body:{specs:{...item.specs,_estaUpgrade:{...meta,history,verified:condition==="chua"?!!meta.verified:true,condition:latest.condition,lastCheck:latest.date}}}
   });
-  const persisted=await getSaved(item.id);
+  const persisted=await getSaved(item.id,building);
   if(!persisted||!(metaOf(persisted).history||[]).some(h=>h.createdAt===entry.createdAt&&h.date===entry.date&&h.condition===entry.condition))throw new Error("Máy chủ chưa xác nhận kết quả kiểm tra đã lưu.");
+  if(currentEquipmentProjectId()!==building)return;
   fetchedAt=0;await load(true);openForm(item.id);
   if(typeof toast==="function")toast("Đã lưu lịch sử kiểm tra và hình ảnh.");
  }catch(err){formError(err?.message||"Không lưu được kết quả kiểm tra.");}
@@ -581,9 +600,9 @@ async function printReport(){
   (meta.custom||[]).forEach(c=>specified.push('<div><b>'+escPrint(c.key||c.k)+':</b> '+escPrint(c.value||c.v)+'</div>'));
   return specified.length?'<section class="spec"><h3>'+escPrint(label(x))+'</h3><div class="specgrid">'+specified.join("")+'</div></section>':"";
  }).filter(Boolean).join("");
- const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - Bản nâng cấp - Hệ thống kỹ thuật</title>'+
+ const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - '+escPrint(projectDisplayName())+' - Hệ thống kỹ thuật</title>'+
  '<style>@page{size:A4;margin:13mm}body{font:12px Arial,sans-serif;color:#243b44}header{border-bottom:2px solid #214a43;padding-bottom:9px}h1{font-size:19px}h2{font-size:14px;margin-top:17px}h3{font-size:12px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #bdc9c4;padding:7px;text-align:left}th{background:#e8f0ea}tr{break-inside:avoid}.notice{font-size:11px;color:#546c66}.spec,.proof{break-inside:avoid;margin-top:10px}.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;font-size:10px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.photos img{max-width:100%;max-height:76mm;object-fit:contain;border:1px solid #d3dcda}footer{display:flex;justify-content:space-between;margin-top:27mm;break-inside:avoid}</style></head><body>'+
- '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: Bản nâng cấp · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
+ '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: '+escPrint(projectDisplayName())+' · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
  '<p class="notice">'+verified.length+' hồ sơ đã xác minh theo bộ lọc. Thiết bị chưa xác minh không xuất hiện trong báo cáo.</p>'+
  '<table><thead><tr><th>STT</th><th>Thiết bị</th><th>Nhóm hệ thống</th><th>Vị trí</th><th>Tình trạng</th><th>Kiểm tra</th><th>Hạn kế tiếp</th></tr></thead><tbody>'+
  rows.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escPrint(x.name)+'</td><td>'+escPrint(x.system_group)+'</td><td>'+escPrint(x.location||"—")+'</td><td>'+
@@ -599,43 +618,45 @@ async function printReport(){
 
 async function remove(){
  if(!allowed())return formError("Bạn không có quyền xóa thiết bị.");
+ const building=currentEquipmentProjectId();
  const existing=items.find(x=>String(x.id)===String(editId));
  const builtIn=SEEDS.find(x=>x.seedKey===editingSeed);
  const selected=existing||builtIn;
  if(!selected)return;
  const name=label(selected);
- if(!confirm('Xóa thiết bị “'+name+'” khỏi danh sách Bản nâng cấp? Thao tác này không ảnh hưởng các dự án khác.'))return;
+ if(!confirm('Xóa thiết bị “'+name+'” khỏi danh sách '+projectDisplayName()+'? Thao tác này không ảnh hưởng các dự án khác.'))return;
  const button=$("ueDelete");button.disabled=true;button.textContent="Đang xóa...";
  try{
   if(existing&&metaOf(existing).seedKey){
    // For original built-in entries, keep an archived marker so they do not reappear after refresh.
-   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+BID,{
+   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+building,{
     method:"PATCH",token:centralSession.access_token,
     body:{specs:{...existing.specs,_estaUpgrade:{...metaOf(existing),archived:true}}}
    });
-   const row=await getSaved(existing.id);
+   const row=await getSaved(existing.id,building);
    if(!row||!metaOf(row).archived)throw new Error("Không xác nhận được thao tác xóa.");
   }else if(builtIn&&!existing){
-   // Never write or delete another project's data; hide this predefined category in NANGCAP.
+   // Never write or delete another project's data; hide this predefined category in the active project.
    const id=crypto.randomUUID();
    await sbFetch("/rest/v1/"+TABLE,{
     method:"POST",token:centralSession.access_token,
-    body:{id,building_id:BID,name:builtIn.name,equipment_type:builtIn.equipment_type,
+    body:{id,building_id:building,name:builtIn.name,equipment_type:builtIn.equipment_type,
       system_group:builtIn.system_group,location:builtIn.location,quantity:1,status:"Ngừng sử dụng",
       specs:{_estaUpgrade:{seedKey:builtIn.seedKey,archived:true,verified:false,history:[]}}}
    });
-   const row=await getSaved(id);
+   const row=await getSaved(id,building);
    if(!row||!metaOf(row).archived)throw new Error("Không xác nhận được thao tác xóa.");
   }else{
    // User-created equipment not from a predefined entry can be deleted from the register.
-   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+BID,{
+   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+building,{
     method:"DELETE",token:centralSession.access_token
    });
-   if(await getSaved(existing.id))throw new Error("Hệ thống chưa xóa được thiết bị.");
+   if(await getSaved(existing.id,building))throw new Error("Hệ thống chưa xóa được thiết bị.");
   }
+  if(currentEquipmentProjectId()!==building)return;
   closeForm();fetchedAt=0;await load(true);
   if(error)throw new Error("Đã xóa nhưng chưa tải lại được danh sách. Vui lòng bấm Làm mới.");
-  if(typeof toast==="function")toast("Đã xóa thiết bị khỏi Bản nâng cấp.");
+  if(typeof toast==="function")toast("Đã xóa thiết bị khỏi "+projectDisplayName()+".");
  }catch(err){formError(err?.message||"Không xóa được thiết bị.");}
  finally{button.disabled=false;button.textContent="🗑 Xóa thiết bị";}
 }
