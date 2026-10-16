@@ -1936,6 +1936,11 @@ async function exportGenericEstaPdf(config={}){
    summaries:Array.isArray(config.summaries)?config.summaries:[],
    priority_items:Array.isArray(config.priorityItems)?config.priorityItems:[],
     photos:Array.isArray(config.photos)?config.photos:[],
+   ...(config.reportStyle==="executive"?{
+     report_style:"executive",
+     executive_items:Array.isArray(config.executiveItems)?config.executiveItems:[],
+     executive_image_count:Number.isInteger(config.executiveImageCount)?config.executiveImageCount:0
+   }:{}),
    ...pdfSignaturePayload(signer)
  };
  try{

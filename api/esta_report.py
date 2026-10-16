@@ -798,6 +798,36 @@ def _prepare_generic_data(payload, token, temp_dir):
                     "id":str(item.get("id") or source)
                 })
     prepared_photos,missing=pdfc.prepare_remote_images(photo_items,token,_download_image,source_key="source")
+    report_style = ("executive" if payload.get("report_style") == "executive"
+                    and payload.get("hide_building") is True
+                    and str(payload.get("title") or "").strip().upper() == "BÁO CÁO GIÁM SÁT KỸ THUẬT"
+                    else "standard")
+    executive_items = []
+    if report_style == "executive":
+        raw_items = payload.get("executive_items") or []
+        if not isinstance(raw_items, list) or len(raw_items) > 1500:
+            raise ValueError("Dữ liệu báo cáo Kiểu 2 không hợp lệ")
+        for item in raw_items:
+            if not isinstance(item, dict):
+                continue
+            executive_items.append({
+                "project": str(item.get("project") or "—")[:70],
+                "title": str(item.get("title") or "—")[:650],
+                "owner": str(item.get("owner") or "")[:160],
+                "date": str(item.get("date") or "")[:10],
+                "due": str(item.get("due") or "")[:10],
+                "status": str(item.get("status") or "")[:90],
+                "detail": str(item.get("detail") or "")[:450],
+                "result": str(item.get("result") or "")[:450],
+                "category": str(item.get("category") or "work")[:24],
+                "open": item.get("open") is True,
+                "starred": item.get("starred") is True,
+                "stage": (int(item.get("stage")) if str(item.get("stage")) in ("0", "1", "2", "3", "4") else 2),
+            })
+    try:
+        image_count = max(0, min(int(payload.get("executive_image_count") or 0), 9999))
+    except (ValueError, TypeError):
+        image_count = 0
 
     return {
         "building":"" if payload.get("hide_building") is True else str(payload.get("building") or "[CẦN BỔ SUNG]"),
@@ -816,6 +846,9 @@ def _prepare_generic_data(payload, token, temp_dir):
         "summaries":clean_summaries,
         "priority_items":clean_priority,
         "photos":[x for x in prepared_photos if x.get("prepared")],
+        "report_style":report_style,
+        "executive_items":executive_items,
+        "executive_image_count":image_count,
         "_missing_images":missing
     }
 
@@ -1112,8 +1145,13 @@ def generate_pdf(payload, token):
         elif report_type == "generic":
             data = _prepare_generic_data(payload, token, td)
             missing_images = int(data.pop("_missing_images", 0) or 0)
-            build_generic_doc(out_path, data)
-            item_count = len(data["rows"])
+            if data.get("report_style") == "executive":
+                from reporting.admin_executive import build_executive_doc
+                build_executive_doc(out_path, data, signature_fn=energy_signatures)
+                item_count = len(data["executive_items"])
+            else:
+                build_generic_doc(out_path, data)
+                item_count = len(data["rows"])
         else:
             data, missing_images = _prepare_data(payload, token, td)
             build_doc(

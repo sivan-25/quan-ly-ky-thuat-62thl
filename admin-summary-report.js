@@ -279,7 +279,22 @@
     projects.innerHTML=projectSpecs.map(([id,name])=>'<label><input type="checkbox" data-as-project="'+esc(id)+'" '+(state.projects.has(id)?"checked":"")+'><span>'+esc(name)+'</span></label>').join("");
     cats.innerHTML=categorySpecs.map(([id,name,desc])=>'<label><input type="checkbox" data-as-category="'+esc(id)+'" '+(state.categories.has(id)?"checked":"")+'><span><b>'+esc(name)+'</b><small>'+esc(desc)+'</small></span></label>').join("");
   }
-  async function exportPDF() {
+  function closeFormatDialog() {
+    const dialog=$("#asFormatDialog");
+    if(!dialog)return;
+    dialog.hidden=true;
+    dialog.setAttribute("aria-hidden","true");
+    if(!state.busy)$("#asExport")?.focus();
+  }
+  function chooseReportStyle() {
+    if(state.busy||state.loading||!state.loaded||Object.keys(state.errors).length)return;
+    const dialog=$("#asFormatDialog");
+    if(!dialog)return;
+    dialog.hidden=false;
+    dialog.setAttribute("aria-hidden","false");
+    dialog.querySelector('[data-as-format="standard"]')?.focus();
+  }
+  async function exportPDF(style="standard") {
     if(state.busy||state.loading)return;
     if(!state.categories.size||!state.projects.size)return setMessage("Chọn ít nhất một dự án và một hạng mục.",true);
     state.busy=true;updateButtons();
@@ -320,6 +335,25 @@
         }
         if(photos.length>=180)break;
       }
+      const totalPhotoCount=photos.length;
+      if(style==="executive"&&photos.length>12){
+        const byProject=new Map();
+        for(const item of photos){
+          const project=item.caption.split(" · ")[0]||"—";
+          if(!byProject.has(project))byProject.set(project,[]);
+          byProject.get(project).push(item);
+        }
+        const picked=[];
+        // Spread the sample across projects instead of taking one project's first 12.
+        while(picked.length<12){
+          let added=false;
+          for(const bucket of byProject.values()){
+            if(bucket.length&&picked.length<12){picked.push(bucket.shift());added=true;}
+          }
+          if(!added)break;
+        }
+        photos.splice(0,photos.length,...picked);
+      }
       const rows=records.map((r,i)=>{
         const label=categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat;
         const rawParts=String(r.detail||"").split(" · ").map(x=>x.trim()).filter(Boolean);
@@ -354,15 +388,30 @@
           {label:"Nội dung công việc",weight:3.45},{label:"Ngày / Hạn",weight:1.3},
           {label:"Tình trạng",weight:1.42},{label:"Phụ trách / Ghi chú",weight:2.25}
         ],rows,photos,
+        ...(style==="executive"?{
+          reportStyle:"executive",
+          executiveImageCount:totalPhotoCount,
+          executiveItems:records.map(r=>{
+            const detail=String(r.detail||"").split(" · ").map(x=>x.trim()).filter(x=>x&&!/^hằng ngày$/i.test(x)&&!/^ok$/i.test(x));
+            return {
+              project:shortProject(r.proj),title:r.content,
+              owner:r.owner||"",date:r.when||"",due:r.due||"",
+              status:r.status||"",category:r.cat,open:!!r.open,
+              starred:!!r.starred,stage:severity(r),
+              detail:detail.filter(x=>x!==r.owner).join(" · "),
+              result:r.plan||""
+            };
+          })
+        }:{}),
         summaries:[
           {label:"TỔNG BẢN GHI",value:String(records.length),dark:true},
           {label:"QUÁ HẠN",value:String(records.filter(r=>severity(r)===0).length)},
           {label:"CẦN XỬ LÝ",value:String(selectedCount(records))},
           {label:"KẾ HOẠCH CHƯA ĐẾN HẠN",value:String(records.filter(r=>severity(r)===3).length)}
         ],
-        filename:"ESTA_BaoCaoGiamSatKyThuat_"+state.from+"_"+state.to+".pdf"
+        filename:"ESTA_BaoCaoGiamSatKyThuat_"+(style==="executive"?"Kieu2_":"")+state.from+"_"+state.to+".pdf"
       });
-      if(success)setMessage("Đã xuất PDF chuẩn ESTA. Gồm "+records.length+" bản ghi của "+selectedNames.length+" hạng mục.");
+      if(success)setMessage("Đã xuất "+(style==="executive"?"PDF Kiểu 2 (rút gọn)":"PDF Kiểu 1 (hiện tại)")+". Gồm "+records.length+" bản ghi của "+selectedNames.length+" hạng mục.");
     } catch(e) {setMessage(e.message||"Xuất PDF không thành công.",true);}
     finally {state.busy=false;updateButtons();}
   }
@@ -413,6 +462,13 @@
       '#navAdminSummary,#asTopShortcut{display:inline-flex;align-items:center;gap:8px}'+
       '#asTopShortcut{white-space:nowrap;border:1px solid #7a987e;background:#e5efdf;color:#295041;border-radius:9px;padding:9px 10px;font-size:12px;font-weight:700;cursor:pointer}'+
       '#asTopShortcut[hidden],#navAdminSummary[hidden]{display:none!important}'+
+      '#asFormatDialog[hidden]{display:none!important}#asFormatDialog{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(19,26,25,.64);z-index:2147483000;padding:18px}'+
+      '#asFormatDialog .asFormatBox{background:#fffaf0;border:1px solid #ddcdb5;border-radius:16px;width:min(480px,100%);padding:22px;box-shadow:0 22px 65px rgba(0,0,0,.27);font-family:Inter,Arial,sans-serif}'+
+      '#asFormatDialog h3{margin:0 0 6px;color:#2e5044;font-size:19px}#asFormatDialog p{margin:0 0 16px;color:#697568;font-size:12px;line-height:1.55}'+
+      '#asFormatDialog .asFormatOption{display:block;width:100%;text-align:left;margin:9px 0;padding:13px 15px;border:1px solid #a2b3a3;background:#fffdf8;color:#315347;border-radius:10px;cursor:pointer;font:inherit}'+
+      '#asFormatDialog .asFormatOption:hover,#asFormatDialog .asFormatOption:focus-visible{border-color:#315b4b;background:#eaf2e6;outline:2px solid #bbd5c2}'+
+      '#asFormatDialog .asFormatOption strong{display:block;font-size:14px}#asFormatDialog .asFormatOption small{display:block;font-size:11px;line-height:1.5;margin-top:3px;color:#5e6c61}'+
+      '#asFormatDialog .asFormatCancel{margin-top:11px;border:0;background:none;color:#715e52;font:inherit;font-size:12px;cursor:pointer;padding:8px}'+
       '@media(max-width:740px){#estaAdminSummaryPage{padding:11px}#estaAdminSummaryPage .asGrid{grid-template-columns:1fr}#estaAdminSummaryPage .asChecks{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asKpis{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asHead{align-items:flex-start}#estaAdminSummaryPage h2{font-size:19px}}';
     document.head.appendChild(css);
     const view=document.createElement("section");view.id="estaAdminSummaryPage";view.hidden=true;
@@ -423,6 +479,33 @@
       '<div class="asCard asPriorityCard"><h3>4. Công việc cần ưu tiên xử lý</h3><p class="asHint">Chỉ hiển thị việc quá hạn, khẩn cấp hoặc cần xử lý ngay. Không tính các việc chưa đến hạn.</p><div class="asTable"><table><thead><tr><th>#</th><th>Công việc / Nguồn</th><th>Người phụ trách</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hạn dự kiến</th></tr></thead><tbody id="asPriorityRows"></tbody></table></div><p class="asHint" id="asPriorityEmpty"></p></div>'+ 
       '<div class="asCard"><h3>5. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Văn. Dữ liệu các dự án được giữ độc lập.</p></div>';
     document.body.appendChild(view);
+    const formatDialog=document.createElement("div");
+    formatDialog.id="asFormatDialog";
+    formatDialog.hidden=true;
+    formatDialog.setAttribute("aria-hidden","true");
+    formatDialog.innerHTML='<div class="asFormatBox" role="dialog" aria-modal="true" aria-labelledby="asFormatTitle" aria-describedby="asFormatDesc">'+
+      '<h3 id="asFormatTitle">Chọn kiểu xuất PDF</h3><p id="asFormatDesc">Hai mẫu sử dụng cùng dữ liệu từ báo cáo đã chọn. Kiểu 1 giữ nguyên; Kiểu 2 trình bày theo mẫu rút gọn.</p>'+
+      '<button class="asFormatOption" type="button" data-as-format="standard"><strong>Kiểu 1 · Hiện tại</strong><small>Bảng đầy đủ, ảnh 2 hình/hàng và trạng thái từng ảnh. Giữ nguyên mẫu đang sử dụng.</small></button>'+
+      '<button class="asFormatOption" type="button" data-as-format="executive"><strong>Kiểu 2 · Rút gọn</strong><small>Tổng quan, công việc chưa hoàn thành, đã hoàn thành, điểm lưu ý và ảnh tiêu biểu giống mẫu bạn gửi.</small></button>'+
+      '<button class="asFormatCancel" type="button" id="asFormatCancel">Hủy, quay lại báo cáo</button></div>';
+    document.body.appendChild(formatDialog);
+    formatDialog.addEventListener("click",e=>{
+      const option=e.target.closest("[data-as-format]");
+      if(option){
+        const style=option.dataset.asFormat;
+        closeFormatDialog();
+        exportPDF(style);
+      }else if(e.target===formatDialog||e.target.closest("#asFormatCancel"))closeFormatDialog();
+    });
+    formatDialog.addEventListener("keydown",e=>{
+      if(e.key==="Escape"){e.preventDefault();closeFormatDialog();}
+      if(e.key==="Tab"){
+        const focusable=[...formatDialog.querySelectorAll("button")];
+        const i=focusable.indexOf(document.activeElement);
+        const n=e.shiftKey?(i+focusable.length-1)%focusable.length:(i+1)%focusable.length;
+        e.preventDefault();focusable[n].focus();
+      }
+    });
     $("#asFrom").value=state.from;$("#asTo").value=state.to;$("#asMonth").value=today().slice(0,7);updatePeriodUI("week");
     const nav=$("#navAdmin");
     if(nav && !$("#navAdminSummary")){
@@ -442,7 +525,7 @@
       if(target.closest("#asMonthApply")){applyMonth();return;}
       if(target.closest("#asCustom")){updatePeriodUI("custom");$("#asFrom")?.focus();return;}
       if(target.closest("#asRefresh")){fetchData();return;}
-      if(target.closest("#asExport")){exportPDF();return;}
+      if(target.closest("#asExport")){chooseReportStyle();return;}
       const pa=target.closest("[data-as-project-all]");
       if(pa){state.projects=new Set(pa.dataset.asProjectAll==="1"?projectSpecs.map(x=>x[0]):[]);renderSelectors();fetchData();return;}
       const ca=target.closest("[data-as-cat-all]");
@@ -469,6 +552,7 @@
     $("#navAdminSummary")?.classList.toggle("active",vis && document.body.classList.contains("estaAdminSummaryOpen"));
   }
   function close() {
+    closeFormatDialog();
     document.body.classList.remove("estaAdminSummaryOpen");$("#estaAdminSummaryPage")?.setAttribute("hidden","");syncShortcut();
   }
   function open() {

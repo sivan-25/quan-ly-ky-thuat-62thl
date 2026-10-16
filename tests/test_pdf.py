@@ -509,6 +509,86 @@ class ReportTests(unittest.TestCase):
                             for t in tables for row in t._cellvalues[1:]
                             if isinstance(row[0], type(out[0]))))
 
+    def test_two_admin_pdf_styles_render_without_changing_style_one(self):
+        from reporting.admin_executive import build_executive_doc, _important
+        from api.esta_report import energy_signatures
+        from reporting import pdf_common as pdfc
+        from reportlab.platypus import Table
+        records = [
+            {"project": "62 THL", "title": "Chống thấm sàn mái", "owner": "NT Thành Đạt",
+             "date": "2026-10-12", "due": "", "status": "Đang thực hiện",
+             "open": True, "stage": 2, "detail": "Đang kiểm tra tình trạng",
+             "category": "work", "starred": False, "result": ""},
+            {"project": "68 PĐL", "title": "Kiểm tra tủ điều khiển PCCC",
+             "owner": "Tiến", "date": "2026-10-13", "due": "",
+             "status": "Hoàn thành", "open": False, "stage": 4,
+             "detail": "Đã xử lý", "category": "work", "starred": False, "result": "Đạt"},
+            {"project": "Admin", "title": "Nhận báo giá nhà thầu",
+             "owner": "Sĩ Văn", "date": "2026-10-14", "due": "",
+             "status": "Đang thực hiện", "open": True, "stage": 2,
+             "detail": "Chờ phản hồi", "category": "work", "starred": True, "result": ""},
+        ]
+        image = photo((480, 320))
+        payload = {
+            "report_type": "generic", "hide_building": True,
+            "title": "BÁO CÁO GIÁM SÁT KỸ THUẬT",
+            "report_date": "16/10/2026",
+            "period_label": "Từ 12/10/2026 đến 18/10/2026",
+            "signature_position": "supervision", "kt_signer_name": "Sĩ Văn",
+            "columns": [
+                {"label": "STT"}, {"label": "Dự án"}, {"label": "Nội dung công việc"},
+                {"label": "Ngày / Hạn"}, {"label": "Tình trạng"}, {"label": "Phụ trách"}
+            ],
+            "rows": [
+                ["1", "62 THL", "Chống thấm sàn mái", "12/10", "Đang", "NT Thành Đạt"],
+                ["2", "68 PĐL", "Kiểm tra tủ PCCC", "13/10", "Hoàn thành", "Tiến"],
+                ["3", "Admin", "Nhận báo giá", "14/10", "Đang", "Sĩ Văn"],
+            ],
+            "photos": [
+                {"ref": image, "status_code": "done", "caption": "68 PĐL · Kiểm tra PCCC"}
+            ],
+        }
+        # The untouched Kiểu 1 continues through the previous generic renderer.
+        before, misses, count = generate_pdf(payload.copy(), "")
+        self.assertTrue(before.startswith(b"%PDF"))
+        self.assertEqual((misses, count), (0, 3))
+
+        compact_payload = {
+            **payload, "report_style": "executive",
+            "executive_items": records,
+            "executive_image_count": 1,
+        }
+        after, misses, count = generate_pdf(compact_payload, "")
+        self.assertTrue(after.startswith(b"%PDF"))
+        self.assertEqual((misses, count), (0, 3))
+        self.assertNotEqual(before, after)
+        self.assertGreater(len(after), 5000)
+        self.assertEqual(len(_important(records)), 2)
+
+    def test_executive_pdf_many_items_paginate_and_handle_empty_photos(self):
+        records = [
+            {"project": "68 PĐL" if i % 2 else "62 THL",
+             "title": "Công việc cần theo dõi %03d" % i,
+             "owner": "Kỹ thuật", "date": "2026-10-13", "status": "Chờ xử lý",
+             "open": i % 3 != 0, "stage": 2 if i % 3 else 4,
+             "detail": "Theo dõi hệ thống", "category": "work"}
+            for i in range(72)
+        ]
+        payload = {
+            "report_type": "generic", "hide_building": True,
+            "title": "BÁO CÁO GIÁM SÁT KỸ THUẬT", "report_style": "executive",
+            "kt_signer_name": "Sĩ Văn", "signature_position": "supervision",
+            "report_date": "16/10/2026", "period_label": "12/10–18/10",
+            "columns": [
+                {"label": "STT"}, {"label": "Dự án"}, {"label": "Nội dung"},
+                {"label": "Ngày"}, {"label": "TT"}, {"label": "Ghi chú"}
+            ],
+            "rows": [], "executive_items": records, "photos": []
+        }
+        raw, misses, count = generate_pdf(payload, "")
+        self.assertTrue(raw.startswith(b"%PDF"))
+        self.assertEqual((misses, count), (0, 72))
+
     def test_original_work_energy_tools_renderers(self):
         samples = [
             {'report_type':'work','tasks':[{'title':'Dữ liệu thử','status':'Hoàn thành','date':'01/09/2026','assignee':'Kiểm thử'}]},
