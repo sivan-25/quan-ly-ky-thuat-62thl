@@ -194,7 +194,7 @@ function ensure(){
  '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><div class="m130LayoutSwitch" role="group" aria-label="Chế độ xem lịch"><button type="button" data-m130-layout="list" aria-pressed="true">Danh sách</button><button type="button" data-m130-layout="calendar" aria-pressed="false">Lịch</button><button type="button" data-m130-layout="timeline" aria-pressed="false">Timeline</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div><details class="m130AuditPanel"><summary>Nhật ký chỉnh sửa / xóa</summary><button type="button" id="m130AuditButton" class="m130AuditButton">Xem nhật ký</button><div id="m130AuditHistory" aria-live="polite"></div></details>';
  anchor.parentNode.insertBefore(root,anchor);
  const overlay=document.createElement("div");overlay.id="m130Overlay";overlay.hidden=true;overlay.innerHTML='<div class="m130Dialog"><div class="m130ModalHead"><h3 id="m130ModalTitle">Công việc bảo trì</h3><button type="button" id="m130Close" aria-label="Đóng">×</button></div><form id="m130PlanForm" hidden>'+
- '<label>Nội dung công việc *<textarea id="m130Title" rows="2" required maxlength="500"></textarea></label><div class="m130Two"><label>Hệ thống<select id="m130System"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Chiếu sáng</option><option>Camera & an ninh</option><option>Khác</option></select></label><label>Vị trí<input id="m130Location" maxlength="160" placeholder="Tầng / khu vực"></label></div><div class="m130Two"><label>Mã thiết bị<input id="m130AssetCode" maxlength="80" placeholder="VD: PCCC-001"></label><label>Loại bảo trì<select id="m130WorkType"><option value="PM">PM · Phòng ngừa</option><option value="CM">CM · Khắc phục</option></select></label></div><label>Mức ưu tiên<select id="m130Priority"><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select></label>'+
+ '<label>Nội dung công việc *<textarea id="m130Title" rows="2" required maxlength="500"></textarea></label><div class="m130Two"><label>Hệ thống<select id="m130System"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Chiếu sáng</option><option>Camera & an ninh</option><option>Kiểm soát ra vào</option><option>Thông gió</option><option>Nước thải</option><option>BMS</option><option>Mạng / viễn thông</option><option>Khác</option></select></label><label>Vị trí<input id="m130Location" maxlength="160" placeholder="Tầng / khu vực"></label></div><div class="m130Two"><label>Mã thiết bị<input id="m130AssetCode" maxlength="80" placeholder="VD: PCCC-001"></label><label>Loại bảo trì<select id="m130WorkType"><option value="PM">PM · Phòng ngừa</option><option value="CM">CM · Khắc phục</option></select></label></div><label>Mức ưu tiên<select id="m130Priority"><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select></label>'+
  '<div class="m130Two"><label>Ngày bắt đầu chu kỳ *<input type="date" id="m130First" required></label><label>Chu kỳ bảo trì<select id="m130Cycle" required><option value="0">1 lần</option><option value="1">1 tháng</option><option value="3">3 tháng</option><option value="4">4 tháng</option><option value="6">6 tháng</option><option value="12">1 năm</option></select></label></div><p class="m130Hint" id="m130NextHint">Chọn chu kỳ, hệ thống sẽ tự tính ngày lặp. Ví dụ 10/10/2026 + 3 tháng → 10/01/2027 → 10/04/2027.</p><label>Tên kỹ thuật / người phụ trách *<input id="m130Assignee" list="m130PeopleOptions" maxlength="120" placeholder="Chọn tên kỹ thuật viên..." required></label><div class="m130PersonQuick" id="m130AssigneeQuick"></div><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu kế hoạch</button></div></form>'+
  '<form id="m130EventForm" hidden><p id="m130EventInfo" class="m130Hint"></p><div class="m130Two"><label>Ngày dự kiến<input id="m130EventDate" type="date" required></label><label>Trạng thái<select id="m130EventStatus"><option value="in_progress">Đang thực hiện</option><option value="completed">Hoàn thành</option><option value="cancelled">Hủy</option></select></label></div><label>Kỹ thuật viên thực hiện *<input id="m130Who" list="m130PeopleOptions" maxlength="120" placeholder="Chọn tên KTV..." autocomplete="off"></label><div class="m130PersonQuick" id="m130WhoQuick"></div><label>Kết quả kiểm tra<select id="m130ResultCode"><option value="">— Chọn kết quả —</option><option value="pass">Đạt</option><option value="fail">Không đạt</option><option value="monitor">Cần theo dõi</option></select></label><label>Kết quả thực hiện / ghi chú<textarea id="m130Result" rows="3" maxlength="2000" placeholder="Ghi nhận thực tế và hướng xử lý"></textarea></label><label>Lý do hoãn / hủy<input id="m130PostponeReason" maxlength="600" placeholder="Bắt buộc nếu Hoãn hoặc Hủy"></label><div class="m130Two"><label>Nhân công (đ)<input id="m130LaborCost" type="number" min="0" step="1000" placeholder="0"></label><label>Vật tư (đ)<input id="m130MaterialCost" type="number" min="0" step="1000" placeholder="0"></label></div><div class="m130PhotoFields"><label>Ảnh trước bảo trì<input id="m130BeforePhotos" type="file" accept="image/*" multiple></label><label>Ảnh sau bảo trì<input id="m130AfterPhotos" type="file" accept="image/*" multiple></label></div><div id="m130PhotoPreview" class="m130PhotoPreview"></div><p class="m130Hint">Hoàn thành cần chọn KTV, kết quả Đạt/Không đạt/Cần theo dõi, ghi chú và ít nhất 1 ảnh trước hoặc sau.</p><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu công việc</button></div></form><datalist id="m130PeopleOptions"></datalist></div>';
  document.body.appendChild(overlay);
@@ -219,7 +219,7 @@ function ensure(){
  root.addEventListener("click",ev=>{
   const photo=ev.target.closest("[data-m130-gallery]");
   if(photo){showMaintenanceGallery(photo.dataset.m130Gallery,photo.dataset.m130PhotoIndex);return;}
-  const v=ev.target.closest("[data-m130-view]"),l=ev.target.closest("[data-m130-layout]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]");
+  const v=ev.target.closest("[data-m130-view]"),l=ev.target.closest("[data-m130-layout]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]"),addDate=ev.target.closest("[data-m130-new-date]");
   if(v){
    viewMode=v.dataset.m130View==="rows"?"rows":"cards";
    try{localStorage.setItem(viewKey(),viewMode)}catch(_){}
@@ -230,9 +230,11 @@ function ensure(){
   else if(e)openEvent(e.dataset.m130Event);
   else if(p)openPlan(p.dataset.m130Plan);
   else if(del)deletePlan(del.dataset.m130Delete);
+  else if(addDate)openPlan(null,addDate.dataset.m130NewDate);
   else{
-   const row=ev.target.closest("[data-m130-open]");
+   const row=ev.target.closest("[data-m130-open]"),day=ev.target.closest("[data-m130-date]");
    if(row)openEvent(row.dataset.m130Open);
+   else if(day&&!ev.target.closest("button,a,input,select,textarea")&&canWrite()&&!busy)openPlan(null,day.dataset.m130Date);
   }
  });
  overlay.addEventListener("click",ev=>{
@@ -329,12 +331,14 @@ function renderAlternative(events){
  const headings=['T2','T3','T4','T5','T6','T7','CN'];
  const cells=Array.from({length:offset},()=>'<div class="m130CalendarBlank"></div>');
  for(let day=1;day<=days;day++){
-  const date=year+"-"+pad(month)+"-"+pad(day);
-  const chips=events.filter(o=>!isMonthOnly(o)&&dateOf(o)===date).map(o=>{
-   const key=esc(o.event.event_key),st=stateKey(o);
-   return '<button type="button" draggable="'+(canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'">'+esc(o.item.work_title)+'</button>';
+  const date=year+"-"+pad(month)+"-"+pad(day),daily=events.filter(o=>!isMonthOnly(o)&&dateOf(o)===date);
+  const chips=daily.map(o=>{
+   const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
+   return '<button type="button" draggable="'+(canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
   }).join("");
-  cells.push('<div class="m130CalendarDay" data-m130-date="'+date+'"><b>'+day+'</b>'+chips+'</div>');
+  const add=canWrite()?'<button type="button" class="m130DayAdd" data-m130-new-date="'+date+'" title="Thêm bảo trì ngày '+fmt(date)+'" aria-label="Thêm bảo trì ngày '+fmt(date)+'">＋</button>':"";
+  const count=daily.length?'<small class="m130DayCount" aria-label="'+daily.length+' công việc">'+daily.length+'</small>':"";
+  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+'" data-m130-date="'+date+'"><div class="m130DayHead"><b>'+day+'</b>'+add+count+'</div>'+chips+'</div>');
  }
  const agenda=events.map(o=>{
   const st=status(o),key=esc(o.event.event_key);
@@ -380,19 +384,24 @@ async function load(force){
  finally{if(B===requestBuilding)busy=false;}
 }
 function closeDialog(){$("m130Overlay").hidden=true;currentPlan=null;currentEvent=null;}
-function openPlan(id){
- if(!canWrite())return;
+function openPlan(id,date){
+ if(!canWrite()||busy||!active())return;
  currentPlan=id?items.find(i=>i.id===id):null;
  const i=currentPlan,base=i?byDate(i):null;
- $("m130ModalTitle").textContent=i?"Chỉnh sửa kế hoạch":"Thêm công việc bảo trì";
+ $("m130ModalTitle").textContent=i?"Chỉnh sửa kế hoạch":date?"Thêm bảo trì · "+fmt(date):"Thêm công việc bảo trì";
  $("m130PlanForm").hidden=false;$("m130EventForm").hidden=true;
  $("m130Title").value=i?.work_title||"";
- $("m130System").value=i?.system_group||"HVAC";
+ const systemField=$("m130System"),selectedSystem=i?.system_group||"HVAC";
+ systemField.querySelectorAll("option[data-m130-legacy-system]").forEach(option=>option.remove());
+ if(![...systemField.options].some(option=>option.value===selectedSystem)){
+  const option=document.createElement("option");option.value=selectedSystem;option.textContent=selectedSystem;option.dataset.m130LegacySystem="1";systemField.appendChild(option);
+ }
+ systemField.value=selectedSystem;
  $("m130Location").value=i?.subsystem||"";
  $("m130AssetCode").value=i?.asset_code||"";
  $("m130WorkType").value=i?.work_type||"PM";
  $("m130Priority").value=i?.priority||"normal";
- $("m130First").value=base?.planned_date||base?.planned_month||year+"-"+pad(month)+"-10";
+ $("m130First").value=base?.planned_date||base?.planned_month||date||year+"-"+pad(month)+"-10";
  $("m130First").readOnly=!!i&&!!base;
  const currentCycle=interval(i),cycleSelect=$("m130Cycle");
  cycleSelect.querySelectorAll("option[data-m130-legacy]").forEach(option=>option.remove());
