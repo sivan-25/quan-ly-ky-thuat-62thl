@@ -456,16 +456,14 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
 @media(max-width:640px){#maint130 .m130UnscheduledList>div{align-items:flex-start}#maint130 .m130UnscheduledList button{font-size:12px}}
 
 
-/* ESTA 2026-10-16: named system tags and quick-add on calendar day. */
+/* ESTA 2026-10-16: compact system labels, prominent work titles and click-anywhere day creation. */
 #maint130 .m130CalendarDay.m130CanAdd{cursor:pointer;transition:border-color .16s,background .16s}
 #maint130 .m130CalendarDay.m130CanAdd:hover{border-color:#806282;background:#fff9f2}
 #maint130 .m130DayHead{display:flex;align-items:center;justify-content:space-between;min-height:23px;gap:2px;padding:1px 3px}
 #maint130 .m130DayHead>b{color:#653a60;font-size:12px;line-height:1.3}
-#maint130 .m130DayAdd{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:24px;height:24px;padding:0;border:1px solid #d8bfcf;border-radius:6px;background:#f4e6ef;color:#563259;font-size:17px;font-weight:800;line-height:1;opacity:.45;cursor:pointer;touch-action:manipulation}
-#maint130 .m130DayAdd:hover,#maint130 .m130DayAdd:focus-visible,#maint130 .m130CalendarDay:hover .m130DayAdd{opacity:1;background:#e7d2e1;border-color:#987a96}
-#maint130 .m130DayAdd:focus-visible{outline:2px solid #216f93;outline-offset:1px}
-#maint130 .m130CalendarChip .m130CalendarSystem{display:block;margin-bottom:3px;width:fit-content;max-width:100%;padding:2px 5px;border-radius:5px;background:rgba(62,37,68,.1);color:inherit;font-size:10px;font-weight:850;line-height:1.2;overflow-wrap:anywhere}
-#maint130 .m130CalendarChip .m130CalendarTitle{display:block;font-weight:650;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+#maint130 .m130CalendarDay.m130CanAdd:focus-visible{outline:2px solid #216f93;outline-offset:1px}
+#maint130 .m130CalendarChip .m130CalendarSystem{display:block;margin-bottom:3px;max-width:100%;padding:0;background:none;color:inherit;opacity:.72;font-size:9px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+#maint130 .m130CalendarChip .m130CalendarTitle{display:block;font-size:13px;font-weight:750;line-height:1.38;white-space:normal;overflow-wrap:anywhere}
 #maint130 .m130DayCount{display:none}
 @media(max-width:760px){
   /* Keep small tappable dates visible; full event details remain below as agenda. */
@@ -474,8 +472,8 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
   #maint130 .m130CalendarDay{height:auto!important;min-height:63px!important;padding:2px!important;overflow:hidden!important}
   #maint130 .m130DayHead{flex-direction:column;justify-content:flex-start;gap:1px;padding:1px 0}
   #maint130 .m130DayHead>b{font-size:12px}
-  #maint130 .m130DayAdd{opacity:1;width:24px;height:24px;font-size:17px}
   #maint130 .m130CalendarChip{display:none!important}
   #maint130 .m130DayCount{display:block;margin-top:1px;min-width:15px;height:15px;padding:0 3px;border-radius:9px;background:#dfe9ed;color:#294f60;font-size:10px;font-weight:800;line-height:15px;text-align:center}
   #maint130 .m130CalendarAgenda{margin-top:12px}
+  #maint130 .m130AgendaButton b{font-size:13px!important;line-height:1.5}
 }

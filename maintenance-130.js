@@ -205,7 +205,12 @@ function ensure(){
  $("m130AuditButton").onclick=loadAuditHistory;
  $("m130Legacy").onclick=()=>{const opened=page.classList.toggle("maint130-assets-open");$("m130Legacy").setAttribute("aria-expanded",String(opened));if(opened&&typeof loadMaintenanceData==="function")loadMaintenanceData(B);};
  ["m130Search","m130Group","m130State","m130PriorityFilter","m130TypeFilter","m130TechnicianFilter","m130SampleFilter"].forEach(id=>$(id).addEventListener(id==="m130Search"?"input":"change",()=>{if(id==="m130SampleFilter")render();else renderList()}));
- root.addEventListener("keydown",ev=>{const r=ev.target.closest("[data-m130-open]");if(r&&ev.target===r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();openEvent(r.dataset.m130Open);}});
+ root.addEventListener("keydown",ev=>{
+  if(ev.key!=="Enter"&&ev.key!==" ")return;
+  const r=ev.target.closest("[data-m130-open]"),day=ev.target.closest("[data-m130-date]");
+  if(r&&ev.target===r){ev.preventDefault();openEvent(r.dataset.m130Open);}
+  else if(day&&ev.target===day&&canWrite()&&!busy){ev.preventDefault();openPlan(null,day.dataset.m130Date);}
+ });
  root.addEventListener("dragstart",ev=>{
   const chip=ev.target.closest("[data-m130-drag]");
   if(chip&&ev.dataTransfer)ev.dataTransfer.setData("text/plain",chip.dataset.m130Drag);
@@ -219,7 +224,7 @@ function ensure(){
  root.addEventListener("click",ev=>{
   const photo=ev.target.closest("[data-m130-gallery]");
   if(photo){showMaintenanceGallery(photo.dataset.m130Gallery,photo.dataset.m130PhotoIndex);return;}
-  const v=ev.target.closest("[data-m130-view]"),l=ev.target.closest("[data-m130-layout]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]"),addDate=ev.target.closest("[data-m130-new-date]");
+  const v=ev.target.closest("[data-m130-view]"),l=ev.target.closest("[data-m130-layout]"),m=ev.target.closest("[data-m130-month]"),e=ev.target.closest("[data-m130-event]"),p=ev.target.closest("[data-m130-plan]"),del=ev.target.closest("[data-m130-delete]");
   if(v){
    viewMode=v.dataset.m130View==="rows"?"rows":"cards";
    try{localStorage.setItem(viewKey(),viewMode)}catch(_){}
@@ -230,7 +235,6 @@ function ensure(){
   else if(e)openEvent(e.dataset.m130Event);
   else if(p)openPlan(p.dataset.m130Plan);
   else if(del)deletePlan(del.dataset.m130Delete);
-  else if(addDate)openPlan(null,addDate.dataset.m130NewDate);
   else{
    const row=ev.target.closest("[data-m130-open]"),day=ev.target.closest("[data-m130-date]");
    if(row)openEvent(row.dataset.m130Open);
@@ -336,9 +340,9 @@ function renderAlternative(events){
    const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
    return '<button type="button" draggable="'+(canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
   }).join("");
-  const add=canWrite()?'<button type="button" class="m130DayAdd" data-m130-new-date="'+date+'" title="Thêm bảo trì ngày '+fmt(date)+'" aria-label="Thêm bảo trì ngày '+fmt(date)+'">＋</button>':"";
   const count=daily.length?'<small class="m130DayCount" aria-label="'+daily.length+' công việc">'+daily.length+'</small>':"";
-  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+'" data-m130-date="'+date+'"><div class="m130DayHead"><b>'+day+'</b>'+add+count+'</div>'+chips+'</div>');
+  const keyboard=canWrite()?' role="group" tabindex="0" aria-label="Ngày '+fmt(date)+'. Nhấn Enter để thêm lịch bảo trì"':"";
+  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+'" data-m130-date="'+date+'"'+keyboard+'><div class="m130DayHead"><b>'+day+'</b>'+count+'</div>'+chips+'</div>');
  }
  const agenda=events.map(o=>{
   const st=status(o),key=esc(o.event.event_key);
