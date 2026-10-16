@@ -3053,12 +3053,7 @@ function renderTools(){
 }
 function setInventoryTab(tab){
  inventoryActiveTab=tab;
- if(tab==="materials"&&$("#inventoryPage")&&!$("#inventoryPage").classList.contains("hide")){
-   const now=new Date();
-   inventoryActiveMonth=now.getMonth()+1;
-   inventorySetYears();
-   if($("#inventoryYear"))$("#inventoryYear").value=String(now.getFullYear());
- }
+ // Preserve the selected year/month when switching between Materials and Tools.
  document.querySelectorAll("[data-inventory-tab]").forEach(b=>b.classList.toggle("active",b.dataset.inventoryTab===tab));
  $("#inventoryMaterialsPane").classList.toggle("hide",tab!=="materials");
  $("#inventoryToolsPane").classList.toggle("hide",tab!=="tools");
@@ -3068,7 +3063,7 @@ function resetMaterialForm(sampleName="",sampleUnit="Cái"){
  $("#materialTrackingStart").value=today();$("#materialTrackingStart").max=today();$("#materialOpeningQty").value="0";$("#materialMinQty").value="0";$("#materialNote").value="";
  $("#materialModalTitle").textContent="Thêm vật tư";
 }
-function openMaterialModal(sampleName="",sampleUnit="Cái"){resetMaterialForm(sampleName,sampleUnit);$("#materialItemModal").classList.remove("hide");setTimeout(()=>$("#materialName").focus(),40)}
+function openMaterialModal(sampleName="",sampleUnit="Cái"){if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");resetMaterialForm(sampleName,sampleUnit);$("#materialItemModal").classList.remove("hide");setTimeout(()=>$("#materialName").focus(),40)}
 window.editMaterial=id=>{
  const m=inventoryMaterials.find(x=>String(x.id)===String(id));if(!m)return;
  $("#materialId").value=m.id;$("#materialCode").value=m.code||"";$("#materialName").value=m.name;$("#materialUnit").value=m.unit;$("#materialTrackingStart").value=inventoryTrackingStart(m);$("#materialTrackingStart").max=today();$("#materialOpeningQty").value=m.opening_qty;$("#materialMinQty").value=m.min_qty;$("#materialNote").value=m.note||"";
@@ -3090,9 +3085,14 @@ window.deleteMaterial=async id=>{
  }catch(e){toast(e.message||"Không thể xóa vật tư")}
 };
 window.openStockTxnModal=id=>{
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  if(!inventoryActiveMaterials().length)return toast("Hãy thêm vật tư trước");
- const y=inventoryYearValue(),m=Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
- const now=new Date(),same=y===now.getFullYear()&&m===now.getMonth()+1;
+ const now=new Date(),allYear=String(inventoryActiveMonth)==="all";
+ // The 12-month overview has no single entry month: default to today, not January.
+ const y=allYear?now.getFullYear():inventoryYearValue();
+ const m=allYear?now.getMonth()+1:Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
+ if(y+"-"+String(m).padStart(2,"0")+"-01">today())return toast("Không thể nhập / xuất cho tháng tương lai");
+ const same=y===now.getFullYear()&&m===now.getMonth()+1;
  const day=same?now.getDate():1;
  const maxDay=new Date(y,m,0).getDate();
  const date=y+"-"+String(m).padStart(2,"0")+"-"+String(Math.min(day,maxDay)).padStart(2,"0");
@@ -3120,7 +3120,7 @@ window.deleteStockTxn=async id=>{
 function resetToolForm(sampleName="",sampleUnit="Cái"){
  $("#toolId").value="";$("#toolCode").value="";$("#toolName").value=sampleName;$("#toolBrand").value="";$("#toolQty").value="1";$("#toolUnit").value=sampleUnit||"Cái";$("#toolLocation").value="";$("#toolKeeper").value="";$("#toolCondition").value="Đang sử dụng";$("#toolAcquiredDate").value="";$("#toolNote").value="";$("#toolModalTitle").textContent="Thêm dụng cụ";
 }
-function openToolModal(sampleName="",sampleUnit="Cái"){resetToolForm(sampleName,sampleUnit);inventoryFillPeople();$("#toolItemModal").classList.remove("hide");setTimeout(()=>$("#toolName").focus(),40)}
+function openToolModal(sampleName="",sampleUnit="Cái"){if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");resetToolForm(sampleName,sampleUnit);inventoryFillPeople();$("#toolItemModal").classList.remove("hide");setTimeout(()=>$("#toolName").focus(),40)}
 window.editTool=id=>{
  const t=inventoryTools.find(x=>String(x.id)===String(id));if(!t)return;
  inventoryFillPeople();$("#toolId").value=t.id;$("#toolCode").value=t.code||"";$("#toolName").value=t.name;$("#toolBrand").value=t.brand||"";$("#toolQty").value=t.qty;$("#toolUnit").value=t.unit;$("#toolLocation").value=t.location||"";$("#toolKeeper").value=t.keeper||"";$("#toolCondition").value=["Tốt","Đang sử dụng","Cần kiểm tra","Hư hỏng"].includes(t.condition_status)?t.condition_status:(["Hỏng","Cần sửa"].includes(t.condition_status)?"Hư hỏng":"Đang sử dụng");$("#toolAcquiredDate").value=t.acquired_date||"";$("#toolNote").value=t.note||"";$("#toolModalTitle").textContent="Chỉnh sửa dụng cụ";$("#toolItemModal").classList.remove("hide");
@@ -3363,6 +3363,35 @@ async function exportToolsEstaPdf(){
  }finally{toolReportBusy=false}
 }
 $("#toolExportPdf").onclick=exportToolsEstaPdf;
+
+/* Dụng cụ – Vật tư: wire controls once so switching months and rerendering cannot lose them. */
+document.querySelectorAll("[data-inventory-tab]").forEach(button=>{
+ button.addEventListener("click",()=>setInventoryTab(button.dataset.inventoryTab));
+});
+$("#inventoryYear").addEventListener("change",renderMaterials);
+$("#materialMonthTabs").addEventListener("click",event=>{
+ const button=event.target.closest("button[data-material-month]");
+ if(!button||!$("#materialMonthTabs").contains(button))return;
+ const value=button.dataset.materialMonth;
+ if(value!=="all"&&!/^([1-9]|1[0-2])$/.test(value))return;
+ inventoryActiveMonth=value==="all"?"all":Number(value);
+ renderMaterials();
+});
+$("#materialSearch").addEventListener("input",renderMaterials);
+$("#toolSearch").addEventListener("input",renderTools);
+$("#stockAlertOnly").addEventListener("click",()=>{
+ inventoryShowAlertsOnly=!inventoryShowAlertsOnly;
+ renderMaterials();
+});
+$("#addMaterialBtn").addEventListener("click",()=>{
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ openMaterialModal();
+});
+$("#openStockTxn").addEventListener("click",()=>openStockTxnModal());
+$("#addToolBtn").addEventListener("click",()=>{
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ openToolModal();
+});
 document.querySelectorAll("[data-material-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.materialSample.split("|");b.closest("details")?.removeAttribute("open");openMaterialModal(n,u)});
 document.querySelectorAll("[data-tool-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.toolSample.split("|");openToolModal(n,u)});
 $("#closeMaterialModal").onclick=$("#cancelMaterialModal").onclick=()=>$("#materialItemModal").classList.add("hide");
