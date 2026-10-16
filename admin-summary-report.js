@@ -334,7 +334,8 @@
     const home=$("#homePage");
     if(!home||$("#estaAdminSummaryPage"))return;
     const css=document.createElement("style");css.id="estaAdminSummaryStyles";
-    css.textContent='#homePage.estaAdminSummaryOpen>:not(#estaAdminSummaryPage){display:none!important}#homePage.estaAdminSummaryOpen{display:block!important;visibility:visible!important;opacity:1!important;min-height:60vh!important}#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:1}' +
+    css.textContent='body:not(.estaAdminSummaryOpen) #estaAdminSummaryPage{display:none!important}body.estaAdminSummaryOpen #estaAdminSummaryPage{display:block!important;position:fixed!important;top:62px!important;left:263px!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important;overflow:auto!important;z-index:2147480000!important;background:#f2eddf!important;visibility:visible!important;opacity:1!important;box-sizing:border-box!important}@media(max-width:768px){body.estaAdminSummaryOpen #estaAdminSummaryPage{left:0!important;top:62px!important;bottom:55px!important}}'+
+      '#homePage.estaAdminSummaryOpen>:not(#estaAdminSummaryPage){display:none!important}#homePage.estaAdminSummaryOpen{display:block!important;visibility:visible!important;opacity:1!important;min-height:60vh!important}#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:1}' +
       '#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{position:fixed!important;top:62px!important;left:var(--sidebar-width, 263px)!important;right:0!important;bottom:0!important;width:auto!important;max-width:none!important;height:auto!important;overflow-y:auto!important;display:block!important;z-index:850!important;margin:0!important;border-radius:0!important}@media(max-width:768px){#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{left:0!important;top:62px!important;bottom:55px!important}}'+
       '#estaAdminSummaryPage{background:#f2eddf;color:#34463b;border:1px solid #ddd5be;border-radius:16px;padding:20px;margin:0 0 20px;font-family:Inter,Arial,sans-serif}'+
       '#estaAdminSummaryPage *{box-sizing:border-box}#estaAdminSummaryPage h2,#estaAdminSummaryPage h3,#estaAdminSummaryPage p{margin:0}'+
@@ -378,14 +379,14 @@
       '#asTopShortcut[hidden],#navAdminSummary[hidden]{display:none!important}'+
       '@media(max-width:740px){#estaAdminSummaryPage{padding:11px}#estaAdminSummaryPage .asGrid{grid-template-columns:1fr}#estaAdminSummaryPage .asChecks{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asKpis{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asHead{align-items:flex-start}#estaAdminSummaryPage h2{font-size:19px}}';
     document.head.appendChild(css);
-    const view=document.createElement("section");view.id="estaAdminSummaryPage";
+    const view=document.createElement("section");view.id="estaAdminSummaryPage";view.hidden=true;
     view.innerHTML='<div class="asHead"><div><h2>Báo cáo tổng hợp</h2><p class="asSub">ESTA · Báo cáo Giám sát Kỹ thuật · Bốn dự án và công việc riêng Admin</p></div><button id="asBack" class="asBtn" type="button">← Tổng quan Admin</button></div>'+
       '<div class="asCard"><h3>1. Kỳ báo cáo</h3><div class="asActions" role="group" aria-label="Lựa chọn kỳ báo cáo"><button id="asWeek" class="asBtn asPeriod active" type="button">Theo tuần</button><button id="asMonthApply" class="asBtn asPeriod" type="button">Theo tháng</button><button id="asCustom" class="asBtn asPeriod" type="button">Từ ngày đến ngày</button></div><div class="asDateFields"><label>Chọn tháng<input id="asMonth" type="month" aria-label="Tháng báo cáo"></label><label>Từ ngày<input id="asFrom" type="date"></label><label>Đến ngày<input id="asTo" type="date"></label></div><div class="asActions"><button id="asRefresh" class="asBtn" type="button">↻ Làm mới dữ liệu</button><span class="asHint" id="asPeriodSummary"></span></div></div>'+
       '<div class="asGrid"><div class="asCard"><h3>2. Chọn dự án</h3><div class="asActions"><button class="asBtn" data-as-project-all="1">Chọn cả 4</button><button class="asBtn" data-as-project-all="0">Bỏ chọn</button></div><div class="asChecks" id="asProjectList"></div><p class="asHint">Công việc riêng của Admin đi kèm khi tích “Công việc”, kể cả không liên kết dự án.</p></div>'+
       '<div class="asCard"><h3>3. Chọn hạng mục cần xuất PDF</h3><div class="asActions"><button class="asBtn" data-as-cat-all="1">Chọn tất cả</button><button class="asBtn" data-as-cat-all="0">Bỏ chọn</button></div><div class="asChecks" id="asCategoryList"></div></div></div>'+
       '<div class="asCard asPriorityCard"><h3>4. Công việc cần ưu tiên xử lý</h3><p class="asHint">Chỉ hiển thị việc quá hạn, khẩn cấp hoặc cần xử lý ngay. Không tính các việc chưa đến hạn.</p><div class="asTable"><table><thead><tr><th>#</th><th>Công việc / Nguồn</th><th>Người phụ trách</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hạn dự kiến</th></tr></thead><tbody id="asPriorityRows"></tbody></table></div><p class="asHint" id="asPriorityEmpty"></p></div>'+ 
       '<div class="asCard"><h3>5. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><div class="asActions"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button></div><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Phan. Dữ liệu các dự án được giữ độc lập.</p></div>';
-    home.appendChild(view);
+    document.body.appendChild(view);
     $("#asFrom").value=state.from;$("#asTo").value=state.to;$("#asMonth").value=today().slice(0,7);updatePeriodUI("week");
     const nav=$("#navAdmin");
     if(nav && !$("#navAdminSummary")){
@@ -429,17 +430,17 @@
   function syncShortcut() {
     const vis=global();
     for(const id of ["#navAdminSummary","#asTopShortcut"]){const el=$(id);if(el)el.hidden=!vis;}
-    $("#navAdminSummary")?.classList.toggle("active",vis && !!$("#homePage.estaAdminSummaryOpen"));
+    $("#navAdminSummary")?.classList.toggle("active",vis && document.body.classList.contains("estaAdminSummaryOpen"));
   }
   function close() {
-    $("#homePage")?.classList.remove("estaAdminSummaryOpen");syncShortcut();
+    document.body.classList.remove("estaAdminSummaryOpen");$("#estaAdminSummaryPage")?.setAttribute("hidden","");syncShortcut();
   }
   function open() {
     if(!allowed())return;
     if(!global() && typeof openAdminOverview==="function")openAdminOverview();
     if(!global())return;
     if(typeof showHome==="function")showHome();
-    install();$("#homePage")?.classList.remove("hide");$("#homePage")?.classList.add("estaAdminSummaryOpen");
+    install();document.body.classList.add("estaAdminSummaryOpen");$("#estaAdminSummaryPage")?.removeAttribute("hidden");
     syncShortcut();fetchData();
   }
   window.ESTAAdminSummary={open,close,refresh:fetchData};
