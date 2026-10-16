@@ -131,7 +131,7 @@ function conditionOf(x){
 const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
-let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="";
+let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",summaryCollapsed=false;
 const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")===BID && typeof projectOverviewActive!=="undefined" && projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
@@ -190,6 +190,52 @@ function ueSystemCounts(g){
  return {size:rows.length,templates:g[3].length,counts};
 }
 
+/* List all fields actually saved for a device, rather than a generic status badge. */
+function equipmentDetails(x){
+ if(x.virtual)return "";
+ const specs=x.specs&&typeof x.specs==="object"?x.specs:{},meta=metaOf(x);
+ const seen=new Set(),chips=[];
+ const add=(key,title,value,unit="")=>{
+  if(seen.has(key)||value===undefined||value===null||typeof value==="object")return;
+  const raw=String(value).trim();if(!raw)return;
+  seen.add(key);
+  chips.push('<span class="ueSpecPill"><b>'+esc(title)+':</b> '+esc(unit==="@"?viDate(raw):raw)+(unit&&unit!=="@"?' '+esc(unit):'')+'</span>');
+ };
+ add("code","Mã thiết bị",x.code);
+ add("type","Loại thiết bị",x.equipment_type);
+ add("brand","Hãng",x.brand);
+ add("model","Model",x.model);
+ add("quantity","Số lượng",x.quantity);
+ add("status","Trạng thái hoạt động",x.status);
+ add("install_year","Năm lắp đặt",x.install_year);
+ add("capacity","Công suất / thông số",specs.capacity);
+ add("serial","Serial",specs.serial);
+ const seed=SEEDS.find(s=>s.seedKey===meta.seedKey);
+ const type=meta.technicalType||x._technicalType||seed?._technicalType||"";
+ for(const f of [...advancedFields(type),...extraFields(),...installFields()])add("sp:"+f.key,f.title,specs[f.key],f.unit);
+ for(const [key,value] of Object.entries(specs)){
+  if(key==="_estaUpgrade"||key==="capacity"||key==="serial"||seen.has("sp:"+key))continue;
+  add("other:"+key,key,value);
+ }
+ for(const f of meta.custom||[])add("custom:"+(f.key||f.k),f.key||f.k,f.value??f.v);
+ add("location","Vị trí",x.location);
+ add("note","Ghi chú",x.note);
+ add("interval","Chu kỳ kiểm tra",meta.interval,"ngày");
+ add("verified","Xác minh",meta.verified?"Đã xác minh":"Chưa xác minh");
+ if(meta.linkedAsset){
+  const linked=linkedAssets.find(a=>String(a.id)===String(meta.linkedAsset));
+  add("linked","Hồ sơ bảo trì",linked?.name||"Đã liên kết");
+ }
+ const last=meta.history?.at(-1);
+ if(last){
+  add("checkBy","Người kiểm tra",last.by);
+  add("reading","Thông số đo",last.reading);
+  add("checkNote","Ghi chú kiểm tra",last.note);
+  add("checkCondition","Kết quả kiểm tra",CONDITIONS[last.condition]||last.condition);
+  add("checkPhotos","Ảnh kiểm tra",last.photos?.length?last.photos.length+" ảnh":"");
+ }
+ return '<div class="ueItemSpecifications">'+(chips.join("")||'<span class="ueSpecsEmpty">Chưa nhập thông số</span>')+'</div>';
+}
 function list(){
  const host=$("ueRows"),counter=$("ueResultCount");
  if(!host)return;
@@ -202,16 +248,16 @@ function list(){
  if(!rows.length){host.innerHTML='<div class="ueEmpty"><b>Không có thiết bị phù hợp.</b><p>Thử đổi nhóm hệ thống, tình trạng hoặc từ khóa tìm kiếm.</p><button type="button" class="ueBtnSecondary" id="ueClearFilter">Bỏ bộ lọc</button></div>';
   $("ueClearFilter").onclick=()=>{search="";group="";status="";render($("updateAssetsPage"),true)};return}
  host.innerHTML=rows.map(x=>{
-  const c=conditionOf(x),virt=!!x.virtual,due=inspectionDue(x),overdue=isDue(x),meta=metaOf(x);
+  const virt=!!x.virtual,due=inspectionDue(x),overdue=isDue(x),meta=metaOf(x);
   const latest=meta.lastCheck||meta.history?.at(-1)?.date||"";
-  const detail=[x.code|| (virt?"Chưa cập nhật":"Đã lưu · Chưa có mã"),[x.brand,x.model].filter(Boolean).join(" / "),!virt?"SL: "+safeQty(x.quantity):""].filter(Boolean).join(" · ");
+  const subtitle=virt?"Bấm để nhập thông tin":x.code?"Mã: "+x.code:"Bấm để xem / chỉnh sửa hồ sơ";
   return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="Xem hồ sơ '+esc(label(x))+'">'+
-   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(detail)+'</small></span></div>'+
+   '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(subtitle)+'</small></span></div>'+
    '<span class="ueItemGroup">'+esc(x.system_group)+'</span>'+
-   '<span class="ueState '+(["hu","sua"].includes(c)?"ueCritical":c==="theodoi"?"ueWarn":c==="tot"?"ueGood":"ueStopped")+'">'+esc(CONDITIONS[c]||"Chưa kiểm tra")+'</span>'+
    '<span class="ueItemDate"><small class="ueMobileLabel">Kiểm tra</small>'+viDate(latest)+'</span>'+
    '<span class="ueItemDue'+(overdue?' ueDateOverdue':'')+'"><small class="ueMobileLabel">Hạn kế tiếp</small>'+viDate(due)+(overdue?'<em>Quá hạn</em>':'')+'</span>'+
-   '<span class="ueItemPlace">'+esc(x.location||"—")+'</span><span class="ueArrow">›</span></button>';
+   '<span class="ueItemPlace">'+esc(x.location||"—")+'</span><span class="ueArrow">›</span>'+
+   equipmentDetails(x)+'</button>';
  }).join("");
  host.querySelectorAll("[data-ue-id]").forEach(btn=>btn.onclick=()=>openForm(btn.dataset.ueId));
 }
@@ -232,13 +278,16 @@ function render(page,skipLoad=false){
    '<div class="ueHeroButtons"><button type="button" class="ueBtnSecondary" id="ueRefresh" title="Làm mới dữ liệu">↻ <span>Làm mới</span></button>'+
    '<button type="button" class="ueBtnSecondary" id="uePrint" title="In / PDF báo cáo">↓ <span>In / PDF</span></button>'+
    '<button type="button" class="ueBtnPrimary" id="ueAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div></header>'+
-  '<div class="ueClassicBody"><section class="ueStatusSummary" aria-label="Tổng quan tình trạng thiết bị">'+
+  '<div class="ueClassicBody"><section id="ueStatusSummary" class="ueStatusSummary'+(summaryCollapsed?' ueCollapsed':'')+'" aria-label="Tổng quan tình trạng thiết bị">'+
+   '<button type="button" id="ueSummaryToggle" class="ueSummaryToggle" aria-controls="ueSummaryContent" aria-expanded="'+(!summaryCollapsed)+'" aria-label="'+(summaryCollapsed?'Mở rộng thống kê':'Thu gọn thống kê')+'" title="'+(summaryCollapsed?'Mở rộng':'Thu gọn')+'">'+(summaryCollapsed?'⌄':'⌃')+'</button>'+
+   '<div class="ueSummaryCompactTitle"><b>Tổng quan tình trạng thiết bị</b><span>'+overview.count+' thiết bị · '+realRows().length+' đã lưu</span></div>'+
+   '<div id="ueSummaryContent" class="ueSummaryContent">'+
    '<div class="ueGrandTotal"><strong>'+overview.count+'</strong><span>thiết bị đang<br>theo dõi</span></div>'+
    '<div class="ueSummaryRight"><div class="ueSummaryBar" aria-hidden="true">'+(pieces||'<i class="ueBarBlank"></i>')+'</div>'+
    '<div class="ueSummaryStates">'+statusDefs.map(([k,t,c])=>{
      const val=k===""?overview.count:stats[k];
      return '<button type="button" class="ueSummaryState'+(status===k?' active':'')+'" data-ue-status-chip="'+k+'" aria-pressed="'+(status===k)+'"><b style="color:'+c+'">'+val+'</b><span>'+t+'</span></button>';
-   }).join("")+'</div></div><div class="ueSummaryCaption">'+esc(line)+'</div></section>'+
+   }).join("")+'</div></div><div class="ueSummaryCaption">'+esc(line)+'</div></div></section>'+
   '<div class="ueClassicGrid"><nav class="ueSystemRail" aria-label="Danh sách hệ thống kỹ thuật">'+
     '<button type="button" data-ue-group="" class="ueRailCard'+(!group?' active':'')+'" aria-pressed="'+(!group)+'">'+UE_ALL_ICON+
       '<span class="ueRailText"><b>Tất cả hệ thống</b><small>'+catalog().length+' hạng mục · '+realRows().length+' đã lưu</small></span><span class="ueRailBar"></span></button>'+
@@ -256,10 +305,19 @@ function render(page,skipLoad=false){
         Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div></div>'+
    (error?'<p class="ueError" role="alert">Không tải được dữ liệu: '+esc(error)+' — Các hạng mục có sẵn vẫn hiển thị. Dữ liệu đã lưu chưa được xác nhận.</p>':'')+
     '<div class="uePanel"><div class="uePanelHead"><div><h3>Danh mục thiết bị</h3><p>Chọn thiết bị để cập nhật thông số hoặc ghi kết quả kiểm tra.</p></div><strong id="ueResultCount"></strong></div>'+
-      '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Tình trạng</span><span>Kiểm tra gần nhất</span><span>Hạn kế tiếp</span><span>Vị trí</span><span></span></div>'+
+      '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Kiểm tra gần nhất</span><span>Hạn kế tiếp</span><span>Vị trí</span><span></span></div>'+
       '<div id="ueRows" class="ueRows"></div></div>'+
     '<p class="ueSourceNote">Danh mục có sẵn để nhập thông tin thiết bị. Chỉ những hồ sơ đã lưu và xác minh mới được đưa vào báo cáo.</p>'+
    '</section></div></div>';
+ $("ueSummaryToggle").onclick=()=>{
+  summaryCollapsed=!summaryCollapsed;
+  $("ueStatusSummary").classList.toggle("ueCollapsed",summaryCollapsed);
+  const button=$("ueSummaryToggle");
+  button.textContent=summaryCollapsed?"⌄":"⌃";
+  button.setAttribute("aria-expanded",String(!summaryCollapsed));
+  button.setAttribute("aria-label",summaryCollapsed?"Mở rộng thống kê":"Thu gọn thống kê");
+  button.title=summaryCollapsed?"Mở rộng":"Thu gọn";
+ };
  $("ueRefresh").onclick=()=>{fetchedAt=0;load(true)};
  $("uePrint").onclick=printReport;
  $("ueAdd").onclick=()=>openForm();
