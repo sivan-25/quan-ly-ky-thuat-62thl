@@ -509,7 +509,8 @@ async function getSaved(id,building=currentEquipmentProjectId()){
 }
 async function save(e){
  e.preventDefault();
- if(!allowed())return formError("Bạn không có quyền lưu thiết bị tại Bản nâng cấp.");
+ if(!allowed())return formError("Bạn không có quyền lưu thiết bị tại dự án này.");
+ const building=currentEquipmentProjectId();
  const form=e.currentTarget,button=$("ueSubmit");if(button.disabled)return;
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
  const year=Number(field("install_year"));
@@ -522,7 +523,7 @@ async function save(e){
  const custom=[...form.querySelectorAll(".ueCustomRow")].map(r=>({key:r.querySelector('[name="customKey"]').value.trim(),value:r.querySelector('[name="customValue"]').value.trim()})).filter(c=>c.key&&c.value);
  const interval=Math.min(3650,Math.max(1,Number(field("inspectionInterval"))||G.find(g=>g[1]===field("system_group"))?.[2]||30));
  specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,custom,archived:false,condition:oldMeta.condition||"chua"};
- const payload={building_id:BID,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
+ const payload={building_id:building,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
  location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),
  status:field("status")||statuses[0],install_year:year||null,note:field("note"),specs};
  if(!payload.name||!payload.equipment_type||!payload.system_group)return formError("Vui lòng điền tên thiết bị, loại và hệ thống.");
@@ -531,9 +532,9 @@ async function save(e){
  try{
   const id=editId||crypto.randomUUID();
   if(!editId)payload.id=id;
-  const path=editId?"/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID:"/rest/v1/"+TABLE;
+  const path=editId?"/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+building:"/rest/v1/"+TABLE;
   await sbFetch(path,{method:editId?"PATCH":"POST",token:centralSession.access_token,body:payload});
-  const persisted=await getSaved(id);
+  const persisted=await getSaved(id,building);
   const baseFields=["name","equipment_type","system_group","brand","model","code","location","note","quantity","status","install_year"];
   const specFields=["capacity","serial",...advancedFields(type).map(f=>f.key),...extraFields().map(f=>f.key),...installFields().map(f=>f.key)];
   const matches=!!persisted&&!metaOf(persisted).archived&&
@@ -541,6 +542,7 @@ async function save(e){
    specFields.every(k=>String(persisted.specs?.[k]??"")===String(specs[k]??""))&&
    !!metaOf(persisted).verified===!!specs._estaUpgrade.verified;
   if(!matches)throw new Error("Máy chủ chưa xác nhận đầy đủ thông số đã lưu. Vui lòng kiểm tra lại.");
+  if(currentEquipmentProjectId()!==building)return;
   fetchedAt=0;await load(true);
   if(error)throw new Error("Đã ghi dữ liệu nhưng chưa tải lại được. Vui lòng bấm Làm mới.");
   openForm(id);
@@ -550,6 +552,7 @@ async function save(e){
 }
 async function saveCheck(){
  if(!active()||!allowed()||!editId)return;
+ const building=currentEquipmentProjectId();
  const item=items.find(x=>x.id===editId),form=$("ueForm"),button=$("ueCheckSave");
  if(!item||button.disabled)return;
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
@@ -560,17 +563,18 @@ async function saveCheck(){
  if(files.length>6||files.some(f=>!f.type.startsWith("image/")||f.size>12*1024*1024))return formError("Chỉ chọn tối đa 6 ảnh, mỗi ảnh không quá 12 MB.");
  button.disabled=true;button.textContent="Đang lưu lần kiểm tra...";
  try{
-  const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,BID):[];
+  const refs=files.length?await uploadMediaFiles(files,"technical-equipment",item.id,null,building):[];
   const meta=metaOf(item);
   const entry={date,by,condition,reading:field("checkReading"),note:field("checkNote"),photos:refs,createdAt:new Date().toISOString()};
   // Keep the newly recorded check even when it is older than the last 100 entries.
   const history=[...(meta.history||[]).slice(-99),entry].sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.createdAt).localeCompare(String(b.createdAt))); const latest=history.at(-1);
-  await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+BID,{
+  await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+building,{
    method:"PATCH",token:centralSession.access_token,
    body:{specs:{...item.specs,_estaUpgrade:{...meta,history,verified:condition==="chua"?!!meta.verified:true,condition:latest.condition,lastCheck:latest.date}}}
   });
-  const persisted=await getSaved(item.id);
+  const persisted=await getSaved(item.id,building);
   if(!persisted||!(metaOf(persisted).history||[]).some(h=>h.createdAt===entry.createdAt&&h.date===entry.date&&h.condition===entry.condition))throw new Error("Máy chủ chưa xác nhận kết quả kiểm tra đã lưu.");
+  if(currentEquipmentProjectId()!==building)return;
   fetchedAt=0;await load(true);openForm(item.id);
   if(typeof toast==="function")toast("Đã lưu lịch sử kiểm tra và hình ảnh.");
  }catch(err){formError(err?.message||"Không lưu được kết quả kiểm tra.");}
