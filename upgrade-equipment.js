@@ -245,7 +245,7 @@ function render(page,skipLoad=false){
     G.map(g=>{const c=ueSystemCounts(g),total=c.size;
       const bars=Object.keys(c.counts).map(k=>c.counts[k]?'<i style="flex:'+c.counts[k]+';background:'+({tot:'#426B46',theodoi:'#975D1D',hu:'#A52F34',sua:'#542548',chua:'#705F55'})[k]+'"></i>':"").join("");
       return '<button type="button" data-ue-group="'+esc(g[1])+'" class="ueRailCard'+(group===g[1]?' active':'')+'" aria-pressed="'+(group===g[1])+'">'+
-       ueIcon(UE_SYSTEM_ICONS[g[0]])+'<span class="ueRailText"><b>'+esc(g[1])+'</b><small>'+(total+c.templates-items.filter(x=>x.system_group===g[1]&&metaOf(x).seedKey).length)+' hạng mục · '+total+' đã lưu</small></span>'+
+       ueIcon(UE_SYSTEM_ICONS[g[0]])+'<span class="ueRailText"><b>'+esc(g[1])+'</b><small>'+catalog().filter(x=>x.system_group===g[1]).length+' hạng mục · '+total+' đã lưu</small></span>'+
        '<span class="ueRailBar">'+bars+'</span></button>';
      }).join("")+'</nav>'+
    '<section class="ueClassicMain"><div class="ueMainHead"><div><h2>'+esc(groupLabel)+'</h2><p>'+esc(description)+'</p></div>'+
@@ -476,6 +476,7 @@ async function saveCheck(){
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
  const date=field("checkDate"),by=field("checkBy"),condition=field("checkCondition");
  if(!date||!by||!["chua","tot","theodoi","hu","sua"].includes(condition))return alert("Vui lòng nhập ngày, tình trạng và người kiểm tra.");
+ $("ueFormError").hidden=true;
  const files=[...form.elements.namedItem("checkPhotos").files];
  if(files.length>6||files.some(f=>!f.type.startsWith("image/")||f.size>12*1024*1024))return alert("Chỉ chọn tối đa 6 ảnh, mỗi ảnh không quá 12 MB.");
  button.disabled=true;button.textContent="Đang lưu lần kiểm tra...";
@@ -487,9 +488,11 @@ async function saveCheck(){
    method:"PATCH",token:centralSession.access_token,
    body:{specs:{...item.specs,_estaUpgrade:{...meta,history,condition:latest.condition,lastCheck:latest.date}}}
   });
+  const persisted=await getSaved(item.id);
+  if(!persisted||!(metaOf(persisted).history||[]).some(h=>h.createdAt===history.at(-1).createdAt))throw new Error("Máy chủ chưa xác nhận kết quả kiểm tra đã lưu.");
   fetchedAt=0;await load(true);openForm(item.id);
   if(typeof toast==="function")toast("Đã lưu lịch sử kiểm tra và hình ảnh.");
- }catch(err){if(typeof toast==="function")toast(err.message||"Không lưu được kết quả kiểm tra.");else alert(err.message)}
+ }catch(err){formError(err?.message||"Không lưu được kết quả kiểm tra.");}
  finally{button.disabled=false;button.textContent="✓ Lưu lần kiểm tra"}
 }
 async function printReport(){
