@@ -240,7 +240,8 @@ function ensureDialog(){
  '<label class="ueFull">Liên kết hồ sơ Bảo trì<select name="linkedAsset" id="ueLinkedAsset"><option value="">Chưa liên kết</option></select></label>'+
  '<label>Công suất / thông số<input name="capacity" maxlength="120"></label>'+
  '<label>Số serial<input name="serial" maxlength="140"></label>'+
- '<section id="ueAdvancedSpecs" class="ueFull ueAdvancedSpecs"></section>'+
+ '<section id="ueAdvancedSpecs" class="ueFull ueAdvancedSpecs"></section>'+ 
+ '<details class="ueFull ueSpecSection ueCustom" id="ueCustom"><summary>Thông số bổ sung <span>Tùy chọn</span></summary><div id="ueCustomRows"></div><button type="button" class="ueBtnSecondary" id="ueAddCustom">＋ Thêm thông số</button></details>'+
  '<label class="ueFull">Ghi chú<textarea name="note" rows="2" maxlength="2500"></textarea></label>'+
  '<datalist id="ueBrands"><option value="Daikin"><option value="Mitsubishi"><option value="Panasonic"><option value="KONE"><option value="Schneider"><option value="LS"><option value="Grundfos"><option value="Nagakawa"><option value="Kruger"><option value="Siemens"></datalist>'+
  '<section id="ueInspection" class="ueFull ueInspection" hidden><h3>Kiểm tra & lịch sử tình trạng</h3><p>Chụp ảnh, ghi thông số và lưu minh chứng theo từng lần kiểm tra.</p>'+
@@ -261,7 +262,17 @@ function ensureDialog(){
  $("ueEditType").onchange=()=>{editingType=seedTypeFromForm();fillAdvanced(collectAdvanced())};
  $("ueForm").onsubmit=save;$("ueDelete").onclick=remove;
  $("ueCheckSave").onclick=saveCheck;
+ $("ueAddCustom").onclick=()=>addCustom();
  return dialog;
+}
+function addCustom(key="",val=""){
+ const host=$("ueCustomRows");if(!host)return;
+ const row=document.createElement("div");row.className="ueCustomRow";
+ row.innerHTML='<input name="customKey" maxlength="120" placeholder="Tên thông số" aria-label="Tên thông số" value="'+esc(key)+'">'+
+ '<input name="customValue" maxlength="240" placeholder="Giá trị" aria-label="Giá trị" value="'+esc(val)+'">'+
+ '<button type="button" aria-label="Xóa thông số">×</button>';
+ row.querySelector("button").onclick=()=>row.remove();host.append(row);
+ if(!allowed())row.querySelectorAll("input,button").forEach(el=>el.disabled=true);
 }
 function seedTypeFromForm(){
  const name=$("ueEditType").value;
@@ -280,9 +291,9 @@ function collectAdvanced(){
 function fillAdvanced(values={}){
  const type=editingType||seedTypeFromForm();
  const fields=advancedFields(type),profiles=extraFields(),warranty=installFields();
- const block=(title,arr)=>arr.length?'<section class="ueSpecSection"><h3>'+esc(title)+'</h3><div class="ueInspectGrid">'+fieldInputs(arr,values)+'</div></section>':"";
- $("ueAdvancedSpecs").innerHTML=block("Thông số kỹ thuật · "+$("ueEditType").value,fields)+
- block("Xuất xứ & nhận dạng",profiles)+block("Lắp đặt · bảo hành · nhà thầu",warranty);
+ const block=(title,arr,open)=>arr.length?'<details class="ueSpecSection"'+(open?' open':'')+'><summary>'+esc(title)+'<span>'+arr.length+' trường</span></summary><div class="ueInspectGrid">'+fieldInputs(arr,values)+'</div></details>':"";
+ $("ueAdvancedSpecs").innerHTML=block("Thông số kỹ thuật · "+$("ueEditType").value,fields,true)+
+ block("Xuất xứ & nhận dạng",profiles,false)+block("Lắp đặt · bảo hành · nhà thầu",warranty,false);
  if(!allowed())$("ueAdvancedSpecs").querySelectorAll("input").forEach(x=>x.disabled=true);
 }
 function renderHistory(x){
@@ -330,6 +341,9 @@ function openForm(id=""){
  linkedAssets.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.code||a.name)+' · '+esc(a.name)+'</option>').join("");
  $("ueLinkedAsset").value=meta.linkedAsset||"";
  fillAdvanced(specs);
+ $("ueCustomRows").replaceChildren();(meta.custom||[]).forEach(c=>addCustom(c.key||c.k,c.value||c.v));
+ $("ueCustom").open=!!(meta.custom||[]).length;
+ $("ueAddCustom").hidden=!allowed();
  $("ueFormNotice").textContent=sample?"Đây là mẫu tham khảo, chưa phải thiết bị thực tế. Hãy điền thông số và xác minh trước khi dùng cho báo cáo vận hành.":
  existing?"Hồ sơ đã lưu. Bạn có thể cập nhật thông tin, ghi lần kiểm tra và lưu ảnh minh chứng.":"Chỉ tạo hồ sơ thực tế khi đã kiểm tra thiết bị tại tòa nhà.";
  $("ueInspection").hidden=!existing;
@@ -358,8 +372,9 @@ async function save(e){
  [...advancedFields(type),...extraFields(),...installFields()].forEach(f=>{specs[f.key]=field("sp_"+f.key)});
  const asset=field("linkedAsset");
  if(asset&&!linkedAssets.some(x=>x.id===asset))return alert("Thiết bị bảo trì liên kết không hợp lệ");
+ const custom=[...form.querySelectorAll(".ueCustomRow")].map(r=>({key:r.querySelector('[name="customKey"]').value.trim(),value:r.querySelector('[name="customValue"]').value.trim()})).filter(c=>c.key&&c.value);
  const interval=Math.min(3650,Math.max(1,Number(field("inspectionInterval"))||G.find(g=>g[1]===field("system_group"))?.[2]||30));
- specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,condition:oldMeta.condition||"chua"};
+ specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,custom,condition:oldMeta.condition||"chua"};
  const payload={building_id:BID,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
  location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),
  status:field("status"),install_year:year||null,note:field("note"),specs};
@@ -401,6 +416,7 @@ async function saveCheck(){
 async function printReport(){
  if(!active())return;
  const rows=currentRows().filter(x=>!x.virtual&&metaOf(x).verified),verified=rows;
+ if(!verified.length){if(typeof toast==="function")toast("Chưa có hồ sơ xác minh phù hợp để in.");return;}
  const win=window.open("","_blank");if(!win){alert("Trình duyệt đang chặn cửa sổ in.");return}
  const escPrint=esc;
  const parts=[];
@@ -410,14 +426,21 @@ async function printReport(){
   parts.push('<section class="proof"><h3>'+escPrint(x.name)+' · '+escPrint(latest.date)+'</h3><div class="photos">'+
    urls.filter(Boolean).map(u=>'<img src="'+escPrint(u)+'">').join("")+'</div></section>');
  }
+ const details=verified.map(x=>{
+  const sp=x.specs||{},meta=metaOf(x),t=meta.technicalType||x._technicalType||"";
+  const fields=[...advancedFields(t),...extraFields(),...installFields()];
+  const specified=fields.filter(f=>String(sp[f.key]||"").trim()).map(f=>'<div><b>'+escPrint(f.title)+':</b> '+escPrint(sp[f.key])+(f.unit&&f.unit!=="@"?" "+escPrint(f.unit):"")+'</div>');
+  (meta.custom||[]).forEach(c=>specified.push('<div><b>'+escPrint(c.key||c.k)+':</b> '+escPrint(c.value||c.v)+'</div>'));
+  return specified.length?'<section class="spec"><h3>'+escPrint(label(x))+'</h3><div class="specgrid">'+specified.join("")+'</div></section>':"";
+ }).filter(Boolean).join("");
  const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - Bản nâng cấp - Hệ thống kỹ thuật</title>'+
- '<style>@page{size:A4;margin:13mm}body{font:12px Arial,sans-serif;color:#243b44}header{border-bottom:2px solid #214a43;padding-bottom:9px}h1{font-size:19px}h2{font-size:14px;margin-top:17px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #bdc9c4;padding:7px;text-align:left}th{background:#e8f0ea}tr{break-inside:avoid}.notice{font-size:11px;color:#546c66}.proof{break-inside:avoid}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.photos img{max-width:100%;max-height:76mm;object-fit:contain;border:1px solid #d3dcda}footer{display:flex;justify-content:space-between;margin-top:27mm;break-inside:avoid}</style></head><body>'+
+ '<style>@page{size:A4;margin:13mm}body{font:12px Arial,sans-serif;color:#243b44}header{border-bottom:2px solid #214a43;padding-bottom:9px}h1{font-size:19px}h2{font-size:14px;margin-top:17px}h3{font-size:12px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #bdc9c4;padding:7px;text-align:left}th{background:#e8f0ea}tr{break-inside:avoid}.notice{font-size:11px;color:#546c66}.spec,.proof{break-inside:avoid;margin-top:10px}.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;font-size:10px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.photos img{max-width:100%;max-height:76mm;object-fit:contain;border:1px solid #d3dcda}footer{display:flex;justify-content:space-between;margin-top:27mm;break-inside:avoid}</style></head><body>'+
  '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: Bản nâng cấp · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
  '<p class="notice">'+verified.length+' hồ sơ đã xác minh theo bộ lọc. Mẫu và thiết bị chưa xác minh không xuất hiện trong báo cáo.</p>'+
  '<table><thead><tr><th>STT</th><th>Thiết bị</th><th>Nhóm hệ thống</th><th>Vị trí</th><th>Tình trạng</th><th>Kiểm tra</th><th>Hạn kế tiếp</th></tr></thead><tbody>'+
  rows.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escPrint(x.name)+'</td><td>'+escPrint(x.system_group)+'</td><td>'+escPrint(x.location||"—")+'</td><td>'+
  escPrint(CONDITIONS[conditionOf(x)]||"—")+'</td><td>'+escPrint(viDate(metaOf(x).lastCheck))+'</td><td>'+escPrint(viDate(inspectionDue(x)))+'</td></tr>').join("")+
- '</tbody></table><h2>HÌNH ẢNH KIỂM TRA (HỒ SƠ XÁC MINH)</h2>'+parts.join("")+
+ '</tbody></table><h2>THÔNG SỐ KỸ THUẬT ĐÃ GHI NHẬN</h2>'+details+'<h2>HÌNH ẢNH KIỂM TRA (HỒ SƠ XÁC MINH)</h2>'+parts.join("")+
  '<footer><div>Người lập phiếu<br><br><br>________________</div><div>Kỹ thuật xác nhận<br><br><br>________________</div></footer></body></html>';
  win.document.open();win.document.write(html);win.document.close();
  let printed=false;const trigger=()=>{if(printed||win.closed)return;printed=true;win.focus();win.print()};
