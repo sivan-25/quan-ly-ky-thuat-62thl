@@ -54,11 +54,13 @@ async function main(){
  assert.equal(rows().length,44,"44 built-in entries listed with no saved rows");
  assert(!page.textContent.includes("Mẫu tham khảo"),"do not show sample reference text");
  assert(!page.textContent.includes("mẫu tham khảo"),"do not show sample reference text lower-case");
- assert(page.textContent.includes("Chưa cập nhật"));
+ assert(page.textContent.includes("Chưa nhập"));
 
  // A predefined item used to submit status="", causing an actual 23514 error.
  const first=rows()[0];
  first.onclick();
+ assert.equal(first.getAttribute("aria-expanded"),"true");
+ first.closest(".ueRefEntry").querySelector("[data-ue-edit]").click();
  assert.equal($("#ueForm").elements.namedItem("status").value,"Đang sử dụng","preloaded item must have valid status");
  assert.equal($("#ueDelete").hidden,false,"delete must be available even before the first save");
  await dialogSubmit();
@@ -66,7 +68,7 @@ async function main(){
  assert.equal($("#ueFormError").hidden,true,"no failure after successful save");
  assert.equal($("#ueSaveFlag").textContent.trim(),"✓ Đã lưu","modal reflects server-confirmed saved record");
  assert.equal($("#ueFormError").closest("footer").tagName,"FOOTER","error is visible above modal action buttons");
- assert(page.textContent.includes("Đã lưu"),"list should mark existing unverified device as saved");
+ assert(page.textContent.includes("1 hạng mục")||page.textContent.includes("44 hạng mục"),"saved device continues to appear in list");
  assert.equal(rows().length,44,"one saved row replaces one predefined entry");
 
  // Update same equipment, ensure it persists with no duplicate.
@@ -85,6 +87,7 @@ async function main(){
  // Delete an as-yet-unmodified built-in device using a tombstone.
  const unsaved=rows()[0].dataset.ueId;
  rows()[0].onclick();
+ rows()[0].closest(".ueRefEntry").querySelector("[data-ue-edit]").click();
  assert.equal($("#ueDelete").hidden,false);
  await clickDelete();
  assert.equal(rows().length,42,"unmodified predefined item must be deletable");

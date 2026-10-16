@@ -1,59 +1,36 @@
 "use strict";
-const assert=require("node:assert/strict");
-const fs=require("node:fs");
-const path=require("node:path");
-const vm=require("node:vm");
+const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
 const {JSDOM}=require("jsdom");
 const root=path.join(__dirname,"..");
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"upgrade-equipment-compact.css"),"utf8");
+const css=fs.readFileSync(path.join(root,"upgrade-equipment-reference.css"),"utf8");
 const js=fs.readFileSync(path.join(root,"upgrade-equipment.js"),"utf8");
-assert(/upgrade-equipment-compact\.css\?v=20261016-[\w-]+/.test(html),"compact CSS must be loaded");
-assert(/upgrade-equipment\.js\?v=20261016-[\w-]+/.test(html),"script cache should be refreshed");
-assert(html.indexOf("upgrade-equipment.css?v")<html.indexOf("upgrade-equipment-compact.css?v"),"overrides must load after base CSS");
-for(const marker of [".ueStatusSummary",".ueSystemRail",".ueRailCard",".ueClassicMain",".ueItem"]){
- assert(css.includes(marker),"missing compact style "+marker);
-}
-assert(css.includes("@media(max-width:1190px)"),"tablet responsive treatment missing");
-assert(css.includes("@media(max-width:700px)"),"mobile responsive treatment missing");
-assert(!css.includes("border:5px solid red"),"annotation box must not be reproduced");
-
-// DOM integration: source HTML-like page, no database/network and no login session.
-const dom=new JSDOM("<!doctype html><html><body><div id='updateAssetsPage'></div></body></html>",{url:"https://example.test"});
-const scope={
- document:dom.window.document,window:dom.window,
- currentBuilding:{id:"NANGCAP",role:"admin"},projectOverviewActive:true,
- centralSession:{access_token:"test-token"},currentAccount:{is_admin:true}
-};
-new vm.Script(js,{filename:"upgrade-equipment.js"}).runInNewContext(scope);
-const page=dom.window.document.getElementById("updateAssetsPage");
+assert(/upgrade-equipment-reference\.css\?v=20261016-[\w-]+/.test(html));
+assert(/upgrade-equipment\.js\?v=20261016-[\w-]+/.test(html));
+assert(html.indexOf("upgrade-equipment-compact.css?v")<html.indexOf("upgrade-equipment-reference.css?v"),"reference stylesheet must load last");
+for(const marker of [".ueRefColHead",".ueRefRow",".ueRefState",".ueRefFacts",".ueRefDetails","@media(max-width:540px)"])assert(css.includes(marker),"missing reference style "+marker);
+const dom=new JSDOM("<div id='updateAssetsPage'></div>",{url:"https://example.test"});
+const scope={document:dom.window.document,window:dom.window,currentBuilding:{id:"NANGCAP",role:"admin"},projectOverviewActive:true,centralSession:{access_token:"fixture"},currentAccount:{is_admin:true}};
+new vm.Script(js).runInNewContext(scope);
+const page=dom.window.document.getElementById("updateAssetsPage"),$=s=>page.querySelector(s),$$=s=>[...page.querySelectorAll(s)];
 dom.window.estaUpgradeAssets.render(page,true);
-const $=sel=>page.querySelector(sel);
-const $$=sel=>Array.from(page.querySelectorAll(sel));
-
-assert.equal($(".ueGrandTotal strong").textContent.trim(),"0","virtual samples must not count as real equipment");
-assert.equal($$("[data-ue-group]").length,10,"all + 9 real system groups required");
-assert.equal($$("#ueRows .ueItem").length,44,"44 ready-to-edit templates required");
-assert.equal($(".ueSummaryCaption").parentElement.className,"ueStatusSummary",
- "compact summary caption must be a third aligned grid cell");
-assert.equal($$("[data-ue-status-chip]").length,7,"all seven status shortcuts must exist");
-assert($(".ueClassicHead #ueAdd"),"Add equipment button must survive");
-assert($(".ueClassicHead #uePrint"),"PDF button must survive");
-
-const pccc=$('[data-ue-group="PCCC"]');
-pccc.click();
-assert.equal($(".ueMainHead h2").textContent,"PCCC");
-assert.equal($$("#ueRows .ueItem").length,9,"system navigation must actually filter");
-assert.equal($('[data-ue-group="PCCC"]').getAttribute("aria-pressed"),"true");
-
-$('[data-ue-group=""]').click();
-const search=$("#ueSearch");
-search.value="AHU";search.oninput({target:search});
-assert.equal($$("#ueRows .ueItem").length,1,"search must filter list");
-assert($(".ueItemId strong").textContent.includes("AHU"));
-
-const currentMarkup=page.innerHTML;
-scope.currentBuilding={id:"130HH"};
+assert(page.classList.contains("ueSnapshot"));
+assert.equal($$("#ueRows .ueRefRow").length,44);
+assert.equal($(".ueRefColHead").children.length,6);
+assert.match($("#ueResultCount").textContent,/44 hạng mục/);
+assert($("#ueAdd")&&$("#uePrint")&&$("#ueRefresh"));
+assert.equal($("#ueGroup").options.length,10,"all nine systems selectable");
+$("#ueGroup").value="PCCC";$("#ueGroup").onchange({target:$("#ueGroup")});
+assert.equal($$("#ueRows .ueRefRow").length,9);
+$("#ueGroup").value="";$("#ueGroup").onchange({target:$("#ueGroup")});
+$("#ueSearch").value="AHU";$("#ueSearch").oninput({target:$("#ueSearch")});
+assert.equal($$("#ueRows .ueRefRow").length,1);
+assert.equal($(".ueRefDevice strong").textContent,"AHU");
+const item=$("[data-ue-id]");item.click();
+assert.equal(item.getAttribute("aria-expanded"),"true","virtual device can expand without forcing modal");
+assert.match($(".ueRefDetails").textContent,/chưa nhập hồ sơ/i);
+assert($(".ueRefDetails [data-ue-edit]"),"virtual form shortcut available");
+const markup=page.innerHTML;scope.currentBuilding={id:"127HH"};
 dom.window.estaUpgradeAssets.render(page,true);
-assert.equal(page.innerHTML,currentMarkup,"NANGCAP page must never rerender for 130HH");
-console.log("Compact NANGCAP visual structure and filters: PASS (9 systems, 44 templates, status row, sidebar, search, responsive CSS).");
+assert.equal(page.innerHTML,markup,"not allowed to rerender other project");
+console.log("NANGCAP screenshot layout, filters, virtual rows and project isolation PASS");
