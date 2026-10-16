@@ -334,7 +334,7 @@
     const home=$("#homePage");
     if(!home||$("#estaAdminSummaryPage"))return;
     const css=document.createElement("style");css.id="estaAdminSummaryStyles";
-    css.textContent='#homePage.estaAdminSummaryOpen>:not(#estaAdminSummaryPage){display:none!important}'+
+    css.textContent='#homePage.estaAdminSummaryOpen>:not(#estaAdminSummaryPage){display:none!important}#homePage.estaAdminSummaryOpen{display:block!important;visibility:visible!important;opacity:1!important;min-height:60vh!important}#homePage.estaAdminSummaryOpen #estaAdminSummaryPage{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:1}' +
       '#estaAdminSummaryPage{background:#f2eddf;color:#34463b;border:1px solid #ddd5be;border-radius:16px;padding:20px;margin:0 0 20px;font-family:Inter,Arial,sans-serif}'+
       '#estaAdminSummaryPage *{box-sizing:border-box}#estaAdminSummaryPage h2,#estaAdminSummaryPage h3,#estaAdminSummaryPage p{margin:0}'+
       '#estaAdminSummaryPage .asHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}'+
@@ -438,7 +438,7 @@
     if(!global() && typeof openAdminOverview==="function")openAdminOverview();
     if(!global())return;
     if(typeof showHome==="function")showHome();
-    install();$("#homePage")?.classList.add("estaAdminSummaryOpen");
+    install();$("#homePage")?.classList.remove("hide");$("#homePage")?.classList.add("estaAdminSummaryOpen");
     syncShortcut();fetchData();
   }
   window.ESTAAdminSummary={open,close,refresh:fetchData};
