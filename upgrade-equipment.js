@@ -312,6 +312,15 @@ function list(){
  host.querySelectorAll("[data-ue-check]").forEach(button=>button.onclick=()=>openForm(button.dataset.ueCheck,true));
 }
 /* Reference layout applies only when the current building is NANGCAP. */
+function systemRailHtml(){
+ const all=[{name:"Tất cả hệ thống",key:"",count:catalog().length,icon:UE_ALL_ICON}].concat(
+  G.map(g=>({name:g[1],key:g[1],count:groupCount(g[1]),icon:ueIcon(UE_SYSTEM_ICONS[g[0]],23)}))
+ );
+ return '<nav class="ueSystemRail" aria-label="Danh mục hệ thống kỹ thuật">'+all.map(g=>
+  '<button type="button" class="ueRailCard'+(group===g.key?' active':'')+'" data-ue-group="'+esc(g.key)+'" aria-pressed="'+(group===g.key)+'">'+
+  g.icon+'<span class="ueRailText"><b>'+esc(g.name)+'</b><small>'+g.count+' thiết bị</small></span></button>'
+ ).join("")+'</nav>';
+}
 function render(page,skipLoad=false){
  if(!active()||!page)return;
  ensureScope();
@@ -319,6 +328,7 @@ function render(page,skipLoad=false){
  page.classList.add("uePage","ueSnapshot");
  page.innerHTML=
   '<section class="ueRefSurface" aria-label="Danh sách thông tin hệ thống kỹ thuật">'+
+   '<div class="ueRefLayout">'+systemRailHtml()+'<main class="ueRefMain">'+
    '<header class="ueRefTop"><div class="ueRefTitle">'+
     '<label class="ueRefTitleSelect"><span class="ueVisuallyHidden">Chọn hệ thống kỹ thuật</span>'+
      '<select id="ueGroup" aria-label="Chọn hệ thống kỹ thuật"><option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select></label>'+
@@ -338,7 +348,8 @@ function render(page,skipLoad=false){
     '<span>THIẾT BỊ</span><span>VỊ TRÍ</span><span>TRẠNG THÁI</span>'+
     '<span>KIỂM TRA GẦN NHẤT</span><span>LẦN TỚI</span><span></span></div>'+
     '<div id="ueRows" class="ueRefRows"></div></div>'+
-  '</section>';
+   '</main></div></section>';
+ page.querySelectorAll("[data-ue-group]").forEach(button=>button.onclick=()=>{group=button.dataset.ueGroup||"";expandedDeviceId="";render(page,true)});
  $("ueSearch").oninput=e=>{search=e.target.value;list()};
  $("ueGroup").onchange=e=>{group=e.target.value;render(page,true)};
  $("ueStatus").onchange=e=>{status=e.target.value;list()};
