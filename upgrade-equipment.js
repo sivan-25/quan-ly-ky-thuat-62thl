@@ -600,9 +600,9 @@ async function printReport(){
   (meta.custom||[]).forEach(c=>specified.push('<div><b>'+escPrint(c.key||c.k)+':</b> '+escPrint(c.value||c.v)+'</div>'));
   return specified.length?'<section class="spec"><h3>'+escPrint(label(x))+'</h3><div class="specgrid">'+specified.join("")+'</div></section>':"";
  }).filter(Boolean).join("");
- const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - Bản nâng cấp - Hệ thống kỹ thuật</title>'+
+ const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - '+escPrint(projectDisplayName())+' - Hệ thống kỹ thuật</title>'+
  '<style>@page{size:A4;margin:13mm}body{font:12px Arial,sans-serif;color:#243b44}header{border-bottom:2px solid #214a43;padding-bottom:9px}h1{font-size:19px}h2{font-size:14px;margin-top:17px}h3{font-size:12px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #bdc9c4;padding:7px;text-align:left}th{background:#e8f0ea}tr{break-inside:avoid}.notice{font-size:11px;color:#546c66}.spec,.proof{break-inside:avoid;margin-top:10px}.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;font-size:10px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.photos img{max-width:100%;max-height:76mm;object-fit:contain;border:1px solid #d3dcda}footer{display:flex;justify-content:space-between;margin-top:27mm;break-inside:avoid}</style></head><body>'+
- '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: Bản nâng cấp · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
+ '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: '+escPrint(projectDisplayName())+' · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
  '<p class="notice">'+verified.length+' hồ sơ đã xác minh theo bộ lọc. Thiết bị chưa xác minh không xuất hiện trong báo cáo.</p>'+
  '<table><thead><tr><th>STT</th><th>Thiết bị</th><th>Nhóm hệ thống</th><th>Vị trí</th><th>Tình trạng</th><th>Kiểm tra</th><th>Hạn kế tiếp</th></tr></thead><tbody>'+
  rows.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escPrint(x.name)+'</td><td>'+escPrint(x.system_group)+'</td><td>'+escPrint(x.location||"—")+'</td><td>'+
@@ -618,43 +618,45 @@ async function printReport(){
 
 async function remove(){
  if(!allowed())return formError("Bạn không có quyền xóa thiết bị.");
+ const building=currentEquipmentProjectId();
  const existing=items.find(x=>String(x.id)===String(editId));
  const builtIn=SEEDS.find(x=>x.seedKey===editingSeed);
  const selected=existing||builtIn;
  if(!selected)return;
  const name=label(selected);
- if(!confirm('Xóa thiết bị “'+name+'” khỏi danh sách Bản nâng cấp? Thao tác này không ảnh hưởng các dự án khác.'))return;
+ if(!confirm('Xóa thiết bị “'+name+'” khỏi danh sách '+projectDisplayName()+'? Thao tác này không ảnh hưởng các dự án khác.'))return;
  const button=$("ueDelete");button.disabled=true;button.textContent="Đang xóa...";
  try{
   if(existing&&metaOf(existing).seedKey){
    // For original built-in entries, keep an archived marker so they do not reappear after refresh.
-   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+BID,{
+   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+building,{
     method:"PATCH",token:centralSession.access_token,
     body:{specs:{...existing.specs,_estaUpgrade:{...metaOf(existing),archived:true}}}
    });
-   const row=await getSaved(existing.id);
+   const row=await getSaved(existing.id,building);
    if(!row||!metaOf(row).archived)throw new Error("Không xác nhận được thao tác xóa.");
   }else if(builtIn&&!existing){
-   // Never write or delete another project's data; hide this predefined category in NANGCAP.
+   // Never write or delete another project's data; hide this predefined category in the active project.
    const id=crypto.randomUUID();
    await sbFetch("/rest/v1/"+TABLE,{
     method:"POST",token:centralSession.access_token,
-    body:{id,building_id:BID,name:builtIn.name,equipment_type:builtIn.equipment_type,
+    body:{id,building_id:building,name:builtIn.name,equipment_type:builtIn.equipment_type,
       system_group:builtIn.system_group,location:builtIn.location,quantity:1,status:"Ngừng sử dụng",
       specs:{_estaUpgrade:{seedKey:builtIn.seedKey,archived:true,verified:false,history:[]}}}
    });
-   const row=await getSaved(id);
+   const row=await getSaved(id,building);
    if(!row||!metaOf(row).archived)throw new Error("Không xác nhận được thao tác xóa.");
   }else{
    // User-created equipment not from a predefined entry can be deleted from the register.
-   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+BID,{
+   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+building,{
     method:"DELETE",token:centralSession.access_token
    });
-   if(await getSaved(existing.id))throw new Error("Hệ thống chưa xóa được thiết bị.");
+   if(await getSaved(existing.id,building))throw new Error("Hệ thống chưa xóa được thiết bị.");
   }
+  if(currentEquipmentProjectId()!==building)return;
   closeForm();fetchedAt=0;await load(true);
   if(error)throw new Error("Đã xóa nhưng chưa tải lại được danh sách. Vui lòng bấm Làm mới.");
-  if(typeof toast==="function")toast("Đã xóa thiết bị khỏi Bản nâng cấp.");
+  if(typeof toast==="function")toast("Đã xóa thiết bị khỏi "+projectDisplayName()+".");
  }catch(err){formError(err?.message||"Không xóa được thiết bị.");}
  finally{button.disabled=false;button.textContent="🗑 Xóa thiết bị";}
 }
