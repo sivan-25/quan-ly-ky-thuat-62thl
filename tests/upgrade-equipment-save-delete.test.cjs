@@ -64,6 +64,9 @@ async function main(){
  await dialogSubmit();
  assert.equal(database.size,1,"saved predefined entry must exist in backend fixture");
  assert.equal($("#ueFormError").hidden,true,"no failure after successful save");
+ assert.equal($("#ueSaveFlag").textContent.trim(),"✓ Đã lưu","modal reflects server-confirmed saved record");
+ assert.equal($("#ueFormError").closest("footer").tagName,"FOOTER","error is visible above modal action buttons");
+ assert(page.textContent.includes("Đã lưu"),"list should mark existing unverified device as saved");
  assert.equal(rows().length,44,"one saved row replaces one predefined entry");
 
  // Update same equipment, ensure it persists with no duplicate.
