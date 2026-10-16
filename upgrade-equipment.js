@@ -115,12 +115,13 @@ const SEEDS=G.flatMap(g=>g[3].map((x,i)=>({
  location:x[1],_technicalType:x[2],_cadence:g[2],status:"",quantity:1,
  virtual:true,specs:{_estaUpgrade:{seedKey:g[0]+":"+i,verified:false,condition:"chua",history:[]}}
 })));
-const CONDITIONS={mau:"Mẫu tham khảo",unverified:"Chưa xác minh",chua:"Chưa kiểm tra",tot:"Tốt",theodoi:"Cần theo dõi",hu:"Hư hỏng",sua:"Đang sửa",quahan:"Quá hạn kiểm tra"};
+const CONDITIONS={mau:"Chưa cập nhật",unverified:"Đã lưu",chua:"Chưa kiểm tra",tot:"Tốt",theodoi:"Cần theo dõi",hu:"Hư hỏng",sua:"Đang sửa",quahan:"Quá hạn kiểm tra"};
 const metaOf=x=>x?.specs?._estaUpgrade||{};
-const realRows=()=>items.filter(x=>!x.virtual);
+const realRows=()=>items.filter(x=>!x.virtual&&!metaOf(x).archived);
 function catalog(){
+ // Keep a deleted built-in entry hidden after refresh and on other devices.
  const keys=new Set(items.map(x=>metaOf(x).seedKey).filter(Boolean));
- return items.concat(SEEDS.filter(x=>!keys.has(x.seedKey)));
+ return realRows().concat(SEEDS.filter(x=>!keys.has(x.seedKey)));
 }
 function conditionOf(x){
  if(x.virtual)return "mau";
@@ -135,8 +136,8 @@ const active=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
 const gopts=()=>groups.map(g=>g[0]);
-const safeQty=n=>Number.isFinite(+n)?Math.max(1,Math.floor(Number(n))):1;
-const eqCount=()=>items.filter(x=>metaOf(x).verified).reduce((n,x)=>n+safeQty(x.quantity),0);
+const safeQty=n=>Number.isFinite(+n)?Math.min(500,Math.max(1,Math.floor(Number(n)))):1;
+const eqCount=()=>realRows().filter(x=>metaOf(x).verified).reduce((n,x)=>n+safeQty(x.quantity),0);
 
 const label=x=>x?.name||x?.equipment_type||"Chưa đặt tên";
 const isPresent=()=>active()&&!!$("updateAssetsPage")&&!$("updateAssetsPage").classList.contains("hide");
@@ -184,7 +185,7 @@ function ueStatusOverview(){
  return {count:list.length,counts};
 }
 function ueSystemCounts(g){
- const rows=items.filter(x=>x.system_group===g[1]),counts={tot:0,theodoi:0,hu:0,sua:0,chua:0};
+ const rows=realRows().filter(x=>x.system_group===g[1]),counts={tot:0,theodoi:0,hu:0,sua:0,chua:0};
  rows.forEach(x=>{const k=ueStatusKey(x);if(Object.hasOwn(counts,k))counts[k]++});
  return {size:rows.length,templates:g[3].length,counts};
 }
@@ -203,7 +204,7 @@ function list(){
  host.innerHTML=rows.map(x=>{
   const c=conditionOf(x),virt=!!x.virtual,due=inspectionDue(x),overdue=isDue(x),meta=metaOf(x);
   const latest=meta.lastCheck||meta.history?.at(-1)?.date||"";
-  const detail=[x.code|| (virt?"Mẫu · Chưa tạo hồ sơ":"Chưa có mã"),[x.brand,x.model].filter(Boolean).join(" / "),!virt?"SL: "+safeQty(x.quantity):""].filter(Boolean).join(" · ");
+  const detail=[x.code|| (virt?"Chưa cập nhật":"Đã lưu · Chưa có mã"),[x.brand,x.model].filter(Boolean).join(" / "),!virt?"SL: "+safeQty(x.quantity):""].filter(Boolean).join(" · ");
   return '<button type="button" class="ueItem'+(virt?' ueVirtual':'')+(overdue?' ueOverdue':'')+'" data-ue-id="'+esc(x.id)+'" aria-label="Xem hồ sơ '+esc(label(x))+'">'+
    '<div class="ueItemId"><span class="ueItemGlyph" aria-hidden="true">'+(virt?'◇':'⚙')+'</span><span><strong>'+esc(label(x))+'</strong><small>'+esc(detail)+'</small></span></div>'+
    '<span class="ueItemGroup">'+esc(x.system_group)+'</span>'+
@@ -223,7 +224,7 @@ function render(page,skipLoad=false){
  const groupLabel=group||"Tất cả hệ thống";
  const description=group?('Danh mục '+group+' · Bấm vào thiết bị để xem và cập nhật hồ sơ.'):
   "Chọn một hệ thống bên trái, rồi bấm vào tên thiết bị để xem toàn bộ thông số.";
- const line='9 hệ thống · '+SEEDS.length+' mẫu tham khảo · '+items.length+' hồ sơ đã lưu';
+ const line='9 hệ thống · '+catalog().length+' hạng mục · '+realRows().length+' thiết bị đã lưu';
  page.classList.add("uePage","ueClassic");
  page.innerHTML=
   '<header class="ueHero ueClassicHead"><div class="ueBrand">'+iconMark+'<div><strong>ESTA</strong><small>PROPERTY MANAGEMENT</small></div></div>'+
@@ -240,11 +241,11 @@ function render(page,skipLoad=false){
    }).join("")+'</div></div><div class="ueSummaryCaption">'+esc(line)+'</div></section>'+
   '<div class="ueClassicGrid"><nav class="ueSystemRail" aria-label="Danh sách hệ thống kỹ thuật">'+
     '<button type="button" data-ue-group="" class="ueRailCard'+(!group?' active':'')+'" aria-pressed="'+(!group)+'">'+UE_ALL_ICON+
-      '<span class="ueRailText"><b>Tất cả hệ thống</b><small>'+items.length+' thiết bị · '+SEEDS.length+' mẫu</small></span><span class="ueRailBar"></span></button>'+
+      '<span class="ueRailText"><b>Tất cả hệ thống</b><small>'+catalog().length+' hạng mục · '+realRows().length+' đã lưu</small></span><span class="ueRailBar"></span></button>'+
     G.map(g=>{const c=ueSystemCounts(g),total=c.size;
       const bars=Object.keys(c.counts).map(k=>c.counts[k]?'<i style="flex:'+c.counts[k]+';background:'+({tot:'#426B46',theodoi:'#975D1D',hu:'#A52F34',sua:'#542548',chua:'#705F55'})[k]+'"></i>':"").join("");
       return '<button type="button" data-ue-group="'+esc(g[1])+'" class="ueRailCard'+(group===g[1]?' active':'')+'" aria-pressed="'+(group===g[1])+'">'+
-       ueIcon(UE_SYSTEM_ICONS[g[0]])+'<span class="ueRailText"><b>'+esc(g[1])+'</b><small>'+total+' thiết bị · '+c.templates+' mẫu</small></span>'+
+       ueIcon(UE_SYSTEM_ICONS[g[0]])+'<span class="ueRailText"><b>'+esc(g[1])+'</b><small>'+catalog().filter(x=>x.system_group===g[1]).length+' hạng mục · '+total+' đã lưu</small></span>'+
        '<span class="ueRailBar">'+bars+'</span></button>';
      }).join("")+'</nav>'+
    '<section class="ueClassicMain"><div class="ueMainHead"><div><h2>'+esc(groupLabel)+'</h2><p>'+esc(description)+'</p></div>'+
@@ -253,11 +254,11 @@ function render(page,skipLoad=false){
        '<option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select>'+
       '<select id="ueStatus" aria-label="Lọc tình trạng"><option value="">Mọi tình trạng</option>'+
         Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div></div>'+
-   (error?'<p class="ueError" role="alert">Không tải được dữ liệu: '+esc(error)+' — Danh mục mẫu vẫn có thể xem. Dữ liệu đã lưu chưa được xác nhận.</p>':'')+
-    '<div class="uePanel"><div class="uePanelHead"><div><h3>Danh mục thiết bị</h3><p>Chọn hạng mục để nhập thông số hoặc ghi kết quả kiểm tra.</p></div><strong id="ueResultCount"></strong></div>'+
+   (error?'<p class="ueError" role="alert">Không tải được dữ liệu: '+esc(error)+' — Các hạng mục có sẵn vẫn hiển thị. Dữ liệu đã lưu chưa được xác nhận.</p>':'')+
+    '<div class="uePanel"><div class="uePanelHead"><div><h3>Danh mục thiết bị</h3><p>Chọn thiết bị để cập nhật thông số hoặc ghi kết quả kiểm tra.</p></div><strong id="ueResultCount"></strong></div>'+
       '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Tình trạng</span><span>Kiểm tra gần nhất</span><span>Hạn kế tiếp</span><span>Vị trí</span><span></span></div>'+
       '<div id="ueRows" class="ueRows"></div></div>'+
-    '<p class="ueSourceNote">Các mẫu chỉ là danh mục để nhập nhanh. Chúng không được tính vào số thiết bị thực tế hoặc báo cáo cho đến khi lưu và xác minh.</p>'+
+    '<p class="ueSourceNote">Danh mục có sẵn để nhập thông tin thiết bị. Chỉ những hồ sơ đã lưu và xác minh mới được đưa vào báo cáo.</p>'+
    '</section></div></div>';
  $("ueRefresh").onclick=()=>{fetchedAt=0;load(true)};
  $("uePrint").onclick=printReport;
@@ -278,7 +279,7 @@ function ensureDialog(){
  if(dialog?.isConnected)return dialog;
  dialog=document.createElement("div");dialog.id="ueOverlay";dialog.className="ueOverlay";dialog.hidden=true;
  dialog.innerHTML='<div class="ueDialog" role="dialog" aria-modal="true" aria-labelledby="ueModalHeading">'+
- '<header><div><small>ESTA · HỒ SƠ HỆ THỐNG KỸ THUẬT</small><h2 id="ueModalHeading">Hồ sơ thiết bị</h2></div><button type="button" id="ueClose" aria-label="Đóng">×</button></header>'+
+ '<header><div><small>ESTA · HỒ SƠ HỆ THỐNG KỸ THUẬT</small><h2 id="ueModalHeading">Hồ sơ thiết bị</h2><span id="ueSaveFlag" class="ueSaveFlag">Chưa lưu</span></div><button type="button" id="ueClose" aria-label="Đóng">×</button></header>'+
  '<form id="ueForm"><div class="ueFormBody">'+
  '<p id="ueFormNotice" class="ueFull ueFormNotice"></p>'+
  '<label>Nhóm hệ thống *<select name="system_group" id="ueEditGroup" required>'+opt(gopts(),"")+'</select></label>'+
@@ -309,8 +310,8 @@ function ensureDialog(){
  '<label class="ueFull">Ghi chú / Kết quả xử lý<textarea name="checkNote" rows="2" maxlength="1500"></textarea></label></div>'+
  '<button type="button" id="ueCheckSave" class="ueBtnPrimary">✓ Lưu lần kiểm tra</button>'+
  '<h4>Lịch sử kiểm tra</h4><div id="ueHistory"></div></section>'+
- '</div><footer><button type="button" class="ueBtnSecondary" id="ueCancel">Hủy</button>'+
- '<button type="button" class="ueDelete" id="ueDelete" hidden>Xóa hồ sơ</button>'+
+ '</div><footer><div id="ueFormError" class="ueFormError" role="alert" aria-live="assertive" hidden></div><button type="button" class="ueBtnSecondary" id="ueCancel">Hủy</button>'+
+ '<button type="button" class="ueDelete" id="ueDelete" hidden>🗑 Xóa thiết bị</button>'+
  '<button type="submit" class="ueBtnPrimary" id="ueSubmit">Lưu hồ sơ thiết bị</button></footer></form></div>';
  document.body.append(dialog);
  $("ueClose").onclick=closeForm;$("ueCancel").onclick=closeForm;
@@ -382,12 +383,15 @@ function openForm(id=""){
  editId=existing?.id||null;editingSeed=selected?.seedKey||metaOf(selected).seedKey||"";
  editingType=selected?._technicalType||metaOf(selected).technicalType||"";
  const d=ensureDialog(),form=$("ueForm");
- form.reset();$("ueModalHeading").textContent=existing?"Chi tiết & kiểm tra thiết bị":sample?"Tạo hồ sơ từ mẫu":"Thêm thiết bị";
+ form.reset();$("ueModalHeading").textContent=existing?"Chi tiết & kiểm tra thiết bị":sample?"Cập nhật thông tin thiết bị":"Thêm thiết bị";
+ $("ueSaveFlag").textContent=existing?"✓ Đã lưu":"Chưa lưu";$("ueSaveFlag").classList.toggle("is-saved",!!existing);
  const values=selected||{system_group:gopts()[0],equipment_type:groups[0][2][0],quantity:1,status:statuses[0]};
  for(const [key,value] of Object.entries(values)){
   const input=form.elements.namedItem(key);
   if(input&&typeof value!=="object")input.value=value??"";
  }
+ // Preloaded entries have status=""; sending an empty status violates the DB CHECK constraint (23514).
+ form.elements.namedItem("status").value=statuses.includes(values.status)?values.status:statuses[0];
  $("ueEditGroup").value=values.system_group||gopts()[0];fillTypes(values.equipment_type);
  const specs=values.specs||{},meta=metaOf(values);
  form.elements.namedItem("capacity").value=specs.capacity||"";
@@ -401,8 +405,9 @@ function openForm(id=""){
  $("ueCustomRows").replaceChildren();(meta.custom||[]).forEach(c=>addCustom(c.key||c.k,c.value||c.v));
  $("ueCustom").open=!!(meta.custom||[]).length;
  $("ueAddCustom").hidden=!allowed();
- $("ueFormNotice").textContent=sample?"Đây là mẫu tham khảo, chưa phải thiết bị thực tế. Hãy điền thông số và xác minh trước khi dùng cho báo cáo vận hành.":
- existing?"Hồ sơ đã lưu. Bạn có thể cập nhật thông tin, ghi lần kiểm tra và lưu ảnh minh chứng.":"Chỉ tạo hồ sơ thực tế khi đã kiểm tra thiết bị tại tòa nhà.";
+ $("ueFormNotice").textContent=sample?"Hạng mục chưa cập nhật. Nhập thông số rồi bấm Lưu thiết bị để ghi nhận.":
+ existing?"Hồ sơ đã lưu. Bạn có thể cập nhật thông tin, ghi lần kiểm tra và lưu ảnh minh chứng.":"Điền thông tin thiết bị rồi bấm Lưu để ghi nhận vào dự án.";
+ $("ueFormError").hidden=true;$("ueFormError").textContent="";
  $("ueInspection").hidden=!existing;
  if(existing){
   form.elements.namedItem("checkDate").value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
@@ -411,15 +416,25 @@ function openForm(id=""){
  }
  const mayEdit=allowed();
  form.querySelectorAll("input,select,textarea").forEach(el=>el.disabled=!mayEdit);
- $("ueDelete").hidden=!mayEdit||!existing;
+ $("ueDelete").hidden=!mayEdit||!selected;
  $("ueSubmit").hidden=!mayEdit;$("ueCheckSave").hidden=!mayEdit;
  d.hidden=false;
 }
 function closeForm(){if(dialog)dialog.hidden=true;editId=null;editingSeed="";editingType=""}
 
 
+function formError(message){
+ const target=$("ueFormError");
+ if(target){target.hidden=false;target.textContent="⚠ "+String(message||"Không thực hiện được thao tác.")}
+ else alert(String(message||"Không thực hiện được thao tác."));
+}
+async function getSaved(id){
+ const rows=await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID+"&select=id,name,code,status,specs&limit=1",{token:centralSession?.access_token});
+ return Array.isArray(rows)?rows[0]||null:null;
+}
 async function save(e){
- e.preventDefault();if(!allowed())return;
+ e.preventDefault();
+ if(!allowed())return formError("Bạn không có quyền lưu thiết bị tại Bản nâng cấp.");
  const form=e.currentTarget,button=$("ueSubmit");if(button.disabled)return;
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
  const year=Number(field("install_year"));
@@ -428,23 +443,30 @@ async function save(e){
  const specs={...old?.specs,capacity:field("capacity"),serial:field("serial")};
  [...advancedFields(type),...extraFields(),...installFields()].forEach(f=>{specs[f.key]=field("sp_"+f.key)});
  const asset=field("linkedAsset");
- if(asset&&!linkedAssets.some(x=>x.id===asset))return alert("Thiết bị bảo trì liên kết không hợp lệ");
+ if(asset&&!linkedAssets.some(x=>String(x.id)===asset))return formError("Thiết bị bảo trì liên kết không hợp lệ.");
  const custom=[...form.querySelectorAll(".ueCustomRow")].map(r=>({key:r.querySelector('[name="customKey"]').value.trim(),value:r.querySelector('[name="customValue"]').value.trim()})).filter(c=>c.key&&c.value);
  const interval=Math.min(3650,Math.max(1,Number(field("inspectionInterval"))||G.find(g=>g[1]===field("system_group"))?.[2]||30));
- specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,custom,condition:oldMeta.condition||"chua"};
+ specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,custom,archived:false,condition:oldMeta.condition||"chua"};
  const payload={building_id:BID,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
  location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),
- status:field("status"),install_year:year||null,note:field("note"),specs};
- if(!payload.name||!payload.equipment_type||!payload.system_group)return;
- button.disabled=true;button.textContent="Đang lưu...";
+ status:field("status")||statuses[0],install_year:year||null,note:field("note"),specs};
+ if(!payload.name||!payload.equipment_type||!payload.system_group)return formError("Vui lòng điền tên thiết bị, loại và hệ thống.");
+ if(!statuses.includes(payload.status))return formError("Vui lòng chọn trạng thái hoạt động hợp lệ.");
+ $("ueFormError").hidden=true;button.disabled=true;button.textContent="Đang lưu...";
  try{
   const id=editId||crypto.randomUUID();
   if(!editId)payload.id=id;
   const path=editId?"/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID:"/rest/v1/"+TABLE;
   await sbFetch(path,{method:editId?"PATCH":"POST",token:centralSession.access_token,body:payload});
-  fetchedAt=0;await load(true);openForm(id);
-  if(typeof toast==="function")toast("Đã lưu hồ sơ thiết bị Bản nâng cấp.");
- }catch(err){if(typeof toast==="function")toast(err.message||"Không lưu được hồ sơ.");else alert(err.message||"Không lưu được hồ sơ.")}
+  const persisted=await getSaved(id);
+  if(!persisted||persisted.name!==payload.name||persisted.status!==payload.status||!!metaOf(persisted).archived){
+   throw new Error("Máy chủ chưa xác nhận dữ liệu đã lưu. Vui lòng kiểm tra lại.");
+  }
+  fetchedAt=0;await load(true);
+  if(error)throw new Error("Đã ghi dữ liệu nhưng chưa tải lại được. Vui lòng bấm Làm mới.");
+  openForm(id);
+  if(typeof toast==="function")toast("Đã lưu thiết bị thành công.");
+ }catch(err){formError(err?.message||"Không lưu được thiết bị.");}
  finally{button.disabled=false;button.textContent="Lưu hồ sơ thiết bị";}
 }
 async function saveCheck(){
@@ -454,6 +476,7 @@ async function saveCheck(){
  const field=n=>String(form.elements.namedItem(n)?.value||"").trim();
  const date=field("checkDate"),by=field("checkBy"),condition=field("checkCondition");
  if(!date||!by||!["chua","tot","theodoi","hu","sua"].includes(condition))return alert("Vui lòng nhập ngày, tình trạng và người kiểm tra.");
+ $("ueFormError").hidden=true;
  const files=[...form.elements.namedItem("checkPhotos").files];
  if(files.length>6||files.some(f=>!f.type.startsWith("image/")||f.size>12*1024*1024))return alert("Chỉ chọn tối đa 6 ảnh, mỗi ảnh không quá 12 MB.");
  button.disabled=true;button.textContent="Đang lưu lần kiểm tra...";
@@ -465,9 +488,11 @@ async function saveCheck(){
    method:"PATCH",token:centralSession.access_token,
    body:{specs:{...item.specs,_estaUpgrade:{...meta,history,condition:latest.condition,lastCheck:latest.date}}}
   });
+  const persisted=await getSaved(item.id);
+  if(!persisted||!(metaOf(persisted).history||[]).some(h=>h.createdAt===history.at(-1).createdAt))throw new Error("Máy chủ chưa xác nhận kết quả kiểm tra đã lưu.");
   fetchedAt=0;await load(true);openForm(item.id);
   if(typeof toast==="function")toast("Đã lưu lịch sử kiểm tra và hình ảnh.");
- }catch(err){if(typeof toast==="function")toast(err.message||"Không lưu được kết quả kiểm tra.");else alert(err.message)}
+ }catch(err){formError(err?.message||"Không lưu được kết quả kiểm tra.");}
  finally{button.disabled=false;button.textContent="✓ Lưu lần kiểm tra"}
 }
 async function printReport(){
@@ -493,7 +518,7 @@ async function printReport(){
  const html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>ESTA - Bản nâng cấp - Hệ thống kỹ thuật</title>'+
  '<style>@page{size:A4;margin:13mm}body{font:12px Arial,sans-serif;color:#243b44}header{border-bottom:2px solid #214a43;padding-bottom:9px}h1{font-size:19px}h2{font-size:14px;margin-top:17px}h3{font-size:12px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #bdc9c4;padding:7px;text-align:left}th{background:#e8f0ea}tr{break-inside:avoid}.notice{font-size:11px;color:#546c66}.spec,.proof{break-inside:avoid;margin-top:10px}.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;font-size:10px}.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.photos img{max-width:100%;max-height:76mm;object-fit:contain;border:1px solid #d3dcda}footer{display:flex;justify-content:space-between;margin-top:27mm;break-inside:avoid}</style></head><body>'+
  '<header><b>ESTA · PROPERTY OPERATIONS</b><h1>BÁO CÁO THÔNG TIN HỆ THỐNG TÒA NHÀ</h1><div>Dự án: Bản nâng cấp · Ngày lập: '+escPrint(new Date().toLocaleDateString("vi-VN"))+'</div></header>'+
- '<p class="notice">'+verified.length+' hồ sơ đã xác minh theo bộ lọc. Mẫu và thiết bị chưa xác minh không xuất hiện trong báo cáo.</p>'+
+ '<p class="notice">'+verified.length+' hồ sơ đã xác minh theo bộ lọc. Thiết bị chưa xác minh không xuất hiện trong báo cáo.</p>'+
  '<table><thead><tr><th>STT</th><th>Thiết bị</th><th>Nhóm hệ thống</th><th>Vị trí</th><th>Tình trạng</th><th>Kiểm tra</th><th>Hạn kế tiếp</th></tr></thead><tbody>'+
  rows.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escPrint(x.name)+'</td><td>'+escPrint(x.system_group)+'</td><td>'+escPrint(x.location||"—")+'</td><td>'+
  escPrint(CONDITIONS[conditionOf(x)]||"—")+'</td><td>'+escPrint(viDate(metaOf(x).lastCheck))+'</td><td>'+escPrint(viDate(inspectionDue(x)))+'</td></tr>').join("")+
@@ -507,16 +532,46 @@ async function printReport(){
 }
 
 async function remove(){
- if(!editId||!allowed())return;
- const existing=items.find(x=>x.id===editId);
- if(!confirm("Xóa hồ sơ thiết bị “"+label(existing)+"” khỏi riêng Bản nâng cấp?"))return;
- const id=editId,button=$("ueDelete");button.disabled=true;
+ if(!allowed())return formError("Bạn không có quyền xóa thiết bị.");
+ const existing=items.find(x=>String(x.id)===String(editId));
+ const builtIn=SEEDS.find(x=>x.seedKey===editingSeed);
+ const selected=existing||builtIn;
+ if(!selected)return;
+ const name=label(selected);
+ if(!confirm('Xóa thiết bị “'+name+'” khỏi danh sách Bản nâng cấp? Thao tác này không ảnh hưởng các dự án khác.'))return;
+ const button=$("ueDelete");button.disabled=true;button.textContent="Đang xóa...";
  try{
-  await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+BID,{method:"DELETE",token:centralSession.access_token});
+  if(existing&&metaOf(existing).seedKey){
+   // For original built-in entries, keep an archived marker so they do not reappear after refresh.
+   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+BID,{
+    method:"PATCH",token:centralSession.access_token,
+    body:{specs:{...existing.specs,_estaUpgrade:{...metaOf(existing),archived:true}}}
+   });
+   const row=await getSaved(existing.id);
+   if(!row||!metaOf(row).archived)throw new Error("Không xác nhận được thao tác xóa.");
+  }else if(builtIn&&!existing){
+   // Never write or delete another project's data; hide this predefined category in NANGCAP.
+   const id=crypto.randomUUID();
+   await sbFetch("/rest/v1/"+TABLE,{
+    method:"POST",token:centralSession.access_token,
+    body:{id,building_id:BID,name:builtIn.name,equipment_type:builtIn.equipment_type,
+      system_group:builtIn.system_group,location:builtIn.location,quantity:1,status:"Ngừng sử dụng",
+      specs:{_estaUpgrade:{seedKey:builtIn.seedKey,archived:true,verified:false,history:[]}}}
+   });
+   const row=await getSaved(id);
+   if(!row||!metaOf(row).archived)throw new Error("Không xác nhận được thao tác xóa.");
+  }else{
+   // User-created equipment not from a predefined entry can be deleted from the register.
+   await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(existing.id)+"&building_id=eq."+BID,{
+    method:"DELETE",token:centralSession.access_token
+   });
+   if(await getSaved(existing.id))throw new Error("Hệ thống chưa xóa được thiết bị.");
+  }
   closeForm();fetchedAt=0;await load(true);
-  if(typeof toast==="function")toast("Đã xóa hồ sơ thiết bị.");
- }catch(e){if(typeof toast==="function")toast(e.message||"Không xóa được thiết bị.");}
- finally{button.disabled=false;}
+  if(error)throw new Error("Đã xóa nhưng chưa tải lại được danh sách. Vui lòng bấm Làm mới.");
+  if(typeof toast==="function")toast("Đã xóa thiết bị khỏi Bản nâng cấp.");
+ }catch(err){formError(err?.message||"Không xóa được thiết bị.");}
+ finally{button.disabled=false;button.textContent="🗑 Xóa thiết bị";}
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&dialog&&!dialog.hidden)closeForm()});
 window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm};
