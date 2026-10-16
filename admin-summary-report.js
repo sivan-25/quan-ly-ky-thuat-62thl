@@ -289,34 +289,60 @@
       const records=buildRecords();
       if(records.length>1500)throw new Error("Có "+records.length+" bản ghi, vượt giới hạn 1.500. Hãy thu hẹp kỳ hoặc hạng mục.");
       const selectedNames=categorySpecs.filter(c=>state.categories.has(c[0])).map(c=>c[1]);
+      const shortProject=(name)=>{
+        const entry=projectSpecs.find(([,full])=>full===name);
+        return entry?entry[0].replace(/^([0-9]{2,3})/,"$1 "):/^Admin/i.test(String(name))?"Admin":String(name||"—");
+      };
+      const shortStatus=(r)=>{
+        const s=severity(r);
+        if(s===0)return "Quá hạn";
+        if(s===1)return "Ưu tiên xử lý";
+        if(s===3)return "Chưa đến hạn";
+        if(s===4)return ["work","incident","maintenance"].includes(r.cat)?"Hoàn thành":r.status;
+        return /đang thực hiện/i.test(r.status)?"Đang thực hiện":"Chờ xử lý";
+      };
       const photos=[];
       if($("#asPhotos")?.checked)for(const r of records) {
         for(const x of r.photos) {
           if(photos.length>=180)break;
           const ref=typeof x==="string"?x:String(x?.ref||x?.path||"");
-          if(ref)photos.push({ref,caption:r.proj+" · "+r.content});
+          if(ref)photos.push({ref,caption:shortProject(r.proj)+" · "+r.content});
         }
         if(photos.length>=180)break;
       }
-      const rows=records.map((r,i)=>[
-        String(i+1),categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat,r.proj+"\n"+r.source,r.content,
-        vn(r.when)+(r.due?" · Hạn "+vn(r.due):""),
-        severityLabel(r)+" · "+r.status,
-        [r.owner&&"Phụ trách: "+r.owner,r.cause&&"Nguyên nhân: "+r.cause,r.plan&&"Hướng xử lý / KQ: "+r.plan,r.detail].filter(Boolean).join("\n")
-      ]);
+      const rows=records.map((r,i)=>{
+        const label=categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat;
+        const rawParts=String(r.detail||"").split(" · ").map(x=>x.trim()).filter(Boolean);
+        const note=rawParts.filter(x=>!["—","Ok","OK",r.owner,r.status,r.cause,r.plan].includes(x)).join(" · ");
+        const details=[
+          r.owner||"",
+          r.cause && !/^(ok|chưa cập nhật)$/i.test(r.cause)?"NN: "+r.cause:"",
+          r.plan && !/^(ok|chưa cập nhật)$/i.test(r.plan)?"XL/KQ: "+r.plan:"",
+          note && !(r.plan&&note.includes(r.plan))?note:""
+        ].filter(Boolean).join(" · ");
+        return [
+          String(i+1),shortProject(r.proj),
+          (selectedNames.length>1?"["+label+"] ":"")+r.content,
+          vn(r.when)+(r.due?String.fromCharCode(10)+"Hạn "+vn(r.due):""),
+          shortStatus(r),details||"—"
+        ];
+      });
       if(typeof window.exportGenericEstaPdf!=="function")throw new Error("Bộ tạo PDF ESTA chưa sẵn sàng.");
       const success=await window.exportGenericEstaPdf({
         building:"",hideBuilding:true,title:"BÁO CÁO GIÁM SÁT KỸ THUẬT",
         sectionLabel:"BÁO CÁO TỔNG HỢP · ESTA",
         signaturePosition:"supervision",signer:{name:"Sĩ Văn",image_data_url:""},
-        tableLabel:"DANH SÁCH HẠNG MỤC ĐÃ CHỌN",
-        subtitle:"Bốn dự án và công việc riêng Admin (khi chọn Công việc) · "+selectedNames.join(" / "),
+        tableLabel:"DANH SÁCH CÔNG VIỆC",
+        subtitle:"",
         periodLabel:"Từ "+vn(state.from)+" đến "+vn(state.to),
-        priorityItems:priorityItems(records).map(r=>({project:r.proj,source:r.source,title:r.content,status:severityLabel(r),owner:r.owner||"Chưa cập nhật",cause:r.cause||"Chưa cập nhật",plan:r.plan||"Chưa cập nhật",due:r.due?vn(r.due):"Chưa có hạn"})),
+        priorityItems:priorityItems(records).map(r=>({
+          project:shortProject(r.proj),title:r.content,status:shortStatus(r),
+          owner:r.owner||"—",due:r.due?vn(r.due):"—"
+        })),
         columns:[
-          {label:"STT",weight:0.34},{label:"Hạng mục",weight:0.95},{label:"Dự án / Nguồn",weight:1.2},
-          {label:"Nội dung",weight:2.5},{label:"Ngày / Hạn",weight:1.1},
-          {label:"Trạng thái",weight:1.35},{label:"Ghi chú / Chỉ số",weight:2.5}
+          {label:"STT",weight:0.45},{label:"Dự án",weight:0.9},
+          {label:"Nội dung công việc",weight:3.45},{label:"Ngày / Hạn",weight:1.3},
+          {label:"Tình trạng",weight:1.42},{label:"Phụ trách / Ghi chú",weight:2.25}
         ],rows,photos,
         summaries:[
           {label:"TỔNG BẢN GHI",value:String(records.length),dark:true},

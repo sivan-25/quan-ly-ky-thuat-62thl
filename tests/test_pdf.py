@@ -384,6 +384,65 @@ class ReportTests(unittest.TestCase):
         self.assertEqual((missing, count), (0, 2))
         self.assertGreater(len(raw), 8000)
 
+    def test_admin_compact_supervision_report_keeps_source_and_signature(self):
+        """Admin PDF is compact without inventing project summary or deleting work."""
+        payload = {
+            'report_type': 'generic',
+            'hide_building': True,
+            'building': '',
+            'title': 'BÁO CÁO GIÁM SÁT KỸ THUẬT',
+            'table_label': 'DANH SÁCH CÔNG VIỆC',
+            'report_date': '16/10/2026',
+            'period_label': 'Từ 12/10/2026 đến 18/10/2026',
+            'signature_position': 'supervision',
+            'kt_signer_name': 'Sĩ Văn',
+            'columns': [
+                {'label': 'STT', 'weight': .45},
+                {'label': 'Dự án', 'weight': .90},
+                {'label': 'Nội dung công việc', 'weight': 3.45},
+                {'label': 'Ngày / Hạn', 'weight': 1.30},
+                {'label': 'Tình trạng', 'weight': 1.42},
+                {'label': 'Phụ trách / Ghi chú', 'weight': 2.25},
+            ],
+            'rows': [
+                ['1', '62 THL', 'Chống thấm sàn mái', '12/10/2026',
+                 'Đang thực hiện', 'Nhà thầu Thành Đạt · Khảo sát tình trạng'],
+                ['2', '68 PĐL', 'Kiểm tra FCU chảy nước tầng 17',
+                 '15/10/2026', 'Hoàn thành', 'Tiền, Vũ'],
+            ],
+            'priority_items': [
+                {'project': '62 THL', 'title': 'Chống thấm sàn mái',
+                 'status': 'Đang thực hiện', 'owner': 'Nhà thầu Thành Đạt',
+                 'due': '—'}
+            ],
+            'summaries': [
+                {'label': 'TỔNG BẢN GHI', 'value': '2'},
+                {'label': 'QUÁ HẠN', 'value': '0'},
+                {'label': 'CẦN XỬ LÝ', 'value': '1'},
+                {'label': 'KẾ HOẠCH CHƯA ĐẾN HẠN', 'value': '0'},
+            ],
+            'photos': [
+                {'ref': photo((640, 960)), 'caption': '62 THL · Chống thấm sàn mái'},
+                {'ref': photo((960, 640)), 'caption': '68 PĐL · Kiểm tra FCU'},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            prepared = _prepare_generic_data({**payload, 'photos': []}, '', tmp)
+            flowables = story_generic(prepared)
+            table = next(x for x in flowables if isinstance(x, Table)
+                         and len(x._cellvalues) == 3
+                         and len(x._cellvalues[0]) == 6)
+            self.assertEqual(table._cellvalues[1][1].text, '62 THL')
+            self.assertEqual(table._cellvalues[2][1].text, '68 PĐL')
+            self.assertFalse(any(getattr(x, 'text', '') == 'TỔNG HỢP THEO DỰ ÁN'
+                                 for x in flowables))
+            signature = next(x for x in flowables if isinstance(x, KeepTogether))
+            sig_table = next(x for x in signature._content if isinstance(x, Table))
+            self.assertEqual(sig_table._cellvalues[2][1].text, 'Sĩ Văn')
+        raw, missing, count = generate_pdf(payload, '')
+        self.assertTrue(raw.startswith(b'%PDF'))
+        self.assertEqual((missing, count), (0, 2))
+
     def test_original_work_energy_tools_renderers(self):
         samples = [
             {'report_type':'work','tasks':[{'title':'Dữ liệu thử','status':'Hoàn thành','date':'01/09/2026','assignee':'Kiểm thử'}]},

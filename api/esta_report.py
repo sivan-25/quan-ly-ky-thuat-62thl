@@ -604,6 +604,12 @@ def build_generic_doc(path, data):
     doc.build(story_generic(data),canvasmaker=NumberedCanvas)
 
 def story_generic(data):
+    # Only the Admin consolidated supervision export uses the new compact design.
+    # All other ESTA PDF layouts retain their current behavior.
+    if (data.get("hide_building") and
+            str(data.get("title") or "").strip().upper() == "BÁO CÁO GIÁM SÁT KỸ THUẬT"):
+        from reporting.admin_compact import story as compact_admin_story
+        return compact_admin_story(data) + [energy_signatures(data)]
     P=Paragraph
     columns=data.get("columns") or []
     rows=data.get("rows") or []
