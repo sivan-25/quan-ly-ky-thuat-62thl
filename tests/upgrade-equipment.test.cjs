@@ -9,7 +9,7 @@ new vm.Script(source,{filename:"upgrade-equipment.js"});
 const anchor="window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm};";
 assert(source.includes(anchor),"equipment module public API not found");
 const instrumented=source.replace(anchor,
- "window.__upgradeProbe={G,SEEDS,FULL_FIELDS,advancedFields,extraFields,installFields,inspectionDue,conditionOf,isDue,active};"+anchor);
+ "window.__upgradeProbe={G,SEEDS,FULL_FIELDS,advancedFields,extraFields,installFields,inspectionDue,conditionOf,isDue,active,ueStatusOverview,ueSystemCounts,setItems:rows=>{items=rows}};"+anchor);
 const window={};
 const scope={window,document:{addEventListener(){}},currentBuilding:{id:"NANGCAP"},projectOverviewActive:true};
 vm.runInNewContext(instrumented,scope,{filename:"upgrade-equipment.js"});
@@ -40,4 +40,22 @@ assert.equal(p.active(),false,"NANGCAP feature must never show on other projects
 assert(source.includes("filter(x=>!x.virtual&&metaOf(x).verified)"),"print must only include verified records");
 assert(source.includes('building_id=eq."+BID'),"write paths must be project-scoped");
 
-console.log("ESTA NANGCAP equipment schema: 9 systems, 44 samples, 40 types, dates, RLS scope and print checks passed.");
+
+// The screenshot's zero-count summary must ignore 44 virtual samples.
+assert.equal(p.ueStatusOverview().count,0);
+assert.equal(p.ueStatusOverview().counts.hu,0);
+const profile={id:"real:1",name:"Bơm chữa cháy",system_group:"PCCC",quantity:1,
+ specs:{_estaUpgrade:{verified:true,condition:"hu",lastCheck:"2020-01-01",interval:30}}};
+p.setItems([profile]);
+assert.equal(p.ueStatusOverview().count,1);
+assert.equal(p.ueStatusOverview().counts.hu,1);
+assert.equal(p.ueStatusOverview().counts.quahan,1);
+assert.equal(p.ueSystemCounts(p.G[0]).size,1);
+assert.equal(p.ueSystemCounts(p.G[0]).templates,9);
+assert(source.includes('class="ueClassicBody"'),"must use the supplied layout and sand background");
+assert(source.includes('class="ueSystemRail"'),"must display the systems in a left-side rail");
+assert(source.includes('class="ueStatusSummary"'),"must display compact horizontal KPI summary");
+assert(source.includes("data-ue-status-chip"),"status chips must be clickable filters");
+assert(!source.includes('<section class="ueSystemPanel">'),"do not restore the old horizontal system cards");
+
+console.log("ESTA NANGCAP equipment register: 9 systems, 44 samples, 40 types, screenshot layout, counts, deadlines, isolation and printing passed.");

@@ -159,9 +159,36 @@ async function load(force=false){
 
 function currentRows(){
  const q=search.trim().toLocaleLowerCase("vi-VN");
- return catalog().filter(x=>(!group||x.system_group===group)&&(!status||(status==="quahan"?isDue(x):conditionOf(x)===status))&&
+ return catalog().filter(x=>(!group||x.system_group===group)&&(!status||(status==="quahan"?isDue(x):(status==="chua"?(x.virtual===false?ueStatusKey(x)==="chua":!x.virtual&&ueStatusKey(x)==="chua"):conditionOf(x)===status)))&&
   (!q||[x.name,x.code,x.system_group,x.equipment_type,x.brand,x.model,x.location,x.note].join(" ").toLocaleLowerCase("vi-VN").includes(q)));
 }
+
+/* SVG outline symbols matching the source HTML's original system navigation. */
+const UE_SYSTEM_ICONS={
+ pccc:'M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z',
+ dien:'M13 2 3 14h9l-1 8 10-12h-9l1-8z',
+ mpd:'M3 7h18v10H3z M7 11v2 M21 10v4 M11 9l-2 3h4l-2 3',
+ hvac:'M9.59 4.59A2 2 0 1 1 11 8H2 M12.59 19.41A2 2 0 1 0 14 16H2 M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2',
+ tm:'M4 3h16v18H4z M12 3v18 M7 10l2-2 2 2 M13 14l2 2 2-2',
+ bom:'M12 22a7 7 0 0 0 7-7c0-4-7-13-7-13S5 11 5 15a7 7 0 0 0 7 7z',
+ cam:'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+ cs:'M9 18h6 M10 22h4 M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z',
+ kc:'M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z M10 6h4 M10 10h4 M10 14h4 M10 18h4'
+};
+const ueIcon=(path,size=24)=>'<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+path+'"/></svg>';
+const UE_ALL_ICON='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>';
+function ueStatusKey(x){const c=conditionOf(x);return c==="unverified"?"chua":c}
+function ueStatusOverview(){
+ const list=realRows(),counts={tot:0,theodoi:0,hu:0,sua:0,chua:0,quahan:0};
+ list.forEach(x=>{const k=ueStatusKey(x);if(Object.hasOwn(counts,k))counts[k]++;if(isDue(x))counts.quahan++});
+ return {count:list.length,counts};
+}
+function ueSystemCounts(g){
+ const rows=items.filter(x=>x.system_group===g[1]),counts={tot:0,theodoi:0,hu:0,sua:0,chua:0};
+ rows.forEach(x=>{const k=ueStatusKey(x);if(Object.hasOwn(counts,k))counts[k]++});
+ return {size:rows.length,templates:g[3].length,counts};
+}
+
 function list(){
  const host=$("ueRows"),counter=$("ueResultCount");
  if(!host)return;
@@ -189,34 +216,63 @@ function list(){
 }
 function render(page,skipLoad=false){
  if(!active()||!page)return;
- const count=catalog().length,verified=items.filter(x=>metaOf(x).verified);
- const alerts=verified.filter(x=>["hu","sua","theodoi"].includes(conditionOf(x))||isDue(x));
- page.classList.add("uePage");
+ const overview=ueStatusOverview(),stats=overview.counts;
+ const statusDefs=[["","Tất cả","var(--ue-ink)"],["tot","Tốt","#426B46"],["theodoi","Cần theo dõi","#975D1D"],["hu","Hư hỏng","#A52F34"],["sua","Đang sửa","#542548"],["chua","Chưa kiểm tra","#705F55"],["quahan","Quá hạn kiểm tra","#B12C31"]];
+ const pieces=["tot","theodoi","hu","sua","chua"].map(k=>stats[k]?'<i style="flex:'+stats[k]+';background:'+statusDefs.find(x=>x[0]===k)[2]+'"></i>':"").join("");
+ const iconMark='<svg width="45" height="45" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="6.4" stroke-linecap="round" aria-hidden="true"><path d="M24 5v38 M7.5 14.5l33 19 M7.5 33.5l33-19"/></svg>';
+ const groupLabel=group||"Tất cả hệ thống";
+ const description=group?('Danh mục '+group+' · Bấm vào thiết bị để xem và cập nhật hồ sơ.'):
+  "Chọn một hệ thống bên trái, rồi bấm vào tên thiết bị để xem toàn bộ thông số.";
+ const line='9 hệ thống · '+SEEDS.length+' mẫu tham khảo · '+items.length+' hồ sơ đã lưu';
+ page.classList.add("uePage","ueClassic");
  page.innerHTML=
-  '<section class="ueHero"><div><span class="ueEyebrow">ESTA · BẢN NÂNG CẤP</span><h1>Thông tin hệ thống tòa nhà</h1><p>9 hệ thống · 44 thiết bị mẫu · Tra cứu thông số và lịch sử kiểm tra</p></div><div class="ueHeroButtons"><button type="button" class="ueBtnSecondary" id="ueRefresh">↻ Làm mới</button><button type="button" class="ueBtnSecondary" id="uePrint">↓ In / PDF</button><button type="button" class="ueBtnPrimary" id="ueAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div></section>'+
-  '<section class="ueStats"><div><small>Danh mục có sẵn</small><b>'+SEEDS.length+'</b><em>Mẫu chưa xác minh</em></div><div><small>Hồ sơ đã lưu</small><b>'+items.length+'</b><em>Dữ liệu dự án</em></div><div><small>Đã xác minh</small><b>'+verified.length+'</b><em>'+eqCount()+' thiết bị thực tế</em></div><div><small>Cần chú ý / quá hạn</small><b>'+alerts.length+'</b><em>Chỉ tính thiết bị đã xác minh</em></div></section>'+
-  '<section class="ueSystemPanel"><header><h2>9 nhóm hệ thống</h2><p>Chọn nhóm để xem thiết bị mẫu hoặc hồ sơ đã lưu.</p></header><div class="ueSystemGrid">'+
-  '<button type="button" data-ue-group="" class="ueSystemChip'+(!group?' active':'')+'"><b>Tất cả</b><span>'+count+' mục</span></button>'+
-  G.map((g,i)=>'<button type="button" data-ue-group="'+esc(g[1])+'" class="ueSystemChip'+(group===g[1]?' active':'')+'"><b>'+esc(g[1])+'</b><span>'+groupCount(g[1])+' mục</span></button>').join("")+
-  '</div></section>'+
-  '<section class="uePanel"><header class="uePanelHead"><div><h2>Danh mục thiết bị kỹ thuật</h2><p>Nhấn vào thiết bị để điền thông số, xác minh, ghi kiểm tra hoặc chụp ảnh.</p></div><strong id="ueResultCount"></strong></header>'+
-  '<div class="ueFilters"><label class="ueSearch"><span>⌕</span><input id="ueSearch" type="search" placeholder="Tìm tên, mã, hãng, vị trí, ghi chú..." value="'+esc(search)+'" autocomplete="off"></label><select id="ueGroup" aria-label="Nhóm hệ thống"><option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select><select id="ueStatus" aria-label="Tình trạng"><option value="">Mọi tình trạng</option>'+Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div>'+
-  (error?'<p class="ueError" role="alert">'+esc(error)+'</p>':'')+
-  '<div class="ueQuickState" aria-label="Lọc nhanh theo tình trạng">'+[['','Tất cả'],['hu','Hư hỏng'],['sua','Đang sửa'],['theodoi','Theo dõi'],['quahan','Quá hạn'],['tot','Tốt'],['chua','Chưa kiểm tra']].map(([k,t])=>'<button type="button" data-ue-status-chip="'+k+'" aria-pressed="'+(status===k)+'">'+t+'</button>').join('')+'</div>'+ 
- '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Tình trạng</span><span>Kiểm tra gần nhất</span><span>Hạn kế tiếp</span><span>Vị trí</span><span></span></div><div id="ueRows" class="ueRows"></div></section>'+
-  '<p class="ueSourceNote">44 dòng là mẫu tham khảo, không phải 44 thiết bị đang hoạt động. Dữ liệu chỉ ghi nhận sau khi Lưu và xác minh tại dự án Bản nâng cấp.</p>';
+  '<header class="ueHero ueClassicHead"><div class="ueBrand">'+iconMark+'<div><strong>ESTA</strong><small>PROPERTY MANAGEMENT</small></div></div>'+
+   '<div class="ueHeaderTitle"><h1>Theo dõi hệ thống kỹ thuật</h1><p>Bản nâng cấp · Thông tin hệ thống tòa nhà</p></div>'+
+   '<div class="ueHeroButtons"><button type="button" class="ueBtnSecondary" id="ueRefresh" title="Làm mới dữ liệu">↻ <span>Làm mới</span></button>'+
+   '<button type="button" class="ueBtnSecondary" id="uePrint" title="In / PDF báo cáo">↓ <span>In / PDF</span></button>'+
+   '<button type="button" class="ueBtnPrimary" id="ueAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div></header>'+
+  '<div class="ueClassicBody"><section class="ueStatusSummary" aria-label="Tổng quan tình trạng thiết bị">'+
+   '<div class="ueGrandTotal"><strong>'+overview.count+'</strong><span>thiết bị đang<br>theo dõi</span></div>'+
+   '<div class="ueSummaryRight"><div class="ueSummaryBar" aria-hidden="true">'+(pieces||'<i class="ueBarBlank"></i>')+'</div>'+
+   '<div class="ueSummaryStates">'+statusDefs.map(([k,t,c])=>{
+     const val=k===""?overview.count:stats[k];
+     return '<button type="button" class="ueSummaryState'+(status===k?' active':'')+'" data-ue-status-chip="'+k+'" aria-pressed="'+(status===k)+'"><b style="color:'+c+'">'+val+'</b><span>'+t+'</span></button>';
+   }).join("")+'</div><div class="ueSummaryCaption">'+esc(line)+'</div></div></section>'+
+  '<div class="ueClassicGrid"><nav class="ueSystemRail" aria-label="Danh sách hệ thống kỹ thuật">'+
+    '<button type="button" data-ue-group="" class="ueRailCard'+(!group?' active':'')+'" aria-pressed="'+(!group)+'">'+UE_ALL_ICON+
+      '<span class="ueRailText"><b>Tất cả hệ thống</b><small>'+items.length+' thiết bị · '+SEEDS.length+' mẫu</small></span><span class="ueRailBar"></span></button>'+
+    G.map(g=>{const c=ueSystemCounts(g),total=c.size;
+      const bars=Object.keys(c.counts).map(k=>c.counts[k]?'<i style="flex:'+c.counts[k]+';background:'+({tot:'#426B46',theodoi:'#975D1D',hu:'#A52F34',sua:'#542548',chua:'#705F55'})[k]+'"></i>':"").join("");
+      return '<button type="button" data-ue-group="'+esc(g[1])+'" class="ueRailCard'+(group===g[1]?' active':'')+'" aria-pressed="'+(group===g[1])+'">'+
+       ueIcon(UE_SYSTEM_ICONS[g[0]])+'<span class="ueRailText"><b>'+esc(g[1])+'</b><small>'+total+' thiết bị · '+c.templates+' mẫu</small></span>'+
+       '<span class="ueRailBar">'+bars+'</span></button>';
+     }).join("")+'</nav>'+
+   '<section class="ueClassicMain"><div class="ueMainHead"><div><h2>'+esc(groupLabel)+'</h2><p>'+esc(description)+'</p></div>'+
+     '<div class="ueMainTools"><label class="ueSearch"><span aria-hidden="true">⌕</span><input id="ueSearch" type="search" placeholder="Tìm theo tên, vị trí, ghi chú" value="'+esc(search)+'" autocomplete="off" aria-label="Tìm thiết bị"></label>'+
+      '<select id="ueGroup" aria-label="Chọn hệ thống">'+
+       '<option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select>'+
+      '<select id="ueStatus" aria-label="Lọc tình trạng"><option value="">Mọi tình trạng</option>'+
+        Object.entries(CONDITIONS).map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+esc(v)+'</option>').join("")+'</select></div></div>'+
+   (error?'<p class="ueError" role="alert">Không tải được dữ liệu: '+esc(error)+' — Danh mục mẫu vẫn có thể xem. Dữ liệu đã lưu chưa được xác nhận.</p>':'')+
+    '<div class="uePanel"><div class="uePanelHead"><div><h3>Danh mục thiết bị</h3><p>Chọn hạng mục để nhập thông số hoặc ghi kết quả kiểm tra.</p></div><strong id="ueResultCount"></strong></div>'+
+      '<div class="ueListHead"><span>Thiết bị</span><span>Hệ thống</span><span>Tình trạng</span><span>Kiểm tra gần nhất</span><span>Hạn kế tiếp</span><span>Vị trí</span><span></span></div>'+
+      '<div id="ueRows" class="ueRows"></div></div>'+
+    '<p class="ueSourceNote">Các mẫu chỉ là danh mục để nhập nhanh. Chúng không được tính vào số thiết bị thực tế hoặc báo cáo cho đến khi lưu và xác minh.</p>'+
+   '</section></div></div>';
  $("ueRefresh").onclick=()=>{fetchedAt=0;load(true)};
  $("uePrint").onclick=printReport;
  $("ueAdd").onclick=()=>openForm();
  $("ueSearch").oninput=e=>{search=e.target.value;list()};
- $("ueGroup").onchange=e=>{group=e.target.value;list()};
+ $("ueGroup").onchange=e=>{group=e.target.value;render(page,true)};
  $("ueStatus").onchange=e=>{status=e.target.value;list()};
- page.querySelectorAll("[data-ue-group]").forEach(b=>b.onclick=()=>{group=b.dataset.ueGroup;$("ueGroup").value=group;list()});
- page.querySelectorAll("[data-ue-status-chip]").forEach(b=>b.onclick=()=>{status=status===b.dataset.ueStatusChip&&status?"":b.dataset.ueStatusChip;$("ueStatus").value=status;list()});
+ page.querySelectorAll("[data-ue-group]").forEach(b=>b.onclick=()=>{group=b.dataset.ueGroup;render(page,true)});
+ page.querySelectorAll("[data-ue-status-chip]").forEach(b=>b.onclick=()=>{
+  status=status===b.dataset.ueStatusChip&&status?"":b.dataset.ueStatusChip;
+  $("ueStatus").value=status;list();
+ });
  list();
  if(!skipLoad&&!fetchedAt)load();
 }
-
 
 function ensureDialog(){
  if(dialog?.isConnected)return dialog;
