@@ -18,6 +18,7 @@ const rows=ids.map((building_id,i)=>({
  system_group:"PCCC",location:"Vị trí "+building_id,status:"Đang sử dụng",
  quantity:1,specs:{_estaUpgrade:{verified:true,condition:"tot",history:[]}}
 }));
+const pmFixture={id:"aaaaaaaa-bbbb-4ccc-8ddd-000000000099",work_title:"Bảo trì bơm PCCC 130 Hồng Hà",equipment_profile_id:rows[4].id,building_id:"130HH",cadence:"3 tháng",assigned_to:"Kỹ thuật 130",deleted_at:null};
 const calls=[];
 const scope={
  window:dom.window,document:dom.window.document,
@@ -28,6 +29,7 @@ const scope={
   const building=decodeURIComponent(url.match(/building_id=eq\.([^&]+)/)?.[1]||"");
   calls.push({url,building});
   if(url.includes("/maintenance_assets"))return [];
+  if(url.includes("esta_maintenance_plan_items"))return building==="130HH"?[pmFixture]:[];
   if(!url.includes("building_equipment_profiles_nangcap"))throw Error("Unexpected endpoint: "+url);
   return rows.filter(r=>r.building_id===building);
  }
@@ -43,6 +45,11 @@ const page=dom.window.document.getElementById("updateAssetsPage");
   assert(page.textContent.includes("Thiết bị riêng "+id),id+" own record missing");
   for(const other of ids.filter(x=>x!==id))assert(!page.textContent.includes("Thiết bị riêng "+other),id+" leaked "+other);
   assert.equal(page.querySelectorAll(".ueRefRow").length,45,id+" must include 44 built-ins + one project row");
+  if(id==="130HH"){
+   page.querySelector('[data-ue-id="'+rows[4].id+'"]').click();
+   assert.match(page.querySelector(".ueLinkedMaintenance").textContent,/Bảo trì liên kết \(1\)/);
+   assert.match(page.querySelector(".ueLinkedMaintenance").textContent,/Bảo trì bơm PCCC 130 Hồng Hà/);
+  }else assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,0,id+" must keep other projects unchanged");
   const systemButtons=[...page.querySelectorAll(".ueSystemRail [data-ue-group]")];
   assert.equal(systemButtons.length,10,id+" must display all nine systems and the all-systems control on the left");
   assert.match(page.querySelector(".ueRefRailHeading")?.textContent||"",/CHỌN HỆ THỐNG/,id+" needs a visible category heading");
