@@ -166,6 +166,27 @@ window.estaMaintenance130NavSummary=async function({today:todayDate,soon:through
  ]);
  return maintenance130DueSummary(Array.isArray(plans)?plans:[],Array.isArray(occurrences)?occurrences:[],todayDate,throughDate);
 };
+/* Shared read-only schedule model for 130HH Admin PDF. Preserve the same recurrence and month-only semantics as the live maintenance board. */
+window.estaMaintenance130ReportRows=function({plans,occurrences,from,to}){
+ const p=Array.isArray(plans)?plans:[],o=Array.isArray(occurrences)?occurrences:[];
+ const start=Number(String(from||"").slice(0,4)),end=Number(String(to||"").slice(0,4));
+ if(!Number.isInteger(start)||!Number.isInteger(end)||start<2020||end>2100||end<start)throw Error("Kỳ báo cáo bảo trì không hợp lệ.");
+ const first=o.reduce((min,e)=>{const y=Number(String(e.planned_month||e.planned_date||"").slice(0,4));return Number.isInteger(y)&&y>=2020?Math.min(min,y):min},start);
+ if(end-first>12)throw Error("Phạm vi lịch bảo trì quá rộng; vui lòng chọn kỳ báo cáo gần hơn.");
+ const result=[];
+ for(let y=first;y<=end;y++){
+  result.push(...schedule(y,p,o).map(row=>({
+   item_id:row.item.id,plan_code:row.item.plan_code,work_title:row.item.work_title,system_group:row.item.system_group,
+   location:row.item.subsystem,assigned_to:row.item.assigned_to,asset_code:row.item.asset_code,
+   equipment_profile_id:row.item.equipment_profile_id,priority:row.item.priority,cadence:row.item.cadence,
+   status:row.event.status||"planned",result_code:row.event.result_code,result_note:row.event.result_note,
+   completed_by:row.event.completed_by,completed_at:row.event.completed_at,
+   planned_date:row.event.planned_date,scheduled_date:row.scheduled,
+   due_date:dateOf(row),month_only:isMonthOnly(row),image_paths:row.event.image_paths||[]
+  })));
+ }
+ return result;
+};
 function notifyMaintenance130Nav(){window.estaRefreshProjectNavAlerts?.();}
 function maintenance130Buckets(events,today=isoToday()){
  const weekEnd=new Date(today+"T12:00:00");
