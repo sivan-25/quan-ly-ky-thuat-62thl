@@ -282,7 +282,7 @@ function list(){
  const host=$("ueRows"),counter=$("ueResultCount");
  if(!host)return;
  const rows=currentRows().slice().sort((a,b)=>conditionRank(a)-conditionRank(b)||Number(isDue(b))-Number(isDue(a))||label(a).localeCompare(label(b),"vi"));
- if(counter)counter.textContent=rows.length+" hạng mục · bấm vào thiết bị để xem chi tiết";
+ if(counter)counter.textContent=currentEquipmentProjectId()==="130HH"?("Đã lưu "+rows.filter(x=>!x.virtual).length+" hồ sơ · "+rows.filter(x=>x.virtual).length+" mục gợi ý chưa nhập"):(rows.length+" hạng mục · bấm vào thiết bị để xem chi tiết");
  if(!rows.length){
   host.innerHTML='<div class="ueRefEmpty"><b>Không có thiết bị phù hợp.</b><p>Hãy thử từ khóa, hệ thống hoặc tình trạng khác.</p><button type="button" id="ueClearFilter">Bỏ bộ lọc</button></div>';
   $("ueClearFilter").onclick=()=>{search="";group="";status="";render($("updateAssetsPage"),true)};
@@ -339,7 +339,7 @@ function systemRailHtml(){
  );
  return '<nav class="ueSystemRail" aria-label="Danh mục hệ thống kỹ thuật"><div class="ueRefRailHeading"><strong>CHỌN HỆ THỐNG</strong><small>Điện · Nước · PCCC · HVAC…</small></div>'+all.map(g=>
   '<button type="button" class="ueRailCard'+(group===g.key?' active':'')+'" data-ue-group="'+esc(g.key)+'" aria-pressed="'+(group===g.key)+'">'+
-  g.icon+'<span class="ueRailText"><b>'+esc(g.name)+'</b><small>'+g.count+' thiết bị</small></span></button>'
+  g.icon+'<span class="ueRailText"><b>'+esc(g.name)+'</b><small>'+g.count+(currentEquipmentProjectId()==="130HH"?' hạng mục':' thiết bị')+'</small></span></button>'
  ).join("")+'</nav>';
 }
 function render(page,skipLoad=false){
