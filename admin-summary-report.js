@@ -114,6 +114,26 @@
         }
       }
       if(selected.has("maintenance")) {
+       if(bid==="130HH"){
+        const planner=window.estaMaintenance130ReportRows;
+        const plans=arr(state.extra[bid]?.esta_maintenance_plan_items),occurrences=arr(state.extra[bid]?.esta_maintenance_plan_occurrences);
+        const scheduled=planner({plans,occurrences,from:state.from,to:state.to});
+        for(const x of scheduled){
+         const raw=String(x.status||"planned"),done=raw==="completed",cancelled=["cancelled","skipped","postponed"].includes(raw);
+         const isOpen=!done&&!cancelled;
+         const due=day(x.due_date),when=day(x.planned_date||x.scheduled_date);
+         if(!include(when,isOpen,due))continue;
+         const stateLabel=done?"Hoàn thành":raw==="awaiting_approval"?"Chờ duyệt":
+          raw==="in_progress"?"Đang thực hiện":raw==="postponed"?"Hoãn":
+          (raw==="cancelled"||raw==="skipped")?"Hủy":"Chưa thực hiện";
+         const priorityLabel=x.priority==="urgent"?"Khẩn cấp":x.priority==="high"?"Cao":"Bình thường";
+         const detail=[x.system_group,x.location,x.cadence,
+          x.month_only?"Chưa ấn định ngày trong tháng":"",x.result_note&&"Kết quả: "+x.result_note].filter(Boolean).join(" · ");
+         push("maintenance",name,x.work_title||"Kế hoạch bảo trì",when,stateLabel,detail,{
+          due,priority:priorityLabel,open:isOpen,photos:x.image_paths,owner:x.completed_by||x.assigned_to||"",
+          plan:x.result_note||"",source:"Lịch Bảo trì ESTA · 130 Hồng Hà"});
+        }
+       }else{
         for(const a of arr(ops.maintenance_assets)) {
           if(a.status==="Ngừng sử dụng")continue;
           const due=day(a.next_due_date),bad=a.status==="Hỏng"|| (!!due && due<today());
@@ -130,6 +150,7 @@
             [x.work_done,x.note,x.performer].filter(Boolean).join(" · "),
             {open:!finished(status),photos:x.images,owner:x.performer||"",plan:x.work_done||"",source:"Nhật ký bảo trì"});
         }
+       }
       }
       if(selected.has("materials")) {
         const tx=arr(ops.inventory_material_transactions);
@@ -208,7 +229,12 @@
       if(state.categories.has("maintenance"))tables.push(["maintenance","maintenance_records"]);
       if(state.categories.has("tools"))tables.push(["tools","inventory_tools"]);
       const chosen=projectSpecs.filter(p=>state.projects.has(p[0]));
-      const results=await Promise.all(chosen.flatMap(([bid])=>tables.map(async([cat,table])=>{
+      if(state.categories.has("maintenance")&&chosen.some(([id])=>id==="130HH")&&typeof window.estaMaintenance130ReportRows!=="function")
+       throw new Error("Chưa tải bộ tính lịch bảo trì ESTA. Hãy tải lại trang trước khi xuất PDF.");
+      const results=await Promise.all(chosen.flatMap(([bid])=>
+       (bid==="130HH"?tables.flatMap(([cat,table])=>cat==="maintenance"?
+        [["maintenance","esta_maintenance_plan_items"],["maintenance","esta_maintenance_plan_occurrences"]]:[[cat,table]]):tables)
+       .map(async([cat,table])=>{
         try {return {cat,bid,table,rows:await paged(table,bid,token)};}
         catch(e){return {cat,bid,error:e.message||"Không thể tải dữ liệu"};}
       })));
@@ -313,7 +339,7 @@
         if(s===0)return "Quá hạn";
         if(s===1)return "Ưu tiên xử lý";
         if(s===3)return "Chưa đến hạn";
-        if(s===4)return ["work","incident","maintenance"].includes(r.cat)?"Hoàn thành":r.status;
+        if(s===4)return r.cat==="maintenance"&&/^(Hủy|Hoãn)$/i.test(r.status)?r.status:(["work","incident","maintenance"].includes(r.cat)?"Hoàn thành":r.status);
         return /đang thực hiện/i.test(r.status)?"Đang thực hiện":"Chờ xử lý";
       };
       const photos=[];
