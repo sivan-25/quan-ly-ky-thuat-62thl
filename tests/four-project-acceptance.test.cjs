@@ -73,7 +73,8 @@ const settle=async()=>{for(let i=0;i<10;i++)await tick();};
   assert.match(d.getElementById("m130List").textContent,/Không có công việc/,"search filters "+b);
   d.getElementById("m130Search").value="";
   d.getElementById("m130Search").dispatchEvent(new w.Event("input",{bubbles:true}));
-  d.getElementById("m130State").value="planned";
+  // An unfinished event dated before today is correctly classified as overdue, not "planned".
+  d.getElementById("m130State").value="late";
   d.getElementById("m130State").dispatchEvent(new w.Event("change",{bubbles:true}));
   assert.match(d.getElementById("m130List").textContent,new RegExp("Công việc bảo trì "+b),"status filter "+b);
   d.getElementById("m130State").value="";
