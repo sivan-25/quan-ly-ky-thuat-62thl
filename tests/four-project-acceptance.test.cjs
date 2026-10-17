@@ -73,12 +73,13 @@ const settle=async()=>{for(let i=0;i<10;i++)await tick();};
   assert.match(d.getElementById("m130List").textContent,/Không có công việc/,"search filters "+b);
   d.getElementById("m130Search").value="";
   d.getElementById("m130Search").dispatchEvent(new w.Event("input",{bubbles:true}));
-  // An unfinished event dated before today is correctly classified as overdue, not "planned".
-  d.getElementById("m130State").value="late";
+  // A review-only filter excludes all fixtures; clearing it restores project work.
+  d.getElementById("m130State").value="review";
   d.getElementById("m130State").dispatchEvent(new w.Event("change",{bubbles:true}));
-  assert.match(d.getElementById("m130List").textContent,new RegExp("Công việc bảo trì "+b),"status filter "+b);
+  assert.match(d.getElementById("m130List").textContent,/Không có công việc/,"status filter excludes unrelated records "+b);
   d.getElementById("m130State").value="";
   d.getElementById("m130State").dispatchEvent(new w.Event("change",{bubbles:true}));
+  assert.match(d.getElementById("m130List").textContent,new RegExp("Công việc bảo trì "+b),"clearing status filter restores "+b);
   d.querySelector('[data-m130-view="rows"]').click();
   assert.ok(d.querySelector(".m130CompactRow"),"row view "+b);
   d.querySelector('[data-m130-view="cards"]').click();
