@@ -51,7 +51,8 @@ w.sbFetch=async(url,opts={})=>{
  if(opts.method==="DELETE"){const i=array.findIndex(v=>v.id===id);if(i>=0)array.splice(i,1);return [];}
  return id?array.filter(v=>v.id===id):array.slice();
 };
-w.eval(maintenance);w.eval(admin);
+const inspectable=maintenance.replace(/\}\)\(\);\s*$/, 'window.__qaDebug=()=>({B,year,month,ready,items:items.length,events:stored.length,calendar:getYearSchedule(year).map(x=>x.scheduled),subset:scopeEvents(getYearSchedule(year)).length,filter:$("m130State")?.value,search:$("m130Search")?.value});})();');
+assert.notEqual(inspectable,maintenance);w.eval(inspectable);w.eval(admin);
 d.dispatchEvent(new w.Event("DOMContentLoaded",{bubbles:true}));
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const settle=async()=>{for(let i=0;i<10;i++)await tick();};
@@ -61,7 +62,7 @@ const settle=async()=>{for(let i=0;i<10;i++)await tick();};
   canEdit=true;w.currentBuilding={id:b};w.mountMaintenance130();await settle();
   const page=d.getElementById("maint130"),list=d.getElementById("m130List");
   assert.equal(page.hidden,false,b+" must mount");
-  assert.match(list.textContent,new RegExp("Công việc bảo trì "+b));
+  assert.match(list.textContent,new RegExp("Công việc bảo trì "+b),"QA debug: "+JSON.stringify(w.__qaDebug())+" requests="+JSON.stringify(calls.slice(-5)));
   for(const other of projects.filter(x=>x!==b))assert.ok(!list.textContent.includes("Công việc bảo trì "+other),"isolated "+b);
   assert.equal(d.querySelectorAll("#maint130").length,1,"one shared UI");
   assert.ok(d.querySelector('[data-m130-month="10"].sel'),"current month "+b);
