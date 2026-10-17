@@ -610,7 +610,7 @@ async function getSaved(id,building=currentEquipmentProjectId()){
 }
 async function saveCustomSystem(){
  if(!allowed()||!LINK_BUILDINGS.has(currentEquipmentProjectId()))return;
- const building=currentEquipmentProjectId(),name=String($("ueCategoryName")?.value||"").trim().replace(/\\s+/g," ");
+ const building=currentEquipmentProjectId(),name=String($("ueCategoryName")?.value||"").trim().replace(/\s+/g," ");
  const message=$("ueCategoryError"),saveButton=$("ueSaveSystem");
  if(!name||name.length>100){message.textContent="Nhập tên hệ thống từ 1 đến 100 ký tự.";return;}
  if(gopts().some(x=>x.toLocaleLowerCase("vi-VN")===name.toLocaleLowerCase("vi-VN"))){message.textContent="Hệ thống này đã tồn tại.";return;}
