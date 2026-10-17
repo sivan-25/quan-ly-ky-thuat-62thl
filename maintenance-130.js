@@ -641,7 +641,18 @@ async function savePlan(ev){
    const occurrence={id:eventId,item_id:id,building_id:B,event_key:code+":"+date.slice(0,7),planned_month:monthISO(date),planned_date:date,status:"planned",source_kind:"year",location:fields.subsystem};
    try{await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:occurrence});}
    catch(error){
-    try{await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"DELETE",token});}catch(_){}
+    // Preserve the failed draft for audit instead of hard-deleting it.
+    // Only 130HH had a DELETE policy; soft rollback works in all four buildings.
+    // Verify the scoped PATCH so a zero-row response is not mistaken for cleanup.
+    try{
+     const deleted_at=new Date().toISOString();
+     const path="/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(B);
+     await sbFetch(path,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Tạo lịch chưa hoàn tất; khôi phục trạng thái chưa lưu"}});
+     const rows=await sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,deleted_at&id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(B),{token});
+     if(!Array.isArray(rows)||rows[0]?.deleted_at!==deleted_at)throw Error("Chưa xác nhận hoàn tác");
+    }catch(rollbackError){
+     throw Error("Tạo lịch thất bại và chưa xác nhận hoàn tác. Hãy tải lại để kiểm tra trước khi tạo lại. Chi tiết: "+String(rollbackError?.message||rollbackError));
+    }
     throw error;
    }
    items.push(item);stored.push(occurrence);

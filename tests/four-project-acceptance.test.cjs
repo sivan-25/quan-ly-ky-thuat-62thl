@@ -140,6 +140,12 @@ const settle=async()=>{for(let i=0;i<10;i++)await tick();};
  d.getElementById("asMonth").value=month;
  d.getElementById("asMonth").dispatchEvent(new w.Event("change",{bubbles:true}));
  d.getElementById("asRefresh").click();await settle();
+ const defaultPreview=d.getElementById("asRows").textContent;
+ assert.ok(!defaultPreview.includes("Dữ liệu mẫu"),"sample rows hidden from official preview");
+ assert.match(d.getElementById("asPreviewHint").textContent,/Đã ẩn .*mục mẫu/);
+ const samples=d.getElementById("asSamples");
+ assert(samples&&!samples.checked,"sample checkbox defaults off");
+ samples.checked=true;samples.dispatchEvent(new w.Event("change",{bubbles:true}));
  const preview=d.getElementById("asRows").textContent;
  for(const b of projects){
   assert.ok(preview.includes("Công việc bảo trì "+b),"Admin PDF includes live maintenance "+b);
