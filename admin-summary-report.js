@@ -44,17 +44,18 @@
   // Pending but not-yet-due work is a PLAN, not an overdue incident.
   function severity(x) {
     const due=day(x.due),now=today();
+    if(x.is_sample)return 5; // Sample plans are not confirmed overdue work.
     if(!x.open)return 4;
     if(due && due<now)return 0;
     if(priority(x.priority)>=3 || /Hỏng|Không đạt|Cần khắc phục/.test(x.status||""))return 1;
     if(due && due>now)return 3;
     return 2;
   }
-  const severityLabel=x=>["Quá hạn","Khẩn cấp / cần can thiệp","Chưa xử lý","Kế hoạch chưa đến hạn","Hoàn thành / ghi nhận"][severity(x)];
+  const severityLabel=x=>["Quá hạn","Khẩn cấp / cần can thiệp","Chưa xử lý","Kế hoạch chưa đến hạn","Hoàn thành / ghi nhận","Dữ liệu mẫu · chưa xác minh"][severity(x)];
   function record(cat,proj,content,when,status,detail,opts={}) {
     const open = opts.open === undefined ? !finished(status) : !!opts.open;
     return {cat,proj,content:String(content || "—"),when:day(when)||"",due:day(opts.due)||"",status:String(status || "—"),detail:String(detail||"—"),priority:opts.priority||"",open,photos:arr(opts.photos),
-      owner:String(opts.owner||""),cause:String(opts.cause||""),plan:String(opts.plan||""),starred:opts.starred===true,source:String(opts.source||"Dự án ghi nhận")};
+      owner:String(opts.owner||""),cause:String(opts.cause||""),plan:String(opts.plan||""),starred:opts.starred===true,is_sample:opts.is_sample===true,source:String(opts.source||"Dự án ghi nhận")};
   }
   function eligibleRow(r) {return state.projects.has(scope(r?.building?.id));}
   function buildRecords() {
@@ -114,42 +115,28 @@
         }
       }
       if(selected.has("maintenance")) {
-       if(bid==="130HH"){
-        const planner=window.estaMaintenance130ReportRows;
-        const plans=arr(state.extra[bid]?.esta_maintenance_plan_items),occurrences=arr(state.extra[bid]?.esta_maintenance_plan_occurrences);
-        const scheduled=planner({plans,occurrences,from:state.from,to:state.to});
-        for(const x of scheduled){
-         const raw=String(x.status||"planned"),done=raw==="completed",cancelled=["cancelled","skipped","postponed"].includes(raw);
-         const isOpen=!done&&!cancelled;
-         const due=day(x.due_date),when=day(x.planned_date||x.scheduled_date);
-         if(!include(when,isOpen,due))continue;
-         const stateLabel=done?"Hoàn thành":raw==="awaiting_approval"?"Chờ duyệt":
-          raw==="in_progress"?"Đang thực hiện":raw==="postponed"?"Hoãn":
-          (raw==="cancelled"||raw==="skipped")?"Hủy":"Chưa thực hiện";
-         const priorityLabel=x.priority==="urgent"?"Khẩn cấp":x.priority==="high"?"Cao":"Bình thường";
-         const detail=[x.system_group,x.location,x.cadence,
-          x.month_only?"Chưa ấn định ngày trong tháng":"",x.result_note&&"Kết quả: "+x.result_note].filter(Boolean).join(" · ");
-         push("maintenance",name,x.work_title||"Kế hoạch bảo trì",when,stateLabel,detail,{
-          due,priority:priorityLabel,open:isOpen,photos:x.image_paths,owner:x.completed_by||x.assigned_to||"",
-          plan:x.result_note||"",source:"Lịch Bảo trì ESTA · 130 Hồng Hà"});
-        }
-       }else{
-        for(const a of arr(ops.maintenance_assets)) {
-          if(a.status==="Ngừng sử dụng")continue;
-          const due=day(a.next_due_date),bad=a.status==="Hỏng"|| (!!due && due<today());
-          if(!bad || !due || due>state.to)continue;
-          push("maintenance",name,[a.code,a.name||"Thiết bị"].filter(Boolean).join(" · "),due,
-            a.status==="Hỏng"?"Hỏng":"Bảo trì quá hạn",[a.system_type,a.location,a.assigned_to].filter(Boolean).join(" · "),
-            {due,priority:a.status==="Hỏng"?"Khẩn cấp":"Cao",open:true,owner:a.assigned_to||"",source:"Lịch bảo trì thiết bị"});
-        }
-        for(const x of arr(state.extra[bid]?.maintenance_records)) {
-          if(!within(x.service_date))continue;
-          const asset=arr(ops.maintenance_assets).find(a=>String(a.id)===String(x.asset_id));
-          const status=x.result_status||"Đã bảo trì";
-          push("maintenance",name,(asset?.name||x.maintenance_type||"Nhật ký bảo trì"),x.service_date,status,
-            [x.work_done,x.note,x.performer].filter(Boolean).join(" · "),
-            {open:!finished(status),photos:x.images,owner:x.performer||"",plan:x.work_done||"",source:"Nhật ký bảo trì"});
-        }
+       // The project maintenance board is shared by all four buildings.
+       // Use its exact plan/occurrence source for Admin too; never fall back
+       // to legacy maintenance_assets which can omit or duplicate newer work.
+       const planner=window.estaMaintenance130ReportRows;
+       const plans=arr(state.extra[bid]?.esta_maintenance_plan_items);
+       const occurrences=arr(state.extra[bid]?.esta_maintenance_plan_occurrences);
+       const scheduled=planner({plans,occurrences,from:state.from,to:state.to});
+       for(const x of scheduled){
+        const raw=String(x.status||"planned"),done=raw==="completed",cancelled=["cancelled","skipped","postponed"].includes(raw);
+        const isOpen=!done&&!cancelled;
+        const due=day(x.due_date),when=day(x.planned_date||x.scheduled_date);
+        if(!include(when,isOpen,due))continue;
+        const stateLabel=done?"Hoàn thành":raw==="awaiting_approval"?"Chờ duyệt":
+         raw==="in_progress"?"Đang thực hiện":raw==="postponed"?"Hoãn":
+         raw==="skipped"?"Không thực hiện":raw==="cancelled"?"Hủy":"Chưa thực hiện";
+        const priorityLabel=x.priority==="urgent"?"Khẩn cấp":x.priority==="high"?"Cao":"Bình thường";
+        const detail=[x.system_group,x.location,x.cadence,
+         x.month_only?"Chưa ấn định ngày trong tháng":"",x.result_note&&"Kết quả: "+x.result_note].filter(Boolean).join(" · ");
+        push("maintenance",name,x.work_title||"Kế hoạch bảo trì",when,stateLabel,detail,{
+         due,priority:priorityLabel,open:isOpen,photos:x.image_paths,owner:x.completed_by||x.assigned_to||"",
+         plan:x.result_note||"",is_sample:x.is_sample===true,
+         source:x.is_sample?"Dữ liệu mẫu · chưa xác minh":"Lịch bảo trì ESTA · "+name});
        }
       }
       if(selected.has("materials")) {
@@ -226,17 +213,14 @@
       state.rows=overview.rows;state.personal=personal;
       const extra={},errors={};
       const tables=[];
-      if(state.categories.has("maintenance"))tables.push(["maintenance","maintenance_records"]);
+      if(state.categories.has("maintenance"))tables.push(["maintenance","esta_maintenance_plan_items"],["maintenance","esta_maintenance_plan_occurrences"]);
       if(state.categories.has("tools"))tables.push(["tools","inventory_tools"]);
       const chosen=projectSpecs.filter(p=>state.projects.has(p[0]));
-      if(state.categories.has("maintenance")&&chosen.some(([id])=>id==="130HH")&&typeof window.estaMaintenance130ReportRows!=="function")
+      if(state.categories.has("maintenance")&&chosen.length&&typeof window.estaMaintenance130ReportRows!=="function")
        throw new Error("Chưa tải bộ tính lịch bảo trì ESTA. Hãy tải lại trang trước khi xuất PDF.");
-      const results=await Promise.all(chosen.flatMap(([bid])=>
-       (bid==="130HH"?tables.flatMap(([cat,table])=>cat==="maintenance"?
-        [["maintenance","esta_maintenance_plan_items"],["maintenance","esta_maintenance_plan_occurrences"]]:[[cat,table]]):tables)
-       .map(async([cat,table])=>{
-        try {return {cat,bid,table,rows:await paged(table,bid,token)};}
-        catch(e){return {cat,bid,error:e.message||"Không thể tải dữ liệu"};}
+      const results=await Promise.all(chosen.flatMap(([bid])=>tables.map(async([cat,table])=>{
+       try {return {cat,bid,table,rows:await paged(table,bid,token)};}
+       catch(e){return {cat,bid,error:e.message||"Không thể tải dữ liệu"};}
       })));
       if(request!==state.request||!global())return false;
       for(const r of results) {
@@ -272,14 +256,14 @@
       ["CẦN XỬ LÝ",selectedCount(records)]
     ].map(([name,value])=>'<div><span>'+name+'</span><strong>'+value+'</strong></div>').join("");
     const hint=$("#asPreviewHint");
-    if(hint)hint.textContent=state.loaded?"Thứ tự: công việc có sao vàng → quá hạn → khẩn cấp → chưa xử lý → kế hoạch chưa đến hạn → hoàn thành. "+records.length+" bản ghi.":"Nhấn Làm mới dữ liệu để xem trước.";
+    if(hint)hint.textContent=state.loaded?"Thứ tự: công việc có sao vàng → quá hạn → khẩn cấp → chưa xử lý → kế hoạch chưa đến hạn → hoàn thành. "+records.length+" bản ghi."+(records.some(r=>r.is_sample)?" Trong đó "+records.filter(r=>r.is_sample).length+" mục mẫu chưa xác minh (không tính vào quá hạn).":""):"Nhấn Làm mới dữ liệu để xem trước.";
     const focus=$("#asPriorityRows"),focusEmpty=$("#asPriorityEmpty");
     if(focus){const items=priorityItems(records);focus.innerHTML=items.map((r,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(r.content)+'</b><small>'+esc(r.proj)+' · '+esc(r.source)+'</small></td><td>'+esc(r.owner||"Chưa cập nhật")+'</td><td>'+esc(r.cause||"Chưa cập nhật")+'</td><td>'+esc(r.plan||"Chưa cập nhật")+'</td><td>'+esc(vn(r.due))+'</td></tr>').join("");if(focusEmpty)focusEmpty.textContent=state.loaded&&!items.length?"Không có công việc ưu tiên cần xử lý trong phạm vi đã chọn.":"";}
     const body=$("#asRows");
     if(body)body.innerHTML=!state.loaded?'<tr><td colspan="6">Chưa có dữ liệu để xem trước.</td></tr>':!records.length?'<tr><td colspan="6">Không có bản ghi phù hợp với phạm vi và hạng mục đã chọn.</td></tr>':records.slice(0,150).map((r,i)=>{
       const label=categorySpecs.find(c=>c[0]===r.cat)?.[1]||r.cat;
       const warn=severity(r)<3;
-      return '<tr><td>'+Number(i+1)+'</td><td>'+esc(label)+'</td><td>'+esc(r.proj)+'<small>'+esc(r.source)+'</small></td><td><b>'+esc(r.content)+'</b><small>'+esc(r.detail)+'</small></td><td>'+esc(vn(r.when))+(r.due?'<small>Hạn: '+esc(vn(r.due))+'</small>':"")+'</td><td><span class="'+(severity(r)<2?"as-danger":severity(r)===2?"as-pending":severity(r)===3?"as-planned":"as-done")+'">'+esc(severityLabel(r))+'</span><small>'+esc(r.status)+'</small></td></tr>';
+      return '<tr><td>'+Number(i+1)+'</td><td>'+esc(label)+'</td><td>'+esc(r.proj)+'<small>'+esc(r.source)+'</small></td><td><b>'+esc(r.content)+'</b><small>'+esc(r.detail)+'</small></td><td>'+esc(vn(r.when))+(r.due?'<small>Hạn: '+esc(vn(r.due))+'</small>':"")+'</td><td><span class="'+(severity(r)<2?"as-danger":severity(r)===2?"as-pending":severity(r)===3?"as-planned":severity(r)===5?"as-sample":"as-done")+'">'+esc(severityLabel(r))+'</span><small>'+esc(r.status)+'</small></td></tr>';
     }).join("");
     const trunc=$("#asTrunc");if(trunc)trunc.textContent=records.length>150?"Đang xem 150/"+records.length+" bản ghi; PDF sẽ chứa toàn bộ (tối đa 1.500).":"";
     updateButtons();
@@ -336,10 +320,11 @@
       };
       const shortStatus=(r)=>{
         const s=severity(r);
+        if(s===5)return "Mẫu · chưa xác minh";
         if(s===0)return "Quá hạn";
         if(s===1)return "Ưu tiên xử lý";
         if(s===3)return "Chưa đến hạn";
-        if(s===4)return r.cat==="maintenance"&&/^(Hủy|Hoãn)$/i.test(r.status)?r.status:(["work","incident","maintenance"].includes(r.cat)?"Hoàn thành":r.status);
+        if(s===4)return r.cat==="maintenance"&&/^(Hủy|Hoãn|Không thực hiện)$/i.test(r.status)?r.status:(["work","incident","maintenance"].includes(r.cat)?"Hoàn thành":r.status);
         return /đang thực hiện/i.test(r.status)?"Đang thực hiện":"Chờ xử lý";
       };
       const photos=[];
@@ -353,7 +338,7 @@
             photos.push({
               ref,caption:shortProject(r.proj)+" · "+r.content,
               status_code:code,
-              status_label:code==="done"?"Hoàn thành":code==="overdue"?"Quá hạn":
+              status_label:r.is_sample?"Mẫu · chưa xác minh":code==="done"?"Hoàn thành":code==="overdue"?"Quá hạn":
                 code==="urgent"?"Cần xử lý":code==="progress"?"Đang thực hiện":
                 code==="planned"?"Chưa đến hạn":"Chưa hoàn thành"
             });
@@ -403,7 +388,7 @@
         sectionLabel:"BÁO CÁO TỔNG HỢP · ESTA",
         signaturePosition:"supervision",signer:{name:"Sĩ Văn",image_data_url:""},
         tableLabel:"DANH SÁCH CÔNG VIỆC",
-        subtitle:"",
+        subtitle:records.some(r=>r.is_sample)?"Dữ liệu mẫu được đánh dấu riêng, không tính là công việc quá hạn hoặc đã nghiệm thu.":"",
         periodLabel:"Từ "+vn(state.from)+" đến "+vn(state.to),
         priorityItems:priorityItems(records).map(r=>({
           project:shortProject(r.proj),title:r.content,status:shortStatus(r),
@@ -482,6 +467,7 @@
       '#estaAdminSummaryPage td span.as-pending{color:#9b642a;font-weight:700}'+
       '#estaAdminSummaryPage td span.as-done{color:#287350;font-weight:700}'+
       '#estaAdminSummaryPage td span.as-planned{color:#436da0;font-weight:700}'+
+      '#estaAdminSummaryPage td span.as-sample{color:#765b29;font-weight:700}'+
       '#estaAdminSummaryPage .asPriorityCard{border-left:4px solid #af6d35;background:#fff9f0}'+
       '#estaAdminSummaryPage .asPriorityCard h3{color:#875025}'+
       '#estaAdminSummaryPage .asHint{font-size:11px;color:#6c776b;margin:8px 0}'+
@@ -495,7 +481,9 @@
       '#asFormatDialog .asFormatOption:hover,#asFormatDialog .asFormatOption:focus-visible{border-color:#315b4b;background:#eaf2e6;outline:2px solid #bbd5c2}'+
       '#asFormatDialog .asFormatOption strong{display:block;font-size:14px}#asFormatDialog .asFormatOption small{display:block;font-size:11px;line-height:1.5;margin-top:3px;color:#5e6c61}'+
       '#asFormatDialog .asFormatCancel{margin-top:11px;border:0;background:none;color:#715e52;font:inherit;font-size:12px;cursor:pointer;padding:8px}'+
-      '@media(max-width:740px){#estaAdminSummaryPage{padding:11px}#estaAdminSummaryPage .asGrid{grid-template-columns:1fr}#estaAdminSummaryPage .asChecks{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asKpis{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asHead{align-items:flex-start}#estaAdminSummaryPage h2{font-size:19px}}';
+      '@media(max-width:740px){#estaAdminSummaryPage{padding:11px}#estaAdminSummaryPage .asGrid{grid-template-columns:1fr}#estaAdminSummaryPage .asChecks{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asKpis{grid-template-columns:1fr 1fr}#estaAdminSummaryPage .asHead{align-items:flex-start}#estaAdminSummaryPage h2{font-size:19px}'+
+      '#estaAdminSummaryPage .asTable{overflow:visible;max-height:none}#estaAdminSummaryPage .asTable table{min-width:0;display:block;width:100%}#estaAdminSummaryPage .asTable thead{display:none}#estaAdminSummaryPage .asTable tbody{display:block}#estaAdminSummaryPage .asTable tr{display:block;border:1px solid #e2ddcf;border-radius:10px;background:#fffdf7;margin:0 0 8px;padding:8px;overflow-wrap:anywhere}#estaAdminSummaryPage .asTable td{display:block;width:100%;padding:6px 8px;border:0;font-size:12px}#estaAdminSummaryPage .asTable td:before{font-size:10px;color:#69776a;font-weight:700;margin-right:6px}'+
+      '#estaAdminSummaryPage .asPriorityCard td:nth-child(2):before{content:"Công việc: "}#estaAdminSummaryPage .asPriorityCard td:nth-child(3):before{content:"Phụ trách: "}#estaAdminSummaryPage .asPriorityCard td:nth-child(4):before{content:"Nguyên nhân: "}#estaAdminSummaryPage .asPriorityCard td:nth-child(5):before{content:"Hướng xử lý: "}#estaAdminSummaryPage .asPriorityCard td:nth-child(6):before{content:"Hạn: "}#estaAdminSummaryPage .asCard:not(.asPriorityCard) .asTable td:nth-child(2):before{content:"Hạng mục: "}#estaAdminSummaryPage .asCard:not(.asPriorityCard) .asTable td:nth-child(3):before{content:"Dự án: "}#estaAdminSummaryPage .asCard:not(.asPriorityCard) .asTable td:nth-child(4):before{content:"Nội dung: "}#estaAdminSummaryPage .asCard:not(.asPriorityCard) .asTable td:nth-child(5):before{content:"Ngày: "}#estaAdminSummaryPage .asCard:not(.asPriorityCard) .asTable td:nth-child(6):before{content:"Tình trạng: "}}';
     document.head.appendChild(css);
     const view=document.createElement("section");view.id="estaAdminSummaryPage";view.hidden=true;
     view.innerHTML='<div class="asHead"><div><h2>Báo cáo tổng hợp</h2><p class="asSub">ESTA · Báo cáo Giám sát Kỹ thuật · Bốn dự án và công việc riêng Admin</p></div><div class="asHeadButtons"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button><button id="asBack" class="asBtn" type="button">← Tổng quan Admin</button></div></div>'+
