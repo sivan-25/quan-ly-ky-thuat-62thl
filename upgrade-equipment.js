@@ -148,7 +148,17 @@ function ensureScope(){
 const active=()=>EQUIPMENT_PROJECTS.has(currentEquipmentProjectId())&&typeof projectOverviewActive!=="undefined"&&projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
-const gopts=()=>groups.map(g=>g[0]);
+const gopts=()=>[...new Set([...groups.map(g=>g[0]),...realRows().map(x=>String(x.system_group||"").trim()).filter(Boolean)])];
+const NEW_SYSTEM_TOKEN="__esta_new_system__";
+function setCustomSystemVisibility(){
+ const input=$("ueCustomSystemName"),isNew=$("ueEditGroup")?.value===NEW_SYSTEM_TOKEN;
+ if(!input)return;
+ input.hidden=!isNew;
+ input.querySelector("input").required=isNew;
+}
+function equipmentFormSystemGroup(){
+ return $("ueEditGroup")?.value===NEW_SYSTEM_TOKEN?String($("ueNewSystemName")?.value||"").trim():String($("ueEditGroup")?.value||"").trim();
+}
 const safeQty=n=>Number.isFinite(+n)?Math.min(500,Math.max(1,Math.floor(Number(n)))):1;
 const eqCount=()=>realRows().filter(x=>metaOf(x).verified).reduce((n,x)=>n+safeQty(x.quantity),0);
 
@@ -369,9 +379,9 @@ function list(){
 }
 /* Shared reference layout for Bản nâng cấp and the four operating projects. */
 function systemRailHtml(){
- const all=[{name:"Tất cả hệ thống",key:"",count:catalog().length,icon:UE_ALL_ICON}].concat(
-  G.map(g=>({name:g[1],key:g[1],count:groupCount(g[1]),icon:ueIcon(UE_SYSTEM_ICONS[g[0]],23)}))
- );
+ const builtIn=G.map(g=>({name:g[1],key:g[1],count:groupCount(g[1]),icon:ueIcon(UE_SYSTEM_ICONS[g[0]],23)}));
+ const dynamic=gopts().filter(name=>!G.some(g=>g[1]===name)).map(name=>({name,key:name,count:groupCount(name),icon:ueIcon(UE_SYSTEM_ICONS.kc,23)}));
+ const all=[{name:"Tất cả hệ thống",key:"",count:catalog().length,icon:UE_ALL_ICON},...builtIn,...dynamic];
  return '<nav class="ueSystemRail" aria-label="Danh mục hệ thống kỹ thuật"><div class="ueRefRailHeading"><strong>CHỌN HỆ THỐNG</strong><small>Điện · Nước · PCCC · HVAC…</small></div>'+all.map(g=>
   '<button type="button" class="ueRailCard'+(group===g.key?' active':'')+'" data-ue-group="'+esc(g.key)+'" aria-pressed="'+(group===g.key)+'">'+
   g.icon+'<span class="ueRailText"><b>'+esc(g.name)+'</b><small>'+g.count+(currentEquipmentProjectId()==="130HH"?' hạng mục':' thiết bị')+'</small></span></button>'
@@ -428,7 +438,8 @@ function ensureDialog(){
  '<header><div><small>ESTA · HỒ SƠ HỆ THỐNG KỸ THUẬT</small><h2 id="ueModalHeading">Hồ sơ thiết bị</h2><span id="ueSaveFlag" class="ueSaveFlag">Chưa lưu</span></div><button type="button" id="ueClose" aria-label="Đóng">×</button></header>'+
  '<form id="ueForm"><div class="ueFormBody">'+
  '<p id="ueFormNotice" class="ueFull ueFormNotice"></p>'+
- '<label>Nhóm hệ thống *<select name="system_group" id="ueEditGroup" required>'+opt(gopts(),"")+'</select></label>'+
+ '<label>Nhóm hệ thống *<select name="system_group" id="ueEditGroup" required>'+opt(gopts(),"")+'<option value="'+NEW_SYSTEM_TOKEN+'">＋ Tạo hệ thống mới</option></select></label>'+
+ '<label id="ueCustomSystemName" hidden>Tên hệ thống mới *<input id="ueNewSystemName" maxlength="100" placeholder="Ví dụ: Hệ thống điện mặt trời"></label>'+
  '<label>Loại thiết bị *<select name="equipment_type" id="ueEditType" required></select></label>'+
  '<label class="ueFull">Tên thiết bị *<input name="name" maxlength="140" required></label>'+
  '<label>Mã thiết bị<input name="code" maxlength="80" placeholder="Ví dụ: HVAC-001"></label>'+
@@ -462,7 +473,7 @@ function ensureDialog(){
  document.body.append(dialog);
  $("ueClose").onclick=closeForm;$("ueCancel").onclick=closeForm;
  dialog.onclick=e=>{if(e.target===dialog)closeForm()};
- $("ueEditGroup").onchange=()=>{editingType="";fillTypes();fillAdvanced(collectAdvanced())};
+ $("ueEditGroup").onchange=()=>{setCustomSystemVisibility();editingType="";fillTypes();fillAdvanced(collectAdvanced())};
  $("ueEditType").onchange=()=>{editingType=seedTypeFromForm();fillAdvanced(collectAdvanced())};
  $("ueForm").onsubmit=save;$("ueDelete").onclick=remove;
  $("ueCheckSave").onclick=saveCheck;
@@ -538,7 +549,8 @@ function openForm(id="",focusInspection=false){
  }
  // Preloaded entries have status=""; sending an empty status violates the DB CHECK constraint (23514).
  form.elements.namedItem("status").value=statuses.includes(values.status)?values.status:statuses[0];
- $("ueEditGroup").value=values.system_group||gopts()[0];fillTypes(values.equipment_type);
+ $("ueEditGroup").innerHTML=opt(gopts(),"")+'<option value="'+NEW_SYSTEM_TOKEN+'">＋ Tạo hệ thống mới</option>';
+ $("ueEditGroup").value=values.system_group||gopts()[0];$("ueNewSystemName").value="";setCustomSystemVisibility();fillTypes(values.equipment_type);
  const specs=values.specs||{},meta=metaOf(values);
  form.elements.namedItem("capacity").value=specs.capacity||"";
  form.elements.namedItem("serial").value=specs.serial||"";
@@ -596,10 +608,11 @@ async function save(e){
  const custom=[...form.querySelectorAll(".ueCustomRow")].map(r=>({key:r.querySelector('[name="customKey"]').value.trim(),value:r.querySelector('[name="customValue"]').value.trim()})).filter(c=>c.key&&c.value);
  const interval=Math.min(3650,Math.max(1,Number(field("inspectionInterval"))||G.find(g=>g[1]===field("system_group"))?.[2]||30));
  specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,custom,archived:false,condition:oldMeta.condition||"chua"};
- const payload={building_id:building,system_group:field("system_group"),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
+ const payload={building_id:building,system_group:equipmentFormSystemGroup(),equipment_type:field("equipment_type"),name:field("name"),code:field("code"),
  location:field("location"),brand:field("brand"),model:field("model"),quantity:safeQty(field("quantity")),
  status:field("status")||statuses[0],install_year:year||null,note:field("note"),specs};
  if(!payload.name||!payload.equipment_type||!payload.system_group)return formError("Vui lòng điền tên thiết bị, loại và hệ thống.");
+ if(payload.system_group===NEW_SYSTEM_TOKEN||payload.system_group.length>100)return formError("Tên hệ thống mới không hợp lệ hoặc quá 100 ký tự.");
  if(!statuses.includes(payload.status))return formError("Vui lòng chọn trạng thái hoạt động hợp lệ.");
  $("ueFormError").hidden=true;button.disabled=true;button.textContent="Đang lưu...";
  try{
