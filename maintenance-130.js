@@ -469,7 +469,7 @@ async function load(force){
    LINK_BUILDINGS.has(B)?sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(requestBuilding)+"&order=name.asc",{token}).catch(()=>[]):Promise.resolve([])
   ]);
   if(!active()||B!==requestBuilding)return;
-  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];equipmentProfiles=LINK_BUILDINGS.has(B)&&Array.isArray(profiles)?profiles.filter(p=>!p.specs?._estaUpgrade?.archived):[];clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();if(pendingFocusPlanId)focusPlanInList(pendingFocusPlanId);
+  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];equipmentProfiles=LINK_BUILDINGS.has(B)&&Array.isArray(profiles)?profiles.filter(p=>!p.specs?._estaUpgrade?.archived):[];fillMaintenanceSystemSelect();clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();if(pendingFocusPlanId)focusPlanInList(pendingFocusPlanId);
  }catch(err){$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
  finally{if(B===requestBuilding)busy=false;}
 }
@@ -489,6 +489,38 @@ async function verifyMaintenanceSaved(table,id,fields,building){
  if(!saved||!Object.entries(fields).every(([key,value])=>same(saved[key],value)))
   throw new Error("Máy chủ chưa xác nhận đầy đủ dữ liệu. Vui lòng kiểm tra hoặc tải lại trang trước khi lưu lần nữa.");
  return saved;
+}
+/* Options come from saved equipment profiles, not only fixed initial categories. */
+function fillMaintenanceSystemSelect(selected=""){
+ const select=$("m130System");if(!select)return;
+ select.querySelectorAll("option[data-m130-equipment-system],option[data-m130-legacy-system]").forEach(option=>option.remove());
+ const existing=new Set([...select.options].map(o=>o.value));
+ for(const profile of equipmentProfiles){
+  const name=String(profile.system_group||"").trim();
+  if(!name||existing.has(name))continue;
+  const option=document.createElement("option");option.value=name;option.textContent=name;option.dataset.m130EquipmentSystem="1";select.appendChild(option);existing.add(name);
+ }
+ if(selected&&!existing.has(selected)){
+  const option=document.createElement("option");option.value=selected;option.textContent=selected;option.dataset.m130LegacySystem="1";select.appendChild(option);
+ }
+ if(selected)select.value=selected;
+}
+async function refreshMaintenanceEquipmentOptions(){
+ if(!LINK_BUILDINGS.has(B)||!centralSession?.access_token||!active())return;
+ const building=B;
+ try{
+  const fresh=await sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(building)+"&order=name.asc",{token:centralSession.access_token});
+  if(B!==building||!active())return;
+  equipmentProfiles=Array.isArray(fresh)?fresh.filter(p=>!p.specs?._estaUpgrade?.archived):[];
+  if($("m130Overlay")?.hidden===false&&$("m130PlanForm")?.hidden===false){
+   const chosenSystem=$("m130System").value,chosenProfile=$("m130EquipmentProfile").value;
+   fillMaintenanceSystemSelect(chosenSystem);fillEquipmentSelect(chosenProfile);
+  }
+ }catch(error){
+  if(B===building&&$("m130Overlay")?.hidden===false&&$("m130PlanForm")?.hidden===false){
+   $("m130EquipmentHelp").textContent="Chưa thể cập nhật danh sách thiết bị mới: "+String(error?.message||error);
+  }
+ }
 }
 function maintenanceSystemMatches(profile,system){
  const groups={"PCCC":["PCCC"],"Điện":["Điện (MSB)"],"HVAC":["Điều hòa (HVAC)"],
@@ -536,12 +568,8 @@ function openPlan(id,date){
  $("m130ModalTitle").textContent=i?"Chỉnh sửa kế hoạch":date?"Thêm bảo trì · "+fmt(date):"Thêm công việc bảo trì";
  $("m130PlanForm").hidden=false;$("m130EventForm").hidden=true;
  $("m130Title").value=i?.work_title||"";
- const systemField=$("m130System"),selectedSystem=i?.system_group||"HVAC";
- systemField.querySelectorAll("option[data-m130-legacy-system]").forEach(option=>option.remove());
- if(![...systemField.options].some(option=>option.value===selectedSystem)){
-  const option=document.createElement("option");option.value=selectedSystem;option.textContent=selectedSystem;option.dataset.m130LegacySystem="1";systemField.appendChild(option);
- }
- systemField.value=selectedSystem;
+ const selectedSystem=i?.system_group||"HVAC";
+ fillMaintenanceSystemSelect(selectedSystem);
  $("m130Location").value=i?.subsystem||"";
  $("m130AssetCode").value=i?.asset_code||"";
  fillEquipmentSelect(i?.equipment_profile_id||"");
@@ -558,6 +586,7 @@ function openPlan(id,date){
  $("m130Assignee").value=i?.assigned_to&&i.assigned_to!=="Kỹ thuật"&&i.assigned_to!=="Kỹ thuật dự án"?i.assigned_to:"";
  renderPersonPickers();
  hint();$("m130Overlay").hidden=false;
+ refreshMaintenanceEquipmentOptions();
 }
 async function savePlan(ev){
  ev.preventDefault();if(busy||!active()||!canWrite())return;
