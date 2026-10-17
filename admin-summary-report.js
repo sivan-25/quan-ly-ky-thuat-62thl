@@ -34,6 +34,7 @@
     projects:new Set(projectSpecs.map(x=>x[0])),
     categories:new Set(["work"]),
     from:initialFrom,to:initialTo,
+    includeSamples:false,omittedSamples:0,
     rows:[],personal:[],extra:{},errors:{},loading:false,loaded:false,busy:false,request:0,loadedAt:""
   };
   const allowed = () => typeof currentAccount !== "undefined" && currentAccount?.is_admin === true;
@@ -176,7 +177,8 @@
          owner:t.assignee||"Admin",cause:t.cause||"",plan:t.solution||t.action_plan||"",source:"Admin · Công việc cá nhân"});
     }
     out.sort((a,b)=>Number(b.starred)-Number(a.starred)||severity(a)-severity(b)||String(a.due||a.when).localeCompare(String(b.due||b.when))||String(a.proj).localeCompare(String(b.proj)));
-    return out;
+    state.omittedSamples=out.filter(r=>r.is_sample).length;
+    return state.includeSamples?out:out.filter(r=>!r.is_sample);
   }
   const safeSource = async(path,token) => {
     const result=await sbFetch(path,{token});
@@ -256,7 +258,7 @@
       ["CẦN XỬ LÝ",selectedCount(records)]
     ].map(([name,value])=>'<div><span>'+name+'</span><strong>'+value+'</strong></div>').join("");
     const hint=$("#asPreviewHint");
-    if(hint)hint.textContent=state.loaded?"Thứ tự: công việc có sao vàng → quá hạn → khẩn cấp → chưa xử lý → kế hoạch chưa đến hạn → hoàn thành. "+records.length+" bản ghi."+(records.some(r=>r.is_sample)?" Trong đó "+records.filter(r=>r.is_sample).length+" mục mẫu chưa xác minh (không tính vào quá hạn).":""):"Nhấn Làm mới dữ liệu để xem trước.";
+    if(hint)hint.textContent=state.loaded?"Thứ tự: công việc có sao vàng → quá hạn → khẩn cấp → chưa xử lý → kế hoạch chưa đến hạn → hoàn thành. "+records.length+" bản ghi."+(state.omittedSamples?(state.includeSamples?" Đang hiển thị ":" Đã ẩn ")+state.omittedSamples+" mục mẫu chưa xác minh (không tính vào quá hạn).":""):"Nhấn Làm mới dữ liệu để xem trước.";
     const focus=$("#asPriorityRows"),focusEmpty=$("#asPriorityEmpty");
     if(focus){const items=priorityItems(records);focus.innerHTML=items.map((r,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(r.content)+'</b><small>'+esc(r.proj)+' · '+esc(r.source)+'</small></td><td>'+esc(r.owner||"Chưa cập nhật")+'</td><td>'+esc(r.cause||"Chưa cập nhật")+'</td><td>'+esc(r.plan||"Chưa cập nhật")+'</td><td>'+esc(vn(r.due))+'</td></tr>').join("");if(focusEmpty)focusEmpty.textContent=state.loaded&&!items.length?"Không có công việc ưu tiên cần xử lý trong phạm vi đã chọn.":"";}
     const body=$("#asRows");
@@ -489,7 +491,7 @@
     view.innerHTML='<div class="asHead"><div><h2>Báo cáo tổng hợp</h2><p class="asSub">ESTA · Báo cáo Giám sát Kỹ thuật · Bốn dự án và công việc riêng Admin</p></div><div class="asHeadButtons"><button class="asBtn asPrimary" id="asExport" type="button">Xuất PDF tổng hợp</button><button id="asBack" class="asBtn" type="button">← Tổng quan Admin</button></div></div>'+
       '<div class="asCard"><h3>1. Kỳ báo cáo</h3><div class="asActions" role="group" aria-label="Lựa chọn kỳ báo cáo"><button id="asWeek" class="asBtn asPeriod active" type="button">Theo tuần</button><button id="asMonthApply" class="asBtn asPeriod" type="button">Theo tháng</button><button id="asCustom" class="asBtn asPeriod" type="button">Từ ngày đến ngày</button></div><div class="asDateFields"><label>Chọn tháng<input id="asMonth" type="month" aria-label="Tháng báo cáo"></label><label>Từ ngày<input id="asFrom" type="date"></label><label>Đến ngày<input id="asTo" type="date"></label></div><div class="asActions"><button id="asRefresh" class="asBtn" type="button">↻ Làm mới dữ liệu</button><span class="asHint" id="asPeriodSummary"></span></div></div>'+
       '<div class="asGrid"><div class="asCard"><h3>2. Chọn dự án</h3><div class="asActions"><button class="asBtn" data-as-project-all="1">Chọn cả 4</button><button class="asBtn" data-as-project-all="0">Bỏ chọn</button></div><div class="asChecks" id="asProjectList"></div><p class="asHint">Công việc riêng của Admin đi kèm khi tích “Công việc”, kể cả không liên kết dự án.</p></div>'+
-      '<div class="asCard"><h3>3. Chọn hạng mục cần xuất PDF</h3><div class="asActions"><button class="asBtn" data-as-cat-all="1">Chọn tất cả</button><button class="asBtn" data-as-cat-all="0">Bỏ chọn</button></div><div class="asChecks" id="asCategoryList"></div></div></div>'+
+      '<div class="asCard"><h3>3. Chọn hạng mục cần xuất PDF</h3><div class="asActions"><button class="asBtn" data-as-cat-all="1">Chọn tất cả</button><button class="asBtn" data-as-cat-all="0">Bỏ chọn</button></div><div class="asChecks" id="asCategoryList"></div><label class="asHint" style="display:block;margin-top:8px"><input type="checkbox" id="asSamples"> Hiện dữ liệu mẫu (mặc định ẩn khỏi báo cáo và PDF chính thức)</label></div></div>'+
       '<div class="asCard asPriorityCard"><h3>4. Công việc cần ưu tiên xử lý</h3><p class="asHint">Chỉ hiển thị việc quá hạn, khẩn cấp hoặc cần xử lý ngay. Không tính các việc chưa đến hạn.</p><div class="asTable"><table><thead><tr><th>#</th><th>Công việc / Nguồn</th><th>Người phụ trách</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hạn dự kiến</th></tr></thead><tbody id="asPriorityRows"></tbody></table></div><p class="asHint" id="asPriorityEmpty"></p></div>'+ 
       '<div class="asCard"><h3>5. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Văn. Dữ liệu các dự án được giữ độc lập.</p></div>';
     document.body.appendChild(view);
@@ -553,6 +555,7 @@
         state.from=from;state.to=to;updatePeriodUI("custom");renderResults();return;
       }
       if(target.id==="asMonth"){applyMonth();return;}
+      if(target.id==="asSamples"){state.includeSamples=target.checked;renderResults();return;}
       if(target.dataset.asProject){if(target.checked)state.projects.add(target.dataset.asProject);else state.projects.delete(target.dataset.asProject);fetchData();return;}
       if(target.dataset.asCategory){if(target.checked)state.categories.add(target.dataset.asCategory);else state.categories.delete(target.dataset.asCategory);fetchData();return;}
     });
