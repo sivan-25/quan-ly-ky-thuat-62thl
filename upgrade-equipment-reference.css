@@ -409,3 +409,19 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog .ueFormBody label :
  #updateAssetsPage.ueSnapshot .ueRefLayout .ueRailCard{min-height:48px!important}
  #updateAssetsPage.ueSnapshot .ueRefRailHeading{padding:1px 5px 5px}
 }
+
+
+/* 130 Hồng Hà: linked plans in the existing device accordion. */
+#updateAssetsPage .ueLinkedMaintenance{padding:11px 15px 14px;margin:8px 12px 13px;border:1px solid #d4dfd2;border-radius:10px;background:#f2f7f1;color:#173c42}
+#updateAssetsPage .ueLinkedMaintenanceHeading{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between;align-items:center;padding-bottom:9px}
+#updateAssetsPage .ueLinkedMaintenanceHeading strong{font-size:13px;font-weight:800}
+#updateAssetsPage .ueLinkedMaintenanceHeading span,#updateAssetsPage .ueLinkedMaintenance p{font-size:11px;line-height:1.6;color:#65746b;margin:0 0 8px}
+#updateAssetsPage .ueLinkedMaintenance button[data-ue-pm]{display:flex;align-items:center;gap:6px;min-height:40px;padding:9px 10px;width:100%;text-align:left;background:#fffdf8;border:1px solid #d9e5d8;border-radius:8px;margin-bottom:5px;cursor:pointer;color:#183d4e}
+#updateAssetsPage .ueLinkedMaintenance button[data-ue-pm] span{flex:1;min-width:0;font-size:12px;font-weight:750}
+#updateAssetsPage .ueLinkedMaintenance button[data-ue-pm] small{font-size:10px;color:#61776b}
+#updateAssetsPage .ueLinkedMaintenance .uePmOpen{border:0;background:transparent;color:#285c52;padding:7px 0;font-size:11px;font-weight:800;cursor:pointer}
+@media(max-width:640px){
+ #updateAssetsPage .ueLinkedMaintenance{margin:5px;padding:10px}
+ #updateAssetsPage .ueLinkedMaintenance button[data-ue-pm]{flex-wrap:wrap}
+ #updateAssetsPage .ueLinkedMaintenance button[data-ue-pm] small{width:100%}
+}
