@@ -510,3 +510,10 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
 /* Four-project acceptance: keep save failures visible inside the modal until the user closes or retries. */
 #m130Overlay .m130SaveError{display:block;margin:10px 16px 2px;padding:11px 13px;border:1px solid #d38b81;border-radius:9px;background:#fff0ed;color:#923126;font-size:13px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}
 #m130Overlay .m130SaveError[hidden]{display:none!important}
+
+/* ESTA · Four-building equipment selector in maintenance forms. */
+#m130Overlay .m130OpenEquipment{align-self:flex-start;border:1px solid #aec8c0;border-radius:8px;padding:7px 11px;background:#e6f1ec;color:#164c4a;font:700 11px Inter,system-ui,sans-serif;cursor:pointer;margin-top:3px}
+#m130Overlay .m130OpenEquipment:focus-visible{outline:2px solid #167c82;outline-offset:2px}
+#m130Overlay .m130EquipmentLink{min-width:0;margin:0}
+#m130Overlay .m130EquipmentLink small{font-weight:500;overflow-wrap:anywhere}
+@media(max-width:640px){#m130Overlay .m130OpenEquipment{min-height:36px;font-size:12px}#m130Overlay .m130EquipmentLink{width:100%}}
