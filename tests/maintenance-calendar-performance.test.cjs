@@ -35,7 +35,7 @@ function markup(program,events){
   dateOf:o=>{calls++;return o.event.planned_date;},
   isMonthOnly:()=>false,shownDate:o=>o.event.planned_date,
   fmt:v=>v.slice(8,10)+"/"+v.slice(5,7)+"/"+v.slice(0,4),
-  stateKey:o=>o.event.status,canWrite:()=>true,esc:escape,
+  stateKey:o=>o.event.status,status:o=>[o.event.status,o.event.status],canWrite:()=>true,esc:escape,
   pad:n=>String(n).padStart(2,"0")
  };
  new Function("ctx","with(ctx){"+program+";return renderAlternative;}")(ctx)(events);
