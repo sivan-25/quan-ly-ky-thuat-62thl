@@ -34,6 +34,7 @@ function markup(program,events){
   $:id=>d.getElementById(id),layoutMode:"calendar",year:2026,month:10,
   dateOf:o=>{calls++;return o.event.planned_date;},
   isMonthOnly:()=>false,shownDate:o=>o.event.planned_date,
+  fmt:v=>v.slice(8,10)+"/"+v.slice(5,7)+"/"+v.slice(0,4),
   stateKey:o=>o.event.status,canWrite:()=>true,esc:escape,
   pad:n=>String(n).padStart(2,"0")
  };
