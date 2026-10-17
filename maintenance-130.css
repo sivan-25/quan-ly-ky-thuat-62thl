@@ -517,3 +517,9 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
 #m130Overlay .m130EquipmentLink{min-width:0;margin:0}
 #m130Overlay .m130EquipmentLink small{font-weight:500;overflow-wrap:anywhere}
 @media(max-width:640px){#m130Overlay .m130OpenEquipment{min-height:36px;font-size:12px}#m130Overlay .m130EquipmentLink{width:100%}}
+
+/* Four-project maintenance history: warn on legacy evidence gaps without overwriting completion. */
+#maint130 .m130EvidenceWarning{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:3px 7px;border:1px solid #dfbc75;border-radius:6px;background:#fff2d5;color:#704c16;font-size:10px;font-weight:750;line-height:1.45;white-space:normal;overflow-wrap:anywhere}
+#m130Overlay .m130LegacyEvidence{display:block;padding:9px 12px;border:1px solid #d4b87e;border-radius:8px;background:#fff4dd;color:#674918;font-size:12px;font-weight:650;line-height:1.5;overflow-wrap:anywhere}
+#m130Overlay .m130LegacyEvidence[hidden]{display:none!important}
+@media(max-width:640px){#maint130 .m130EvidenceWarning{font-size:10px}#m130Overlay .m130LegacyEvidence{font-size:12px}}

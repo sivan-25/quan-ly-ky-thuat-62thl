@@ -52,6 +52,7 @@ function render(viewMode){
   interval:()=>3,cycleLabel:()=> "3 tháng",fmt:v=>/^\d{4}-\d{2}-\d{2}$/.test(v)?v.slice(8,10)+"/"+v.slice(5,7)+"/"+v.slice(0,4):(v||"—"),dateOf:o=>o.scheduled,
   isMonthOnly:()=>false,shownDate:o=>o.event.planned_date.slice(8,10)+"/"+o.event.planned_date.slice(5,7)+"/"+o.event.planned_date.slice(0,4),
   items:[],stored:[],personLabel:v=>v,lastCompleted:()=>"2026-09-01",nextCardDate:()=>"2027-01-01",
+  maintenanceEvidenceWarning:()=>"", // Rendering fixture isolates renderList; full feature is exercised in maintenance-evidence-gaps.test.cjs.
   maintenanceEvidenceHtml:(e,key)=>e.image_paths.length?'<div class="m130Evidence" data-evidence="'+escape(key)+'"></div>':"",
   hydrateMaintenanceEvidence:()=>{hydrationCount++;}
  };
