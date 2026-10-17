@@ -116,8 +116,8 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueFormBody :is(input,select,
  body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog footer{padding:10px}
 }
 
-/* Prevent detached dialogs from showing when switching to another project. */
-body:not(.estaUpgradeMode) .ueOverlay{display:none!important}
+/* Hide equipment dialog outside its registered technical page, but never hide it for the four live projects. */
+body:not(.estaUpgradeMode):not(.estaTechnicalAssetsMode) .ueOverlay{display:none!important}
 /* NANGCAP uses the standalone up-to-date register; keep legacy toggle out of the way. */
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #m130Legacy{display:none!important}
 
