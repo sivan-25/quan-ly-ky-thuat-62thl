@@ -506,3 +506,7 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
  #maint130 .m130LinkedEquipment{max-width:100%;font-size:11px;min-height:32px}
  #m130Overlay .m130EquipmentLink select{font-size:16px}
 }
+
+/* Four-project acceptance: keep save failures visible inside the modal until the user closes or retries. */
+#m130Overlay .m130SaveError{display:block;margin:10px 16px 2px;padding:11px 13px;border:1px solid #d38b81;border-radius:9px;background:#fff0ed;color:#923126;font-size:13px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}
+#m130Overlay .m130SaveError[hidden]{display:none!important}
