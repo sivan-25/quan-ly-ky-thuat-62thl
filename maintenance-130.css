@@ -493,3 +493,16 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
  #m130Overlay #m130First,#m130Overlay #m130EventDate{min-height:48px;font-size:16px}
  #m130Overlay .m130PersonQuick button{padding:8px 11px;min-height:36px}
 }
+
+
+/* Pilot only: 130 Hồng Hà technical equipment and maintenance plan linking */
+#m130Overlay .m130EquipmentLink[hidden]{display:none!important}
+#m130Overlay .m130EquipmentLink{display:flex;flex-direction:column;gap:6px;padding:10px 12px;margin:3px 0 11px;border:1px solid #bcd8c8;background:#f2f8ef;border-radius:10px;color:#1a493d;font-weight:800}
+#m130Overlay .m130EquipmentLink select{height:42px;max-width:100%;min-width:0;background:#fffdf8;border:1px solid #91b6a3;border-radius:8px;color:#173d4c;padding:6px 9px;font-size:13px}
+#m130Overlay .m130EquipmentLink small{font-size:11px;line-height:1.45;color:#587069;font-weight:500}
+#maint130 .m130LinkedEquipment{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid #b6d6c5!important;background:#e8f3e9!important;color:#1a5946!important;padding:5px 9px!important;border-radius:7px;cursor:pointer;font-size:11px;font-weight:750}
+#maint130 .m130LinkedEquipment:hover{background:#d5eadc!important}
+@media(max-width:640px){
+ #maint130 .m130LinkedEquipment{max-width:100%;font-size:11px;min-height:32px}
+ #m130Overlay .m130EquipmentLink select{font-size:16px}
+}

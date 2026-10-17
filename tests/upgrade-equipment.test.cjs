@@ -2,7 +2,7 @@
 const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
 const src=fs.readFileSync(path.join(__dirname,"..","upgrade-equipment.js"),"utf8");
 new vm.Script(src,{filename:"upgrade-equipment.js"});
-const anchor="window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm};";
+const anchor="window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,async focusEquipment(id){";
 assert(src.includes(anchor),"public equipment API missing");
 const instrumented=src.replace(anchor,"window.__probe={G,SEEDS,advancedFields,extraFields,installFields,inspectionDue,conditionOf,active,ueStatusOverview,setItems:rows=>{items=rows}};"+anchor);
 const win={};const scope={window:win,document:{addEventListener(){}},currentBuilding:{id:"NANGCAP"},projectOverviewActive:true};

@@ -49,7 +49,7 @@ assert.deepEqual(JSON.parse(JSON.stringify(calculate([],[],'2026-10-14','2026-11
 assert.match(center,/\["130HH","127HH","62THL","68PĐL","NANGCAP"\]\.includes\(bid\)\?Promise\.resolve\(\[\]\):sbFetch\("\/rest\/v1\/maintenance_assets/,'Shared projects use maintenance plan badge rather than legacy assets');
 assert.match(center,/window\.estaMaintenance130NavSummary/,'badge must be based on maintenance plan summary');
 assert.match(center,/window\.estaRefreshProjectNavAlerts/,'badge must expose refresh hook');
-assert.match(js,/notifyMaintenance130Nav\(\);toast\("✓ Đã lưu kế hoạch bảo trì"\)/);
+assert.match(js,/notifyMaintenance130Nav\(\);if\(B==="130HH"\)window\.estaUpgradeAssets\?\.refresh\?\.\(\)\.catch\(\(\)=>\{\}\);toast\("✓ Đã lưu kế hoạch bảo trì"\)/);
 assert.match(html,/command-center\.js\?v=\d{8}-[a-z0-9-]+/i,"versioned Admin command-center JS");
 assert.match(html,/maintenance-130\.js\?v=\d{8}-[a-z0-9-]+/i,"versioned maintenance JS");
 dom.window.close();

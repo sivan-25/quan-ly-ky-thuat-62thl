@@ -134,12 +134,12 @@ function conditionOf(x){
 const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
-let items=[],linkedAssets=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
+let items=[],linkedAssets=[],maintenancePlans=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
 let scopedBuildingId="";
 function ensureScope(){
  const id=currentEquipmentProjectId();
  if(scopedBuildingId!==id){
-  closeForm();scopedBuildingId=id;items=[];linkedAssets=[];fetchedAt=0;loading=null;
+  closeForm();scopedBuildingId=id;items=[];linkedAssets=[];maintenancePlans=[];fetchedAt=0;loading=null;
   error="";search="";group="";status="";expandedDeviceId="";
  }
  return id;
@@ -163,6 +163,11 @@ async function load(force=false){
    const result=await sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token});
    if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
    items=Array.isArray(result)?result:[];error="";fetchedAt=Date.now();
+   if(building==="130HH"){
+    const rows=await sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,work_title,system_group,subsystem,cadence,assigned_to,equipment_profile_id,deleted_at&building_id=eq.130HH&order=created_at.asc",{token:centralSession?.access_token}).catch(()=>[]);
+    if(scopedBuildingId!==building||currentEquipmentProjectId()!==building)return;
+    maintenancePlans=Array.isArray(rows)?rows:[];
+   }
    sbFetch("/rest/v1/maintenance_assets?building_id=eq."+encodeURIComponent(building)+"&select=id,name,code,location&order=name.asc",{token:centralSession?.access_token})
     .then(a=>{if(active()&&scopedBuildingId===building)linkedAssets=Array.isArray(a)?a:[]})
     .catch(()=>{if(scopedBuildingId===building)linkedAssets=[]});
@@ -265,6 +270,14 @@ function ueRowStatus(x){
  const condition=ueStatusKey(x);
  return {label:condition==="chua"?"Chưa kiểm tra":CONDITIONS[condition]||"Chưa kiểm tra",tone:condition};
 }
+function ueMaintenanceHtml(x){
+ if(currentEquipmentProjectId()!=="130HH"||x.virtual)return "";
+ const plans=maintenancePlans.filter(p=>!p.deleted_at&&String(p.equipment_profile_id||"")===String(x.id));
+ return '<div class="ueLinkedMaintenance"><div class="ueLinkedMaintenanceHeading"><strong>Bảo trì liên kết ('+plans.length+')</strong><span>Lịch và kết quả được quản lý tại trang Bảo trì thiết bị.</span></div>'+
+  (plans.length?plans.map(p=>'<button type="button" data-ue-pm="'+esc(p.id)+'"><span>'+esc(p.work_title)+'</span><small>'+esc(p.cadence||"1 lần")+' · '+esc(p.assigned_to||"Chưa phân công")+'</small><b>↗</b></button>').join(""):
+   '<p>Chưa liên kết kế hoạch bảo trì. Mở Bảo trì thiết bị, sửa kế hoạch và chọn hồ sơ này.</p>')+
+  '<button type="button" class="uePmOpen" data-ue-pm-list>↗ Mở trang Bảo trì thiết bị</button></div>';
+}
 function list(){
  const host=$("ueRows"),counter=$("ueResultCount");
  if(!host)return;
@@ -291,7 +304,7 @@ function list(){
     '<span class="ueRefChevron" aria-hidden="true">'+(expanded?'▴':'▾')+'</span>'+
    '</button>'+
    '<section class="ueRefDetails" id="'+esc(detailId)+'" aria-label="Thông số '+esc(label(x))+'"'+(expanded?'':' hidden')+'>'+
-     equipmentDetails(x)+
+     equipmentDetails(x)+ueMaintenanceHtml(x)+
      '<div class="ueRefRowActions">'+
       (!virt?'<button type="button" class="ueRefCheck" data-ue-check="'+esc(id)+'"'+(!allowed()?' disabled':'')+'>Ghi nhận kiểm tra</button>':'')+
       '<button type="button" class="ueRefEdit" data-ue-edit="'+esc(id)+'">'+(virt?'Nhập hồ sơ thiết bị':'Xem / chỉnh sửa hồ sơ')+'</button>'+
@@ -307,6 +320,14 @@ function list(){
    const detail=entry.querySelector(".ueRefDetails");if(detail)detail.hidden=!open;
    const arrow=row.querySelector(".ueRefChevron");if(arrow)arrow.textContent=open?"▴":"▾";
   });
+ });
+ host.querySelectorAll("[data-ue-pm]").forEach(button=>button.onclick=()=>{
+  if(currentEquipmentProjectId()!=="130HH")return;
+  document.getElementById("navMaintenance")?.click();
+  window.estaMaintenance130?.focusPlan?.(button.dataset.uePm);
+ });
+ host.querySelectorAll("[data-ue-pm-list]").forEach(button=>button.onclick=()=>{
+  if(currentEquipmentProjectId()==="130HH")document.getElementById("navMaintenance")?.click();
  });
  host.querySelectorAll("[data-ue-edit]").forEach(button=>button.onclick=()=>openForm(button.dataset.ueEdit));
  host.querySelectorAll("[data-ue-check]").forEach(button=>button.onclick=()=>openForm(button.dataset.ueCheck,true));
@@ -384,7 +405,7 @@ function ensureDialog(){
  '<label>Năm lắp đặt<input name="install_year" type="number" min="1950" max="2100"></label>'+ 
  '<label>Chu kỳ kiểm tra (ngày)<input name="inspectionInterval" type="number" min="1" max="3650" value="30"></label>'+
  '<label>Xác minh thực tế<select name="verified"><option value="0">Chưa xác minh thiết bị</option><option value="1">Đã kiểm tra xác minh tại tòa nhà</option></select></label>'+
- '<label class="ueFull">Liên kết hồ sơ Bảo trì<select name="linkedAsset" id="ueLinkedAsset"><option value="">Chưa liên kết</option></select></label>'+
+ '<label class="ueFull" id="ueLegacyMaintenanceLink">Liên kết hồ sơ Bảo trì cũ<select name="linkedAsset" id="ueLinkedAsset"><option value="">Chưa liên kết</option></select></label>'+
  '<label>Công suất / thông số<input name="capacity" maxlength="120"></label>'+
  '<label>Số serial<input name="serial" maxlength="140"></label>'+
  '<section id="ueAdvancedSpecs" class="ueFull ueAdvancedSpecs"></section>'+ 
@@ -491,6 +512,7 @@ function openForm(id="",focusInspection=false){
  $("ueLinkedAsset").innerHTML='<option value="">Chưa liên kết</option>'+
  linkedAssets.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.code||a.name)+' · '+esc(a.name)+'</option>').join("");
  $("ueLinkedAsset").value=meta.linkedAsset||"";
+ $("ueLegacyMaintenanceLink").style.display=currentEquipmentProjectId()==="130HH"?"none":"";
  fillAdvanced(specs);
  $("ueCustomRows").replaceChildren();(meta.custom||[]).forEach(c=>addCustom(c.key||c.k,c.value||c.v));
  $("ueCustom").open=!!(meta.custom||[]).length;
@@ -534,8 +556,8 @@ async function save(e){
  const type=editingType||seedTypeFromForm();
  const specs={...old?.specs,capacity:field("capacity"),serial:field("serial")};
  [...advancedFields(type),...extraFields(),...installFields()].forEach(f=>{specs[f.key]=field("sp_"+f.key)});
- const asset=field("linkedAsset");
- if(asset&&!linkedAssets.some(x=>String(x.id)===asset))return formError("Thiết bị bảo trì liên kết không hợp lệ.");
+ const asset=building==="130HH"?String(oldMeta.linkedAsset||""):field("linkedAsset");
+ if(building!=="130HH"&&asset&&!linkedAssets.some(x=>String(x.id)===asset))return formError("Thiết bị bảo trì liên kết không hợp lệ.");
  const custom=[...form.querySelectorAll(".ueCustomRow")].map(r=>({key:r.querySelector('[name="customKey"]').value.trim(),value:r.querySelector('[name="customValue"]').value.trim()})).filter(c=>c.key&&c.value);
  const interval=Math.min(3650,Math.max(1,Number(field("inspectionInterval"))||G.find(g=>g[1]===field("system_group"))?.[2]||30));
  specs._estaUpgrade={...oldMeta,seedKey:editingSeed||oldMeta.seedKey||null,verified:field("verified")==="1",linkedAsset:asset,technicalType:type,history:oldMeta.history||[],interval,custom,archived:false,condition:oldMeta.condition||"chua"};
@@ -677,5 +699,15 @@ async function remove(){
  finally{button.disabled=false;button.textContent="🗑 Xóa thiết bị";}
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&dialog&&!dialog.hidden)closeForm()});
-window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm};
+window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,async focusEquipment(id){
+ if(currentEquipmentProjectId()!=="130HH")return;
+ const building=currentEquipmentProjectId();
+ await load();
+ if(currentEquipmentProjectId()!==building)return;
+ expandedDeviceId=String(id||"");group="";status="";search="";
+ const page=$("updateAssetsPage");if(!page)return;
+ render(page,true);
+ const row=[...page.querySelectorAll("[data-ue-id]")].find(el=>el.dataset.ueId===expandedDeviceId);
+ row?.scrollIntoView?.({block:"center",behavior:"smooth"});
+}};
 })();
