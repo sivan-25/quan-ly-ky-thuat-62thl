@@ -362,3 +362,50 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog .ueFormBody label :
   padding:9px 7px 15px!important;
  }
 }
+
+
+/* ESTA 2026-10-17: system rail remains usable even when root mode is briefly reset. */
+#updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout{
+ display:grid!important;grid-template-columns:minmax(195px,220px) minmax(0,1fr)!important;
+ align-items:start;gap:12px;min-width:0;
+}
+#updateAssetsPage.ueSnapshot:not(.hide) .ueRefMain{min-width:0}
+#updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout .ueSystemRail{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ flex-direction:column!important;gap:6px!important;min-width:0;padding:9px!important;
+ background:#fffaf1;border:1px solid #ead9c6;border-radius:11px;
+}
+#updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout .ueRailCard{
+ display:grid!important;visibility:visible!important;width:100%;text-align:left;cursor:pointer;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueSystemRail::before{
+ content:none!important;
+}
+#updateAssetsPage.ueSnapshot .ueRefRailHeading{
+ display:flex;flex-direction:column;gap:2px;padding:3px 7px 7px;color:#173d4c;
+}
+#updateAssetsPage.ueSnapshot .ueRefRailHeading strong{
+ font-size:11px;font-weight:850;letter-spacing:.08em;
+}
+#updateAssetsPage.ueSnapshot .ueRefRailHeading small{
+ font-size:10px;color:#74675f;line-height:1.4;
+}
+#updateAssetsPage.ueSnapshot .ueRailCard[aria-pressed="true"]{
+ box-shadow:inset 3px 0 #a46427!important;
+}
+@media(max-width:1000px){
+ #updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ #updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout .ueSystemRail{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueRefRailHeading{grid-column:1/-1}
+}
+@media(max-width:640px){
+ #updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout .ueSystemRail{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueRefLayout .ueRailCard{min-height:48px!important}
+ #updateAssetsPage.ueSnapshot .ueRefRailHeading{padding:1px 5px 5px}
+}
