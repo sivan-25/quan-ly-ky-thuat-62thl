@@ -12,7 +12,6 @@ on:
       - "maintenance-130.js"
       - "upgrade-equipment.js"
       - "tests/**"
-      - "tests/test_completion_certificate.py"
       - ".github/workflows/pdf-regression.yml"
   pull_request:
     branches: [main]
