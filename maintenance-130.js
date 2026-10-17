@@ -63,7 +63,12 @@ function addMonths(anchor,delta){
 function interval(i){const n=Number(String(i?.cadence||"").match(/\d+/)?.[0]||0);return Number.isInteger(n)&&n>=1&&n<=120?n:0;}
 function cycleLabel(n){return n===0?"1 lần":n===12?"1 năm":n+" tháng";}
 function byDate(i){return stored.filter(e=>e.item_id===i.id).sort((a,b)=>String(a.planned_month).localeCompare(String(b.planned_month)))[0];}
-function lastCompleted(o){
+function lastCompleted(o,completedByItem){
+ // One sorted index per card render avoids scanning every historical record for each card.
+ if(completedByItem){
+  for(const date of completedByItem.get(o.item.id)||[])if(date<=o.scheduled)return date;
+  return "";
+ }
  const completed=stored.filter(e=>e.item_id===o.item.id&&e.status==="completed"&&e.planned_date&&String(e.planned_date)<=o.scheduled);
  completed.sort((a,b)=>String(b.planned_date).localeCompare(String(a.planned_date)));
  return completed[0]?.planned_date||"";
@@ -351,10 +356,16 @@ function hint(){
 }
 function render(){
  if(!show()||!ready)return;
- const all=getYearSchedule(year),subset=all.filter(o=>Number(o.scheduled.slice(5,7))===month);
+ const all=getYearSchedule(year),monthCounts=Array(12).fill(0),subset=[];
+ // One pass supplies both the KPI month and all twelve month badges.
+ for(const o of all){
+  const m=Number(o.scheduled.slice(5,7));
+  if(m>=1&&m<=12)monthCounts[m-1]++;
+  if(m===month)subset.push(o);
+ }
  kpiHtml(scopeEvents(subset));
  $("m130Year").textContent="Năm "+year;
- $("m130Months").innerHTML=Array.from({length:12},(_,idx)=>{const m=idx+1,count=all.filter(o=>Number(o.scheduled.slice(5,7))===m).length;return '<button type="button" data-m130-month="'+m+'" class="'+(m===month?"sel":"")+'"><small>Th '+pad(m)+'</small><b>'+count+'</b></button>';}).join("");
+ $("m130Months").innerHTML=monthCounts.map((count,idx)=>{const m=idx+1;return '<button type="button" data-m130-month="'+m+'" class="'+(m===month?"sel":"")+'"><small>Th '+pad(m)+'</small><b>'+count+'</b></button>';}).join("");
  const groups=[...new Set(items.map(i=>i.system_group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi")),select=$("m130Group"),old=select.value;
  if(select.options.length!==groups.length+1||groups.some(g=>![...select.options].some(o=>o.value===g))){select.innerHTML='<option value="">Tất cả hệ thống</option>'+groups.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");select.value=old;}
  renderList();
@@ -366,6 +377,13 @@ function renderList(){
  $("m130ListTitle").textContent="Công việc tháng "+pad(month)+"/"+year;
  $("m130ListCount").textContent=visible.length+" / "+subset.length+" công việc"+(subset.some(o=>demo(o.item))?" · "+subset.filter(o=>demo(o.item)).length+" mục mẫu chưa xác minh":"");
  const isCards=viewMode==="cards",list=$("m130List");
+ const completedByItem=new Map();
+ if(isCards)for(const e of stored){
+  if(e.status!=="completed"||!e.planned_date)continue;
+  const dates=completedByItem.get(e.item_id)||[];
+  dates.push(String(e.planned_date));completedByItem.set(e.item_id,dates);
+ }
+ if(isCards)for(const dates of completedByItem.values())dates.sort((a,b)=>b.localeCompare(a));
  list.classList.toggle("m130CardsMode",isCards);
  list.classList.toggle("m130RowsMode",!isCards);
  $("maint130").querySelectorAll("[data-m130-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m130View===viewMode)));
@@ -383,7 +401,7 @@ function renderList(){
     '<h4>'+esc(i.work_title)+'</h4><p class="m130ShortMeta">'+(isMonthOnly(o)?'<span class="m130MissingDay">Chưa ấn định ngày</span>':'')+'<span class="m130MetaLocation">⌖ '+location+'</span><span class="m130MetaPerson">♙ '+esc(personLabel(e.completed_by||i.assigned_to))+'</span>'+(i.asset_code?'<span class="m130MetaCode">· '+esc(i.asset_code)+'</span>':'')+'</p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+
     '<div class="m130EntryActions">'+linkedButton+'<button type="button" data-m130-event="'+key+'">'+(canWrite()?(e.status==="completed"?"Xem KQ":"Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130Edit" aria-label="Sửa kế hoạch '+esc(i.work_title)+'" title="Sửa kế hoạch" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16z"/></svg></button></div></article>';
   }
-  const done=lastCompleted(o),upcoming=nextCardDate(o);
+  const done=lastCompleted(o,completedByItem),upcoming=nextCardDate(o);
   const record=esc(e.event_key),editable=canWrite()?"":"disabled";
   return '<article class="m130ServiceCard m130State-'+st[1]+'">'+
    '<div class="m130CardHead"><div class="m130CardHeading"><span class="m130SystemLabel">'+esc(i.system_group)+'</span><span class="m130CardLocation">'+(i.asset_code?'Mã TB: '+esc(i.asset_code)+' · ':'')+location+' · Lịch kỳ này: '+shownDate(o)+'</span></div><div class="m130TopTags"><span class="m130CardStatus '+st[1]+'"><span class="m130StatusLabel">Tình trạng:</span> <b class="m130StatusValue">'+st[0]+'</b></span></div></div>'+
@@ -419,8 +437,15 @@ function renderAlternative(events){
  const firstDay=new Date(year,month-1,1).getDay(),offset=(firstDay+6)%7,days=new Date(year,month,0).getDate();
  const headings=['T2','T3','T4','T5','T6','T7','CN'];
  const cells=Array.from({length:offset},()=>'<div class="m130CalendarBlank"></div>');
+ // Keep event ordering while indexing each date once, not thirty-one times.
+ const eventsByDay=new Map();
+ for(const o of events){
+  if(isMonthOnly(o))continue;
+  const date=dateOf(o),daily=eventsByDay.get(date)||[];
+  daily.push(o);eventsByDay.set(date,daily);
+ }
  for(let day=1;day<=days;day++){
-  const date=year+"-"+pad(month)+"-"+pad(day),daily=events.filter(o=>!isMonthOnly(o)&&dateOf(o)===date);
+  const date=year+"-"+pad(month)+"-"+pad(day),daily=eventsByDay.get(date)||[];
   const chips=daily.map(o=>{
    const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
    return '<button type="button" draggable="'+(canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
