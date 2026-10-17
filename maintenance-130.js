@@ -152,6 +152,8 @@ function maintenance130DueSummary(planItems,occurrences,todayDate,throughDate){
   scheduleRows.push(...schedule(yearValue,planItems,occurrences));
  }
  const actionable=scheduleRows.filter(o=>{
+  // A template is not an outstanding real-world maintenance obligation.
+  if(demo(o.item))return false;
   if(["completed","cancelled","skipped","postponed"].includes(String(o.event.status||"planned")))return false;
   const due=dateOf(o);
   return due>=String(startYear)+"-01-01"&&due<=throughDate;
@@ -161,7 +163,7 @@ function maintenance130DueSummary(planItems,occurrences,todayDate,throughDate){
 window.estaMaintenance130NavSummary=async function({today:todayDate,soon:throughDate,token,buildingId}){
  const target=PROJECT_IDS.has(String(buildingId||""))?String(buildingId):B;
  const [plans,occurrences]=await Promise.all([
-  sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,plan_code,cadence,deleted_at,work_title&building_id=eq."+target,{token}),
+  sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,plan_code,cadence,deleted_at,work_title,source_notes&building_id=eq."+target,{token}),
   sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=item_id,event_key,planned_month,planned_date,due_date,status&building_id=eq."+target,{token})
  ]);
  return maintenance130DueSummary(Array.isArray(plans)?plans:[],Array.isArray(occurrences)?occurrences:[],todayDate,throughDate);
@@ -218,7 +220,7 @@ function kpiHtml(events){
  const pair=[[c.late,"Quá hạn","late"],[todayCount,"Hôm nay","today"],[weekCount,"7 ngày tới","week"],[c.review,"Chờ duyệt","review"],[timely,"Đúng hạn","done"]];
  const stats=$("m130Stats");
  stats.innerHTML=pair.map(x=>'<div class="m130Kpi '+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
- stats.dataset.monthOverview=JSON.stringify({...maintenance130Buckets(events,today),onTime:timely});
+ stats.dataset.monthOverview=JSON.stringify({...maintenance130Buckets(verifiedEvents,today),onTime:timely});
 
 }
 
