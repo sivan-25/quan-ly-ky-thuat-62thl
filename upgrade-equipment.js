@@ -6,6 +6,7 @@
 "use strict";
 const TABLE="building_equipment_profiles_nangcap";
 const EQUIPMENT_PROJECTS=new Set(["NANGCAP","68PĐL","62THL","127HH","130HH"]);
+const LINK_BUILDINGS=new Set(["68PĐL","62THL","127HH","130HH"]);
 const currentEquipmentProjectId=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"");
 const projectDisplayName=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.name||currentBuilding?.id||"Dự án":"Dự án");
 const $=id=>document.getElementById(id);
@@ -134,12 +135,12 @@ function conditionOf(x){
 const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
-let items=[],linkedAssets=[],maintenancePlans=[],fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
+let items=[],linkedAssets=[],maintenancePlans=[],maintenanceEvents=[],maintenanceHistoryError="",fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
 let scopedBuildingId="";
 function ensureScope(){
  const id=currentEquipmentProjectId();
  if(scopedBuildingId!==id){
-  closeForm();scopedBuildingId=id;items=[];linkedAssets=[];maintenancePlans=[];fetchedAt=0;loading=null;
+  closeForm();scopedBuildingId=id;items=[];linkedAssets=[];maintenancePlans=[];maintenanceEvents=[];maintenanceHistoryError="";fetchedAt=0;loading=null;
   error="";search="";group="";status="";expandedDeviceId="";
  }
  return id;
@@ -163,10 +164,22 @@ async function load(force=false){
    const result=await sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token});
    if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
    items=Array.isArray(result)?result:[];error="";fetchedAt=Date.now();
-   if(building==="130HH"){
-    const rows=await sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,work_title,system_group,subsystem,cadence,assigned_to,equipment_profile_id,deleted_at&building_id=eq.130HH&order=created_at.asc",{token:centralSession?.access_token}).catch(()=>[]);
-    if(scopedBuildingId!==building||currentEquipmentProjectId()!==building)return;
-    maintenancePlans=Array.isArray(rows)?rows:[];
+   if(LINK_BUILDINGS.has(building)){
+    try{
+     const rows=await sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,work_title,system_group,subsystem,cadence,assigned_to,equipment_profile_id,deleted_at&building_id=eq."+encodeURIComponent(building)+"&order=created_at.asc",{token:centralSession?.access_token});
+     if(scopedBuildingId!==building||currentEquipmentProjectId()!==building)return;
+     maintenancePlans=Array.isArray(rows)?rows:[];
+     const ids=maintenancePlans.filter(p=>!p.deleted_at&&p.equipment_profile_id).map(p=>p.id);
+     if(ids.length){
+      const records=await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=item_id,planned_date,planned_month,completed_at,completed_by,result_code,result_note,image_paths,status&building_id=eq."+encodeURIComponent(building)+"&status=eq.completed&item_id=in.("+ids.map(encodeURIComponent).join(",")+")&order=completed_at.desc&limit=1000",{token:centralSession?.access_token});
+      if(scopedBuildingId!==building||currentEquipmentProjectId()!==building)return;
+      maintenanceEvents=Array.isArray(records)?records:[];
+     }else maintenanceEvents=[];
+     maintenanceHistoryError="";
+    }catch(e){
+     if(scopedBuildingId!==building||currentEquipmentProjectId()!==building)return;
+     maintenanceHistoryError="Không tải được dữ liệu bảo trì liên kết: "+String(e?.message||e);
+    }
    }
    sbFetch("/rest/v1/maintenance_assets?building_id=eq."+encodeURIComponent(building)+"&select=id,name,code,location&order=name.asc",{token:centralSession?.access_token})
     .then(a=>{if(active()&&scopedBuildingId===building)linkedAssets=Array.isArray(a)?a:[]})
@@ -271,11 +284,29 @@ function ueRowStatus(x){
  return {label:condition==="chua"?"Chưa kiểm tra":CONDITIONS[condition]||"Chưa kiểm tra",tone:condition};
 }
 function ueMaintenanceHtml(x){
- if(currentEquipmentProjectId()!=="130HH"||x.virtual)return "";
+ if(!LINK_BUILDINGS.has(currentEquipmentProjectId())||x.virtual)return "";
  const plans=maintenancePlans.filter(p=>!p.deleted_at&&String(p.equipment_profile_id||"")===String(x.id));
- return '<div class="ueLinkedMaintenance"><div class="ueLinkedMaintenanceHeading"><strong>Bảo trì liên kết ('+plans.length+')</strong><span>Lịch và kết quả được quản lý tại trang Bảo trì thiết bị.</span></div>'+
-  (plans.length?plans.map(p=>'<button type="button" data-ue-pm="'+esc(p.id)+'"><span>'+esc(p.work_title)+'</span><small>'+esc(p.cadence||"1 lần")+' · '+esc(p.assigned_to||"Chưa phân công")+'</small><b>↗</b></button>').join(""):
-   '<p>Chưa liên kết kế hoạch bảo trì. Mở Bảo trì thiết bị, sửa kế hoạch và chọn hồ sơ này.</p>')+
+ const resultName={pass:"Đạt",fail:"Không đạt",monitor:"Cần theo dõi"};
+ const info=plans.map(p=>{
+  const done=maintenanceEvents.filter(e=>String(e.item_id)===String(p.id)&&e.status==="completed")
+   .sort((a,b)=>String(b.completed_at||b.planned_date||"").localeCompare(String(a.completed_at||a.planned_date||""))).slice(0,5);
+  const history=done.length?done.map(e=>{
+   const date=String(e.completed_at||e.planned_date||e.planned_month||"").slice(0,10);
+   const result=resultName[e.result_code]||"Chưa ghi kết quả";
+   const photos=(Array.isArray(e.image_paths)?e.image_paths:[]).map(q=>typeof q==="string"?{kind:"after",ref:q}:q).filter(q=>q&&q.ref);
+   return '<div class="uePmRecord"><div><b>'+esc(date?viDate(date):"—")+' · '+esc(result)+'</b><small>'+esc(e.completed_by||"Chưa ghi KTV")+'</small></div>'+
+    (e.result_note?'<p>'+esc(e.result_note)+'</p>':'')+
+    (photos.length?'<div class="uePmEvidence">'+photos.slice(0,3).map(q=>
+      '<img alt="Ảnh '+esc(q.kind==="before"?"trước":"sau")+' bảo trì" data-ue-maintenance-image="'+esc(q.ref)+'">').join("")+
+      (photos.length>3?'<small>+'+(photos.length-3)+' ảnh trong hồ sơ bảo trì</small>':'')+'</div>':'')+
+    '</div>';
+  }).join(""):'<p class="uePmEmpty">Chưa có kỳ bảo trì hoàn thành được ghi nhận.</p>';
+  return '<div class="uePmPlan"><button type="button" data-ue-pm="'+esc(p.id)+'"><span>'+esc(p.work_title)+'</span><small>'+esc(p.cadence||"1 lần")+' · '+esc(p.assigned_to||"Chưa phân công")+'</small><b>↗</b></button>'+
+    '<div class="uePmHistory">'+history+'</div></div>';
+ }).join("");
+ return '<div class="ueLinkedMaintenance"><div class="ueLinkedMaintenanceHeading"><strong>Bảo trì liên kết ('+plans.length+')</strong><span>Lịch sử hoàn thành lấy từ trang Bảo trì thiết bị của cùng tòa nhà.</span></div>'+
+  (maintenanceHistoryError?'<p class="uePmLoadError" role="alert">'+esc(maintenanceHistoryError)+'</p>':"")+
+  (plans.length?info:'<p>Chưa liên kết kế hoạch bảo trì. Từ Bảo trì thiết bị, chọn hệ thống và hồ sơ này để liên kết.</p>')+
   '<button type="button" class="uePmOpen" data-ue-pm-list>↗ Mở trang Bảo trì thiết bị</button></div>';
 }
 function list(){
@@ -322,12 +353,16 @@ function list(){
   });
  });
  host.querySelectorAll("[data-ue-pm]").forEach(button=>button.onclick=()=>{
-  if(currentEquipmentProjectId()!=="130HH")return;
+  if(!LINK_BUILDINGS.has(currentEquipmentProjectId()))return;
   document.getElementById("navMaintenance")?.click();
   window.estaMaintenance130?.focusPlan?.(button.dataset.uePm);
  });
  host.querySelectorAll("[data-ue-pm-list]").forEach(button=>button.onclick=()=>{
-  if(currentEquipmentProjectId()==="130HH")document.getElementById("navMaintenance")?.click();
+  if(LINK_BUILDINGS.has(currentEquipmentProjectId()))document.getElementById("navMaintenance")?.click();
+ });
+ host.querySelectorAll("img[data-ue-maintenance-image]").forEach(async img=>{
+  try{if(typeof mediaObjectUrl==="function"){const url=await mediaObjectUrl(img.dataset.ueMaintenanceImage);if(img.isConnected)img.src=url;}}
+  catch(_){img.alt="Không mở được ảnh bảo trì";}
  });
  host.querySelectorAll("[data-ue-edit]").forEach(button=>button.onclick=()=>openForm(button.dataset.ueEdit));
  host.querySelectorAll("[data-ue-check]").forEach(button=>button.onclick=()=>openForm(button.dataset.ueCheck,true));
@@ -700,7 +735,7 @@ async function remove(){
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&dialog&&!dialog.hidden)closeForm()});
 window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,async focusEquipment(id){
- if(currentEquipmentProjectId()!=="130HH")return;
+ if(!LINK_BUILDINGS.has(currentEquipmentProjectId()))return;
  const building=currentEquipmentProjectId();
  await load();
  if(currentEquipmentProjectId()!==building)return;
