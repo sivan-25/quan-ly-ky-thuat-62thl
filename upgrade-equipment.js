@@ -171,14 +171,17 @@ async function load(force=false){
  if(!force&&fetchedAt&&Date.now()-fetchedAt<20000)return;
  loading=(async()=>{
   try{
-   const result=await sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token});
+   // Profile and system catalog are independent: load together to shorten first display.
+   // Keep project guards after the batch to prevent responses leaking across buildings.
+   const [result,savedSystems]=await Promise.all([
+    sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token}),
+    LINK_BUILDINGS.has(building)
+     ?sbFetch("/rest/v1/ops_systems?select=id,name,active,sort_order&building_id=eq."+encodeURIComponent(building)+"&active=eq.true&order=sort_order.asc,name.asc",{token:centralSession?.access_token}).catch(()=>[])
+     :Promise.resolve([])
+   ]);
    if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
    items=Array.isArray(result)?result:[];error="";fetchedAt=Date.now();
-   if(LINK_BUILDINGS.has(building)){
-    const savedSystems=await sbFetch("/rest/v1/ops_systems?select=id,name,active,sort_order&building_id=eq."+encodeURIComponent(building)+"&active=eq.true&order=sort_order.asc,name.asc",{token:centralSession?.access_token}).catch(()=>[]);
-    if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
-    systemCatalog=Array.isArray(savedSystems)?savedSystems:[];
-   }
+   if(LINK_BUILDINGS.has(building))systemCatalog=Array.isArray(savedSystems)?savedSystems:[];
    if(LINK_BUILDINGS.has(building)){
     try{
      const rows=await sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,work_title,system_group,subsystem,cadence,assigned_to,equipment_profile_id,deleted_at&building_id=eq."+encodeURIComponent(building)+"&order=created_at.asc",{token:centralSession?.access_token});
