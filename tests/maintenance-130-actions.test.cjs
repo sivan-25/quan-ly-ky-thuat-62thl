@@ -15,7 +15,17 @@ w.centralSession={access_token:"test-token"};
 w.toast=()=>{};
 w.mediaImgHtml=ref=>'<img data-ref="'+String(ref).replace(/"/g,"&quot;")+'">';
 w.hydrateMediaImages=async()=>{};
-w.sbFetch=async(path,opts)=>{calls.push({path,opts});return [];};
+const savedRows=new Map();
+w.sbFetch=async(path,opts={})=>{
+ calls.push({path,opts});
+ const kind=path.includes("esta_maintenance_plan_occurrences")?"event":path.includes("esta_maintenance_plan_items")?"plan":null;
+ const id=decodeURIComponent(path.match(/id=eq\.([^&]+)/)?.[1]||opts.body?.id||"");
+ const key=kind+":"+id;
+ if(kind&&opts.method==="PATCH"){savedRows.set(key,{...savedRows.get(key),...opts.body,id});return [];}
+ if(kind&&opts.method==="POST"){savedRows.set(key,{...opts.body,id});return [];}
+ if(kind&&path.includes("select=*"))return savedRows.has(key)?[savedRows.get(key)]:[];
+ return [];
+};
 const fixture={
  item:{id:"plan1",building_id:"130HH",plan_code:"130HH-TEST-1",work_title:"Kiểm tra cảm biến mực nước",
  system_group:"Cấp thoát nước",subsystem:"Bồn mái",source_notes:"MẪU (dữ liệu từ Excel)",priority:"normal",
