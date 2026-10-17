@@ -30,6 +30,10 @@ const scope={
   calls.push({url,building});
   if(url.includes("/maintenance_assets"))return [];
   if(url.includes("esta_maintenance_plan_items"))return building==="130HH"?[pmFixture]:[];
+  if(url.includes("esta_maintenance_plan_occurrences"))return building==="130HH"?[
+   {item_id:pmFixture.id,status:"completed",planned_date:"2026-10-14",
+    completed_at:"2026-10-14T09:00:00Z",completed_by:"Văn",result_code:"pass",
+    result_note:"Áp suất đạt yêu cầu",image_paths:[{kind:"after",ref:"storage:130HH/after.jpg"}]}]:[];
   if(!url.includes("building_equipment_profiles_nangcap"))throw Error("Unexpected endpoint: "+url);
   return rows.filter(r=>r.building_id===building);
  }
@@ -49,7 +53,10 @@ const page=dom.window.document.getElementById("updateAssetsPage");
    page.querySelector('[data-ue-id="'+rows[4].id+'"]').click();
    assert.match(page.querySelector(".ueLinkedMaintenance").textContent,/Bảo trì liên kết \(1\)/);
    assert.match(page.querySelector(".ueLinkedMaintenance").textContent,/Bảo trì bơm PCCC 130 Hồng Hà/);
-  }else assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,0,id+" must keep other projects unchanged");
+   assert.match(page.querySelector(".uePmHistory").textContent,/Áp suất đạt yêu cầu/);
+   assert.ok(page.querySelector('img[data-ue-maintenance-image="storage:130HH/after.jpg"]'),"show stored evidence");
+  }else if(id==="NANGCAP")assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,0,"upgrade sandbox unchanged");
+  else assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,1,id+" must show its own maintenance panel");
   const systemButtons=[...page.querySelectorAll(".ueSystemRail [data-ue-group]")];
   assert.equal(systemButtons.length,10,id+" must display all nine systems and the all-systems control on the left");
   assert.match(page.querySelector(".ueRefRailHeading")?.textContent||"",/CHỌN HỆ THỐNG/,id+" needs a visible category heading");
