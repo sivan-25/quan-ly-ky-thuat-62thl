@@ -26,7 +26,7 @@ const scope={window:w,document:d,crypto,currentAccount:{is_admin:true},
  get currentBuilding(){return {id:state.building,name:"130 Hồng Hà",role:"editor"}},
  get projectOverviewActive(){return true}};
 new vm.Script(source).runInNewContext(scope);
-const $=id=>d.getElementById(id);
+const $=selector=>d.querySelector(selector);
 (async()=>{
  w.estaUpgradeAssets.render(page,true);await w.estaUpgradeAssets.refresh();
  assert.equal(page.querySelectorAll(".ueRefRow").length,44);
