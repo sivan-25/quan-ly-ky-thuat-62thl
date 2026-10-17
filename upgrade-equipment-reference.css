@@ -439,3 +439,14 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog .ueFormBody label :
 #updateAssetsPage .ueLinkedMaintenance .uePmLoadError{color:#983632!important;background:#fff0e9;border-radius:7px;padding:8px}
 #updateAssetsPage .ueLinkedMaintenance .uePmEmpty{font-style:italic}
 @media(max-width:640px){#updateAssetsPage .ueLinkedMaintenance .uePmEvidence img{width:64px;height:56px}}
+
+
+/* Building-scoped custom systems: unobtrusive create flow and mobile stacking. */
+#updateAssetsPage .ueNewSystemBox[hidden],#ueOverlay #ueCustomSystemName[hidden]{display:none!important}
+#updateAssetsPage .ueNewSystemBox{display:flex;align-items:end;gap:8px;flex-wrap:wrap;padding:12px;margin:5px 0 12px;background:#f8f1e6;border:1px solid #dec9ac;border-radius:10px}
+#updateAssetsPage .ueNewSystemBox label{display:flex;flex-direction:column;gap:6px;flex:1 1 220px;font-size:11px;font-weight:750;color:#401336}
+#updateAssetsPage .ueNewSystemBox input{min-height:38px;border:1px solid #cfb99e;border-radius:8px;background:white;padding:8px;font-size:12px;width:100%;min-width:0}
+#updateAssetsPage .ueNewSystemBox button{min-height:38px;background:#244b4d;color:white;border:0;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700;cursor:pointer}
+#updateAssetsPage .ueNewSystemBox #ueCancelSystem{background:#e9e3d9;color:#3c4853}
+#updateAssetsPage .ueNewSystemBox #ueCategoryError{width:100%;color:#a2423e;font-size:11px}
+@media(max-width:640px){#updateAssetsPage .ueNewSystemBox{align-items:stretch}#updateAssetsPage .ueNewSystemBox label{flex:1 0 100%}}
