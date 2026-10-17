@@ -343,7 +343,7 @@ function renderList(){
  list.innerHTML=visible.map(o=>{
   const e=o.event,i=o.item,st=status(o),key=esc(e.event_key);
   const cycle=interval(i),cycleText=cycle?cycleLabel(cycle):(i.cadence||"1 lần"),location=esc(i.subsystem||"Chưa ghi vị trí");
-  const attached=B==="130HH"&&i.equipment_profile_id?equipmentProfiles.find(p=>String(p.id)===String(i.equipment_profile_id)):null;
+  const attached=typeof B!=="undefined"&&B==="130HH"&&i.equipment_profile_id&&typeof equipmentProfiles!=="undefined"?equipmentProfiles.find(p=>String(p.id)===String(i.equipment_profile_id)):null;
   const linkedButton=attached?'<button type="button" class="m130LinkedEquipment" data-m130-profile="'+esc(attached.id)+'" title="Mở hồ sơ thiết bị">↗ '+esc(attached.name)+'</button>':"";
   if(!isCards){
    return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
