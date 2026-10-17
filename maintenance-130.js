@@ -496,7 +496,7 @@ function fillMaintenanceSystemSelect(selected=""){
  const select=$("m130System");if(!select)return;
  select.querySelectorAll("option[data-m130-equipment-system],option[data-m130-legacy-system]").forEach(option=>option.remove());
  const existing=new Set([...select.options].map(o=>o.value));
- for(const profile of [...systemCatalog.map(x=>({system_group:x.name})),...equipmentProfiles]){
+ for(const profile of [...systemCatalog.filter(x=>x.active!==false).map(x=>({system_group:x.name})),...equipmentProfiles]){
   const name=String(profile.system_group||"").trim();
   if(!name||existing.has(name))continue;
   const option=document.createElement("option");option.value=name;option.textContent=name;option.dataset.m130EquipmentSystem="1";select.appendChild(option);existing.add(name);
