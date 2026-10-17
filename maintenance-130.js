@@ -561,6 +561,7 @@ async function savePlan(ev){
    if(profileId&&!equipmentProfiles.some(p=>String(p.id)===profileId))throw Error("Thiết bị liên kết không tồn tại trong 130 Hồng Hà.");
    fields.equipment_profile_id=profileId||null;
   }
+  let savedPlanId=currentPlan?.id||"";
   if(currentPlan){
    const id=currentPlan.id;
    if(dateChanged){
@@ -579,6 +580,7 @@ async function savePlan(ev){
    if(dateChanged){year=Number(date.slice(0,4));month=Number(date.slice(5,7));}
   }else{
    const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code=B+"-USER-"+id.slice(0,13);
+   savedPlanId=id;
    const item={id,building_id:B,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Bổ sung từ trang Bảo trì ESTA",...fields};
    await sbFetch("/rest/v1/esta_maintenance_plan_items",{method:"POST",token,body:item});
    const occurrence={id:eventId,item_id:id,building_id:B,event_key:code+":"+date.slice(0,7),planned_month:monthISO(date),planned_date:date,status:"planned",source_kind:"year",location:fields.subsystem};
@@ -590,7 +592,7 @@ async function savePlan(ev){
    items.push(item);stored.push(occurrence);
    year=Number(date.slice(0,4));month=Number(date.slice(5,7));
   }
-  const savedPlan=await verifyMaintenanceSaved("esta_maintenance_plan_items",currentPlan?.id||id,fields,B);
+  const savedPlan=await verifyMaintenanceSaved("esta_maintenance_plan_items",savedPlanId,fields,B);
   if(!savedPlan)throw new Error("Không xác nhận được kế hoạch bảo trì.");
   clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();if(B==="130HH")window.estaUpgradeAssets?.refresh?.().catch(()=>{});toast("✓ Đã lưu kế hoạch bảo trì");
  }catch(err){saveError("Chưa xác nhận lưu kế hoạch: "+(err.message||err));}
