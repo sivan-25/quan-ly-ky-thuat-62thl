@@ -6,8 +6,14 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const output = process.env.ESTA_VISUAL_DIR || 'visual-artifacts';
 fs.mkdirSync(output, {recursive:true});
-const widths=[{width:320,height:720},{width:390,height:844},{width:768,height:1024},{width:1024,height:768},{width:1440,height:900}];
-const scenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL','inventory-62THL','maintenance-68PĐL','contractor-130HH','incident-127HH','inspection-130HH','documents-62THL','reports-68PĐL'];
+const standardWidths=[{width:320,height:720},{width:390,height:844},{width:768,height:1024},{width:1024,height:768},{width:1440,height:900}];
+const widths=process.env.ESTA_VISUAL_WIDTHS
+ ? process.env.ESTA_VISUAL_WIDTHS.split(',').map(Number).filter(Number.isFinite).map(width=>({width,height:width<500?844:1024}))
+ : standardWidths;
+const standardScenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL','inventory-62THL','maintenance-68PĐL','contractor-130HH','incident-127HH','inspection-130HH','documents-62THL','reports-68PĐL'];
+const scenarios=process.env.ESTA_VISUAL_SCENARIOS
+ ? process.env.ESTA_VISUAL_SCENARIOS.split(',').map(x=>x.trim()).filter(Boolean)
+ : standardScenarios;
 const results=[];
 const fixedTime=Date.parse('2026-10-10T02:00:00.000Z');
 const channelTolerance=12; // headless Chromium antialiasing showed 1 pixel with delta 10/255; geometry/content still checked exactly
