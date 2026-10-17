@@ -31,6 +31,7 @@ new vm.Script(js).runInNewContext(scope);
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 (async()=>{
  for(const project of ["68PĐL","62THL","127HH","130HH"]){
+  const start=requests.length;
   state.id=project;
   const page=d.getElementById("updateAssetsPage");
   w.estaUpgradeAssets.render(page,true);
@@ -39,7 +40,7 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
   assert(state.pending&&state.pending.building===project,"profile query pending "+project);
   assert(requests.some(x=>x.building===project&&x.url.includes("/ops_systems")),
    "system catalog should start before profile query resolves "+project);
-  assert(!requests.some(x=>x.building!==project&&x.url.includes("/esta_maintenance_plan_items")),
+  assert(!requests.slice(start).some(x=>x.building!==project&&x.url.includes("/esta_maintenance_plan_items")),
    "no cross-project active history");
   state.pending.resolve([]);
   await result;await tick();
