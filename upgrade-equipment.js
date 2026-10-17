@@ -135,12 +135,12 @@ function conditionOf(x){
 const groupCount=k=>catalog().filter(x=>x.system_group===k).length;
 
 const statuses=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
-let items=[],linkedAssets=[],maintenancePlans=[],maintenanceEvents=[],maintenanceHistoryError="",fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
+let items=[],systemCatalog=[],linkedAssets=[],maintenancePlans=[],maintenanceEvents=[],maintenanceHistoryError="",fetchedAt=0,loading=null,error="",search="",group="",status="",dialog=null,editId=null,editingSeed="",editingType="",expandedDeviceId="";
 let scopedBuildingId="";
 function ensureScope(){
  const id=currentEquipmentProjectId();
  if(scopedBuildingId!==id){
-  closeForm();scopedBuildingId=id;items=[];linkedAssets=[];maintenancePlans=[];maintenanceEvents=[];maintenanceHistoryError="";fetchedAt=0;loading=null;
+  closeForm();scopedBuildingId=id;items=[];systemCatalog=[];linkedAssets=[];maintenancePlans=[];maintenanceEvents=[];maintenanceHistoryError="";fetchedAt=0;loading=null;
   error="";search="";group="";status="";expandedDeviceId="";
  }
  return id;
@@ -148,7 +148,7 @@ function ensureScope(){
 const active=()=>EQUIPMENT_PROJECTS.has(currentEquipmentProjectId())&&typeof projectOverviewActive!=="undefined"&&projectOverviewActive;
 const allowed=()=>active()&&!!centralSession?.access_token&&(!!currentAccount?.is_admin||String(currentBuilding?.role||"").toLowerCase()!=="viewer");
 const opt=(a,v)=>a.map(x=>'<option value="'+esc(x)+'"'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join("");
-const gopts=()=>[...new Set([...groups.map(g=>g[0]),...realRows().map(x=>String(x.system_group||"").trim()).filter(Boolean)])];
+const gopts=()=>[...new Set([...groups.map(g=>g[0]),...systemCatalog.filter(x=>x.active!==false).map(x=>String(x.name||"").trim()).filter(Boolean),...realRows().map(x=>String(x.system_group||"").trim()).filter(Boolean)])];
 const NEW_SYSTEM_TOKEN="__esta_new_system__";
 function setCustomSystemVisibility(){
  const input=$("ueCustomSystemName"),isNew=$("ueEditGroup")?.value===NEW_SYSTEM_TOKEN;
@@ -174,6 +174,11 @@ async function load(force=false){
    const result=await sbFetch("/rest/v1/"+TABLE+"?building_id=eq."+encodeURIComponent(building)+"&select=*&order=system_group.asc,name.asc",{token:centralSession?.access_token});
    if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
    items=Array.isArray(result)?result:[];error="";fetchedAt=Date.now();
+   if(LINK_BUILDINGS.has(building)){
+    const savedSystems=await sbFetch("/rest/v1/ops_systems?select=id,name,active,sort_order&building_id=eq."+encodeURIComponent(building)+"&active=eq.true&order=sort_order.asc,name.asc",{token:centralSession?.access_token}).catch(()=>[]);
+    if(!active()||currentEquipmentProjectId()!==building||scopedBuildingId!==building)return;
+    systemCatalog=Array.isArray(savedSystems)?savedSystems:[];
+   }
    if(LINK_BUILDINGS.has(building)){
     try{
      const rows=await sbFetch("/rest/v1/esta_maintenance_plan_items?select=id,work_title,system_group,subsystem,cadence,assigned_to,equipment_profile_id,deleted_at&building_id=eq."+encodeURIComponent(building)+"&order=created_at.asc",{token:centralSession?.access_token});
@@ -413,7 +418,9 @@ function render(page,skipLoad=false){
     '</div></header>'+
    '<div class="ueRefActions"><button type="button" id="ueRefresh">↻ Làm mới</button>'+
     '<button type="button" id="uePrint">↓ Xuất PDF</button>'+
+    (LINK_BUILDINGS.has(currentEquipmentProjectId())?'<button type="button" id="ueAddSystem"'+(!allowed()?' disabled':'')+'>＋ Thêm hệ thống</button>':'')+
     '<button type="button" id="ueAdd" class="ueRefAdd"'+(!allowed()?' disabled':'')+'>＋ Thêm thiết bị</button></div>'+
+   (LINK_BUILDINGS.has(currentEquipmentProjectId())?'<div id="ueNewSystemBox" class="ueNewSystemBox" hidden><label>Tên hệ thống mới <input id="ueCategoryName" maxlength="100" placeholder="Ví dụ: Hệ thống điện mặt trời"></label><button type="button" id="ueSaveSystem">Lưu hệ thống</button><button type="button" id="ueCancelSystem">Hủy</button><span id="ueCategoryError" role="alert"></span></div>':'')+
    (error?'<p class="ueRefError" role="alert">Không tải được dữ liệu: '+esc(error)+'. Các hồ sơ đã lưu chưa được xác nhận.</p>':'')+
    '<div class="ueRefTable"><div class="ueRefColHead" aria-hidden="true">'+
     '<span>THIẾT BỊ</span><span>VỊ TRÍ</span><span>TRẠNG THÁI</span>'+
@@ -427,6 +434,15 @@ function render(page,skipLoad=false){
  $("ueRefresh").onclick=()=>{fetchedAt=0;load(true)};
  $("uePrint").onclick=printReport;
  $("ueAdd").onclick=()=>openForm();
+ if($("ueAddSystem")){
+  $("ueAddSystem").onclick=()=>{
+   const box=$("ueNewSystemBox");box.hidden=!box.hidden;
+   if(!box.hidden)$("ueCategoryName").focus();
+  };
+  $("ueSaveSystem").onclick=saveCustomSystem;
+  $("ueCancelSystem").onclick=()=>{$("ueNewSystemBox").hidden=true};
+  $("ueCategoryName").onkeydown=event=>{if(event.key==="Enter"){event.preventDefault();saveCustomSystem();}};
+ }
  list();
  if(!skipLoad&&!fetchedAt)load();
 }
@@ -591,6 +607,27 @@ function formError(message){
 async function getSaved(id,building=currentEquipmentProjectId()){
  const rows=await sbFetch("/rest/v1/"+TABLE+"?id=eq."+encodeURIComponent(id)+"&building_id=eq."+building+"&select=*&limit=1",{token:centralSession?.access_token});
  return Array.isArray(rows)?rows[0]||null:null;
+}
+async function saveCustomSystem(){
+ if(!allowed()||!LINK_BUILDINGS.has(currentEquipmentProjectId()))return;
+ const building=currentEquipmentProjectId(),name=String($("ueCategoryName")?.value||"").trim().replace(/\\s+/g," ");
+ const message=$("ueCategoryError"),saveButton=$("ueSaveSystem");
+ if(!name||name.length>100){message.textContent="Nhập tên hệ thống từ 1 đến 100 ký tự.";return;}
+ if(gopts().some(x=>x.toLocaleLowerCase("vi-VN")===name.toLocaleLowerCase("vi-VN"))){message.textContent="Hệ thống này đã tồn tại.";return;}
+ message.textContent="";saveButton.disabled=true;saveButton.textContent="Đang lưu...";
+ try{
+  const id=crypto.randomUUID();
+  const record={id,building_id:building,code:"UE-"+id.slice(0,8),name,active:true};
+  await sbFetch("/rest/v1/ops_systems",{method:"POST",token:centralSession.access_token,body:record});
+  const rows=await sbFetch("/rest/v1/ops_systems?select=id,name,building_id&id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(building),{token:centralSession.access_token});
+  if(!Array.isArray(rows)||rows[0]?.name!==name||rows[0]?.building_id!==building)
+   throw Error("Máy chủ chưa xác nhận hệ thống mới. Vui lòng tải lại để kiểm tra.");
+  if(currentEquipmentProjectId()!==building)return;
+  group=name;fetchedAt=0;await load(true);
+  if(error)throw Error("Đã tạo hệ thống nhưng chưa tải lại được danh mục.");
+  if(typeof toast==="function")toast("✓ Đã lưu hệ thống "+name+" vào "+projectDisplayName());
+ }catch(err){if(currentEquipmentProjectId()===building)message.textContent=err?.message||"Không thêm được hệ thống.";}
+ finally{if(saveButton.isConnected){saveButton.disabled=false;saveButton.textContent="Lưu hệ thống";}}
 }
 async function save(e){
  e.preventDefault();
