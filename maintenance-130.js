@@ -12,7 +12,7 @@ function readView(){
  try{const v=localStorage.getItem(viewKey());if(v==="cards"||v==="rows")return v;}catch(_){}
  return typeof window!=="undefined"&&window.matchMedia?.("(max-width:640px)")?.matches?"rows":"cards";
 }
-let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="";
+let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],systemCatalog=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="";
 function clearScheduleCache(){scheduleCache=null}
 function getYearSchedule(y){if(scheduleCache?.year===y)return scheduleCache.events;const events=schedule(y);scheduleCache={year:y,events};return events}
 function personLabel(value){
@@ -462,14 +462,15 @@ async function load(force){
  const requestBuilding=B;
  busy=true;$("m130List").innerHTML='<p class="m130Empty">Đang tải dữ liệu bảo trì...</p>';
  try{
-  const token=centralSession.access_token,[i,e,persons,profiles]=await Promise.all([
+  const token=centralSession.access_token,[i,e,persons,profiles,systems]=await Promise.all([
    sbFetch("/rest/v1/esta_maintenance_plan_items?select=*&building_id=eq."+B+"&order=created_at.asc",{token}),
    sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=*&building_id=eq."+B+"&order=planned_month.asc,planned_date.asc",{token}),
    sbFetch("/rest/v1/building_people?select=name&building_id=eq."+B+"&order=name.asc",{token}).catch(()=>[]),
-   LINK_BUILDINGS.has(B)?sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(requestBuilding)+"&order=name.asc",{token}).catch(()=>[]):Promise.resolve([])
+   LINK_BUILDINGS.has(B)?sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(requestBuilding)+"&order=name.asc",{token}).catch(()=>[]):Promise.resolve([]),
+   LINK_BUILDINGS.has(B)?sbFetch("/rest/v1/ops_systems?select=name,active&building_id=eq."+encodeURIComponent(requestBuilding)+"&active=eq.true&order=sort_order.asc,name.asc",{token}).catch(()=>[]):Promise.resolve([])
   ]);
   if(!active()||B!==requestBuilding)return;
-  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];equipmentProfiles=LINK_BUILDINGS.has(B)&&Array.isArray(profiles)?profiles.filter(p=>!p.specs?._estaUpgrade?.archived):[];fillMaintenanceSystemSelect();clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();if(pendingFocusPlanId)focusPlanInList(pendingFocusPlanId);
+  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];equipmentProfiles=LINK_BUILDINGS.has(B)&&Array.isArray(profiles)?profiles.filter(p=>!p.specs?._estaUpgrade?.archived):[];systemCatalog=LINK_BUILDINGS.has(B)&&Array.isArray(systems)?systems.filter(x=>x.active!==false):[];fillMaintenanceSystemSelect();clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();if(pendingFocusPlanId)focusPlanInList(pendingFocusPlanId);
  }catch(err){$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
  finally{if(B===requestBuilding)busy=false;}
 }
@@ -495,7 +496,7 @@ function fillMaintenanceSystemSelect(selected=""){
  const select=$("m130System");if(!select)return;
  select.querySelectorAll("option[data-m130-equipment-system],option[data-m130-legacy-system]").forEach(option=>option.remove());
  const existing=new Set([...select.options].map(o=>o.value));
- for(const profile of equipmentProfiles){
+ for(const profile of [...systemCatalog.map(x=>({system_group:x.name})),...equipmentProfiles]){
   const name=String(profile.system_group||"").trim();
   if(!name||existing.has(name))continue;
   const option=document.createElement("option");option.value=name;option.textContent=name;option.dataset.m130EquipmentSystem="1";select.appendChild(option);existing.add(name);
@@ -509,9 +510,13 @@ async function refreshMaintenanceEquipmentOptions(){
  if(!LINK_BUILDINGS.has(B)||!centralSession?.access_token||!active())return;
  const building=B;
  try{
-  const fresh=await sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(building)+"&order=name.asc",{token:centralSession.access_token});
+  const [fresh,freshSystems]=await Promise.all([
+   sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(building)+"&order=name.asc",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/ops_systems?select=name,active&building_id=eq."+encodeURIComponent(building)+"&active=eq.true&order=sort_order.asc,name.asc",{token:centralSession.access_token})
+  ]);
   if(B!==building||!active())return;
   equipmentProfiles=Array.isArray(fresh)?fresh.filter(p=>!p.specs?._estaUpgrade?.archived):[];
+  systemCatalog=Array.isArray(freshSystems)?freshSystems.filter(x=>x.active!==false):[];
   if($("m130Overlay")?.hidden===false&&$("m130PlanForm")?.hidden===false){
    const chosenSystem=$("m130System").value,chosenProfile=$("m130EquipmentProfile").value;
    fillMaintenanceSystemSelect(chosenSystem);fillEquipmentSelect(chosenProfile);
@@ -837,7 +842,7 @@ window.mountMaintenance130=()=>{
  const next=String(typeof currentBuilding!=="undefined"?(currentBuilding?.id||""):"");
  if(!PROJECT_IDS.has(next)){show();return;}
  if(next!==B){
-  B=next;items=[];stored=[];people=[];equipmentProfiles=[];pendingFocusPlanId="";ready=false;busy=false;currentEvent=null;currentPlan=null;
+  B=next;items=[];stored=[];people=[];equipmentProfiles=[];systemCatalog=[];pendingFocusPlanId="";ready=false;busy=false;currentEvent=null;currentPlan=null;
   year=new Date().getFullYear();month=new Date().getMonth()+1;viewMode=readView();layoutMode="list";
   clearScheduleCache();
   const overlay=$("m130Overlay");if(overlay)overlay.hidden=true;
