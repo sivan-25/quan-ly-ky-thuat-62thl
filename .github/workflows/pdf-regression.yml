@@ -8,6 +8,11 @@ on:
       - "reporting/**"
       - "tests/test_pdf.py"
       - "tests/test_completion_certificate.py"
+      - "admin-summary-report.js"
+      - "maintenance-130.js"
+      - "upgrade-equipment.js"
+      - "tests/**"
+      - "tests/test_completion_certificate.py"
       - ".github/workflows/pdf-regression.yml"
   pull_request:
     branches: [main]
@@ -15,6 +20,11 @@ on:
       - "api/esta_report.py"
       - "reporting/**"
       - "tests/test_pdf.py"
+      - "tests/test_completion_certificate.py"
+      - "admin-summary-report.js"
+      - "maintenance-130.js"
+      - "upgrade-equipment.js"
+      - "tests/**"
       - ".github/workflows/pdf-regression.yml"
   workflow_dispatch:
 
