@@ -558,7 +558,7 @@ function openForm(id="",focusInspection=false){
  const d=ensureDialog(),form=$("ueForm");
  form.reset();$("ueModalHeading").textContent=existing?"Chi tiết & kiểm tra thiết bị":sample?"Cập nhật thông tin thiết bị":"Thêm thiết bị";
  $("ueSaveFlag").textContent=existing?"✓ Đã lưu":"Chưa lưu";$("ueSaveFlag").classList.toggle("is-saved",!!existing);
- const values=selected||{system_group:gopts()[0],equipment_type:groups[0][2][0],quantity:1,status:statuses[0]};
+ const values=selected||{system_group:group||gopts()[0],equipment_type:group?(groups.find(g=>g[0]===group)?.[2]?.[0]||"Khác"):groups[0][2][0],quantity:1,status:statuses[0]};
  for(const [key,value] of Object.entries(values)){
   const input=form.elements.namedItem(key);
   if(input&&typeof value!=="object")input.value=value??"";
