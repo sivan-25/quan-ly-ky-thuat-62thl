@@ -316,7 +316,7 @@ function systemRailHtml(){
  const all=[{name:"Tất cả hệ thống",key:"",count:catalog().length,icon:UE_ALL_ICON}].concat(
   G.map(g=>({name:g[1],key:g[1],count:groupCount(g[1]),icon:ueIcon(UE_SYSTEM_ICONS[g[0]],23)}))
  );
- return '<nav class="ueSystemRail" aria-label="Danh mục hệ thống kỹ thuật">'+all.map(g=>
+ return '<nav class="ueSystemRail" aria-label="Danh mục hệ thống kỹ thuật"><div class="ueRefRailHeading"><strong>CHỌN HỆ THỐNG</strong><small>Điện · Nước · PCCC · HVAC…</small></div>'+all.map(g=>
   '<button type="button" class="ueRailCard'+(group===g.key?' active':'')+'" data-ue-group="'+esc(g.key)+'" aria-pressed="'+(group===g.key)+'">'+
   g.icon+'<span class="ueRailText"><b>'+esc(g.name)+'</b><small>'+g.count+' thiết bị</small></span></button>'
  ).join("")+'</nav>';
@@ -324,6 +324,11 @@ function systemRailHtml(){
 function render(page,skipLoad=false){
  if(!active()||!page)return;
  ensureScope();
+ // Refresh the technical theme on every render so system navigation remains visible.
+ if(page.id==="updateAssetsPage"&&currentEquipmentProjectId()!=="NANGCAP"){
+  document.getElementById("app")?.classList.add("estaTechnicalAssetsMode");
+  document.body.classList.add("estaTechnicalAssetsMode");
+ }
  page.classList.remove("ueClassic");
  page.classList.add("uePage","ueSnapshot");
  page.innerHTML=
