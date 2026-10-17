@@ -425,3 +425,28 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog .ueFormBody label :
  #updateAssetsPage .ueLinkedMaintenance button[data-ue-pm]{flex-wrap:wrap}
  #updateAssetsPage .ueLinkedMaintenance button[data-ue-pm] small{width:100%}
 }
+
+/* ESTA · Bidirectional service records attached to the same building profile. */
+#updateAssetsPage .ueLinkedMaintenance .uePmPlan{background:#fffaf3;border:1px solid #dce4db;border-radius:9px;padding:8px;margin:7px 0;min-width:0}
+#updateAssetsPage .ueLinkedMaintenance .uePmPlan button[data-ue-pm]{margin:0 0 7px}
+#updateAssetsPage .ueLinkedMaintenance .uePmHistory{display:grid;gap:7px}
+#updateAssetsPage .ueLinkedMaintenance .uePmRecord{background:#f4f8f4;border:1px solid #e0e8de;border-radius:7px;padding:8px;min-width:0}
+#updateAssetsPage .ueLinkedMaintenance .uePmRecord b{display:block;color:#174d43;font-size:12px}
+#updateAssetsPage .ueLinkedMaintenance .uePmRecord small{display:block;font-size:11px;color:#63786d;margin:3px 0;overflow-wrap:anywhere}
+#updateAssetsPage .ueLinkedMaintenance .uePmRecord p{white-space:pre-wrap;overflow-wrap:anywhere;color:#2e4b49;margin:5px 0!important}
+#updateAssetsPage .ueLinkedMaintenance .uePmEvidence{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:6px}
+#updateAssetsPage .ueLinkedMaintenance .uePmEvidence img{width:78px;height:64px;object-fit:cover;border-radius:7px;background:#ebefeb;border:1px solid #d5dbd0}
+#updateAssetsPage .ueLinkedMaintenance .uePmLoadError{color:#983632!important;background:#fff0e9;border-radius:7px;padding:8px}
+#updateAssetsPage .ueLinkedMaintenance .uePmEmpty{font-style:italic}
+@media(max-width:640px){#updateAssetsPage .ueLinkedMaintenance .uePmEvidence img{width:64px;height:56px}}
+
+
+/* Building-scoped custom systems: unobtrusive create flow and mobile stacking. */
+#updateAssetsPage .ueNewSystemBox[hidden],#ueOverlay #ueCustomSystemName[hidden]{display:none!important}
+#updateAssetsPage .ueNewSystemBox{display:flex;align-items:end;gap:8px;flex-wrap:wrap;padding:12px;margin:5px 0 12px;background:#f8f1e6;border:1px solid #dec9ac;border-radius:10px}
+#updateAssetsPage .ueNewSystemBox label{display:flex;flex-direction:column;gap:6px;flex:1 1 220px;font-size:11px;font-weight:750;color:#401336}
+#updateAssetsPage .ueNewSystemBox input{min-height:38px;border:1px solid #cfb99e;border-radius:8px;background:white;padding:8px;font-size:12px;width:100%;min-width:0}
+#updateAssetsPage .ueNewSystemBox button{min-height:38px;background:#244b4d;color:white;border:0;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700;cursor:pointer}
+#updateAssetsPage .ueNewSystemBox #ueCancelSystem{background:#e9e3d9;color:#3c4853}
+#updateAssetsPage .ueNewSystemBox #ueCategoryError{width:100%;color:#a2423e;font-size:11px}
+@media(max-width:640px){#updateAssetsPage .ueNewSystemBox{align-items:stretch}#updateAssetsPage .ueNewSystemBox label{flex:1 0 100%}}

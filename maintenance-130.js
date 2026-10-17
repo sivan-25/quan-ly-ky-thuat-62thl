@@ -1,6 +1,7 @@
 (function(){
 "use strict";
 const PROJECT_IDS=new Set(["130HH","127HH","62THL","68PĐL","NANGCAP"]);
+const LINK_BUILDINGS=new Set(["130HH","127HH","62THL","68PĐL"]);
 let B="130HH";
 const $=id=>document.getElementById(id);
 const projectLabel=()=>({"130HH":"130 Hồng Hà","127HH":"127 Hồng Hà","62THL":"62 Trần Huy Liệu","68PĐL":"68 Phan Đăng Lưu","NANGCAP":"Bản nâng cấp"})[B]||B;
@@ -11,7 +12,7 @@ function readView(){
  try{const v=localStorage.getItem(viewKey());if(v==="cards"||v==="rows")return v;}catch(_){}
  return typeof window!=="undefined"&&window.matchMedia?.("(max-width:640px)")?.matches?"rows":"cards";
 }
-let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="";
+let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],systemCatalog=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="";
 function clearScheduleCache(){scheduleCache=null}
 function getYearSchedule(y){if(scheduleCache?.year===y)return scheduleCache.events;const events=schedule(y);scheduleCache={year:y,events};return events}
 function personLabel(value){
@@ -235,7 +236,7 @@ function ensure(){
  '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><div class="m130LayoutSwitch" role="group" aria-label="Chế độ xem lịch"><button type="button" data-m130-layout="list" aria-pressed="true">Danh sách</button><button type="button" data-m130-layout="calendar" aria-pressed="false">Lịch</button><button type="button" data-m130-layout="timeline" aria-pressed="false">Timeline</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div><details class="m130AuditPanel"><summary>Nhật ký chỉnh sửa / xóa</summary><button type="button" id="m130AuditButton" class="m130AuditButton">Xem nhật ký</button><div id="m130AuditHistory" aria-live="polite"></div></details>';
  anchor.parentNode.insertBefore(root,anchor);
  const overlay=document.createElement("div");overlay.id="m130Overlay";overlay.hidden=true;overlay.innerHTML='<div class="m130Dialog"><div class="m130ModalHead"><h3 id="m130ModalTitle">Công việc bảo trì</h3><button type="button" id="m130Close" aria-label="Đóng">×</button></div><p id="m130SaveError" class="m130SaveError" role="alert" aria-live="assertive" hidden></p><form id="m130PlanForm" hidden>'+
- '<label>Nội dung công việc *<textarea id="m130Title" rows="2" required maxlength="500"></textarea></label><label id="m130EquipmentLinkRow" class="m130EquipmentLink" hidden>Thiết bị từ Thông tin hệ thống <select id="m130EquipmentProfile"><option value="">Chưa liên kết thiết bị</option></select><small id="m130EquipmentHelp">Chọn thiết bị đã lưu để không nhập lại hồ sơ kỹ thuật.</small></label><div class="m130Two"><label>Hệ thống<select id="m130System"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Chiếu sáng</option><option>Camera & an ninh</option><option>Kiểm soát ra vào</option><option>Thông gió</option><option>Nước thải</option><option>BMS</option><option>Mạng / viễn thông</option><option>Khác</option></select></label><label>Vị trí<input id="m130Location" maxlength="160" placeholder="Tầng / khu vực"></label></div><div class="m130Two"><label>Mã thiết bị<input id="m130AssetCode" maxlength="80" placeholder="VD: PCCC-001"></label><label>Loại bảo trì<select id="m130WorkType"><option value="PM">PM · Phòng ngừa</option><option value="CM">CM · Khắc phục</option></select></label></div><label>Mức ưu tiên<select id="m130Priority"><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select></label>'+
+ '<label>Nội dung công việc *<textarea id="m130Title" rows="2" required maxlength="500"></textarea></label><div class="m130Two"><label>Hệ thống<select id="m130System"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Chiếu sáng</option><option>Camera & an ninh</option><option>Kiểm soát ra vào</option><option>Thông gió</option><option>Nước thải</option><option>BMS</option><option>Mạng / viễn thông</option><option>Khác</option></select></label><label>Vị trí<input id="m130Location" maxlength="160" placeholder="Tầng / khu vực"></label></div><div class="m130Two"><label id="m130EquipmentLinkRow" class="m130EquipmentLink">Thiết bị / hạng mục liên kết<select id="m130EquipmentProfile"><option value="">Không liên kết thiết bị</option></select><small id="m130EquipmentHelp">Chỉ hiển thị hồ sơ thiết bị đã lưu tại dự án này.</small><button type="button" id="m130GoEquipment" class="m130OpenEquipment">↗ Mở Thông tin hệ thống</button><input id="m130AssetCode" type="hidden"></label><label>Loại bảo trì<select id="m130WorkType"><option value="PM">PM · Phòng ngừa</option><option value="CM">CM · Khắc phục</option></select></label></div><label>Mức ưu tiên<select id="m130Priority"><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select></label>'+
  '<div class="m130Two"><label>Ngày bắt đầu chu kỳ *<input type="date" id="m130First" min="2020-01-01" max="2100-12-31" aria-label="Chọn ngày bắt đầu chu kỳ bảo trì" required></label><label>Chu kỳ bảo trì<select id="m130Cycle" required><option value="0">1 lần</option><option value="1">1 tháng</option><option value="3">3 tháng</option><option value="4">4 tháng</option><option value="6">6 tháng</option><option value="12">1 năm</option></select></label></div><p class="m130Hint" id="m130NextHint">Chọn chu kỳ, hệ thống sẽ tự tính ngày lặp. Ví dụ 10/10/2026 + 3 tháng → 10/01/2027 → 10/04/2027.</p><label>Tên kỹ thuật / người phụ trách *<input id="m130Assignee" maxlength="500" autocomplete="off" placeholder="Chọn nhiều người hoặc nhập tên, cách nhau bằng dấu phẩy" required></label><small class="m130PersonCount" id="m130AssigneeCount" aria-live="polite">Chọn một hoặc nhiều người bên dưới</small><div class="m130PersonQuick" id="m130AssigneeQuick" role="group" aria-label="Chọn nhiều kỹ thuật viên phụ trách"></div><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu kế hoạch</button></div></form>'+
  '<form id="m130EventForm" hidden><p id="m130EventInfo" class="m130Hint"></p><div class="m130Two"><label>Ngày dự kiến<input id="m130EventDate" type="date" required></label><label>Trạng thái<select id="m130EventStatus"><option value="planned">Chưa thực hiện</option><option value="in_progress">Đang thực hiện</option><option value="awaiting_approval">Chờ duyệt</option><option value="completed">Hoàn thành</option><option value="postponed">Hoãn</option><option value="cancelled">Hủy</option><option value="skipped">Không thực hiện</option></select></label></div><label>Kỹ thuật viên thực hiện *<input id="m130Who" maxlength="500" placeholder="Chọn nhiều kỹ thuật viên hoặc nhập tên" autocomplete="off"></label><small class="m130PersonCount" id="m130WhoCount" aria-live="polite">Chọn một hoặc nhiều người bên dưới</small><div class="m130PersonQuick" id="m130WhoQuick" role="group" aria-label="Chọn nhiều kỹ thuật viên thực hiện"></div><label>Kết quả kiểm tra<select id="m130ResultCode"><option value="">— Chọn kết quả —</option><option value="pass">Đạt</option><option value="fail">Không đạt</option><option value="monitor">Cần theo dõi</option></select></label><label>Kết quả thực hiện / ghi chú<textarea id="m130Result" rows="3" maxlength="2000" placeholder="Ghi nhận thực tế và hướng xử lý"></textarea></label><label>Lý do hoãn / hủy<input id="m130PostponeReason" maxlength="600" placeholder="Bắt buộc nếu Hoãn hoặc Hủy"></label><div class="m130Two"><label>Nhân công (đ)<input id="m130LaborCost" type="number" min="0" step="1000" placeholder="0"></label><label>Vật tư (đ)<input id="m130MaterialCost" type="number" min="0" step="1000" placeholder="0"></label></div><div class="m130PhotoFields"><label>Ảnh trước bảo trì<input id="m130BeforePhotos" type="file" accept="image/*" multiple></label><label>Ảnh sau bảo trì<input id="m130AfterPhotos" type="file" accept="image/*" multiple></label></div><div id="m130PhotoPreview" class="m130PhotoPreview"></div><p class="m130Hint">Hoàn thành cần chọn KTV, kết quả Đạt/Không đạt/Cần theo dõi, ghi chú và ít nhất 1 ảnh trước hoặc sau.</p><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu công việc</button></div></form><datalist id="m130PeopleOptions"></datalist></div>';
  document.body.appendChild(overlay);
@@ -266,7 +267,7 @@ function ensure(){
   const photo=ev.target.closest("[data-m130-gallery]");
   if(photo){showMaintenanceGallery(photo.dataset.m130Gallery,photo.dataset.m130PhotoIndex);return;}
   const profile=ev.target.closest("[data-m130-profile]");
-  if(profile&&B==="130HH"){
+  if(profile&&LINK_BUILDINGS.has(B)){
    const id=profile.dataset.m130Profile;
    document.getElementById("navUpdateAssets")?.click();
    window.estaUpgradeAssets?.focusEquipment?.(id);
@@ -314,7 +315,7 @@ function ensure(){
  overlay.querySelectorAll("[data-m130-cancel]").forEach(b=>b.onclick=closeDialog);
  overlay.addEventListener("click",ev=>{if(ev.target===overlay)closeDialog();});
  $("m130EquipmentProfile").addEventListener("change",()=>{
-  if(B!=="130HH")return;
+  if(!LINK_BUILDINGS.has(B))return;
   const profile=equipmentProfiles.find(x=>String(x.id)===$("m130EquipmentProfile").value);
   $("m130EquipmentHelp").textContent=profile?"Đã chọn hồ sơ "+profile.name+". Vị trí và mã thiết bị trống sẽ được điền sẵn.":"Không liên kết: kế hoạch bảo trì vẫn được giữ.";
   if(profile){
@@ -326,6 +327,11 @@ function ensure(){
     if(sys)$("m130System").value=sys;
    }
   }
+ });
+ $("m130System").addEventListener("change",()=>fillEquipmentSelect(""));
+ $("m130GoEquipment").addEventListener("click",()=>{
+  if(!confirm("Mở Thông tin hệ thống để thêm hoặc xem thiết bị? Nội dung đang nhập trong cửa sổ này chưa được lưu."))return;
+  closeDialog();document.getElementById("navUpdateAssets")?.click();
  });
  $("m130PlanForm").onsubmit=savePlan;
  $("m130EventForm").onsubmit=saveEvent;
@@ -368,7 +374,7 @@ function renderList(){
  list.innerHTML=visible.map(o=>{
   const e=o.event,i=o.item,st=status(o),key=esc(e.event_key);
   const cycle=interval(i),cycleText=cycle?cycleLabel(cycle):(i.cadence||"1 lần"),location=esc(i.subsystem||"Chưa ghi vị trí");
-  const attached=typeof B!=="undefined"&&B==="130HH"&&i.equipment_profile_id&&typeof equipmentProfiles!=="undefined"?equipmentProfiles.find(p=>String(p.id)===String(i.equipment_profile_id)):null;
+  const attached=i.equipment_profile_id&&typeof B!=="undefined"&&["130HH","127HH","62THL","68PĐL"].includes(B)&&typeof equipmentProfiles!=="undefined"?equipmentProfiles.find(p=>String(p.id)===String(i.equipment_profile_id)):null;
   const linkedButton=attached?'<button type="button" class="m130LinkedEquipment" data-m130-profile="'+esc(attached.id)+'" title="Mở hồ sơ thiết bị">↗ '+esc(attached.name)+'</button>':"";
   if(!isCards){
    return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
@@ -456,14 +462,15 @@ async function load(force){
  const requestBuilding=B;
  busy=true;$("m130List").innerHTML='<p class="m130Empty">Đang tải dữ liệu bảo trì...</p>';
  try{
-  const token=centralSession.access_token,[i,e,persons,profiles]=await Promise.all([
+  const token=centralSession.access_token,[i,e,persons,profiles,systems]=await Promise.all([
    sbFetch("/rest/v1/esta_maintenance_plan_items?select=*&building_id=eq."+B+"&order=created_at.asc",{token}),
    sbFetch("/rest/v1/esta_maintenance_plan_occurrences?select=*&building_id=eq."+B+"&order=planned_month.asc,planned_date.asc",{token}),
    sbFetch("/rest/v1/building_people?select=name&building_id=eq."+B+"&order=name.asc",{token}).catch(()=>[]),
-   B==="130HH"?sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq.130HH&order=name.asc",{token}).catch(()=>[]):Promise.resolve([])
+   LINK_BUILDINGS.has(B)?sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(requestBuilding)+"&order=name.asc",{token}).catch(()=>[]):Promise.resolve([]),
+   LINK_BUILDINGS.has(B)?sbFetch("/rest/v1/ops_systems?select=name,active&building_id=eq."+encodeURIComponent(requestBuilding)+"&active=eq.true&order=sort_order.asc,name.asc",{token}).catch(()=>[]):Promise.resolve([])
   ]);
   if(!active()||B!==requestBuilding)return;
-  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];equipmentProfiles=B==="130HH"&&Array.isArray(profiles)?profiles.filter(p=>!p.specs?._estaUpgrade?.archived):[];clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();if(pendingFocusPlanId)focusPlanInList(pendingFocusPlanId);
+  items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];equipmentProfiles=LINK_BUILDINGS.has(B)&&Array.isArray(profiles)?profiles.filter(p=>!p.specs?._estaUpgrade?.archived):[];systemCatalog=LINK_BUILDINGS.has(B)&&Array.isArray(systems)?systems.filter(x=>x.active!==false):[];fillMaintenanceSystemSelect();clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();if(pendingFocusPlanId)focusPlanInList(pendingFocusPlanId);
  }catch(err){$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
  finally{if(B===requestBuilding)busy=false;}
 }
@@ -484,19 +491,66 @@ async function verifyMaintenanceSaved(table,id,fields,building){
   throw new Error("Máy chủ chưa xác nhận đầy đủ dữ liệu. Vui lòng kiểm tra hoặc tải lại trang trước khi lưu lần nữa.");
  return saved;
 }
+/* Options come from saved equipment profiles, not only fixed initial categories. */
+function fillMaintenanceSystemSelect(selected=""){
+ const select=$("m130System");if(!select)return;
+ select.querySelectorAll("option[data-m130-equipment-system],option[data-m130-legacy-system]").forEach(option=>option.remove());
+ const existing=new Set([...select.options].map(o=>o.value));
+ for(const profile of [...systemCatalog.filter(x=>x.active!==false).map(x=>({system_group:x.name})),...equipmentProfiles]){
+  const name=String(profile.system_group||"").trim();
+  if(!name||existing.has(name))continue;
+  const option=document.createElement("option");option.value=name;option.textContent=name;option.dataset.m130EquipmentSystem="1";select.appendChild(option);existing.add(name);
+ }
+ if(selected&&!existing.has(selected)){
+  const option=document.createElement("option");option.value=selected;option.textContent=selected;option.dataset.m130LegacySystem="1";select.appendChild(option);
+ }
+ if(selected)select.value=selected;
+}
+async function refreshMaintenanceEquipmentOptions(){
+ if(!LINK_BUILDINGS.has(B)||!centralSession?.access_token||!active())return;
+ const building=B;
+ try{
+  const [fresh,freshSystems]=await Promise.all([
+   sbFetch("/rest/v1/building_equipment_profiles_nangcap?select=id,name,code,location,system_group,specs&building_id=eq."+encodeURIComponent(building)+"&order=name.asc",{token:centralSession.access_token}),
+   sbFetch("/rest/v1/ops_systems?select=name,active&building_id=eq."+encodeURIComponent(building)+"&active=eq.true&order=sort_order.asc,name.asc",{token:centralSession.access_token})
+  ]);
+  if(B!==building||!active())return;
+  equipmentProfiles=Array.isArray(fresh)?fresh.filter(p=>!p.specs?._estaUpgrade?.archived):[];
+  systemCatalog=Array.isArray(freshSystems)?freshSystems.filter(x=>x.active!==false):[];
+  if($("m130Overlay")?.hidden===false&&$("m130PlanForm")?.hidden===false){
+   const chosenSystem=$("m130System").value,chosenProfile=$("m130EquipmentProfile").value;
+   fillMaintenanceSystemSelect(chosenSystem);fillEquipmentSelect(chosenProfile);
+  }
+ }catch(error){
+  if(B===building&&$("m130Overlay")?.hidden===false&&$("m130PlanForm")?.hidden===false){
+   $("m130EquipmentHelp").textContent="Chưa thể cập nhật danh sách thiết bị mới: "+String(error?.message||error);
+  }
+ }
+}
+function maintenanceSystemMatches(profile,system){
+ const groups={"PCCC":["PCCC"],"Điện":["Điện (MSB)"],"HVAC":["Điều hòa (HVAC)"],
+  "Cấp thoát nước":["Bơm & cấp thoát nước"],"Máy phát điện":["Máy phát điện"],
+  "Thang máy":["Thang máy"],"Chiếu sáng":["Chiếu sáng & Điện nhẹ"],
+  "Camera & an ninh":["Camera & An ninh"],"Kiểm soát ra vào":["Camera & An ninh"],
+  "Thông gió":["Điều hòa (HVAC)"],"Nước thải":["Bơm & cấp thoát nước"],
+  "Mạng / viễn thông":["Chiếu sáng & Điện nhẹ"]};
+ return String(profile.system_group||"")===system||(groups[system]||[]).includes(profile.system_group);
+}
 function fillEquipmentSelect(selected=""){
  const row=$("m130EquipmentLinkRow"),select=$("m130EquipmentProfile");
- if(!row||!select)return;
- row.hidden=B!=="130HH";
- if(B!=="130HH")return;
- select.innerHTML='<option value="">Chưa liên kết thiết bị</option>'+
-  equipmentProfiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+(p.code?' · '+esc(p.code):'')+' · '+esc(p.system_group||"")+'</option>').join("");
- if(selected&&!equipmentProfiles.some(p=>String(p.id)===String(selected)))select.appendChild(new Option("Thiết bị liên kết không còn tồn tại",selected,true,true));
+ if(!row||!select)return;row.hidden=!LINK_BUILDINGS.has(B);if(row.hidden)return;
+ const matching=equipmentProfiles.filter(p=>maintenanceSystemMatches(p,$("m130System").value));
+ const current=equipmentProfiles.find(p=>String(p.id)===String(selected));
+ const available=current&&!matching.includes(current)?[...matching,current]:matching;
+ select.innerHTML='<option value="">Không liên kết thiết bị</option>'+
+  available.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name||"Chưa đặt tên")+(p.code?' · '+esc(p.code):"")+(p.location?' · '+esc(p.location):"")+'</option>').join("");
+ if(selected&&!current)select.appendChild(new Option("Hồ sơ liên kết chưa tải được hoặc đã xóa",selected,true,true));
  select.value=selected||"";
- $("m130EquipmentHelp").textContent=selected?"Dùng chung hồ sơ kỹ thuật đã lưu.":"Chọn thiết bị đã lưu trong Thông tin hệ thống; không tạo thiết bị mẫu tự động.";
+ $("m130EquipmentHelp").textContent=selected?"Lịch sử và kết quả bảo trì sẽ xuất hiện trong hồ sơ thiết bị.":
+  matching.length?("Có "+matching.length+" hồ sơ thiết bị đã lưu thuộc hệ thống này."):"Chưa có hồ sơ thiết bị đã lưu thuộc hệ thống này. Hãy khai báo tại Thông tin hệ thống trước.";
 }
 function focusPlanInList(id){
- if(B!=="130HH"||!ready||!active())return;
+ if(!LINK_BUILDINGS.has(B)||!ready||!active())return;
  const p=items.find(x=>String(x.id)===String(id)&&!x.deleted_at);
  if(!p){pendingFocusPlanId="";return;}
  const dates=stored.filter(e=>e.item_id===p.id).map(e=>String(e.planned_date||e.planned_month||"").slice(0,10)).filter(d=>/^\d{4}-\d\d-\d\d$/.test(d));
@@ -507,7 +561,7 @@ function focusPlanInList(id){
  $("m130Search").value=p.work_title;layoutMode="list";render();
 }
 window.estaMaintenance130={focusPlan(id){
- if(B!=="130HH")return;
+ if(!LINK_BUILDINGS.has(B))return;
  pendingFocusPlanId=String(id||"");
  if(ready)focusPlanInList(pendingFocusPlanId);
 }};
@@ -519,12 +573,8 @@ function openPlan(id,date){
  $("m130ModalTitle").textContent=i?"Chỉnh sửa kế hoạch":date?"Thêm bảo trì · "+fmt(date):"Thêm công việc bảo trì";
  $("m130PlanForm").hidden=false;$("m130EventForm").hidden=true;
  $("m130Title").value=i?.work_title||"";
- const systemField=$("m130System"),selectedSystem=i?.system_group||"HVAC";
- systemField.querySelectorAll("option[data-m130-legacy-system]").forEach(option=>option.remove());
- if(![...systemField.options].some(option=>option.value===selectedSystem)){
-  const option=document.createElement("option");option.value=selectedSystem;option.textContent=selectedSystem;option.dataset.m130LegacySystem="1";systemField.appendChild(option);
- }
- systemField.value=selectedSystem;
+ const selectedSystem=i?.system_group||"HVAC";
+ fillMaintenanceSystemSelect(selectedSystem);
  $("m130Location").value=i?.subsystem||"";
  $("m130AssetCode").value=i?.asset_code||"";
  fillEquipmentSelect(i?.equipment_profile_id||"");
@@ -541,6 +591,7 @@ function openPlan(id,date){
  $("m130Assignee").value=i?.assigned_to&&i.assigned_to!=="Kỹ thuật"&&i.assigned_to!=="Kỹ thuật dự án"?i.assigned_to:"";
  renderPersonPickers();
  hint();$("m130Overlay").hidden=false;
+ refreshMaintenanceEquipmentOptions();
 }
 async function savePlan(ev){
  ev.preventDefault();if(busy||!active()||!canWrite())return;
@@ -558,10 +609,12 @@ async function savePlan(ev){
  busy=true;const btn=$("m130PlanForm").querySelector("[type=submit]");btn.disabled=true;
  try{
   const token=centralSession.access_token,fields={work_title:title,system_group:$("m130System").value,subsystem:$("m130Location").value.trim(),assigned_to:assignee,asset_code:$("m130AssetCode").value.trim(),work_type:$("m130WorkType").value,priority:$("m130Priority").value,cadence:n?n+" tháng":"Không lặp"};
-  if(B==="130HH"){
+  if(LINK_BUILDINGS.has(B)){
    const profileId=$("m130EquipmentProfile").value;
-   if(profileId&&!equipmentProfiles.some(p=>String(p.id)===profileId))throw Error("Thiết bị liên kết không tồn tại trong 130 Hồng Hà.");
+   const matchedProfile=equipmentProfiles.find(p=>String(p.id)===profileId);
+   if(profileId&&!matchedProfile)throw Error("Thiết bị liên kết không tồn tại trong "+projectLabel()+". Vui lòng kiểm tra Thông tin hệ thống.");
    fields.equipment_profile_id=profileId||null;
+   if(matchedProfile)fields.asset_code=matchedProfile.code||"";
   }
   let savedPlanId=currentPlan?.id||"";
   if(currentPlan){
@@ -596,7 +649,7 @@ async function savePlan(ev){
   }
   const savedPlan=await verifyMaintenanceSaved("esta_maintenance_plan_items",savedPlanId,fields,B);
   if(!savedPlan)throw new Error("Không xác nhận được kế hoạch bảo trì.");
-  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();if(B==="130HH")window.estaUpgradeAssets?.refresh?.().catch(()=>{});toast("✓ Đã lưu kế hoạch bảo trì");
+  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();if(LINK_BUILDINGS.has(B))window.estaUpgradeAssets?.refresh?.().catch(()=>{});toast("✓ Đã lưu kế hoạch bảo trì");
  }catch(err){saveError("Chưa xác nhận lưu kế hoạch: "+(err.message||err));}
  finally{busy=false;btn.disabled=false;}
 }
@@ -743,7 +796,7 @@ async function saveEvent(ev){
   await verifyMaintenanceSaved("esta_maintenance_plan_occurrences",id,{planned_date:fields.planned_date,status:fields.status,result_note:fields.result_note,result_code:fields.result_code,completed_by:fields.completed_by,postpone_reason:fields.postpone_reason,image_paths:fields.image_paths},B);
   const next={...old,...fields,id,item_id:o.item.id,building_id:B};
   if(wasVirtual)stored.push(next);else stored=stored.map(x=>x.id===id?next:x);
-  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();
+  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();if(LINK_BUILDINGS.has(B))window.estaUpgradeAssets?.refresh?.().catch(()=>{});
   toast(statusValue==="completed"?"✓ Hoàn thành đã lưu đủ minh chứng":statusValue==="awaiting_approval"?"Đã chuyển Chờ duyệt":"✓ Đã lưu tiến độ bảo trì");
   if(statusValue==="completed"&&resultCode==="fail")toast("Lưu ý: kết quả KHÔNG ĐẠT. Cần xử lý tiếp.");
  }catch(err){saveError("Chưa xác nhận lưu bảo trì: "+(err.message||err));}
@@ -758,7 +811,7 @@ async function deletePlan(id){
   const deleted_at=new Date().toISOString(),token=centralSession.access_token;
   await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Ẩn theo xác nhận trên giao diện bảo trì ESTA"}});
   items=items.map(x=>x.id===id?{...x,deleted_at}:x);
-  clearScheduleCache();render();notifyMaintenance130Nav();if(B==="130HH")window.estaUpgradeAssets?.refresh?.().catch(()=>{});toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
+  clearScheduleCache();render();notifyMaintenance130Nav();if(LINK_BUILDINGS.has(B))window.estaUpgradeAssets?.refresh?.().catch(()=>{});toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
  }catch(err){toast("Không thể xóa mềm: "+(err.message||err));}
  finally{busy=false;}
 }
@@ -789,7 +842,7 @@ window.mountMaintenance130=()=>{
  const next=String(typeof currentBuilding!=="undefined"?(currentBuilding?.id||""):"");
  if(!PROJECT_IDS.has(next)){show();return;}
  if(next!==B){
-  B=next;items=[];stored=[];people=[];equipmentProfiles=[];pendingFocusPlanId="";ready=false;busy=false;currentEvent=null;currentPlan=null;
+  B=next;items=[];stored=[];people=[];equipmentProfiles=[];systemCatalog=[];pendingFocusPlanId="";ready=false;busy=false;currentEvent=null;currentPlan=null;
   year=new Date().getFullYear();month=new Date().getMonth()+1;viewMode=readView();layoutMode="list";
   clearScheduleCache();
   const overlay=$("m130Overlay");if(overlay)overlay.hidden=true;
