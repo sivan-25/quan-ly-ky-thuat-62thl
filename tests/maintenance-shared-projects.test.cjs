@@ -23,6 +23,9 @@ const data=Object.fromEntries(projects.map(b=>{
 data["68PĐL"].events[0].planned_date=null;
 data["68PĐL"].events.push({...data["68PĐL"].events[0],id:"68PĐL-january",event_key:"68PĐL-TEST:"+year+"-01",planned_month:year+"-01-01"});
 data["68PĐL"].plans.push({...data["68PĐL"].plans[0],id:"68PĐL-pending",plan_code:"68PĐL-PENDING",work_title:"Hạng mục chưa có lịch"});
+const profileId="aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+data["130HH"].plans[0].equipment_profile_id=profileId;
+const savedProfile={id:profileId,name:"Bơm PCCC đã lưu",code:"PCCC-130-01",location:"Phòng bơm",system_group:"PCCC",specs:{_estaUpgrade:{verified:true}}};
 w.currentBuilding={id:"130HH"};
 w.centralSession={access_token:"fixture"};
 w.toast=()=>{};
@@ -34,6 +37,7 @@ w.sbFetch=async url=>{
  calls.push(url);
  const b=url.match(/building_id=eq\.([^&]+)/)?.[1];
  if(!data[b])throw Error("Missing or cross-building filter: "+url);
+ if(url.includes("building_equipment_profiles_nangcap"))return b==="130HH"?[savedProfile]:[];
  if(url.includes("esta_maintenance_plan_items"))return data[b].plans;
  if(url.includes("esta_maintenance_plan_occurrences"))return data[b].events;
  if(url.includes("building_people"))return data[b].people;
@@ -57,6 +61,15 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
   const selectedMonth=d.getElementById("m130Months").querySelector(".sel");
   assert.ok(selectedMonth,"month navigation exists: "+building);
   assert.ok(d.querySelector("#m130Pdf"),"shared PDF exists: "+building);
+  if(building==="130HH"){
+   assert(page.querySelector('[data-m130-profile="'+profileId+'"]'),"linked profile shortcut visible");
+   page.querySelector('[data-m130-plan="130HH-plan"]').click();
+   assert.equal(d.getElementById("m130EquipmentProfile").value,profileId,"existing plan preselects linked profile");
+   assert.equal(d.getElementById("m130EquipmentLinkRow").hidden,false);
+   d.getElementById("m130Close").click();
+  }else{
+   assert(!page.querySelector("[data-m130-profile]"),"other buildings have no new technical-profile links");
+  }
   if(building==="68PĐL"){
    page.querySelector('[data-m130-view="rows"]').click();
    assert.match(page.querySelector("#m130List").textContent,/Chưa ấn định ngày/,"do not invent 68 PĐL dates");
