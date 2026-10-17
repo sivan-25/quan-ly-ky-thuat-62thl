@@ -550,7 +550,7 @@ async function savePlan(ev){
    items.push(item);stored.push(occurrence);
    year=Number(date.slice(0,4));month=Number(date.slice(5,7));
   }
-  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();toast("✓ Đã lưu kế hoạch bảo trì");
+  clearScheduleCache();closeDialog();render();notifyMaintenance130Nav();if(B==="130HH")window.estaUpgradeAssets?.refresh?.().catch(()=>{});toast("✓ Đã lưu kế hoạch bảo trì");
  }catch(err){toast("Không lưu được: "+(err.message||err));}
  finally{busy=false;btn.disabled=false;}
 }
@@ -710,7 +710,7 @@ async function deletePlan(id){
   const deleted_at=new Date().toISOString(),token=centralSession.access_token;
   await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Ẩn theo xác nhận trên giao diện bảo trì ESTA"}});
   items=items.map(x=>x.id===id?{...x,deleted_at}:x);
-  clearScheduleCache();render();notifyMaintenance130Nav();toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
+  clearScheduleCache();render();notifyMaintenance130Nav();if(B==="130HH")window.estaUpgradeAssets?.refresh?.().catch(()=>{});toast("Đã xóa mềm; lịch sử được giữ trong Audit.");
  }catch(err){toast("Không thể xóa mềm: "+(err.message||err));}
  finally{busy=false;}
 }
@@ -752,7 +752,7 @@ window.mountMaintenance130=()=>{
  }
  const head=$("maint130")?.querySelector(".m130Header small");
  if(head)head.textContent="ESTA · "+projectLabel().toUpperCase()+" · QUẢN LÝ BẢO TRÌ";
- load();
+ load(next==="130HH"&&ready);
 };
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{ensure();show();},{once:true});else{ensure();show();}
 })();
