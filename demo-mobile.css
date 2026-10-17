@@ -538,9 +538,7 @@
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     gap:8px!important;
   }
-  #app.demoMobilePilot #energyPage .energySummaryCards article:last-child{
-    grid-column:1/-1!important;
-  }
+  
   #app.demoMobilePilot #energyPage .energyCard,
   #app.demoMobilePilot #energyPage .energyTableCard{
     width:100%!important;
@@ -716,11 +714,7 @@
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     gap:8px!important;
   }
-  #app.demoMobilePilot #inventoryPage .inventoryMetric{
-    min-width:0!important;
-    min-height:92px!important;
-    padding:11px!important;
-  }
+  
   #app.demoMobilePilot #inventoryPage .inventorySupportGrid{
     grid-template-columns:1fr!important;
   }
@@ -809,9 +803,7 @@
     grid-template-columns:1fr 1fr!important;
     gap:8px!important;
   }
-  #app.demoMobilePilot #contractorPage .contractorIntroActions .primary{
-    grid-column:1/-1!important;
-  }
+  
   #app.demoMobilePilot #contractorPage .contractorIntroActions button{
     width:100%!important;
     min-height:44px!important;
