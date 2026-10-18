@@ -6,7 +6,7 @@ const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"upgrade-equipment-reference.css"),"utf8");
 const js=fs.readFileSync(path.join(root,"upgrade-equipment.js"),"utf8");
 assert(/upgrade-equipment-reference\.css\?v=202610(16|17|18)-[\w-]+/.test(html));
-assert(/upgrade-equipment\.js\?v=202610(16|17)-[\w-]+/.test(html));
+assert(/upgrade-equipment\.js\?v=202610(16|17|18)-[\w-]+/.test(html));
 assert(html.indexOf("upgrade-equipment-compact.css?v")<html.indexOf("upgrade-equipment-reference.css?v"),"reference stylesheet must load last");
 assert(html.includes("upgrade-equipment-reference.css?v=20261018-compactform01"),"compact form stylesheet must be cache-busted");
 for(const token of [".ueDialog .ueFormBody > .ueFull","grid-column:1 / -1!important","grid-template-columns:repeat(3,minmax(0,1fr))!important","height:36px!important","min-height:42px!important"]){
