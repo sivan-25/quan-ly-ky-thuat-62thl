@@ -3,8 +3,8 @@
 
 const UPDATE_ID="UPDATE";
 const DEMO_ID="DEMO";
-const TECHNICAL_INFO_PROJECTS=new Set(["NANGCAP","68PĐL","62THL","127HH","130HH"]);
-const LIVE_MOBILE_NAV_PROJECTS=new Set(["127HH","130HH","62THL","68PDL","NANGCAP"]);
+const TECHNICAL_INFO_PROJECTS=new Set(["68PĐL","62THL","127HH","130HH"]);
+const LIVE_MOBILE_NAV_PROJECTS=new Set(["127HH","130HH","62THL","68PDL","68PĐL"]);
 const SLA_RULES={
  Critical:{response:5,target:30,label:"Critical"},
  High:{response:15,target:120,label:"High"},
@@ -652,7 +652,7 @@ function updateArrangeSidebar(on){
 function updateApplyMode(){
  updateInjectShell();
  const on=updateIs()&&($("#adminPage")?.classList.contains("hide")??true);
- // Shared NANGCAP theme is active only while the technical equipment page is visible.
+ // Shared technical theme is active only while the technical equipment page is visible.
  if(!on||$("#updateAssetsPage")?.classList.contains("hide")){
   $("#app")?.classList.remove("estaTechnicalAssetsMode");
   document.body.classList.remove("estaTechnicalAssetsMode");
@@ -756,7 +756,7 @@ function updateSetTop(title,subtitle){
 }
 function updateShowTechnicalEquipment(page){
  if(!TECHNICAL_INFO_PROJECTS.has(updateScopeId())||!window.estaUpgradeAssets?.render)return false;
- const useSharedStyling=updateScopeId()!=="NANGCAP";
+ const useSharedStyling=true;
  $("#app")?.classList.toggle("estaTechnicalAssetsMode",useSharedStyling);
  document.body.classList.toggle("estaTechnicalAssetsMode",useSharedStyling);
  window.estaUpgradeAssets.render(page);
