@@ -55,7 +55,15 @@ const page=dom.window.document.getElementById("updateAssetsPage");
    assert.match(page.querySelector(".ueLinkedMaintenance").textContent,/Bảo trì bơm PCCC 130 Hồng Hà/);
    assert.match(page.querySelector(".uePmHistory").textContent,/Áp suất đạt yêu cầu/);
    assert.ok(page.querySelector('img[data-ue-maintenance-image="storage:130HH/after.jpg"]'),"show stored evidence");
-  }else assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,1,id+" must show its own maintenance panel");
+   assert.match(page.querySelector(".uePmLatest").textContent,/Bảo trì gần nhất:.*Đạt/,"completed maintenance must appear in device information");
+   assert.equal(page.querySelector(".ueRefDetails:not([hidden]) .ueRefCheck"),null,"linked device must not ask for duplicate routine inspection");
+   assert.ok(page.querySelector(".ueRefDetails:not([hidden]) .ueRefUnexpectedCheck"),"optional exceptional inspection remains available");
+  }else{
+   assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,1,id+" must show its own maintenance panel");
+   page.querySelector('[data-ue-id="'+rows[ids.indexOf(id)].id+'"]').click();
+   assert.ok(page.querySelector('.ueRefDetails:not([hidden]) .ueRefCheck'),id+" unlinked device retains routine inspection");
+   assert.equal(page.querySelector('.ueRefDetails:not([hidden]) .ueRefUnexpectedCheck'),null,id+" unlinked device has no exceptional-inspection label");
+  }
   const systemButtons=[...page.querySelectorAll(".ueSystemRail [data-ue-group]")];
   assert.equal(systemButtons.length,10,id+" must display all nine systems and the all-systems control on the left");
   assert.match(page.querySelector(".ueRefRailHeading")?.textContent||"",/CHỌN HỆ THỐNG/,id+" needs a visible category heading");
