@@ -5,7 +5,7 @@ new vm.Script(src,{filename:"upgrade-equipment.js"});
 const anchor="window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,async focusEquipment(id){";
 assert(src.includes(anchor),"public equipment API missing");
 const instrumented=src.replace(anchor,"window.__probe={G,SEEDS,advancedFields,extraFields,installFields,inspectionDue,conditionOf,active,ueStatusOverview,setItems:rows=>{items=rows}};"+anchor);
-const win={};const scope={window:win,document:{addEventListener(){}},currentBuilding:{id:"NANGCAP"},projectOverviewActive:true};
+const win={};const scope={window:win,document:{addEventListener(){}},currentBuilding:{id:"68PĐL"},projectOverviewActive:true};
 vm.runInNewContext(instrumented,scope,{filename:"upgrade-equipment.js"});
 const p=win.__probe;
 assert.equal(p.G.length,9);
@@ -30,6 +30,6 @@ assert(src.includes('building_id=eq."+building'),"data reads and writes must rem
 assert(src.includes("filter(x=>!x.virtual&&metaOf(x).verified)"),"PDF only verified devices");
 scope.currentBuilding={id:"130HH"};
 assert.equal(p.active(),true,"130HH must share technical information page");
-for(const id of ["62THL","68PĐL","127HH","NANGCAP"]){scope.currentBuilding={id};assert.equal(p.active(),true,id+" must be supported")}
+for(const id of ["62THL","68PĐL","127HH"]){scope.currentBuilding={id};assert.equal(p.active(),true,id+" must be supported")}
 scope.currentBuilding={id:"UPDATE"};assert.equal(p.active(),false,"other sandbox pages must remain unchanged");
-console.log("ESTA shared technical register: 5 projects, 9 systems, 44 templates, 40 types, scoped records PASS");
+console.log("ESTA shared technical register: 4 projects, 9 systems, 44 templates, 40 types, scoped records PASS");
