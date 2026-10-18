@@ -29,11 +29,16 @@ const evidence=thumb({image_paths:[
  {kind:"after",ref:"storage:130HH/third.jpg"},
  {kind:"after",ref:"storage:130HH/fourth.jpg"}
 ]},"photo-event");
-assert.equal((evidence.match(/data-m130-photo-index/g)||[]).length,4,"three thumbs and more button");
-assert.equal((evidence.match(/<img /g)||[]).length,3,"only three initial thumbnails");
+assert.equal((evidence.match(/data-m130-photo-index/g)||[]).length,4,"four thumbs visible");
+assert.equal((evidence.match(/<img /g)||[]).length,4,"all four saved thumbnails remain visible");
 assert.match(evidence,/Trước 1/);
 assert.match(evidence,/Sau 2/);
-assert.match(evidence,/\+1 ảnh/);
+const five=thumb({image_paths:[
+ ...Array.from({length:5},(_,i)=>({kind:"after",ref:"storage:130HH/photo-"+i+".jpg"}))
+]},"five");
+assert.equal((five.match(/<img /g)||[]).length,4,"only four images initially rendered for larger sets");
+assert.match(five,/\+1 ảnh/,"additional images stay available in the gallery");
+assert.match(five,/data-m130-photo-index="4"/,"more button opens the fifth image");
 assert.match(evidence,/data-storage-path="130HH\/first.jpg"/);
 assert.match(thumb({image_paths:["storage:130HH/legacy.jpg"]},"a"),/Sau 1/,"legacy string images supported");
 assert.match(thumb({image_paths:[{kind:"before",ref:"storage:p"}]},"quote'key"),/quote&#39;key/,"HTML attribute encoded");
