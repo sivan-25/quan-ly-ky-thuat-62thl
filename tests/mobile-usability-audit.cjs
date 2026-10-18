@@ -65,9 +65,23 @@ async function run(browser,project,module,width){
    const el=document.querySelector(sel);if(!visible(el))return null;
    const r=el.getBoundingClientRect();return {sel,w:Math.round(r.width),h:Math.round(r.height)}
   }).filter(Boolean);
-  return {pageId,visible:visible(container),client:vp,docOverflow:Math.max(0,docOverflow),tooWide:tooWide.slice(0,12),tooWideCount:tooWide.length,small:small.slice(0,20),smallCount:small.length,primary};
+  const expected={
+   work:["#demoAddTaskMaterial","#estaPriorityStar"],
+   energy:["#energyDate","#energyValue","#energyValue2","#energyNote","#energyPeopleButton","#energyQuickSearch","#energyExportPdf"],
+   inventory:["#inventoryYear","#materialSearch"],
+   maintenance:["#m130Create","#m130AuditButton"],
+   assets:["#ueAdd","#ueAddSystem","#uePrint","#ueRefresh","#ueGroup"]
+  };
+  const priority=[...(expected[module]||[]),"#menu","#quickReturnAdmin"];
+  const touchProblems=priority.flatMap(sel=>{
+   const el=document.querySelector(sel);
+   if(!visible(el)||el.disabled)return [];
+   const rect=el.getBoundingClientRect();
+   return rect.width<43||rect.height<43?[{sel,w:Math.round(rect.width),h:Math.round(rect.height)}]:[];
+  });
+  return {pageId,visible:visible(container),client:vp,docOverflow:Math.max(0,docOverflow),tooWide:tooWide.slice(0,12),tooWideCount:tooWide.length,small:small.slice(0,20),smallCount:small.length,primary,touchProblems};
  },{module});
- if(audit.docOverflow>4||audit.tooWideCount||errors.length||!audit.visible)console.log("AUDIT_ISSUE "+JSON.stringify({project,module,width,...audit,errors}).slice(0,2900));
+ if(audit.docOverflow>4||audit.tooWideCount||audit.touchProblems.length||errors.length||!audit.visible)console.log("AUDIT_ISSUE "+JSON.stringify({project,module,width,...audit,errors}).slice(0,2900));
  results.push({project,module,width,...audit,errors});
  await context.close();
 }
@@ -80,9 +94,10 @@ async function run(browser,project,module,width){
   javascriptErrors:results.filter(r=>r.errors.length).length,
   documentOverflows:results.filter(r=>r.docOverflow>4).length,
   clippedControls:results.filter(r=>r.tooWideCount).length,
-  smallTargets:results.filter(r=>r.smallCount).length
+  smallTargets:results.filter(r=>r.smallCount).length,
+  undersizedCriticalControls:results.filter(r=>r.touchProblems.length).length
  };
  fs.writeFileSync(path.join(root,"results.json"),JSON.stringify({summary:sum,results},null,2));
  console.log("MOBILE_AUDIT_SUMMARY "+JSON.stringify(sum));
- if(sum.invalidViews||sum.javascriptErrors)process.exitCode=1;
+ if(sum.invalidViews||sum.javascriptErrors||sum.documentOverflows||sum.clippedControls||sum.undersizedCriticalControls)process.exitCode=1;
 })().catch(e=>{console.error(e);process.exitCode=1});
