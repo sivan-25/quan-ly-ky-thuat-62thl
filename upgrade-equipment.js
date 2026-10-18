@@ -798,9 +798,7 @@ async function remove(){
  finally{button.disabled=false;button.textContent="🗑 Xóa thiết bị";}
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&dialog&&!dialog.hidden)closeForm()});
-window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,
- invalidateMaintenance(building){if(scopedBuildingId===String(building||""))fetchedAt=0;},
- async focusEquipment(id){
+window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,async focusEquipment(id){
  if(!LINK_BUILDINGS.has(currentEquipmentProjectId()))return;
  const building=currentEquipmentProjectId();
  await load(true); // Refresh linked results when returning after maintenance completion.
@@ -810,5 +808,5 @@ window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,
  render(page,true);
  const row=[...page.querySelectorAll("[data-ue-id]")].find(el=>el.dataset.ueId===expandedDeviceId);
  row?.scrollIntoView?.({block:"center",behavior:"smooth"});
-}};
+},invalidateMaintenance(building){if(scopedBuildingId===String(building||""))fetchedAt=0;}};
 })();
