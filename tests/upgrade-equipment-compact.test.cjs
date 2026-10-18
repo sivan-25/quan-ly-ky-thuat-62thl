@@ -22,7 +22,7 @@ dom.window.estaUpgradeAssets.render(page,true);
 assert(page.classList.contains("ueSnapshot"));
 assert.equal($$("#ueRows .ueRefRow").length,44);
 assert.equal($(".ueRefColHead").children.length,6);
-assert.match($("#ueResultCount").textContent,/44 hạng mục/);
+assert.match($("#ueResultCount").textContent,/44 mục gợi ý chưa nhập/);
 assert($("#ueAdd")&&$("#uePrint")&&$("#ueRefresh"));
 assert.equal($("#ueGroup").options.length,10,"all nine systems selectable");
 $("#ueGroup").value="PCCC";$("#ueGroup").onchange({target:$("#ueGroup")});
