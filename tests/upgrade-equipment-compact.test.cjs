@@ -8,10 +8,20 @@ const js=fs.readFileSync(path.join(root,"upgrade-equipment.js"),"utf8");
 assert(/upgrade-equipment-reference\.css\?v=202610(16|17|18)-[\w-]+/.test(html));
 assert(/upgrade-equipment\.js\?v=202610(16|17)-[\w-]+/.test(html));
 assert(html.indexOf("upgrade-equipment-compact.css?v")<html.indexOf("upgrade-equipment-reference.css?v"),"reference stylesheet must load last");
-assert(html.includes("upgrade-equipment-reference.css?v=20261018-compactform01"),"compact form stylesheet must be cache-busted");
+assert(html.includes("upgrade-equipment-reference.css?v=20261018-compactlinked02"),"compact form stylesheet must be cache-busted");
 for(const token of [".ueDialog .ueFormBody > .ueFull","grid-column:1 / -1!important","grid-template-columns:repeat(3,minmax(0,1fr))!important","height:36px!important","min-height:42px!important"]){
  assert(css.includes(token),"shared compact form must include "+token);
 }
+// The same four-project technical view must keep its saved facts and linked maintenance
+// visible while arranging records and image evidence in compact responsive cards.
+for(const token of [
+ ".ueRefDetails .ueRefFacts",
+ ".ueLinkedMaintenance .uePmRecord",
+ ".uePmRecord > .uePmEvidence",
+ "grid-template-columns:minmax(0,1fr) auto!important",
+ "width:60px!important",
+ "grid-template-columns:minmax(0,1fr)!important"
+])assert(css.includes(token),"missing compact linked equipment rule: "+token);
 const formCss=css;
 for(const token of [".ueSpecFieldLabel","align-items:stretch!important","margin-top:auto!important","grid-template-columns:repeat(2,minmax(0,1fr))!important","@media(max-width:700px)"])assert(formCss.includes(token),"missing form alignment rule: "+token);
 assert(js.includes('class="ueSpecField"'),"all advanced spec controls need aligned field wrappers");
