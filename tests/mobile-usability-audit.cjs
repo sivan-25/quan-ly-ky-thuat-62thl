@@ -1,9 +1,9 @@
 "use strict";
 /* Read-only mobile audit: real Chromium layout, isolated fixture, no live APIs. */
 const {chromium}=require("playwright"),fs=require("node:fs"),path=require("node:path");
-const widths=[320,360,390,430,768];
-const projects=["68PĐL","62THL","127HH","130HH"];
-const modules=["work","energy","inventory","maintenance","assets"];
+const widths=process.env.ESTA_AUDIT_WIDTHS?.split(",").map(Number)||[320,360,390,430,768];
+const projects=process.env.ESTA_AUDIT_PROJECTS?.split(",")||["68PĐL","62THL","127HH","130HH"];
+const modules=process.env.ESTA_AUDIT_MODULES?.split(",")||["work","energy","inventory","maintenance","assets"];
 const results=[];
 const root=process.env.ESTA_MOBILE_AUDIT_DIR||"mobile-audit";
 fs.mkdirSync(root,{recursive:true});
@@ -77,7 +77,8 @@ async function run(browser,project,module,width){
    const el=document.querySelector(sel);
    if(!visible(el)||el.disabled)return [];
    const rect=el.getBoundingClientRect();
-   return rect.width<43||rect.height<43?[{sel,w:Math.round(rect.width),h:Math.round(rect.height)}]:[];
+   const style=getComputedStyle(el);
+   return rect.width<43||rect.height<43?[{sel,w:Math.round(rect.width),h:Math.round(rect.height),cssMinHeight:style.minHeight,cssHeight:style.height,cssMaxHeight:style.maxHeight,cssTransform:style.transform,cssZoom:style.zoom,insideApp:!!el.closest("#app")}]:[];
   });
   return {pageId,visible:visible(container),client:vp,docOverflow:Math.max(0,docOverflow),tooWide:tooWide.slice(0,12),tooWideCount:tooWide.length,small:small.slice(0,20),smallCount:small.length,primary,touchProblems};
  },{module});
@@ -99,5 +100,5 @@ async function run(browser,project,module,width){
  };
  fs.writeFileSync(path.join(root,"results.json"),JSON.stringify({summary:sum,results},null,2));
  console.log("MOBILE_AUDIT_SUMMARY "+JSON.stringify(sum));
- if(sum.invalidViews||sum.javascriptErrors||sum.documentOverflows||sum.clippedControls||sum.undersizedCriticalControls)process.exitCode=1;
+ if(!process.env.ESTA_AUDIT_DIAGNOSTIC&&(sum.invalidViews||sum.javascriptErrors||sum.documentOverflows||sum.clippedControls||sum.undersizedCriticalControls))process.exitCode=1;
 })().catch(e=>{console.error(e);process.exitCode=1});
