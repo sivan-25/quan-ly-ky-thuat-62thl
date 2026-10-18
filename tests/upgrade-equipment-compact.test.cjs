@@ -15,7 +15,7 @@ assert(js.includes('values?.[f.key]??""'),"numeric 0 values must remain visible 
 
 for(const marker of [".ueRefColHead",".ueRefRow",".ueRefState",".ueRefFacts",".ueRefDetails","@media(max-width:540px)"])assert(css.includes(marker),"missing reference style "+marker);
 const dom=new JSDOM("<div id='updateAssetsPage'></div>",{url:"https://example.test"});
-const scope={document:dom.window.document,window:dom.window,currentBuilding:{id:"NANGCAP",role:"admin"},projectOverviewActive:true,centralSession:{access_token:"fixture"},currentAccount:{is_admin:true}};
+const scope={document:dom.window.document,window:dom.window,currentBuilding:{id:"130HH",role:"admin"},projectOverviewActive:true,centralSession:{access_token:"fixture"},currentAccount:{is_admin:true}};
 new vm.Script(js).runInNewContext(scope);
 const page=dom.window.document.getElementById("updateAssetsPage"),$=s=>page.querySelector(s),$$=s=>[...page.querySelectorAll(s)];
 dom.window.estaUpgradeAssets.render(page,true);
