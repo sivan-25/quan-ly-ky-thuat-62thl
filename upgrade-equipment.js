@@ -300,10 +300,20 @@ function ueRowStatus(x){
  const condition=ueStatusKey(x);
  return {label:condition==="chua"?"Chưa kiểm tra":CONDITIONS[condition]||"Chưa kiểm tra",tone:condition};
 }
+function linkedPlansFor(x){
+ if(!LINK_BUILDINGS.has(currentEquipmentProjectId())||x.virtual)return [];
+ return maintenancePlans.filter(p=>!p.deleted_at&&String(p.equipment_profile_id||"")===String(x.id));
+}
 function ueMaintenanceHtml(x){
  if(!LINK_BUILDINGS.has(currentEquipmentProjectId())||x.virtual)return "";
- const plans=maintenancePlans.filter(p=>!p.deleted_at&&String(p.equipment_profile_id||"")===String(x.id));
+ const plans=linkedPlansFor(x);
  const resultName={pass:"Đạt",fail:"Không đạt",monitor:"Cần theo dõi"};
+ // Latest maintenance outcome is read from completed occurrences, not profile verification.
+ const ids=new Set(plans.map(p=>String(p.id)));
+ const latest=maintenanceEvents.filter(e=>ids.has(String(e.item_id))&&e.status==="completed")
+  .sort((a,b)=>String(b.completed_at||b.planned_date||b.planned_month||"").localeCompare(String(a.completed_at||a.planned_date||a.planned_month||"")))[0];
+ const latestDate=latest?String(latest.completed_at||latest.planned_date||latest.planned_month||"").slice(0,10):"";
+ const latestText=latest?'<span class="uePmLatest">Bảo trì gần nhất: '+esc(latestDate?viDate(latestDate):"—")+' · '+esc(resultName[latest.result_code]||"Chưa ghi kết quả")+'</span>':"";
  const info=plans.map(p=>{
   const done=maintenanceEvents.filter(e=>String(e.item_id)===String(p.id)&&e.status==="completed")
    .sort((a,b)=>String(b.completed_at||b.planned_date||"").localeCompare(String(a.completed_at||a.planned_date||""))).slice(0,5);
@@ -321,7 +331,7 @@ function ueMaintenanceHtml(x){
   return '<div class="uePmPlan"><button type="button" data-ue-pm="'+esc(p.id)+'"><span>'+esc(p.work_title)+'</span><small>'+esc(p.cadence||"1 lần")+' · '+esc(p.assigned_to||"Chưa phân công")+'</small><b>↗</b></button>'+
     '<div class="uePmHistory">'+history+'</div></div>';
  }).join("");
- return '<div class="ueLinkedMaintenance"><div class="ueLinkedMaintenanceHeading"><strong>Bảo trì liên kết ('+plans.length+')</strong><span>Lịch sử hoàn thành lấy từ trang Bảo trì thiết bị của cùng tòa nhà.</span></div>'+
+ return '<div class="ueLinkedMaintenance"><div class="ueLinkedMaintenanceHeading"><strong>Bảo trì liên kết ('+plans.length+')</strong>'+latestText+'<span>Lịch sử bảo trì được đồng bộ; xác minh thông số thiết bị là bước riêng.</span></div>'+
   (maintenanceHistoryError?'<p class="uePmLoadError" role="alert">'+esc(maintenanceHistoryError)+'</p>':"")+
   (plans.length?info:'<p>Chưa liên kết kế hoạch bảo trì. Từ Bảo trì thiết bị, chọn hệ thống và hồ sơ này để liên kết.</p>')+
   '<button type="button" class="uePmOpen" data-ue-pm-list>↗ Mở trang Bảo trì thiết bị</button></div>';
@@ -341,6 +351,7 @@ function list(){
   const state=ueRowStatus(x),meta=metaOf(x);
   const last=meta.lastCheck||meta.history?.at(-1)?.date||"",next=inspectionDue(x);
   const interval=Math.max(1,Number(meta.interval)||G.find(g=>g[1]===x.system_group)?.[2]||30);
+  const hasLinkedMaintenance=linkedPlansFor(x).length>0;
   const detailId="ueDetail-"+id;
   return '<div class="ueRefEntry'+(expanded?' ueRefEntryOpen':'')+'">'+
    '<button type="button" class="ueRefRow" data-ue-id="'+esc(id)+'" aria-controls="'+esc(detailId)+'" aria-expanded="'+expanded+'" aria-label="Xem chi tiết '+esc(label(x))+'">'+
@@ -354,7 +365,8 @@ function list(){
    '<section class="ueRefDetails" id="'+esc(detailId)+'" aria-label="Thông số '+esc(label(x))+'"'+(expanded?'':' hidden')+'>'+
      equipmentDetails(x)+ueMaintenanceHtml(x)+
      '<div class="ueRefRowActions">'+
-      (!virt?'<button type="button" class="ueRefCheck" data-ue-check="'+esc(id)+'"'+(!allowed()?' disabled':'')+'>Ghi nhận kiểm tra</button>':'')+
+      (!virt&&!hasLinkedMaintenance?'<button type="button" class="ueRefCheck" data-ue-check="'+esc(id)+'"'+(!allowed()?' disabled':'')+'>Ghi nhận kiểm tra</button>':'')+
+      (hasLinkedMaintenance&&allowed()?'<button type="button" class="ueRefUnexpectedCheck" data-ue-check="'+esc(id)+'" title="Chỉ dùng khi cần kiểm tra ngoài kế hoạch bảo trì">Kiểm tra đột xuất</button>':'')+
       '<button type="button" class="ueRefEdit" data-ue-edit="'+esc(id)+'">'+(virt?'Nhập hồ sơ thiết bị':'Xem / chỉnh sửa hồ sơ')+'</button>'+
      '</div></section></div>';
  }).join("");
@@ -786,10 +798,12 @@ async function remove(){
  finally{button.disabled=false;button.textContent="🗑 Xóa thiết bị";}
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&dialog&&!dialog.hidden)closeForm()});
-window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,async focusEquipment(id){
+window.estaUpgradeAssets={render,refresh:()=>load(true),close:closeForm,
+ invalidateMaintenance(building){if(scopedBuildingId===String(building||""))fetchedAt=0;},
+ async focusEquipment(id){
  if(!LINK_BUILDINGS.has(currentEquipmentProjectId()))return;
  const building=currentEquipmentProjectId();
- await load();
+ await load(true); // Refresh linked results when returning after maintenance completion.
  if(currentEquipmentProjectId()!==building)return;
  expandedDeviceId=String(id||"");group="";status="";search="";
  const page=$("updateAssetsPage");if(!page)return;
