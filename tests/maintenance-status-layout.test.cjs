@@ -46,7 +46,7 @@ let hydrationCount=0;
 function render(viewMode){
  const context={
   $,show:()=>true,ready:true,year:2026,month:10,viewMode,layoutMode:"list",
-  scopeEvents:events=>events,getYearSchedule:()=>data,demo:()=>false,
+  scopeEvents:events=>events,getYearSchedule:()=>data,demo:()=>false,kpiHtml:()=>{},
   renderAlternative:()=>{},status:o=>states.find(s=>s[0]===o.event.status).slice(2).concat(states.find(s=>s[0]===o.event.status)[1]),
   stateKey:()=>"",isoToday:()=>"2026-10-14",canWrite:()=>true,esc:escape,pad:n=>String(n).padStart(2,"0"),
   interval:()=>3,cycleLabel:()=> "3 tháng",fmt:v=>/^\d{4}-\d{2}-\d{2}$/.test(v)?v.slice(8,10)+"/"+v.slice(5,7)+"/"+v.slice(0,4):(v||"—"),dateOf:o=>o.scheduled,
