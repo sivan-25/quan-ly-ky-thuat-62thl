@@ -477,3 +477,132 @@
  }
 }
 
+/* ESTA 2026-10-18 | Smaller, predictable action cells; room for real maintenance photos. */
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow{
+ gap:11px!important;
+ min-height:96px!important;
+ padding:12px 16px!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions{
+ display:grid!important;
+ grid-template-columns:120px 114px 38px!important;
+ gap:6px!important;
+ width:284px!important;
+ max-width:284px!important;
+ flex:0 0 284px!important;
+ justify-content:end!important;
+ margin-left:auto!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions:not(.m130HasLinkedEquipment){
+ grid-template-columns:114px 38px!important;
+ width:158px!important;
+ max-width:158px!important;
+ flex-basis:158px!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button{
+ box-sizing:border-box!important;
+ height:36px!important;
+ min-height:36px!important;
+ max-height:36px!important;
+ margin:0!important;
+ padding:0 6px!important;
+ border-radius:8px!important;
+ font-size:11px!important;
+ line-height:1.3!important;
+ text-overflow:ellipsis!important;
+ overflow:hidden!important;
+ white-space:nowrap!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > .m130LinkedEquipment{
+ width:120px!important;
+ grid-column:1!important;
+ font-size:10.5px!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button[data-m130-event]{
+ width:114px!important;
+ grid-column:2!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions:not(.m130HasLinkedEquipment) > button[data-m130-event]{
+ grid-column:1!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > .m130Edit{
+ grid-column:3!important;
+ width:38px!important;
+ min-width:38px!important;
+ height:36px!important;
+ min-height:36px!important;
+ max-height:36px!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions:not(.m130HasLinkedEquipment) > .m130Edit{
+ grid-column:2!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CardFoot{
+ gap:6px!important;
+ padding-top:8px!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CardFoot > button{
+ min-height:35px!important;
+ height:35px!important;
+ box-sizing:border-box!important;
+ padding:6px 10px!important;
+ border-radius:8px!important;
+ font-size:11px!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CardFoot > .m130LinkedEquipment{
+ max-width:170px!important;
+ font-size:10.5px!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence{
+ flex:0 1 auto!important;
+ max-width:300px!important;
+ gap:5px!important;
+ margin:0!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence button{
+ width:67px!important;
+ min-height:0!important;
+ padding:3px!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence img{
+ width:59px!important;
+ height:53px!important;
+}
+#maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence .m130MoreEvidence{
+ width:67px!important;
+ min-height:70px!important;
+ font-size:10px!important;
+}
+@media(max-width:1100px){
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow{
+  flex-wrap:wrap!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions,
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions:not(.m130HasLinkedEquipment){
+  flex:0 0 auto!important;
+  width:max-content!important;
+  max-width:100%!important;
+  justify-self:end!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence{
+  max-width:100%!important;
+ }
+}
+@media(max-width:640px){
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button{
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > .m130Edit{
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence{
+  flex:1 1 100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  justify-content:flex-start!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .m130CardFoot > button{min-height:40px!important;height:40px!important}
+}
