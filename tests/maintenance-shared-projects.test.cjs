@@ -58,6 +58,20 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
   for(const other of projects.filter(x=>x!==building)){
    assert.ok(!page.querySelector("#m130List").textContent.includes("Bảo trì riêng "+other),"No cross-project rows: "+building+" / "+other);
   }
+  // Regress the visible list/summary mismatch: templates are counted but disclosed,
+  // and "real only" must count zero rather than silently showing misleading zero for All.
+  const summary=JSON.parse(d.getElementById("m130Stats").dataset.monthOverview);
+  assert.equal(summary.total,1,"visible month has one occurrence: "+building);
+  assert.equal(summary.samples,1,"template shown in All is counted and disclosed: "+building);
+  assert.equal(summary.real,0,"template must not masquerade as a verified real item: "+building);
+  assert.equal(Object.values(summary.counts).reduce((a,b)=>a+b,0),summary.total,"exclusive buckets cover list: "+building);
+  assert.equal(d.querySelector(".m130Kpi.late b").textContent,String(summary.counts.late),"native overdue count uses current month");
+  d.getElementById("m130SampleFilter").value="real";
+  d.getElementById("m130SampleFilter").dispatchEvent(new w.Event("change",{bubbles:true}));
+  assert.equal(JSON.parse(d.getElementById("m130Stats").dataset.monthOverview).total,0,"Real filter hides demo count: "+building);
+  d.getElementById("m130SampleFilter").value="all";
+  d.getElementById("m130SampleFilter").dispatchEvent(new w.Event("change",{bubbles:true}));
+  assert.equal(JSON.parse(d.getElementById("m130Stats").dataset.monthOverview).total,1,"All filter restores visible count: "+building);
   const selectedMonth=d.getElementById("m130Months").querySelector(".sel");
   assert.ok(selectedMonth,"month navigation exists: "+building);
   assert.ok(d.querySelector("#m130Pdf"),"shared PDF exists: "+building);
