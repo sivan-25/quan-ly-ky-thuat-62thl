@@ -9,7 +9,7 @@ const js=fs.readFileSync(path.join(__dirname,"..","upgrade-equipment.js"),"utf8"
 const dom=new JSDOM("<div id='updateAssetsPage'></div>",{url:"https://example.test"});
 const document=dom.window.document,window=dom.window,page=document.getElementById("updateAssetsPage");
 const database=new Map(),calls=[],alerts=[];
-const BID="NANGCAP";
+const BID="130HH";
 const state={currentBuilding:{id:BID,role:"editor"},projectOverviewActive:true};
 const auth={access_token:"fixture",refresh_token:"fixture"};
 const supported=["Đang sử dụng","Dự phòng","Cần theo dõi","Đang sửa chữa","Ngừng sử dụng"];
@@ -144,6 +144,6 @@ async function main(){
  assert.equal($("#ueFormError").hidden,false,"show clear error in device form");
  assert($("#ueFormError").textContent.includes("Lỗi lưu từ máy chủ"));
  assert(calls.length>=oldCalls);
- console.log("NANGCAP save/edit/delete fixture PASS: 23514 fixed; 44 original entries; persistent seed deletion; custom DELETE; server error visible.");
+ console.log("130HH save/edit/delete fixture PASS: 23514 fixed; 44 original entries; persistent seed deletion; custom DELETE; server error visible.");
 }
 main().catch(e=>{console.error(e);process.exitCode=1});

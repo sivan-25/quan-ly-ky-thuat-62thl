@@ -9,16 +9,16 @@ const css=fs.readFileSync(path.join(root,"upgrade-equipment-reference.css"),"utf
 const parityCss=fs.readFileSync(path.join(root,"nangcap-unified.css"),"utf8");
 const pageHtml=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const dbSql=fs.readFileSync(path.join(root,"migrations/technical_systems_four_projects.sql"),"utf8");
-const ids=["NANGCAP","68PĐL","62THL","127HH","130HH"];
+const ids=["68PĐL","62THL","127HH","130HH"];
 const dom=new JSDOM("<div id='updateAssetsPage'></div>",{url:"https://example.test"});
-const state={id:"NANGCAP"};
+const state={id:"68PĐL"};
 const rows=ids.map((building_id,i)=>({
  id:"00000000-0000-4000-8000-"+String(i+1).padStart(12,"0"),building_id,
  name:"Thiết bị riêng "+building_id,equipment_type:"Khác",
  system_group:"PCCC",location:"Vị trí "+building_id,status:"Đang sử dụng",
  quantity:1,specs:{_estaUpgrade:{verified:true,condition:"tot",history:[]}}
 }));
-const pmFixture={id:"aaaaaaaa-bbbb-4ccc-8ddd-000000000099",work_title:"Bảo trì bơm PCCC 130 Hồng Hà",equipment_profile_id:rows[4].id,building_id:"130HH",cadence:"3 tháng",assigned_to:"Kỹ thuật 130",deleted_at:null};
+const pmFixture={id:"aaaaaaaa-bbbb-4ccc-8ddd-000000000099",work_title:"Bảo trì bơm PCCC 130 Hồng Hà",equipment_profile_id:rows[3].id,building_id:"130HH",cadence:"3 tháng",assigned_to:"Kỹ thuật 130",deleted_at:null};
 const calls=[];
 const scope={
  window:dom.window,document:dom.window.document,
@@ -50,17 +50,16 @@ const page=dom.window.document.getElementById("updateAssetsPage");
   for(const other of ids.filter(x=>x!==id))assert(!page.textContent.includes("Thiết bị riêng "+other),id+" leaked "+other);
   assert.equal(page.querySelectorAll(".ueRefRow").length,45,id+" must include 44 built-ins + one project row");
   if(id==="130HH"){
-   page.querySelector('[data-ue-id="'+rows[4].id+'"]').click();
+   page.querySelector('[data-ue-id="'+rows[3].id+'"]').click();
    assert.match(page.querySelector(".ueLinkedMaintenance").textContent,/Bảo trì liên kết \(1\)/);
    assert.match(page.querySelector(".ueLinkedMaintenance").textContent,/Bảo trì bơm PCCC 130 Hồng Hà/);
    assert.match(page.querySelector(".uePmHistory").textContent,/Áp suất đạt yêu cầu/);
    assert.ok(page.querySelector('img[data-ue-maintenance-image="storage:130HH/after.jpg"]'),"show stored evidence");
-  }else if(id==="NANGCAP")assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,0,"upgrade sandbox unchanged");
-  else assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,1,id+" must show its own maintenance panel");
+  }else assert.equal(page.querySelectorAll(".ueLinkedMaintenance").length,1,id+" must show its own maintenance panel");
   const systemButtons=[...page.querySelectorAll(".ueSystemRail [data-ue-group]")];
   assert.equal(systemButtons.length,10,id+" must display all nine systems and the all-systems control on the left");
   assert.match(page.querySelector(".ueRefRailHeading")?.textContent||"",/CHỌN HỆ THỐNG/,id+" needs a visible category heading");
-  if(id!=="NANGCAP")assert(dom.window.document.body.classList.contains("estaTechnicalAssetsMode"),id+" must restore the technical theme on render");
+  assert(dom.window.document.body.classList.contains("estaTechnicalAssetsMode"),id+" must restore the technical theme on render");
   assert(systemButtons.some(b=>b.textContent.includes("Điện (MSB)")),id+" missing Electric navigation");
   assert(systemButtons.some(b=>b.textContent.includes("Bơm & cấp thoát nước")),id+" missing Water navigation");
   assert(systemButtons.some(b=>b.textContent.includes("PCCC")),id+" missing Fire navigation");
@@ -83,9 +82,9 @@ const page=dom.window.document.getElementById("updateAssetsPage");
  assert(css.includes(".estaTechnicalAssetsMode"),"new technical page should have screenshot-style CSS");
  assert(css.includes(".ueRefLayout .ueSystemRail"),"shared technical pages must preserve their left system navigation");
  assert(css.includes("#updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout"),"category rail fallback must not depend on the root mode");
- assert(parityCss.includes("#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode)"),"technical page must use exactly the same root theme selectors as Bản nâng cấp");
+ assert(parityCss.includes("#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode)"),"technical page uses existing shared style selectors");
  assert(parityCss.includes("body:is(.estaUpgradeMode,.estaTechnicalAssetsMode)"),"portal dialogs must use exactly the same theme");
- assert(!parityCss.includes("#app.estaUpgradeMode")&&!parityCss.includes("body.estaUpgradeMode"),"no orphan NANGCAP-only theme selectors permitted");
+ assert(!parityCss.includes("#app.estaUpgradeMode")&&!parityCss.includes("body.estaUpgradeMode"),"no redundant standalone theme selectors permitted");
  assert(parityCss.split("#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode)").length-1>=70,"the complete shared theme, not a partial imitation, must be reused");
  for(const rule of [".estaSidebar",".estaTopbar",".page","input:not([type=\"checkbox\"])"]){
   assert(parityCss.includes(rule),"shared project design is missing "+rule);
@@ -98,5 +97,5 @@ const page=dom.window.document.getElementById("updateAssetsPage");
  const before=page.innerHTML;
  dom.window.estaUpgradeAssets.render(page,true);
  assert.equal(page.innerHTML,before,"other pages must not be replaced");
- console.log("ESTA shared technical information: 5 isolated projects, identical UI, other pages untouched PASS");
+ console.log("ESTA shared technical information: 4 isolated projects, identical UI, other pages untouched PASS");
 })().catch(e=>{console.error(e);process.exitCode=1});

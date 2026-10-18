@@ -5,7 +5,7 @@ const js=fs.readFileSync(path.join(__dirname,"..","upgrade-equipment.js"),"utf8"
 const dom=new JSDOM("<div id='updateAssetsPage'></div>",{url:"https://example.test"});
 const page=dom.window.document.getElementById("updateAssetsPage");
 const row={
- id:"aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",building_id:"NANGCAP",
+ id:"aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",building_id:"130HH",
  name:"Bơm chữa cháy điện",equipment_type:"Bơm chữa cháy điện",system_group:"PCCC",
  location:"Phòng bơm",brand:"Grundfos",model:"NK 150",code:"PCCC-01",status:"Đang sử dụng",
  quantity:2,install_year:2025,note:"Kiểm tra định kỳ",
@@ -13,7 +13,7 @@ const row={
  _estaUpgrade:{seedKey:"pccc:0",technicalType:"bom_dien",verified:true,interval:30,condition:"tot",
  custom:[{key:"Áp lực thử",value:"8 bar"}],history:[{date:"2026-10-10",by:"Văn",reading:"6 bar",condition:"tot",note:"Đạt",photos:[]}]}}
 };
-const scope={window:dom.window,document:dom.window.document,currentBuilding:{id:"NANGCAP",role:"editor"},projectOverviewActive:true,
+const scope={window:dom.window,document:dom.window.document,currentBuilding:{id:"130HH",role:"editor"},projectOverviewActive:true,
  centralSession:{access_token:"fixture"},currentAccount:{is_admin:true},sbFetch:async p=>p.includes("maintenance_assets")?[]:[row]};
 new vm.Script(js).runInNewContext(scope);
 const $=s=>dom.window.document.querySelector(s);
@@ -44,5 +44,5 @@ const $=s=>dom.window.document.querySelector(s);
  button.click();
  detail.querySelector("[data-ue-edit]").click();
  assert.equal($("#ueForm").elements.namedItem("brand").value,"Grundfos");
- console.log("NANGCAP expanded specifications, inspection and profile editing PASS");
+ console.log("130HH expanded specifications, inspection and profile editing PASS");
 })().catch(e=>{console.error(e);process.exitCode=1});

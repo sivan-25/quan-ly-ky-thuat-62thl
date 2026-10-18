@@ -1,11 +1,10 @@
-/* ESTA | NANGCAP - unified building equipment register.
- * Isolated from the four operating projects and their maintenance schedules.
- * Data: public.building_equipment_profiles_nangcap, building_id = NANGCAP.
+/* ESTA | Shared equipment register for four operating buildings.
+ * Data: public.building_equipment_profiles_nangcap, isolated by active building_id.
  */
 (()=>{
 "use strict";
 const TABLE="building_equipment_profiles_nangcap";
-const EQUIPMENT_PROJECTS=new Set(["NANGCAP","68PĐL","62THL","127HH","130HH"]);
+const EQUIPMENT_PROJECTS=new Set(["68PĐL","62THL","127HH","130HH"]);
 const LINK_BUILDINGS=new Set(["68PĐL","62THL","127HH","130HH"]);
 const currentEquipmentProjectId=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"");
 const projectDisplayName=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.name||currentBuilding?.id||"Dự án":"Dự án");
@@ -385,7 +384,7 @@ function list(){
  host.querySelectorAll("[data-ue-edit]").forEach(button=>button.onclick=()=>openForm(button.dataset.ueEdit));
  host.querySelectorAll("[data-ue-check]").forEach(button=>button.onclick=()=>openForm(button.dataset.ueCheck,true));
 }
-/* Shared reference layout for Bản nâng cấp and the four operating projects. */
+/* Shared reference layout for the four operating projects. */
 function systemRailHtml(){
  const builtIn=G.map(g=>({name:g[1],key:g[1],count:groupCount(g[1]),icon:ueIcon(UE_SYSTEM_ICONS[g[0]],23)}));
  const dynamic=gopts().filter(name=>!G.some(g=>g[1]===name)).map(name=>({name,key:name,count:groupCount(name),icon:ueIcon(UE_SYSTEM_ICONS.kc,23)}));
@@ -399,7 +398,7 @@ function render(page,skipLoad=false){
  if(!active()||!page)return;
  ensureScope();
  // Refresh the technical theme on every render so system navigation remains visible.
- if(page.id==="updateAssetsPage"&&currentEquipmentProjectId()!=="NANGCAP"){
+ if(page.id==="updateAssetsPage"){
   document.getElementById("app")?.classList.add("estaTechnicalAssetsMode");
   document.body.classList.add("estaTechnicalAssetsMode");
  }
