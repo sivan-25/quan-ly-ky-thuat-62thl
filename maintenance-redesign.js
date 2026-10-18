@@ -109,9 +109,10 @@
     const total=Number.isFinite(Number(raw.total))?Number(raw.total):Number(stats.querySelector(".estamTotal b")?.textContent)||0;
     const data=raw.counts||{};
     const pct=String(raw.onTime??stats.querySelector(".m130Kpi.done b")?.textContent??"—");
-    const signature=JSON.stringify({total,data,pct,period:pad(selectedMonth())+"/"+selectedYear()});
+    const samples=Math.max(0,Number(raw.samples)||0);
+    const signature=JSON.stringify({total,data,pct,samples,period:pad(selectedMonth())+"/"+selectedYear()});
     if(panel.dataset.signature!==signature){
-      totalEl.innerHTML='<strong>'+total+'</strong><span>đầu việc bảo trì<br>trong tháng</span>';
+      totalEl.innerHTML='<strong>'+total+'</strong><span>đầu việc bảo trì<br>trong tháng'+(samples?'<small class="estam130SampleNote">'+samples+' mục mẫu chưa xác minh</small>':'')+'</span>';
       const occupied=groupConfig.filter(g=>Number(data[g.id]||0)>0);
       const segments=occupied.map(g=>{
         const n=Number(data[g.id]||0);
