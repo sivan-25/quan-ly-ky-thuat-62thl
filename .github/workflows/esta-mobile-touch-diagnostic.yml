@@ -1,0 +1,31 @@
+name: ESTA Mobile Touch Diagnostics
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'esta-mobile.css'
+      - 'inventory-mobile-no-scroll.css'
+      - 'tests/mobile-usability-audit.cjs'
+      - '.github/workflows/esta-mobile-touch-diagnostic.yml'
+jobs:
+  touch-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm ci
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - run: |
+          python3 -m http.server 8766 --bind 127.0.0.1 > /tmp/esta-audit-server.log 2>&1 &
+          sleep 2
+      - name: Diagnose four key controls at 390px and 768px
+        env:
+          ESTA_AUDIT_DIAGNOSTIC: '1'
+          ESTA_AUDIT_PROJECTS: '68PĐL'
+          ESTA_AUDIT_WIDTHS: '390,768'
+        run: node tests/mobile-usability-audit.cjs
