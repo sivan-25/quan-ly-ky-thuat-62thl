@@ -196,7 +196,10 @@ window.estaMaintenance130ReportRows=function({plans,occurrences,from,to}){
  }
  return result;
 };
-function notifyMaintenance130Nav(){window.estaRefreshProjectNavAlerts?.();}
+function notifyMaintenance130Nav(){
+ window.estaUpgradeAssets?.invalidateMaintenance?.(B);
+ window.estaRefreshProjectNavAlerts?.();
+}
 function maintenance130Buckets(events,today=isoToday()){
  const weekEnd=new Date(today+"T12:00:00");
  weekEnd.setDate(weekEnd.getDate()+7);
@@ -391,13 +394,13 @@ function renderList(){
   const e=o.event,i=o.item,st=status(o),key=esc(e.event_key);
   const cycle=interval(i),cycleText=cycle?cycleLabel(cycle):(i.cadence||"1 lần"),location=esc(i.subsystem||"Chưa ghi vị trí");
   const attached=i.equipment_profile_id&&typeof B!=="undefined"&&["130HH","127HH","62THL","68PĐL"].includes(B)&&typeof equipmentProfiles!=="undefined"?equipmentProfiles.find(p=>String(p.id)===String(i.equipment_profile_id)):null;
-  const linkedButton=attached?'<button type="button" class="m130LinkedEquipment" data-m130-profile="'+esc(attached.id)+'" title="Mở hồ sơ thiết bị">↗ '+esc(attached.name)+'</button>':"";
+  const linkedButton=attached?'<button type="button" class="m130LinkedEquipment" data-m130-profile="'+esc(attached.id)+'" title="Mở Thông tin hệ thống: '+esc(attached.name)+'" aria-label="Mở Thông tin hệ thống: '+esc(attached.name)+'">↗ Thông tin hệ thống</button>':"";
   if(!isCards){
    return '<article class="m130Entry m130CompactRow m130State-'+st[1]+'" data-m130-open="'+key+'" role="button" tabindex="0" aria-label="Xem công việc '+esc(i.work_title)+'">'+
     '<time class="m130Date" datetime="'+esc(isMonthOnly(o)?"":dateOf(o))+'" aria-label="'+esc(isMonthOnly(o)?"Chưa ấn định ngày trong tháng":"Ngày "+fmt(dateOf(o)))+'"><b>'+esc(isMonthOnly(o)?"—":dateOf(o).slice(8,10))+'</b><small>Th'+esc(dateOf(o).slice(5,7))+'</small></time>'+
     '<div class="m130EntryBody"><div class="m130Pills"><span class="m130Badge '+st[1]+'" aria-label="Tình trạng: '+esc(st[0])+'"><b class="m130StatusValue">'+esc(st[1]==="late"?"Quá hạn "+Math.max(1,Math.round((Date.parse(isoToday()+"T12:00:00")-Date.parse(dateOf(o)+"T12:00:00"))/86400000))+" ngày":st[0])+'</b></span><span class="m130Sys">'+esc(i.system_group)+'</span>'+(cycle?'<span class="m130Cycle">↻ '+cycleText+'</span>':'')+maintenanceEvidenceWarning(e)+'</div>'+
     '<h4>'+esc(i.work_title)+'</h4><p class="m130ShortMeta">'+(isMonthOnly(o)?'<span class="m130MissingDay">Chưa ấn định ngày</span>':'')+'<span class="m130MetaLocation">⌖ '+location+'</span><span class="m130MetaPerson">♙ '+esc(personLabel(e.completed_by||i.assigned_to))+'</span>'+(i.asset_code?'<span class="m130MetaCode">· '+esc(i.asset_code)+'</span>':'')+'</p>'+(e.result_note?'<p class="m130Result"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+
-    '<div class="m130EntryActions">'+linkedButton+'<button type="button" data-m130-event="'+key+'">'+(canWrite()?(e.status==="completed"?"Xem KQ":"Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130Edit" aria-label="Sửa kế hoạch '+esc(i.work_title)+'" title="Sửa kế hoạch" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16z"/></svg></button></div></article>';
+    '<div class="m130EntryActions'+(attached?' m130HasLinkedEquipment':'')+'">'+linkedButton+'<button type="button" data-m130-event="'+key+'">'+(canWrite()?(e.status==="completed"?"Xem kết quả":"Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130Edit" aria-label="Sửa kế hoạch '+esc(i.work_title)+'" title="Sửa kế hoạch" data-m130-plan="'+esc(i.id)+'" '+(canWrite()?"":"disabled")+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16z"/></svg></button></div></article>';
   }
   const done=lastCompleted(o,completedByItem),upcoming=nextCardDate(o);
   const record=esc(e.event_key),editable=canWrite()?"":"disabled";
@@ -407,7 +410,7 @@ function renderList(){
    '<div class="m130CardMetrics"><div><small>Gần nhất</small><strong>'+fmt(done)+'</strong></div><div><small>Kế tiếp</small><strong>'+(isMonthOnly(o)?shownDate(o):fmt(upcoming))+'</strong></div><div><small>Chu kỳ</small><strong>'+esc(cycleText)+'</strong></div></div>'+
    '<div class="m130CardLower"><div class="m130CardDetails"><div class="m130CardMeta"><span>Kỹ thuật: <b>'+esc(personLabel(e.completed_by||i.assigned_to))+'</b></span></div>'+
    (e.result_note?'<p class="m130CardResult"><b>KQ:</b> '+esc(e.result_note)+'</p>':'')+'</div>'+maintenanceEvidenceHtml(e,e.event_key)+'</div>'+
-   '<div class="m130CardFoot">'+linkedButton+'<button type="button" class="m130RecordBtn" data-m130-event="'+record+'">'+(canWrite()?(e.status==="completed"?"✓ Xem / sửa KQ":"＋ Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
+   '<div class="m130CardFoot">'+linkedButton+'<button type="button" class="m130RecordBtn" data-m130-event="'+record+'">'+(canWrite()?(e.status==="completed"?"Xem / sửa KQ":"Ghi bảo trì"):"Xem chi tiết")+'</button><button type="button" class="m130PlanBtn" data-m130-plan="'+esc(i.id)+'" '+editable+'>Sửa</button><button type="button" class="m130DeleteBtn" title="Xóa kế hoạch (có xác nhận)" aria-label="Xóa kế hoạch '+esc(i.work_title)+'" data-m130-delete="'+esc(i.id)+'" '+editable+'>×</button></div></article>';
  }).join("")||'<p class="m130Empty">Không có công việc trong tháng và bộ lọc này.</p>';
  const scheduledItems=new Set(stored.map(e=>e.item_id));
  const missing=items.filter(i=>!i.deleted_at&&!scheduledItems.has(i.id))
