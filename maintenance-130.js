@@ -215,19 +215,17 @@ function maintenance130Buckets(events,today=isoToday()){
  return {total:events.length,counts};
 }
 function kpiHtml(events){
- const verifiedEvents=events.filter(o=>!demo(o.item));
- const c=countsFor(verifiedEvents),today=isoToday(),weekEnd=new Date(today+"T12:00:00");
- weekEnd.setDate(weekEnd.getDate()+7);
- const limit=weekEnd.getFullYear()+"-"+pad(weekEnd.getMonth()+1)+"-"+pad(weekEnd.getDate());
- const todayCount=verifiedEvents.filter(o=>dateOf(o)===today).length,weekCount=verifiedEvents.filter(o=>dateOf(o)>=today&&dateOf(o)<=limit).length;
- const eligible=verifiedEvents.filter(o=>o.event.status==="completed"&&(o.event.completed_at||o.event.finished_at));
+ // KPI and grouped rows must use exactly the same filtered month occurrences.
+ // Include templates in "all" and "sample" views, but never present them as verified real records.
+ const today=isoToday(),buckets=maintenance130Buckets(events,today),c=buckets.counts;
+ const eligible=events.filter(o=>o.event.status==="completed"&&(o.event.completed_at||o.event.finished_at));
  const onTime=eligible.filter(o=>String(o.event.completed_at||o.event.finished_at).slice(0,10)<=dateOf(o)).length;
  const timely=eligible.length?Math.round(onTime/eligible.length*100)+"%":"—";
- const pair=[[c.late,"Quá hạn","late"],[todayCount,"Hôm nay","today"],[weekCount,"7 ngày tới","week"],[c.review,"Chờ duyệt","review"],[timely,"Đúng hạn","done"]];
+ const samples=events.filter(o=>demo(o.item)).length;
+ const pair=[[c.late,"Quá hạn","late"],[c.today,"Hôm nay","today"],[c.week,"7 ngày tới","week"],[c.review,"Chờ duyệt","review"],[timely,"Đúng hạn","done"]];
  const stats=$("m130Stats");
  stats.innerHTML=pair.map(x=>'<div class="m130Kpi '+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
- stats.dataset.monthOverview=JSON.stringify({...maintenance130Buckets(verifiedEvents,today),onTime:timely});
-
+ stats.dataset.monthOverview=JSON.stringify({...buckets,onTime:timely,samples,real:events.length-samples});
 }
 
 function ensure(){
@@ -363,7 +361,6 @@ function render(){
   if(m>=1&&m<=12)monthCounts[m-1]++;
   if(m===month)subset.push(o);
  }
- kpiHtml(scopeEvents(subset));
  $("m130Year").textContent="Năm "+year;
  $("m130Months").innerHTML=monthCounts.map((count,idx)=>{const m=idx+1;return '<button type="button" data-m130-month="'+m+'" class="'+(m===month?"sel":"")+'"><small>Th '+pad(m)+'</small><b>'+count+'</b></button>';}).join("");
  const groups=[...new Set(items.map(i=>i.system_group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi")),select=$("m130Group"),old=select.value;
@@ -376,6 +373,7 @@ function renderList(){
  const visible=subset.filter(o=>(!g||o.item.system_group===g)&&(!s||(s==="late"?stateKey(o)==="late":s==="cancelled"?(stateKey(o)==="cancelled"||stateKey(o)==="postponed"):stateKey(o)===s))&&(!q||[o.item.work_title,o.item.system_group,o.item.subsystem,o.item.asset_code,o.item.assigned_to].join(" ").toLocaleLowerCase("vi-VN").includes(q))&&(!$("m130PriorityFilter").value||o.item.priority===$("m130PriorityFilter").value)&&(!$("m130TypeFilter").value||o.item.work_type===$("m130TypeFilter").value)&&(!$("m130TechnicianFilter").value||splitPeople(o.event.completed_by||o.item.assigned_to).includes($("m130TechnicianFilter").value)));
  $("m130ListTitle").textContent="Công việc tháng "+pad(month)+"/"+year;
  $("m130ListCount").textContent=visible.length+" / "+subset.length+" công việc"+(subset.some(o=>demo(o.item))?" · "+subset.filter(o=>demo(o.item)).length+" mục mẫu chưa xác minh":"");
+ kpiHtml(visible);
  const isCards=viewMode==="cards",list=$("m130List");
  const completedByItem=new Map();
  if(isCards)for(const e of stored){
