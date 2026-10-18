@@ -57,6 +57,7 @@ jobs:
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
+          ESTA_VISUAL_TOUCH_IMPROVEMENTS: '1'
           ESTA_VISUAL_WIDTHS: '320,390,768'
           ESTA_VISUAL_SCENARIOS: 'login,admin,admin-home,work-62THL,work-68PĐL,work-127HH,work-130HH,edit-62THL,edit-130HH,energy-68PĐL,inventory-62THL,maintenance-68PĐL,maintenance-62THL,maintenance-127HH,maintenance-130HH,contractor-130HH,incident-127HH,inspection-130HH,documents-62THL,reports-68PĐL'
         run: node tests/browser-visual-parity.cjs
