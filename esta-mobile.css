@@ -106,3 +106,35 @@
 @media(min-width:761px){
   #app .estaBottomNav{display:none!important}
 }
+
+/* ESTA 2026-10-18 | Four-building mobile touch targets.
+   Measured in real Chromium touch emulation: keep controls comfortably tappable.
+   Scoped to phone/tablet widths; do not modify desktop or business logic. */
+@media(max-width:800px){
+ #app:not(.hide) #menu,
+ #app:not(.hide) #quickReturnAdmin{min-width:44px!important;min-height:44px!important;touch-action:manipulation}
+ #app:not(.hide) #demoAddTaskMaterial,
+ #app:not(.hide) #estaPriorityStar{min-width:44px!important;min-height:44px!important;touch-action:manipulation}
+ #app:not(.hide) #energyPage :is(#energyDate,#energyValue,#energyValue2,#energyNote,#energyPeopleButton,#energyQuickSearch,#energyExportPdf){min-height:44px!important;touch-action:manipulation}
+ #app:not(.hide) #inventoryPage :is(#inventoryYear,#materialSearch){min-height:44px!important;touch-action:manipulation}
+ #app:not(.hide) #maintenancePage :is(#m130Create,#m130AuditButton){min-height:44px!important;touch-action:manipulation}
+ #app:not(.hide) #updateAssetsPage :is(#ueAdd,#ueAddSystem,#uePrint,#ueRefresh,#ueGroup){min-height:44px!important;touch-action:manipulation}
+}
+/* At 768px the visible desktop sidebar leaves too little horizontal space
+   for the inventory tabs and year selector; wrap within the available pane. */
+@media(min-width:761px) and (max-width:850px){
+ #app.inventoryMode #inventoryPage .inventoryCommandControls{
+  display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+  min-width:0!important;max-width:100%!important;width:100%!important;
+  gap:8px!important;flex:1 1 auto!important;
+ }
+ #app.inventoryMode #inventoryPage .inventoryLocalTabs{
+  min-width:0!important;max-width:100%!important;flex:1 1 260px!important;
+ }
+ #app.inventoryMode #inventoryPage .inventoryLocalTabs button{
+  min-width:0!important;flex:1 1 0!important;white-space:normal!important;
+ }
+ #app.inventoryMode #inventoryPage .inventoryCommandMeta{
+  min-width:0!important;max-width:100%!important;flex:0 1 auto!important;
+ }
+}
