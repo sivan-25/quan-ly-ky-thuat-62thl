@@ -77,6 +77,11 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
   assert.ok(d.querySelector("#m130Pdf"),"shared PDF exists: "+building);
   if(building==="130HH"){
    assert(page.querySelector('[data-m130-profile="'+profileId+'"]'),"linked profile shortcut visible");
+   assert.match(page.querySelector('[data-m130-profile="'+profileId+'"]').textContent,/Thông tin hệ thống/,"linked action is recognizable rather than FCU name");
+   page.querySelector('[data-m130-view="rows"]').click();
+   assert.ok(page.querySelector(".m130EntryActions.m130HasLinkedEquipment"),"linked row uses compact three-slot actions");
+   assert.match(page.querySelector(".m130EntryActions .m130LinkedEquipment").textContent,/Thông tin hệ thống/);
+
    page.querySelector('[data-m130-plan="130HH-plan"]').click();
    assert.equal(d.getElementById("m130EquipmentProfile").value,profileId,"existing plan preselects linked profile");
    assert.equal(d.getElementById("m130EquipmentLinkRow").hidden,false);
