@@ -709,12 +709,12 @@ function recordedImages(event){
 function maintenanceEvidenceHtml(event,key){
  const photos=recordedImages(event);
  if(!photos.length)return "";
- const visible=photos.slice(0,3);
+ const visible=photos.slice(0,4);
  return '<div class="m130Evidence" aria-label="'+photos.length+' ảnh bảo trì">'+visible.map((p,index)=>
    '<button type="button" data-m130-gallery="'+esc(key)+'" data-m130-photo-index="'+index+'" aria-label="Xem ảnh '+(p.kind==="before"?"trước":"sau")+' bảo trì '+(index+1)+'">'+
    (typeof mediaImgHtml==="function"?mediaImgHtml(p.ref,"m130EvidenceImage"):'<span>Ảnh '+(index+1)+'</span>')+
    '<small>'+(p.kind==="before"?"Trước":"Sau")+' '+(index+1)+'</small></button>'
- ).join("")+(photos.length>3?'<button type="button" class="m130MoreEvidence" data-m130-gallery="'+esc(key)+'" data-m130-photo-index="3" aria-label="Xem thêm '+(photos.length-3)+' ảnh">+'+(photos.length-3)+' ảnh</button>':"")+'</div>';
+ ).join("")+(photos.length>4?'<button type="button" class="m130MoreEvidence" data-m130-gallery="'+esc(key)+'" data-m130-photo-index="4" aria-label="Xem thêm '+(photos.length-4)+' ảnh">+'+(photos.length-4)+' ảnh</button>':"")+'</div>';
 }
 let m130EvidenceObserver=null;
 function hydrateMaintenanceEvidence(){
