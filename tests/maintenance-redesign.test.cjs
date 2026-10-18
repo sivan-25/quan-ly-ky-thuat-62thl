@@ -94,6 +94,17 @@ async function fixture(id,internal,extra=""){
   assert.match(layout,/grid-template-columns:270px minmax\(0,1fr\)/,"monthly summary matches left-total/right-progress layout");
   assert.match(layout,/\.estam130WorkItems \.m130CompactRow/,"maintenance rows displayed inside grouped panels");
   assert.match(layout,/\.m130CompactRow\.m130State-late \.m130Date/,"overdue date tiles have distinct colors");
+
+  // Explicit action-role selectors prevent linked device buttons from accidentally
+  // getting the navy record button style just because they are the first child.
+  for(const token of [
+    ".m130EntryActions > .m130LinkedEquipment",
+    ".m130EntryActions > button[data-m130-event]",
+    ".m130EntryActions > button.m130Edit",
+    "grid-template-columns:minmax(0,128px) minmax(0,128px) 44px",
+    "height:44px!important"
+  ])assert(layout.includes(token),"missing uniform row actions CSS: "+token);
+
   assert.match(layout,/\.estam130ExtraFilters/,"advanced filters remain reachable");
   assert.match(layout,/\.estamViewSwitch \[data-estam-view="timeline"\]/,"timeline hidden from three-option main toolbar");
   console.log("maintenance redesign smoke tests passed (4 projects / demo legacy)");
