@@ -16,7 +16,7 @@ const rows=ids.map((building_id,i)=>({
  id:"00000000-0000-4000-8000-"+String(i+1).padStart(12,"0"),building_id,
  name:"Thiết bị riêng "+building_id,equipment_type:"Khác",
  system_group:"PCCC",location:"Vị trí "+building_id,status:"Đang sử dụng",
- quantity:1,specs:{_estaUpgrade:{verified:true,condition:"tot",history:[]}}
+ quantity:1,specs:{_estaUpgrade:{verified:i!==3,condition:"tot",history:[]}}
 }));
 const pmFixture={id:"aaaaaaaa-bbbb-4ccc-8ddd-000000000099",work_title:"Bảo trì bơm PCCC 130 Hồng Hà",equipment_profile_id:rows[3].id,building_id:"130HH",cadence:"3 tháng",assigned_to:"Kỹ thuật 130",deleted_at:null};
 const calls=[];
@@ -56,6 +56,7 @@ const page=dom.window.document.getElementById("updateAssetsPage");
    assert.match(page.querySelector(".uePmHistory").textContent,/Áp suất đạt yêu cầu/);
    assert.ok(page.querySelector('img[data-ue-maintenance-image="storage:130HH/after.jpg"]'),"show stored evidence");
    assert.match(page.querySelector(".uePmLatest").textContent,/Bảo trì gần nhất:.*Đạt/,"completed maintenance must appear in device information");
+   assert.match(page.querySelector(".ueRefDetails:not([hidden])")?.closest(".ueRefEntry")?.querySelector(".ueRefState")?.textContent||"",/chưa xác minh/i,"completed maintenance must not auto-verify equipment parameters");
    assert.equal(page.querySelector(".ueRefDetails:not([hidden]) .ueRefCheck"),null,"linked device must not ask for duplicate routine inspection");
    assert.ok(page.querySelector(".ueRefDetails:not([hidden]) .ueRefUnexpectedCheck"),"optional exceptional inspection remains available");
   }else{
