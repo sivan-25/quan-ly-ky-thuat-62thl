@@ -854,3 +854,61 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog footer :is(.ueBtnPr
  }
 }
 
+/* ESTA 2026-10-18 | Maintenance results and device verification are distinct.
+   Keep emergency checks discoverable but avoid duplicate routine input. */
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueLinkedMaintenanceHeading .uePmLatest{
+ display:inline-flex!important;
+ align-items:center!important;
+ min-height:23px!important;
+ padding:4px 8px!important;
+ border:1px solid #bad8c9!important;
+ border-radius:7px!important;
+ background:#e4f2e9!important;
+ color:#176046!important;
+ font-size:10.5px!important;
+ font-weight:800!important;
+ line-height:1.35!important;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueLinkedMaintenanceHeading > span:not(.uePmLatest){
+ flex-basis:100%!important;
+ font-size:10px!important;
+ margin:0!important;
+ line-height:1.4!important;
+ color:#64766e!important;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefRowActions{
+ gap:7px!important;
+ margin-top:8px!important;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefRowActions button{
+ box-sizing:border-box!important;
+ min-height:34px!important;
+ height:34px!important;
+ padding:6px 10px!important;
+ border-radius:8px!important;
+ font-size:10.5px!important;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefRowActions .ueRefUnexpectedCheck{
+ display:inline-flex!important;
+ justify-content:center!important;
+ align-items:center!important;
+ border:1px dashed #b3c9c2!important;
+ background:transparent!important;
+ color:#4d6a62!important;
+ font-weight:700!important;
+}
+#app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefRowActions .ueRefUnexpectedCheck:hover{
+ background:#ecf5f1!important;
+ border-color:#72998c!important;
+}
+@media(max-width:540px){
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefRowActions{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefRowActions button{
+  min-height:40px!important;
+  height:auto!important;
+  padding:8px!important;
+  white-space:normal!important;
+ }
+}
