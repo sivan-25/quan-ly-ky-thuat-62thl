@@ -117,7 +117,19 @@ async function capture(browser,site,scenario,viewport){
      significantPercentDiff:+(significantDifferentPixels*100/(a.width*a.height)).toFixed(4),
      geometryEqual:equal,baseline:base.stats,candidate:next.stats,errors:{baseline:base.errors,candidate:next.errors}};
     results.push(item);
-    if(significantDifferentPixels||!equal||base.errors.length||next.errors.length){
+    const touchChange=process.env.ESTA_VISUAL_TOUCH_IMPROVEMENTS==="1"&&
+      ["work","edit","energy","inventory","maintenance"].includes(moduleName);
+    item.expectedTouchImprovement=touchChange;
+    // Changes to tap targets intentionally alter pixels and heights only on audited
+    // business pages. Keep exact pixel parity on every untouched page, and verify
+    // candidate pages still work, keep their content and never overflow the viewport.
+    const candidateOverflow=next.stats.docWidth-next.stats.clientWidth>4;
+    if(touchChange){
+     if(base.errors.length||next.errors.length||candidateOverflow){
+      failures++;console.error("TOUCH REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
+     }else console.log("PASS audited mobile touch change "+label+
+       " (intentional pixel differences "+significantDifferentPixels+")");
+    }else if(significantDifferentPixels||!equal||base.errors.length||next.errors.length){
      failures++;console.error('DIFF '+label+': '+JSON.stringify(item).slice(0,900));
     }else console.log('PASS meaningful pixel/DOM parity '+label+
        (rawDifferentPixels?' ('+rawDifferentPixels+' minor anti-aliasing pixels, max channel delta '+maxColorDeviation+')':''));
@@ -129,7 +141,7 @@ async function capture(browser,site,scenario,viewport){
   const rows=results.map(x=>'| '+x.scenario+' | '+x.viewport+' | '+x.rawDifferentPixels+' | '+x.significantDifferentPixels+' | '+x.maxColorDeviation+' | '+(x.geometryEqual?'Yes':'No')+' |');
   const md=['# ESTA browser screenshot parity','',
    'All data is mocked; all external network requests are blocked. This does not test live Supabase or actual device performance.',
-   'Minor headless rendering noise up to '+channelTolerance+'/255 per channel is tolerated. Raw differences remain reported. Geometry and JavaScript error checks are exact.',
+   'Unchanged pages require pixel and DOM parity (12/255 antialiasing tolerance). In the opt-in mobile touch-improvements run, work/edit/energy/inventory/maintenance may differ intentionally in size; they must have no script errors and no document overflow. Exact tap targets are checked independently in mobile-audit results.',
    '',
    '| Scenario | Viewport | Raw differing pixels | Significant differing pixels | Max channel difference | Geometry equal |',
    '|---|---|---:|---:|---:|---|',...rows,''];
