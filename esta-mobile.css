@@ -138,3 +138,23 @@
   min-width:0!important;max-width:100%!important;flex:0 1 auto!important;
  }
 }
+
+/* The shared selectors above meet more specific module rules that explicitly
+   shrink the same controls. Keep these four-building safeguards narrowly scoped. */
+@media(max-width:800px){
+ #app:not(.hide) #workPage #demoWorkLinks #demoAddTaskMaterial{
+  height:auto!important;min-height:44px!important;
+ }
+ #app:not(.hide) #energyPage #energyForm :is(#energyDate,#energyValue,#energyValue2,#energyPeopleButton){
+  height:44px!important;min-height:44px!important;
+ }
+ #app:not(.hide) #maintenancePage #estaMaintenanceRedesign[data-kind="130"] #m130Create{
+  height:44px!important;min-height:44px!important;
+ }
+ #app:not(.hide):is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot #ueGroup{
+  height:44px!important;min-height:44px!important;
+ }
+ #app.inventoryMode:not(.hide):has(#inventoryPage:not(.hide)) #quickReturnAdmin{
+  min-width:44px!important;
+ }
+}
