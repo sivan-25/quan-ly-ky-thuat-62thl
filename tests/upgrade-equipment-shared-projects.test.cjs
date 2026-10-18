@@ -89,7 +89,7 @@ const page=dom.window.document.getElementById("updateAssetsPage");
  for(const rule of [".estaSidebar",".estaTopbar",".page","input:not([type=\"checkbox\"])"]){
   assert(parityCss.includes(rule),"shared project design is missing "+rule);
  }
- assert(pageHtml.includes("nangcap-unified.css?v=20261016-technical-parity01"),"browsers must load the corrected styles, not a cached variant");
+ assert(pageHtml.includes("nangcap-unified.css?v=20261018-navigation-parity01"),"browsers must load the corrected styles, not a cached variant");
  assert(routes.includes('if(!on||$("#updateAssetsPage")?.classList.contains("hide"))'),"shared theme must be turned off after leaving the technical page");
  assert(dbSql.includes("private.can_access_building(building_id,true)"),"database must isolate writes by assigned building");
  for(const id of ids)assert(dbSql.includes("'"+id+"'"),id+" must have its own database scope");
