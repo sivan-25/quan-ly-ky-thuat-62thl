@@ -388,3 +388,92 @@
  color:#a23946;font-size:10px!important;font-weight:750;
  line-height:1.25;
 }
+
+/* 2026-10-18 | Uniform maintenance action slots on all four buildings.
+   Style by action type, not :first-child: an FCU link may precede the record button. */
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions{
+ display:grid!important;
+ grid-template-columns:minmax(0,128px) minmax(0,128px) 44px!important;
+ gap:8px!important;
+ width:316px!important;
+ min-width:0!important;
+ flex:0 0 316px!important;
+ align-items:center!important;
+ justify-content:end!important;
+ margin-left:auto!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button{
+ box-sizing:border-box!important;
+ height:44px!important;
+ min-height:44px!important;
+ max-height:44px!important;
+ min-width:0!important;
+ max-width:100%!important;
+ margin:0!important;
+ padding:0 10px!important;
+ border-radius:10px!important;
+ font-size:12px!important;
+ font-weight:800!important;
+ line-height:1.25!important;
+ white-space:nowrap!important;
+ overflow:hidden;
+ text-overflow:ellipsis;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > .m130LinkedEquipment{
+ grid-column:1!important;
+ width:128px!important;
+ background:#e8f1f4!important;
+ border:1px solid #b9d1dc!important;
+ color:#164562!important;
+ justify-content:center!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > .m130LinkedEquipment:hover{
+ background:#dceaf1!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button[data-m130-event]{
+ grid-column:2!important;
+ width:128px!important;
+ background:#1a4a6c!important;
+ border:1px solid #1a4a6c!important;
+ color:#fff!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button[data-m130-event]:not(:disabled):hover{
+ background:#113d5e!important;
+}
+#maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button.m130Edit{
+ grid-column:3!important;
+ width:44px!important;
+ min-width:44px!important;
+ padding:0!important;
+ display:flex!important;
+ justify-content:center!important;
+ align-items:center!important;
+ background:#fffaf2!important;
+ border:1px solid #cbd9de!important;
+ color:#214962!important;
+}
+@media(max-width:1000px){
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow{
+  flex-wrap:wrap!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions{
+  flex:1 1 100%!important;
+  width:min(100%,316px)!important;
+  max-width:316px!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px!important;
+ }
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > :is(.m130LinkedEquipment,button[data-m130-event]){
+  width:100%!important;
+ }
+}
+@media(max-width:640px){
+ #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions{
+  flex:0 0 100%!important;
+  width:min(100%,316px)!important;
+  max-width:316px!important;
+  margin-left:auto!important;
+  justify-self:end!important;
+  justify-content:end!important;
+ }
+}
+
