@@ -184,27 +184,34 @@
   }
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventoryMonthRailHead{display:none!important}
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventoryMobilePeriod{display:none!important}
+  /* Cả năm + T1-T6 in row 1; T7-T12 in row 2. No horizontal gesture. */
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #materialMonthTabs{
-    display:flex!important;flex-wrap:nowrap!important;gap:5px!important;
-    width:100%!important;max-width:100%!important;
-    margin:0!important;padding:1px 0 5px!important;
+    display:grid!important;
+    grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,40px)!important;
+    gap:4px!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding:1px 0 3px!important;
     border:0!important;border-radius:0!important;background:transparent!important;
-    overflow-x:auto!important;overflow-y:hidden!important;
-    overscroll-behavior-x:contain!important;scrollbar-width:none!important;
-    -webkit-overflow-scrolling:touch!important;
+    overflow:visible!important;box-sizing:border-box!important;
+    touch-action:manipulation!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs::-webkit-scrollbar{display:none!important}
   #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button{
-    flex:0 0 auto!important;width:auto!important;min-width:42px!important;
+    flex:none!important;width:100%!important;max-width:100%!important;min-width:0!important;
     height:40px!important;min-height:40px!important;
-    border-radius:10px!important;padding:0 11px!important;
+    border-radius:8px!important;padding:0 1px!important;
     background:#16233a!important;color:#c9d6ec!important;
-    border:1px solid #24344f!important;font-size:12px!important;
-    font-weight:650!important;
+    border:1px solid #24344f!important;font-size:11px!important;
+    font-weight:700!important;line-height:1.15!important;
     box-shadow:none!important;position:relative!important;
+    white-space:nowrap!important;overflow:hidden!important;
+    text-overflow:clip!important;
   }
   #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button.yearOverviewBtn{
-    min-width:74px!important;max-width:none!important;grid-column:auto!important;
+    min-width:0!important;max-width:100%!important;
+    grid-column:auto!important;grid-row:auto!important;
+    padding:0 2px!important;font-size:10px!important;
+    line-height:1.05!important;white-space:normal!important;
   }
   #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button.active{
     background:#2dd4bf!important;color:#06231f!important;
@@ -365,17 +372,6 @@
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-out b{color:#fbbf5c!important}
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-closing b{color:#8dbbff!important}
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130Progress{
-    height:4px!important;width:100%!important;background:#101b2c!important;
-    overflow:hidden!important;margin-top:4px!important;border-radius:5px!important;
-  }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130Progress span{
-    display:block!important;height:100%!important;border-radius:5px!important;
-    background:#2dd4bf!important;
-  }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130ProgressText{
-    display:block!important;margin-top:4px!important;color:#a9b8d2!important;font-size:9px!important;
-  }
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileNotice{
     font-size:10px!important;margin-top:4px!important;color:#ffc18d!important;
   }
@@ -463,6 +459,8 @@
   #app #inventoryPage.inventory130MobileCompact #inventory130ListBar :is(summary,button){font-size:10px!important;padding:0 6px!important}
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue b{font-size:15px!important}
   #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatus{font-size:8px!important}
+  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button{font-size:10px!important}
+  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button.yearOverviewBtn{font-size:9px!important}
 }
 
 
