@@ -862,7 +862,7 @@ function syncOverviewNavigation(){
  document.body.classList.toggle("estaUpgradeMode",upgrade);
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
- document.getElementById("app")?.classList.toggle("estaPilot130HH",project&&String(currentBuilding?.id||"")==="130HH");
+ document.getElementById("app")?.classList.toggle("estaFourProjectCompact",project&&["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding?.id||"")));
  $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
  $("#navProjectOverview").classList.toggle("hide",!admin||!project);
@@ -965,7 +965,7 @@ function prepareProjectContext(building){
 
  currentBuilding={...building};
  // Ensure the pilot scope follows the newly selected building, not the previous project.
- document.getElementById("app")?.classList.toggle("estaPilot130HH",String(currentBuilding.id)==="130HH");
+ document.getElementById("app")?.classList.toggle("estaFourProjectCompact",["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding.id)));
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
  if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
@@ -2231,7 +2231,7 @@ function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageK
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
  // Keep the compact pilot consistent for direct module navigation and browser fixtures.
- $("#app")?.classList.toggle("estaPilot130HH",!!projectOverviewActive&&String(currentBuilding?.id||"")==="130HH");
+ $("#app")?.classList.toggle("estaFourProjectCompact",!!projectOverviewActive&&["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding?.id||"")));
  if(typeof energyManageReset==="function")energyManageReset();
  closeWorkFilter();
  const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};

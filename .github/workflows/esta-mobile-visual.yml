@@ -13,8 +13,8 @@ on:
       - 'upgrade-equipment.css'
       - 'upgrade-equipment-compact.css'
       - 'upgrade-equipment-reference.css'
-      - 'pilot-130-compact.css'
-      - 'tests/130hh-system-rail-geometry.cjs'
+      - 'four-project-compact.css'
+      - 'tests/four-project-system-rail-geometry.cjs'
       - 'index.html'
       - 'tests/browser-visual-parity.cjs'
       - 'tests/mobile-usability-audit.cjs'
@@ -63,9 +63,9 @@ jobs:
           ESTA_VISUAL_WIDTHS: '320,390,768'
           ESTA_VISUAL_SCENARIOS: 'login,admin,admin-home,work-62THL,work-68PĐL,work-127HH,work-130HH,edit-62THL,edit-130HH,energy-68PĐL,inventory-62THL,maintenance-68PĐL,maintenance-62THL,maintenance-127HH,maintenance-130HH,contractor-130HH,incident-127HH,inspection-130HH,documents-62THL,reports-68PĐL'
         run: node tests/browser-visual-parity.cjs
-      - name: Verify 130HH long system labels on phones and laptops
+      - name: Verify all four system menus on phones and laptops
         working-directory: candidate
-        run: node tests/130hh-system-rail-geometry.cjs
+        run: node tests/four-project-system-rail-geometry.cjs
       - name: Audit real mobile layout and touch targets for four buildings
         working-directory: candidate
         run: node tests/mobile-usability-audit.cjs
