@@ -35,7 +35,7 @@ const ctx={
  inventoryYearValue:()=>2026,inventoryActiveMaterials:()=>[mat],
  inventoryStockAlerts:()=>[],inventoryTrackingStart:()=>mat.tracking_start_date,
  inventoryMonthEnd:()=> "2026-10-31",inventorySnapshot:()=>snap,
- inventoryStockAsOf:()=>22,inventoryNum:x=>Number(x||0),
+ today:()=> "2026-10-19",inventoryStockAsOf:()=>22,inventoryNum:x=>Number(x||0),
  inventoryFmt:x=>Number(x||0).toLocaleString("vi-VN"),
  renderStockAlerts:()=>{},canProjectEdit:()=>true,esc,fmt:date=>date,
  sentenceCapitalizeText:x=>x
