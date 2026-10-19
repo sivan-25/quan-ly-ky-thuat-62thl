@@ -2916,6 +2916,8 @@ window.openLowStockReplenish=id=>{
  setTimeout(()=>$("#stockTxnQty").focus(),50);
 };
 function renderMaterials(){
+ // Only 130 Hong Ha uses the compact phone inventory pilot; other projects retain the previous layout.
+ document.getElementById("inventoryPage")?.classList.toggle("inventory130MobileCompact",String(currentBuilding?.id||"")==="130HH");
  const y=inventoryYearValue(),allYear=String(inventoryActiveMonth)==="all";
  const month=allYear?null:Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
  const q=($("#materialSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
