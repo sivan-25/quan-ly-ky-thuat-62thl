@@ -7,44 +7,43 @@
 #contractorJobModal .contractorJobSaveStatus.error{color:#ffb6b6}
 
 @media(max-width:760px){
-  /* Only the 130 Hồng Hà contractor job modal: the existing projects and desktop
-     keep their original modal sizing and controls. The bottom clearance stays above
-     ESTA's fixed mobile dock even on short iPhones. */
-  #contractorJobModal.contractorJobMobile130:not(.hide){
-    position:fixed!important;inset:0!important;z-index:220!important;
+  /* Contractor mobile form across ESTA projects: no reliance on a project ID CSS class.
+     The dialog must fit the visual viewport and stay above bottom navigation. */
+  #contractorJobModal:not(.hide){
+    position:fixed!important;inset:0!important;z-index:10050!important;
     display:flex!important;align-items:stretch!important;justify-content:center!important;
-    padding:max(12px,env(safe-area-inset-top)) 7px calc(91px + env(safe-area-inset-bottom))!important;
+    padding:max(9px,env(safe-area-inset-top)) 7px max(12px,env(safe-area-inset-bottom))!important;
     overflow:hidden!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorModalCard{
+  #contractorJobModal .contractorModalCard{
     width:100%!important;max-width:560px!important;
     height:100%!important;max-height:100%!important;min-height:0!important;
     margin:0!important;padding:0!important;overflow:hidden!important;
     display:flex!important;flex-direction:column!important;
     border-radius:16px!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorModalHead{
+  #contractorJobModal .contractorModalHead{
     flex:0 0 auto!important;min-height:0!important;
     padding:11px 13px 10px!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorModalHead>span{
+  #contractorJobModal .contractorModalHead>span{
     display:block!important;margin-right:35px!important;font-size:9px!important;line-height:1.2!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorModalHead h3{
+  #contractorJobModal .contractorModalHead h3{
     margin:4px 40px 2px 0!important;font-size:18px!important;line-height:1.2!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorModalHead p{
+  #contractorJobModal .contractorModalHead p{
     margin:0!important;font-size:11px!important;line-height:1.2!important;
   }
-  #contractorJobModal.contractorJobMobile130 #closeContractorJobModal{
+  #contractorJobModal #closeContractorJobModal{
     top:10px!important;right:10px!important;width:36px!important;height:36px!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobCompactForm{
+  #contractorJobModal .contractorJobCompactForm{
     display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
     gap:0!important;width:100%!important;min-height:0!important;
     padding:0!important;margin:0!important;overflow:hidden!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll{
+  #contractorJobModal .contractorJobFieldsScroll{
     display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
     align-content:start!important;gap:9px 8px!important;
     flex:1 1 auto!important;min-width:0!important;min-height:0!important;
@@ -53,32 +52,32 @@
     -webkit-overflow-scrolling:touch!important;overscroll-behavior:contain;
     scrollbar-width:thin;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll>input[type="hidden"]{
+  #contractorJobModal .contractorJobFieldsScroll>input[type="hidden"]{
     display:none!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll>label{
+  #contractorJobModal .contractorJobFieldsScroll>label{
     display:flex!important;flex-direction:column!important;min-width:0!important;
     grid-column:1/-1!important;gap:4px!important;margin:0!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll>.jobDateField,
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll>.jobCompletedField{
+  #contractorJobModal .contractorJobFieldsScroll>.jobDateField,
+  #contractorJobModal .contractorJobFieldsScroll>.jobCompletedField{
     grid-column:span 1!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobCompactForm label>span:first-child{
+  #contractorJobModal .contractorJobCompactForm label>span:first-child{
     display:block!important;margin:0!important;font-size:12px!important;
     line-height:1.3!important;font-weight:720!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobDateShell{
+  #contractorJobModal .contractorJobDateShell{
     display:flex!important;align-items:center!important;position:relative!important;
     min-width:0!important;width:100%!important;min-height:40px!important;height:40px!important;
     border:1px solid #344560!important;border-radius:9px!important;
     background:#151f34!important;color:#f0f5ff!important;
     overflow:hidden!important;box-sizing:border-box!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobDateShell:focus-within{
+  #contractorJobModal .contractorJobDateShell:focus-within{
     border-color:#35d8f1!important;box-shadow:0 0 0 2px rgba(31,200,226,.17)!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobDateText{
+  #contractorJobModal .contractorJobDateText{
     display:block!important;flex:1!important;min-width:0!important;
     margin:0!important;padding:0 7px!important;text-align:center!important;
     color:#e8f3ff!important;font-size:12px!important;line-height:1.2!important;
@@ -86,22 +85,22 @@
     white-space:nowrap!important;pointer-events:none!important;
     text-overflow:clip!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobDateShell input[type="date"]{
+  #contractorJobModal .contractorJobDateShell input[type="date"]{
     display:block!important;position:absolute!important;inset:0!important;z-index:2!important;
     width:100%!important;max-width:100%!important;min-width:0!important;
     height:100%!important;min-height:0!important;margin:0!important;padding:0!important;
-    opacity:.015!important;cursor:pointer!important;box-sizing:border-box!important;
+    opacity:0!important;cursor:pointer!important;box-sizing:border-box!important;
     -webkit-appearance:none!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobCompactForm input:not([type="file"]),
-  #contractorJobModal.contractorJobMobile130 .contractorJobCompactForm select{
+  #contractorJobModal .contractorJobCompactForm input:not([type="file"]),
+  #contractorJobModal .contractorJobCompactForm select{
     min-width:0!important;max-width:100%!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll>.jobStatusField select{
+  #contractorJobModal .contractorJobFieldsScroll>.jobStatusField select{
     height:41px!important;min-height:41px!important;
     padding:7px 10px!important;font-size:15px!important;border-radius:9px!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll textarea{
+  #contractorJobModal .contractorJobFieldsScroll textarea{
     display:block!important;box-sizing:border-box!important;
     min-width:0!important;width:100%!important;min-height:41px!important;
     max-height:none!important;margin:0!important;padding:9px 10px!important;
@@ -110,11 +109,11 @@
     overflow-wrap:anywhere!important;
     /* Inline pixel height from autoSizeContractorJobFields expands on input. */
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobImageField{
+  #contractorJobModal .contractorJobImageField{
     min-width:0!important;grid-column:1/-1!important;
     margin:0!important;padding:9px!important;border-radius:10px!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFormActions{
+  #contractorJobModal .contractorJobFormActions{
     position:relative!important;display:flex!important;flex:0 0 auto!important;
     align-items:center!important;justify-content:flex-end!important;
     gap:8px!important;min-height:67px!important;
@@ -124,39 +123,60 @@
     background:#111c30!important;box-shadow:0 -10px 23px rgba(6,16,30,.45)!important;
     z-index:3!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFormActions button{
+  #contractorJobModal .contractorJobFormActions button{
     display:inline-flex!important;align-items:center!important;justify-content:center!important;
     min-width:83px!important;min-height:43px!important;height:43px!important;
     padding:0 13px!important;border-radius:10px!important;
     font-size:14px!important;font-weight:800!important;white-space:nowrap!important;
     cursor:pointer!important;
   }
-  #contractorJobModal.contractorJobMobile130 #contractorJobSaveBtn{
+  #contractorJobModal #contractorJobSaveBtn{
     min-width:125px!important;box-shadow:0 4px 15px rgba(27,185,207,.17)!important;
   }
-  #contractorJobModal.contractorJobMobile130 #contractorJobSaveBtn:disabled{
+  #contractorJobModal #contractorJobSaveBtn:disabled{
     cursor:default!important;opacity:.78!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobSaveStatus{
+  #contractorJobModal .contractorJobSaveStatus{
     flex:1 1 auto!important;margin-right:auto!important;
     min-width:0!important;white-space:nowrap!important;
     color:#3ee0b4!important;font-size:12px!important;font-weight:800!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobSaveStatus.error{
+  #contractorJobModal .contractorJobSaveStatus.error{
     color:#ffb6b6!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobSaveStatus:empty{
+  #contractorJobModal .contractorJobSaveStatus:empty{
     display:none!important;
   }
 }
 @media(max-width:360px){
-  #contractorJobModal.contractorJobMobile130 .contractorJobFieldsScroll{
+  #contractorJobModal .contractorJobFieldsScroll{
     padding:9px!important;gap:8px 6px!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobDateText{
+  #contractorJobModal .contractorJobDateText{
     font-size:11px!important;padding:0 4px!important;
   }
-  #contractorJobModal.contractorJobMobile130 .contractorJobFormActions button{
+  #contractorJobModal .contractorJobFormActions button{
     min-width:70px!important;padding:0 10px!important;
+  }
+}
+
+/* When editing the contractor work record, the modal owns the viewport;
+   ESTA bottom nav must not cover the confirm button. */
+@media(max-width:760px){
+  body:has(#contractorJobModal:not(.hide)) #app .estaBottomNav,
+  body:has(#contractorJobModal:not(.hide)) #app .mobileBottomNav{
+    display:none!important;
+  }
+  #contractorJobModal:not(.hide){isolation:isolate}
+  #contractorJobModal .contractorJobFieldsScroll{
+    box-sizing:border-box!important;max-width:100%!important;
+  }
+  #contractorJobModal .contractorJobFieldsScroll>label,
+  #contractorJobModal .contractorJobFieldsScroll>.contractorJobImageField{
+    width:100%!important;max-width:100%!important;box-sizing:border-box!important;
+  }
+  #contractorJobModal .contractorJobDateShell{overflow:hidden!important}
+  #contractorJobModal .contractorJobFormActions{
+    box-sizing:border-box!important;bottom:0!important;
   }
 }
