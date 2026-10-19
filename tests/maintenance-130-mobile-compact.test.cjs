@@ -10,15 +10,15 @@ new Function(source);
 
 assert.ok(html.includes("maintenance-130-mobile.css?v="),"mobile pilot stylesheet is linked");
 assert.ok(css.includes("@media (max-width:640px)"),"pilot uses a mobile breakpoint");
-assert.ok(css.includes('[data-estam-building="130HH"]'),"pilot is scoped to 130HH");
+for(const id of ["130HH","127HH","62THL","68PĐL"])assert.ok(css.includes('[data-estam-building="'+id+'"]'),"compact mobile CSS contains "+id);
 assert.ok(css.includes("grid-template-columns:repeat(4,minmax(0,1fr))"),"four KPIs per mobile row");
 assert.ok(css.includes(".estam130Overview:not(.estam130MetricsOpen)"),"secondary KPIs remain expandable");
 assert.ok(css.includes("height:44px!important;min-height:44px!important"),"main tap targets are 44px");
 assert.ok(!css.includes(String.fromCharCode(92)+"n@media"),"CSS media rule has no escaped newline");
-assert.ok(html.includes("maintenance-130-mobile.css?v=20261019-130hh-touch02"),"PWA receives refreshed maintenance stylesheet");
-const touchScope='#app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"]';
+assert.ok(html.includes("maintenance-130-mobile.css?v=20261019-fourbuilding-mobile01"),"PWA receives four-building maintenance stylesheet");
+const touchScope='#app.estaFourProjectCompact.maintenanceMode #maintenancePage:is([data-estam-building="130HH"],[data-estam-building="127HH"],[data-estam-building="62THL"],[data-estam-building="68PĐL"])';
 const mobileRules=css.slice(css.indexOf("/* Reclaim width without undersized"));
-assert.ok(mobileRules.includes(touchScope),"row touch rules only apply to 130HH");
+assert.ok(mobileRules.includes(touchScope),"row touch rules apply to all four approved projects");
 assert.ok(mobileRules.includes("width:min(100%,284px)!important"),"linked action row must fit narrow phones");
 assert.ok(mobileRules.includes("width:min(100%,168px)!important"),"unlinked action row stays compact");
 assert.ok(mobileRules.includes("height:44px!important;min-height:44px!important;max-height:44px!important"),"row buttons remain easy to touch");
@@ -66,8 +66,14 @@ async function mount(building){
   for(const building of ["127HH","62THL","68PĐL"]){
     const other=await mount(building);
     assert.equal(other.d.querySelector("#maintenancePage").dataset.estamBuilding,building);
-    assert.ok(other.d.querySelector(".estam130Metric"),"other project keeps existing overview");
+    assert.ok(other.d.querySelector(".estam130Metric"),"other project keeps full shared overview");
+    const details=other.d.getElementById("estam130MobileMore");
+    assert.ok(details,"other building has expandable KPIs: "+building);
+    details.click();
+    assert.equal(details.getAttribute("aria-expanded"),"true");
+    details.click();
+    assert.equal(details.getAttribute("aria-expanded"),"false");
     other.dom.window.close();
   }
-  console.log("130HH mobile KPI expansion, project isolation and controls passed.");
+  console.log("PASS four-building compact mobile KPIs, touch controls and project isolation");
 })().catch(error=>{console.error(error);process.exitCode=1;});
