@@ -2937,6 +2937,8 @@ function renderMaterials(){
  });
 
  const periodText=allYear?("12 tháng / "+y):("Tháng "+String(month).padStart(2,"0")+" / "+y);
+ const periodSelect=$("#materialMobilePeriod");
+ if(periodSelect)periodSelect.value=allYear?"all":String(month);
  $("#materialMonthLabel").textContent=periodText;
  $("#materialSelectedMonth").textContent=periodText;
  $("#materialTitleCount").textContent="("+list.length+" mục)";
@@ -3003,6 +3005,35 @@ function renderMaterials(){
        '</div></td></tr>';
    }).join("");
  }
+ // Mobile presentation follows the very same snapshot and permission checks as the desktop table.
+ const mobileCards=$("#materialMobileCards");
+ if(mobileCards)mobileCards.innerHTML=snaps.map(({m,s},i)=>{
+  const snapshot=allYear?null:s.months[month-1];
+  const balance=allYear?s.closing:snapshot.stock;
+  const isLow=inventoryNum(m.min_qty)>0&&inventoryNum(balance)<=inventoryNum(m.min_qty);
+  const id=String(m.id).replace(/[^a-zA-Z0-9_-]/g,"");
+  const metrics=[["Tồn đầu",allYear?s.opening:snapshot.begin],["Nhập",allYear?s.totalIn:snapshot.inQty],["Xuất",allYear?s.totalOut:snapshot.outQty],["Tồn cuối",balance]];
+  const valueHtml='<div class="invMobileValues">'+metrics.map(([label,val],index)=>
+   '<div class="invMobileValue '+(index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>';
+  const canEdit=canProjectEdit();
+  const canDelete=canEdit&&currentAccount?.is_admin&&Math.abs(inventoryNum(s.current))<0.000001;
+  const actions=canEdit?'<div class="invMobileCardActions">'+
+    '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
+    '<button type="button" onclick="editMaterial(\''+id+'\')">Sửa</button>'+
+    (canDelete?'<button type="button" class="is-delete" onclick="deleteMaterial(\''+id+'\')">Xóa</button>':'')+
+    '</div>':'';
+  const yearly=allYear?'<details class="invYearDetails"><summary>Nhập / xuất từng tháng</summary><div class="invYearGrid">'+
+   s.months.map((monthValue,j)=>'<div class="invYearMonth"><span>Th '+String(j+1).padStart(2,"0")+'</span><b>'+
+   (monthValue.active?'N '+inventoryFmt(monthValue.inQty)+' / X '+inventoryFmt(monthValue.outQty):'—')+'</b></div>').join("")+
+   '</div></details>':'';
+  return '<article class="invMobileCard '+(isLow?"is-low":"")+'">'+
+   '<div class="invMobileCardHead"><div class="invMobileCardName"><strong>'+esc(m.name)+'</strong>'+
+   (m.code?'<small>Mã: '+esc(m.code)+'</small>':'')+
+   '<span class="invMobileUnit">ĐVT: '+esc(m.unit||"—")+'</span></div>'+
+   '<span class="invMobileNumber">#'+(i+1)+'</span></div>'+valueHtml+
+   (isLow?'<small class="invMobileNotice">⚠ Tồn thấp · định mức '+inventoryFmt(m.min_qty)+'</small>':'')+
+   yearly+actions+'</article>';
+ }).join("");
  $("#materialEmpty").classList.toggle("hide",snaps.length>0);
 
  const byId=Object.fromEntries(inventoryMaterials.map(m=>[m.id,m]));
@@ -3017,6 +3048,21 @@ function renderMaterials(){
    const note=esc(x.note||"—")+(linked?'<button class="materialTaskLink" type="button" onclick="openLinkedTaskFromStockTxn(\''+esc(String(x.source_task_id))+'\')">↗ '+esc(x.source_task_title||"Mở công việc")+'</button>':'');
    const action=linked?'<span class="materialSystemTxn" title="Giao dịch được tạo tự động từ công việc">Tự động</span>':'<button class="miniDanger" onclick="deleteStockTxn(\''+x.id+'\')">'+trashIcon+'</button>';
    return '<tr><td>'+fmt(x.tx_date)+'</td><td><b>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</b></td><td><span class="stockType '+x.tx_type+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></td><td><b>'+inventoryFmt(x.qty)+'</b></td><td>'+esc(x.performer||"—")+'</td><td>'+note+'</td><td>'+action+'</td></tr>';
+ }).join("");
+ const mobileTx=$("#materialMobileTransactions");
+ if(mobileTx)mobileTx.innerHTML=tx.map(x=>{
+  const linked=x.source_type==="work_task"&&x.source_task_id;
+  const id=String(x.id).replace(/[^a-zA-Z0-9_-]/g,"");
+  const taskId=String(x.source_task_id||"").replace(/[^a-zA-Z0-9_-]/g,"");
+  const buttons=linked?'<button type="button" onclick="openLinkedTaskFromStockTxn(\''+taskId+'\')">↗ '+esc(x.source_task_title||"Mở công việc")+'</button>':
+    canProjectEdit()?'<button type="button" class="is-delete" onclick="deleteStockTxn(\''+id+'\')">Xóa giao dịch</button>':'';
+  return '<article class="invMobileCard"><div class="invMobileCardHead">'+
+   '<div class="invMobileCardName"><strong>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</strong><small>'+fmt(x.tx_date)+'</small></div>'+
+   '<span class="invMobileType '+(x.tx_type==="out"?"is-out":"")+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></div>'+
+   '<div class="invMobileMeta"><div><small>Số lượng</small><b>'+inventoryFmt(x.qty)+'</b></div>'+
+   '<div><small>Người thực hiện</small><b>'+esc(x.performer||"—")+'</b></div></div>'+
+   (x.note?'<div class="invMobileNote">'+esc(x.note)+'</div>':'')+
+   (buttons?'<div class="invMobileCardActions">'+buttons+'</div>':'')+'</article>';
  }).join("");
  $("#materialTxnEmpty").classList.toggle("hide",tx.length>0);
 
@@ -3053,6 +3099,21 @@ function renderTools(){
      '<td class="toolNoteCell" title="'+esc(note==="—"?"":note)+'">'+esc(note)+'</td>'+
      '<td><div class="invRowActions compact"><button title="Sửa" onclick="editTool(\''+t.id+'\')">'+editIcon+'</button><button title="Xóa" class="danger" onclick="deleteTool(\''+t.id+'\')">'+trashIcon+'</button></div></td>'+
    '</tr>';
+ }).join("");
+ const mobileTools=$("#toolsMobileCards");
+ if(mobileTools)mobileTools.innerHTML=list.map((t,i)=>{
+  const id=String(t.id).replace(/[^a-zA-Z0-9_-]/g,"");
+  const meta=[["Tình trạng",t.condition_status],["Hãng",t.brand],["Vị trí",t.location],["Phụ trách",t.keeper]];
+  const edit=canProjectEdit()?'<div class="invMobileCardActions">'+
+   '<button type="button" onclick="editTool(\''+id+'\')">Sửa</button>'+
+   '<button type="button" class="is-delete" onclick="deleteTool(\''+id+'\')">Xóa</button></div>':'';
+  return '<article class="invMobileCard"><div class="invMobileCardHead">'+
+   '<div class="invMobileCardName"><strong>'+esc(sentenceCapitalizeText(t.name||""))+'</strong>'+
+   (t.code?'<small>Mã: '+esc(t.code)+'</small>':'')+
+   '<span class="invMobileUnit">'+inventoryFmt(t.qty)+' '+esc(t.unit||"Cái")+'</span></div>'+
+   '<span class="invMobileNumber">#'+(i+1)+'</span></div>'+
+   '<div class="invMobileMeta">'+meta.map(([label,value])=>'<div><small>'+label+'</small><b>'+esc(value||"—")+'</b></div>').join("")+'</div>'+
+   (t.note?'<div class="invMobileNote">'+esc(t.note)+'</div>':'')+edit+'</article>';
  }).join("");
  $("#toolsEmpty").classList.toggle("hide",list.length>0);
 }
@@ -3382,7 +3443,12 @@ $("#materialMonthTabs").addEventListener("click",event=>{
  inventoryActiveMonth=value==="all"?"all":Number(value);
  renderMaterials();
 });
-$("#materialSearch").addEventListener("input",renderMaterials);
+$("#materialMobilePeriod")?.addEventListener("change",e=>{
+  const value=e.target.value;
+  const monthButton=[...document.querySelectorAll("[data-material-month]")].find(b=>b.dataset.materialMonth===value);
+  monthButton?.click();
+ });
+ $("#materialSearch").addEventListener("input",renderMaterials);
 $("#toolSearch").addEventListener("input",renderTools);
 $("#stockAlertOnly").addEventListener("click",()=>{
  inventoryShowAlertsOnly=!inventoryShowAlertsOnly;
