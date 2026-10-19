@@ -1,7 +1,8 @@
 /* ESTA | 130 Hồng Hà | Mobile maintenance compact (pilot only)
    Presentation-only. Other projects and desktop stay unchanged.
    Eight secondary KPI details are retained in the expandable section; no data is hidden permanently. */
-#maintenancePage #estam130MobileMore{display:none!important}\n@media (max-width:640px){
+#maintenancePage #estam130MobileMore{display:none!important}
+@media (max-width:640px){
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"]{
     padding:0 10px 112px!important;
   }
