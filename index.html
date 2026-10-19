@@ -1815,6 +1815,16 @@
   </section>
 
   <section id="inventoryMaterialsPane" class="inventoryPane inventoryWorkspace">
+    <!-- 130 HH: mobile-only design reproduced from the supplied reference HTML.
+         Real data and mutations continue through the existing ESTA controls. -->
+    <div id="inventory130SearchRow" class="inventory130SearchRow">
+      <label class="inventory130SearchField" for="inventory130Search">
+        <span aria-hidden="true">⌕</span>
+        <input id="inventory130Search" type="search" placeholder="Tìm vật tư..." autocomplete="off" aria-label="Tìm vật tư">
+      </label>
+      <select id="inventory130Year" aria-label="Chọn năm xem vật tư"></select>
+      <button id="inventory130Pdf" type="button" title="Xuất PDF vật tư" aria-label="Xuất PDF vật tư">⇩</button>
+    </div>
     <div class="inventorySectionBar">
       <div>
         <span class="inventoryKicker">VẬT TƯ TIÊU HAO</span>
@@ -1910,6 +1920,15 @@
       </article>
     </div>
 
+    <div id="inventory130ListBar" class="inventory130ListBar">
+      <span id="inventory130ListCount">Danh sách · 0 mục</span>
+      <details id="inventory130QuickMenu" class="inventory130QuickMenu">
+        <summary>⚡ Thêm nhanh</summary>
+        <div id="inventory130QuickChoices" class="inventory130QuickChoices"></div>
+      </details>
+      <button id="inventory130AddMaterial" type="button">＋ Vật tư mới</button>
+    </div>
+
     <div class="inventoryTableCard materialMonthlyCard">
       <div class="inventoryCardTitle materialTableTitle">
         <div><span>BẢNG VẬT TƯ</span><h3 id="materialMonthLabel">Tháng 01 / 2026</h3></div>
@@ -1959,6 +1978,7 @@
       <div id="materialMobileTransactions" class="invMobileList" aria-label="Giao dịch nhập xuất trên điện thoại"></div>
       <div id="materialTxnEmpty" class="inventoryEmpty hide">Chưa có giao dịch nhập / xuất trong tháng này.</div>
     </div>
+    <button id="inventory130FloatingTxn" type="button">⇄ Nhập / Xuất</button>
   </section>
 
   <section id="inventoryToolsPane" class="inventoryPane inventoryWorkspace hide">
