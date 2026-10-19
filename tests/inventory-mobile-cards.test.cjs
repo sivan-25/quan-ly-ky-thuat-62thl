@@ -138,4 +138,39 @@ assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact")
 ctx.currentBuilding={id:"68PĐL"};
 vm.runInContext("renderMaterials();",ctx);
 assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact"),false,"68 PĐL retains existing card sizing");
+
+// 130 HH phone stock movement: both radio options occupy one row; native select remains
+// the single backend value and the date/quantity fields share a compact two-column grid.
+assert.match(html,/id="stockTxnQuickChoices"/);
+assert.match(html,/name="stockTxnQuickType" value="in"/);
+assert.match(html,/name="stockTxnQuickType" value="out"/);
+assert.match(html,/class="stockTxnDateField"/);
+assert.match(html,/class="stockTxnQtyField"/);
+assert.match(css,/#stockTxnModal\.stockTxn130Compact #stockTxnForm \.stockTxnQuickChoices/);
+assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important/);
+assert.match(css,/#stockTxnModal\.stockTxn130Compact #stockTxnForm>\.stockTxnDateField/);
+assert.match(css,/#stockTxnModal\.stockTxn130Compact #stockTxnForm>\.stockTxnQtyField/);
+assert.match(css,/#stockTxnModal \.stockTxnQuickChoices\{display:none\}/,"default form remains unchanged in other projects");
+assert.match(appSource,/stockTxn130Compact",String\(currentBuilding\?\.id\|\|""\)==="130HH"/);
+assert.match(appSource,/stockTxnQuickType.*addEventListener|"change",\(\)=>\{/);
+assert.match(appSource,/const materialId=\$\("#stockTxnMaterial"\).*txType=\$\("#stockTxnType"\)\.value/,"save flow still reads the native select");
+const quickSync=appSource.slice(appSource.indexOf("function syncStockTxnQuickChoice(){"),appSource.indexOf("window.openStockTxnModal=id=>{"));
+assert.match(quickSync,/function syncStockTxnQuickChoice/);
+ctx.currentBuilding={id:"130HH"};
+$("#stockTxnModal").classList.add("stockTxn130Compact");
+vm.runInContext(quickSync,ctx);
+$("#stockTxnType").value="out";
+vm.runInContext("syncStockTxnQuickChoice();",ctx);
+assert.equal($("#stockTxnQuickChoices input[value='out']").checked,true,"export radio selects export");
+assert.equal($("#stockTxnQuickChoices input[value='in']").checked,false,"import radio unchecks");
+assert.equal($("#stockTxnSubmit").textContent,"Xác nhận xuất","export confirmation is explicit");
+$("#stockTxnType").value="in";
+vm.runInContext("syncStockTxnQuickChoice();",ctx);
+assert.equal($("#stockTxnQuickChoices input[value='in']").checked,true,"import radio selects import");
+assert.equal($("#stockTxnSubmit").textContent,"Xác nhận nhập","import confirmation is explicit");
+$("#stockTxnModal").classList.remove("stockTxn130Compact");
+vm.runInContext("syncStockTxnQuickChoice();",ctx);
+assert.equal($("#stockTxnSubmit").textContent,"Lưu giao dịch","existing desktop/default action label is preserved");
+console.log("PASS stock transaction radio type, compact date/qty CSS, and existing save binding");
+
 console.log("PASS mobile inventory: 130HH scope, four KPIs, month/year, arithmetic, actions, tools, permissions");
