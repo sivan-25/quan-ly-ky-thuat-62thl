@@ -199,6 +199,20 @@ function closeContractorDetail(){
   renderContractors();
   window.scrollTo({top:0,behavior:"smooth"});
 }
+function contractorPhoneDetailCompact(){
+  return String(currentBuilding?.id||"")==="130HH" && window.matchMedia("(max-width:760px)").matches;
+}
+function syncContractorDetailMobile(){
+  // Inline override also defeats legacy `article { display:flex!important }` styles.
+  // Restore original CSS outside the pilot, including when phone orientation changes.
+  const termCard=$("#contractorDetail .contractorTermDetailCard");
+  if(termCard){
+    if(contractorPhoneDetailCompact())termCard.style.setProperty("display","none","important");
+    else termCard.style.removeProperty("display");
+  }
+  const search=$("#contractorJobSearch");
+  if(search)search.placeholder=contractorPhoneDetailCompact()?"Tìm nội dung...":"Tìm nội dung, nguyên nhân...";
+}
 function renderContractorDetail(){
   // Keep the 130 HH phone-only detail variant scoped to this project.
   $("#contractorPage")?.classList.toggle("contractorMobile130",String(currentBuilding?.id||"")==="130HH");
@@ -222,6 +236,9 @@ function renderContractorDetail(){
   term.textContent=contractDates||"—";
   const mobileTerm=$("#contractorDetailMobileTerm");
   if(mobileTerm){mobileTerm.textContent=contractDates;mobileTerm.hidden=!contractDates;}
+  const termGroup=mobileTerm?.closest(".contractorMobileTermGroup");
+  if(termGroup)termGroup.hidden=!contractDates;
+  syncContractorDetailMobile();
   renderContractorJobs();
 }
 function renderContractorJobs(){
@@ -230,6 +247,8 @@ function renderContractorJobs(){
   const all=contractorJobsFor(selectedContractorId);
   const list=all.filter(x=>(!status||x.status===status)&&(!search||[x.work_content,x.cause,x.solution,x.note,x.status].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(search))));
   $("#contractorJobCount").textContent="("+all.length+")";
+  if($("#contractorMobileJobCount"))$("#contractorMobileJobCount").textContent="("+all.length+")";
+  $("#contractorJobStatusFilter")?.closest(".contractorJobStatusMini")?.classList.toggle("hasFilter",!!status);
   $("#contractorJobList").innerHTML=list.map((x,i)=>{
     const linked=x._source==="task"||!!x.source_task_id;
     const linkedTaskId=x.source_task_id||"";
@@ -660,3 +679,6 @@ function contractorEscapeHandler(e){
   if(!modalOpen)closeContractorDetail();
 }
 document.addEventListener("keydown",contractorEscapeHandler);
+window.addEventListener("resize",()=>{
+  if(selectedContractorId)syncContractorDetailMobile();
+},{passive:true});
