@@ -59,6 +59,9 @@ jobs:
       - name: Check asset modal save visibility on iPhone viewports
         working-directory: candidate
         run: node tests/maintenance-asset-mobile-browser.cjs
+      - name: Check maintenance plan field pairs and horizontal scrolling
+        working-directory: candidate
+        run: node tests/maintenance-plan-mobile-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
