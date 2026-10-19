@@ -2919,6 +2919,9 @@ window.openLowStockReplenish=id=>{
 /* Mobile 130 HH reference controls mirror native ESTA controls: no duplicate backend state. */
 function syncInventory130Reference({year,allYear,count}){
  const active=String(currentBuilding?.id||"")==="130HH"&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
+ const title=$("#topInventoryTitle h1"),subtitle=$("#topInventoryTitle p");
+ if(title)title.textContent=active?"Vật tư":"Dụng cụ - Vật tư";
+ if(subtitle)subtitle.textContent=active?"Dụng cụ - Vật tư":"Quản lý tồn kho và dụng cụ kỹ thuật";
  const input=$("#inventory130Search"),yearSelect=$("#inventory130Year"),counter=$("#inventory130ListCount");
  if(!input||!yearSelect||!counter)return;
  if(!active)return;
