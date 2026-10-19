@@ -56,6 +56,9 @@ jobs:
           done
           cat /tmp/esta-baseline.log /tmp/esta-candidate.log
           exit 1
+      - name: Check asset modal save visibility on iPhone viewports
+        working-directory: candidate
+        run: node tests/maintenance-asset-mobile-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:

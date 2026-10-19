@@ -1,0 +1,238 @@
+/* ESTA 2026-10-19 | Maintenance ASSET modal only.
+   Keep the legacy three-column desktop form layout after extracting scrollable fields.
+   No changes to asset data, date calculation, maintenance records or other modals. */
+#maintenanceAssetModal .maintenanceAssetFields{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  min-width:0;
+}
+#maintenanceAssetModal .maintenanceAssetFields>label{min-width:0}
+
+@media(max-width:760px){
+  /* Modal must be above the fixed ESTA bottom dock on iPhone/PWA. */
+  #maintenanceAssetModal:not(.hide){
+    position:fixed!important;
+    inset:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    z-index:50000!important;
+    overflow:hidden!important;
+    padding:calc(8px + env(safe-area-inset-top,0px)) 8px
+      calc(8px + env(safe-area-inset-bottom,0px))!important;
+    box-sizing:border-box!important;
+    overscroll-behavior:contain;
+  }
+  #maintenanceAssetModal.hide{display:none!important}
+  #maintenanceAssetModal .maintenanceModalCard{
+    display:flex!important;
+    flex-direction:column!important;
+    width:min(100%,460px)!important;
+    max-width:100%!important;
+    height:min(690px,calc(100dvh - 16px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)))!important;
+    max-height:calc(100dvh - 16px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    border-radius:14px!important;
+    box-sizing:border-box!important;
+    isolation:isolate;
+  }
+  #maintenanceAssetModal .inventoryModalHead{
+    flex:0 0 auto!important;
+    padding:12px 48px 10px 13px!important;
+    margin:0!important;
+  }
+  #maintenanceAssetModal .inventoryModalHead>span{
+    font-size:9px!important;
+    letter-spacing:1px!important;
+    line-height:1.2!important;
+  }
+  #maintenanceAssetModal .inventoryModalHead h3{
+    margin:3px 0 3px!important;
+    font-size:19px!important;
+    line-height:1.25!important;
+  }
+  #maintenanceAssetModal .inventoryModalHead p{
+    margin:0!important;
+    font-size:11px!important;
+    line-height:1.35!important;
+  }
+  #maintenanceAssetModal #closeMaintenanceAssetModal{
+    top:9px!important;
+    right:9px!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    z-index:3!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:0!important;
+    font-size:25px!important;
+  }
+
+  /* Only the input area scrolls; Submit and Cancel never scroll out of sight. */
+  #maintenanceAssetModal #maintenanceAssetForm{
+    display:flex!important;
+    flex-direction:column!important;
+    flex:1 1 auto!important;
+    gap:0!important;
+    width:100%!important;
+    min-height:0!important;
+    min-width:0!important;
+    max-height:100%!important;
+    overflow:hidden!important;
+    margin:0!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    gap:9px 9px!important;
+    align-content:start!important;
+    flex:1 1 auto!important;
+    min-height:0!important;
+    min-width:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
+    touch-action:pan-y;
+    padding:11px 12px 18px!important;
+    scroll-padding-bottom:18px;
+    box-sizing:border-box!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields>label,
+  #maintenanceAssetModal .maintenanceAssetFields>label.wide{
+    display:block!important;
+    grid-column:auto!important;
+    min-width:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields>label.wide{
+    grid-column:1/-1!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields>label>span{
+    display:block!important;
+    min-height:16px;
+    margin:0 0 4px!important;
+    color:#acbbd0!important;
+    font-size:11px!important;
+    font-weight:750!important;
+    line-height:1.25!important;
+    white-space:normal!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields :is(input,select){
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    height:43px!important;
+    min-height:43px!important;
+    max-height:43px!important;
+    margin:0!important;
+    padding:0 9px!important;
+    border-radius:9px!important;
+    box-sizing:border-box!important;
+    font-family:inherit!important;
+    font-size:16px!important;
+    font-weight:500!important;
+    line-height:1.2!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis;
+  }
+  /* iOS Safari date controls can grow beyond their CSS grid tracks. */
+  #maintenanceAssetModal .maintenanceAssetFields input[type="date"]{
+    -webkit-appearance:none;
+    appearance:none;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+    text-align:left!important;
+    font-variant-numeric:tabular-nums;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields input[type="date"]::-webkit-date-and-time-value{
+    min-width:0!important;
+    max-width:100%!important;
+    text-align:left!important;
+    font-size:14px!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields input[type="date"]::-webkit-datetime-edit{
+    min-width:0!important;
+    padding:0!important;
+    font-size:14px!important;
+  }
+  #maintenanceAssetModal .maintenanceAutoHint{
+    margin-left:4px!important;
+    padding:1px 5px!important;
+    font-size:9px!important;
+    white-space:nowrap!important;
+    vertical-align:middle!important;
+  }
+
+  #maintenanceAssetModal #maintenanceAssetForm>.inventoryFormActions{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.35fr)!important;
+    align-items:center!important;
+    gap:9px!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))!important;
+    border-top:1px solid #304158!important;
+    background:#111c2e!important;
+    box-shadow:0 -5px 14px rgba(0,0,0,.2)!important;
+    z-index:2!important;
+    box-sizing:border-box!important;
+  }
+  #maintenanceAssetModal #maintenanceAssetForm>.inventoryFormActions button{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:48px!important;
+    height:48px!important;
+    margin:0!important;
+    padding:8px 10px!important;
+    border-radius:9px!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    white-space:nowrap!important;
+    touch-action:manipulation;
+  }
+  #maintenanceAssetModal #cancelMaintenanceAssetModal{
+    border:1px solid #49607b!important;
+    background:#1e2d44!important;
+    color:#e4efff!important;
+  }
+  #maintenanceAssetModal #maintenanceAssetForm>.inventoryFormActions button[type="submit"]{
+    border:1px solid #2186a4!important;
+    background:#17618a!important;
+    color:#fff!important;
+  }
+}
+@media(max-width:359px){
+  #maintenanceAssetModal .maintenanceAssetFields>label:has(#maintenanceLastDate),
+  #maintenanceAssetModal .maintenanceAssetFields>label:has(#maintenanceNextDate){
+    grid-column:1/-1!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields{
+    gap:8px!important;
+    padding-inline:10px!important;
+  }
+  #maintenanceAssetModal .maintenanceAssetFields>label>span{
+    font-size:10.5px!important;
+  }
+}
