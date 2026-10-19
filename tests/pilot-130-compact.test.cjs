@@ -8,19 +8,19 @@ const maintenanceSource=fs.readFileSync("maintenance-130.js","utf8");
 const css=fs.readFileSync("pilot-130-compact.css","utf8");
 const html=fs.readFileSync("index.html","utf8");
 
-assert.match(html,/pilot-130-compact\\.css\\?v=20261019-pilot01/);
-assert.match(appSource,/currentBuilding=\\{\\.\\.\\.building\\};[\\s\\S]{0,250}classList\\.toggle\\("estaPilot130HH",String\\(currentBuilding\\.id\\)==="130HH"\\)/);
-assert.match(maintenanceSource,/if\\(B==="130HH"\\)return "rows";/);
-assert.match(maintenanceSource,/localStorage\\.getItem\\(viewKey\\(\\)\\)/);
+assert.match(html,/pilot-130-compact\.css\?v=20261019-pilot01/);
+assert.match(appSource,/currentBuilding=\{\.\.\.building\};[\s\S]{0,250}classList\.toggle\("estaPilot130HH",String\(currentBuilding\.id\)==="130HH"\)/);
+assert.match(maintenanceSource,/if\(B==="130HH"\)return "rows";/);
+assert.match(maintenanceSource,/localStorage\.getItem\(viewKey\(\)\)/);
 
-const selectors=css.replace(/\\/\\*[\\s\\S]*?\\*\\//g,"").split("\n").map(x=>x.trim())
+const selectors=css.replace(/\/\*[\s\S]*?\*\//g,"").split("\n").map(x=>x.trim())
  .filter(x=>x.endsWith("{")&&!x.startsWith("@media"));
 assert.ok(selectors.length>=25,"meaningful scoped style coverage");
 for(const selector of selectors){
  assert.ok(selector.startsWith("#app.estaPilot130HH "), "unscoped CSS rule: "+selector);
 }
 
-const match=appSource.match(/function syncOverviewNavigation\\(\\)\\{[\\s\\S]*?\\n\\}\\nfunction showHome/);
+const match=appSource.match(/function syncOverviewNavigation\(\)\{[\s\S]*?\n\}\nfunction showHome/);
 assert.ok(match,"central navigation function exists");
 const fn=match[0].slice(0,-"\nfunction showHome".length);
 const fake=()=>({
