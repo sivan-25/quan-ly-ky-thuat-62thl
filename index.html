@@ -856,7 +856,7 @@
 <link rel="stylesheet" href="four-project-compact.css?v=20261019-four-buildings01" media="screen">
 <link rel="stylesheet" href="inventory-mobile-cards.css?v=20261019-phone130oneRow05" media="screen">
 <link rel="stylesheet" href="maintenance-130-mobile.css?v=20261019-130hh-compact01" media="screen">
-<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-mobile130-01">
+<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-detail-v2-01">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2185,10 +2185,10 @@
         <button id="contractorBackBtn" class="contractorBackBtn" type="button">← Danh sách nhà thầu</button>
       </div>
       <div class="contractorDetailActions">
-        <button id="contractorDetailExcel" class="contractorBtn ghost excel" type="button">Excel ⇩ Hồ sơ</button>
-        <button id="contractorDetailPdf" class="contractorBtn ghost" type="button">PDF ⇩ Hồ sơ</button>
-        <button id="editContractorBtn" class="contractorBtn ghost" type="button">✎ Sửa thông tin</button>
-        <button id="addContractorJobBtn" class="contractorBtn primary" type="button">＋ Thêm công việc</button>
+        <button id="contractorDetailExcel" class="contractorBtn ghost excel" type="button" aria-label="Xuất hồ sơ Excel"><span class="contractorActionLong">Excel ⇩ Hồ sơ</span><span class="contractorActionShort" aria-hidden="true">Excel</span></button>
+        <button id="contractorDetailPdf" class="contractorBtn ghost" type="button" aria-label="Xuất hồ sơ PDF"><span class="contractorActionLong">PDF ⇩ Hồ sơ</span><span class="contractorActionShort" aria-hidden="true">PDF</span></button>
+        <button id="editContractorBtn" class="contractorBtn ghost" type="button" aria-label="Sửa thông tin nhà thầu"><span class="contractorActionLong">✎ Sửa thông tin</span><span class="contractorActionShort" aria-hidden="true">✎ Sửa</span></button>
+        <button id="addContractorJobBtn" class="contractorBtn primary" type="button" aria-label="Thêm công việc nhà thầu"><span class="contractorActionLong">＋ Thêm công việc</span><span class="contractorActionShort" aria-hidden="true">＋ Thêm CV</span></button>
         <button id="contractorDetailCloseBtn" class="contractorDetailCloseBtn" type="button" title="Đóng" aria-label="Đóng">×</button>
       </div>
     </div>
@@ -2202,13 +2202,20 @@
         <h1 id="contractorDetailName">Tên nhà thầu</h1>
         <p id="contractorDetailNote">—</p>
       </div>
+      <div class="contractorMobileDetailMeta" aria-label="Trạng thái và thời hạn hợp đồng">
+        <span id="contractorDetailMobileStatus" class="contractorStatusBadge active">Đang hợp tác</span>
+        <span id="contractorDetailMobileTerm" class="contractorMobileTerm" title="Thời hạn hợp đồng">—</span>
+      </div>
       <span id="contractorDetailStatus" class="contractorStatusBadge active">Đang hợp tác</span>
     </div>
 
     <div class="contractorContactGrid contractorContactGrid3">
       <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><path d="M6 3h4l2 5-3 2a15 15 0 0 0 5 5l2-3 5 2v4c0 2-2 3-4 3C9 20 4 15 3 7c0-2 1-4 3-4z"/></svg></span><div><small>SỐ ĐIỆN THOẠI</small><a id="contractorDetailPhone" href="#">—</a></div></article>
       <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 4-7 8-7s7 2 8 7"/></svg></span><div><small>NGƯỜI LIÊN HỆ</small><b id="contractorDetailContact">—</b></div></article>
-      <article><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><div><small>THỜI HẠN HỢP ĐỒNG</small><b id="contractorDetailContractTerm">—</b></div></article>
+      <article class="contractorTermDetailCard"><span class="contractorContactIcon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><div><small>THỜI HẠN HỢP ĐỒNG</small><b id="contractorDetailContractTerm">—</b></div></article>
+    </div>
+    <div class="contractorMobileDetailNote">
+      <span>Ghi chú</span><p id="contractorMobileDetailNoteValue">—</p>
     </div>
 
     <div class="contractorJobsPanel">
@@ -2685,7 +2692,7 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261019-inventory130oneRow05"></script><script src="completion-certificate-130.js?v=20261015-upgrade01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261019-mobile130-01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
+<script src="contractor.js?v=20261019-detail-v2-01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
   const target=event.target;
