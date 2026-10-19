@@ -861,8 +861,9 @@
 <link rel="stylesheet" href="maintenance-130-mobile.css?v=20261019-fourbuilding-mobile01" media="screen">
 <link rel="stylesheet" href="maintenance-asset-mobile-form.css?v=20261019-formcompact01" media="screen">
 <link rel="stylesheet" href="maintenance-plan-mobile.css?v=20261019-plancompact01" media="screen">
-<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-call-premium01
-<link rel="stylesheet" href="contractor-job-mobile-130.css?v=20261019-fix-fullwidth03">">
+<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-call-premium01">
+<link rel="stylesheet" href="contractor-job-mobile-130.css?v=20261019-fix-fullwidth03">
+<link rel="stylesheet" href="contractor-profile-form-mobile.css?v=20261019-profile-grid01">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2473,16 +2474,18 @@
     <button id="closeContractorModal" class="modalClose" type="button">×</button>
     <div class="contractorModalHead"><span>ESTA · CONTRACTOR PROFILE</span><h3 id="contractorModalTitle">Thêm nhà thầu</h3><p>Thông tin này được lưu riêng theo từng dự án.</p></div>
     <form id="contractorForm" class="contractorForm">
+      <div class="contractorProfileFieldsScroll">
       <input id="contractorId" type="hidden">
       <label class="wide"><span>Tên nhà thầu *</span><input id="contractorName" maxlength="160" required placeholder="VD: Công ty THT"></label>
-      <label><span>Số điện thoại</span><input id="contractorPhone" maxlength="40" placeholder="090..."></label>
-      <label><span>Người liên hệ</span><input id="contractorContactName" maxlength="120" placeholder="Anh/Chị..."></label>
+      <label class="contractorPhoneField"><span>Số điện thoại</span><input id="contractorPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="090..."></label>
+      <label class="contractorContactField"><span>Người liên hệ</span><input id="contractorContactName" maxlength="120" placeholder="Anh/Chị..."></label>
       <label><span>Lĩnh vực</span><input id="contractorSpecialty" maxlength="120" placeholder="HVAC, PCCC, điện..."></label>
-      <label><span>Hợp đồng từ ngày</span><input id="contractorContractStart" type="date"></label>
-      <label><span>Hợp đồng đến ngày</span><input id="contractorContractEnd" type="date"></label>
+      <label class="contractorStartField"><span>Hợp đồng từ ngày</span><span class="contractorProfileDateShell"><input id="contractorContractStart" type="date"><span class="contractorProfileDateText" id="contractorContractStartText" aria-hidden="true">Chọn ngày</span></span></label>
+      <label class="contractorEndField"><span>Hợp đồng đến ngày</span><span class="contractorProfileDateShell"><input id="contractorContractEnd" type="date"><span class="contractorProfileDateText" id="contractorContractEndText" aria-hidden="true">Chọn ngày</span></span></label>
       <label><span>Trạng thái</span><select id="contractorStatus"><option>Đang hợp tác</option><option>Tạm ngưng</option><option>Ngừng hợp tác</option></select></label>
       <label class="wide"><span>Ghi chú</span><textarea id="contractorNote" maxlength="600" rows="3" placeholder="Phạm vi phụ trách, thông tin cần lưu ý..."></textarea></label>
-      <div class="contractorFormActions"><button id="cancelContractorModal" type="button" class="contractorBtn ghost">Hủy</button><button type="submit" class="contractorBtn primary">Lưu nhà thầu</button></div>
+      </div>
+      <div class="contractorFormActions contractorProfileFormActions"><span id="contractorProfileSaveStatus" role="status" aria-live="polite" class="contractorProfileSaveStatus"></span><button id="cancelContractorModal" type="button" class="contractorBtn ghost">Hủy</button><button id="saveContractorProfile" type="submit" class="contractorBtn primary">Lưu nhà thầu</button></div>
     </form>
   </div>
 </div>
