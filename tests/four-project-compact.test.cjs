@@ -58,9 +58,10 @@ const stored=new Map(),viewContext={B:"130HH",LINK_BUILDINGS:new Set(projects),
  localStorage:{getItem:key=>stored.get(key)||null},
  window:{matchMedia:()=>({matches:false})}};
 vm.createContext(viewContext);
+vm.runInContext(src[0],viewContext);
 for(const project of projects){
  viewContext.B=project;
- assert.equal(vm.runInContext(src[0]+"\nreadView();",viewContext),"rows",project+" default row view");
+ assert.equal(vm.runInContext("readView()",viewContext),"rows",project+" default row view");
  stored.set("esta.maintenance."+project+".view","cards");
  assert.equal(vm.runInContext("readView()",viewContext),"cards",project+" saved view kept");
  stored.delete("esta.maintenance."+project+".view");
