@@ -56,7 +56,7 @@ assert.equal($("#toolsMobileCards .invMobileCard").querySelectorAll("button").le
 ctx.inventoryActiveMonth="all";
 vm.runInContext("renderMaterials();",ctx);
 assert.equal($("#materialMobilePeriod").value,"all");
-assert.equal($("#materialMobileCards .invYearMonth").length,12,"year view retains every month");
+assert.equal(dom.window.document.querySelectorAll("#materialMobileCards .invYearMonth").length,12,"year view retains every month");
 
 ctx.canProjectEdit=()=>false;
 vm.runInContext("renderMaterials(); renderTools();",ctx);
