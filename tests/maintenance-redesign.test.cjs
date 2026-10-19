@@ -29,6 +29,15 @@ async function fixture(id,internal,extra=""){
     assert.equal(d.querySelectorAll(".estamStats .m130Kpi .estamKpiDetail").length,6,"all KPI descriptions visible");
     assert.equal(d.querySelector(".estamTotal .estamKpiDetail").textContent,"Công việc trong tháng");
     assert.ok(d.querySelector(".estam130Overview"),"summary panel added on 130HH");
+    assert.equal(d.getElementById("maintenancePage").dataset.estamBuilding,"130HH","mobile pilot set to real project");
+    const details=d.getElementById("estam130MobileMore");
+    assert.ok(details,"mobile KPI details toggle exists");
+    assert.equal(details.getAttribute("aria-expanded"),"false");
+    details.click();
+    assert.equal(details.getAttribute("aria-expanded"),"true","extra KPIs can expand");
+    assert.ok(d.querySelector(".estam130Overview").classList.contains("estam130MetricsOpen"));
+    details.click();
+    assert.equal(details.getAttribute("aria-expanded"),"false","extra KPIs can collapse again");
     assert.ok(d.querySelector(".estam130Lead strong"),"large total visible");
     assert.equal(d.querySelectorAll("[data-estam130-group]").length,8,"seven exclusive categories and all-filter");
     assert.ok(d.querySelector(".estam130Progress"),"progress summary shown");
@@ -65,6 +74,7 @@ async function fixture(id,internal,extra=""){
   for(const buildingId of ["68PĐL","127HH","62THL"]){
     const {dom,d}=await fixture(buildingId,m130);
     assert.ok(d.querySelector(".estam130Overview"),"shared 130HH overview rendered: "+buildingId);
+    assert.equal(d.getElementById("maintenancePage").dataset.estamBuilding,buildingId,"project-specific CSS cannot bleed");
     assert.equal(d.querySelector(".estamStats .m130Kpi.estamTotal b").textContent,"20");
     assert.ok(d.querySelector("#estamNativeActions #m130Create"),"shared add action: "+buildingId);
     assert.ok(d.querySelector("#estam130Filters #m130State"),"shared filters: "+buildingId);
@@ -86,6 +96,13 @@ async function fixture(id,internal,extra=""){
     assert.ok(d.querySelector("#estamNativeActions #addMaintenanceAsset"));
     dom.window.close();
   }
+  const pilotCss=fs.readFileSync(path.join(__dirname,"..","maintenance-130-mobile.css"),"utf8");
+  assert.match(pilotCss,/#maintenancePage\[data-estam-building="130HH"\]/,"pilot styles cannot affect other projects");
+  assert.match(pilotCss,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/,"four priority metrics on one line");
+  assert.match(pilotCss,/\.estam130Overview:not\(\.estam130MetricsOpen\)/,"secondary KPIs collapse without data deletion");
+  assert.match(pilotCss,/#estam130MobileMore\{display:none!important\}/,"extra detail button hidden outside pilot");
+  const html=fs.readFileSync(path.join(__dirname,"..","index.html"),"utf8");
+  assert.match(html,/maintenance-130-mobile\.css\?v=/,"pilot mobile CSS shipped");
   const scopedCss=fs.readFileSync(path.join(__dirname,"..","maintenance-130-summary.css"),"utf8");
   assert.match(scopedCss,/\[data-kind="130"\]/,"KPI redesign scoped to 130HH");
   assert.match(scopedCss,/@media\(max-width:640px\)/,"mobile layout provided");
