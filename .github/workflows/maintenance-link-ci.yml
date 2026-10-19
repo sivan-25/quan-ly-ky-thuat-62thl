@@ -31,5 +31,7 @@ jobs:
         run: node tests/maintenance-130-mobile-compact.test.cjs
       - name: Check asset modal HTML, dates and fixed controls
         run: node tests/maintenance-asset-mobile-modal.test.cjs
+      - name: Verify mobile maintenance planning and saved confirmation
+        run: node tests/maintenance-plan-mobile.test.cjs
       - name: Run ESTA test suite
         run: npm test
