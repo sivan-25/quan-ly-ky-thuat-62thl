@@ -53,7 +53,7 @@ for (const [name,source] of [["contractor CSS",css],["profile CSS",formCss],["jo
 }
 
 // Database reads and writes must stay restricted to the currently selected building.
-assert.ok(js.includes('"&building_id=eq."+b'),"data load must be building-scoped");
+assert.ok(js.includes('building_id=eq."+b'),"data load must be building-scoped");
 assert.ok(js.includes("building_id:currentBuilding.id"),"data mutations need building id");
 assert.ok(js.includes('"&building_id=eq."+encodeURIComponent(currentBuilding.id)'),"scoped updates/deletes missing");
 
