@@ -184,7 +184,7 @@
   grid-template-columns:minmax(0,1fr)!important;
  }
 }
-@media(max-width:700px){
+@media(max-width:850px){
  #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
   grid-template-columns:minmax(0,1fr)!important;gap:7px!important;
   padding:7px 2px!important;
