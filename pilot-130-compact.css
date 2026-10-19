@@ -125,14 +125,15 @@
  padding:9px 10px 14px!important;
 }
 #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout{
- grid-template-columns:185px minmax(0,1fr)!important;
+ grid-template-columns:220px minmax(0,1fr)!important;
  gap:9px!important;
 }
 #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueSystemRail{
  gap:4px!important;padding:7px!important;
 }
 #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueRailCard{
- min-height:42px!important;padding:6px 9px!important;
+ min-height:66px!important;height:auto!important;max-height:none!important;
+ padding:9px 10px!important;align-items:center!important;
 }
 #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefTop{
  gap:6px!important;margin-bottom:4px!important;
@@ -249,5 +250,67 @@
  #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefSearch input,
  #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefTools #ueStatus{
   min-height:44px!important;height:44px!important;
+ }
+}
+
+/* 130 HH – rail labels must be readable at any font scaling / viewport width.
+   Titles may wrap; item totals always remain on their own non-overlapping line. */
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueRailCard{
+ box-sizing:border-box!important;
+ grid-template-columns:24px minmax(0,1fr) 12px!important;
+ grid-auto-rows:max-content!important;
+ column-gap:8px!important;
+ overflow:visible!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRailCard .ueRailText{
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:center!important;
+ align-self:center!important;
+ min-width:0!important;
+ width:100%!important;
+ height:auto!important;
+ min-height:0!important;
+ gap:4px!important;
+ overflow:visible!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRailCard .ueRailText b{
+ display:block!important;
+ flex:0 0 auto!important;
+ max-width:100%!important;
+ font-size:13px!important;
+ font-weight:800!important;
+ line-height:1.4!important;
+ white-space:normal!important;
+ overflow-wrap:break-word!important;
+ hyphens:none!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRailCard .ueRailText small{
+ display:block!important;
+ flex:0 0 auto!important;
+ max-width:100%!important;
+ margin:0!important;
+ font-size:11px!important;
+ line-height:1.35!important;
+ white-space:normal!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRailCard svg{
+ width:23px!important;height:23px!important;
+}
+@media(max-width:1000px){
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+}
+@media(max-width:560px){
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueSystemRail{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueRailCard{
+  min-height:64px!important;
+  padding:8px 12px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRailCard .ueRailText b{
+  font-size:13px!important;
  }
 }
