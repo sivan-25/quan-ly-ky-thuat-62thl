@@ -3019,13 +3019,19 @@ function renderMaterials(){
   const is130PhonePilot=String(currentBuilding?.id||"")==="130HH";
   const canDelete=canEdit&&currentAccount?.is_admin&&Math.abs(inventoryNum(s.current))<0.000001;
   const valueHtml='<div class="invMobileValues">'+metrics.map(([label,val],index)=>
-   '<div class="invMobileValue '+(index===1?"is-in":index===2?"is-out":index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>';
+   '<div class="invMobileValue '+(index===1?"is-in":index===2?"is-out":index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+(is130PhonePilot&&index===1&&inventoryNum(val)>0?"+":is130PhonePilot&&index===2&&inventoryNum(val)>0?"−":"")+inventoryFmt(val)+'</b></div>').join("")+'</div>';
+  const supply=Math.max(0,inventoryNum(metrics[0][1]))+Math.max(0,inventoryNum(metrics[1][1]));
+  const progress=supply>0?Math.max(0,Math.min(100,inventoryNum(balance)/supply*100)):0;
+  const referenceProgress=is130PhonePilot&&supply>0?'<div class="inventory130Progress" role="meter" aria-label="Tỷ lệ vật tư còn lại" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+Math.round(progress)+'"><span style="width:'+progress.toFixed(1)+'%"></span></div>'+
+   '<small class="inventory130ProgressText">Còn '+inventoryFmt(balance)+'/'+inventoryFmt(supply)+' so với tồn đầu + nhập</small>':'';
   const actions=canEdit?'<div class="invMobileCardActions">'+
    '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
    '<button type="button" onclick="editMaterial(\''+id+'\')">Sửa</button>'+
    (!is130PhonePilot&&canDelete?'<button type="button" class="is-delete" onclick="deleteMaterial(\''+id+'\')">Xóa</button>':'')+
    '</div>':'';
   const pilotDelete=is130PhonePilot&&canDelete?'<button type="button" class="invMobileDelete" title="Xóa vật tư khi tồn kho bằng 0" aria-label="Xóa '+esc(m.name)+'" onclick="deleteMaterial(\''+id+'\')">×</button>':'';
+  const pilotEdit=is130PhonePilot&&canEdit?'<button type="button" class="inventory130Edit" aria-label="Sửa '+esc(m.name)+'" onclick="editMaterial(\''+id+'\')">✎</button>':'';
+  const pilotMove=is130PhonePilot&&canEdit?'<button type="button" class="inventory130Move" aria-label="Nhập xuất '+esc(m.name)+'" onclick="openStockTxnModal(\''+id+'\')">⇄</button>':'';
   const stockStatus=inventoryNum(balance)<=0?"Hết hàng":isLow?"Sắp hết":"Còn hàng";
   const yearly=!is130PhonePilot&&allYear?'<details class="invYearDetails"><summary>Nhập / xuất từng tháng</summary><div class="invYearGrid">'+
    s.months.map((monthValue,j)=>'<div class="invYearMonth"><span>Th '+String(j+1).padStart(2,"0")+'</span><b>'+
@@ -3037,9 +3043,9 @@ function renderMaterials(){
    '<strong>'+esc(m.name)+'</strong>'+
    (m.code?'<small>Mã: '+esc(m.code)+'</small>':'')+
    '<span class="invMobileUnit">ĐVT: '+esc(m.unit||"—")+'</span></div>'+
-   (is130PhonePilot?'<div class="invMobileStatusGroup"><span class="invMobileStatus">'+stockStatus+'</span>'+pilotDelete+'</div>':'<span class="invMobileNumber">#'+(i+1)+'</span>')+
+   (is130PhonePilot?'<div class="invMobileStatusGroup"><span class="invMobileStatus">'+stockStatus+'</span>'+pilotMove+pilotEdit+pilotDelete+'</div>':'<span class="invMobileNumber">#'+(i+1)+'</span>')+
    '</div>'+
-   (is130PhonePilot?'<div class="invMobileCardBottom'+(canEdit?"":" is-readonly")+'">'+valueHtml+actions+'</div>':valueHtml)+
+   (is130PhonePilot?'<div class="invMobileCardBottom is-readonly">'+valueHtml+'</div>':valueHtml)+referenceProgress+
    (isLow?'<small class="invMobileNotice">⚠ Tồn thấp · định mức '+inventoryFmt(m.min_qty)+'</small>':'')+
    yearly+(is130PhonePilot?"":actions)+'</article>';
  }).join("");
@@ -3065,6 +3071,14 @@ function renderMaterials(){
   const taskId=String(x.source_task_id||"").replace(/[^a-zA-Z0-9_-]/g,"");
   const buttons=linked?'<button type="button" onclick="openLinkedTaskFromStockTxn(\''+taskId+'\')">↗ '+esc(x.source_task_title||"Mở công việc")+'</button>':
     canProjectEdit()?'<button type="button" class="is-delete" onclick="deleteStockTxn(\''+id+'\')">Xóa giao dịch</button>':'';
+  if(String(currentBuilding?.id||"")==="130HH"){
+   return '<article class="invMobileCard inventory130Transaction"><div class="inventory130TxnMain">'+
+    '<div class="inventory130TxnText"><strong>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</strong>'+
+    '<small>'+fmt(x.tx_date)+' · '+esc(x.performer||"Chưa ghi người thực hiện")+'</small></div>'+
+    '<span class="inventory130TxnBadge '+(x.tx_type==="out"?"is-out":"is-in")+'">'+(x.tx_type==="out"?"Xuất −":"Nhập +")+inventoryFmt(x.qty)+'</span></div>'+
+    (x.note?'<small class="inventory130TxnNote">'+esc(x.note)+'</small>':'')+
+    (buttons?'<div class="inventory130TxnActions">'+buttons+'</div>':'')+'</article>';
+  }
   return '<article class="invMobileCard"><div class="invMobileCardHead">'+
    '<div class="invMobileCardName"><strong>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</strong><small>'+fmt(x.tx_date)+'</small></div>'+
    '<span class="invMobileType '+(x.tx_type==="out"?"is-out":"")+'">'+(x.tx_type==="in"?"Nhập":"Xuất")+'</span></div>'+
@@ -3079,6 +3093,7 @@ function renderMaterials(){
  const selectable=inventoryActiveMaterials().filter(m=>inventoryTrackingStart(m)<=periodEnd);
  sel.innerHTML='<option value="">— Chọn vật tư —</option>'+selectable.map(m=>'<option value="'+m.id+'">'+esc(m.name)+' · tồn '+inventoryFmt(inventoryStockAsOf(m,today())??0)+' '+esc(m.unit)+'</option>').join("");
  if(selectable.some(m=>m.id===old))sel.value=old;
+ if(typeof syncInventory130Reference==="function")syncInventory130Reference({year:y,allYear,count:snaps.length});
 }
 function renderTools(){
  const q=($("#toolSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
