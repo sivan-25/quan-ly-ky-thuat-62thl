@@ -2979,9 +2979,12 @@ function renderMaterials(){
  $("#materialMonthLabel").textContent=periodText;
  $("#materialSelectedMonth").textContent=periodText;
  $("#materialTitleCount").textContent="("+list.length+" mục)";
- $("#materialInLabel").textContent=allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG";
- $("#materialOutLabel").textContent=allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG";
- $("#materialStockLabel").textContent=allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN";
+ const reference130=String(currentBuilding?.id||"")==="130HH";
+ $("#materialInLabel").textContent=reference130?(allYear?"Nhập năm":"Nhập tháng"):(allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG");
+ $("#materialOutLabel").textContent=reference130?(allYear?"Xuất năm":"Xuất tháng"):(allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG");
+ $("#materialStockLabel").textContent=reference130?"Mặt hàng tồn":(allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN");
+ const fullYearButton=$("#materialMonthTabs .yearOverviewBtn");
+ if(fullYearButton)fullYearButton.textContent=reference130?"Cả năm":"12 tháng";
 
  const periodRows=inventoryActiveMaterials().map(m=>({m,s:inventorySnapshot(m,y)})).filter(x=>allYear?x.s.months.some(mm=>mm.active):x.s.months[month-1]?.active);
  const totalIn=periodRows.reduce((sum,x)=>sum+(allYear?inventoryNum(x.s.totalIn):inventoryNum(x.s.months[month-1]?.inQty)),0);
@@ -3058,7 +3061,7 @@ function renderMaterials(){
   const supply=Math.max(0,inventoryNum(metrics[0][1]))+Math.max(0,inventoryNum(metrics[1][1]));
   const progress=supply>0?Math.max(0,Math.min(100,inventoryNum(balance)/supply*100)):0;
   const referenceProgress=is130PhonePilot&&supply>0?'<div class="inventory130Progress" role="meter" aria-label="Tỷ lệ vật tư còn lại" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+Math.round(progress)+'"><span style="width:'+progress.toFixed(1)+'%"></span></div>'+
-   '<small class="inventory130ProgressText">Còn '+inventoryFmt(balance)+'/'+inventoryFmt(supply)+' so với tồn đầu + nhập</small>':'';
+   '<small class="inventory130ProgressText">Còn '+inventoryFmt(balance)+'/'+inventoryFmt(supply)+(inventoryNum(metrics[0][1])===0?' so với tổng nhập':' so với tồn đầu + nhập')+'</small>':'';
   const actions=canEdit?'<div class="invMobileCardActions">'+
    '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
    '<button type="button" onclick="editMaterial(\''+id+'\')">Sửa</button>'+
