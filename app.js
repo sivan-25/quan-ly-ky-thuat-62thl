@@ -2895,7 +2895,8 @@ function renderStockAlerts(){
  $("#stockAlertOnly").textContent=inventoryShowAlertsOnly?"Hiện tất cả vật tư":"Chỉ xem cảnh báo";
  const box=$("#stockAlertList");
  if(!alerts.length){
-   box.innerHTML='<div class="stockAlertEmpty"><span>✓</span><div><b>Tồn kho đang ổn định</b><small>Không có vật tư nào bằng hoặc thấp hơn mức tồn tối thiểu.</small></div></div>';
+   const title=String(currentBuilding?.id||"")==="130HH"?"Tồn kho ổn định · không vật tư dưới mức tối thiểu":"Tồn kho đang ổn định";
+   box.innerHTML='<div class="stockAlertEmpty"><span>✓</span><div><b>'+title+'</b><small>Không có vật tư nào bằng hoặc thấp hơn mức tồn tối thiểu.</small></div></div>';
    return;
  }
  box.innerHTML=alerts.map(({m,current,min,severity})=>{
@@ -2917,7 +2918,7 @@ window.openLowStockReplenish=id=>{
 };
 /* Mobile 130 HH reference controls mirror native ESTA controls: no duplicate backend state. */
 function syncInventory130Reference({year,allYear,count}){
- const active=String(currentBuilding?.id||"")==="130HH";
+ const active=String(currentBuilding?.id||"")==="130HH"&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
  const input=$("#inventory130Search"),yearSelect=$("#inventory130Year"),counter=$("#inventory130ListCount");
  if(!input||!yearSelect||!counter)return;
  if(!active)return;
@@ -2979,7 +2980,7 @@ function renderMaterials(){
  $("#materialMonthLabel").textContent=periodText;
  $("#materialSelectedMonth").textContent=periodText;
  $("#materialTitleCount").textContent="("+list.length+" mục)";
- const reference130=String(currentBuilding?.id||"")==="130HH";
+ const reference130=String(currentBuilding?.id||"")==="130HH"&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
  $("#materialInLabel").textContent=reference130?(allYear?"Nhập năm":"Nhập tháng"):(allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG");
  $("#materialOutLabel").textContent=reference130?(allYear?"Xuất năm":"Xuất tháng"):(allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG");
  $("#materialStockLabel").textContent=reference130?"Mặt hàng tồn":(allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN");
