@@ -854,6 +854,7 @@
 <link rel="stylesheet" href="upgrade-equipment.css?v=20261017-live-dialog01" media="screen">
 <link rel="stylesheet" href="upgrade-equipment-compact.css?v=20261016-sharedsystems01" media="screen"><link rel="stylesheet" href="upgrade-equipment-reference.css?v=20261018-inspectionflow03" media="screen">
 <link rel="stylesheet" href="four-project-compact.css?v=20261019-four-buildings01" media="screen">
+<link rel="stylesheet" href="inventory-mobile-cards.css?v=20261019-phone01" media="screen">
 <style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style></head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -1869,6 +1870,23 @@
         <button type="button" data-material-month="11">Th 11</button>
         <button type="button" data-material-month="12">Th 12</button>
       </div>
+      <label class="inventoryMobilePeriod" for="materialMobilePeriod">Chọn kỳ xem vật tư
+        <select id="materialMobilePeriod" aria-label="Chọn tháng hoặc 12 tháng">
+          <option value="all">Cả năm · 12 tháng</option>
+          <option value="1">Tháng 01</option>
+          <option value="2">Tháng 02</option>
+          <option value="3">Tháng 03</option>
+          <option value="4">Tháng 04</option>
+          <option value="5">Tháng 05</option>
+          <option value="6">Tháng 06</option>
+          <option value="7">Tháng 07</option>
+          <option value="8">Tháng 08</option>
+          <option value="9">Tháng 09</option>
+          <option value="10">Tháng 10</option>
+          <option value="11">Tháng 11</option>
+          <option value="12">Tháng 12</option>
+        </select>
+      </label>
     </div>
 
     <div class="inventoryStats monthlyStats">
@@ -1903,6 +1921,7 @@
           <tbody id="materialMatrixBody"></tbody>
         </table>
       </div>
+      <div id="materialMobileCards" class="invMobileList" aria-label="Danh sách vật tư trên điện thoại"></div>
       <div id="materialEmpty" class="inventoryEmpty hide">Chưa có vật tư trong dự án này.</div>
     </div>
 
@@ -1935,6 +1954,7 @@
           <tbody id="materialTxnBody"></tbody>
         </table>
       </div>
+      <div id="materialMobileTransactions" class="invMobileList" aria-label="Giao dịch nhập xuất trên điện thoại"></div>
       <div id="materialTxnEmpty" class="inventoryEmpty hide">Chưa có giao dịch nhập / xuất trong tháng này.</div>
     </div>
   </section>
@@ -1985,6 +2005,7 @@
           <tbody id="toolsBody"></tbody>
         </table>
       </div>
+      <div id="toolsMobileCards" class="invMobileList" aria-label="Danh sách dụng cụ trên điện thoại"></div>
       <div id="toolsEmpty" class="inventoryEmpty hide">Chưa có dụng cụ kỹ thuật.</div>
     </div>
 
