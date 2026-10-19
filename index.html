@@ -860,7 +860,8 @@
 <link rel="stylesheet" href="inventory-mobile-cards.css?v=20261019-phone130reference06" media="screen">
 <link rel="stylesheet" href="maintenance-130-mobile.css?v=20261019-130hh-touch02" media="screen">
 <link rel="stylesheet" href="maintenance-asset-mobile-form.css?v=20261019-formcompact01" media="screen">
-<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-call-premium01">
+<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-call-premium01
+<link rel="stylesheet" href="contractor-job-mobile-130.css?v=20261019-compact-confirm01">">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2490,18 +2491,19 @@
     <button id="closeContractorJobModal" class="modalClose" type="button">×</button>
     <div class="contractorModalHead contractorJobModalHead"><span>ESTA · CONTRACTOR WORK LOG</span><h3 id="contractorJobModalTitle">Thêm công việc</h3><p id="contractorJobModalContractor">Nhà thầu</p></div>
     <form id="contractorJobForm" class="contractorForm jobForm contractorJobCompactForm">
+      <div class="contractorJobFieldsScroll">
       <input id="contractorJobId" type="hidden">
       <input id="contractorJobSourceTaskId" type="hidden">
       <input id="contractorJobContractorId" type="hidden">
 
-      <label class="jobDateField"><span>Ngày thực hiện *</span><input id="contractorJobDate" type="date" required></label>
-      <label class="jobCompletedField"><span>Ngày hoàn thành</span><input id="contractorJobCompletedDate" type="date"></label>
+      <label class="jobDateField"><span>Ngày thực hiện *</span><span class="contractorJobDateShell"><input id="contractorJobDate" type="date" required><span class="contractorJobDateText" id="contractorJobDateText" aria-hidden="true">Chọn ngày</span></span></label>
+      <label class="jobCompletedField"><span>Ngày hoàn thành</span><span class="contractorJobDateShell"><input id="contractorJobCompletedDate" type="date"><span class="contractorJobDateText" id="contractorJobCompletedDateText" aria-hidden="true">Chọn ngày</span></span></label>
       <label class="jobStatusField"><span>Tình trạng *</span><select id="contractorJobStatus" required><option>Đang thực hiện</option><option>Hoàn thành</option><option>Chờ xử lý</option><option>Tạm dừng</option></select></label>
 
-      <label class="jobContentField"><span>Nội dung công việc *</span><textarea id="contractorJobContent" rows="3" maxlength="1200" required placeholder="Mô tả công việc nhà thầu thực hiện..."></textarea></label>
-      <label class="jobCauseField"><span>Nguyên nhân</span><textarea id="contractorJobCause" rows="3" maxlength="1000" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></textarea></label>
-      <label class="jobSolutionField"><span>Hướng xử lý</span><textarea id="contractorJobSolution" rows="3" maxlength="1000" placeholder="Phương án xử lý, thay thế, khắc phục..."></textarea></label>
-      <label class="jobNoteField"><span>Ghi chú</span><textarea id="contractorJobNote" rows="2" maxlength="800" placeholder="Ghi chú thêm nếu có..."></textarea></label>
+      <label class="jobContentField"><span>Nội dung công việc *</span><textarea id="contractorJobContent" rows="1" maxlength="1200" required placeholder="Mô tả công việc nhà thầu thực hiện..."></textarea></label>
+      <label class="jobCauseField"><span>Nguyên nhân</span><textarea id="contractorJobCause" rows="1" maxlength="1000" placeholder="Nguyên nhân sự cố / lý do thực hiện..."></textarea></label>
+      <label class="jobSolutionField"><span>Hướng xử lý</span><textarea id="contractorJobSolution" rows="1" maxlength="1000" placeholder="Phương án xử lý, thay thế, khắc phục..."></textarea></label>
+      <label class="jobNoteField"><span>Ghi chú</span><textarea id="contractorJobNote" rows="1" maxlength="800" placeholder="Ghi chú thêm nếu có..."></textarea></label>
 
       <div class="contractorJobImageField">
         <div class="contractorImageHeading"><span>Hình ảnh công việc</span><small>Ảnh được nén và lưu theo dự án</small></div>
@@ -2515,9 +2517,11 @@
         <div id="contractorJobImagePreview" class="contractorJobImagePreview"></div>
       </div>
 
+      </div>
       <div class="contractorFormActions contractorJobFormActions">
         <button id="cancelContractorJobModal" type="button" class="contractorBtn ghost">Hủy</button>
-        <button id="contractorJobSaveBtn" type="submit" class="contractorBtn primary">Lưu công việc</button>
+        <span id="contractorJobSaveStatus" class="contractorJobSaveStatus" role="status" aria-live="polite"></span>
+        <button id="contractorJobSaveBtn" type="submit" class="contractorBtn primary">Xác nhận</button>
       </div>
     </form>
   </div>
@@ -2718,7 +2722,7 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261019-inventory130reference08"></script><script src="completion-certificate-130.js?v=20261015-upgrade01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261019-call-premium01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
+<script src="contractor.js?v=20261019-compact-confirm01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
   const target=event.target;
