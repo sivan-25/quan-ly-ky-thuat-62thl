@@ -109,3 +109,102 @@
     min-width:0!important;min-height:45px!important;font-size:13px!important;
   }
 }
+
+
+/* ESTA 130 Hồng Hà: pilot of denser, thumb-friendly phone inventory rows.
+   Only the 130HH project and <=760px displays are affected.
+   No stock calculation, transaction flow or desktop table is modified. */
+@media(max-width:760px){
+  #app #inventoryPage.inventory130MobileCompact .inventoryStats{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;margin:7px 0!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .inventoryStats article{
+    padding:7px 3px!important;min-height:67px!important;
+    gap:3px!important;border-radius:9px!important;
+    justify-content:center!important;text-align:center!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .inventoryStats article>div{
+    width:100%!important;min-width:0!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .inventoryStats small{
+    display:block!important;font-size:9px!important;
+    line-height:1.18!important;letter-spacing:0!important;
+    overflow-wrap:anywhere!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .inventoryStats b{
+    font-size:19px!important;line-height:1.12!important;
+    margin-top:4px!important;font-variant-numeric:tabular-nums!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileList{
+    padding:7px!important;gap:7px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCard{
+    padding:9px 10px!important;border-radius:11px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardHead{
+    gap:6px!important;align-items:center!important;min-height:30px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardName strong{
+    display:inline!important;font-size:14px!important;
+    line-height:1.28!important;vertical-align:middle!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardName small{
+    font-size:10px!important;margin-top:2px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileUnit{
+    display:inline-flex!important;margin:0 0 0 7px!important;
+    padding:2px 6px!important;border-radius:5px!important;
+    font-size:10px!important;vertical-align:middle!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileNumber{
+    padding:2px 5px!important;font-size:10px!important;
+    border-radius:6px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileValues{
+    gap:5px!important;margin-top:7px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileValue{
+    padding:5px 2px!important;border-radius:7px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileValue span{
+    font-size:9px!important;line-height:1.16!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileValue b{
+    font-size:15px!important;line-height:1.2!important;
+    margin-top:3px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardActions{
+    gap:7px!important;margin-top:7px!important;
+    padding-top:0!important;border-top:0!important;flex-wrap:nowrap!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardActions button{
+    min-width:0!important;min-height:40px!important;
+    padding:7px 6px!important;font-size:12px!important;
+    border-radius:8px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardActions button:first-child{
+    flex:1.65 1 0!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardActions button:not(:first-child){
+    flex:1 1 0!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCardActions button.is-delete{
+    flex:0 1 60px!important;min-width:0!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileNotice{
+    font-size:10px!important;margin-top:5px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invYearDetails{
+    margin-top:5px!important;padding-top:5px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .inventoryCardTitle{
+    padding:8px 10px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .inventorySectionBar{
+    gap:6px!important;padding:9px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .inventoryMonthRail{
+    padding:8px!important;margin:6px 0!important;
+  }
+}
