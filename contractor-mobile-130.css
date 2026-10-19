@@ -390,3 +390,114 @@
     font-size:10px!important;
   }
 }
+
+/* ESTA CONTRACTOR DETAIL V3 · 130 HH only · one-row history/search. */
+.contractorMobileTermGroup{display:none}
+#contractorMobileJobCount{display:none}
+.contractorJobStatusMini{display:contents}
+@media(max-width:760px){
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileDetailMeta{
+    align-items:center!important;gap:7px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileTermGroup{
+    display:flex!important;flex-direction:column!important;justify-content:center!important;
+    align-items:flex-start!important;min-width:0!important;gap:3px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileTermGroup[hidden]{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileTermGroup small{
+    display:block!important;margin:0!important;padding:0!important;
+    color:#d8b778!important;font-size:9px!important;font-weight:730!important;
+    line-height:1.1!important;letter-spacing:0!important;white-space:nowrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileTerm{
+    display:block!important;font-size:10px!important;line-height:1.25!important;
+    color:#dfebf8!important;font-weight:650!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 article.contractorTermDetailCard{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobsHead{
+    display:grid!important;grid-template-columns:max-content minmax(0,1fr)!important;
+    align-items:center!important;justify-content:stretch!important;
+    flex-direction:row!important;gap:8px!important;min-width:0!important;
+    min-height:0!important;padding:10px 9px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobHeading{
+    min-width:0!important;margin:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobHeading .contractorKicker{
+    display:block!important;margin:0!important;padding:0!important;
+    color:#37d8e9!important;font-size:9px!important;font-weight:800!important;
+    letter-spacing:.2px!important;line-height:1.25!important;white-space:nowrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorMobileJobCount{
+    display:inline!important;font-size:9px!important;font-weight:700!important;
+    color:#a8bdd7!important;letter-spacing:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobHeading h2{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobFilters{
+    display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+    align-items:center!important;gap:6px!important;min-width:0!important;
+    width:100%!important;margin:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobFilters .contractorSearch.compact{
+    display:flex!important;flex:1 1 auto!important;min-width:0!important;
+    width:auto!important;max-width:none!important;height:39px!important;
+    min-height:39px!important;padding:0 7px!important;border-radius:9px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobFilters .contractorSearch.compact svg{
+    width:15px!important;height:15px!important;flex:0 0 15px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorJobSearch{
+    width:100%!important;min-width:0!important;height:36px!important;
+    padding:0 5px!important;font-size:12px!important;line-height:1.3!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorJobSearch::placeholder{
+    color:#a7b8d0!important;opacity:1!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobStatusMini{
+    display:flex!important;position:relative!important;align-items:center!important;
+    justify-content:center!important;width:38px!important;min-width:38px!important;
+    height:39px!important;min-height:39px!important;flex:0 0 38px!important;
+    margin:0!important;padding:0!important;overflow:hidden!important;
+    border:1px solid #344562!important;border-radius:9px!important;
+    background:#1a2a44!important;color:#c6d7ec!important;cursor:pointer!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobStatusMini.hasFilter{
+    color:#30dce9!important;border-color:#27839a!important;background:#123647!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobStatusMini svg{
+    display:block!important;width:18px!important;height:18px!important;flex:0 0 18px!important;
+    fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobStatusMini:focus-within{
+    outline:2px solid #44d6f3!important;outline-offset:1px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorJobStatusFilter{
+    position:absolute!important;inset:0!important;z-index:1!important;
+    display:block!important;width:100%!important;height:100%!important;
+    min-width:0!important;min-height:0!important;margin:0!important;padding:0!important;
+    border:0!important;opacity:0!important;cursor:pointer!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorJobList:empty{
+    display:none!important;padding:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorJobEmpty:not(.hide){
+    min-height:90px!important;height:auto!important;margin:0!important;padding:16px 10px!important;
+  }
+}
+@media(max-width:380px){
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobsHead{
+    grid-template-columns:103px minmax(0,1fr)!important;gap:5px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobHeading .contractorKicker{
+    white-space:normal!important;font-size:8px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobStatusMini{
+    width:35px!important;min-width:35px!important;flex-basis:35px!important;
+  }
+}
