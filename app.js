@@ -3019,6 +3019,11 @@ function renderMaterials(){
    '<div class="invMobileValue '+(index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>';
   const canEdit=canProjectEdit();
   const is130PhonePilot=String(currentBuilding?.id||"")==="130HH";
+  // In the 130 HH mobile pilot, place closing stock in a prominent header badge.
+  // Keep the other three figures plus actions on one line; the underlying figures are unchanged.
+  const compactValuesHtml=is130PhonePilot?'<div class="invMobileValues">'+metrics.slice(0,3).map(([label,val],index)=>
+   '<div class="invMobileValue '+(index===1?"is-in":index===2?"is-out":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>':valueHtml;
+  const closingHtml=is130PhonePilot?'<div class="invMobileStock"><span>Tồn cuối</span><b>'+inventoryFmt(balance)+'</b><small>'+esc(m.unit||"")+'</small></div>':'<span class="invMobileNumber">#'+(i+1)+'</span>';
   const canDelete=canEdit&&currentAccount?.is_admin&&Math.abs(inventoryNum(s.current))<0.000001;
   const actions=canEdit?'<div class="invMobileCardActions">'+
     '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
@@ -3029,12 +3034,14 @@ function renderMaterials(){
    s.months.map((monthValue,j)=>'<div class="invYearMonth"><span>Th '+String(j+1).padStart(2,"0")+'</span><b>'+
    (monthValue.active?'N '+inventoryFmt(monthValue.inQty)+' / X '+inventoryFmt(monthValue.outQty):'—')+'</b></div>').join("")+
    '</div></details>':'';
-  return '<article class="invMobileCard '+(isLow?"is-low":"")+(is130PhonePilot?" invMobileCard130":"")+'">'+
-   '<div class="invMobileCardHead"><div class="invMobileCardName"><strong>'+esc(m.name)+'</strong>'+
+  return '<article class="invMobileCard '+(isLow?"is-low":"")+(is130PhonePilot?" invMobileCard130"+(inventoryNum(balance)<=0?" is-out-of-stock":""):"")+'">'+
+   '<div class="invMobileCardHead"><div class="invMobileCardName">'+
+   (is130PhonePilot?'<span class="invMobileIndex">'+String(i+1).padStart(2,"0")+'</span>':"")+
+   '<strong>'+esc(m.name)+'</strong>'+
    (m.code?'<small>Mã: '+esc(m.code)+'</small>':'')+
    '<span class="invMobileUnit">ĐVT: '+esc(m.unit||"—")+'</span></div>'+
-   '<span class="invMobileNumber">#'+(i+1)+'</span></div>'+
-   (is130PhonePilot?'<div class="invMobileCardBottom'+(canEdit?"":" is-readonly")+'">'+valueHtml+actions+'</div>':valueHtml)+
+   closingHtml+'</div>'+
+   (is130PhonePilot?'<div class="invMobileCardBottom'+(canEdit?"":" is-readonly")+'">'+compactValuesHtml+actions+'</div>':valueHtml)+
    (isLow?'<small class="invMobileNotice">⚠ Tồn thấp · định mức '+inventoryFmt(m.min_qty)+'</small>':'')+
    yearly+(is130PhonePilot?"":actions)+'</article>';
  }).join("");
