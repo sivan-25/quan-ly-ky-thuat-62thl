@@ -546,7 +546,7 @@
  }
  #stockTxnModal.stockTxn130Compact #stockTxnForm label{min-width:0!important}
  #stockTxnModal.stockTxn130Compact #stockTxnForm label:has(>input,>select){max-width:100%!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]),select){
+ #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]):not([type=hidden]),select){
   display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
   box-sizing:border-box!important;height:45px!important;min-height:45px!important;
   padding:0 10px!important;border:1px solid #3d526c!important;
@@ -555,7 +555,7 @@
   font-size:14px!important;font-weight:550!important;line-height:1.3!important;
   box-shadow:none!important;color-scheme:dark!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]),select):focus{
+ #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]):not([type=hidden]),select):focus{
   border-color:#39d4c7!important;outline:2px solid #39d4c755!important;
   outline-offset:0!important;
  }
