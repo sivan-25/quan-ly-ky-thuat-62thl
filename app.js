@@ -3015,33 +3015,31 @@ function renderMaterials(){
   const isLow=inventoryNum(m.min_qty)>0&&inventoryNum(balance)<=inventoryNum(m.min_qty);
   const id=String(m.id).replace(/[^a-zA-Z0-9_-]/g,"");
   const metrics=[["Tồn đầu",allYear?s.opening:snapshot.begin],["Nhập",allYear?s.totalIn:snapshot.inQty],["Xuất",allYear?s.totalOut:snapshot.outQty],["Tồn cuối",balance]];
-  const valueHtml='<div class="invMobileValues">'+metrics.map(([label,val],index)=>
-   '<div class="invMobileValue '+(index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>';
   const canEdit=canProjectEdit();
   const is130PhonePilot=String(currentBuilding?.id||"")==="130HH";
-  // In the 130 HH mobile pilot, place closing stock in a prominent header badge.
-  // Keep the other three figures plus actions on one line; the underlying figures are unchanged.
-  const compactValuesHtml=is130PhonePilot?'<div class="invMobileValues">'+metrics.slice(0,3).map(([label,val],index)=>
-   '<div class="invMobileValue '+(index===1?"is-in":index===2?"is-out":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>':valueHtml;
-  const closingHtml=is130PhonePilot?'<div class="invMobileStock"><span>Tồn cuối</span><b>'+inventoryFmt(balance)+'</b><small>'+esc(m.unit||"")+'</small></div>':'<span class="invMobileNumber">#'+(i+1)+'</span>';
   const canDelete=canEdit&&currentAccount?.is_admin&&Math.abs(inventoryNum(s.current))<0.000001;
+  const valueHtml='<div class="invMobileValues">'+metrics.map(([label,val],index)=>
+   '<div class="invMobileValue '+(index===1?"is-in":index===2?"is-out":index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>';
   const actions=canEdit?'<div class="invMobileCardActions">'+
-    '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
-    '<button type="button" onclick="editMaterial(\''+id+'\')">Sửa</button>'+
-    (canDelete?'<button type="button" class="is-delete" onclick="deleteMaterial(\''+id+'\')">Xóa</button>':'')+
-    '</div>':'';
-  const yearly=allYear?'<details class="invYearDetails"><summary>Nhập / xuất từng tháng</summary><div class="invYearGrid">'+
+   '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
+   '<button type="button" onclick="editMaterial(\''+id+'\')">Sửa</button>'+
+   (!is130PhonePilot&&canDelete?'<button type="button" class="is-delete" onclick="deleteMaterial(\''+id+'\')">Xóa</button>':'')+
+   '</div>':'';
+  const pilotDelete=is130PhonePilot&&canDelete?'<button type="button" class="invMobileDelete" title="Xóa vật tư khi tồn kho bằng 0" aria-label="Xóa '+esc(m.name)+'" onclick="deleteMaterial(\''+id+'\')">×</button>':'';
+  const stockStatus=inventoryNum(balance)<=0?"Hết hàng":isLow?"Sắp hết":"Còn hàng";
+  const yearly=!is130PhonePilot&&allYear?'<details class="invYearDetails"><summary>Nhập / xuất từng tháng</summary><div class="invYearGrid">'+
    s.months.map((monthValue,j)=>'<div class="invYearMonth"><span>Th '+String(j+1).padStart(2,"0")+'</span><b>'+
    (monthValue.active?'N '+inventoryFmt(monthValue.inQty)+' / X '+inventoryFmt(monthValue.outQty):'—')+'</b></div>').join("")+
    '</div></details>':'';
-  return '<article class="invMobileCard '+(isLow?"is-low":"")+(is130PhonePilot?" invMobileCard130"+(inventoryNum(balance)<=0?" is-out-of-stock":""):"")+'">'+
+  return '<article class="invMobileCard '+(isLow?"is-low ":"")+(is130PhonePilot?"invMobileCard130"+(inventoryNum(balance)<=0?" is-out-of-stock":""):"")+'">'+
    '<div class="invMobileCardHead"><div class="invMobileCardName">'+
    (is130PhonePilot?'<span class="invMobileIndex">'+String(i+1).padStart(2,"0")+'</span>':"")+
    '<strong>'+esc(m.name)+'</strong>'+
    (m.code?'<small>Mã: '+esc(m.code)+'</small>':'')+
    '<span class="invMobileUnit">ĐVT: '+esc(m.unit||"—")+'</span></div>'+
-   closingHtml+'</div>'+
-   (is130PhonePilot?'<div class="invMobileCardBottom'+(canEdit?"":" is-readonly")+'">'+compactValuesHtml+actions+'</div>':valueHtml)+
+   (is130PhonePilot?'<div class="invMobileStatusGroup"><span class="invMobileStatus">'+stockStatus+'</span>'+pilotDelete+'</div>':'<span class="invMobileNumber">#'+(i+1)+'</span>')+
+   '</div>'+
+   (is130PhonePilot?'<div class="invMobileCardBottom'+(canEdit?"":" is-readonly")+'">'+valueHtml+actions+'</div>':valueHtml)+
    (isLow?'<small class="invMobileNotice">⚠ Tồn thấp · định mức '+inventoryFmt(m.min_qty)+'</small>':'')+
    yearly+(is130PhonePilot?"":actions)+'</article>';
  }).join("");
