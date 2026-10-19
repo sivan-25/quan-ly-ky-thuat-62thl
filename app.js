@@ -3018,6 +3018,7 @@ function renderMaterials(){
   const valueHtml='<div class="invMobileValues">'+metrics.map(([label,val],index)=>
    '<div class="invMobileValue '+(index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+inventoryFmt(val)+'</b></div>').join("")+'</div>';
   const canEdit=canProjectEdit();
+  const is130PhonePilot=String(currentBuilding?.id||"")==="130HH";
   const canDelete=canEdit&&currentAccount?.is_admin&&Math.abs(inventoryNum(s.current))<0.000001;
   const actions=canEdit?'<div class="invMobileCardActions">'+
     '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
@@ -3028,13 +3029,14 @@ function renderMaterials(){
    s.months.map((monthValue,j)=>'<div class="invYearMonth"><span>Th '+String(j+1).padStart(2,"0")+'</span><b>'+
    (monthValue.active?'N '+inventoryFmt(monthValue.inQty)+' / X '+inventoryFmt(monthValue.outQty):'—')+'</b></div>').join("")+
    '</div></details>':'';
-  return '<article class="invMobileCard '+(isLow?"is-low":"")+'">'+
+  return '<article class="invMobileCard '+(isLow?"is-low":"")+(is130PhonePilot?" invMobileCard130":"")+'">'+
    '<div class="invMobileCardHead"><div class="invMobileCardName"><strong>'+esc(m.name)+'</strong>'+
    (m.code?'<small>Mã: '+esc(m.code)+'</small>':'')+
    '<span class="invMobileUnit">ĐVT: '+esc(m.unit||"—")+'</span></div>'+
-   '<span class="invMobileNumber">#'+(i+1)+'</span></div>'+valueHtml+
+   '<span class="invMobileNumber">#'+(i+1)+'</span></div>'+
+   (is130PhonePilot?'<div class="invMobileCardBottom'+(canEdit?"":" is-readonly")+'">'+valueHtml+actions+'</div>':valueHtml)+
    (isLow?'<small class="invMobileNotice">⚠ Tồn thấp · định mức '+inventoryFmt(m.min_qty)+'</small>':'')+
-   yearly+actions+'</article>';
+   yearly+(is130PhonePilot?"":actions)+'</article>';
  }).join("");
  $("#materialEmpty").classList.toggle("hide",snaps.length>0);
 
