@@ -279,3 +279,214 @@
     font-size:10px!important;
   }
 }
+
+
+/* 130HH phone visual hierarchy v3 — strong contrast without taller cards.
+   Scoped to the 130HH inventory pilot; other projects and desktop are unchanged. */
+@media(max-width:760px){
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats{
+    gap:6px!important;margin:8px 0 10px!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats article{
+    position:relative!important;overflow:hidden!important;
+    border:1px solid #376476!important;border-top:3px solid #30bfc6!important;
+    min-height:75px!important;border-radius:10px!important;
+    padding:7px 4px 8px!important;
+    box-shadow:0 4px 12px rgba(2,12,23,.18)!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats small{
+    color:#dbeaf2!important;font-size:10px!important;
+    font-weight:750!important;letter-spacing:0!important;
+    line-height:1.2!important;text-transform:none!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats b{
+    font-size:22px!important;font-weight:850!important;letter-spacing:-.45px!important;
+    line-height:1.1!important;margin-top:5px!important;
+    text-shadow:0 1px 8px rgba(0,0,0,.22)!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .inMetric{
+    background:linear-gradient(155deg,#184b47,#123331)!important;
+    border-color:#277e77!important;border-top-color:#43e0c5!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .inMetric b{
+    color:#78f4d7!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .outMetric{
+    background:linear-gradient(155deg,#59412a,#3b2e25)!important;
+    border-color:#8b6242!important;border-top-color:#ffc26c!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .outMetric b{
+    color:#ffda96!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .stockMetric{
+    background:linear-gradient(155deg,#24486b,#1a324d)!important;
+    border-color:#396997!important;border-top-color:#79b9ff!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .stockMetric b{
+    color:#a9d8ff!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .lowMetric{
+    background:linear-gradient(155deg,#61363e,#41262e)!important;
+    border-color:#9c5963!important;border-top-color:#ff9999!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .lowMetric b{
+    color:#ffb6ac!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130{
+    position:relative!important;
+    background:linear-gradient(120deg,#1a324b,#14283d 80%)!important;
+    border:1px solid #42647d!important;border-left:3px solid #39c4dc!important;
+    border-radius:11px!important;
+    box-shadow:0 3px 10px rgba(0,10,23,.24)!important;
+    padding:9px!important;
+    color:#eef7ff!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130.is-low{
+    border-color:#a9656b!important;border-left-color:#ffb06d!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130.is-out-of-stock{
+    border-color:#b86672!important;border-left-color:#ff777e!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardHead{
+    display:flex!important;gap:6px!important;align-items:center!important;
+    min-height:38px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardName{
+    min-width:0!important;line-height:1.25!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardName strong{
+    display:inline!important;color:#fff!important;
+    font-size:14px!important;font-weight:800!important;
+    line-height:1.26!important;overflow-wrap:anywhere!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileIndex{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    font-size:10px!important;font-weight:800!important;
+    padding:3px 5px!important;margin-right:6px!important;
+    color:#92eaff!important;background:#21526a!important;
+    border:1px solid #427f9b!important;border-radius:5px!important;
+    vertical-align:middle!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileUnit{
+    background:#243e54!important;border-color:#49697f!important;
+    color:#e5f1f9!important;font-size:10px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStock{
+    flex:0 0 auto!important;min-width:60px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    flex-direction:column!important;gap:1px!important;
+    border-radius:8px!important;padding:5px 7px!important;
+    border:1px solid #3ea8b3!important;
+    background:linear-gradient(160deg,#145d67,#0f414d)!important;
+    text-align:center!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStock span{
+    color:#d7fcff!important;font-size:9px!important;font-weight:750!important;line-height:1.1!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStock b{
+    color:#85f6e9!important;font-weight:850!important;font-size:22px!important;
+    line-height:1.05!important;font-variant-numeric:tabular-nums!important;
+    overflow-wrap:anywhere!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStock small{
+    color:#e6f5f9!important;font-size:9px!important;
+    line-height:1.05!important;max-width:100%!important;overflow-wrap:anywhere!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130:is(.is-low,.is-out-of-stock) .invMobileStock{
+    border-color:#d58b78!important;background:#633d40!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130:is(.is-low,.is-out-of-stock) .invMobileStock b{
+    color:#ffd5a9!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardBottom{
+    grid-template-columns:minmax(0,1.38fr) minmax(126px,1fr)!important;
+    gap:6px!important;margin-top:7px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardBottom.is-readonly{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValues{
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;min-width:0!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue{
+    display:flex!important;justify-content:center!important;
+    padding:6px 2px!important;min-width:0!important;
+    border-radius:7px!important;border:1px solid #304e69!important;
+    background:#20354d!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-in{
+    background:#163d3d!important;border-color:#236c69!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-out{
+    background:#49372b!important;border-color:#775642!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue span{
+    color:#e1edf5!important;font-size:10px!important;font-weight:650!important;line-height:1.12!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue b{
+    color:#fff!important;font-size:17px!important;font-weight:800!important;line-height:1.12!important;
+    margin-top:4px!important;font-variant-numeric:tabular-nums!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-in b{
+    color:#89f5d8!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-out b{
+    color:#ffd196!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions{
+    grid-template-columns:minmax(0,1.45fr) minmax(0,.7fr)!important;
+    gap:5px!important;min-height:45px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions button{
+    border-radius:7px!important;min-height:45px!important;
+    color:#f5fcff!important;font-size:11px!important;font-weight:800!important;
+    padding:5px 2px!important;
+    box-shadow:none!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions button:first-child{
+    background:#087991!important;border:1px solid #40d2e0!important;
+    color:#fff!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions button:nth-child(2){
+    background:#294960!important;border:1px solid #638da9!important;
+    color:#fff!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions button:focus-visible{
+    outline:2px solid #f6d898!important;outline-offset:2px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileNotice{
+    font-size:10px!important;font-weight:750!important;color:#ffd5a4!important;
+    margin-top:5px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #openStockTxn{
+    background:#0e6980!important;border-color:#3ac5d6!important;
+    color:#fff!important;font-weight:800!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #addMaterialBtn{
+    background:#245c78!important;border-color:#8cbeda!important;
+    color:#fff!important;font-weight:800!important;
+  }
+}
+@media(max-width:365px){
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats b{
+    font-size:19px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats small{
+    font-size:9px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardBottom{
+    grid-template-columns:minmax(0,1.25fr) minmax(111px,1fr)!important;
+    gap:4px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue b{
+    font-size:14px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue span{
+    font-size:9px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStock b{
+    font-size:19px!important;
+  }
+}
