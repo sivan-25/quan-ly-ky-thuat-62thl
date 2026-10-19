@@ -233,3 +233,21 @@
   min-height:42px!important;
  }
 }
+
+/* Mobile: compact appearance must retain at least 44px critical touch targets. */
+@media(max-width:850px){
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] #m130Create,
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button{
+  height:44px!important;min-height:44px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot #ueGroup{
+  min-height:44px!important;height:44px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefActions button{
+  min-height:44px!important;height:44px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefSearch input,
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefTools #ueStatus{
+  min-height:44px!important;height:44px!important;
+ }
+}
