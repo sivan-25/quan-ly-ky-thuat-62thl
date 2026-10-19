@@ -855,7 +855,8 @@
 <link rel="stylesheet" href="upgrade-equipment-compact.css?v=20261016-sharedsystems01" media="screen"><link rel="stylesheet" href="upgrade-equipment-reference.css?v=20261018-inspectionflow03" media="screen">
 <link rel="stylesheet" href="four-project-compact.css?v=20261019-four-buildings01" media="screen">
 <link rel="stylesheet" href="inventory-mobile-cards.css?v=20261019-phone130contrast04" media="screen">
-<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style></head><body>
+<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-mobile130-01">
+</head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
     <div class="lv8LeftInner">
@@ -2110,6 +2111,10 @@
         <b class="sky s1"></b><b class="sky s2"></b><b class="sky s3"></b><b class="sky s4"></b><b class="sky s5"></b>
       </div>
       <div class="contractorIntroActions">
+        <details class="contractorMobileExport">
+          <summary aria-label="Tùy chọn xuất danh sách" title="Xuất danh sách">⋯</summary>
+          <div><button type="button" data-contractor-export-mobile="contractorExportExcel">Xuất Excel</button><button type="button" data-contractor-export-mobile="contractorExportPdf">Xuất PDF</button></div>
+        </details>
         <button id="contractorExportExcel" class="contractorBtn ghost excel" type="button">Excel ⇩</button>
         <button id="contractorExportPdf" class="contractorBtn ghost" type="button">PDF ⇩</button>
         <button id="addContractorBtn" class="contractorBtn primary" type="button">＋ <span>Thêm nhà thầu</span></button>
@@ -2132,6 +2137,17 @@
         <div class="contractorToolbarRight">
           <div class="contractorSearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="contractorSearch" placeholder="Tìm nhà thầu, người liên hệ, SĐT..."></div>
           <select id="contractorStatusFilter" class="contractorStatusFilterHidden"><option value="">Tất cả trạng thái</option><option>Đang hợp tác</option><option>Tạm ngưng</option><option>Ngừng hợp tác</option></select>
+          <details class="contractorMobileFilter">
+            <summary aria-label="Lọc danh sách nhà thầu" title="Lọc nhà thầu">☷ Lọc</summary>
+            <div>
+              <label for="contractorMobileSpecialty">Chuyên môn
+                <select id="contractorMobileSpecialty"><option value="">Tất cả chuyên môn</option><option value="ĐHKK">ĐHKK</option><option value="PCCC">PCCC</option><option value="Thang máy">Thang máy</option><option value="Điện">Điện</option><option value="Cấp thoát nước">Cấp thoát nước</option><option value="Vệ sinh">Vệ sinh</option></select>
+              </label>
+              <label for="contractorMobileStatus">Trạng thái
+                <select id="contractorMobileStatus"><option value="">Tất cả trạng thái</option><option value="Đang hợp tác">Đang hợp tác</option><option value="Tạm ngưng">Tạm ngưng</option><option value="Ngừng hợp tác">Ngừng hợp tác</option></select>
+              </label>
+            </div>
+          </details>
         </div>
       </div>
       <div id="contractorSpecialtyFilters" class="contractorSpecialtyFilters">
@@ -2668,7 +2684,7 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261019-inventory130contrast04"></script><script src="completion-certificate-130.js?v=20261015-upgrade01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261007-pdf-compact01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
+<script src="contractor.js?v=20261019-mobile130-01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
   const target=event.target;
