@@ -12,7 +12,7 @@ for(const id of ["materialMobileCards","materialMobilePeriod","materialMobileTra
 }
 assert.match(html,/inventory-mobile-cards\.css\?v=/);
 assert.match(css,/@media\(max-width:760px\)/);
-assert.match(css,/supplied Vật tư tiêu hao HTML reference/);
+assert.match(css,/ESTA shared mobile inventory/);
 assert.match(css,/#inventory130SearchRow/);
 assert.match(css,/#materialMonthTabs button\.active/);
 assert.match(css,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/);
@@ -28,13 +28,14 @@ assert.ok(html.indexOf("four-project-compact.css")<html.indexOf("inventory-mobil
 
 const dom=new JSDOM(html,{url:"https://example.test/"});
 const $=selector=>dom.window.document.querySelector(selector);
-const syncSource=appSource.slice(appSource.indexOf("function syncInventory130Reference("),appSource.indexOf("function renderMaterials(){"));
+const syncSource=appSource.slice(appSource.indexOf("const ESTA_INVENTORY_PROJECTS="),appSource.indexOf("function renderMaterials(){"));
 const source=appSource.slice(appSource.indexOf("function renderMaterials(){"),appSource.indexOf("function setInventoryTab(tab){"));
 assert.match(syncSource,/function syncInventory130Reference/);
 assert.match(appSource,/inventory130FloatingTxn.*addEventListener/);
 assert.match(appSource,/inventory130Search.*addEventListener/);
 assert.match(source,/function renderMaterials\(\)/);
-assert.match(source,/classList\.toggle\("inventory130MobileCompact",String\(currentBuilding\?\.id\|\|""\)==="130HH"\)/);
+assert.match(source,/classList\.toggle\("inventorySharedMobileCompact",isEstaInventoryProject\(\)\)/);
+assert.match(syncSource,/ESTA_INVENTORY_PROJECTS=new Set\(\["130HH","127HH","62THL","68PĐL","68PDL"\]\)/);
 assert.match(source,/function renderTools\(\)/);
 const mat={id:"material-uuid",name:"Dây điện 8 inch",code:"VT-001",unit:"m",tracking_start_date:"2026-09-01",min_qty:2,opening_qty:20};
 const tools=[{id:"tool-uuid",name:"Ampe kìm",code:"DC-01",qty:1,unit:"Cái",condition_status:"Tốt",brand:"Fluke",location:"Kho",keeper:"Văn",note:""}];
@@ -58,7 +59,7 @@ const ctx={
 };
 vm.createContext(ctx);vm.runInContext(syncSource+"\n"+source,ctx);
 vm.runInContext("renderMaterials(); renderTools();",ctx);
-assert.ok($("#inventoryPage").classList.contains("inventory130MobileCompact"),"130 HH mobile layout marker is active");
+assert.ok($("#inventoryPage").classList.contains("inventorySharedMobileCompact"),"130 HH mobile layout marker is active");
 const card=$("#materialMobileCards .invMobileCard");
 assert.ok(card,"month view must render a dedicated material card");
 assert.ok(card.classList.contains("invMobileCard130"),"130 HH gets a distinct compact material card");
@@ -123,21 +124,27 @@ assert.ok($("#materialMobileCards .invMobileCardBottom.is-readonly"),"viewer sti
 assert.equal($("#materialMobileCards .invMobileValue.is-closing b").textContent,"22","viewer sees closing stock without edit controls");
 assert.equal($("#toolsMobileCards .invMobileCardActions"),null,"viewer cannot access tool edits");
 assert.equal($("#materialMobileTransactions .invMobileCardActions"),null,"viewer cannot delete transactions");
-ctx.currentBuilding={id:"62THL"};
-vm.runInContext("renderMaterials();",ctx);
-assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact"),false,"62 THL retains existing card sizing");
-assert.equal($("#materialMobileCards .invMobileCard130"),null,"62 THL does not receive 130-specific markup");
-assert.equal($("#materialMobileCards .invMobileCardBottom"),null,"62 THL keeps its original action row");
-assert.equal($("#materialMobileCards .invMobileValue").parentElement.children.length,4,"62 THL retains four inline figures");
-assert.equal($("#materialMonthTabs .yearOverviewBtn").textContent,"12 tháng","other projects keep previous month title");
-assert.equal($("#materialMobileCards .invMobileStatus"),null,"62 THL keeps existing heading");
-assert.equal(dom.window.document.querySelectorAll("#materialMobileCards .invYearMonth").length,12,"62 THL retains its previous annual breakdown");
-ctx.currentBuilding={id:"127HH"};
-vm.runInContext("renderMaterials();",ctx);
-assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact"),false,"127 HH retains existing card sizing");
-ctx.currentBuilding={id:"68PĐL"};
-vm.runInContext("renderMaterials();",ctx);
-assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact"),false,"68 PĐL retains existing card sizing");
+// The 130 HH reference UI, figures and permissions are now identical in all four projects.
+for(const id of ["130HH","62THL","127HH","68PĐL","68PDL"]){
+ ctx.currentBuilding={id};
+ ctx.canProjectEdit=()=>true;
+ ctx.inventoryActiveMonth="all";
+ vm.runInContext("renderMaterials();",ctx);
+ assert.ok($("#inventoryPage").classList.contains("inventorySharedMobileCompact"),id+" gets common mobile styling");
+ assert.ok($("#materialMobileCards .invMobileCard130"),id+" gets reference compact material card");
+ assert.equal($("#materialMobileCards .invMobileValues").children.length,4,id+" retains four stock metrics");
+ assert.ok($("#materialMobileCards .inventory130Move"),id+" preserves the stock movement shortcut");
+ assert.equal($("#materialMonthTabs .yearOverviewBtn").textContent,"Cả năm",id+" gets reference year filter");
+ assert.equal($("#materialMobileCards .inventory130Progress"),null,id+" hides the unneeded progress bar");
+ assert.equal($("#materialMobileCards .invYearDetails"),null,id+" hides month-by-month expansion");
+ assert.ok($("#materialMobileTransactions .inventory130Transaction"),id+" gets compact history");
+}
+// No app-level copy of materials or transactions: every API uses the current building ID.
+assert.match(appSource,/inventory_materials\?select=\*&building_id=eq/);
+assert.match(appSource,/inventory_material_transactions\?select=\*&building_id=eq/);
+assert.match(appSource,/body=\{building_id:currentBuilding.id,material_id:materialId/);
+ctx.currentBuilding={id:"130HH"};
+
 
 // 130 HH phone stock movement: both radio options occupy one row; native select remains
 // the single backend value and the date/quantity fields share a compact two-column grid.
@@ -146,18 +153,18 @@ assert.match(html,/name="stockTxnQuickType" value="in"/);
 assert.match(html,/name="stockTxnQuickType" value="out"/);
 assert.match(html,/class="stockTxnDateField"/);
 assert.match(html,/class="stockTxnQtyField"/);
-assert.match(css,/#stockTxnModal\.stockTxn130Compact #stockTxnForm \.stockTxnQuickChoices/);
+assert.match(css,/#stockTxnModal\.stockTxnSharedCompact #stockTxnForm \.stockTxnQuickChoices/);
 assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important/);
-assert.match(css,/#stockTxnModal\.stockTxn130Compact #stockTxnForm>\.stockTxnDateField/);
-assert.match(css,/#stockTxnModal\.stockTxn130Compact #stockTxnForm>\.stockTxnQtyField/);
+assert.match(css,/#stockTxnModal\.stockTxnSharedCompact #stockTxnForm>\.stockTxnDateField/);
+assert.match(css,/#stockTxnModal\.stockTxnSharedCompact #stockTxnForm>\.stockTxnQtyField/);
 assert.match(css,/#stockTxnModal \.stockTxnQuickChoices\{display:none\}/,"default form remains unchanged in other projects");
-assert.match(appSource,/stockTxn130Compact",String\(currentBuilding\?\.id\|\|""\)==="130HH"/);
+assert.match(appSource,/stockTxnSharedCompact",isEstaInventoryProject\(\)/);
 assert.match(appSource,/stockTxnQuickType.*addEventListener|"change",\(\)=>\{/);
 assert.match(appSource,/const materialId=\$\("#stockTxnMaterial"\).*txType=\$\("#stockTxnType"\)\.value/,"save flow still reads the native select");
 const quickSync=appSource.slice(appSource.indexOf("function syncStockTxnQuickChoice(){"),appSource.indexOf("window.openStockTxnModal=id=>{"));
 assert.match(quickSync,/function syncStockTxnQuickChoice/);
 ctx.currentBuilding={id:"130HH"};
-$("#stockTxnModal").classList.add("stockTxn130Compact");
+$("#stockTxnModal").classList.add("stockTxnSharedCompact");
 vm.runInContext(quickSync,ctx);
 $("#stockTxnType").value="out";
 vm.runInContext("syncStockTxnQuickChoice();",ctx);
@@ -168,9 +175,9 @@ $("#stockTxnType").value="in";
 vm.runInContext("syncStockTxnQuickChoice();",ctx);
 assert.equal($("#stockTxnQuickChoices input[value='in']").checked,true,"import radio selects import");
 assert.equal($("#stockTxnSubmit").textContent,"Xác nhận nhập","import confirmation is explicit");
-$("#stockTxnModal").classList.remove("stockTxn130Compact");
+$("#stockTxnModal").classList.remove("stockTxnSharedCompact");
 vm.runInContext("syncStockTxnQuickChoice();",ctx);
 assert.equal($("#stockTxnSubmit").textContent,"Lưu giao dịch","existing desktop/default action label is preserved");
 console.log("PASS stock transaction radio type, compact date/qty CSS, and existing save binding");
 
-console.log("PASS mobile inventory: 130HH scope, four KPIs, month/year, arithmetic, actions, tools, permissions");
+console.log("PASS mobile inventory: 4-project shared reference, isolated stock, radio form, permissions");
