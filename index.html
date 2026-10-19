@@ -2594,13 +2594,20 @@
     <div class="inventoryModalHead"><span>ESTA · STOCK MOVEMENT</span><h3 id="stockTxnModalTitle">Nhập / Xuất vật tư</h3><p>Mọi phát sinh sẽ tự động cập nhật tồn kho theo tháng.</p></div>
     <form id="stockTxnForm" class="inventoryForm">
       <input id="stockTxnId" type="hidden">
-      <label class="wide"><span>Vật tư *</span><select id="stockTxnMaterial" required></select></label>
-      <label><span>Loại *</span><select id="stockTxnType"><option value="in">Nhập kho</option><option value="out">Xuất kho</option></select></label>
-      <label><span>Ngày *</span><input id="stockTxnDate" type="date" required></label>
-      <label><span>Số lượng *</span><input id="stockTxnQty" type="number" step="0.01" min="0.01" required></label>
-      <label><span>Người thực hiện</span><select id="stockTxnPerformer"><option value="">— Chọn —</option></select></label>
-      <label class="wide"><span>Ghi chú</span><input id="stockTxnNote" maxlength="300" placeholder="Nhập mua mới, xuất thay thế, sử dụng tầng..."></label>
-      <div class="inventoryFormActions"><button id="cancelStockTxnModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu giao dịch</button></div>
+      <label class="wide stockTxnMaterialField"><span>Vật tư *</span><select id="stockTxnMaterial" required></select></label>
+      <div class="stockTxnTypeField">
+        <label class="stockTxnOriginalType"><span>Loại *</span><select id="stockTxnType"><option value="in">Nhập kho</option><option value="out">Xuất kho</option></select></label>
+        <fieldset id="stockTxnQuickChoices" class="stockTxnQuickChoices">
+          <legend>Loại giao dịch *</legend>
+          <label class="stockTxnChoice stockTxnChoiceIn"><input type="radio" name="stockTxnQuickType" value="in" checked><span>Nhập kho</span></label>
+          <label class="stockTxnChoice stockTxnChoiceOut"><input type="radio" name="stockTxnQuickType" value="out"><span>Xuất kho</span></label>
+        </fieldset>
+      </div>
+      <label class="stockTxnDateField"><span>Ngày *</span><input id="stockTxnDate" type="date" required></label>
+      <label class="stockTxnQtyField"><span>Số lượng *</span><input id="stockTxnQty" type="number" inputmode="decimal" step="0.01" min="0.01" required placeholder="Nhập số lượng"></label>
+      <label class="stockTxnPerformerField"><span>Người thực hiện</span><select id="stockTxnPerformer"><option value="">— Chọn —</option></select></label>
+      <label class="wide stockTxnNoteField"><span>Ghi chú</span><input id="stockTxnNote" maxlength="300" placeholder="Nội dung nhập hoặc xuất..."></label>
+      <div class="inventoryFormActions"><button id="cancelStockTxnModal" type="button" class="inventorySecondary">Hủy</button><button id="stockTxnSubmit" type="submit" class="inventoryPrimary">Lưu giao dịch</button></div>
     </form>
   </div>
 </div>
