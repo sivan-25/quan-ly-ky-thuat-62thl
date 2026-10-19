@@ -111,81 +111,80 @@
 }
 
 
-/* ESTA 130 HH · supplied Vật tư tiêu hao HTML reference (2026-10-19).
-   Design-only styles scoped to inventory materials and <=760px.
-   Preserve original ESTА logic, tools, desktop, and other buildings. */
+/* ESTA shared mobile inventory: reference design from 130 HH applied to all four projects.
+   Visual changes only at <=760px; each project's data remains independent. */
 #inventory130SearchRow,#inventory130ListBar,#inventory130FloatingTxn{display:none}
 @media(max-width:760px){
-  #app #inventoryPage.inventory130MobileCompact{
+  #app #inventoryPage.inventorySharedMobileCompact{
     background:#0e1626!important;color:#eaf0fa!important;
     padding:8px 8px calc(150px + env(safe-area-inset-bottom))!important;
     overflow-x:clip!important;
   }
-  #app #inventoryPage.inventory130MobileCompact .inventoryCommand{
+  #app #inventoryPage.inventorySharedMobileCompact .inventoryCommand{
     background:transparent!important;border:0!important;
     padding:0!important;margin:0 0 8px!important;box-shadow:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact .inventoryCommandControls{
+  #app #inventoryPage.inventorySharedMobileCompact .inventoryCommandControls{
     display:block!important;padding:0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact .inventoryCommand .inventoryLocalTabs{
+  #app #inventoryPage.inventorySharedMobileCompact .inventoryCommand .inventoryLocalTabs{
     display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;
     background:#16233a!important;padding:4px!important;border-radius:12px!important;
     border:1px solid #24344f!important;
   }
-  #app #inventoryPage.inventory130MobileCompact .inventoryLocalTabs button{
+  #app #inventoryPage.inventorySharedMobileCompact .inventoryLocalTabs button{
     min-height:40px!important;height:40px!important;padding:5px 4px!important;
     background:transparent!important;border:0!important;border-radius:9px!important;
     color:#c9d6ec!important;font-size:12px!important;font-weight:550!important;
     white-space:nowrap!important;
   }
-  #app #inventoryPage.inventory130MobileCompact .inventoryLocalTabs button.active{
+  #app #inventoryPage.inventorySharedMobileCompact .inventoryLocalTabs button.active{
     background:#134e56!important;color:#eafffb!important;font-weight:750!important;
   }
-  #app #inventoryPage.inventory130MobileCompact .inventoryLocalTabs svg{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact .inventoryCommandMeta.inventoryYearOnly{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane>.inventorySectionBar{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventory130SearchRow{
+  #app #inventoryPage.inventorySharedMobileCompact .inventoryLocalTabs svg{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact .inventoryCommandMeta.inventoryYearOnly{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane>.inventorySectionBar{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130SearchRow{
     display:flex!important;align-items:center!important;gap:7px!important;
     width:100%!important;margin:0 0 8px!important;padding:0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130SearchRow .inventory130SearchField{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130SearchRow .inventory130SearchField{
     display:flex!important;align-items:center!important;min-width:0!important;
     flex:1!important;height:42px!important;gap:6px!important;
     padding:0 10px!important;background:#16233a!important;
     border:1px solid #24344f!important;border-radius:10px!important;
     color:#a9b8d2!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130SearchRow .inventory130SearchField span{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130SearchRow .inventory130SearchField span{
     font-size:21px!important;font-weight:400!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130Search{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130Search{
     display:block!important;min-width:0!important;flex:1!important;
     width:100%!important;border:0!important;outline:0!important;
     background:transparent!important;color:#eaf0fa!important;
     font-size:14px!important;font-family:inherit!important;
     -webkit-appearance:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130Year,
-  #app #inventoryPage.inventory130MobileCompact #inventory130Pdf{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130Year,
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130Pdf{
     flex:none!important;height:42px!important;min-height:42px!important;
     background:#16233a!important;border:1px solid #24344f!important;
     border-radius:10px!important;color:#eaf0fa!important;font-size:13px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130Year{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130Year{
     width:76px!important;padding:0 5px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130Pdf{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130Pdf{
     width:42px!important;font-size:22px!important;font-weight:700!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventoryMonthRail{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventoryMonthRail{
     background:transparent!important;border:0!important;box-shadow:none!important;
     margin:0 0 8px!important;padding:0!important;overflow:visible!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventoryMonthRailHead{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventoryMobilePeriod{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventoryMonthRailHead{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventoryMobilePeriod{display:none!important}
   /* Cả năm + T1-T6 in row 1; T7-T12 in row 2. No horizontal gesture. */
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #materialMonthTabs{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #materialMonthTabs{
     display:grid!important;
     grid-template-columns:repeat(7,minmax(0,1fr))!important;
     grid-template-rows:repeat(2,40px)!important;
@@ -196,7 +195,7 @@
     overflow:visible!important;box-sizing:border-box!important;
     touch-action:manipulation!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button{
+  #app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button{
     flex:none!important;width:100%!important;max-width:100%!important;min-width:0!important;
     height:40px!important;min-height:40px!important;
     border-radius:8px!important;padding:0 1px!important;
@@ -207,246 +206,246 @@
     white-space:nowrap!important;overflow:hidden!important;
     text-overflow:clip!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button.yearOverviewBtn{
+  #app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button.yearOverviewBtn{
     min-width:0!important;max-width:100%!important;
     grid-column:auto!important;grid-row:auto!important;
     padding:0 2px!important;font-size:10px!important;
     line-height:1.05!important;white-space:normal!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button.active{
+  #app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button.active{
     background:#2dd4bf!important;color:#06231f!important;
     border-color:#2dd4bf!important;font-weight:800!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button.hasActivity:not(.active):after{
+  #app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button.hasActivity:not(.active):after{
     background:#f5b342!important;
   }
   /* Four metrics as one unified bar, exactly as in the reference. */
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats{
     display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
     gap:0!important;padding:0!important;margin:0 0 9px!important;
     background:#16233a!important;border:1px solid #24344f!important;
     border-radius:12px!important;overflow:hidden!important;box-shadow:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats article{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article{
     display:flex!important;align-items:center!important;justify-content:center!important;
     background:transparent!important;border:0!important;box-shadow:none!important;
     border-radius:0!important;min-height:61px!important;padding:8px 2px!important;
     text-align:center!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats article+article{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article+article{
     border-left:1px solid #24344f!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats article>div{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article>div{
     width:100%!important;display:flex!important;flex-direction:column-reverse!important;
     align-items:center!important;justify-content:center!important;min-width:0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats article :is(.invStatIcon,svg,em){display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats article b{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article :is(.invStatIcon,svg,em){display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article b{
     display:block!important;font-size:22px!important;font-weight:850!important;
     line-height:1.1!important;margin:0 0 3px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats article small{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article small{
     color:#a9b8d2!important;letter-spacing:0!important;
     font-size:9px!important;font-weight:500!important;line-height:1.25!important;
     white-space:normal!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .inMetric b{color:#5eead4!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .outMetric b{color:#fbbf5c!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .stockMetric b{color:#8dbbff!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .monthlyStats .lowMetric b{color:#d0d9e8!important}
-  #app #inventoryPage.inventory130MobileCompact #inventory130ListBar{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .inMetric b{color:#5eead4!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .outMetric b{color:#fbbf5c!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .stockMetric b{color:#8dbbff!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .lowMetric b{color:#d0d9e8!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130ListBar{
     display:flex!important;align-items:center!important;gap:6px!important;
     min-height:45px!important;padding:0 0 6px!important;width:100%!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130ListCount{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130ListCount{
     flex:1 1 auto!important;min-width:0!important;
     color:#eaf0fa!important;font-size:12px!important;font-weight:750!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130ListBar :is(summary,button){
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130ListBar :is(summary,button){
     min-height:39px!important;height:39px!important;padding:0 8px!important;
     border-radius:10px!important;font-weight:700!important;
     font-size:11px!important;white-space:nowrap!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130QuickMenu{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickMenu{
     position:relative!important;flex:0 0 auto!important;z-index:12!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130QuickMenu summary{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickMenu summary{
     display:flex!important;align-items:center!important;justify-content:center!important;
     list-style:none!important;border:1px solid #24344f!important;
     background:#16233a!important;color:#eaf0fa!important;cursor:pointer!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130QuickMenu summary::-webkit-details-marker{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventory130QuickChoices{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickMenu summary::-webkit-details-marker{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickChoices{
     position:absolute!important;right:0!important;top:43px!important;z-index:20!important;
     display:grid!important;gap:5px!important;width:210px!important;
     padding:8px!important;background:#1c2e46!important;
     border:1px solid #36526d!important;border-radius:10px!important;
     box-shadow:0 10px 26px #0006!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130QuickChoices button{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickChoices button{
     height:auto!important;min-height:40px!important;
     display:block!important;white-space:normal!important;
     text-align:left!important;color:#eaf0fa!important;background:#16233a!important;
     border:1px solid #304965!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventory130AddMaterial{
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130AddMaterial{
     flex:0 0 auto!important;background:#2dd4bf!important;
     border:1px solid #2dd4bf!important;color:#06231f!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .materialMonthlyCard{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .materialMonthlyCard{
     background:transparent!important;border:0!important;
     padding:0!important;margin:0!important;box-shadow:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .materialMonthlyCard>.inventoryCardTitle{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #materialMobileCards{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .materialMonthlyCard>.inventoryCardTitle{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #materialMobileCards{
     display:grid!important;gap:8px!important;padding:0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130{
     background:#16233a!important;color:#eaf0fa!important;border:1px solid #24344f!important;
     border-left:1px solid #24344f!important;border-radius:14px!important;
     padding:11px!important;box-shadow:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardHead{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardHead{
     min-height:30px!important;align-items:flex-start!important;gap:5px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardName strong{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardName strong{
     display:inline!important;font-size:13px!important;line-height:1.3!important;
     font-weight:800!important;color:#f8fbff!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileIndex{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardName small{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileIndex{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardName small{
     display:block!important;font-size:10px!important;margin-top:2px!important;
     color:#a9b8d2!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileUnit{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileUnit{
     display:inline!important;background:transparent!important;border:0!important;
     padding:0!important;margin:0 0 0 6px!important;color:#a9b8d2!important;
     font-size:10px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatusGroup{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatusGroup{
     flex:0 0 auto!important;display:flex!important;align-items:center!important;gap:3px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatus{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatus{
     display:inline-flex!important;align-items:center!important;
     background:#103e3c!important;border:0!important;border-radius:8px!important;
     min-height:22px!important;padding:2px 5px!important;
     color:#68f2d5!important;font-size:9px!important;font-weight:800!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatus:before{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatus:before{
     display:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130.is-low .invMobileStatus{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130.is-low .invMobileStatus{
     color:#ffc36d!important;background:#4c3829!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130.is-out-of-stock .invMobileStatus{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130.is-out-of-stock .invMobileStatus{
     color:#ffa2a5!important;background:#4b2a34!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 :is(.inventory130Move,.inventory130Edit,.invMobileDelete){
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 :is(.inventory130Move,.inventory130Edit,.invMobileDelete){
     display:inline-flex!important;align-items:center!important;justify-content:center!important;
     min-width:29px!important;min-height:29px!important;width:29px!important;height:29px!important;
     padding:2px!important;border:0!important;background:transparent!important;
     color:#bdcee5!important;font-size:16px!important;cursor:pointer!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardBottom{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardBottom{
     display:block!important;min-width:0!important;margin-top:8px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValues{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValues{
     display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
     gap:0!important;width:100%!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue{
     min-height:48px!important;padding:5px 1px!important;
     border:0!important;border-radius:0!important;background:transparent!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue+div{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue+div{
     border-left:1px solid #31435e!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue span{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue span{
     color:#a9b8d2!important;font-size:10px!important;font-weight:500!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue b{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue b{
     font-size:18px!important;font-weight:800!important;line-height:1.15!important;
     margin-top:4px!important;color:#f5f9ff!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-in b{color:#5eead4!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-out b{color:#fbbf5c!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-closing b{color:#8dbbff!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileNotice{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-in b{color:#5eead4!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-out b{color:#fbbf5c!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-closing b{color:#8dbbff!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileCardActions{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileNotice{
     font-size:10px!important;margin-top:4px!important;color:#ffc18d!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventorySupportGrid{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventorySupportGrid{
     display:block!important;margin:8px 0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #stockAlertPanel{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #stockAlertPanel{
     margin:0!important;padding:0!important;background:transparent!important;
     border:0!important;box-shadow:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #stockAlertPanel:has(.stockAlertEmpty) .stockAlertHead{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #stockAlertPanel:has(.stockAlertEmpty) .stockAlertHead{
     display:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #stockAlertPanel .stockAlertEmpty{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #stockAlertPanel .stockAlertEmpty{
     display:flex!important;align-items:center!important;gap:7px!important;
     padding:11px!important;border-radius:11px!important;background:#113a32!important;
     color:#aafce3!important;border:0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #stockAlertPanel .stockAlertEmpty b{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #stockAlertPanel .stockAlertEmpty b{
     color:#b1f6df!important;font-size:11px!important;font-weight:650!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #stockAlertPanel .stockAlertEmpty small{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #stockAlertPanel .stockAlertEmpty small{
     display:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .transactionCard{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .transactionCard{
     padding:0!important;margin:8px 0 0!important;background:transparent!important;
     border:0!important;box-shadow:none!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle{
     padding:4px 0 8px!important;background:transparent!important;
     border:0!important;min-height:0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle span{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle h3{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle span{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle h3{
     color:#eaf0fa!important;font-size:13px!important;font-weight:750!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle p{display:none!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #materialMobileTransactions{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .transactionCard .inventoryCardTitle p{display:none!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #materialMobileTransactions{
     display:grid!important;gap:6px!important;padding:0!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130Transaction{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130Transaction{
     display:block!important;padding:10px!important;border-radius:10px!important;
     background:#16233a!important;border:1px solid #24344f!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnMain{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnMain{
     display:flex!important;align-items:center!important;justify-content:space-between!important;
     min-width:0!important;gap:8px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnText{flex:1 1 auto!important;min-width:0!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnText strong{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnText{flex:1 1 auto!important;min-width:0!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnText strong{
     color:#eaf0fa!important;display:block!important;font-size:12px!important;
     font-weight:750!important;overflow-wrap:anywhere!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnText small{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnText small{
     display:block!important;margin-top:3px!important;font-size:10px!important;color:#a9b8d2!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnBadge{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnBadge{
     flex:0 0 auto!important;padding:5px 7px!important;border-radius:15px!important;
     background:#154b3c!important;color:#74f3ca!important;
     font-size:11px!important;font-weight:800!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnBadge.is-out{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnBadge.is-out{
     background:#4d3518!important;color:#ffbd56!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnNote{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnNote{
     display:block!important;color:#a9b8d2!important;font-size:10px!important;margin-top:3px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnActions{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnActions{
     display:flex!important;justify-content:flex-end!important;gap:4px!important;margin-top:5px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .inventory130TxnActions button{
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .inventory130TxnActions button{
     border:0!important;border-radius:7px!important;background:#203750!important;
     color:#d6e9fd!important;padding:4px 7px!important;min-height:30px!important;font-size:10px!important;
   }
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane #inventory130FloatingTxn:not([hidden]){
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane #inventory130FloatingTxn:not([hidden]){
     display:flex!important;align-items:center!important;justify-content:center!important;
     position:fixed!important;right:13px!important;bottom:calc(84px + env(safe-area-inset-bottom))!important;
     z-index:35!important;min-height:44px!important;padding:0 16px!important;border-radius:24px!important;
@@ -455,39 +454,38 @@
   }
 }
 @media(max-width:360px){
-  #app #inventoryPage.inventory130MobileCompact #inventory130ListCount{font-size:11px!important}
-  #app #inventoryPage.inventory130MobileCompact #inventory130ListBar :is(summary,button){font-size:10px!important;padding:0 6px!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue b{font-size:15px!important}
-  #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatus{font-size:8px!important}
-  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button{font-size:10px!important}
-  #app #inventoryPage.inventory130MobileCompact #materialMonthTabs button.yearOverviewBtn{font-size:9px!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130ListCount{font-size:11px!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventory130ListBar :is(summary,button){font-size:10px!important;padding:0 6px!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileValue b{font-size:15px!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 .invMobileStatus{font-size:8px!important}
+  #app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button{font-size:10px!important}
+  #app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button.yearOverviewBtn{font-size:9px!important}
 }
 
 
 @media(max-width:760px){
- #app #inventoryPage.inventory130MobileCompact{
+ #app #inventoryPage.inventorySharedMobileCompact{
   font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif!important;
  }
- #app #inventoryPage.inventory130MobileCompact #inventory130QuickMenu:not([open]) #inventory130QuickChoices{
+ #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickMenu:not([open]) #inventory130QuickChoices{
   display:none!important;
  }
- #app #inventoryPage.inventory130MobileCompact #inventoryMaterialsPane .invMobileCard130 :is(.inventory130Move,.inventory130Edit,.invMobileDelete):focus-visible,
- #app #inventoryPage.inventory130MobileCompact #inventory130FloatingTxn:focus-visible,
- #app #inventoryPage.inventory130MobileCompact #inventory130SearchRow :is(input,select,button):focus-visible{
+ #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .invMobileCard130 :is(.inventory130Move,.inventory130Edit,.invMobileDelete):focus-visible,
+ #app #inventoryPage.inventorySharedMobileCompact #inventory130FloatingTxn:focus-visible,
+ #app #inventoryPage.inventorySharedMobileCompact #inventory130SearchRow :is(input,select,button):focus-visible{
   outline:2px solid #f4cb77!important;outline-offset:2px!important;
  }
 }
 
-/* 130 HH mobile stock movement form — clear radio choices, paired short date/quantity.
-   Modal sits outside #inventoryPage. Scope by runtime class so 3 other projects
-   and desktop keep the original select and workflows. */
+/* Shared four-project stock movement modal: paired date/quantity, import/export radio.
+   Desktop keeps the original select and workflow; no inventory data is copied. */
 #stockTxnModal .stockTxnQuickChoices{display:none}
 @media(max-width:760px){
- #stockTxnModal.stockTxn130Compact{
+ #stockTxnModal.stockTxnSharedCompact{
   padding:12px!important;box-sizing:border-box!important;
   background:rgba(3,14,28,.76)!important;backdrop-filter:blur(8px)!important;
  }
- #stockTxnModal.stockTxn130Compact .inventoryModalCard{
+ #stockTxnModal.stockTxnSharedCompact .inventoryModalCard{
   width:min(440px,calc(100vw - 28px))!important;
   max-height:calc(100dvh - 112px)!important;
   padding:0!important;box-sizing:border-box!important;
@@ -496,7 +494,7 @@
   box-shadow:0 20px 65px rgba(0,5,16,.53)!important;
   overflow-y:auto!important;overscroll-behavior:contain!important;
  }
- #stockTxnModal.stockTxn130Compact .modalClose{
+ #stockTxnModal.stockTxnSharedCompact .modalClose{
   position:absolute!important;right:12px!important;top:12px!important;
   display:flex!important;align-items:center!important;justify-content:center!important;
   width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;
@@ -504,49 +502,49 @@
   border:1px solid #364b66!important;color:#d8e8f7!important;
   font-size:19px!important;line-height:1!important;z-index:5!important;
  }
- #stockTxnModal.stockTxn130Compact .inventoryModalHead{
+ #stockTxnModal.stockTxnSharedCompact .inventoryModalHead{
   padding:17px 54px 12px 16px!important;
   background:linear-gradient(130deg,#172d45,#111e31)!important;
   border-bottom:1px solid #2f415b!important;
  }
- #stockTxnModal.stockTxn130Compact .inventoryModalHead>span{
+ #stockTxnModal.stockTxnSharedCompact .inventoryModalHead>span{
   font-size:10px!important;color:#52e3d4!important;letter-spacing:1.3px!important;
   font-weight:800!important;line-height:1.1!important;
  }
- #stockTxnModal.stockTxn130Compact .inventoryModalHead h3{
+ #stockTxnModal.stockTxnSharedCompact .inventoryModalHead h3{
   color:#f2f8ff!important;font-size:20px!important;
   line-height:1.22!important;font-weight:800!important;margin:5px 0 0!important;
  }
- #stockTxnModal.stockTxn130Compact .inventoryModalHead p{display:none!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm.inventoryForm{
+ #stockTxnModal.stockTxnSharedCompact .inventoryModalHead p{display:none!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm.inventoryForm{
   display:grid!important;
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
   gap:11px 9px!important;
   min-width:0!important;padding:14px 16px 16px!important;
   background:transparent!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnMaterialField,
- #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnTypeField,
- #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnPerformerField,
- #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnNoteField,
- #stockTxnModal.stockTxn130Compact #stockTxnForm>.inventoryFormActions{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm>.stockTxnMaterialField,
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm>.stockTxnTypeField,
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm>.stockTxnPerformerField,
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm>.stockTxnNoteField,
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm>.inventoryFormActions{
   grid-column:1/-1!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnDateField{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm>.stockTxnDateField{
   grid-column:1!important;min-width:0!important;align-self:stretch!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnQtyField{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm>.stockTxnQtyField{
   grid-column:2!important;min-width:0!important;align-self:stretch!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm label>span,
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnQuickChoices legend{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm label>span,
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnQuickChoices legend{
   display:block!important;margin:0 0 6px!important;padding:0!important;
   font-size:11px!important;line-height:1.3!important;
   font-weight:750!important;color:#bbcee2!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm label{min-width:0!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm label:has(>input,>select){max-width:100%!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]):not([type=hidden]),select){
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm label{min-width:0!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm label:has(>input,>select){max-width:100%!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm :is(input:not([type=radio]):not([type=hidden]),select){
   display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
   box-sizing:border-box!important;height:45px!important;min-height:45px!important;
   padding:0 10px!important;border:1px solid #3d526c!important;
@@ -555,29 +553,29 @@
   font-size:14px!important;font-weight:550!important;line-height:1.3!important;
   box-shadow:none!important;color-scheme:dark!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]):not([type=hidden]),select):focus{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm :is(input:not([type=radio]):not([type=hidden]),select):focus{
   border-color:#39d4c7!important;outline:2px solid #39d4c755!important;
   outline-offset:0!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm input::placeholder{color:#8097b2!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm #stockTxnDate{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm input::placeholder{color:#8097b2!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm #stockTxnDate{
   font-size:12px!important;letter-spacing:-.35px!important;
   padding-left:7px!important;padding-right:5px!important;
   text-align:left!important;-webkit-appearance: auto!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnDate::-webkit-date-and-time-value{text-align:left!important;min-width:0!important}
- #stockTxnModal.stockTxn130Compact #stockTxnDate::-webkit-datetime-edit{padding:0!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm #stockTxnQty{font-size:16px!important;font-weight:750!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnOriginalType{display:none!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnQuickChoices{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnDate::-webkit-date-and-time-value{text-align:left!important;min-width:0!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnDate::-webkit-datetime-edit{padding:0!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm #stockTxnQty{font-size:16px!important;font-weight:750!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnOriginalType{display:none!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnQuickChoices{
   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
   gap:8px!important;margin:0!important;padding:0!important;
   border:0!important;min-width:0!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnQuickChoices legend{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnQuickChoices legend{
   grid-column:1/-1!important;margin-bottom:7px!important;width:100%!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice{
   display:flex!important;align-items:center!important;justify-content:center!important;
   gap:8px!important;width:100%!important;max-width:100%!important;
   box-sizing:border-box!important;min-width:0!important;min-height:46px!important;
@@ -586,12 +584,12 @@
   border-radius:10px!important;cursor:pointer!important;
   color:#d4e2f2!important;font-size:13px!important;font-weight:800!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice>span{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice>span{
   display:inline!important;margin:0!important;padding:0!important;
   font-size:13px!important;color:inherit!important;font-weight:800!important;
   white-space:nowrap!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm input[type=radio]{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]{
   appearance:none!important;-webkit-appearance:none!important;
   display:inline-grid!important;place-items:center!important;
   flex:none!important;width:18px!important;height:18px!important;
@@ -600,52 +598,52 @@
   border:2px solid #8b9db2!important;border-radius:50%!important;
   background:#101d30!important;cursor:pointer!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm input[type=radio]:checked{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked{
   border-color:#42e6c9!important;background:#133e3e!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm input[type=radio]:checked:after{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked:after{
   content:""!important;display:block!important;width:8px!important;height:8px!important;
   background:#58edd5!important;border-radius:50%!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceIn:has(input:checked){
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoiceIn:has(input:checked){
   background:#124947!important;border-color:#2ed7bf!important;color:#8dffe3!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceOut:has(input:checked){
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoiceOut:has(input:checked){
   background:#523e2c!important;border-color:#f7b65d!important;color:#ffdb99!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceOut input:checked{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoiceOut input:checked{
   border-color:#ffbd66!important;background:#583d24!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceOut input:checked:after{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoiceOut input:checked:after{
   background:#ffcb80!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice input:focus-visible{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice input:focus-visible{
   outline:2px solid #fff0ad!important;outline-offset:3px!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions{
   display:grid!important;grid-template-columns:1fr 1.3fr!important;gap:8px!important;
   position:sticky!important;bottom:0!important;margin:2px -16px -16px!important;
   padding:11px 16px calc(13px + env(safe-area-inset-bottom,0px))!important;
   background:#101c2f!important;border-top:1px solid #283d56!important;z-index:3!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions button{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions button{
   display:flex!important;align-items:center!important;justify-content:center!important;
   min-width:0!important;width:100%!important;height:44px!important;min-height:44px!important;
   padding:6px!important;border-radius:9px!important;font-size:13px!important;font-weight:800!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions .inventorySecondary{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions .inventorySecondary{
   border:1px solid #536a83!important;background:#23354a!important;color:#eaf2fc!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions .inventoryPrimary{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions .inventoryPrimary{
   border:1px solid #2fd7c3!important;background:#0a7884!important;color:#fff!important;
  }
- #stockTxnModal.stockTxn130Compact #stockTxnForm:has(.stockTxnChoiceOut input:checked) .inventoryFormActions .inventoryPrimary{
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm:has(.stockTxnChoiceOut input:checked) .inventoryFormActions .inventoryPrimary{
   background:#9a632a!important;border-color:#efb25f!important;
  }
 }
 @media(max-width:360px){
- #stockTxnModal.stockTxn130Compact #stockTxnForm.inventoryForm{gap:9px 7px!important;padding:12px!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm #stockTxnDate{font-size:11px!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice{gap:5px!important}
- #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions{margin:2px -12px -12px!important;padding:10px 12px!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm.inventoryForm{gap:9px 7px!important;padding:12px!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm #stockTxnDate{font-size:11px!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice{gap:5px!important}
+ #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions{margin:2px -12px -12px!important;padding:10px 12px!important}
 }
