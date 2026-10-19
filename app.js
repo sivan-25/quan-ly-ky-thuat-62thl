@@ -862,6 +862,7 @@ function syncOverviewNavigation(){
  document.body.classList.toggle("estaUpgradeMode",upgrade);
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
+ document.getElementById("app")?.classList.toggle("estaPilot130HH",project&&String(currentBuilding?.id||"")==="130HH");
  $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
  $("#navProjectOverview").classList.toggle("hide",!admin||!project);
@@ -963,6 +964,8 @@ function prepareProjectContext(building){
  $("#technicalDocumentProgress")?.classList.add("hide");
 
  currentBuilding={...building};
+ // Ensure the pilot scope follows the newly selected building, not the previous project.
+ document.getElementById("app")?.classList.toggle("estaPilot130HH",String(currentBuilding.id)==="130HH");
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
  if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
@@ -2227,6 +2230,8 @@ function sync68EnergyTabs(){
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
+ // Keep the compact pilot consistent for direct module navigation and browser fixtures.
+ $("#app")?.classList.toggle("estaPilot130HH",!!projectOverviewActive&&String(currentBuilding?.id||"")==="130HH");
  if(typeof energyManageReset==="function")energyManageReset();
  closeWorkFilter();
  const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
