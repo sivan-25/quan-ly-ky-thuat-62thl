@@ -1,0 +1,49 @@
+name: ESTA Contractor Four-Project Mobile Parity
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'contractor.js'
+      - 'contractor-mobile-130.css'
+      - 'contractor-profile-form-mobile.css'
+      - 'contractor-job-mobile-130.css'
+      - 'index.html'
+      - 'tests/contractor-four-project-mobile.test.cjs'
+      - 'tests/contractor-four-project-browser.cjs'
+      - '.github/workflows/contractor-four-project-mobile.yml'
+  workflow_dispatch:
+
+jobs:
+  contractor-mobile:
+    name: Read-only mobile contractor regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static checks for four projects and data isolation
+        run: |
+          node --check contractor.js
+          node --check tests/contractor-four-project-mobile.test.cjs
+          node tests/contractor-four-project-mobile.test.cjs
+      - name: Install Chromium test runner
+        run: |
+          npm ci
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Serve isolated static fixtures
+        run: |
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory . >/tmp/esta-contractor-mobile.log 2>&1 &
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8766/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/esta-contractor-mobile.log
+          exit 1
+      - name: Chromium mobile profile and work form geometry
+        run: node tests/contractor-four-project-browser.cjs
