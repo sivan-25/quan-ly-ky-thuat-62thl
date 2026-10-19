@@ -15,6 +15,16 @@ assert.ok(css.includes("grid-template-columns:repeat(4,minmax(0,1fr))"),"four KP
 assert.ok(css.includes(".estam130Overview:not(.estam130MetricsOpen)"),"secondary KPIs remain expandable");
 assert.ok(css.includes("height:44px!important;min-height:44px!important"),"main tap targets are 44px");
 assert.ok(!css.includes(String.fromCharCode(92)+"n@media"),"CSS media rule has no escaped newline");
+assert.ok(html.includes("maintenance-130-mobile.css?v=20261019-130hh-touch02"),"PWA receives refreshed maintenance stylesheet");
+const touchScope='#app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"]';
+const mobileRules=css.slice(css.indexOf("/* Reclaim width without undersized"));
+assert.ok(mobileRules.includes(touchScope),"row touch rules only apply to 130HH");
+assert.ok(mobileRules.includes("width:min(100%,284px)!important"),"linked action row must fit narrow phones");
+assert.ok(mobileRules.includes("width:min(100%,168px)!important"),"unlinked action row stays compact");
+assert.ok(mobileRules.includes("height:44px!important;min-height:44px!important;max-height:44px!important"),"row buttons remain easy to touch");
+assert.ok(mobileRules.includes("width:44px!important;min-width:44px!important;height:44px!important"),"edit button has a full 44px square");
+assert.ok(mobileRules.includes(".m130CardFoot > button"),"card mode actions are covered");
+assert.ok(css.includes("min-height:44px;padding:4px 8px"),"secondary KPI disclosure remains touch friendly");
 
 const wait=()=>new Promise(resolve=>setTimeout(resolve,20));
 async function mount(building){

@@ -27,5 +27,7 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Verify 130HH phone maintenance controls
+        run: node tests/maintenance-130-mobile-compact.test.cjs
       - name: Run ESTA test suite
         run: npm test
