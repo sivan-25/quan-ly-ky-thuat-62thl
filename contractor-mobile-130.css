@@ -186,14 +186,40 @@
     width:16px;height:16px;flex:0 0 16px;fill:none;stroke:currentColor;stroke-width:1.8;
     stroke-linecap:round;stroke-linejoin:round;
   }
+  /* Contractor mobile directory: accessible premium call pill. */
   #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall{
-    display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
-    min-height:39px;padding:8px 13px;border:1px solid #14776f;border-radius:10px;
-    background:#11544e;color:#a6ffe5;font-size:13px;font-weight:800;
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;
+    min-height:42px;padding:0 13px;border:1px solid #22b59f;border-radius:999px;
+    background:linear-gradient(125deg,#105c55 0%,#128e7e 58%,#1ab39b 100%);
+    color:#ecfff9;font-size:12px;font-weight:800;line-height:1.2;
     text-decoration:none;white-space:nowrap;
+    box-shadow:0 3px 11px rgba(6,123,102,.24),inset 0 1px rgba(255,255,255,.16);
+    transition:filter .17s ease,box-shadow .17s ease,transform .17s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall svg{
+    display:block;width:16px;height:16px;flex:0 0 16px;
+    fill:none;stroke:currentColor;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall:hover{
+    filter:brightness(1.08);box-shadow:0 5px 15px rgba(6,123,102,.32);
+  }
+  #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall:active{
+    transform:scale(.97);filter:brightness(.96);
+  }
+  #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall:focus-visible{
+    outline:2px solid #57eafa;outline-offset:3px;
   }
   #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall.disabled{
-    opacity:.48;cursor:default;pointer-events:none;
+    border-color:#33465d;background:#202e43;color:#849ab4;
+    box-shadow:none;opacity:.7;cursor:default;pointer-events:none;font-size:11px;
+  }
+  @media(prefers-reduced-motion:reduce){
+    #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall{
+      transition:none;
+    }
+    #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCall:active{transform:none}
   }
   #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCard a:focus-visible,
   #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileCard summary:focus-visible,
