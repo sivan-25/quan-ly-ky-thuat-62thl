@@ -2947,11 +2947,6 @@ function syncInventory130Reference({year,allYear,count}){
    choiceBox.appendChild(choice);
   });
  }
- const todaySelected=document.querySelector("#materialMonthTabs button.active");
- if(todaySelected&&todaySelected.dataset.materialMonth!=="all"&&todaySelected.scrollIntoView){
-  // Keep the active month visible, without moving the surrounding page.
-  try{todaySelected.scrollIntoView({block:"nearest",inline:"nearest",behavior:"instant"})}catch(_){}
- }
 }
 
 function renderMaterials(){
@@ -3062,10 +3057,7 @@ function renderMaterials(){
   const canDelete=canEdit&&currentAccount?.is_admin&&Math.abs(inventoryNum(s.current))<0.000001;
   const valueHtml='<div class="invMobileValues">'+metrics.map(([label,val],index)=>
    '<div class="invMobileValue '+(index===1?"is-in":index===2?"is-out":index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+(is130PhonePilot&&index===1&&inventoryNum(val)>0?"+":is130PhonePilot&&index===2&&inventoryNum(val)>0?"−":"")+inventoryFmt(val)+'</b></div>').join("")+'</div>';
-  const supply=Math.max(0,inventoryNum(metrics[0][1]))+Math.max(0,inventoryNum(metrics[1][1]));
-  const progress=supply>0?Math.max(0,Math.min(100,inventoryNum(balance)/supply*100)):0;
-  const referenceProgress=is130PhonePilot&&supply>0?'<div class="inventory130Progress" role="meter" aria-label="Tỷ lệ vật tư còn lại" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+Math.round(progress)+'"><span style="width:'+progress.toFixed(1)+'%"></span></div>'+
-   '<small class="inventory130ProgressText">Còn '+inventoryFmt(balance)+'/'+inventoryFmt(supply)+(inventoryNum(metrics[0][1])===0?' so với tổng nhập':' so với tồn đầu + nhập')+'</small>':'';
+
   const actions=canEdit?'<div class="invMobileCardActions">'+
    '<button type="button" onclick="openStockTxnModal(\''+id+'\')">⇄ Nhập / Xuất</button>'+
    '<button type="button" onclick="editMaterial(\''+id+'\')">Sửa</button>'+
@@ -3087,7 +3079,7 @@ function renderMaterials(){
    '<span class="invMobileUnit">ĐVT: '+esc(m.unit||"—")+'</span></div>'+
    (is130PhonePilot?'<div class="invMobileStatusGroup"><span class="invMobileStatus">'+stockStatus+'</span>'+pilotMove+pilotEdit+pilotDelete+'</div>':'<span class="invMobileNumber">#'+(i+1)+'</span>')+
    '</div>'+
-   (is130PhonePilot?'<div class="invMobileCardBottom is-readonly">'+valueHtml+'</div>':valueHtml)+referenceProgress+
+   (is130PhonePilot?'<div class="invMobileCardBottom is-readonly">'+valueHtml+'</div>':valueHtml)+
    (isLow?'<small class="invMobileNotice">⚠ Tồn thấp · định mức '+inventoryFmt(m.min_qty)+'</small>':'')+
    yearly+(is130PhonePilot?"":actions)+'</article>';
  }).join("");
