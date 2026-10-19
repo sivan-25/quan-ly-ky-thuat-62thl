@@ -477,3 +477,175 @@
   outline:2px solid #f4cb77!important;outline-offset:2px!important;
  }
 }
+
+/* 130 HH mobile stock movement form — clear radio choices, paired short date/quantity.
+   Modal sits outside #inventoryPage. Scope by runtime class so 3 other projects
+   and desktop keep the original select and workflows. */
+#stockTxnModal .stockTxnQuickChoices{display:none}
+@media(max-width:760px){
+ #stockTxnModal.stockTxn130Compact{
+  padding:12px!important;box-sizing:border-box!important;
+  background:rgba(3,14,28,.76)!important;backdrop-filter:blur(8px)!important;
+ }
+ #stockTxnModal.stockTxn130Compact .inventoryModalCard{
+  width:min(440px,calc(100vw - 28px))!important;
+  max-height:calc(100dvh - 112px)!important;
+  padding:0!important;box-sizing:border-box!important;
+  border:1px solid #3a526e!important;border-radius:16px!important;
+  background:#111c30!important;color:#edf5ff!important;
+  box-shadow:0 20px 65px rgba(0,5,16,.53)!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+ }
+ #stockTxnModal.stockTxn130Compact .modalClose{
+  position:absolute!important;right:12px!important;top:12px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;
+  border-radius:9px!important;background:#203148!important;
+  border:1px solid #364b66!important;color:#d8e8f7!important;
+  font-size:19px!important;line-height:1!important;z-index:5!important;
+ }
+ #stockTxnModal.stockTxn130Compact .inventoryModalHead{
+  padding:17px 54px 12px 16px!important;
+  background:linear-gradient(130deg,#172d45,#111e31)!important;
+  border-bottom:1px solid #2f415b!important;
+ }
+ #stockTxnModal.stockTxn130Compact .inventoryModalHead>span{
+  font-size:10px!important;color:#52e3d4!important;letter-spacing:1.3px!important;
+  font-weight:800!important;line-height:1.1!important;
+ }
+ #stockTxnModal.stockTxn130Compact .inventoryModalHead h3{
+  color:#f2f8ff!important;font-size:20px!important;
+  line-height:1.22!important;font-weight:800!important;margin:5px 0 0!important;
+ }
+ #stockTxnModal.stockTxn130Compact .inventoryModalHead p{display:none!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm.inventoryForm{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:11px 9px!important;
+  min-width:0!important;padding:14px 16px 16px!important;
+  background:transparent!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnMaterialField,
+ #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnTypeField,
+ #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnPerformerField,
+ #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnNoteField,
+ #stockTxnModal.stockTxn130Compact #stockTxnForm>.inventoryFormActions{
+  grid-column:1/-1!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnDateField{
+  grid-column:1!important;min-width:0!important;align-self:stretch!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm>.stockTxnQtyField{
+  grid-column:2!important;min-width:0!important;align-self:stretch!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm label>span,
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnQuickChoices legend{
+  display:block!important;margin:0 0 6px!important;padding:0!important;
+  font-size:11px!important;line-height:1.3!important;
+  font-weight:750!important;color:#bbcee2!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm label{min-width:0!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm label:has(>input,>select){max-width:100%!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]),select){
+  display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+  box-sizing:border-box!important;height:45px!important;min-height:45px!important;
+  padding:0 10px!important;border:1px solid #3d526c!important;
+  border-radius:9px!important;background:#1b2940!important;
+  color:#edf5ff!important;font-family:inherit!important;
+  font-size:14px!important;font-weight:550!important;line-height:1.3!important;
+  box-shadow:none!important;color-scheme:dark!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm :is(input:not([type=radio]),select):focus{
+  border-color:#39d4c7!important;outline:2px solid #39d4c755!important;
+  outline-offset:0!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm input::placeholder{color:#8097b2!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm #stockTxnDate{
+  font-size:12px!important;letter-spacing:-.35px!important;
+  padding-left:7px!important;padding-right:5px!important;
+  text-align:left!important;-webkit-appearance: auto!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnDate::-webkit-date-and-time-value{text-align:left!important;min-width:0!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnDate::-webkit-datetime-edit{padding:0!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm #stockTxnQty{font-size:16px!important;font-weight:750!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnOriginalType{display:none!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnQuickChoices{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;margin:0!important;padding:0!important;
+  border:0!important;min-width:0!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnQuickChoices legend{
+  grid-column:1/-1!important;margin-bottom:7px!important;width:100%!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:8px!important;width:100%!important;max-width:100%!important;
+  box-sizing:border-box!important;min-width:0!important;min-height:46px!important;
+  padding:7px 6px!important;margin:0!important;
+  background:#192940!important;border:1px solid #43566f!important;
+  border-radius:10px!important;cursor:pointer!important;
+  color:#d4e2f2!important;font-size:13px!important;font-weight:800!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice>span{
+  display:inline!important;margin:0!important;padding:0!important;
+  font-size:13px!important;color:inherit!important;font-weight:800!important;
+  white-space:nowrap!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm input[type=radio]{
+  appearance:none!important;-webkit-appearance:none!important;
+  display:inline-grid!important;place-items:center!important;
+  flex:none!important;width:18px!important;height:18px!important;
+  min-width:18px!important;min-height:18px!important;
+  padding:0!important;margin:0!important;
+  border:2px solid #8b9db2!important;border-radius:50%!important;
+  background:#101d30!important;cursor:pointer!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm input[type=radio]:checked{
+  border-color:#42e6c9!important;background:#133e3e!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm input[type=radio]:checked:after{
+  content:""!important;display:block!important;width:8px!important;height:8px!important;
+  background:#58edd5!important;border-radius:50%!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceIn:has(input:checked){
+  background:#124947!important;border-color:#2ed7bf!important;color:#8dffe3!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceOut:has(input:checked){
+  background:#523e2c!important;border-color:#f7b65d!important;color:#ffdb99!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceOut input:checked{
+  border-color:#ffbd66!important;background:#583d24!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoiceOut input:checked:after{
+  background:#ffcb80!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice input:focus-visible{
+  outline:2px solid #fff0ad!important;outline-offset:3px!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions{
+  display:grid!important;grid-template-columns:1fr 1.3fr!important;gap:8px!important;
+  position:sticky!important;bottom:0!important;margin:2px -16px -16px!important;
+  padding:11px 16px calc(13px + env(safe-area-inset-bottom,0px))!important;
+  background:#101c2f!important;border-top:1px solid #283d56!important;z-index:3!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  min-width:0!important;width:100%!important;height:44px!important;min-height:44px!important;
+  padding:6px!important;border-radius:9px!important;font-size:13px!important;font-weight:800!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions .inventorySecondary{
+  border:1px solid #536a83!important;background:#23354a!important;color:#eaf2fc!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions .inventoryPrimary{
+  border:1px solid #2fd7c3!important;background:#0a7884!important;color:#fff!important;
+ }
+ #stockTxnModal.stockTxn130Compact #stockTxnForm:has(.stockTxnChoiceOut input:checked) .inventoryFormActions .inventoryPrimary{
+  background:#9a632a!important;border-color:#efb25f!important;
+ }
+}
+@media(max-width:360px){
+ #stockTxnModal.stockTxn130Compact #stockTxnForm.inventoryForm{gap:9px 7px!important;padding:12px!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm #stockTxnDate{font-size:11px!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .stockTxnChoice{gap:5px!important}
+ #stockTxnModal.stockTxn130Compact #stockTxnForm .inventoryFormActions{margin:2px -12px -12px!important;padding:10px 12px!important}
+}
