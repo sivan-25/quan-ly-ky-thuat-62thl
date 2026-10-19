@@ -200,19 +200,28 @@ function closeContractorDetail(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function renderContractorDetail(){
+  // Keep the 130 HH phone-only detail variant scoped to this project.
+  $("#contractorPage")?.classList.toggle("contractorMobile130",String(currentBuilding?.id||"")==="130HH");
   const c=contractors.find(x=>String(x.id)===String(selectedContractorId));
   if(!c){closeContractorDetail();return}
   $("#contractorDetailSpecialty").textContent=(c.specialty||"nhà thầu").toUpperCase();
   $("#contractorDetailName").textContent=c.name;
-  $("#contractorDetailNote").textContent=c.note||"Thông tin liên hệ và lịch sử công việc tại "+(currentBuilding?.name||"dự án");
+  // The generic introduction is not part of the contractor's actual data.
+  $("#contractorDetailNote").textContent=c.note||"";
+  if($("#contractorMobileDetailNoteValue"))$("#contractorMobileDetailNoteValue").textContent=c.note||"—";
   const badge=$("#contractorDetailStatus");
   badge.textContent=c.status;badge.className="contractorStatusBadge "+contractorStatusClass(c.status);
+  const mobileBadge=$("#contractorDetailMobileStatus");
+  if(mobileBadge){mobileBadge.textContent=c.status||"Chưa xác định";mobileBadge.className="contractorStatusBadge "+contractorStatusClass(c.status);}
   const phone=$("#contractorDetailPhone");phone.textContent=c.phone||"—";phone.href=contractorPhoneHref(c.phone);
   $("#contractorDetailContact").textContent=c.contact_name||"—";
   const term=$("#contractorDetailContractTerm");
   const start=c.contract_start_date?fmt(c.contract_start_date):"Chưa ghi";
   const end=c.contract_end_date?fmt(c.contract_end_date):"Chưa ghi";
-  term.textContent=(c.contract_start_date||c.contract_end_date)?start+" → "+end:"—";
+  const contractDates=(c.contract_start_date||c.contract_end_date)?start+" → "+end:"";
+  term.textContent=contractDates||"—";
+  const mobileTerm=$("#contractorDetailMobileTerm");
+  if(mobileTerm){mobileTerm.textContent=contractDates;mobileTerm.hidden=!contractDates;}
   renderContractorJobs();
 }
 function renderContractorJobs(){
