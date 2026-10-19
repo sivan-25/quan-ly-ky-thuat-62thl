@@ -14,7 +14,6 @@ assert.match(html,/inventory-mobile-cards\.css\?v=/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/#app #inventoryPage\.inventory130MobileCompact \.inventoryStats\{/);
 assert.match(css,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/);
-assert.match(appSource,/classList\.toggle\("inventory130MobileCompact",String\(currentBuilding\?\.id\|\|""\)==="130HH"\)/);
 assert.match(css,/\.materialMonthlyCard>\.inventoryTableScroll/);
 assert.ok(html.indexOf("four-project-compact.css")<html.indexOf("inventory-mobile-cards.css"),"mobile patch loads last");
 
@@ -22,6 +21,7 @@ const dom=new JSDOM(html,{url:"https://example.test/"});
 const $=selector=>dom.window.document.querySelector(selector);
 const source=appSource.slice(appSource.indexOf("function renderMaterials(){"),appSource.indexOf("function setInventoryTab(tab){"));
 assert.match(source,/function renderMaterials\(\)/);
+assert.match(source,/classList\.toggle\("inventory130MobileCompact",String\(currentBuilding\?\.id\|\|""\)==="130HH"\)/);
 assert.match(source,/function renderTools\(\)/);
 const mat={id:"material-uuid",name:"Dây điện 8 inch",code:"VT-001",unit:"m",tracking_start_date:"2026-09-01",min_qty:2,opening_qty:20};
 const tools=[{id:"tool-uuid",name:"Ampe kìm",code:"DC-01",qty:1,unit:"Cái",condition_status:"Tốt",brand:"Fluke",location:"Kho",keeper:"Văn",note:""}];
