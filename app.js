@@ -2917,9 +2917,11 @@ window.openLowStockReplenish=id=>{
  $("#stockTxnDate").value=today();
  setTimeout(()=>$("#stockTxnQty").focus(),50);
 };
-/* Mobile 130 HH reference controls mirror native ESTA controls: no duplicate backend state. */
+/* All four ESTA buildings use 130 HH's reference UI; stock records stay scoped to each building. */
+const ESTA_INVENTORY_PROJECTS=new Set(["130HH","127HH","62THL","68PĐL","68PDL"]);
+function isEstaInventoryProject(){return ESTA_INVENTORY_PROJECTS.has(String(currentBuilding?.id||""))}
 function syncInventory130Reference({year,allYear,count}){
- const active=String(currentBuilding?.id||"")==="130HH"&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
+ const active=isEstaInventoryProject()&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
  const title=$("#topInventoryTitle h1"),subtitle=$("#topInventoryTitle p");
  if(title)title.textContent=active?"Vật tư":"Dụng cụ - Vật tư";
  if(subtitle)subtitle.textContent=active?"Dụng cụ - Vật tư":"Quản lý tồn kho và dụng cụ kỹ thuật";
@@ -2951,8 +2953,8 @@ function syncInventory130Reference({year,allYear,count}){
 }
 
 function renderMaterials(){
- // Only 130 Hong Ha uses the compact phone inventory pilot; other projects retain the previous layout.
- document.getElementById("inventoryPage")?.classList.toggle("inventory130MobileCompact",String(currentBuilding?.id||"")==="130HH");
+ // Shared four-project phone interface; records and transactions remain separate by building_id.
+ document.getElementById("inventoryPage")?.classList.toggle("inventorySharedMobileCompact",isEstaInventoryProject());
  const y=inventoryYearValue(),allYear=String(inventoryActiveMonth)==="all";
  const month=allYear?null:Math.max(1,Math.min(12,Number(inventoryActiveMonth)||1));
  const q=($("#materialSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
@@ -2979,7 +2981,7 @@ function renderMaterials(){
  $("#materialMonthLabel").textContent=periodText;
  $("#materialSelectedMonth").textContent=periodText;
  $("#materialTitleCount").textContent="("+list.length+" mục)";
- const reference130=String(currentBuilding?.id||"")==="130HH"&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
+ const reference130=isEstaInventoryProject()&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
  $("#materialInLabel").textContent=reference130?(allYear?"Nhập năm":"Nhập tháng"):(allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG");
  $("#materialOutLabel").textContent=reference130?(allYear?"Xuất năm":"Xuất tháng"):(allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG");
  $("#materialStockLabel").textContent=reference130?"Mặt hàng tồn":(allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN");
@@ -3054,7 +3056,7 @@ function renderMaterials(){
   const id=String(m.id).replace(/[^a-zA-Z0-9_-]/g,"");
   const metrics=[["Tồn đầu",allYear?s.opening:snapshot.begin],["Nhập",allYear?s.totalIn:snapshot.inQty],["Xuất",allYear?s.totalOut:snapshot.outQty],["Tồn cuối",balance]];
   const canEdit=canProjectEdit();
-  const is130PhonePilot=String(currentBuilding?.id||"")==="130HH";
+  const is130PhonePilot=isEstaInventoryProject();
   const canDelete=canEdit&&currentAccount?.is_admin&&Math.abs(inventoryNum(s.current))<0.000001;
   const valueHtml='<div class="invMobileValues">'+metrics.map(([label,val],index)=>
    '<div class="invMobileValue '+(index===1?"is-in":index===2?"is-out":index===3?"is-closing":"")+'"><span>'+label+'</span><b>'+(is130PhonePilot&&index===1&&inventoryNum(val)>0?"+":is130PhonePilot&&index===2&&inventoryNum(val)>0?"−":"")+inventoryFmt(val)+'</b></div>').join("")+'</div>';
@@ -3106,7 +3108,7 @@ function renderMaterials(){
   const taskId=String(x.source_task_id||"").replace(/[^a-zA-Z0-9_-]/g,"");
   const buttons=linked?'<button type="button" onclick="openLinkedTaskFromStockTxn(\''+taskId+'\')">↗ '+esc(x.source_task_title||"Mở công việc")+'</button>':
     canProjectEdit()?'<button type="button" class="is-delete" onclick="deleteStockTxn(\''+id+'\')">Xóa giao dịch</button>':'';
-  if(String(currentBuilding?.id||"")==="130HH"){
+  if(isEstaInventoryProject()){
    return '<article class="invMobileCard inventory130Transaction"><div class="inventory130TxnMain">'+
     '<div class="inventory130TxnText"><strong>'+esc(byId[x.material_id]?.name||"Vật tư đã xóa")+'</strong>'+
     '<small>'+fmt(x.tx_date)+' · '+esc(x.performer||"Chưa ghi người thực hiện")+'</small></div>'+
@@ -3212,7 +3214,7 @@ window.deleteMaterial=async id=>{
 function syncStockTxnQuickChoice(){
  const selected=$("#stockTxnType")?.value==="out"?"out":"in";
  document.querySelectorAll('#stockTxnQuickChoices input[name="stockTxnQuickType"]').forEach(r=>{r.checked=r.value===selected});
- const compact=$("#stockTxnModal")?.classList.contains("stockTxn130Compact")&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
+ const compact=$("#stockTxnModal")?.classList.contains("stockTxnSharedCompact")&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
  const submit=$("#stockTxnSubmit");
  if(submit)submit.textContent=compact?(selected==="out"?"Xác nhận xuất":"Xác nhận nhập"):"Lưu giao dịch";
 }
@@ -3229,7 +3231,7 @@ window.openStockTxnModal=id=>{
  const maxDay=new Date(y,m,0).getDate();
  const date=y+"-"+String(m).padStart(2,"0")+"-"+String(Math.min(day,maxDay)).padStart(2,"0");
  $("#stockTxnId").value="";$("#stockTxnDate").value=date;$("#stockTxnType").value="in";$("#stockTxnQty").value="";$("#stockTxnPerformer").value="";$("#stockTxnNote").value="";
- $("#stockTxnModal").classList.toggle("stockTxn130Compact",String(currentBuilding?.id||"")==="130HH");
+ $("#stockTxnModal").classList.toggle("stockTxnSharedCompact",isEstaInventoryProject());
  syncStockTxnQuickChoice();
  renderMaterials();if(id)$("#stockTxnMaterial").value=id;
  const chosen=inventoryActiveMaterials().find(x=>x.id===$("#stockTxnMaterial").value);
