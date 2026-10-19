@@ -2895,7 +2895,7 @@ function renderStockAlerts(){
  $("#stockAlertOnly").textContent=inventoryShowAlertsOnly?"Hiện tất cả vật tư":"Chỉ xem cảnh báo";
  const box=$("#stockAlertList");
  if(!alerts.length){
-   const title=String(currentBuilding?.id||"")==="130HH"?"Tồn kho ổn định · không vật tư dưới mức tối thiểu":"Tồn kho đang ổn định";
+   const title=ESTA_INVENTORY_PROJECTS.has(String(currentBuilding?.id||""))?"Tồn kho ổn định · không vật tư dưới mức tối thiểu":"Tồn kho đang ổn định";
    box.innerHTML='<div class="stockAlertEmpty"><span>✓</span><div><b>'+title+'</b><small>Không có vật tư nào bằng hoặc thấp hơn mức tồn tối thiểu.</small></div></div>';
    return;
  }
@@ -2981,12 +2981,12 @@ function renderMaterials(){
  $("#materialMonthLabel").textContent=periodText;
  $("#materialSelectedMonth").textContent=periodText;
  $("#materialTitleCount").textContent="("+list.length+" mục)";
- const reference130=isEstaInventoryProject()&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
- $("#materialInLabel").textContent=reference130?(allYear?"Nhập năm":"Nhập tháng"):(allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG");
- $("#materialOutLabel").textContent=reference130?(allYear?"Xuất năm":"Xuất tháng"):(allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG");
- $("#materialStockLabel").textContent=reference130?"Mặt hàng tồn":(allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN");
+ const referenceMobile=isEstaInventoryProject()&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
+ $("#materialInLabel").textContent=referenceMobile?(allYear?"Nhập năm":"Nhập tháng"):(allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG");
+ $("#materialOutLabel").textContent=referenceMobile?(allYear?"Xuất năm":"Xuất tháng"):(allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG");
+ $("#materialStockLabel").textContent=referenceMobile?"Mặt hàng tồn":(allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN");
  const fullYearButton=$("#materialMonthTabs .yearOverviewBtn");
- if(fullYearButton)fullYearButton.textContent=reference130?"Cả năm":"12 tháng";
+ if(fullYearButton)fullYearButton.textContent=referenceMobile?"Cả năm":"12 tháng";
 
  const periodRows=inventoryActiveMaterials().map(m=>({m,s:inventorySnapshot(m,y)})).filter(x=>allYear?x.s.months.some(mm=>mm.active):x.s.months[month-1]?.active);
  const totalIn=periodRows.reduce((sum,x)=>sum+(allYear?inventoryNum(x.s.totalIn):inventoryNum(x.s.months[month-1]?.inQty)),0);
