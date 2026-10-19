@@ -1,0 +1,235 @@
+/* ESTA 130 Hồng Hà pilot – compact maintenance and system records.
+   All rules are gated by .estaPilot130HH. Other buildings remain untouched.
+   No database schema, status, photo or maintenance-link behavior is modified. */
+
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"]{
+ padding-top:4px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
+ display:grid!important;
+ grid-template-columns:195px minmax(0,1fr)!important;
+ grid-template-rows:auto!important;
+ gap:12px!important;
+ min-height:0!important;
+ padding:10px 3px 8px!important;
+ border-top:1px solid #a9bfca!important;
+ align-items:center!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{
+ grid-area:1 / 1!important;
+ max-width:195px!important;
+ grid-template-columns:36px minmax(0,1fr) 36px!important;
+ gap:3px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav button{
+ height:38px!important;min-height:38px!important;border-radius:8px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav #estamMonth{
+ font-size:14px!important;letter-spacing:0!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Lead{
+ display:none!important; /* 'Tất cả' already shows the identical total in the clickable metrics */
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Overview{
+ grid-area:1 / 2!important;
+ padding:0!important;gap:5px!important;justify-content:center!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Progress{
+ height:7px!important;min-height:7px!important;border-radius:5px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
+ grid-template-columns:repeat(9,minmax(0,1fr))!important;
+ gap:3px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric,
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime{
+ min-height:46px!important;padding:3px 5px!important;gap:2px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric b,
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime b{
+ font-size:20px!important;line-height:1!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric span,
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime span{
+ font-size:10px!important;line-height:1.2!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{
+ margin:1px 0 8px!important;padding:2px 0!important;gap:7px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters .m130Toolbar{
+ gap:6px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters input#m130Search{
+ height:40px!important;min-height:40px!important;max-width:280px!important;
+ padding:7px 11px!important;font-size:12px!important;border-radius:8px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters #m130Group{
+ height:40px!important;max-width:160px!important;min-width:110px!important;
+ padding:7px 27px 7px 10px!important;font-size:12px!important;border-radius:8px!important;
+}
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Filters summary,
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button,
+#app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] #m130Create{
+ height:40px!important;min-height:40px!important;border-radius:8px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .estam130WorkHeading{
+ padding:7px 11px!important;min-height:0!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .estam130WorkItems .m130CompactRow{
+ gap:7px!important;min-height:73px!important;padding:8px 11px!important;
+ border-radius:9px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Date{
+ min-height:54px!important;height:54px!important;flex-basis:53px!important;
+ min-width:53px!important;width:53px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryBody{
+ min-width:0!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryBody h4{
+ font-size:13px!important;line-height:1.35!important;margin:2px 0!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130Pills{
+ gap:4px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130ShortMeta{
+ font-size:10.5px!important;line-height:1.35!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions{
+ grid-template-columns:112px 108px 38px!important;
+ width:270px!important;max-width:270px!important;flex-basis:270px!important;
+ gap:6px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions:not(.m130HasLinkedEquipment){
+ grid-template-columns:108px 38px!important;
+ width:152px!important;max-width:152px!important;flex-basis:152px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions > .m130LinkedEquipment{
+ width:112px!important;font-size:10px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions > button[data-m130-event]{
+ width:108px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence{
+ max-width:260px!important;gap:4px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence button{
+ width:61px!important;
+}
+#app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow > .m130Evidence img{
+ width:53px!important;height:49px!important;
+}
+
+/* System information: keep the category rail, saved specifications and linked history. */
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefSurface{
+ padding:9px 10px 14px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout{
+ grid-template-columns:185px minmax(0,1fr)!important;
+ gap:9px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueSystemRail{
+ gap:4px!important;padding:7px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueRailCard{
+ min-height:42px!important;padding:6px 9px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefTop{
+ gap:6px!important;margin-bottom:4px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot #ueGroup{
+ font-size:18px!important;min-height:28px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefSearch input,
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefTools #ueStatus{
+ height:38px!important;min-height:38px!important;font-size:12px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefActions{
+ gap:5px!important;margin-bottom:6px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefActions button{
+ min-height:34px!important;padding:6px 9px!important;font-size:11px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefColHead,
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefRow{
+ padding-left:10px!important;padding-right:9px!important;gap:6px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefColHead{
+ min-height:35px!important;font-size:10px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefRow{
+ min-height:44px!important;padding-top:6px!important;padding-bottom:6px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefDetails{
+ padding:5px 10px 11px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefDetails .ueRefFacts{
+ padding:10px!important;gap:8px 12px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefRowActions{
+ margin-top:7px!important;gap:6px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefRowActions button{
+ min-height:38px!important;padding:7px 10px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueLinkedMaintenance{
+ margin:7px 0!important;padding:9px 11px!important;
+}
+#app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueLinkedMaintenanceHeading{
+ padding-bottom:6px!important;
+}
+
+@media(max-width:1000px){
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+}
+@media(max-width:700px){
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamSummary{
+  grid-template-columns:minmax(0,1fr)!important;gap:7px!important;
+  padding:7px 2px!important;
+ }
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamMonthNav{
+  grid-area:auto!important;max-width:100%!important;
+  grid-template-columns:40px minmax(0,1fr) 40px!important;
+ }
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Overview{
+  grid-area:auto!important;
+ }
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metrics{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important;
+ }
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130Metric,
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estam130OnTime{
+  min-height:40px!important;
+ }
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamToolbar{
+  flex-wrap:wrap!important;
+ }
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters input#m130Search{
+  flex:1 1 100%!important;max-width:100%!important;
+ }
+ #app.estaPilot130HH #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamNativeFilters #m130Group{
+  max-width:none!important;min-width:0!important;flex:1 1 auto!important;
+ }
+ #app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions,
+ #app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions:not(.m130HasLinkedEquipment){
+  width:max-content!important;max-width:100%!important;flex:0 0 auto!important;
+ }
+ #app.estaPilot130HH #maintenancePage.maint130-mode #maint130 .m130CompactRow .m130EntryActions > button{
+  height:40px!important;min-height:40px!important;max-height:40px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefSurface{
+  padding:7px 5px 12px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueSystemRail{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:5px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefLayout .ueRailCard{
+  min-height:44px!important;
+ }
+ #app.estaPilot130HH #updateAssetsPage.ueSnapshot .ueRefRowActions button{
+  min-height:42px!important;
+ }
+}
