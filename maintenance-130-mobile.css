@@ -29,7 +29,7 @@
   }
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] .maintenanceProjectMeta{
     display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;
-    width:auto!important;max-width:36%!important;min-width:0!important;min-height:37px!important;
+    width:auto!important;max-width:36%!important;min-width:0!important;min-height:44px!important;
     padding:6px 8px!important;margin:0!important;border-radius:8px!important;
   }
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] .maintenanceProjectMeta b{
@@ -40,7 +40,7 @@
     min-width:0!important;width:auto!important;margin:0!important;
   }
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] .maintenanceHeroActions button{
-    min-height:37px!important;height:37px!important;padding:6px 8px!important;
+    min-height:44px!important;height:44px!important;padding:7px 8px!important;
     border-radius:8px!important;font-size:10.5px!important;line-height:1.2!important;
     min-width:0!important;flex:1 1 auto!important;white-space:nowrap!important;
   }
@@ -111,7 +111,7 @@
   }
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #estam130MobileMore{
     display:flex!important;align-items:center;justify-content:center;width:100%;
-    min-height:40px;padding:2px 8px;border:0;background:transparent;color:#285574;
+    min-height:44px;padding:4px 8px;border:0;background:transparent;color:#285574;
     font:800 11px Montserrat,system-ui,sans-serif;cursor:pointer;
   }
 
@@ -142,7 +142,7 @@
     width:44px!important;min-width:44px!important;max-width:44px!important;align-self:center!important;
   }
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #estaMaintenanceRedesign .estam130Filters summary{
-    width:42px!important;height:44px!important;min-height:44px!important;
+    width:44px!important;height:44px!important;min-height:44px!important;
   }
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #estaMaintenanceRedesign .estamActionArea{
     display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;
@@ -180,10 +180,30 @@
     height:52px!important;min-height:52px!important;
   }
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .m130CompactRow .m130EntryBody h4{
-    font-size:12.5px!important;line-height:1.36!important;
+    font-size:13px!important;line-height:1.38!important;
   }
-  #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .m130CompactRow .m130EntryActions{
-    gap:5px!important;
+  /* Reclaim width without undersized record/edit/equipment buttons. */
+  #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions{
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px!important;
+    gap:5px!important;width:min(100%,284px)!important;max-width:100%!important;
+    flex:0 1 auto!important;min-width:0!important;justify-content:end!important;margin-left:auto!important;
+  }
+  #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions:not(.m130HasLinkedEquipment){
+    grid-template-columns:minmax(0,1fr) 44px!important;
+    width:min(100%,168px)!important;max-width:100%!important;
+  }
+  #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > button{
+    height:44px!important;min-height:44px!important;max-height:44px!important;
+  }
+  #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > :is(.m130LinkedEquipment,button[data-m130-event]){
+    width:100%!important;min-width:0!important;max-width:100%!important;
+  }
+  #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .estam130WorkItems .m130CompactRow .m130EntryActions > .m130Edit{
+    width:44px!important;min-width:44px!important;height:44px!important;
+    min-height:44px!important;max-height:44px!important;
+  }
+  #app.estaFourProjectCompact.maintenanceMode #maintenancePage[data-estam-building="130HH"] #maint130 .m130CardFoot > button{
+    min-height:44px!important;height:44px!important;
   }
 }
 @media (min-width:641px){
