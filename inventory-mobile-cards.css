@@ -260,7 +260,11 @@
     font-size:10px!important;
   }
   #app #inventoryPage.inventory130MobileCompact .invMobileCard130 .invYearDetails{
-    margin-top:7px!important;
+    margin-top:5px!important;padding-top:4px!important;
+  }
+  #app #inventoryPage.inventory130MobileCompact .invMobileCard130 .invYearDetails summary{
+    min-height:23px!important;display:flex!important;
+    align-items:center!important;font-size:10px!important;
   }
 }
 @media(max-width:355px){
