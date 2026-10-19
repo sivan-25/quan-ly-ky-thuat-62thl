@@ -206,3 +206,187 @@
  #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileSpecialty{font-size:9px}
  #app.contractorMode #contractorPage.contractorMobile130 .contractorMobileName h3{font-size:14px!important}
 }
+
+
+/* 130 HH COMPACT DETAIL V2 · phone-only; desktop and other projects unchanged. */
+.contractorMobileDetailMeta,.contractorMobileDetailNote,.contractorActionShort{display:none}
+@media(max-width:760px){
+  /* Flatten the action bar so the profile sits immediately below Back.
+     The four actions then share a single compact row underneath the profile. */
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorDetail{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    grid-auto-rows:auto!important;align-content:start!important;
+    gap:8px!important;min-width:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorDetailTop{
+    display:contents!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorDetailNav{
+    grid-column:1!important;grid-row:1!important;
+    display:flex!important;align-items:center!important;min-width:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorBackBtn{
+    display:inline-flex!important;align-items:center!important;
+    height:38px!important;min-height:38px!important;padding:0 12px!important;
+    border:1px solid #416180!important;border-radius:10px!important;
+    background:#15334f!important;color:#eef7ff!important;
+    font-size:12px!important;font-weight:730!important;
+    white-space:nowrap!important;cursor:pointer!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorProfile{
+    grid-column:1!important;grid-row:2!important;
+    display:grid!important;grid-template-columns:36px minmax(0,1fr) auto!important;
+    align-items:center!important;column-gap:7px!important;row-gap:0!important;
+    width:100%!important;min-width:0!important;min-height:68px!important;
+    margin:0!important;padding:10px!important;
+    border-radius:12px!important;overflow:hidden!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorProfileIcon{
+    grid-column:1!important;grid-row:1!important;width:36px!important;height:36px!important;
+    border-radius:9px!important;min-width:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorProfileIcon svg{
+    width:21px!important;height:21px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorProfileMain{
+    grid-column:2!important;grid-row:1!important;min-width:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorProfileMain>span{
+    display:block!important;margin:0!important;color:#28dcee!important;
+    font-size:9px!important;line-height:1.2!important;letter-spacing:.15px!important;
+    font-weight:800!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorProfileMain h1{
+    margin:4px 0 0!important;font-size:17px!important;line-height:1.15!important;
+    font-weight:800!important;overflow-wrap:anywhere;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorDetailNote,
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorDetailStatus{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileDetailMeta{
+    grid-column:3!important;grid-row:1!important;justify-self:end!important;
+    display:flex!important;align-items:center!important;justify-content:flex-end!important;
+    flex-wrap:nowrap!important;gap:6px!important;min-width:0!important;
+    color:#cedef3!important;white-space:nowrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorDetailMobileStatus{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    flex:0 0 auto!important;max-width:100%!important;min-height:27px!important;
+    padding:0 8px!important;border-radius:999px!important;
+    font-size:10px!important;font-weight:750!important;white-space:nowrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileTerm{
+    display:inline-block!important;min-width:0!important;
+    color:#cdd8e9!important;font-size:10px!important;line-height:1.25!important;
+    font-weight:650!important;font-variant-numeric:tabular-nums;
+    letter-spacing:-.35px!important;white-space:nowrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileTerm[hidden]{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorDetailActions{
+    grid-column:1!important;grid-row:3!important;
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    width:100%!important;min-width:0!important;margin:0!important;
+    gap:6px!important;align-items:stretch!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorDetailActions .contractorBtn{
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    width:100%!important;min-width:0!important;min-height:43px!important;height:43px!important;
+    padding:0 4px!important;margin:0!important;border-radius:10px!important;
+    font-size:12px!important;line-height:1.15!important;white-space:nowrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorActionLong{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorActionShort{
+    display:inline!important;font-size:11px!important;font-weight:780!important;
+    line-height:1.15!important;white-space:nowrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode #contractorDetailCloseBtn{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3{
+    grid-column:1!important;grid-row:4!important;
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;width:100%!important;min-width:0!important;margin:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 article{
+    min-width:0!important;min-height:68px!important;
+    display:flex!important;align-items:center!important;gap:7px!important;
+    padding:8px!important;border-radius:11px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 .contractorContactIcon{
+    width:29px!important;height:29px!important;flex:0 0 29px!important;
+    border-radius:8px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 .contractorContactIcon svg{
+    width:16px!important;height:16px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 article>div{
+    min-width:0!important;flex:1 1 auto!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 small{
+    margin:0!important;color:#d1ab67!important;
+    font-size:9px!important;line-height:1.25!important;font-weight:750!important;
+    letter-spacing:0!important;white-space:normal!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 b,
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 a{
+    display:block!important;margin:4px 0 0!important;
+    color:#eef6ff!important;font-size:13px!important;line-height:1.25!important;
+    font-weight:780!important;overflow-wrap:anywhere!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorContactGrid3 a{
+    color:#35ddec!important;text-decoration:none!important;
+  }
+  /* Preserve the contract data in the record but eliminate the redundant tile on phones. */
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorTermDetailCard{
+    display:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileDetailNote{
+    grid-column:1!important;grid-row:5!important;
+    display:flex!important;align-items:baseline!important;gap:9px!important;
+    width:100%!important;min-width:0!important;margin:0!important;padding:10px 12px!important;
+    border:1px solid #2d405b!important;border-radius:11px!important;
+    background:#111b30!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileDetailNote span{
+    flex:0 0 auto;color:#d5b478;font-size:11px;font-weight:750;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileDetailNote p{
+    flex:1;min-width:0;margin:0;color:#dae5f4;font-size:12px;
+    line-height:1.35;overflow-wrap:anywhere;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobsPanel{
+    grid-column:1!important;grid-row:6!important;min-width:0!important;margin:0!important;
+    border-radius:12px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobsHead{
+    min-height:0!important;padding:11px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobsHead h2{
+    font-size:15px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorJobsHead .contractorKicker{
+    font-size:9px!important;
+  }
+}
+@media(max-width:380px){
+  /* Graceful fallback for very narrow phones: status + dates remain together
+     on one horizontal line instead of causing horizontal page scrolling. */
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorProfile{
+    grid-template-columns:34px minmax(0,1fr)!important;
+    row-gap:6px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorMobileDetailMeta{
+    grid-column:1/-1!important;grid-row:2!important;justify-self:end!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorDetailActions{
+    gap:4px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobile130.contractorDetailMode .contractorActionShort{
+    font-size:10px!important;
+  }
+}
