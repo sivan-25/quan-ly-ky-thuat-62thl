@@ -856,7 +856,7 @@
 <link rel="stylesheet" href="four-project-compact.css?v=20261019-four-buildings01" media="screen">
 <link rel="stylesheet" href="inventory-mobile-cards.css?v=20261019-phone130oneRow05" media="screen">
 <link rel="stylesheet" href="maintenance-130-mobile.css?v=20261019-130hh-touch02" media="screen">
-<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-detail-v2-01">
+<style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-detail-v3-01">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2204,7 +2204,7 @@
       </div>
       <div class="contractorMobileDetailMeta" aria-label="Trạng thái và thời hạn hợp đồng">
         <span id="contractorDetailMobileStatus" class="contractorStatusBadge active">Đang hợp tác</span>
-        <span id="contractorDetailMobileTerm" class="contractorMobileTerm" title="Thời hạn hợp đồng">—</span>
+        <span class="contractorMobileTermGroup"><small>Thời hạn hợp đồng</small><span id="contractorDetailMobileTerm" class="contractorMobileTerm">—</span></span>
       </div>
       <span id="contractorDetailStatus" class="contractorStatusBadge active">Đang hợp tác</span>
     </div>
@@ -2220,10 +2220,10 @@
 
     <div class="contractorJobsPanel">
       <div class="contractorJobsHead">
-        <div><span class="contractorKicker">LỊCH SỬ CÔNG VIỆC</span><h2>Công việc đã thực hiện <span id="contractorJobCount">(0)</span></h2></div>
+        <div class="contractorJobHeading"><span class="contractorKicker">LỊCH SỬ CÔNG VIỆC <span id="contractorMobileJobCount">(0)</span></span><h2>Công việc đã thực hiện <span id="contractorJobCount">(0)</span></h2></div>
         <div class="contractorJobFilters">
-          <div class="contractorSearch compact"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="contractorJobSearch" placeholder="Tìm nội dung, nguyên nhân..."></div>
-          <select id="contractorJobStatusFilter"><option value="">Tất cả tình trạng</option><option>Đang thực hiện</option><option>Hoàn thành</option><option>Chờ xử lý</option><option>Tạm dừng</option></select>
+          <div class="contractorSearch compact"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="contractorJobSearch" aria-label="Tìm nội dung hoặc nguyên nhân công việc" placeholder="Tìm nội dung, nguyên nhân..."></div>
+          <label class="contractorJobStatusMini" title="Lọc tình trạng công việc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg><select id="contractorJobStatusFilter" aria-label="Lọc tình trạng công việc"><option value="">Tất cả tình trạng</option><option>Đang thực hiện</option><option>Hoàn thành</option><option>Chờ xử lý</option><option>Tạm dừng</option></select></label>
         </div>
       </div>
 
@@ -2692,7 +2692,7 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261019-inventory130oneRow05"></script><script src="completion-certificate-130.js?v=20261015-upgrade01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="contractor.js?v=20261019-detail-v2-01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
+<script src="contractor.js?v=20261019-detail-v3-01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261016-priorityvi01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
   const target=event.target;
