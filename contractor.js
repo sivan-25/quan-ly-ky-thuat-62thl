@@ -711,7 +711,8 @@ function contractorInitEvents(){
       }
     }finally{
       if(cancelBtn)cancelBtn.disabled=false;
-      if(saveBtn){saveBtn.disabled=false;saveBtn.textContent=dbSaved?"✓ Đã lưu":"Xác nhận"}
+      // A successfully inserted record must not be inserted twice if refresh fails.
+      if(saveBtn){saveBtn.disabled=dbSaved;saveBtn.textContent=dbSaved?"✓ Đã lưu":"Xác nhận"}
     }
   };
 }
