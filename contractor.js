@@ -1,4 +1,6 @@
 /* ESTA Contractor Module */
+const ESTA_CONTRACTOR_PROJECTS=new Set(["68PĐL","68PDL","62THL","127HH","130HH"]);
+const isEstaContractorProject=()=>ESTA_CONTRACTOR_PROJECTS.has(String(currentBuilding?.id||""));
 let contractors=[],contractorJobs=[],contractorLoadedBuilding="",selectedContractorId="",contractorSpecialtyFilter="";
 
 function contractorStatusClass(status=""){
@@ -113,8 +115,8 @@ async function loadContractorData(buildingId=currentBuilding?.id,force=false){
   }
 }
 function renderContractors(){
-  // Pilot is intentionally restricted to project 130 Hồng Hà.
-  $("#contractorPage")?.classList.toggle("contractorMobile130",String(currentBuilding?.id||"")==="130HH");
+  // The mobile contractor directory is shared by ESTA's four active buildings.
+  $("#contractorPage")?.classList.toggle("contractorMobileProjects",isEstaContractorProject());
   const search=($("#contractorSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
   const status=$("#contractorStatusFilter")?.value||"";
   const specialty=contractorSpecialtyFilter;
@@ -204,11 +206,11 @@ function closeContractorDetail(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function contractorPhoneDetailCompact(){
-  return String(currentBuilding?.id||"")==="130HH" && window.matchMedia("(max-width:760px)").matches;
+  return isEstaContractorProject() && window.matchMedia("(max-width:760px)").matches;
 }
 function syncContractorDetailMobile(){
   // Inline override also defeats legacy `article { display:flex!important }` styles.
-  // Restore original CSS outside the pilot, including when phone orientation changes.
+  // Restore original CSS on desktops and projects outside this shared group.
   const termCard=$("#contractorDetail .contractorTermDetailCard");
   if(termCard){
     if(contractorPhoneDetailCompact())termCard.style.setProperty("display","none","important");
@@ -218,8 +220,8 @@ function syncContractorDetailMobile(){
   if(search)search.placeholder=contractorPhoneDetailCompact()?"Tìm nội dung...":"Tìm nội dung, nguyên nhân...";
 }
 function renderContractorDetail(){
-  // Keep the 130 HH phone-only detail variant scoped to this project.
-  $("#contractorPage")?.classList.toggle("contractorMobile130",String(currentBuilding?.id||"")==="130HH");
+  // Compact contractor detail is scoped to the four active ESTA projects.
+  $("#contractorPage")?.classList.toggle("contractorMobileProjects",isEstaContractorProject());
   const c=contractors.find(x=>String(x.id)===String(selectedContractorId));
   if(!c){closeContractorDetail();return}
   $("#contractorDetailSpecialty").textContent=(c.specialty||"nhà thầu").toUpperCase();
@@ -353,8 +355,8 @@ function contractorJobShowSaveFeedback(message="",error=false){
   if(status){status.textContent=message;status.classList.toggle("error",!!error)}
 }
 function contractorJobPrepareModal(){
-  const modal=$("#contractorJobModal"),pilot=String(currentBuilding?.id||"")==="130HH";
-  modal?.classList.toggle("contractorJobMobile130",pilot);
+  const modal=$("#contractorJobModal"),pilot=isEstaContractorProject();
+  modal?.classList.toggle("contractorJobMobileProjects",pilot);
   const saveBtn=$("#contractorJobSaveBtn");
   if(saveBtn){saveBtn.disabled=false;saveBtn.textContent="Xác nhận"}
   contractorJobShowSaveFeedback("");
