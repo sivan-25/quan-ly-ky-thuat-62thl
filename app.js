@@ -2913,6 +2913,7 @@ function renderStockAlerts(){
 window.openLowStockReplenish=id=>{
  openStockTxnModal(id);
  $("#stockTxnType").value="in";
+ syncStockTxnQuickChoice();
  $("#stockTxnDate").value=today();
  setTimeout(()=>$("#stockTxnQty").focus(),50);
 };
@@ -3208,6 +3209,13 @@ window.deleteMaterial=async id=>{
    toast("Đã xóa vật tư khỏi danh sách");
  }catch(e){toast(e.message||"Không thể xóa vật tư")}
 };
+function syncStockTxnQuickChoice(){
+ const selected=$("#stockTxnType")?.value==="out"?"out":"in";
+ document.querySelectorAll('#stockTxnQuickChoices input[name="stockTxnQuickType"]').forEach(r=>{r.checked=r.value===selected});
+ const compact=$("#stockTxnModal")?.classList.contains("stockTxn130Compact")&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
+ const submit=$("#stockTxnSubmit");
+ if(submit)submit.textContent=compact?(selected==="out"?"Xác nhận xuất":"Xác nhận nhập"):"Lưu giao dịch";
+}
 window.openStockTxnModal=id=>{
  if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
  if(!inventoryActiveMaterials().length)return toast("Hãy thêm vật tư trước");
@@ -3221,6 +3229,8 @@ window.openStockTxnModal=id=>{
  const maxDay=new Date(y,m,0).getDate();
  const date=y+"-"+String(m).padStart(2,"0")+"-"+String(Math.min(day,maxDay)).padStart(2,"0");
  $("#stockTxnId").value="";$("#stockTxnDate").value=date;$("#stockTxnType").value="in";$("#stockTxnQty").value="";$("#stockTxnPerformer").value="";$("#stockTxnNote").value="";
+ $("#stockTxnModal").classList.toggle("stockTxn130Compact",String(currentBuilding?.id||"")==="130HH");
+ syncStockTxnQuickChoice();
  renderMaterials();if(id)$("#stockTxnMaterial").value=id;
  const chosen=inventoryActiveMaterials().find(x=>x.id===$("#stockTxnMaterial").value);
  $("#stockTxnDate").max=today();
@@ -3552,6 +3562,14 @@ $("#materialItemForm").onsubmit=async e=>{
   $("#materialItemModal").classList.add("hide");await loadInventoryData(currentBuilding.id,true);toast(id?"Đã cập nhật vật tư":"Đã thêm vật tư");
  }catch(err){toast(err.status===409?"Vật tư này đã có trong dự án":err.message)}
 };
+document.querySelectorAll('#stockTxnQuickChoices input[name="stockTxnQuickType"]').forEach(radio=>{
+ radio.addEventListener("change",()=>{
+  if(!radio.checked)return;
+  $("#stockTxnType").value=radio.value;
+  syncStockTxnQuickChoice();
+ });
+});
+$("#stockTxnType").addEventListener("change",syncStockTxnQuickChoice);
 $("#stockTxnMaterial").onchange=()=>{
  const m=inventoryActiveMaterials().find(x=>x.id===$("#stockTxnMaterial").value);
  $("#stockTxnDate").min=m?inventoryTrackingStart(m):"";
