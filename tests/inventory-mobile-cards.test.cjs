@@ -12,6 +12,9 @@ for(const id of ["materialMobileCards","materialMobilePeriod","materialMobileTra
 }
 assert.match(html,/inventory-mobile-cards\.css\?v=/);
 assert.match(css,/@media\(max-width:760px\)/);
+assert.match(css,/#app #inventoryPage\.inventory130MobileCompact \.inventoryStats\{/);
+assert.match(css,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/);
+assert.match(appSource,/classList\.toggle\("inventory130MobileCompact",String\(currentBuilding\?\.id\|\|""\)==="130HH"\)/);
 assert.match(css,/\.materialMonthlyCard>\.inventoryTableScroll/);
 assert.ok(html.indexOf("four-project-compact.css")<html.indexOf("inventory-mobile-cards.css"),"mobile patch loads last");
 
@@ -29,7 +32,7 @@ const snap={
 };
 const esc=x=>String(x??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const ctx={
- document:dom.window.document,$,currentAccount:{is_admin:true},inventoryActiveMonth:10,
+ document:dom.window.document,$,currentAccount:{is_admin:true},currentBuilding:{id:"130HH"},inventoryActiveMonth:10,
  inventoryTools:tools,inventoryMaterials:[mat],inventoryTransactions,inventoryShowAlertsOnly:false,
  INV_MONTHS:["Th 01","Th 02","Th 03","Th 04","Th 05","Th 06","Th 07","Th 08","Th 09","Th 10","Th 11","Th 12"],
  inventoryYearValue:()=>2026,inventoryActiveMaterials:()=>[mat],
@@ -42,6 +45,7 @@ const ctx={
 };
 vm.createContext(ctx);vm.runInContext(source,ctx);
 vm.runInContext("renderMaterials(); renderTools();",ctx);
+assert.ok($("#inventoryPage").classList.contains("inventory130MobileCompact"),"130 HH mobile layout marker is active");
 const card=$("#materialMobileCards .invMobileCard");
 assert.ok(card,"month view must render a dedicated material card");
 assert.match(card.textContent,/Dây điện 8 inch/);
@@ -63,4 +67,13 @@ vm.runInContext("renderMaterials(); renderTools();",ctx);
 assert.equal($("#materialMobileCards .invMobileCardActions"),null,"viewer cannot access stock edit buttons");
 assert.equal($("#toolsMobileCards .invMobileCardActions"),null,"viewer cannot access tool edits");
 assert.equal($("#materialMobileTransactions .invMobileCardActions"),null,"viewer cannot delete transactions");
-console.log("PASS mobile inventory month/year, arithmetic, actions, tools, and viewer permissions");
+ctx.currentBuilding={id:"62THL"};
+vm.runInContext("renderMaterials();",ctx);
+assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact"),false,"62 THL retains existing card sizing");
+ctx.currentBuilding={id:"127HH"};
+vm.runInContext("renderMaterials();",ctx);
+assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact"),false,"127 HH retains existing card sizing");
+ctx.currentBuilding={id:"68PĐL"};
+vm.runInContext("renderMaterials();",ctx);
+assert.equal($("#inventoryPage").classList.contains("inventory130MobileCompact"),false,"68 PĐL retains existing card sizing");
+console.log("PASS mobile inventory: 130HH scope, four KPIs, month/year, arithmetic, actions, tools, permissions");
