@@ -113,6 +113,8 @@ async function loadContractorData(buildingId=currentBuilding?.id,force=false){
   }
 }
 function renderContractors(){
+  // Pilot is intentionally restricted to project 130 Hồng Hà.
+  $("#contractorPage")?.classList.toggle("contractorMobile130",String(currentBuilding?.id||"")==="130HH");
   const search=($("#contractorSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
   const status=$("#contractorStatusFilter")?.value||"";
   const specialty=contractorSpecialtyFilter;
@@ -131,6 +133,7 @@ function renderContractors(){
   $("#contractorGrid").innerHTML=list.map(c=>{
     const jobs=contractorJobsFor(c.id),last=contractorLastJob(c.id),field=contractorFieldLabel(c.specialty);
     const note=c.note||((field&&field!=="Khác")?"Nhà thầu "+field:"Nhà thầu kỹ thuật");
+    const phoneHref=contractorPhoneHref(c.phone),canCall=phoneHref!=="#";
     return '<article class="contractorRowCard" tabindex="0" role="button" data-open-contractor="'+c.id+'">'+
       '<div class="contractorRowIdentity">'+
         '<span class="contractorLetter contractorLetter-'+contractorFieldClass(c.specialty)+'">'+esc(contractorInitial(c.name))+'</span>'+
@@ -146,12 +149,31 @@ function renderContractors(){
         '<button type="button" title="Sửa" data-edit-contractor="'+c.id+'"><svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10zM14.5 6l3.5 3.5"/></svg></button>'+
         '<button type="button" class="danger" title="Xóa" data-delete-contractor="'+c.id+'"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M8 10v8M12 10v8M16 10v8M7 7l1 14h8l1-14"/></svg></button>'+
       '</div>'+
+      '<div class="contractorMobileCard">'+
+        '<div class="contractorMobileTop">'+
+          '<span class="contractorMobileInitial" aria-hidden="true">'+esc(contractorInitial(c.name))+'</span>'+
+          '<div class="contractorMobileInfo">'+
+            '<div class="contractorMobileName"><h3>'+esc(c.name)+'</h3><span class="contractorMobileSpecialty">'+esc(field)+'</span></div>'+
+            '<p class="contractorMobileMeta">Liên hệ: '+esc(c.contact_name||"Chưa có")+' <span>· '+jobs.length+' công việc</span></p>'+
+          '</div>'+
+          '<details class="contractorMobileMenu" data-stop-contractor><summary aria-label="Thao tác nhà thầu '+esc(c.name)+'" title="Thao tác">⋯</summary>'+
+            '<div><button type="button" data-edit-contractor="'+esc(String(c.id))+'">✎ Sửa nhà thầu</button>'+
+            '<button type="button" class="danger" data-delete-contractor="'+esc(String(c.id))+'">Xóa nhà thầu</button></div>'+
+          '</details>'+
+        '</div>'+
+        '<div class="contractorMobileBottom">'+
+          (canCall
+            ?'<a class="contractorMobileNumber" href="'+esc(phoneHref)+'" data-stop-contractor aria-label="Gọi '+esc(c.phone)+'"><svg viewBox="0 0 24 24"><path d="M6 3h4l2 5-3 2a15 15 0 0 0 5 5l2-3 5 2v4c0 2-1 4-3 4C9 20 4 15 3 7c0-2 1-4 3-4z"/></svg>'+esc(c.phone)+'</a>'
+            :'<span class="contractorMobileNumber">'+esc(c.phone||"Chưa có SĐT")+'</span>')+
+          (canCall?'<a class="contractorMobileCall" href="'+esc(phoneHref)+'" data-stop-contractor>☎ Gọi</a>':'<span class="contractorMobileCall disabled" aria-disabled="true">☎ Gọi</span>')+
+        '</div>'+
+      '</div>'+
     '</article>';
   }).join("");
 
   $("#contractorGrid").querySelectorAll("[data-open-contractor]").forEach(el=>{
-    el.onclick=e=>{if(e.target.closest("button,a"))return;openContractorDetail(el.dataset.openContractor)};
-    el.onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&!e.target.closest("button,a")){e.preventDefault();openContractorDetail(el.dataset.openContractor)}};
+    el.onclick=e=>{if(e.target.closest("button,a,details"))return;openContractorDetail(el.dataset.openContractor)};
+    el.onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&!e.target.closest("button,a,details")){e.preventDefault();openContractorDetail(el.dataset.openContractor)}};
   });
   $("#contractorGrid").querySelectorAll("[data-view-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();openContractorDetail(b.dataset.viewContractor)});
   $("#contractorGrid").querySelectorAll("[data-edit-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();editContractor(b.dataset.editContractor)});
@@ -502,8 +524,22 @@ function contractorExportDetailExcel(){
 function contractorInitEvents(){
   $("#contractorSearch").oninput=renderContractors;
   $("#contractorStatusFilter").onchange=renderContractors;
+  if($("#contractorMobileSpecialty"))$("#contractorMobileSpecialty").onchange=e=>{
+    contractorSpecialtyFilter=e.target.value;
+    document.querySelectorAll("[data-contractor-specialty]").forEach(b=>b.classList.toggle("active",(b.dataset.contractorSpecialty||"")===contractorSpecialtyFilter));
+    renderContractors();
+  };
+  if($("#contractorMobileStatus"))$("#contractorMobileStatus").onchange=e=>{
+    $("#contractorStatusFilter").value=e.target.value;
+    renderContractors();
+  };
+  document.querySelectorAll("[data-contractor-export-mobile]").forEach(btn=>btn.onclick=()=>{
+    document.getElementById(btn.dataset.contractorExportMobile)?.click();
+    btn.closest("details")?.removeAttribute("open");
+  });
   document.querySelectorAll("[data-contractor-specialty]").forEach(b=>b.onclick=()=>{
     contractorSpecialtyFilter=b.dataset.contractorSpecialty||"";
+    if($("#contractorMobileSpecialty"))$("#contractorMobileSpecialty").value=contractorSpecialtyFilter;
     document.querySelectorAll("[data-contractor-specialty]").forEach(x=>x.classList.toggle("active",x===b));
     renderContractors();
   });
