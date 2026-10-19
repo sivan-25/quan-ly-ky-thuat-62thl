@@ -86,3 +86,26 @@
  #app #inventoryPage .invMobileValue b{font-size:14px!important}
  #app #inventoryPage .invMobileCardActions button{min-width:72px!important}
 }
+
+/* Inventory editors are top-level modal siblings, not descendants of #inventoryPage. */
+@media(max-width:760px){
+  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryModalCard{
+    width:min(96vw,580px)!important;max-height:calc(100dvh - 28px)!important;
+    overflow-y:auto!important;overscroll-behavior:contain!important;
+    box-sizing:border-box!important;padding:14px!important;
+  }
+  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryForm{
+    grid-template-columns:minmax(0,1fr)!important;min-width:0!important;
+  }
+  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryForm :is(input,select,textarea){
+    max-width:100%!important;min-width:0!important;font-size:16px!important;
+  }
+  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryFormActions{
+    position:sticky!important;bottom:0!important;z-index:3!important;
+    display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;
+    background:#101b2e!important;padding:10px 0!important;
+  }
+  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryFormActions button{
+    min-width:0!important;min-height:45px!important;font-size:13px!important;
+  }
+}
