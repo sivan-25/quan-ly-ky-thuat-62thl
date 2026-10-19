@@ -10,6 +10,8 @@ const now=new Date();
 const viewKey=()=>"esta.maintenance."+B+".view";
 function readView(){
  try{const v=localStorage.getItem(viewKey());if(v==="cards"||v==="rows")return v;}catch(_){}
+ // Pilot: default 130 Hồng Hà to compact rows; preserve each user’s saved preference.
+ if(B==="130HH")return "rows";
  return typeof window!=="undefined"&&window.matchMedia?.("(max-width:640px)")?.matches?"rows":"cards";
 }
 let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],systemCatalog=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="";
