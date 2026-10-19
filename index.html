@@ -859,6 +859,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="screen">
 <link rel="stylesheet" href="inventory-mobile-cards.css?v=20261019-phone130reference06" media="screen">
 <link rel="stylesheet" href="maintenance-130-mobile.css?v=20261019-130hh-touch02" media="screen">
+<link rel="stylesheet" href="maintenance-asset-mobile-form.css?v=20261019-formcompact01" media="screen">
 <style id="estaPriorityStarStyles">.estaStarStack{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;vertical-align:middle;min-width:25px}.estaPriorityStar{appearance:none!important;border:0!important;background:transparent!important;color:#aab4bd!important;display:inline-flex!important;align-items:center;justify-content:center;width:30px;min-height:30px;cursor:pointer!important;padding:3px!important;opacity:1!important;pointer-events:auto!important}.estaPriorityStar svg{display:block;fill:currentColor!important;pointer-events:none}.estaPriorityStar.is-marked{color:#f4b400!important}.estaPriorityStar:focus-visible{outline:2px solid #176b6b;outline-offset:2px;border-radius:3px}</style><link rel="stylesheet" href="contractor-mobile-130.css?v=20261019-detail-v3-01">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
@@ -2524,9 +2525,10 @@
 <div id="maintenanceAssetModal" class="modal hide">
   <div class="modalCard inventoryModalCard maintenanceModalCard">
     <button id="closeMaintenanceAssetModal" class="modalClose" type="button">×</button>
-    <div class="inventoryModalHead"><span>ESTA · ASSET REGISTER</span><h3 id="maintenanceAssetModalTitle">Thêm thiết bị</h3><p>Chọn ngày bảo trì gần nhất và chu kỳ. Hệ thống sẽ tự tính và tiếp tục lịch bảo trì kế tiếp.</p></div>
+    <div class="inventoryModalHead"><span>ESTA · ASSET REGISTER</span><h3 id="maintenanceAssetModalTitle">Thêm thiết bị</h3><p>Nhập thông tin; lịch bảo trì kế tiếp được tự động tính.</p></div>
     <form id="maintenanceAssetForm" class="inventoryForm">
       <input id="maintenanceAssetId" type="hidden">
+      <div class="maintenanceAssetFields">
       <label class="wide"><span>Tên thiết bị *</span><input id="maintenanceName" maxlength="140" required placeholder="VD: FCU tầng 6"></label>
       <label><span>Hệ thống</span><select id="maintenanceSystem"><option>HVAC</option><option>Điện</option><option>PCCC</option><option>Cấp thoát nước</option><option>Máy phát điện</option><option>Thang máy</option><option>Khác</option></select></label>
       <label><span>Vị trí</span><input id="maintenanceLocation" maxlength="120" placeholder="Tầng / phòng kỹ thuật"></label>
@@ -2538,6 +2540,7 @@
       <label><span>Người phụ trách</span><select id="maintenanceAssigned"><option value="">— Chọn —</option></select></label>
       <label><span>Trạng thái</span><select id="maintenanceStatus"><option>Hoạt động</option><option>Tạm dừng</option><option>Hỏng</option><option>Ngừng sử dụng</option></select></label>
       <label class="wide"><span>Ghi chú</span><input id="maintenanceNote" maxlength="400"></label>
+      </div>
       <div class="inventoryFormActions"><button id="cancelMaintenanceAssetModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu thiết bị</button></div>
     </form>
   </div>
