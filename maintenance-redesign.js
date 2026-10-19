@@ -176,7 +176,7 @@
     refreshHeader();
   });
   const origins=new Map();
-  let mode="",view="rows", extraEntries=[], queued=false, ready=false;
+  let mode="",view="rows", extraEntries=[], queued=false, ready=false, lastBuilding="";
   const autoMonth=new Set();
   const move=(el,slot)=>{
     if(!el)return;
@@ -281,9 +281,14 @@
   }
   function wire(){
     if(!active())return;
-    // Mobile pilot selector: isolate 130 Hồng Hà without changing the other 3 projects.
-    page.dataset.estamBuilding=typeof currentBuilding==="undefined"?"":String(currentBuilding?.id||"");
+    // One approved compact mobile view for all four buildings, with separate filter state.
+    const building=typeof currentBuilding==="undefined"?"":String(currentBuilding?.id||"");
+    page.dataset.estamBuilding=building;
     const target=currentMode();
+    if(building!==lastBuilding){
+      lastBuilding=building;quickGroup="all";mobileMetricsOpen=false;
+      if(target==="130"){view="rows";page.dataset.estamView=view;}
+    }
     if(target!==mode){
       restore();mode=target;view="rows";quickGroup="all";
       shell.dataset.kind=mode;

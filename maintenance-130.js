@@ -909,6 +909,7 @@ window.mountMaintenance130=()=>{
  const next=String(typeof currentBuilding!=="undefined"?(currentBuilding?.id||""):"");
  if(!PROJECT_IDS.has(next)){show();return;}
  if(next!==B){
+  resetPlanSaveFeedback(); // Do not let a delayed success message close another building\u0027s modal.
   B=next;items=[];stored=[];people=[];equipmentProfiles=[];systemCatalog=[];pendingFocusPlanId="";ready=false;busy=false;currentEvent=null;currentPlan=null;
   year=new Date().getFullYear();month=new Date().getMonth()+1;viewMode=readView();layoutMode="list";
   clearScheduleCache();

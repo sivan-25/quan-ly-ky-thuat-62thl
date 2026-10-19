@@ -62,6 +62,9 @@ jobs:
       - name: Check maintenance plan field pairs and horizontal scrolling
         working-directory: candidate
         run: node tests/maintenance-plan-mobile-browser.cjs
+      - name: Audit approved compact maintenance across all four buildings
+        working-directory: candidate
+        run: node tests/maintenance-four-building-mobile-parity.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
