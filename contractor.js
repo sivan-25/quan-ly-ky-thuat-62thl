@@ -165,7 +165,11 @@ function renderContractors(){
           (canCall
             ?'<a class="contractorMobileNumber" href="'+esc(phoneHref)+'" data-stop-contractor aria-label="Gọi '+esc(c.phone)+'"><svg viewBox="0 0 24 24"><path d="M6 3h4l2 5-3 2a15 15 0 0 0 5 5l2-3 5 2v4c0 2-1 4-3 4C9 20 4 15 3 7c0-2 1-4 3-4z"/></svg>'+esc(c.phone)+'</a>'
             :'<span class="contractorMobileNumber">'+esc(c.phone||"Chưa có SĐT")+'</span>')+
-          (canCall?'<a class="contractorMobileCall" href="'+esc(phoneHref)+'" data-stop-contractor>☎ Gọi</a>':'<span class="contractorMobileCall disabled" aria-disabled="true">☎ Gọi</span>')+
+          (canCall
+            ?'<a class="contractorMobileCall" href="'+esc(phoneHref)+'" data-stop-contractor aria-label="Gọi ngay số '+esc(c.phone)+'">'+
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 3.18 2 2 0 0 1 4.08 1h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.3-1.26a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92Z"/><path d="M14.05 2a9 9 0 0 1 8 8M14.05 6a5 5 0 0 1 4 4"/></svg><span>Gọi ngay</span></a>'
+            :'<span class="contractorMobileCall disabled" aria-disabled="true" title="Nhà thầu chưa có số điện thoại">'+
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 3.18 2 2 0 0 1 4.08 1h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.3-1.26a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92Z"/><path d="M14.05 2a9 9 0 0 1 8 8M14.05 6a5 5 0 0 1 4 4"/></svg><span>Chưa có SĐT</span></span>')+
         '</div>'+
       '</div>'+
     '</article>';
