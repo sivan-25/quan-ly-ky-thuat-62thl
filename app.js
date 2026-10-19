@@ -2230,6 +2230,8 @@ function sync68EnergyTabs(){
 function energyLoad(){try{const a=JSON.parse(localStorage.getItem(energyStorageKey())||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
 function energySaveAll(a){localStorage.setItem(energyStorageKey(),JSON.stringify(a))}
 function showModule(name){
+ // Keep the compact pilot consistent for direct module navigation and browser fixtures.
+ $("#app")?.classList.toggle("estaPilot130HH",!!projectOverviewActive&&String(currentBuilding?.id||"")==="130HH");
  if(typeof energyManageReset==="function")energyManageReset();
  closeWorkFilter();
  const pages={work:"#workPage",energy:"#energyPage",inventory:"#inventoryPage",maintenance:"#maintenancePage",contractor:"#contractorPage",construction:"#constructionMaterialPage"};
