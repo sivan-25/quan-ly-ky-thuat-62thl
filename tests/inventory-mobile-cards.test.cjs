@@ -41,7 +41,7 @@ const snap={
 };
 const esc=x=>String(x??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const ctx={
- document:dom.window.document,$,currentAccount:{is_admin:true},currentBuilding:{id:"130HH"},inventoryActiveMonth:10,
+ document:dom.window.document,window:dom.window,$,currentAccount:{is_admin:true},currentBuilding:{id:"130HH"},inventoryActiveMonth:10,
  inventoryTools:tools,inventoryMaterials:[mat],inventoryTransactions,inventoryShowAlertsOnly:false,
  INV_MONTHS:["Th 01","Th 02","Th 03","Th 04","Th 05","Th 06","Th 07","Th 08","Th 09","Th 10","Th 11","Th 12"],
  inventoryYearValue:()=>2026,inventoryActiveMaterials:()=>[mat],
