@@ -2915,6 +2915,41 @@ window.openLowStockReplenish=id=>{
  $("#stockTxnDate").value=today();
  setTimeout(()=>$("#stockTxnQty").focus(),50);
 };
+/* Mobile 130 HH reference controls mirror native ESTA controls: no duplicate backend state. */
+function syncInventory130Reference({year,allYear,count}){
+ const active=String(currentBuilding?.id||"")==="130HH";
+ const input=$("#inventory130Search"),yearSelect=$("#inventory130Year"),counter=$("#inventory130ListCount");
+ if(!input||!yearSelect||!counter)return;
+ if(!active)return;
+ const originalYear=$("#inventoryYear"),originalSearch=$("#materialSearch");
+ if(originalYear&&yearSelect.innerHTML!==originalYear.innerHTML)yearSelect.innerHTML=originalYear.innerHTML;
+ if(originalYear)yearSelect.value=originalYear.value;
+ if(originalSearch&&input.value!==originalSearch.value)input.value=originalSearch.value;
+ counter.textContent="Danh sách · "+count+" mục";
+ const historyTitle=$("#inventoryMaterialsPane .transactionCard .inventoryCardTitle h3");
+ if(historyTitle)historyTitle.textContent="Lịch sử nhập / xuất · "+year;
+ const quick=$("#inventory130QuickMenu"),add=$("#inventory130AddMaterial"),float=$("#inventory130FloatingTxn");
+ const allowed=canProjectEdit();
+ if(quick)quick.hidden=!allowed;
+ if(add)add.hidden=!allowed;
+ if(float)float.hidden=!allowed;
+ const choiceBox=$("#inventory130QuickChoices");
+ if(choiceBox&&!choiceBox.dataset.ready){
+  choiceBox.dataset.ready="1";
+  document.querySelectorAll("#inventoryMaterialsPane .inventoryQuickChoices [data-material-sample]").forEach(source=>{
+   const choice=document.createElement("button");
+   choice.type="button";choice.textContent=source.textContent;
+   choice.addEventListener("click",()=>{if(quick)quick.open=false;source.click()});
+   choiceBox.appendChild(choice);
+  });
+ }
+ const todaySelected=document.querySelector("#materialMonthTabs button.active");
+ if(todaySelected&&todaySelected.dataset.materialMonth!=="all"&&todaySelected.scrollIntoView){
+  // Keep the active month visible, without moving the surrounding page.
+  try{todaySelected.scrollIntoView({block:"nearest",inline:"nearest",behavior:"instant"})}catch(_){}
+ }
+}
+
 function renderMaterials(){
  // Only 130 Hong Ha uses the compact phone inventory pilot; other projects retain the previous layout.
  document.getElementById("inventoryPage")?.classList.toggle("inventory130MobileCompact",String(currentBuilding?.id||"")==="130HH");
@@ -3459,6 +3494,19 @@ document.querySelectorAll("[data-inventory-tab]").forEach(button=>{
  button.addEventListener("click",()=>setInventoryTab(button.dataset.inventoryTab));
 });
 $("#inventoryYear").addEventListener("change",renderMaterials);
+$("#inventory130Search")?.addEventListener("input",event=>{
+ const original=$("#materialSearch");if(!original)return;
+ original.value=event.target.value;
+ original.dispatchEvent(new Event("input",{bubbles:true}));
+});
+$("#inventory130Year")?.addEventListener("change",event=>{
+ const original=$("#inventoryYear");if(!original)return;
+ original.value=event.target.value;
+ original.dispatchEvent(new Event("change",{bubbles:true}));
+});
+$("#inventory130Pdf")?.addEventListener("click",()=>$("#materialExportPdf")?.click());
+$("#inventory130AddMaterial")?.addEventListener("click",()=>$("#addMaterialBtn")?.click());
+$("#inventory130FloatingTxn")?.addEventListener("click",()=>$("#openStockTxn")?.click());
 $("#materialMonthTabs").addEventListener("click",event=>{
  const button=event.target.closest("button[data-material-month]");
  if(!button||!$("#materialMonthTabs").contains(button))return;
