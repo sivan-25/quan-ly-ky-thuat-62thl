@@ -41,7 +41,7 @@
     {id:"done",label:"Hoàn thành",color:"#23805f"},
     {id:"paused",label:"Hoãn / Hủy",color:"#748090"}
   ];
-  let quickGroup="all";
+  let quickGroup="all",mobileMetricsOpen=false;
   const overviewGroup=element=>{
     if(element.classList.contains("m130State-done"))return "done";
     if(element.classList.contains("m130State-review"))return "review";
@@ -123,10 +123,14 @@
         return '<button type="button" class="estam130Metric" data-estam130-group="'+g.id+'" aria-pressed="false"><b>'+n+'</b><span>'+escapeHtml(g.label)+'</span></button>';
       }).join("");
       panel.innerHTML='<div class="estam130Progress" role="img" aria-label="Phân bổ '+total+' công việc bảo trì">'+(segments||'<span class="estam130BarEmpty">Chưa có công việc</span>')+'</div>'+
-        '<div class="estam130Metrics"><button type="button" class="estam130Metric estam130All" data-estam130-group="all" aria-pressed="true"><b>'+total+'</b><span>Tất cả</span></button>'+buttons+
-        '<div class="estam130OnTime"><b>'+escapeHtml(pct)+'</b><span>Đúng hạn</span></div></div>';
+        '<div class="estam130Metrics" id="estam130MobileMetrics"><button type="button" class="estam130Metric estam130All" data-estam130-group="all" aria-pressed="true"><b>'+total+'</b><span>Tất cả</span></button>'+buttons+
+        '<div class="estam130OnTime"><b>'+escapeHtml(pct)+'</b><span>Đúng hạn</span></div></div>'+ 
+        '<button type="button" id="estam130MobileMore" aria-controls="estam130MobileMetrics" aria-expanded="false">Xem thêm chỉ số ▾</button>';
       panel.dataset.signature=signature;
     }
+    panel.classList.toggle("estam130MetricsOpen",mobileMetricsOpen);
+    const more=panel.querySelector("#estam130MobileMore");
+    if(more){more.setAttribute("aria-expanded",String(mobileMetricsOpen));more.textContent=mobileMetricsOpen?"Thu gọn chỉ số ▴":"Xem thêm chỉ số ▾";}
     panel.querySelectorAll("[data-estam130-group]").forEach(button=>{
       const selected=button.dataset.estam130Group===quickGroup;
       button.setAttribute("aria-pressed",String(selected));
@@ -156,6 +160,14 @@
     if(legacy)content.appendChild(legacy);
   };
   shell.addEventListener("click",event=>{
+    const more=event.target.closest("#estam130MobileMore");
+    if(more&&mode==="130"){
+      mobileMetricsOpen=!mobileMetricsOpen;
+      shell.querySelector(".estam130Overview")?.classList.toggle("estam130MetricsOpen",mobileMetricsOpen);
+      more.setAttribute("aria-expanded",String(mobileMetricsOpen));
+      more.textContent=mobileMetricsOpen?"Thu gọn chỉ số ▴":"Xem thêm chỉ số ▾";
+      return;
+    }
     const groupButton=event.target.closest("[data-estam130-group]");
     if(!groupButton||mode!=="130")return;
     const next=groupButton.dataset.estam130Group;
@@ -269,6 +281,8 @@
   }
   function wire(){
     if(!active())return;
+    // Mobile pilot selector: isolate 130 Hồng Hà without changing the other 3 projects.
+    page.dataset.estamBuilding=typeof currentBuilding==="undefined"?"":String(currentBuilding?.id||"");
     const target=currentMode();
     if(target!==mode){
       restore();mode=target;view="rows";quickGroup="all";
