@@ -17,10 +17,10 @@ function ui(){
  <header class="ccWeHead"><div><span>ESTA · ADMIN WORK ORDER</span><h2 id="ccWeHeading">Chỉnh sửa công việc Admin đã giao</h2><p id="ccWeProject">Đang tải công việc...</p></div><button type="button" class="ccWeX" data-we-close aria-label="Đóng">×</button></header>
  <form id="ccWeForm"><div class="ccWeGrid">
  <label class="full"><span>Nội dung công việc *</span><textarea id="ccWeContent" rows="3" required maxlength="2500"></textarea></label>
- <label><span>Ngày giao *</span><input id="ccWeAssigned" type="date" required></label>
- <label><span>Ngày bắt đầu *</span><input id="ccWeStart" type="date" required></label>
- <label><span>Hạn hoàn thành *</span><input id="ccWeDue" type="date" required></label>
- <label><span>Loại công việc</span><select id="ccWeType"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label>
+ <label class="ccWeDate"><span>Ngày giao *</span><input id="ccWeAssigned" type="date" required></label>
+ <label class="ccWeDate"><span>Ngày bắt đầu *</span><input id="ccWeStart" type="date" required></label>
+ <label class="ccWeDate"><span>Hạn hoàn thành *</span><input id="ccWeDue" type="date" required></label>
+ <label class="ccWeType"><span>Loại công việc</span><select id="ccWeType"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label>
  <label><span>Mức độ ưu tiên</span><select id="ccWePriority"><option>Thấp</option><option>Trung bình</option><option>Cao</option><option>Khẩn cấp</option></select></label>
  <label><span>Trạng thái</span><select id="ccWeStatus"><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option><option>Hoàn thành</option><option>Bắt đầu</option></select></label>
  <label class="full"><span>Người thực hiện *</span><input id="ccWeAssignee" required maxlength="200" list="ccWePeople" placeholder="Nhập tên, cách nhau bằng dấu phẩy"><datalist id="ccWePeople"></datalist></label>

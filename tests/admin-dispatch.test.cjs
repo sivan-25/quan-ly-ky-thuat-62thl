@@ -77,10 +77,12 @@ async function main() {
   await w.estaCommandCenterRefresh();
   assert.equal(q('#ccPrintSelected').disabled,false,'Mobile Xuất PDF starts selection, even with zero checks');
   assert.equal(q('#ccPrintSelected').textContent,'Xuất PDF','Short mobile action label');
-  q('#ccPrintSelected').click();
+  assert.equal(q('#ccBeginPdf').classList.contains('hide'),false,'Mobile start visible when not choosing');
+  q('#ccBeginPdf').click();
   assert.equal(q('#estaCommandCenter').classList.contains('ccPdfSelecting'),true);
   assert.equal(q('#ccPrintSelected').disabled,true,'Cannot generate an empty selection');
   assert.equal(q('#ccCancelPdf').classList.contains('hide'),false);
+  assert.equal(q('#ccBeginPdf').classList.contains('hide'),true,'Entering PDF hides the compact start button');
   const originalTask=visible()[0].dataset.taskId;
   visible()[0].click();
   assert.equal(visible()[0].querySelector('[data-cc-pdf-select]').checked,true,'Tap full card selects a task');
@@ -95,6 +97,9 @@ async function main() {
   visible()[1].querySelector('[data-cc-pdf-select]').click();
   assert.equal(q('#ccHeaderPdfCount').textContent,'2','Second native checkbox is independently selectable');
   q('#ccCancelPdf').click();
+  assert.equal(q('#estaCommandCenter').classList.contains('ccPdfSelecting'),false,'Cancel immediately dismisses PDF mode');
+  assert.equal(q('#ccBeginPdf').classList.contains('hide'),false,'Cancel restores the compact start action');
+  assert.equal(q('#ccCancelPdf').classList.contains('hide'),true,'Floating Cancel must disappear without scrolling');
   assert.equal(q('#ccPrintSelected').textContent,'Xuất PDF');
   assert.equal(q('#ccPrintSelected').disabled,false,'Cancel restores start button');
   assert.equal(q('#ccHeaderPdfCount').classList.contains('hide'),true);
