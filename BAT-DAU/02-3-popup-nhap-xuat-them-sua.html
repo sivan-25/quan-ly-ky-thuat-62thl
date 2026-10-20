@@ -1,0 +1,62 @@
+<!-- Trich xuat nguyen van tu index.html, KHONG phai file chay doc lap -->
+<div id="materialItemModal" class="modal hide">
+  <div class="modalCard inventoryModalCard">
+    <button id="closeMaterialModal" class="modalClose" type="button">×</button>
+    <div class="inventoryModalHead"><span>ESTA · MATERIAL MASTER</span><h3 id="materialModalTitle">Thêm vật tư</h3><p>Vật tư chỉ bắt đầu xuất hiện từ tháng có ngày bắt đầu quản lý; các tháng trước không phát sinh dữ liệu.</p></div>
+    <form id="materialItemForm" class="inventoryForm">
+      <input id="materialId" type="hidden">
+      <label><span>Mã vật tư</span><input id="materialCode" maxlength="40" placeholder="VD: VT-001"></label>
+      <label class="wide"><span>Tên vật tư *</span><input id="materialName" maxlength="120" required placeholder="VD: Băng keo điện 3M"></label>
+      <label><span>Đơn vị tính *</span><input id="materialUnit" maxlength="30" required value="Cái"></label>
+      <label><span>Ngày bắt đầu quản lý *</span><input id="materialTrackingStart" type="date" required></label>
+      <label><span>Tồn tại thời điểm bắt đầu</span><input id="materialOpeningQty" type="number" step="0.01" min="0" value="0"></label>
+      <label><span>Mức tồn tối thiểu</span><input id="materialMinQty" type="number" step="0.01" min="0" value="0"></label>
+      <label class="wide"><span>Ghi chú</span><input id="materialNote" maxlength="300" placeholder="Quy cách, hãng, vị trí lưu..."></label>
+      <div class="inventoryFormActions"><button id="cancelMaterialModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu vật tư</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="stockTxnModal" class="modal hide">
+  <div class="modalCard inventoryModalCard">
+    <button id="closeStockTxnModal" class="modalClose" type="button">×</button>
+    <div class="inventoryModalHead"><span>ESTA · STOCK MOVEMENT</span><h3 id="stockTxnModalTitle">Nhập / Xuất vật tư</h3><p>Mọi phát sinh sẽ tự động cập nhật tồn kho theo tháng.</p></div>
+    <form id="stockTxnForm" class="inventoryForm">
+      <input id="stockTxnId" type="hidden">
+      <label class="wide stockTxnMaterialField"><span>Vật tư *</span><select id="stockTxnMaterial" required></select></label>
+      <div class="stockTxnTypeField">
+        <label class="stockTxnOriginalType"><span>Loại *</span><select id="stockTxnType"><option value="in">Nhập kho</option><option value="out">Xuất kho</option></select></label>
+        <fieldset id="stockTxnQuickChoices" class="stockTxnQuickChoices">
+          <legend>Loại giao dịch *</legend>
+          <label class="stockTxnChoice stockTxnChoiceIn"><input type="radio" name="stockTxnQuickType" value="in" checked><span>Nhập kho</span></label>
+          <label class="stockTxnChoice stockTxnChoiceOut"><input type="radio" name="stockTxnQuickType" value="out"><span>Xuất kho</span></label>
+        </fieldset>
+      </div>
+      <label class="stockTxnDateField"><span>Ngày *</span><input id="stockTxnDate" type="date" required></label>
+      <label class="stockTxnQtyField"><span>Số lượng *</span><input id="stockTxnQty" type="number" inputmode="decimal" step="0.01" min="0.01" required placeholder="Nhập số lượng"></label>
+      <label class="stockTxnPerformerField"><span>Người thực hiện</span><select id="stockTxnPerformer"><option value="">— Chọn —</option></select></label>
+      <label class="wide stockTxnNoteField"><span>Ghi chú</span><input id="stockTxnNote" maxlength="300" placeholder="Nội dung nhập hoặc xuất..."></label>
+      <div class="inventoryFormActions"><button id="cancelStockTxnModal" type="button" class="inventorySecondary">Hủy</button><button id="stockTxnSubmit" type="submit" class="inventoryPrimary">Lưu giao dịch</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="toolItemModal" class="modal hide">
+  <div class="modalCard inventoryModalCard">
+    <button id="closeToolModal" class="modalClose" type="button">×</button>
+    <div class="inventoryModalHead"><span>ESTA · TOOL REGISTER</span><h3 id="toolModalTitle">Thêm dụng cụ</h3><p>Quản lý dụng cụ kỹ thuật riêng cho từng dự án.</p></div>
+    <form id="toolItemForm" class="inventoryForm">
+      <input id="toolId" type="hidden">
+      <label><span>Mã dụng cụ</span><input id="toolCode" maxlength="40" placeholder="VD: DC-001"></label>
+      <label class="wide"><span>Tên dụng cụ *</span><input id="toolName" maxlength="120" required placeholder="VD: Đồng hồ vạn năng"></label>
+      <label><span>Nhãn hiệu</span><input id="toolBrand" maxlength="100" placeholder="VD: Kyoritsu, Bosch..."></label>
+      <label><span>Số lượng *</span><input id="toolQty" type="number" step="0.01" min="0" required value="1"></label>
+      <label><span>Đơn vị</span><input id="toolUnit" maxlength="30" value="Cái"></label>
+      <label><span>Tình trạng</span><select id="toolCondition"><option>Tốt</option><option>Đang sử dụng</option><option>Cần kiểm tra</option><option>Hư hỏng</option></select></label>
+      <label><span>Vị trí lưu</span><input id="toolLocation" maxlength="120" placeholder="Kho kỹ thuật, tủ dụng cụ..."></label><label><span>Người phụ trách</span><select id="toolKeeper"><option value="">— Chọn —</option></select></label>
+      <label><span>Ngày mua</span><input id="toolAcquiredDate" type="date"></label>
+      <label class="wide toolNoteField"><span>Ghi chú</span><input id="toolNote" maxlength="300" placeholder="Model, serial, vị trí sử dụng, tình trạng chi tiết..."></label>
+      <div class="inventoryFormActions"><button id="cancelToolModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu dụng cụ</button></div>
+    </form>
+  </div>
+</div>
