@@ -411,3 +411,30 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
  border-color:#A46427!important;
  color:#F3DEBF!important;
 }
+
+
+/* Compact mobile inventory uses its own dark, high-specificity overrides. */
+#app.estaBrand130 #inventoryPage.inventorySharedMobileCompact .inventoryCommand,
+#app.estaBrand130 #inventoryPage .inventoryCommand,
+#app.estaBrand130.inventoryMode #inventoryPage .inventoryCommand{
+ background:#F5ECD0!important;
+ color:#2B1526!important;
+ border:1px solid #D7BE9C!important;
+ box-shadow:0 8px 23px rgba(65,20,55,.08)!important;
+}
+#app.estaBrand130 #inventoryPage.inventorySharedMobileCompact .inventoryLocalTabs,
+#app.estaBrand130 #inventoryPage.inventorySharedMobileCompact .inventoryCommand .inventoryLocalTabs,
+#app.estaBrand130 #inventoryPage .inventoryLocalTabs{
+ background:#F5ECD0!important;
+ border-color:#D7BE9C!important;
+}
+#app.estaBrand130 #inventoryPage.inventorySharedMobileCompact .inventoryLocalTabs button{
+ background:#FBF3E3!important;
+ color:#411437!important;
+ border-color:#D7BE9C!important;
+}
+#app.estaBrand130 #inventoryPage.inventorySharedMobileCompact .inventoryLocalTabs button.active{
+ background:#411437!important;
+ color:#F3DEBF!important;
+ border-color:#A46427!important;
+}
