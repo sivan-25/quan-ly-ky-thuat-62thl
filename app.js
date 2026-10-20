@@ -3136,9 +3136,23 @@ function renderMaterials(){
  if(selectable.some(m=>m.id===old))sel.value=old;
  if(typeof syncInventory130Reference==="function")syncInventory130Reference({year:y,allYear,count:snaps.length});
 }
-function renderTools(){
+function filteredTools(){
  const q=($("#toolSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
- const list=inventoryTools.filter(t=>!q||[t.name,t.code,t.brand,t.location,t.keeper,t.note,t.condition_status].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
+ const status=$("#toolStatusFilter")?.value||"all";
+ return inventoryTools.filter(t=>{
+  const searchable=[t.name,t.code,t.brand,t.location,t.keeper,t.note,t.condition_status];
+  const matched=!q||searchable.some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q));
+  if(!matched)return false;
+  if(status==="ready")return ["Tốt","Đang sử dụng"].includes(t.condition_status);
+  if(status==="attention")return ["Cần kiểm tra","Cần sửa","Hỏng","Hư hỏng"].includes(t.condition_status);
+  return true;
+ });
+}
+function toolConditionClass(status){
+ return ["Tốt","Đang sử dụng"].includes(status)?"good":["Hỏng","Hư hỏng","Cần sửa"].includes(status)?"bad":"warn";
+}
+function renderTools(){
+ const list=filteredTools();
  $("#toolCount").textContent=inventoryTools.length;
  $("#toolGoodCount").textContent=inventoryTools.filter(x=>["Tốt","Đang sử dụng"].includes(x.condition_status)).length;
  $("#toolRepairCount").textContent=inventoryTools.filter(x=>["Cần kiểm tra","Cần sửa","Hỏng","Hư hỏng"].includes(x.condition_status)).length;
@@ -3160,27 +3174,37 @@ function renderTools(){
      '<td><span class="toolQtyValue">'+inventoryFmt(t.qty)+'</span> <small class="toolUnit">'+esc(unit)+'</small></td>'+
      '<td>'+esc(location)+'</td>'+
      '<td>'+esc(keeper)+'</td>'+
-     '<td><span class="toolCondition '+(["Tốt","Đang sử dụng"].includes(t.condition_status)?"good":["Hỏng","Hư hỏng","Cần sửa"].includes(t.condition_status)?"bad":"warn")+'">'+esc(t.condition_status)+'</span></td>'+
+     '<td><span class="toolCondition '+toolConditionClass(t.condition_status)+'">'+esc(t.condition_status||"Chưa cập nhật")+'</span></td>'+
      '<td class="toolNoteCell" title="'+esc(note==="—"?"":note)+'">'+esc(note)+'</td>'+
-     '<td><div class="invRowActions compact"><button title="Sửa" onclick="editTool(\''+t.id+'\')">'+editIcon+'</button><button title="Xóa" class="danger" onclick="deleteTool(\''+t.id+'\')">'+trashIcon+'</button></div></td>'+
+     '<td>'+(canProjectEdit()?'<div class="invRowActions compact"><button type="button" aria-label="Sửa '+esc(name)+'" title="Sửa" onclick="editTool(\''+String(t.id).replace(/[^a-zA-Z0-9_-]/g,"")+'\')">'+editIcon+'</button><button type="button" aria-label="Xóa '+esc(name)+'" title="Xóa" class="danger" onclick="deleteTool(\''+String(t.id).replace(/[^a-zA-Z0-9_-]/g,"")+'\')">'+trashIcon+'</button></div>':'<span class="toolReadonly">Chỉ xem</span>')+'</td>'+
    '</tr>';
  }).join("");
  const mobileTools=$("#toolsMobileCards");
  if(mobileTools)mobileTools.innerHTML=list.map((t,i)=>{
   const id=String(t.id).replace(/[^a-zA-Z0-9_-]/g,"");
-  const meta=[["Tình trạng",t.condition_status],["Hãng",t.brand],["Vị trí",t.location],["Phụ trách",t.keeper]];
+  const meta=[["Nhãn hiệu",t.brand],["Vị trí lưu",t.location],["Ngày mua",t.acquired_date]];
   const edit=canProjectEdit()?'<div class="invMobileCardActions">'+
-   '<button type="button" onclick="editTool(\''+id+'\')">Sửa</button>'+
-   '<button type="button" class="is-delete" onclick="deleteTool(\''+id+'\')">Xóa</button></div>':'';
-  return '<article class="invMobileCard"><div class="invMobileCardHead">'+
-   '<div class="invMobileCardName"><strong>'+esc(sentenceCapitalizeText(t.name||""))+'</strong>'+
-   (t.code?'<small>Mã: '+esc(t.code)+'</small>':'')+
-   '<span class="invMobileUnit">'+inventoryFmt(t.qty)+' '+esc(t.unit||"Cái")+'</span></div>'+
-   '<span class="invMobileNumber">#'+(i+1)+'</span></div>'+
-   '<div class="invMobileMeta">'+meta.map(([label,value])=>'<div><small>'+label+'</small><b>'+esc(value||"—")+'</b></div>').join("")+'</div>'+
-   (t.note?'<div class="invMobileNote">'+esc(t.note)+'</div>':'')+edit+'</article>';
+   '<button type="button" aria-label="Chỉnh sửa '+esc(t.name)+'" onclick="editTool(\''+id+'\')">✎ Chỉnh sửa</button>'+
+   '<button type="button" class="is-delete" aria-label="Xóa '+esc(t.name)+'" onclick="deleteTool(\''+id+'\')">Xóa</button></div>':'';
+  return '<article class="invMobileCard estaToolCard">'+
+   '<div class="invMobileCardHead"><div class="invMobileCardName">'+
+    '<strong>'+esc(sentenceCapitalizeText(t.name||""))+'</strong>'+
+    (t.code?'<small>Mã: '+esc(t.code)+'</small>':'')+'</div>'+
+    '<span class="toolCondition '+toolConditionClass(t.condition_status)+'">'+esc(t.condition_status||"Chưa cập nhật")+'</span></div>'+
+   '<div class="estaToolCardCore"><div><span>Số lượng</span><strong>'+inventoryFmt(t.qty)+' <small>'+esc(t.unit||"Cái")+'</small></strong></div>'+
+    '<div class="estaToolKeeper"><span>Người phụ trách</span><b>'+esc(t.keeper||"Chưa phân công")+'</b></div></div>'+
+   '<details class="estaToolMore"><summary>Thông tin bổ sung</summary><div class="invMobileMeta">'+
+     meta.map(([label,value])=>'<div><small>'+label+'</small><b>'+esc(value||"—")+'</b></div>').join("")+
+     '</div>'+(t.note?'<p class="invMobileNote">'+esc(t.note)+'</p>':'')+'</details>'+
+   edit+'</article>';
  }).join("");
- $("#toolsEmpty").classList.toggle("hide",list.length>0);
+ const visible=$("#toolVisibleCount");
+ if(visible)visible.textContent="Đang hiển thị "+list.length+" / "+inventoryTools.length+" dụng cụ";
+ const empty=$("#toolsEmpty");
+ if(empty){
+  empty.textContent=inventoryTools.length?"Không tìm thấy dụng cụ phù hợp. Hãy thử đổi từ khóa hoặc tình trạng.":"Chưa có dụng cụ kỹ thuật trong dự án này.";
+  empty.classList.toggle("hide",list.length>0);
+ }
 }
 function setInventoryTab(tab){
  inventoryActiveTab=tab;
@@ -3451,8 +3475,7 @@ async function exportMaterialsEstaPdf(){
 window.exportMaterialsEstaPdf=exportMaterialsEstaPdf;
 $("#materialExportPdf").onclick=exportMaterialsEstaPdf;
 function toolsForReport(){
- const q=($("#toolSearch")?.value||"").trim().toLocaleLowerCase("vi-VN");
- return inventoryTools.filter(t=>!q||[t.name,t.code,t.brand,t.location,t.keeper,t.note,t.condition_status].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q)));
+ return filteredTools();
 }
 let toolReportBusy=false;
 async function exportToolsEstaPdf(){
@@ -3537,6 +3560,7 @@ $("#materialMobilePeriod")?.addEventListener("change",e=>{
  });
  $("#materialSearch").addEventListener("input",renderMaterials);
 $("#toolSearch").addEventListener("input",renderTools);
+$("#toolStatusFilter")?.addEventListener("change",renderTools);
 $("#stockAlertOnly").addEventListener("click",()=>{
  inventoryShowAlertsOnly=!inventoryShowAlertsOnly;
  renderMaterials();
