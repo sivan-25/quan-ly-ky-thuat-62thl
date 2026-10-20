@@ -7,12 +7,25 @@ const html=fs.readFileSync("index.html","utf8");
 const app=fs.readFileSync("app.js","utf8");
 const css=fs.readFileSync("tools-professional.css","utf8");
 for(const id of ["inventoryToolsPane","toolSearch","toolStatusFilter","toolVisibleCount","toolsBody","toolsMobileCards","toolCount","toolGoodCount","toolRepairCount","toolExportPdf","addToolBtn","toolItemModal"])assert.match(html,new RegExp('id="'+id+'"'));
-assert.match(html,/tools-professional\.css\?v=20261020-tools01/);
+assert.match(html,/tools-professional\.css\?v=20261020-toolcompact02/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(min-width:1051px\) and \(max-width:1400px\)/);
 assert.match(css,/@media\(max-width:1050px\)/);
+// Mobile tool editor must stay compact, but keep the original persistence fields.
+for(const id of ["toolName","toolBrand","toolCode","toolQty","toolUnit","toolCondition","toolKeeper","toolLocation","toolAcquiredDate","toolNote"]){
+ assert.match(html,new RegExp('id="'+id+'"'),"tool input "+id);
+}
+assert.match(css,/#toolItemModal #toolItemForm\.inventoryForm>label\.toolField-name/);
+assert.match(css,/#toolItemModal #toolItemForm \.inventoryFormActions/);
 const dom=new JSDOM(html,{url:"https://esta.test/"});
 const $=s=>dom.window.document.querySelector(s);
+const toolEditor=$("#toolItemForm");
+assert.equal(toolEditor.querySelectorAll(":scope > label").length,8,"visible tool editor fields");
+assert.ok($("#toolExtraFields").querySelector("#toolAcquiredDate"),"date remains editable in extras");
+assert.ok($("#toolExtraFields").querySelector("#toolNote"),"note remains editable in extras");
+assert.equal($("#toolExtraFields").open,false,"optional details collapsed by default");
+assert.equal(toolEditor.querySelectorAll(".inventoryFormActions button").length,2);
+
 const tools=[
  {id:"tool-01",name:"Đồng hồ vạn năng",code:"DC-01",qty:2,unit:"Cái",brand:"Fluke",keeper:"Văn",location:"Kho kỹ thuật",note:"Đo điện",condition_status:"Tốt"},
  {id:"tool-02",name:"Máy khoan",code:"DC-02",qty:1,unit:"Bộ",brand:"Bosch",keeper:"Nam",location:"Tủ dụng cụ",note:"",condition_status:"Đang sử dụng"},
