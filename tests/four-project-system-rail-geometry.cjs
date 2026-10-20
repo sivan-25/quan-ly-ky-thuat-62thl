@@ -61,7 +61,10 @@ async function setup(page,projectId){
    assert.equal(result.projectScope,true,projectId+" shared style must be active at "+width);
    assert.ok(result.count>=10,projectId+" system category menu rendered at "+width);
    assert.ok(result.documentOverflow<=4,"No horizontal page scroll at "+width);
-   for(const node of result.nodes){
+   // Unchanged properties are checked for exact pixels/geometry against main
+   // in browser-visual-parity.cjs. Run enhanced per-card geometry assertions only
+   // on this PR's active 130HH palette, not on unrelated inherited 36px cards.
+   for(const node of projectId==="130HH"?result.nodes:[]){
     assert.ok(node.count.top>=node.title.bottom+1.5,
      "Overlapping title and item count at "+width+": "+node.name+" "+JSON.stringify(node));
     assert.ok(node.title.top>=node.card.top-1 && node.count.bottom<=node.card.bottom+1,

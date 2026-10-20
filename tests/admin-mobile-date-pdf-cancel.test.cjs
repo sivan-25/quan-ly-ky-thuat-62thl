@@ -10,7 +10,7 @@ for(const id of ['ccWeAssigned','ccWeStart','ccWeDue'])
  assert.match(editor,new RegExp('class="ccWeDate"[^>]*><span>[^<]+<\\/span><input id="'+id+'"'));
 assert.match(css,/\.ccWeGrid\s*>\s*label\.ccWeDate[\s\S]*?grid-column:\s*1\/-1/);
 assert.match(css,/max-width:\s*600px/);
-assert.match(admin,/root\.classList\.remove\("ccPdfSelecting"\)/);
+assert.match(admin,/root\.classList\.remove\("ccPdfSelecting","ccSelectMode"\)/);
 assert.match(admin,/root\.querySelector\("#ccBeginPdf"\)\.addEventListener\("click",runAdminPdfAction\)/);
 const start=work.indexOf('let workStatFilter=""');
 const stop=work.indexOf('\nfunction filtered(',start);

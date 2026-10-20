@@ -862,6 +862,9 @@ function syncOverviewNavigation(){
  document.body.classList.toggle("estaUpgradeMode",upgrade);
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
+ const brand130=project&&String(currentBuilding?.id||"")==="130HH";
+ document.getElementById("app")?.classList.toggle("estaBrand130",brand130);
+ document.body.classList.toggle("estaBrand130",brand130);
  document.getElementById("app")?.classList.toggle("estaFourProjectCompact",project&&["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding?.id||"")));
  $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
@@ -966,6 +969,8 @@ function prepareProjectContext(building){
  currentBuilding={...building};
  // Ensure the pilot scope follows the newly selected building, not the previous project.
  document.getElementById("app")?.classList.toggle("estaFourProjectCompact",["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding.id)));
+ document.getElementById("app")?.classList.toggle("estaBrand130",String(currentBuilding.id)==="130HH");
+ document.body.classList.toggle("estaBrand130",String(currentBuilding.id)==="130HH");
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
  if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
