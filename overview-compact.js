@@ -3,7 +3,6 @@
  "use strict";
  const $=s=>document.querySelector(s);
  let root=null,watchers=[];
- const onMobile=()=>window.matchMedia("(max-width:760px)").matches;
  function markZeros(){
   if(!root)return;
   root.querySelectorAll("#ccSummary .opsKpi").forEach(k=>{
@@ -15,29 +14,17 @@
    });
   });
  }
- function setMode(enabled){
-  if(!root)return;
-  root.classList.toggle("ccSelectMode",enabled);
-  const toggle=root.querySelector("#ccSelectToggle");
-  if(toggle){toggle.textContent=enabled?"Xong":"Chọn để xuất PDF";toggle.setAttribute("aria-pressed",String(enabled))}
+ function removeDuplicatePdfControl(){
+  // The existing header action is the single mobile PDF entry point.
+  root?.querySelector("#ccSelectToggle")?.remove();
+  root?.classList.remove("ccSelectMode");
  }
  function init(){
   const next=$("#estaCommandCenter");
   if(!next||!next.querySelector(".ccTaskScopes"))return false;
-  if(root===next)return true;
+  if(root===next){removeDuplicatePdfControl();return true;}
   root=next;
-  const scope=root.querySelector(".ccTaskScopes");
-  if(!root.querySelector("#ccSelectToggle")){
-   const button=document.createElement("button");
-   button.id="ccSelectToggle";button.type="button";
-   button.setAttribute("aria-label","Bật hoặc tắt chế độ chọn công việc để xuất PDF");
-   button.addEventListener("click",()=>{
-    if(!onMobile())return;
-    setMode(!root.classList.contains("ccSelectMode"));
-   });
-   scope.insertAdjacentElement("beforebegin",button);
-  }
-  setMode(false);
+  removeDuplicatePdfControl();
   const observer=new MutationObserver(markZeros);
   for(const selector of ["#ccSummary","#ccProjectCards"]){
    const section=root.querySelector(selector);
@@ -51,7 +38,4 @@
   const pending=new MutationObserver(()=>{if(init())pending.disconnect()});
   pending.observe(document.documentElement,{childList:true,subtree:true});
  }
- window.addEventListener("resize",()=>{
-  if(!onMobile())setMode(false);
- },{passive:true});
-})();
+remove duplicate mode resize})();
