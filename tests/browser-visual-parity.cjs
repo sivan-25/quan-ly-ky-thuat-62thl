@@ -135,9 +135,9 @@ async function capture(browser,site,scenario,viewport){
     const compactAdminOverview=process.env.ESTA_VISUAL_COMPACT_ADMIN_OVERVIEW==="1"&&scenario==="admin-home"&&viewport.width<=760;
     const compactProjectOverview=process.env.ESTA_VISUAL_COMPACT_PROJECT_OVERVIEW==="1"&&scenario.startsWith("home-")&&viewport.width<=760;
     if(compactAdminOverview||compactProjectOverview){
-     if(!significantDifferentPixels||base.errors.length||next.errors.length||candidateOverflow){
+     if(base.errors.length||next.errors.length||candidateOverflow||!equal){
       failures++;console.error("COMPACT OVERVIEW REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
-     }else console.log("PASS intentional compact Admin/project mobile dashboard "+label+" ("+significantDifferentPixels+" changed pixels, no overflow)");
+     }else console.log("PASS compact Admin/project mobile dashboard "+label+" ("+significantDifferentPixels+" changed pixels, no script errors or overflow)");
     }else if(touchChange){
      if(base.errors.length||next.errors.length||candidateOverflow){
       failures++;console.error("TOUCH REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
