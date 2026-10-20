@@ -73,6 +73,10 @@ async function prep(page,p){
       bodyBrand:body.classList.contains("estaBrand130"),
       visible:!!area&&!area.classList.contains("hide"),
       topbar:css(topbar)?.backgroundImage||"",
+      topbarColor:css(topbar)?.backgroundColor||"",
+      topbarDisplay:css(topbar)?.display||"",
+      brandLink:!![...document.styleSheets].find(s=>String(s.href||"").includes("esta-brand-130-complete")),
+      currentMode:app.className,
       topbarText:css(document.querySelector("#topWorkTitle h1"))?.color||"",
       area:rgba(area),
       card:rgba(element),
@@ -92,7 +96,7 @@ async function prep(page,p){
     assert.equal(state.bodyBrand,true,"130HH mode "+mode+" lost body brand");
     assert.equal(state.visible,true,"130HH mode "+mode+" hidden");
     assert.ok(state.topbar.includes("rgb(65, 20, 55)")&&state.topbar.includes("rgb(43, 21, 38)"),
-     "Unbranded blue header "+mode+" width "+width+": "+state.topbar);
+     "Unbranded blue header "+mode+" width "+width+": "+JSON.stringify(state));
     assert.equal(state.area,cream,"Page background in "+mode+" width "+width);
     assert.ok(state.overflow<=4,"Horizontal overflow in "+mode+" width "+width+": "+state.overflow);
     for(const key of ["workCard","energyKpi","energyPanel","inventory","energyTable"]){
