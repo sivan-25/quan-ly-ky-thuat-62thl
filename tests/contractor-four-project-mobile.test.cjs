@@ -76,7 +76,7 @@ function renderFor(projectId,phone="0900000000"){
   const isEstaContractorProject=()=>projectTest(projectId);
   const item={id:"test",name:"Fixture Contractor",phone,contact_name:"Tester",specialty:"PCCC",status:"Đang hợp tác"};
   const f=factory($,[item],()=>[],()=>null,"",currentBuilding,x=>x||"Khác",()=>"pccc",
-    x=>x.charAt(0),x=>"tel:"+x,x=>String(x).replace(/&/g,"&amp;").replace(/"/g,"&quot;"),x=>x,isEstaContractorProject);
+    x=>x.charAt(0),x=>x?"tel:"+x:"#",x=>String(x).replace(/&/g,"&amp;").replace(/"/g,"&quot;"),x=>x,isEstaContractorProject);
   f();
   return {activated:nodes["#contractorPage"].classList.activated,html:nodes["#contractorGrid"].innerHTML};
 }
