@@ -38,4 +38,4 @@
   const pending=new MutationObserver(()=>{if(init())pending.disconnect()});
   pending.observe(document.documentElement,{childList:true,subtree:true});
  }
-remove duplicate mode resize})();
+})();
