@@ -1553,8 +1553,10 @@ function workRowCheckbox(x){
 }
 function syncWorkSelection(){
  const btn=$("#workSelectModeBtn"),bar=$("#workSelectedPdfBar");
- if(btn){btn.classList.toggle("hide",!currentAccount?.is_admin);btn.textContent=workSelectMode?"✓ Đang chọn":"⚙ Cài đặt";btn.setAttribute("aria-pressed",String(workSelectMode))}
- if(bar)bar.classList.toggle("hide",!workSelectMode);
+ if(btn){btn.classList.toggle("hide",!currentAccount?.is_admin);btn.textContent=workSelectMode?"✓ Đang chọn":"Xuất PDF";btn.setAttribute("aria-pressed",String(workSelectMode))}
+ const showSelection=workSelectMode&&!!currentAccount?.is_admin;
+ if(bar)bar.classList.toggle("hide",!showSelection);
+ $("#workPage")?.classList.toggle("workSelectionActive",showSelection);
  const count=$("#workSelectedCount");if(count)count.textContent="Đã chọn "+workSelectedIds.size+" dòng";
  const print=$("#workPrintSelected");if(print)print.disabled=!workSelectedIds.size;
  const del=$("#workDeleteSelected");if(del)del.disabled=!workSelectedIds.size;
@@ -1564,10 +1566,12 @@ function syncWorkSelection(){
 function initWorkSelection(){
  const controls=$("#workPage .workTableMeta"),tbody=$("#tbody");
  if(!controls||!tbody||$("#workSelectModeBtn"))return;
- const select=document.createElement("button");select.id="workSelectModeBtn";select.type="button";select.textContent="⚙ Cài đặt";select.className="energyManageBtn";controls.appendChild(select);
+ const select=document.createElement("button");select.id="workSelectModeBtn";select.type="button";select.textContent="Xuất PDF";select.className="energyManageBtn";controls.appendChild(select);
  const bar=document.createElement("div");bar.id="workSelectedPdfBar";bar.className="energyDeleteBar workSelectedPdfBar hide";
- bar.innerHTML='<label><input type="checkbox" id="workSelectAll"> Chọn tất cả dòng hiển thị</label><strong id="workSelectedCount">Đã chọn 0 dòng</strong><button type="button" id="workDeleteSelected" disabled>Xóa đã chọn</button><button type="button" id="workPrintSelected" disabled>▣ In PDF đã chọn</button><button type="button" id="workCancelSelect">Hủy</button>';
- const desktop=tbody.closest(".desktopTable");desktop.insertAdjacentElement("afterend",bar);
+ bar.innerHTML='<label><input type="checkbox" id="workSelectAll"><span>Chọn tất cả dòng hiển thị</span></label><strong id="workSelectedCount" aria-live="polite">Đã chọn 0 dòng</strong><button type="button" id="workDeleteSelected" disabled>Xóa đã chọn</button><button type="button" id="workPrintSelected" disabled>In PDF</button><button type="button" id="workCancelSelect">Hủy</button>';
+ // Keep this toolbar outside .tableCard (overflow:hidden), but inside the page
+ // so route changes hide it automatically. It stays anchored to the viewport.
+ $("#workPage").appendChild(bar);
  select.onclick=()=>{if(!currentAccount?.is_admin)return;workSelectMode=!workSelectMode;workSelectedIds.clear();render()};
  $("#workCancelSelect").onclick=()=>{workSelectMode=false;workSelectedIds.clear();render()};
  $("#workSelectAll").onchange=e=>{filtered().forEach(x=>e.target.checked?workSelectedIds.add(String(x.id)):workSelectedIds.delete(String(x.id)));render()};
