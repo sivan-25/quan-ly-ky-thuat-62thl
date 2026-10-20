@@ -438,3 +438,14 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
  color:#F3DEBF!important;
  border-color:#A46427!important;
 }
+
+
+/* The live work editor switches to compact/tablet mode at 768px; keep the card warm. */
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode #workPage .workEntryCard,
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode #workPage .workEntryForm,
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode #workPage .premiumTableCard,
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode #workPage .tableCard {
+ background-color:#F5ECD0!important;
+ border-color:#D7BE9C!important;
+ color:#2B1526!important;
+}
