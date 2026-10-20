@@ -920,7 +920,7 @@
 <link rel="stylesheet" href="contractor-job-mobile-130.css?v=20261019-fix-fullwidth03">
 <link rel="stylesheet" href="contractor-profile-form-mobile.css?v=20261019-profile-grid01">
 <link rel="stylesheet" href="overview-compact.css?v=20261020-compact03" media="screen">
-<link rel="stylesheet" href="tools-professional.css?v=20261020-tools01" media="screen">
+<link rel="stylesheet" href="tools-professional.css?v=20261020-toolcompact02" media="screen">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2680,19 +2680,25 @@
 
 <div id="toolItemModal" class="modal hide">
   <div class="modalCard inventoryModalCard">
-    <button id="closeToolModal" class="modalClose" type="button">×</button>
+    <button id="closeToolModal" class="modalClose" type="button" aria-label="Đóng chỉnh sửa dụng cụ">×</button>
     <div class="inventoryModalHead"><span>ESTA · TOOL REGISTER</span><h3 id="toolModalTitle">Thêm dụng cụ</h3><p>Quản lý dụng cụ kỹ thuật riêng cho từng dự án.</p></div>
     <form id="toolItemForm" class="inventoryForm">
       <input id="toolId" type="hidden">
-      <label><span>Mã dụng cụ</span><input id="toolCode" maxlength="40" placeholder="VD: DC-001"></label>
-      <label class="wide"><span>Tên dụng cụ *</span><input id="toolName" maxlength="120" required placeholder="VD: Đồng hồ vạn năng"></label>
-      <label><span>Nhãn hiệu</span><input id="toolBrand" maxlength="100" placeholder="VD: Kyoritsu, Bosch..."></label>
+      <label class="wide toolField-name"><span>Tên dụng cụ *</span><input id="toolName" maxlength="120" required placeholder="VD: Ampe kìm"></label>
+      <label class="toolField-brand"><span>Nhãn hiệu</span><input id="toolBrand" maxlength="100" placeholder="VD: Total"></label>
+      <label class="toolField-code"><span>Mã dụng cụ</span><input id="toolCode" maxlength="40" placeholder="VD: DC-001"></label>
       <label class="toolField-qty"><span>Số lượng *</span><input id="toolQty" type="number" step="0.01" min="0" required value="1"></label>
       <label class="toolField-unit"><span>Đơn vị</span><input id="toolUnit" maxlength="30" value="Cái"></label>
       <label class="toolField-status"><span>Tình trạng</span><select id="toolCondition"><option>Tốt</option><option>Đang sử dụng</option><option>Cần kiểm tra</option><option>Hư hỏng</option></select></label>
-      <label><span>Vị trí lưu</span><input id="toolLocation" maxlength="120" placeholder="Kho kỹ thuật, tủ dụng cụ..."></label><label><span>Người phụ trách</span><select id="toolKeeper"><option value="">— Chọn —</option></select></label>
-      <label class="toolField-date"><span>Ngày mua</span><input id="toolAcquiredDate" type="date"></label>
-      <label class="wide toolNoteField"><span>Ghi chú</span><input id="toolNote" maxlength="300" placeholder="Model, serial, vị trí sử dụng, tình trạng chi tiết..."></label>
+      <label class="toolField-keeper"><span>Người phụ trách</span><select id="toolKeeper"><option value="">— Chọn —</option></select></label>
+      <label class="wide toolField-location"><span>Vị trí lưu</span><input id="toolLocation" maxlength="120" placeholder="Kho kỹ thuật, tủ dụng cụ..."></label>
+      <details class="toolExtraFields" id="toolExtraFields">
+        <summary>Thông tin bổ sung <small>Ngày mua, ghi chú</small></summary>
+        <div class="toolExtraGrid">
+          <label class="toolField-date"><span>Ngày mua</span><input id="toolAcquiredDate" type="date"></label>
+          <label class="toolNoteField"><span>Ghi chú</span><input id="toolNote" maxlength="300" placeholder="Model, serial, tình trạng chi tiết..."></label>
+        </div>
+      </details>
       <div class="inventoryFormActions"><button id="cancelToolModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu dụng cụ</button></div>
     </form>
   </div>
