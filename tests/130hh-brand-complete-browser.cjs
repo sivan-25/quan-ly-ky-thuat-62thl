@@ -60,7 +60,7 @@ async function prep(page,p){
    const errors=await prep(page,"130HH");
    for(const [mode,root,card] of modes){
     const state=await page.evaluate(({mode,root,card})=>{
-     try{showModule(mode)}catch(e){window.__brandTestError=String(e)}
+     try{if(mode==="home")showHome();else showModule(mode)}catch(e){window.__brandTestError=String(e)}
      const app=document.querySelector("#app");
      const area=document.querySelector(root);
      const element=area?.querySelector(card);
