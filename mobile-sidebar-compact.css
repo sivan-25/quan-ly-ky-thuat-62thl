@@ -1,0 +1,165 @@
+/* ESTA mobile navigation: compact, one-screen-first layout.
+   Loaded last so older demoMobilePilot/desktop navigation rules cannot inflate it. */
+@media (max-width:760px){
+  #app #mobileSidebar,
+  #app.demoMobilePilot #mobileSidebar{
+    box-sizing:border-box!important;
+    width:min(68vw,272px)!important;
+    max-width:min(68vw,272px)!important;
+    min-width:0!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    padding:calc(env(safe-area-inset-top,0px) + 6px) 9px calc(env(safe-area-inset-bottom,0px) + 8px)!important;
+    z-index:1100!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #app #mobileSidebar .mobileSidebarHeader,
+  #app.demoMobilePilot #mobileSidebar .mobileSidebarHeader{
+    position:relative!important;
+    top:auto!important;
+    min-height:38px!important;
+    padding:0 2px 5px!important;
+    flex:0 0 auto!important;
+    gap:5px!important;
+    font-size:10px!important;
+    letter-spacing:1px!important;
+  }
+  #app #mobileSidebar #sidebarClose,
+  #app.demoMobilePilot #mobileSidebar #sidebarClose{
+    min-width:70px!important;
+    min-height:36px!important;
+    height:36px!important;
+    padding:0 9px!important;
+    gap:5px!important;
+    border-radius:8px!important;
+    font-size:11px!important;
+    white-space:nowrap!important;
+  }
+  #app #mobileSidebar #sidebarClose span{font-size:19px!important}
+  #app #mobileSidebar .estaSidebarBrand{
+    gap:6px!important;
+    min-height:46px!important;
+    padding:2px 3px 8px!important;
+    flex:0 0 auto!important;
+  }
+  #app #mobileSidebar .estaPetalLogo{
+    width:40px!important;
+    height:40px!important;
+    flex:0 0 30px!important;
+    transform:scale(.72)!important;
+    transform-origin:left center!important;
+  }
+  #app #mobileSidebar .estaSidebarBrand b{
+    font-size:19px!important;
+    line-height:1!important;
+    letter-spacing:3px!important;
+  }
+  #app #mobileSidebar .estaSidebarBrand small{
+    font-size:5.5px!important;
+    line-height:1.2!important;
+    letter-spacing:.9px!important;
+    margin-top:3px!important;
+    white-space:nowrap!important;
+  }
+  #app #mobileSidebar .technicalProjectSwitcher{margin:5px 0!important;padding:5px!important}
+  #app #mobileSidebar .technicalProjectSwitcher label{font-size:10px!important}
+  #app #mobileSidebar .technicalProjectSwitcher select{height:36px!important;min-height:36px!important}
+  #app #mobileSidebar .estaNav,
+  #app #mobileSidebar aside nav{
+    flex:0 0 auto!important;
+    margin:5px 0 2px!important;
+    min-width:0!important;
+    padding:0!important;
+  }
+  #app #mobileSidebar .estaNav::before{
+    display:block!important;
+    padding:0 7px 4px!important;
+    font-size:8px!important;
+    letter-spacing:1.2px!important;
+    line-height:1.2!important;
+  }
+  #app #mobileSidebar .estaNav button,
+  #app.demoMobilePilot #mobileSidebar .estaNav button{
+    box-sizing:border-box!important;
+    width:100%!important;
+    height:39px!important;
+    min-height:39px!important;
+    max-height:39px!important;
+    margin:1px 0!important;
+    padding:0 8px!important;
+    gap:8px!important;
+    border-radius:9px!important;
+    font-size:12px!important;
+    font-weight:550!important;
+    line-height:1.15!important;
+    letter-spacing:0!important;
+    white-space:nowrap!important;
+    touch-action:manipulation!important;
+  }
+  #app #mobileSidebar .estaNav button.active{font-weight:700!important}
+  #app #mobileSidebar .estaNav button svg,
+  #app.demoMobilePilot #mobileSidebar .estaNav button svg{
+    width:17px!important;
+    height:17px!important;
+    flex:0 0 17px!important;
+  }
+  #app #mobileSidebar .estaNav button > span:not(.ccNavBadge){
+    min-width:0!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+  #app #mobileSidebar .estaNav .ccNavBadge{
+    min-width:18px!important;
+    height:18px!important;
+    padding:0 4px!important;
+    font-size:9px!important;
+  }
+  #app #mobileSidebar .sideBackup{
+    margin-top:6px!important;
+    padding-top:6px!important;
+    gap:5px!important;
+    flex:0 0 auto!important;
+  }
+  #app #mobileSidebar .sideBackup button,
+  #app.demoMobilePilot #mobileSidebar .sideBackup button{
+    height:34px!important;
+    min-height:34px!important;
+    padding:0 3px!important;
+    font-size:9px!important;
+    touch-action:manipulation!important;
+  }
+  #app #mobileSidebar .sideBackup svg{width:14px!important;height:14px!important}
+  #app #mobileSidebar .sideBottom{
+    min-height:40px!important;
+    margin-top:5px!important;
+    padding:5px 2px 0!important;
+    flex:0 0 auto!important;
+  }
+  #app #mobileSidebar .sideAvatar{width:25px!important;height:25px!important;flex-basis:25px!important}
+  #app #mobileSidebar .sideUserCard #sideUser b{font-size:10px!important;max-width:130px!important}
+  #app #mobileSidebar .sideUserCard #sideUser small{font-size:9px!important}
+  #app #mobileSidebar .sideLogout,
+  #app.demoMobilePilot #mobileSidebar .sideLogout{
+    width:34px!important;
+    height:34px!important;
+    min-height:34px!important;
+    touch-action:manipulation!important;
+  }
+  /* Bottom dock should not cover the list while the side navigation is open. */
+  #app.menuOpen > .estaBottomNav{visibility:hidden!important;pointer-events:none!important}
+}
+/* Preserve discoverability and keyboard access on shorter displays: scroll is
+   available only when all authorized modules cannot physically fit. */
+@media (max-width:760px) and (max-height:760px){
+  #app #mobileSidebar .mobileSidebarHeader{min-height:36px!important}
+  #app #mobileSidebar .estaSidebarBrand{min-height:40px!important;padding-bottom:5px!important}
+  #app #mobileSidebar .estaNav button,
+  #app.demoMobilePilot #mobileSidebar .estaNav button{height:36px!important;min-height:36px!important;max-height:36px!important;margin:0!important}
+  #app #mobileSidebar .estaNav::before{padding-bottom:3px!important}
+}
