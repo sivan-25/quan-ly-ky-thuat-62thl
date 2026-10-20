@@ -1,0 +1,17 @@
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path");
+const read=p=>fs.readFileSync(path.join(__dirname,"..",p),"utf8");
+const html=read("index.html"),css=read("overview-compact.css"),script=read("overview-compact.js");
+new Function(script);
+assert.ok(html.includes("overview-compact.css?v=20261020-compact03"),"versioned compact style link");
+assert.ok(html.includes("overview-compact.js?v=20261020-compact03"),"versioned mobile adapter");
+assert.ok(css.includes("ESTA MOBILE OVERVIEW V3"),"new mobile project compact rules");
+assert.ok(css.includes("#app.homeMode.estaFourProjectCompact:not(.adminCommandHome) #homePage"),"scope only to operating projects");
+assert.ok(css.includes("#app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccProjects"),"Admin cards compact");
+assert.ok(css.includes("grid-template-columns:repeat(3,minmax(0,1fr))"),"Admin KPI grid retained");
+assert.ok(css.includes("grid-template-columns:repeat(2,minmax(0,1fr))"),"two-column KPI/project tiles");
+assert.ok(css.includes(".homeEnergyList"),"energy visible as compact 3-column grid");
+assert.ok(css.includes(".quickActions"),"quick actions kept");
+assert.ok(!script.includes("localStorage")&&!script.includes("fetch("),"UI-only adapter");
+assert.ok(read("app.js").includes('"68PĐL","62THL","127HH","130HH"'),"all four real project IDs share scope");
+console.log("PASS compact Admin + 4 project overview assets, CSS scope, all business actions present");
