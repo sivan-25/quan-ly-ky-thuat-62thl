@@ -31,8 +31,8 @@ assert.ok(!js.includes('String(currentBuilding?.id||"")==="130HH"'),"stale 130 H
 assert.ok(css.includes(".contractorMobileCall svg"),"approved mobile call icon missing");
 assert.ok(css.includes(".contractorMobileTermGroup"),"compact contract term missing");
 assert.ok(css.includes(".contractorJobFilters"),"compact history search missing");
-assert.ok(html.includes('contractor-mobile-130.css?v=20261019-four-projects01'));
-assert.ok(html.includes('contractor.js?v=20261019-four-projects01'));
+assert.ok(html.includes('contractor-mobile-130.css?v=20261020-copy-phone01'));
+assert.ok(html.includes('contractor.js?v=20261020-copy-phone01'));
 
 const profile=html.slice(html.indexOf('<div id="contractorModal"'),html.indexOf('<div id="contractorJobModal"'));
 const job=html.slice(html.indexOf('<div id="contractorJobModal"'),html.indexOf('<div id="maintenanceAssetModal"'));
@@ -65,7 +65,7 @@ const factory=new Function("$","contractors","contractorJobsFor","contractorLast
   "contractorSpecialtyFilter","currentBuilding","contractorFieldLabel","contractorFieldClass",
   "contractorInitial","contractorPhoneHref","esc","fmt","isEstaContractorProject",
   js.slice(renderStart,renderEnd)+"\nreturn renderContractors;");
-function renderFor(projectId){
+function renderFor(projectId,phone="0900000000"){
   const nodes=Object.create(null);
   const $=id=>nodes[id]??(nodes[id]={
     value:"",textContent:"",innerHTML:"",
@@ -74,7 +74,7 @@ function renderFor(projectId){
   });
   const currentBuilding={id:projectId};
   const isEstaContractorProject=()=>projectTest(projectId);
-  const item={id:"test",name:"Fixture Contractor",phone:"0900000000",contact_name:"Tester",specialty:"PCCC",status:"Đang hợp tác"};
+  const item={id:"test",name:"Fixture Contractor",phone,contact_name:"Tester",specialty:"PCCC",status:"Đang hợp tác"};
   const f=factory($,[item],()=>[],()=>null,"",currentBuilding,x=>x||"Khác",()=>"pccc",
     x=>x.charAt(0),x=>"tel:"+x,x=>String(x).replace(/&/g,"&amp;").replace(/"/g,"&quot;"),x=>x,isEstaContractorProject);
   f();
@@ -86,6 +86,34 @@ for(const id of projects){
   assert.ok(rendered.html.includes("contractorMobileCard"),id+" mobile card not rendered");
   assert.ok(rendered.html.includes("Gọi ngay"),id+" call action missing");
   assert.ok(rendered.html.includes('href="tel:0900000000"'),id+" tap-to-call broken");
+  assert.ok(rendered.html.includes('data-copy-contractor-phone="0900000000"'),id+" phone-copy action missing");
+  assert.ok(rendered.html.includes("contractorMobilePhoneActions"),id+" copy/call pair container missing");
+  assert.ok(rendered.html.includes("<span>Sao chép</span>"),id+" copy label missing");
 }
 assert.equal(renderFor("Demo").activated,false,"unapproved demo project was changed");
-console.log("PASS contractor mobile directory/detail 68 PĐL, 62 THL, 127 HH, 130 HH (read-only fixtures)");
+const noNumber=renderFor("130HH","");
+assert.ok(noNumber.html.includes('contractorMobileCopy disabled'),"no-number copy button must be disabled");
+assert.ok(noNumber.html.includes('disabled aria-label="Không có số để sao chép"'),"disabled copy lacks hint");
+assert.ok(css.includes(".contractorMobileCopy")&&css.includes(".contractorMobilePhoneActions"),"copy button styling missing");
+const copyStart=js.indexOf("async function copyContractorPhone(phone){");
+const copyEnd=js.indexOf("function contractorInitial(",copyStart);
+assert.ok(copyStart>=0&&copyEnd>copyStart,"copy helper not found");
+async function testClipboard(){
+  const copied=[];
+  const makeCopy=new Function("navigator","document",
+    js.slice(copyStart,copyEnd)+"\nreturn copyContractorPhone;");
+  const modern=makeCopy({clipboard:{writeText:async value=>{copied.push(value)}}},{});
+  assert.equal(await modern("0868 897 511"),true,"modern clipboard must report success");
+  assert.deepEqual(copied,["0868 897 511"],"clipboard must retain actual phone text");
+  assert.equal(await modern(""),false,"empty phone must not copy");
+  const selected={value:"",style:{},setAttribute(){},focus(){},select(){},remove(){}};
+  let usedFallback=false;
+  const legacy=makeCopy({clipboard:null},{
+    createElement:()=>selected,body:{appendChild(){}},execCommand:(command)=>{usedFallback=command==="copy";return true}
+  });
+  assert.equal(await legacy("0912345678"),true,"legacy iPhone copy must work");
+  assert.equal(selected.value,"0912345678","legacy copy must keep phone");
+  assert.equal(usedFallback,true,"legacy execCommand never invoked");
+  console.log("PASS contractor mobile directory/copy/call for all four ESTA projects (read-only fixtures)");
+}
+testClipboard().catch(error=>{console.error(error);process.exitCode=1});
