@@ -862,6 +862,8 @@ function syncOverviewNavigation(){
  document.body.classList.toggle("estaUpgradeMode",upgrade);
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
+ // Pilot brand theme: only active 130 Hồng Hà; never tint Admin or other buildings.
+ document.getElementById("app")?.classList.toggle("estaBrand130",project&&String(currentBuilding?.id||"").toUpperCase()==="130HH");
  document.getElementById("app")?.classList.toggle("estaFourProjectCompact",project&&["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding?.id||"")));
  $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
