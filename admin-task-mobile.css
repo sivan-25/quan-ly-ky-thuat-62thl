@@ -325,3 +325,35 @@
   cursor:pointer!important;
  }
 }
+
+/* 2026-10-20: One entry button and a permanently reachable X inside the PDF dock. */
+@media(max-width:760px){
+ #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccPdfTools{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  position:fixed!important;box-sizing:border-box!important;
+  padding:44px 12px 12px!important;row-gap:7px!important;column-gap:8px!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccPdfTools::before{
+  content:"Chọn công việc xuất PDF";position:absolute;top:15px;left:14px;
+  max-width:calc(100% - 64px);font-size:12px;font-weight:750;line-height:1.2;color:#e9f6f8;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccPdfTools #ccCancelPdf{
+  display:inline-flex!important;position:absolute!important;
+  right:8px!important;top:6px!important;left:auto!important;bottom:auto!important;
+  grid-column:auto!important;order:0!important;flex:none!important;
+  width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important;
+  justify-content:center!important;align-items:center!important;padding:0!important;
+  background:#314c5a!important;color:#fff!important;border:1px solid #76939c!important;
+  border-radius:9px!important;font-size:24px!important;line-height:1!important;
+  cursor:pointer!important;touch-action:manipulation!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccPdfTools #ccPrintSelected{
+  grid-column:1/-1!important;order:2!important;min-height:44px!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccPdfTools #ccPdfSelectionStatus{
+  order:3!important;grid-column:1/-1!important;
+ }
+ #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccPdfTools>label{
+  order:1!important;min-width:0!important;
+ }
+}
