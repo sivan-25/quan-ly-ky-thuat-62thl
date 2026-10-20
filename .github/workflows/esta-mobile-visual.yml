@@ -16,6 +16,8 @@ on:
       - 'four-project-compact.css'
       - 'tests/four-project-system-rail-geometry.cjs'
       - 'index.html'
+      - 'esta-brand-130-complete.css'
+      - 'tests/130hh-brand-complete-browser.cjs'
       - 'tests/browser-visual-parity.cjs'
       - 'tests/mobile-usability-audit.cjs'
       - '.github/workflows/esta-mobile-visual.yml'
@@ -59,6 +61,9 @@ jobs:
       - name: Verify compact Admin and four project home UI
         working-directory: candidate
         run: node tests/overview-projects-mobile-compact.test.cjs
+      - name: Verify 130HH complete ESTA brand on every page and device width
+        working-directory: candidate
+        run: node tests/130hh-brand-complete-browser.cjs
       - name: Check asset modal save visibility on iPhone viewports
         working-directory: candidate
         run: node tests/maintenance-asset-mobile-browser.cjs

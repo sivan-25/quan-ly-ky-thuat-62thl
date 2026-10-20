@@ -19,7 +19,7 @@ const fixedTime=Date.parse('2026-10-10T02:00:00.000Z');
 const channelTolerance=12; // headless Chromium antialiasing tolerance
 // The first rollout intentionally changes the 130HH palette, never the three other projects.
 // Detect a newly introduced stylesheet rather than disabling brand checks for future PRs.
-const brand130FirstRollout=fs.existsSync('esta-brand-130.css')&&!fs.existsSync('../baseline/esta-brand-130.css');
+const brand130FirstRollout=(fs.existsSync('esta-brand-130.css')&&!fs.existsSync('../baseline/esta-brand-130.css'))||(fs.existsSync('esta-brand-130-complete.css')&&!fs.existsSync('../baseline/esta-brand-130-complete.css'));
 async function fixture(page,scenario){
  if(scenario==='login')return;
  const projectId=scenario.includes('-')&&scenario!=='admin-home'?scenario.split('-').slice(1).join('-'):'68PĐL';
