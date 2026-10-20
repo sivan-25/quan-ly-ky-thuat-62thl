@@ -2,7 +2,7 @@
 const assert=require("node:assert/strict");
 const fs=require("node:fs");
 const vm=require("node:vm");
-const appSource=fs.readFileSync("app.js","utf8");
+const appSource=fs.readFileSync("app.js","utf8").replace(/\r\n/g,"\n");
 const maintenanceSource=fs.readFileSync("maintenance-130.js","utf8");
 const css=fs.readFileSync("four-project-compact.css","utf8");
 const html=fs.readFileSync("index.html","utf8");
