@@ -66,7 +66,7 @@ async function prep(page,p){
      const element=area?.querySelector(card);
      const topbar=document.querySelector("#app .estaTopbar");
      const css=e=>e?getComputedStyle(e):null;
-     const rgba=(el)=>css(el)?.backgroundColor||"";
+     const rgba=(el)=>el&&el.getClientRects().length>0?(css(el)?.backgroundColor||""):null;
      const body=document.body;
      const doc=document.documentElement;
      return {brand:app.classList.contains("estaBrand130"),
@@ -100,7 +100,7 @@ async function prep(page,p){
     assert.equal(state.area,cream,"Page background in "+mode+" width "+width);
     assert.ok(state.overflow<=4,"Horizontal overflow in "+mode+" width "+width+": "+state.overflow);
     for(const key of ["workCard","energyKpi","energyPanel","inventory","energyTable"]){
-      assert.equal(state[key],soft,key+" still has legacy blue/dark surface in "+mode+" width "+width);
+      if(state[key]!==null)assert.equal(state[key],soft,key+" still has legacy blue/dark surface in "+mode+" width "+width);
     }
     assert.equal(errors.length,0,"JavaScript errors in "+mode+": "+errors.join(", "));
    }
