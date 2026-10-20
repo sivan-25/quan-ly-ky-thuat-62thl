@@ -58,6 +58,31 @@ function contractorPhoneHref(phone=""){
   const p=String(phone||"").replace(/[^\d+]/g,"");
   return p?"tel:"+p:"#";
 }
+async function copyContractorPhone(phone){
+  const value=String(phone||"").trim();
+  if(!value)return false;
+  try{
+    if(navigator.clipboard?.writeText){
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  }catch(error){
+    console.warn("Clipboard API unavailable; trying legacy copy",error);
+  }
+  // Legacy fallback for older iPhone/PWA browser contexts.
+  const input=document.createElement("textarea");
+  input.value=value;
+  input.setAttribute("readonly","");
+  input.style.position="fixed";
+  input.style.left="-9999px";
+  document.body.appendChild(input);
+  input.focus();
+  input.select();
+  let copied=false;
+  try{copied=document.execCommand("copy")}catch(error){console.warn("Copy command failed",error)}
+  input.remove();
+  return copied;
+}
 function contractorInitial(name=""){
   return (String(name||"").trim().charAt(0)||"N").toLocaleUpperCase("vi-VN");
 }
@@ -167,11 +192,16 @@ function renderContractors(){
           (canCall
             ?'<a class="contractorMobileNumber" href="'+esc(phoneHref)+'" data-stop-contractor aria-label="Gọi '+esc(c.phone)+'"><svg viewBox="0 0 24 24"><path d="M6 3h4l2 5-3 2a15 15 0 0 0 5 5l2-3 5 2v4c0 2-1 4-3 4C9 20 4 15 3 7c0-2 1-4 3-4z"/></svg>'+esc(c.phone)+'</a>'
             :'<span class="contractorMobileNumber">'+esc(c.phone||"Chưa có SĐT")+'</span>')+
-          (canCall
-            ?'<a class="contractorMobileCall" href="'+esc(phoneHref)+'" data-stop-contractor aria-label="Gọi ngay số '+esc(c.phone)+'">'+
-              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 3.18 2 2 0 0 1 4.08 1h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.3-1.26a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92Z"/><path d="M14.05 2a9 9 0 0 1 8 8M14.05 6a5 5 0 0 1 4 4"/></svg><span>Gọi ngay</span></a>'
-            :'<span class="contractorMobileCall disabled" aria-disabled="true" title="Nhà thầu chưa có số điện thoại">'+
-              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 3.18 2 2 0 0 1 4.08 1h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.3-1.26a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92Z"/><path d="M14.05 2a9 9 0 0 1 8 8M14.05 6a5 5 0 0 1 4 4"/></svg><span>Chưa có SĐT</span></span>')+
+          '<div class="contractorMobilePhoneActions">'+
+            (canCall
+              ?'<button type="button" class="contractorMobileCopy" data-copy-contractor-phone="'+esc(c.phone)+'" data-stop-contractor aria-label="Sao chép số '+esc(c.phone)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Sao chép</span></button>'
+              :'<button type="button" class="contractorMobileCopy disabled" disabled aria-label="Không có số để sao chép"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Sao chép</span></button>')+
+            (canCall
+              ?'<a class="contractorMobileCall" href="'+esc(phoneHref)+'" data-stop-contractor aria-label="Gọi ngay số '+esc(c.phone)+'">'+
+                '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 3.18 2 2 0 0 1 4.08 1h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.3-1.26a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92Z"/><path d="M14.05 2a9 9 0 0 1 8 8M14.05 6a5 5 0 0 1 4 4"/></svg><span>Gọi ngay</span></a>'
+              :'<span class="contractorMobileCall disabled" aria-disabled="true" title="Nhà thầu chưa có số điện thoại">'+
+                '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 3.18 2 2 0 0 1 4.08 1h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78A2 2 0 0 1 22 16.92Z"/><path d="M14.05 2a9 9 0 0 1 8 8M14.05 6a5 5 0 0 1 4 4"/></svg><span>Chưa có SĐT</span></span>')+
+          '</div>'+
         '</div>'+
       '</div>'+
     '</article>';
@@ -184,6 +214,21 @@ function renderContractors(){
   $("#contractorGrid").querySelectorAll("[data-view-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();openContractorDetail(b.dataset.viewContractor)});
   $("#contractorGrid").querySelectorAll("[data-edit-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();editContractor(b.dataset.editContractor)});
   $("#contractorGrid").querySelectorAll("[data-delete-contractor]").forEach(b=>b.onclick=e=>{e.stopPropagation();deleteContractor(b.dataset.deleteContractor)});
+  $("#contractorGrid").querySelectorAll("[data-copy-contractor-phone]").forEach(btn=>btn.addEventListener("click",async e=>{
+    e.stopPropagation();
+    if(btn.disabled)return;
+    const copied=await copyContractorPhone(btn.dataset.copyContractorPhone);
+    if(!copied){toast("Không thể sao chép. Hãy nhấn giữ số điện thoại để sao chép.");return}
+    const label=btn.querySelector("span");
+    if(label)label.textContent="Đã chép";
+    btn.classList.add("copied");
+    toast("Đã sao chép số điện thoại");
+    setTimeout(()=>{
+      if(!btn.isConnected)return;
+      if(label)label.textContent="Sao chép";
+      btn.classList.remove("copied");
+    },1800);
+  }));
   $("#contractorGrid").querySelectorAll("[data-stop-contractor]").forEach(a=>a.onclick=e=>e.stopPropagation());
 
   $("#contractorEmpty").classList.toggle("hide",list.length>0);
