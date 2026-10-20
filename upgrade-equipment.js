@@ -357,7 +357,7 @@ function list(){
    '<button type="button" class="ueRefRow" data-ue-id="'+esc(id)+'" aria-controls="'+esc(detailId)+'" aria-expanded="'+expanded+'" aria-label="Xem chi tiết '+esc(label(x))+'">'+
     '<span class="ueRefDevice"><strong>'+esc(label(x))+'</strong><small>'+esc(x.system_group||"Chưa phân hệ")+'</small></span>'+
     '<span class="ueRefLocation">'+esc(x.location||"—")+'</span>'+
-    '<span class="ueRefStatusCell"><span class="ueRefState ueRefState-'+esc(state.tone)+'">'+esc(state.label)+'</span></span>'+
+    '<span class="ueRefStatusCell"><span class="ueRefState ueRefState-'+esc(state.tone)+'"><span class="ueStateFull">'+esc(state.label)+'</span><span class="ueStateShort">'+esc(state.tone==="unverified"?"Chưa xác minh":state.label)+'</span></span></span>'+
     '<span class="ueRefLast">'+(last?esc(viDate(last)):'<span class="ueRefDash">—</span>')+'</span>'+
     '<span class="ueRefNext">'+(next?esc(viDate(next)):virt?'<span class="ueRefDash">—</span>':'<span class="ueRefCycle">Chu kỳ '+interval+' ngày</span>')+'</span>'+
     '<span class="ueRefChevron" aria-hidden="true">'+(expanded?'▴':'▾')+'</span>'+
@@ -403,7 +403,7 @@ function systemRailHtml(){
  const all=[{name:"Tất cả hệ thống",key:"",count:catalog().length,icon:UE_ALL_ICON},...builtIn,...dynamic];
  return '<nav class="ueSystemRail" aria-label="Danh mục hệ thống kỹ thuật"><div class="ueRefRailHeading"><strong>CHỌN HỆ THỐNG</strong><small>Điện · Nước · PCCC · HVAC…</small></div>'+all.map(g=>
   '<button type="button" class="ueRailCard'+(group===g.key?' active':'')+'" data-ue-group="'+esc(g.key)+'" aria-pressed="'+(group===g.key)+'">'+
-  g.icon+'<span class="ueRailText"><b>'+esc(g.name)+'</b><small>'+g.count+(currentEquipmentProjectId()==="130HH"?' hạng mục':' thiết bị')+'</small></span></button>'
+  g.icon+'<span class="ueRailText"><b><span class="ueRailFull">'+esc(g.name)+'</span><span class="ueRailShort">'+esc(({"Điều hòa (HVAC)":"Điều hòa","Bơm & cấp thoát nước":"Bơm & nước","Camera & An ninh":"Camera","Chiếu sáng & Điện nhẹ":"Chiếu sáng","Kết cấu & Xây dựng":"Kết cấu"}[g.name])||g.name)+'</span></b><small><span class="ueChipCount">'+g.count+'</span><span class="ueChipSuffix">'+(currentEquipmentProjectId()==="130HH"?' hạng mục':' thiết bị')+'</span></small></span></button>'
  ).join("")+'</nav>';
 }
 function render(page,skipLoad=false){
@@ -458,6 +458,12 @@ function render(page,skipLoad=false){
   $("ueCategoryName").onkeydown=event=>{if(event.key==="Enter"){event.preventDefault();saveCustomSystem();}};
  }
  list();
+ // Keep the selected compact tab visible after rebuilding the system navigation.
+ if(typeof window.matchMedia==="function"&&window.matchMedia("(max-width: 1000px)").matches){
+  const selected=page.querySelector(".ueSystemRail .ueRailCard.active");
+  const rail=selected?.closest(".ueSystemRail");
+  if(rail)rail.scrollLeft=Math.max(0,selected.offsetLeft-12);
+ }
  if(!skipLoad&&!fetchedAt)load();
 }
 

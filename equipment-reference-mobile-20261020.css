@@ -1,0 +1,187 @@
+/* ESTA 20/10/2026 · Compact information-system register.
+   Reference: "Thông tin hệ thống – bản gọn.html" (390px mobile canvas).
+   Layout only; existing Supabase records, forms, inspection and PM links are untouched. */
+#updateAssetsPage.ueSnapshot .ueRailShort,
+#updateAssetsPage.ueSnapshot .ueStateShort{display:none}
+@media (max-width:1000px){
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot:not(.hide){
+   max-width:100%!important;min-width:0!important;overflow-x:hidden!important;
+   background:#fbf6ec!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefSurface{
+   max-width:100%!important;min-width:0!important;background:#fbf6ec!important;
+   padding:5px 0 13px!important;border-top:0!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout{
+   display:flex!important;flex-direction:column!important;gap:0!important;
+   grid-template-columns:minmax(0,1fr)!important;min-width:0!important;max-width:100%!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot:not(.hide) .ueRefLayout .ueSystemRail{
+   position:relative!important;display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+   grid-template-columns:none!important;align-items:center!important;gap:7px!important;
+   width:100%!important;min-width:0!important;max-width:100%!important;
+   overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;
+   -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+   background:transparent!important;border:0!important;border-radius:0!important;
+   padding:7px 10px 9px!important;scrollbar-width:none;
+ }
+ #updateAssetsPage.ueSnapshot .ueSystemRail::-webkit-scrollbar{display:none}
+ #updateAssetsPage.ueSnapshot .ueRefRailHeading{display:none!important}
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard,
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard.active{
+   display:inline-flex!important;flex:0 0 auto!important;flex-direction:row!important;
+   grid-template-columns:none!important;align-items:center!important;justify-content:center!important;
+   gap:6px!important;width:auto!important;max-width:none!important;min-width:0!important;
+   height:36px!important;min-height:36px!important;max-height:36px!important;
+   padding:0 7px 0 11px!important;border:1px solid #dacdb9!important;
+   border-radius:20px!important;background:#fff!important;color:#411437!important;
+   box-shadow:none!important;scroll-snap-align:start;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard.active{
+   background:#411437!important;color:#fff!important;border-color:#411437!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard svg,
+ #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard::after{display:none!important;content:none!important}
+ #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard .ueRailText{
+   display:inline-flex!important;align-items:center!important;flex-direction:row!important;
+   min-width:0!important;gap:6px!important;white-space:nowrap!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard .ueRailText b{
+   font-size:12.5px!important;line-height:1!important;white-space:nowrap!important;
+   color:inherit!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueRailFull{display:none!important}
+ #updateAssetsPage.ueSnapshot .ueRailShort{display:inline!important}
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard .ueRailText small{
+   display:inline-flex!important;align-items:center!important;justify-content:center!important;
+   height:23px!important;min-width:23px!important;padding:0 6px!important;
+   border-radius:13px!important;font-size:11px!important;font-weight:750!important;
+   line-height:1!important;background:#f0e9dd!important;color:#411437!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueSystemRail .ueChipSuffix{display:none!important}
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard.active small{
+   background:#fff!important;color:#411437!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard[aria-pressed="true"]{
+   box-shadow:none!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefMain{
+   min-width:0!important;width:100%!important;max-width:100%!important;
+   padding:0 9px!important;background:transparent!important;border:0!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefTop{
+   display:flex!important;flex-direction:column!important;align-items:stretch!important;
+   flex-wrap:nowrap!important;gap:5px!important;margin:0!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefTitle{
+   display:flex!important;align-items:baseline!important;justify-content:space-between!important;
+   gap:8px!important;flex:0 0 auto!important;min-width:0!important;
+   padding:3px 5px 2px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot #ueGroup{
+   font-size:17px!important;line-height:1.2!important;font-weight:800!important;
+   min-height:24px!important;max-width:190px!important;padding-right:17px!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueRefTitleSelect::after{right:2px!important;top:0!important;font-size:14px!important}
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot #ueResultCount{
+   margin:0!important;text-align:right!important;font-size:10.5px!important;line-height:1.3!important;
+   flex:1 1 auto!important;min-width:0!important;color:#836d62!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefTools{
+   display:flex!important;justify-content:space-between!important;flex:0 0 auto!important;
+   min-width:0!important;gap:6px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefSearch{
+   flex:1 1 55%!important;min-width:0!important;max-width:none!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefSearch input,
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefTools #ueStatus{
+   height:33px!important;min-height:33px!important;border-radius:8px!important;
+   padding:0 9px!important;font-size:16px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefTools #ueStatus{
+   flex:0 1 135px!important;width:135px!important;max-width:41%!important;padding-right:4px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefActions{
+   display:flex!important;justify-content:flex-end!important;flex-wrap:wrap!important;
+   gap:3px 5px!important;margin:5px 0 6px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefActions button{
+   min-height:28px!important;padding:4px 6px!important;font-size:11px!important;
+   border:1px solid #eadfcb!important;border-radius:7px!important;
+   background:#fff!important;color:#411437!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefActions .ueRefAdd{
+   background:#411437!important;color:#fff!important;border-color:#411437!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefTable{
+   overflow:hidden!important;max-width:100%!important;border:1px solid #e9ddc9!important;
+   border-radius:10px!important;background:#fff!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefColHead{
+   display:none!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefRow{
+   display:grid!important;grid-template-columns:minmax(0,1fr) auto 17px!important;
+   gap:8px!important;align-items:center!important;
+   width:100%!important;min-width:0!important;min-height:49px!important;
+   padding:7px 9px 7px 12px!important;text-align:left!important;
+   background:#fff!important;border-bottom:1px solid #f0e8df!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefDevice{
+   display:block!important;min-width:0!important;grid-column:1!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefDevice strong{
+   font-size:14px!important;line-height:1.25!important;font-weight:700!important;
+   color:#2a1327!important;overflow-wrap:anywhere!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueRefDevice small{display:none!important}
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefRow :is(.ueRefLocation,.ueRefLast,.ueRefNext){
+   display:none!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefStatusCell{
+   grid-column:2!important;min-width:0!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefState{
+   display:inline-flex!important;align-items:center!important;gap:5px!important;
+   max-width:122px!important;min-height:25px!important;border-radius:14px!important;
+   padding:4px 8px!important;font-size:11px!important;line-height:1.2!important;
+   font-weight:700!important;white-space:normal!important;
+ }
+ #updateAssetsPage.ueSnapshot .ueRefState::before{
+   content:"";display:block;flex:0 0 7px;width:7px;height:7px;
+   background:currentColor;border-radius:50%;
+ }
+ #updateAssetsPage.ueSnapshot .ueStateFull{display:none!important}
+ #updateAssetsPage.ueSnapshot .ueStateShort{display:inline!important}
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefState-missing{
+   background:#eeeae3!important;color:#6e6156!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefState-unverified{
+   background:#fceccf!important;color:#80521b!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefChevron{
+   grid-column:3!important;color:#8a7f76!important;font-size:15px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefEntryOpen .ueRefRow{
+   background:#fef7ec!important;box-shadow:inset 3px 0 #a46427!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefDetails{
+   max-width:100%!important;overflow-wrap:anywhere!important;padding:6px 8px 11px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefDetails .ueRefFacts{
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px 10px!important;
+   padding:9px!important;
+ }
+}
+@media(max-width:380px){
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefDevice strong{
+   font-size:13px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefState{
+   max-width:106px!important;padding:4px 6px!important;font-size:10px!important;
+ }
+ #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot .ueRefSearch input{
+   font-size:16px!important;
+ }
+}
