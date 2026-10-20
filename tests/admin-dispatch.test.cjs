@@ -125,12 +125,13 @@ async function main() {
   q('#ccTaskPager [data-page="2"]').click();
   assert.equal(visible().length,4);
   assert.equal(visible()[0].querySelector('[data-cc-pdf-select]').checked,true);
+  const orderBeforePdf=visible().map(row=>row.dataset.building+'::'+row.dataset.taskId);
   assert.equal(q('#ccHeaderPdfCount').textContent,'24');
   q('#ccHeaderPdf').click();await next();await next();
   assert.equal(pdfCalls.length,1);
   assert.equal(pdfCalls[0].rows.length,24);
   assert.equal(pdfCalls[0].rows[0][2],'Công việc 1','Starred work is first ONLY inside exported PDF');
-  assert.equal(visible()[0].dataset.building,'127HH','PDF priority has not reordered dashboard cards');
+  assert.deepEqual(visible().map(row=>row.dataset.building+'::'+row.dataset.taskId),orderBeforePdf,'PDF priority has not reordered visible dashboard cards');
   assert.equal(pdfCalls[0].photos.length,1);
   assert.ok(pdfCalls[0].rows.some(row=>String(row[6]).includes('KQ: Hoàn tất kiểm tra')));
   assert.ok(pdfCalls[0].rows.every(row=>!String(row[2]).includes('Việc kỹ thuật tự tạo')));
