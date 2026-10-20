@@ -115,9 +115,7 @@
  #toolItemModal .inventoryForm{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
  #toolItemModal .inventoryForm label{min-width:0!important;grid-column:1/-1!important}
  #toolItemModal .inventoryForm label.toolField-qty,
- #toolItemModal .inventoryForm label.toolField-unit,
- #toolItemModal .inventoryForm label.toolField-status,
- #toolItemModal .inventoryForm label.toolField-date{grid-column:auto!important}
+ #toolItemModal .inventoryForm label.toolField-unit{grid-column:auto!important}
  #toolItemModal .inventoryFormActions{grid-column:1/-1!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;position:sticky!important;bottom:0!important;background:#101b2e!important;padding:10px 0!important;z-index:4!important}
  #toolItemModal .inventoryForm :is(input,select){font-size:16px!important;min-height:44px!important}
 }
