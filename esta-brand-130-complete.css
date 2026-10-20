@@ -1,0 +1,365 @@
+/* ESTA / 130 HONG HA — Full brand visual system, October 2026.
+   BRAND SOURCE: user-provided esta-brand.skill
+   Explicit 130HH scope; never change Admin or other projects.
+   Only appearance: preserve operations, statuses, photo/PDF, and component layout. */
+#app.estaBrand130 {
+ --esta130-plum:#411437;
+ --esta130-deep:#2B1526;
+ --esta130-cream:#F3DEBF;
+ --esta130-soft:#F5ECD0;
+ --esta130-lift:#FBF3E3;
+ --esta130-copper:#A46427;
+ --esta130-text:#2B1526;
+ --esta130-secondary:#625045;
+ --esta130-line:#D7BE9C;
+ --esta130-shadow:0 8px 23px rgba(65,20,55,.08);
+ --esta-primary:#411437;
+ --esta-border:#D7BE9C;
+ --esta-shadow:0 8px 23px rgba(65,20,55,.08);
+ --ov-navy:#411437;
+ --ov-deep:#2B1526;
+ --ov-cream:#F3DEBF;
+ --ov-panel:#F5ECD0;
+ --ov-line:#D7BE9C;
+ --upd-navy:#411437;
+ --upd-navy-2:#2B1526;
+ --upd-ink:#2B1526;
+ --upd-muted:#625045;
+ --upd-cream:#F3DEBF;
+ --upd-cream-2:#F5ECD0;
+ --upd-card:#F5ECD0;
+ --upd-line:#D7BE9C;
+ --upd-teal:#A46427;
+ --upd-shadow:0 8px 23px rgba(65,20,55,.08);
+ color:var(--esta130-text)!important;
+ background:var(--esta130-cream)!important;
+ font-family:Montserrat,Arial,sans-serif!important;
+ color-scheme:light;
+}
+#app.estaBrand130 :is(main,.page,.modulePage,.homeDashboard,.demoFeaturePage,.maintenancePage,.inventoryPage,.contractorPage,.constructionMaterialPage,#updateAssetsPage.uePage,.ueSnapshot) {
+ background:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(h1,h2,h3,h4) {font-family:Montserrat,Arial,sans-serif!important}
+/* Topbar was formerly navy on every module, overriding the initial 130 theme. */
+#app.estaBrand130 main > header.estaTopbar,
+#app.estaBrand130 .estaTopbar,
+#app.estaBrand130:is(.workMode,.energyMode,.maintenanceMode,.inventoryMode,.contractorMode,.homeMode,.constructionMode,.demoProjectMode) .estaTopbar {
+ background:linear-gradient(105deg,var(--esta130-deep),var(--esta130-plum))!important;
+ color:var(--esta130-cream)!important;
+ border-bottom:1px solid var(--esta130-copper)!important;
+ box-shadow:0 5px 16px rgba(43,21,38,.16)!important;
+}
+#app.estaBrand130 .estaTopbar :is(.topModuleTitle h1,.topModuleTitle p,.topModuleTitle span,.account b,.account span,#headerRole,.ccTopContext,.topModuleTitle svg) {
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 .estaTopbar .topModuleIcon,
+#app.estaBrand130 .estaTopbar .topModuleTitle .topModuleIcon {
+ color:var(--esta130-cream)!important;
+ background:rgba(243,222,191,.09)!important;
+ border:1px solid rgba(243,222,191,.27)!important;
+ box-shadow:none!important;
+}
+#app.estaBrand130 .estaTopbar .topModuleIcon svg{color:var(--esta130-cream)!important;stroke:currentColor!important}
+#app.estaBrand130 .estaTopbar :is(.headerSearch,.energySearch,.ccTopSearch,.headerTools .iconAction,.headerTools .pdfAction,.headerTools .headerBell,.headerTools .ccTopAction,.energyHeaderBell,#peopleSettingsBtn,#workFilterBtn,#workPdfBtn,.mobileMenuBtn,#menu) {
+ background:rgba(43,21,38,.50)!important;
+ border:1px solid rgba(243,222,191,.42)!important;
+ color:var(--esta130-cream)!important;
+ box-shadow:none!important;
+}
+#app.estaBrand130 .estaTopbar :is(.headerSearch,.energySearch,.ccTopSearch) :is(input,svg),
+#app.estaBrand130 .estaTopbar :is(button:not(.quickReturnAdmin),button:not(.quickReturnAdmin) svg) {
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 .estaTopbar :is(.headerSearch input,.ccTopSearch input) {
+ background:transparent!important;
+ border:0!important;
+ outline:0!important;
+ box-shadow:none!important;
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 .estaTopbar input::placeholder {color:#DFCEBE!important;opacity:1}
+#app.estaBrand130 .estaTopbar .quickReturnAdmin {
+ background:var(--esta130-soft)!important;
+ color:var(--esta130-plum)!important;
+ border:1px solid var(--esta130-copper)!important;
+}
+#app.estaBrand130 .estaTopbar .quickReturnAdmin span{color:var(--esta130-plum)!important}
+#app.estaBrand130 .estaTopbar :is(.headerAvatar,.account) {color:var(--esta130-cream)!important}
+#app.estaBrand130 .estaTopbar :is(.headerTools .iconAction,.headerTools .pdfAction,.headerTools .ccTopAction):hover{background:rgba(164,100,39,.36)!important}
+/* Sidebar, mobile navigation and module buttons use one visual system. */
+#app.estaBrand130 :is(#mobileSidebar,.estaSidebar) {
+ background:linear-gradient(180deg,var(--esta130-plum),var(--esta130-deep))!important;
+ border-color:rgba(243,222,191,.24)!important;
+}
+#app.estaBrand130 .estaSidebar :is(.brand b,.estaNav button,.sideUserCard,.sideBuilding b,.mobileSidebarHeader){color:var(--esta130-cream)!important}
+#app.estaBrand130 .estaSidebar :is(.estaNav button.active,.estaNav button[aria-current="page"]) {
+ background:rgba(164,100,39,.26)!important;
+ border-color:rgba(243,222,191,.35)!important;
+ box-shadow:inset 3px 0 var(--esta130-copper)!important;
+}
+#app.estaBrand130 #estaBottomNav,
+body.estaBrand130 #updateMobileNav.liveProjectMobileNav{
+ background:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
+}
+#app.estaBrand130 #estaBottomNav button,
+body.estaBrand130 #updateMobileNav.liveProjectMobileNav button {color:var(--esta130-cream)!important}
+#app.estaBrand130 #estaBottomNav button[aria-current="page"],
+body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
+ background:var(--esta130-soft)!important;
+ color:var(--esta130-plum)!important;
+}
+/* Unified shell, hero, statistic panels across all operational pages. */
+#app.estaBrand130 :is(.heroStrip,.homeWelcome,.unifiedCommand,.opsHero,.ccHero,.updateHero) {
+ background:linear-gradient(110deg,var(--esta130-deep),var(--esta130-plum))!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-copper)!important;
+}
+#app.estaBrand130 :is(.heroStrip,.homeWelcome,.unifiedCommand,.opsHero,.ccHero,.updateHero) :is(h1,h2,h3,p,small,span,b,strong){
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi,.updateKpi,.homeActivity,.opsPanel,.ccProjectCard){
+ background:var(--esta130-soft)!important;
+ border-color:var(--esta130-line)!important;
+ color:var(--esta130-text)!important;
+ box-shadow:var(--esta130-shadow)!important;
+}
+#app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi) :is(small,span:not(.status):not(.badge),p){
+ color:var(--esta130-secondary)!important;
+}
+#app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi) :is(strong,b){
+ color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(.topModuleIcon,.headIcon,.formSectionMark,.energyMark,.inventoryCommandIcon,.maintenanceCommandIcon,.constructionCommandIcon,.summaryIcon){
+ background:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-copper)!important;
+ box-shadow:none!important;
+}
+#app.estaBrand130 :is(.pageHead h1,.pageHead h2,.pageHead p,.pageEyebrow,.energyTitleBlock h2,.formSectionHead h2,.inventorySectionBar h2,.contractorToolbar h2,.maintenanceBoard h2){
+ color:var(--esta130-plum)!important;
+}
+/* Work order card, list and status-safe table (do not touch status badges). */
+#app.estaBrand130 #workPage :is(.workEntryCard,.workEntryHeader,.premiumTableCard,.tableTop,.desktopTable,.workEntryForm){
+ background:var(--esta130-soft)!important;
+ border-color:var(--esta130-line)!important;
+ color:var(--esta130-text)!important;
+ box-shadow:none!important;
+}
+#app.estaBrand130 #workPage .workEntryHeader{
+ background:var(--esta130-soft)!important;
+ border-bottom:1px solid var(--esta130-line)!important;
+}
+#app.estaBrand130 #workPage .workEntryHeader :is(h2,p,span){color:var(--esta130-plum)!important}
+#app.estaBrand130 #workPage .workEntryHeaderIcon{
+ background:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 #workPage .workTaskTable,
+#app.estaBrand130 #workPage .workTaskTable tbody,
+#app.estaBrand130 #workPage .workTaskTable tbody tr,
+#app.estaBrand130 #workPage .workTaskTable tbody td,
+#app.estaBrand130 #workPage #mobileCards{
+ background:var(--esta130-soft)!important;
+ color:var(--esta130-text)!important;
+ border-color:var(--esta130-line)!important;
+}
+#app.estaBrand130 #workPage .workTaskTable thead,
+#app.estaBrand130 #workPage .workTaskTable thead tr,
+#app.estaBrand130 #workPage .workTaskTable thead th {
+ background:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-copper)!important;
+}
+#app.estaBrand130 #workPage .workTaskTable tbody tr:hover{background:#EAD6BD!important}
+#app.estaBrand130 #workPage :is(.taskContentCell b,.taskDateCell,.taskNotesCell,.workTaskTable tbody td b){color:var(--esta130-plum)!important}
+#app.estaBrand130 #workPage :is(.proTaskCard,.taskMobileCard,.workMobileCard){
+ background:var(--esta130-soft)!important;
+ border-color:var(--esta130-line)!important;
+ color:var(--esta130-text)!important;
+}
+/* Energy: all navy panels to warm cards and light input controls. */
+#app.estaBrand130 #energyPage :is(.energyTabs,.energyCard,.energyTableCard,.energySummaryCards,.energySummaryCards article,.energyForm,.energyTableTop,.energyDesktopTable,.energyHistoryTable,.energyHistoryTable tbody,.energyHistoryTable tbody tr,.energyHistoryTable tbody td,#energyMobileCards,.energyCardTitle){
+ background:var(--esta130-soft)!important;
+ border-color:var(--esta130-line)!important;
+ color:var(--esta130-text)!important;
+ box-shadow:none!important;
+}
+#app.estaBrand130 #energyPage :is(.energyCard,.energyTableCard,.energySummaryCards article){
+ box-shadow:var(--esta130-shadow)!important;
+}
+#app.estaBrand130 #energyPage :is(.energyCardTitle h2,.energyTableTop h2,.energyCardTitle p,.energyTableTop p,.energySectionKicker,.energyForm label>span,.energySummaryCards strong,.energySummaryCards small){
+ color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 #energyPage .energyHistoryTable :is(thead,thead tr,thead th){
+ background:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-copper)!important;
+}
+#app.estaBrand130 #energyPage .energyHistoryTable tbody tr:hover{background:#EAD6BD!important}
+#app.estaBrand130 #energyPage :is(.energyTabs button,.energyManageBtn,.energySearch,.energyTopTools,.energyFilters,.energyRangeButton,.energyTopTools button:not(.primary)){
+ background:var(--esta130-lift)!important;
+ color:var(--esta130-plum)!important;
+ border-color:var(--esta130-line)!important;
+ box-shadow:none!important;
+}
+#app.estaBrand130 #energyPage :is(.energyTabs button.active,.energyTabs button[aria-selected="true"],.energyRangeButton.active){
+ background:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 #energyPage :is(.energyTabs button.active svg,.energyTabs button[aria-selected="true"] svg){color:var(--esta130-cream)!important}
+#app.estaBrand130 #energyPage :is(.energySearch input,.energyQuickSearch) {
+ background:transparent!important;
+ color:var(--esta130-text)!important;
+}
+#app.estaBrand130 #energyPage :is(#energySave,.energySave,.energyForm button[type="submit"]){
+ background:var(--esta130-plum)!important;
+ border:1px solid var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+}
+/* Inventory, technical tools, building systems and equipment register. */
+#app.estaBrand130 :is(.inventoryCommand,.inventoryWorkspace,.inventorySectionBar,.inventoryTableCard,.inventoryHero,.inventoryMonthRail,.inventoryPane,.inventoryQuickAdd,.inventoryTableScroll,.inventoryModalCard,.toolsMainCard,.estaToolCard,.inventoryForm,.invMobileCard,.toolTableCard,
+ .uePanel,.ueSystemPanel,.ueRailCard,.ueMainHead,.ueClassicHead,.ueHeaderTitle,.ueSummaryBar,.ueRefTop,.ueMainTools,.ueRefLayout,.ueFormBody,.ueClassicGrid,.ueSystemRail){
+ background:var(--esta130-soft)!important;
+ border-color:var(--esta130-line)!important;
+ color:var(--esta130-text)!important;
+}
+#app.estaBrand130 :is(.inventoryCommand,.inventoryWorkspace,.inventoryTableCard,.toolsMainCard,.estaToolCard,.uePanel,.ueRailCard){
+ box-shadow:var(--esta130-shadow)!important;
+}
+#app.estaBrand130 :is(.inventoryLocalTabs button.active,.inventoryMonthRail button.active,.inventoryMonthRail button[aria-selected="true"],.ueSystemRail .ueRailCard.active,.ueSystemRail .ueRailCard[aria-pressed="true"]){
+ background:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.ueSystemRail .ueRailCard.active,.ueSystemRail .ueRailCard[aria-pressed="true"]) :is(span,b,small,svg){color:var(--esta130-cream)!important}
+#app.estaBrand130 :is(.inventoryCommand h1,.inventorySectionBar h2,.inventoryCardTitle,.uePanel h2,.ueMainHead h2,.ueClassicHead h2,.ueHeaderTitle h2,.ueRailText b){
+ color:var(--esta130-plum)!important;
+}
+/* Maintenance / scheduling cards, preserve progress status colors. */
+#app.estaBrand130 #maintenancePage :is(.maintenanceHero,.m130Header){
+ background:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 #maintenancePage :is(.maintenanceHero,.m130Header) :is(h1,h2,p,span,small){
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 #maintenancePage :is(.maintenanceSchedule,.maintenanceBoard,.maintenanceHistoryCard,.m130Cal,.m130CompactRow,.m130ServiceCard,.m130CalendarDay,.m130AgendaItem,.m130AuditPanel,.m130Stats>div,.m130CardMetrics>div,.m130Toolbar,.m130ListTop,.m130ListTools){
+ background:var(--esta130-soft)!important;
+ border-color:var(--esta130-line)!important;
+ color:var(--esta130-text)!important;
+}
+#app.estaBrand130 #maintenancePage :is(.m130Months button.sel,.m130AddButton,.m130RecordBtn){
+ background:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-copper)!important;
+}
+/* Contractors, construction materials, incident, checks, reports and project overview. */
+#app.estaBrand130 :is(.contractorIntro,.constructionCommand,.constructionIntro,.demoHero,.rc-heading){
+ background:linear-gradient(110deg,var(--esta130-deep),var(--esta130-plum))!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-copper)!important;
+}
+#app.estaBrand130 :is(.contractorIntro,.constructionCommand,.constructionIntro,.demoHero,.rc-heading) :is(h1,h2,p,small,span){
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.contractorCard,.contractorRowCard,.contractorJobsPanel,.contractorProfile,.contractorJobCard,.contractorListHeader,.contractorDetailTop,.constructionRowCard,.constructionLogCard,
+ .demoPanel,.demoGrid2>.demoPanel,.demoTableWrap,.demoNoticePanel,.demoOpsCards,.demoChecklistRow,.demoDocCats,.rc-period,.rc-panel,.rc-card,.rc-summary,.rc-section,.rc-table,.opsPanel,.opsScopeBar,.ccTaskScopes,.ccTableWrap,.ccTable,.activityRow,.homeActivity,.homeKpis,.homePanel,.homeQuickActions){
+ background:var(--esta130-soft)!important;
+ color:var(--esta130-text)!important;
+ border-color:var(--esta130-line)!important;
+}
+#app.estaBrand130 :is(.demoTable,.demoTable tbody,.demoTable tbody tr,.demoTable td,.rc-table tbody tr,.ccTable tbody tr,.toolsTable tbody tr){
+ background:var(--esta130-soft)!important;
+ color:var(--esta130-text)!important;
+ border-color:var(--esta130-line)!important;
+}
+#app.estaBrand130 :is(.demoTable thead th,.rc-table thead th,.toolsTable thead th,.ccTable thead th){
+ background:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.demoHeroActions .primary,.contractorBtn.primary,.constructionPrimaryBtn,.inventoryPrimary,.demoBtn.primary,.rc-button.primary,.rc-button[aria-pressed="true"]){
+ background:var(--esta130-plum)!important;
+ border-color:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+}
+/* Common field components, neutral buttons, neutral cards. */
+#app.estaBrand130 :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea,.peopleSelectBtn,.peopleSelectMenu,.energyImagePicker,.imagePicker,.uploadBox){
+ background:var(--esta130-lift)!important;
+ border-color:#CFB394!important;
+ color:var(--esta130-text)!important;
+}
+#app.estaBrand130 :is(input,textarea)::placeholder{color:#736054!important;opacity:1}
+#app.estaBrand130 :is(label,.workField>span,.energyForm label>span,.inventoryForm label>span,.rc-field>span){
+ color:var(--esta130-secondary)!important;
+}
+#app.estaBrand130 :is(input,select,textarea,button):focus-visible{
+ outline:2px solid var(--esta130-copper)!important;
+ outline-offset:2px!important;
+}
+#app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.contractorPrimary,.constructionPrimaryBtn,.m130AddButton,#saveBtn,#energySaveBtn,.formPrimary,button[type="submit"].primary){
+ background:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(.secondary,.inventorySecondary,.contractorBtn.secondary,.workCancel,.rc-button:not(.primary),.quickReturnAdmin){
+ background:var(--esta130-lift)!important;
+ color:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
+}
+#app.estaBrand130 :is(.energyTabs button,.inventoryLocalTabs button,.demoTabs button,.demoTaskTabs button,.rc-segments button,.maintenanceViewSwitch button,.m130Months button,.workTypeTabs button) {
+ border-color:var(--esta130-line)!important;
+}
+#app.estaBrand130 :is(.energyTabs button.active,.inventoryLocalTabs button.active,.demoTabs button.active,.demoTaskTabs button.active,.rc-segments button.active,.maintenanceViewSwitch button.active,.workTypeTabs button.active) {
+ background:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
+ color:var(--esta130-cream)!important;
+}
+/* A readable fixed PDF-selection bar in project mode. */
+#app.estaBrand130 :is(#workSelectedPdfBar,.workSelectedPdfBar,#energyDeleteBar,.energyDeleteBar){
+ background:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ border-color:var(--esta130-copper)!important;
+}
+#app.estaBrand130 :is(#workSelectedPdfBar,#energyDeleteBar) :is(label,strong,span){
+ color:var(--esta130-cream)!important;
+}
+/* Dialogs and drawers may sit outside #app; the body gate follows 130HH only. */
+body.estaBrand130 :is(.workEditDrawerCard,.workEditDrawer .workEntryCard,.workEditDrawer .workEntryForm,.demoDrawerCard,.modalCard,.contractorModalCard,.jobModalCard,.inventoryModalCard,.demoIncidentModalCard,.demoChecklistModalCard,
+ #m130Overlay .m130Dialog,.ccModalCard,.updateModalCard,.viewerCard,.rc-modal,.technicalDocumentModal,.peopleManagerModal){
+ background:var(--esta-card,#F5ECD0)!important;
+ border-color:#D7BE9C!important;
+ color:#2B1526!important;
+}
+body.estaBrand130 :is(.workEditDrawerHead,.workEditDrawer .workEntryHeader,.demoDrawerHead,.demoIncidentModalHead,.demoChecklistModalHead,.contractorModalHead,.ccModalHead,.inventoryModalHead,.m130ModalHead){
+ background:#411437!important;
+ color:#F3DEBF!important;
+ border-color:#A46427!important;
+}
+body.estaBrand130 :is(.workEditDrawerHead,.workEditDrawer .workEntryHeader,.demoDrawerHead,.demoIncidentModalHead,.demoChecklistModalHead,.contractorModalHead,.ccModalHead,.inventoryModalHead,.m130ModalHead) :is(h1,h2,h3,p,span,small){
+ color:#F3DEBF!important;
+}
+body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractorModalCard,.inventoryModalCard,.ccModalCard,.updateModalCard,#m130Overlay .m130Dialog) :is(input,textarea,select){
+ background:#FBF3E3!important;
+ color:#2B1526!important;
+ border-color:#CFB394!important;
+}
+body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractorModalCard,.inventoryModalCard,.ccModalCard,#m130Overlay .m130Dialog) :is(.primary,button[type="submit"].primary){
+ background:#411437!important;
+ color:#F3DEBF!important;
+ border-color:#411437!important;
+}
+body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractorModalCard,.inventoryModalCard,.ccModalCard,#m130Overlay .m130Dialog) :is(button,input,select,textarea):focus-visible{
+ outline:2px solid #A46427!important;
+ outline-offset:2px!important;
+}
+/* No global treatment of status and warning/error/success badges: retain meaning. */
+@media(max-width:760px){
+ #app.estaBrand130 .estaTopbar{border-bottom-color:#A46427!important}
+ #app.estaBrand130 #workPage :is(.workEntryCard,.premiumTableCard,#mobileCards){background:#F5ECD0!important}
+ #app.estaBrand130 #energyPage :is(.energySummaryCards article,.energyCard,.energyTableCard,#energyMobileCards){background:#F5ECD0!important}
+ #app.estaBrand130 :is(.demoPanel,.contractorRowCard,.estaToolCard){background:#F5ECD0!important}
+}
