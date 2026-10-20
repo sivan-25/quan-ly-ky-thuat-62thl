@@ -920,7 +920,7 @@
 <link rel="stylesheet" href="contractor-job-mobile-130.css?v=20261019-fix-fullwidth03">
 <link rel="stylesheet" href="contractor-profile-form-mobile.css?v=20261019-profile-grid01">
 <link rel="stylesheet" href="overview-compact.css?v=20261020-compact03" media="screen">
-<link rel="stylesheet" href="tools-professional.css?v=20261020-toolcompact02" media="screen">
+<link rel="stylesheet" href="tools-professional.css?v=20261020-toolcompact03" media="screen">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2053,13 +2053,13 @@
         <p>Theo dõi số lượng, nhãn hiệu, vị trí lưu, người phụ trách và tình trạng sử dụng.</p>
       </div>
       <div class="inventoryToolbarActions">
-        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="toolSearch" type="search" autocomplete="off" placeholder="Tên, mã, hãng dụng cụ..." aria-label="Tìm kiếm dụng cụ kỹ thuật"></div>
+        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="toolSearch" type="search" autocomplete="off" placeholder="Tìm tên hoặc mã dụng cụ..." aria-label="Tìm kiếm dụng cụ kỹ thuật"></div>
         <select id="toolStatusFilter" aria-label="Lọc tình trạng dụng cụ">
           <option value="all">Tất cả tình trạng</option>
           <option value="ready">Tốt / Đang sử dụng</option>
           <option value="attention">Cần kiểm tra / Hư hỏng</option>
         </select>
-        <button id="toolExportPdf" class="inventorySecondary estaReportPdfBtn" type="button" aria-label="Xuất PDF dụng cụ kỹ thuật">
+        <button id="toolExportPdf" class="inventorySecondary estaReportPdfBtn" type="button" aria-label="Xuất PDF dụng cụ kỹ thuật" title="Xuất PDF">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span>
         </button>
         <button id="addToolBtn" class="inventoryPrimary" type="button">＋ Thêm dụng cụ</button>
@@ -2073,7 +2073,7 @@
       </article>
       <article class="inventoryMetric">
         <span class="invStatIcon green"><svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg></span>
-        <div><small>ĐANG SỬ DỤNG</small><b id="toolGoodCount">0</b><em>Sẵn sàng làm việc</em></div>
+        <div><small>ĐANG DÙNG</small><b id="toolGoodCount">0</b><em>Sẵn sàng làm việc</em></div>
       </article>
       <article class="inventoryMetric">
         <span class="invStatIcon red"><svg viewBox="0 0 24 24"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></span>

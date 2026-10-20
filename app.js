@@ -3191,6 +3191,7 @@ function renderTools(){
  if(mobileTools)mobileTools.innerHTML=list.map((t,i)=>{
   const id=String(t.id).replace(/[^a-zA-Z0-9_-]/g,"");
   const meta=[["Nhãn hiệu",t.brand],["Vị trí lưu",t.location],["Ngày mua",t.acquired_date]];
+  const mobileStatus=t.condition_status==="Đang sử dụng"?"Đang dùng":(t.condition_status||"Chưa cập nhật");
   const edit=canProjectEdit()?'<div class="invMobileCardActions">'+
    '<button type="button" aria-label="Chỉnh sửa '+esc(t.name)+'" onclick="editTool(\''+id+'\')">✎ Chỉnh sửa</button>'+
    '<button type="button" class="is-delete" aria-label="Xóa '+esc(t.name)+'" onclick="deleteTool(\''+id+'\')">Xóa</button></div>':'';
@@ -3198,13 +3199,13 @@ function renderTools(){
    '<div class="invMobileCardHead"><div class="invMobileCardName">'+
     '<strong>'+esc(sentenceCapitalizeText(t.name||""))+'</strong>'+
     (t.code?'<small>Mã: '+esc(t.code)+'</small>':'')+'</div>'+
-    '<span class="toolCondition '+toolConditionClass(t.condition_status)+'">'+esc(t.condition_status||"Chưa cập nhật")+'</span></div>'+
+    '<span class="toolCondition '+toolConditionClass(t.condition_status)+'">'+esc(mobileStatus)+'</span></div>'+
    '<div class="estaToolCardCore"><div><span>Số lượng</span><strong>'+inventoryFmt(t.qty)+' <small>'+esc(t.unit||"Cái")+'</small></strong></div>'+
     '<div class="estaToolKeeper"><span>Người phụ trách</span><b>'+esc(t.keeper||"Chưa phân công")+'</b></div></div>'+
-   '<details class="estaToolMore"><summary>Thông tin bổ sung</summary><div class="invMobileMeta">'+
+   '<details class="estaToolMore"><summary>Chi tiết &amp; thao tác</summary><div class="invMobileMeta">'+
      meta.map(([label,value])=>'<div><small>'+label+'</small><b>'+esc(value||"—")+'</b></div>').join("")+
-     '</div>'+(t.note?'<p class="invMobileNote">'+esc(t.note)+'</p>':'')+'</details>'+
-   edit+'</article>';
+     '</div>'+(t.note?'<p class="invMobileNote">'+esc(t.note)+'</p>':'')+
+     edit+'</details></article>';
  }).join("");
  const visible=$("#toolVisibleCount");
  if(visible)visible.textContent="Đang hiển thị "+list.length+" / "+inventoryTools.length+" dụng cụ";

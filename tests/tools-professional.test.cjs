@@ -7,7 +7,7 @@ const html=fs.readFileSync("index.html","utf8");
 const app=fs.readFileSync("app.js","utf8");
 const css=fs.readFileSync("tools-professional.css","utf8");
 for(const id of ["inventoryToolsPane","toolSearch","toolStatusFilter","toolVisibleCount","toolsBody","toolsMobileCards","toolCount","toolGoodCount","toolRepairCount","toolExportPdf","addToolBtn","toolItemModal"])assert.match(html,new RegExp('id="'+id+'"'));
-assert.match(html,/tools-professional\.css\?v=20261020-toolcompact02/);
+assert.match(html,/tools-professional\.css\?v=20261020-toolcompact03/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(min-width:1051px\) and \(max-width:1400px\)/);
 assert.match(css,/@media\(max-width:1050px\)/);
@@ -55,6 +55,14 @@ assert.equal($("#toolRepairCount").textContent,"2");
 assert.equal($("#toolsBody").querySelectorAll("tr").length,4);
 assert.equal($("#toolsMobileCards").querySelectorAll(".estaToolCard").length,4);
 assert.equal($("#toolsMobileCards").querySelectorAll(".estaToolMore summary").length,4);
+for(const card of $("#toolsMobileCards").querySelectorAll(".estaToolCard")){
+  const details=card.querySelector("details.estaToolMore");
+  assert.equal(details.open,false,"compact tool cards start collapsed");
+  assert.ok(details.querySelector("summary").textContent.includes("Chi tiết"),"clear expansion label");
+  if(card.querySelector(".invMobileCardActions"))assert.ok(details.contains(card.querySelector(".invMobileCardActions")),"edit/delete only in expanded details");
+}
+assert.match(css, /#app #inventoryPage #inventoryToolsPane .toolsStats/);
+assert.match(css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 assert.equal($("#toolsMobileCards .estaToolCard .invMobileCardActions").querySelectorAll("button").length,2);
 assert.match($("#toolVisibleCount").textContent,/4 \/ 4/);
 $("#toolStatusFilter").value="attention";
