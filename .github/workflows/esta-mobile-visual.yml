@@ -56,6 +56,9 @@ jobs:
           done
           cat /tmp/esta-baseline.log /tmp/esta-candidate.log
           exit 1
+      - name: Verify compact Admin and four project home UI
+        working-directory: candidate
+        run: node tests/overview-projects-mobile-compact.test.cjs
       - name: Check asset modal save visibility on iPhone viewports
         working-directory: candidate
         run: node tests/maintenance-asset-mobile-browser.cjs
