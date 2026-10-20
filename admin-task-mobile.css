@@ -222,3 +222,46 @@
     font-size:9px!important;padding:5px 2px!important;
   }
 }
+
+/* 2026-10-20: Mobile Admin PDF selection; no change to desktop work table. */
+@media (max-width:760px) {
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccPdfTools #ccPrintSelected {
+    width:100%;min-height:44px!important;font-size:13px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccPdfTools #ccCancelPdf.hide,
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccPdfTools #ccPdfSelectionStatus.hide {
+    display:none!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccPdfTools #ccPdfSelectionStatus {
+    display:block;flex:1 1 100%;order:2;
+    font-size:11px;font-weight:650;color:#e2f4ec;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccPdfTools #ccCancelPdf {
+    display:inline-flex;flex:0 0 100%;order:3;align-items:center;justify-content:center;
+    padding:9px 12px;min-height:40px;border:1px solid #6c8790;
+    border-radius:8px;background:#263d4c;color:#fff;font-size:12px;font-weight:700;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable tr[data-cc-task] > td.ccPdfSelectCell::before {
+    content:"Xuất PDF"!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable .ccPdfSelectCell .ccPdfTapTarget {
+    width:100%;min-width:0;min-height:44px;display:flex!important;
+    flex-direction:column;gap:2px;justify-content:center;align-items:center;
+    cursor:pointer;touch-action:manipulation;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable .ccPdfTapLabel {
+    display:block;font-size:9px;color:#677f88;font-weight:650;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccTable tr[data-cc-task] > td.ccPdfSelectCell {
+    z-index:2!important;position:relative!important;min-height:55px!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccTable tr[data-cc-task][data-admin-assigned="true"] {
+    cursor:pointer!important;touch-action:manipulation;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccTable tr[data-cc-task][data-pdf-picked="true"] {
+    border-color:#0d8d8a!important;box-shadow:inset 0 0 0 1px #0d8d8a,0 2px 9px #0b8c8a26!important;
+  }
+  #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter.ccPdfSelecting .ccTable tr[data-cc-task][data-pdf-picked="true"] > td.ccPdfSelectCell .ccPdfTapLabel {
+    color:#00756d!important;font-weight:800;
+  }
+}
