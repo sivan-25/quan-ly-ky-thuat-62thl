@@ -124,3 +124,133 @@
  #app.inventoryMode #inventoryToolsPane .toolsStats small{font-size:9px!important}
  #app.inventoryMode #inventoryToolsPane .toolsStats b{font-size:20px!important}
 }
+
+/* ESTA compact tool editor · 2026-10-20
+   Compact for both desktop and mobile, without changing tool records or save handlers. */
+#toolItemModal{z-index:12000!important;overscroll-behavior:contain!important}
+#toolItemModal .inventoryModalCard{
+  width:min(95vw,580px)!important;
+  max-height:calc(100dvh - 24px)!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  border-radius:15px!important;
+}
+#toolItemModal .inventoryModalHead{
+  padding:14px 17px 10px!important;
+  background:#101b2d!important;
+  border-bottom:1px solid #293c57!important;
+}
+#toolItemModal .inventoryModalHead>span,
+#toolItemModal .inventoryModalHead p{display:none!important}
+#toolItemModal .inventoryModalHead h3{
+  margin:0!important;
+  padding-right:32px!important;
+  font-size:19px!important;
+  line-height:1.4!important;
+  font-weight:800!important;
+  color:#f3f7ff!important;
+}
+#toolItemModal #toolItemForm.inventoryForm{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px 10px!important;
+  min-width:0!important;
+  padding:12px 16px 14px!important;
+}
+#toolItemModal #toolItemForm.inventoryForm>label{grid-column:auto!important;min-width:0!important}
+#toolItemModal #toolItemForm.inventoryForm>label.toolField-name,
+#toolItemModal #toolItemForm.inventoryForm>label.toolField-location{
+  grid-column:1/-1!important;
+}
+#toolItemModal #toolItemForm.inventoryForm label>span{
+  display:block!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1.35!important;
+  margin:0 0 4px!important;
+}
+#toolItemModal #toolItemForm.inventoryForm :is(input,select){
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:40px!important;
+  min-height:40px!important;
+  padding:7px 10px!important;
+  box-sizing:border-box!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+  text-overflow:ellipsis!important;
+}
+#toolItemModal #toolItemForm.inventoryForm :is(input,select):focus-visible,
+#toolItemModal #toolExtraFields summary:focus-visible{outline:2px solid #48d1e4!important;outline-offset:2px!important}
+#toolItemModal #toolItemForm .toolExtraFields{
+  grid-column:1/-1!important;
+  min-width:0!important;
+  border:1px solid #344965!important;
+  border-radius:10px!important;
+  overflow:hidden!important;
+}
+#toolItemModal #toolExtraFields summary{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:40px!important;
+  padding:9px 11px!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  color:#79d8e9!important;
+  background:#16243a!important;
+  cursor:pointer!important;
+  list-style:none!important;
+}
+#toolItemModal #toolExtraFields summary::-webkit-details-marker{display:none!important}
+#toolItemModal #toolExtraFields summary small{
+  color:#a3b8d1!important;
+  font-size:10px!important;
+  font-weight:500!important;
+  text-align:right!important;
+}
+#toolItemModal #toolExtraFields[open] summary{border-bottom:1px solid #344965!important}
+#toolItemModal .toolExtraGrid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:9px!important;
+  padding:10px!important;
+}
+#toolItemModal .toolExtraGrid label{grid-column:1/-1!important;min-width:0!important}
+#toolItemModal #toolItemForm .inventoryFormActions{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:center!important;
+  gap:9px!important;
+  position:sticky!important;
+  bottom:0!important;
+  z-index:6!important;
+  margin:3px -16px -14px!important;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))!important;
+  background:#101b2d!important;
+  border-top:1px solid #2d405b!important;
+}
+#toolItemModal #toolItemForm .inventoryFormActions button{
+  width:100%!important;
+  min-width:0!important;
+  min-height:43px!important;
+  padding:8px!important;
+  border-radius:9px!important;
+  font-size:13px!important;
+  font-weight:750!important;
+}
+@media(max-width:760px){
+  #toolItemModal{padding:10px!important}
+  #toolItemModal .inventoryModalCard{width:min(100%,520px)!important;max-height:calc(100dvh - 20px)!important}
+  #toolItemModal #toolItemForm.inventoryForm{padding:11px 13px 13px!important;gap:8px!important}
+  #toolItemModal #toolItemForm .inventoryFormActions{
+    margin:3px -13px -13px!important;
+    padding:9px 13px calc(9px + env(safe-area-inset-bottom,0px))!important;
+  }
+}
