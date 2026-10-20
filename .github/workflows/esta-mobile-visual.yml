@@ -16,6 +16,8 @@ on:
       - 'four-project-compact.css'
       - 'tests/four-project-system-rail-geometry.cjs'
       - 'index.html'
+      - 'esta-brand-130-complete.css'
+      - 'tests/130hh-brand-complete-browser.cjs'
       - 'tests/browser-visual-parity.cjs'
       - 'tests/mobile-usability-audit.cjs'
       - '.github/workflows/esta-mobile-visual.yml'
@@ -74,6 +76,9 @@ jobs:
       - name: Verify all four system menus on phones and laptops
         working-directory: candidate
         run: node tests/four-project-system-rail-geometry.cjs
+      - name: Verify 130HH complete ESTA brand on every page and device width
+        working-directory: candidate
+        run: node tests/130hh-brand-complete-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
