@@ -527,3 +527,63 @@
     width:35px!important;min-width:35px!important;flex-basis:35px!important;
   }
 }
+
+
+/* ESTA mobile contractors · Copy phone + Call now, four buildings, phone only. */
+@media(max-width:760px){
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileBottom{
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    gap:7px!important;min-width:0!important;flex-wrap:wrap!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileNumber{
+    flex:1 1 104px!important;min-width:0!important;
+    font-size:13px!important;line-height:1.25!important;
+    overflow-wrap:anywhere!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobilePhoneActions{
+    display:flex!important;align-items:center!important;justify-content:flex-end!important;
+    flex:0 0 auto!important;gap:6px!important;min-width:0!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileCopy{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    gap:5px!important;flex:0 0 auto!important;
+    min-height:42px!important;padding:0 10px!important;
+    border:1px solid #37668c!important;border-radius:999px!important;
+    background:linear-gradient(135deg,#1d3754,#204c6a)!important;
+    color:#d6f7ff!important;font-size:12px!important;font-weight:800!important;
+    line-height:1.2!important;white-space:nowrap!important;cursor:pointer!important;
+    box-shadow:0 3px 12px rgba(2,25,42,.20)!important;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileCopy svg{
+    width:15px!important;height:15px!important;flex:0 0 15px!important;
+    fill:none!important;stroke:currentColor!important;stroke-width:1.85!important;
+    stroke-linecap:round!important;stroke-linejoin:round!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileCopy:active{
+    filter:brightness(1.12)!important;transform:scale(.97)!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileCopy.copied{
+    background:#0d544b!important;border-color:#20bba4!important;color:#9afcdb!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileCopy:disabled{
+    opacity:.48!important;cursor:default!important;pointer-events:none!important;
+    background:#202e43!important;border-color:#33465d!important;color:#93a7ba!important;
+    box-shadow:none!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileCall{
+    min-height:42px!important;padding:0 11px!important;gap:5px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobilePhoneActions button:focus-visible{
+    outline:2px solid #58ecfa!important;outline-offset:3px!important;
+  }
+}
+@media(max-width:365px){
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileBottom{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    justify-items:stretch!important;gap:7px!important;
+  }
+  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobilePhoneActions{
+    justify-content:flex-end!important;width:100%!important;
+  }
+}
