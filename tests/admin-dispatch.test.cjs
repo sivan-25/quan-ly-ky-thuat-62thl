@@ -70,6 +70,43 @@ async function main() {
   assert.equal(visible()[0].dataset.building,'127HH');
   // Select-all reaches every filtered Admin task, including later pages.
   assert.equal(q('#ccPrintSelected').disabled,true);
+
+  // Mobile Admin PDF: button enters pick mode; tapping a task picks instead of editing.
+  let mobilePdfViewport=true;
+  w.matchMedia=()=>({matches:mobilePdfViewport});
+  await w.estaCommandCenterRefresh();
+  assert.equal(q('#ccPrintSelected').disabled,false,'Mobile Xuất PDF starts selection, even with zero checks');
+  assert.equal(q('#ccPrintSelected').textContent,'Xuất PDF','Short mobile action label');
+  q('#ccPrintSelected').click();
+  assert.equal(q('#estaCommandCenter').classList.contains('ccPdfSelecting'),true);
+  assert.equal(q('#ccPrintSelected').disabled,true,'Cannot generate an empty selection');
+  assert.equal(q('#ccCancelPdf').classList.contains('hide'),false);
+  const originalTask=visible()[0].dataset.taskId;
+  visible()[0].click();
+  assert.equal(visible()[0].querySelector('[data-cc-pdf-select]').checked,true,'Tap full card selects a task');
+  assert.equal(q('#ccPdfSelectionStatus').textContent.includes('Đã chọn 1 công việc'),true);
+  assert.equal(q('#ccHeaderPdfCount').textContent,'1');
+  assert.equal(visible()[0].dataset.taskId,originalTask);
+  assert.equal(edited,null,'Selecting a card does not open the edit dialog');
+  visible()[0].click();
+  assert.equal(visible()[0].querySelector('[data-cc-pdf-select]').checked,false,'Second tap unselects');
+  visible()[0].querySelector('.ccPdfTapTarget').click();
+  assert.equal(visible()[0].querySelector('[data-cc-pdf-select]').checked,true,'Tap selection label activates native checkbox');
+  visible()[1].querySelector('[data-cc-pdf-select]').click();
+  assert.equal(q('#ccHeaderPdfCount').textContent,'2','Second native checkbox is independently selectable');
+  q('#ccCancelPdf').click();
+  assert.equal(q('#ccPrintSelected').textContent,'Xuất PDF');
+  assert.equal(q('#ccPrintSelected').disabled,false,'Cancel restores start button');
+  assert.equal(q('#ccHeaderPdfCount').classList.contains('hide'),true);
+  assert.equal(visible()[0].querySelector('[data-cc-pdf-select]').checked,false);
+  assert.equal(pdfCalls.length,0,'Cancel never exports');
+  q('#ccHeaderPdf').click();
+  assert.equal(q('#estaCommandCenter').classList.contains('ccPdfSelecting'),true,'Header PDF also starts pick mode');
+  q('#ccCancelPdf').click();
+  mobilePdfViewport=false;
+  await w.estaCommandCenterRefresh();
+  assert.equal(q('#ccPrintSelected').disabled,true,'Desktop still requires checked tasks before export');
+  assert.match(q('#ccPrintSelected').textContent,/Xuất PDF \(0\)/);
   rows[0].snapshot.tasks[0].imgs=['storage:b-TEST/tasks/test/image.jpg'];
   rows[0].snapshot.tasks[0].result='Hoàn tất kiểm tra';
   await w.estaCommandCenterRefresh();

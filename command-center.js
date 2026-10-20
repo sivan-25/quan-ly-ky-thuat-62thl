@@ -4,7 +4,19 @@ const ROOT_ID="estaCommandCenter";
 let rows=[],activity=[],loading=false,lastUpdated="",lastFetchedAt=0,dataAccount=null,taskPage=1,alertPage=1,activityPage=1;
 let taskScope="admin";
 const pdfSelectedKeys=new Set();
-let pdfFilteredTasks=[],pdfExportBusy=false;
+let pdfFilteredTasks=[],pdfExportBusy=false,pdfMobileSelecting=false;
+const mobilePdf=()=>typeof window.matchMedia==="function"&&window.matchMedia("(max-width:760px)").matches;
+function runAdminPdfAction(){
+ if(mobilePdf()&&!pdfMobileSelecting){
+  pdfMobileSelecting=true;
+  taskScope="admin";
+  taskPage=1;
+  renderLists();
+  $c("#ccTaskBody")?.scrollIntoView?.({behavior:"smooth",block:"start"});
+  return;
+ }
+ return exportAdminAssignedPdf();
+}
 const pdfTaskKey=t=>String(t?._buildingId||"")+"::"+String(t?.id??"");
 let personalTasks=[],personalEditId=null,personalExistingImages=[],previousProjectAssignee="Kỹ thuật dự án";
 const isAdminTask=t=>t?.dispatchedByAdmin===true||!!String(t?.dispatchGroupId||"").trim();
@@ -46,7 +58,7 @@ function ensureAdminHeader(admin){
   });
   box.querySelector("#ccHeaderDispatch").addEventListener("click",()=>{if(globalScope())openDispatch()});
   box.querySelector("#ccHeaderRefresh").addEventListener("click",()=>{if(globalScope())loadCenter(true)});
-  box.querySelector("#ccHeaderPdf").addEventListener("click",()=>{if(globalScope())exportAdminAssignedPdf()});
+  box.querySelector("#ccHeaderPdf").addEventListener("click",()=>{if(globalScope())runAdminPdfAction()});
  }
  if(title&&!title.querySelector("#ccTopContext")){
   const copy=title.lastElementChild;
@@ -86,26 +98,31 @@ function ensureScopeBar(home){
  return bar;
 }
 function ensureRoot(){
- if(dataAccount&&dataAccount!==currentAccount){rows=[];activity=[];personalTasks=[];lastUpdated="";lastFetchedAt=0;dataAccount=null;taskPage=alertPage=activityPage=1;taskScope="admin";pdfSelectedKeys.clear();pdfFilteredTasks=[]}
+ if(dataAccount&&dataAccount!==currentAccount){rows=[];activity=[];personalTasks=[];lastUpdated="";lastFetchedAt=0;dataAccount=null;taskPage=alertPage=activityPage=1;taskScope="admin";pdfSelectedKeys.clear();pdfFilteredTasks=[];pdfMobileSelecting=false}
  const home=$c("#homePage");if(!home)return null;
  ensureScopeBar(home);
  ensureAdminHeader(globalScope());
  let root=$c("#"+ROOT_ID);
  if(!root){
   root=document.createElement("section");root.id=ROOT_ID;root.className="ccRoot opsOverview hide";
-  root.innerHTML='<div class="ccHero opsHero"><div class="ccHeroCopy opsHeroCopy"><div class="ccHeroTags opsHeroTags"><span>ESTA OPERATIONS</span><b>ĐA DỰ ÁN</b><i id="ccDataState">Đang tải dữ liệu</i></div><h2>Trung tâm điều hành</h2><p>Tổng hợp công việc, cảnh báo và năng lượng của các dự án.</p></div><div class="ccHeroActions opsHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary opsKpiGrid"></div><div class="ccProjectHeading"><h3>Dự án đang vận hành</h3><span>Chạm để mở →</span></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>THEO DÕI CÔNG VIỆC</span><h3 id="ccTaskTitle">Công việc Admin đã giao</h3><p id="ccTaskMeta" aria-live="polite">Đang tải dữ liệu...</p></div></div><div id="ccPdfTools" class="ccPdfTools"><label><input id="ccPdfSelectAll" type="checkbox" aria-label="Chọn tất cả công việc Admin theo bộ lọc"><span>Chọn tất cả đang lọc</span></label><label><input id="ccPdfWithPhotos" type="checkbox" checked><span>Kèm hình ảnh</span></label><button id="ccPrintSelected" class="ccBtn primary" type="button" disabled>📄 Xuất PDF (0)</button></div><div class="ccTaskScopes" role="group" aria-label="Nguồn công việc"><button type="button" data-cc-scope="admin" aria-pressed="true">Admin đã giao <b id="ccAdminTaskCount">0</b></button><button type="button" data-cc-scope="all" aria-pressed="false">Tất cả công việc <b id="ccAllTaskCount">0</b></button></div><div class="ccFilters"><select id="ccProjectFilter" aria-label="Lọc dự án"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter" aria-label="Lọc trạng thái"><option value="">Tất cả trạng thái</option><option>Bắt đầu</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option><option value="overdue">Quá hạn</option></select><select id="ccPriorityFilter" aria-label="Lọc mức độ"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" aria-label="Tìm công việc" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th scope="col" class="ccPdfCol">Chọn</th><th scope="col">Dự án</th><th scope="col">Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div><div id="ccTaskPager" class="opsPager"></div></section><aside class="ccPanel ccAlertsPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div><div id="ccAlertPager" class="opsPager"></div></aside></div><div class="opsDashboardGrid"><section class="ccPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>NĂNG LƯỢNG</span><h3>Năng lượng tháng này</h3><p>Tiêu thụ theo dự án · EVN1 và EVN2 hiển thị riêng.</p></div></div><div id="ccEnergyList" class="opsEnergyList"></div></section><section class="ccPanel ccActivityPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>NHẬT KÝ VẬN HÀNH</span><h3>Hoạt động gần đây</h3><p>Lịch sử cập nhật theo dự án và tài khoản thực hiện.</p></div></div><div id="ccActivityList" class="ccActivityList"></div><div id="ccActivityPager" class="opsPager"></div></section></div><section class="opsQuickActions" aria-label="Thao tác nhanh"><button type="button" data-cc-dispatch>＋ Giao công việc</button><button type="button" data-cc-directory>Quản lý dự án →</button></section><p id="ccLoadMessage" class="opsLoadMessage" role="status" aria-live="polite"></p>';
+  root.innerHTML='<div class="ccHero opsHero"><div class="ccHeroCopy opsHeroCopy"><div class="ccHeroTags opsHeroTags"><span>ESTA OPERATIONS</span><b>ĐA DỰ ÁN</b><i id="ccDataState">Đang tải dữ liệu</i></div><h2>Trung tâm điều hành</h2><p>Tổng hợp công việc, cảnh báo và năng lượng của các dự án.</p></div><div class="ccHeroActions opsHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary opsKpiGrid"></div><div class="ccProjectHeading"><h3>Dự án đang vận hành</h3><span>Chạm để mở →</span></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>THEO DÕI CÔNG VIỆC</span><h3 id="ccTaskTitle">Công việc Admin đã giao</h3><p id="ccTaskMeta" aria-live="polite">Đang tải dữ liệu...</p></div></div><div id="ccPdfTools" class="ccPdfTools"><label><input id="ccPdfSelectAll" type="checkbox" aria-label="Chọn tất cả công việc Admin theo bộ lọc"><span>Chọn tất cả đang lọc</span></label><label><input id="ccPdfWithPhotos" type="checkbox" checked><span>Kèm hình ảnh</span></label><button id="ccPrintSelected" class="ccBtn primary" type="button" disabled>📄 Xuất PDF (0)</button><span id="ccPdfSelectionStatus" class="hide" role="status" aria-live="polite"></span><button id="ccCancelPdf" class="ccBtn ccPdfCancel hide" type="button">Hủy chọn</button></div><div class="ccTaskScopes" role="group" aria-label="Nguồn công việc"><button type="button" data-cc-scope="admin" aria-pressed="true">Admin đã giao <b id="ccAdminTaskCount">0</b></button><button type="button" data-cc-scope="all" aria-pressed="false">Tất cả công việc <b id="ccAllTaskCount">0</b></button></div><div class="ccFilters"><select id="ccProjectFilter" aria-label="Lọc dự án"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter" aria-label="Lọc trạng thái"><option value="">Tất cả trạng thái</option><option>Bắt đầu</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option><option value="overdue">Quá hạn</option></select><select id="ccPriorityFilter" aria-label="Lọc mức độ"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" aria-label="Tìm công việc" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th scope="col" class="ccPdfCol">Chọn</th><th scope="col">Dự án</th><th scope="col">Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div><div id="ccTaskPager" class="opsPager"></div></section><aside class="ccPanel ccAlertsPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div><div id="ccAlertPager" class="opsPager"></div></aside></div><div class="opsDashboardGrid"><section class="ccPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>NĂNG LƯỢNG</span><h3>Năng lượng tháng này</h3><p>Tiêu thụ theo dự án · EVN1 và EVN2 hiển thị riêng.</p></div></div><div id="ccEnergyList" class="opsEnergyList"></div></section><section class="ccPanel ccActivityPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>NHẬT KÝ VẬN HÀNH</span><h3>Hoạt động gần đây</h3><p>Lịch sử cập nhật theo dự án và tài khoản thực hiện.</p></div></div><div id="ccActivityList" class="ccActivityList"></div><div id="ccActivityPager" class="opsPager"></div></section></div><section class="opsQuickActions" aria-label="Thao tác nhanh"><button type="button" data-cc-dispatch>＋ Giao công việc</button><button type="button" data-cc-directory>Quản lý dự án →</button></section><p id="ccLoadMessage" class="opsLoadMessage" role="status" aria-live="polite"></p>';
   const anchor=home.querySelector(".homeKpis");if(anchor)anchor.insertAdjacentElement("afterend",root);else home.prepend(root);
   root.querySelector("#ccRefresh").addEventListener("click",()=>loadCenter(true));
   root.querySelector("#ccDispatch").addEventListener("click",openDispatch);
   root.querySelector("#ccPdfSelectAll").addEventListener("change",e=>{
    pdfFilteredTasks.forEach(t=>{const key=pdfTaskKey(t);if(e.target.checked)pdfSelectedKeys.add(key);else pdfSelectedKeys.delete(key)});
+   if(mobilePdf())pdfMobileSelecting=true;
    renderLists();
   });
-  root.querySelector("#ccPrintSelected").addEventListener("click",exportAdminAssignedPdf);
+  root.querySelector("#ccPrintSelected").addEventListener("click",runAdminPdfAction);
+  root.querySelector("#ccCancelPdf").addEventListener("click",()=>{
+   pdfMobileSelecting=false;pdfSelectedKeys.clear();renderLists();
+  });
   root.addEventListener("change",e=>{
    if(!e.target.matches("[data-cc-pdf-select]"))return;
    const key=e.target.dataset.ccPdfSelect;
    if(e.target.checked)pdfSelectedKeys.add(key);else pdfSelectedKeys.delete(key);
+   if(mobilePdf())pdfMobileSelecting=true;
    renderLists();
   });
   ["#ccProjectFilter","#ccStatusFilter","#ccPriorityFilter"].forEach(id=>root.querySelector(id).addEventListener("change",()=>{taskPage=alertPage=activityPage=1;renderLists();renderActivity()}));
@@ -118,7 +135,17 @@ function ensureRoot(){
     target?.scrollIntoView?.({behavior:"smooth",block:"start"});
     return;
    }
-   if(e.target.closest("[data-cc-pdf-select]"))return;
+   if(e.target.closest("[data-cc-pdf-select], .ccPdfTapTarget"))return;
+   const pdfRow=e.target.closest("[data-cc-task]");
+   if(pdfRow&&mobilePdf()&&pdfMobileSelecting){
+    if(pdfRow.dataset.adminAssigned==="true"){
+     e.preventDefault();
+     const key=pdfRow.dataset.pdfKey;
+     if(pdfSelectedKeys.has(key))pdfSelectedKeys.delete(key);else pdfSelectedKeys.add(key);
+     renderLists();
+    }
+    return;
+   }
    const edit=e.target.closest("[data-cc-edit]");if(edit)return window.estaAdminWorkEditor?.open(edit.dataset.building,edit.dataset.taskId);
    const scope=e.target.closest("[data-cc-scope]");if(scope){taskScope=scope.dataset.ccScope;taskPage=1;renderLists();return}
    const page=e.target.closest("[data-cc-page]");if(page){const n=Number(page.dataset.page);if(page.dataset.ccPage==="task")taskPage=n;if(page.dataset.ccPage==="alert")alertPage=n;if(page.dataset.ccPage==="activity")activityPage=n;renderLists();renderActivity();return}
@@ -274,7 +301,7 @@ async function exportAdminAssignedPdf(){
    periodLabel:period,columns,rows,summaries,photos,
    filename:"ESTA_Admin_CongViec_"+todayC()+"_"+selected.length+"_viec.pdf"
   });
-  if(success){pdfSelectedKeys.clear();renderLists()}
+  if(success){pdfSelectedKeys.clear();pdfMobileSelecting=false;renderLists()}
  }catch(err){console.warn("Admin work PDF export failed",err);toast(err?.message||"Không thể tạo báo cáo PDF Admin")}
  finally{pdfExportBusy=false;renderLists()}
 }
@@ -293,10 +320,28 @@ function renderLists(){
  const pdfFilteredKeys=pdfFilteredTasks.map(pdfTaskKey),checkedFiltered=pdfFilteredKeys.filter(key=>pdfSelectedKeys.has(key)).length;
  const selectAllPdf=$c("#ccPdfSelectAll");
  if(selectAllPdf){selectAllPdf.checked=pdfFilteredKeys.length>0&&checkedFiltered===pdfFilteredKeys.length;selectAllPdf.indeterminate=checkedFiltered>0&&checkedFiltered<pdfFilteredKeys.length;selectAllPdf.disabled=!pdfFilteredKeys.length||pdfExportBusy}
- const printBtn=$c("#ccPrintSelected");if(printBtn){printBtn.disabled=!pdfSelectedKeys.size||pdfExportBusy;printBtn.textContent=pdfExportBusy?"Đang xuất PDF…":"📄 Xuất PDF ("+pdfSelectedKeys.size+")"}
+ const printBtn=$c("#ccPrintSelected");
+ if(printBtn){
+  if(mobilePdf()){
+   printBtn.disabled=pdfExportBusy||(pdfMobileSelecting&&!pdfSelectedKeys.size);
+   printBtn.textContent=pdfExportBusy?"Đang xuất PDF…":"Xuất PDF";
+  }else{
+   printBtn.disabled=!pdfSelectedKeys.size||pdfExportBusy;
+   printBtn.textContent=pdfExportBusy?"Đang xuất PDF…":"📄 Xuất PDF ("+pdfSelectedKeys.size+")";
+  }
+ }
+ const selecting=mobilePdf()&&pdfMobileSelecting;
+ $c("#"+ROOT_ID)?.classList.toggle("ccPdfSelecting",selecting);
+ const cancelPdf=$c("#ccCancelPdf");
+ if(cancelPdf)cancelPdf.classList.toggle("hide",!selecting);
+ const selectInfo=$c("#ccPdfSelectionStatus");
+ if(selectInfo){
+  selectInfo.classList.toggle("hide",!selecting);
+  selectInfo.textContent=selecting?"Đã chọn "+pdfSelectedKeys.size+" công việc · Chạm thẻ để chọn / bỏ chọn":"";
+ }
  syncAdminHeader();
  taskPage=Math.max(1,Math.min(taskPage,Math.ceil(tasks.length/TASK_PAGE_SIZE)));
- const body=$c("#ccTaskBody");if(body)body.innerHTML=tasks.length?tasks.slice((taskPage-1)*TASK_PAGE_SIZE,taskPage*TASK_PAGE_SIZE).map(t=>'<tr tabindex="0" aria-label="Mở công việc" data-cc-task data-admin-assigned="'+(isAdminTask(t)?"true":"false")+'" data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'"><td data-label="Chọn" class="ccPdfSelectCell">'+(isAdminTask(t)?'<input type="checkbox" data-cc-pdf-select="'+escC(pdfTaskKey(t))+'" aria-label="Chọn in PDF công việc '+escC(t.c||"")+'" '+(pdfSelectedKeys.has(pdfTaskKey(t))?'checked':'')+'>':'')+'</td><td data-label="Dự án"><span class="ccProjectTag">'+escC(shortProjectName(t._buildingId))+'</span></td><td data-label="Công việc"><b>'+escC(t.c||"Công việc kỹ thuật")+'</b>'+(t.personalWork?'<small>Công việc thực hiện · Văn'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':isAdminTask(t)?'<small>Admin giao'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':(t.n?'<small>'+escC(t.n)+'</small>':""))+(isAdminTask(t)&&!t.personalWork?'<button class="ccAdminTaskEdit" type="button" data-cc-edit data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'" aria-label="Chỉnh sửa công việc Admin đã giao">✎ Chỉnh sửa</button>':'')+'</td><td data-label="Trạng thái"><span class="ccStatus '+statusClass(t.s)+'">'+escC(t.s||"Đang thực hiện")+'</span></td><td data-label="Mức độ"><span class="ccPriority p'+priorityRank(t.priority)+'">'+escC(priorityVi(t.priority))+'</span></td><td data-label="Người thực hiện">'+escC(t.a||"—")+'</td><td data-label="Hạn">'+fmtC(t.dueDate||"")+'</td><td data-label="Cảnh báo">'+warningHtml(t)+'</td></tr>').join(""):'<tr><td colspan="8" class="ccEmptyCell">'+(taskScope==="admin"&&!adminTasks.length?"Chưa có công việc Admin đã giao. Nhấn ＋ Giao công việc để bắt đầu.":"Không có công việc phù hợp với bộ lọc.")+'</td></tr>';
+ const body=$c("#ccTaskBody");if(body)body.innerHTML=tasks.length?tasks.slice((taskPage-1)*TASK_PAGE_SIZE,taskPage*TASK_PAGE_SIZE).map(t=>'<tr tabindex="0" aria-label="Mở công việc" data-cc-task data-admin-assigned="'+(isAdminTask(t)?"true":"false")+'" data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'" data-pdf-key="'+escC(pdfTaskKey(t))+'" data-pdf-picked="'+(pdfSelectedKeys.has(pdfTaskKey(t))?"true":"false")+'"><td data-label="Chọn" class="ccPdfSelectCell">'+(isAdminTask(t)?'<label class="ccPdfTapTarget"><input type="checkbox" data-cc-pdf-select="'+escC(pdfTaskKey(t))+'" aria-label="Chọn in PDF công việc '+escC(t.c||"")+'" '+(pdfSelectedKeys.has(pdfTaskKey(t))?'checked':'')+'><span class="ccPdfTapLabel">Chọn</span></label>':'')+'</td><td data-label="Dự án"><span class="ccProjectTag">'+escC(shortProjectName(t._buildingId))+'</span></td><td data-label="Công việc"><b>'+escC(t.c||"Công việc kỹ thuật")+'</b>'+(t.personalWork?'<small>Công việc thực hiện · Văn'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':isAdminTask(t)?'<small>Admin giao'+(t.dispatchedAt?' · '+fmtC(t.dispatchedAt):'')+'</small>':(t.n?'<small>'+escC(t.n)+'</small>':""))+(isAdminTask(t)&&!t.personalWork?'<button class="ccAdminTaskEdit" type="button" data-cc-edit data-building="'+escC(t._buildingId)+'" data-task-id="'+escC(t.id)+'" aria-label="Chỉnh sửa công việc Admin đã giao">✎ Chỉnh sửa</button>':'')+'</td><td data-label="Trạng thái"><span class="ccStatus '+statusClass(t.s)+'">'+escC(t.s||"Đang thực hiện")+'</span></td><td data-label="Mức độ"><span class="ccPriority p'+priorityRank(t.priority)+'">'+escC(priorityVi(t.priority))+'</span></td><td data-label="Người thực hiện">'+escC(t.a||"—")+'</td><td data-label="Hạn">'+fmtC(t.dueDate||"")+'</td><td data-label="Cảnh báo">'+warningHtml(t)+'</td></tr>').join(""):'<tr><td colspan="8" class="ccEmptyCell">'+(taskScope==="admin"&&!adminTasks.length?"Chưa có công việc Admin đã giao. Nhấn ＋ Giao công việc để bắt đầu.":"Không có công việc phù hợp với bộ lọc.")+'</td></tr>';
  const meta=$c("#ccTaskMeta");if(meta)meta.textContent=tasks.length+" công việc · "+tasks.filter(t=>t.s==="Đang thực hiện").length+" đang làm · "+tasks.filter(isDone).length+" hoàn thành · "+tasks.filter(t=>t.s==="Chờ xử lý").length+" chờ xử lý · "+tasks.filter(isOverdue).length+" quá hạn";
  let list=alerts().filter(a=>(!project||a.bid===project)&&(!q||[a.title,a.detail,a.bn,a.bid].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
  pager("ccTaskPager","task",taskPage,tasks.length,TASK_PAGE_SIZE);
