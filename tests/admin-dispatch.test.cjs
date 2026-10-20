@@ -68,6 +68,11 @@ async function main() {
   assert.equal(q('#ccAllTaskCount').textContent,'25');
   assert.equal(visible().length,20);
   assert.equal(visible()[0].dataset.building,'127HH');
+  // Supervisor star changes appearance/persistence, never the on-screen work order.
+  rows[0].snapshot.tasks[0].supervisorStarred=true;
+  await w.estaCommandCenterRefresh();
+  assert.equal(visible()[0].dataset.building,'127HH','Marked project work must not jump ahead on screen');
+  assert.equal(visible()[0].dataset.taskId,'77','Original displayed work remains first');
   // Select-all reaches every filtered Admin task, including later pages.
   assert.equal(q('#ccPrintSelected').disabled,true);
 
@@ -124,6 +129,8 @@ async function main() {
   q('#ccHeaderPdf').click();await next();await next();
   assert.equal(pdfCalls.length,1);
   assert.equal(pdfCalls[0].rows.length,24);
+  assert.equal(pdfCalls[0].rows[0][2],'Công việc 1','Starred work is first ONLY inside exported PDF');
+  assert.equal(visible()[0].dataset.building,'127HH','PDF priority has not reordered dashboard cards');
   assert.equal(pdfCalls[0].photos.length,1);
   assert.ok(pdfCalls[0].rows.some(row=>String(row[6]).includes('KQ: Hoàn tất kiểm tra')));
   assert.ok(pdfCalls[0].rows.every(row=>!String(row[2]).includes('Việc kỹ thuật tự tạo')));
