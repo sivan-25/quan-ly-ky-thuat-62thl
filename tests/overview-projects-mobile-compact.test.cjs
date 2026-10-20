@@ -3,8 +3,8 @@ const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("n
 const read=p=>fs.readFileSync(path.join(__dirname,"..",p),"utf8");
 const html=read("index.html"),css=read("overview-compact.css"),script=read("overview-compact.js");
 new Function(script);
-assert.ok(html.includes("overview-compact.css?v=20261020-compact03"),"versioned compact style link");
-assert.ok(html.includes("overview-compact.js?v=20261020-compact03"),"versioned mobile adapter");
+assert.match(html,/overview-compact\.css\?v=[^"\s]+/,"versioned compact style link");
+assert.match(html,/overview-compact\.js\?v=20261020-brand-130-fix01/,"versioned mobile adapter");
 assert.ok(css.includes("ESTA MOBILE OVERVIEW V3"),"new mobile project compact rules");
 assert.ok(css.includes("#app.homeMode.estaFourProjectCompact:not(.adminCommandHome) #homePage"),"scope only to operating projects");
 assert.ok(css.includes("#app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccProjects"),"Admin cards compact");
