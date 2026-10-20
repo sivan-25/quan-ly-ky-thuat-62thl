@@ -1,0 +1,155 @@
+/* ESTA Property Management – 130 Hồng Hà only.
+   Source: user's uploaded esta-brand.skill (L'MAK Group).
+   Scoped to project so Admin and the other three buildings remain unchanged.
+   Functional/semantic states (warning, error, success) retain their status colors. */
+#app.estaBrand130 {
+  --esta130-plum:#411437;
+  --esta130-plum-deep:#2B1526;
+  --esta130-cream:#F3DEBF;
+  --esta130-card:#F5ECD0;
+  --esta130-copper:#A46427;
+  --esta130-taupe:#625045;
+  --esta130-muted:#A99586;
+  --esta130-rule:#DAC4A7;
+  --esta130-shadow:0 5px 18px rgba(65,20,55,.08);
+  font-family:Montserrat,Arial,sans-serif!important;
+  background:var(--esta130-cream)!important;
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(button,input,select,textarea,table) {
+  font-family:Montserrat,Arial,sans-serif!important;
+}
+#app.estaBrand130 main,
+#app.estaBrand130 main > .page,
+#app.estaBrand130 :is(.inventoryPage,.maintenancePage) {
+  background:var(--esta130-cream)!important;
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 #mobileSidebar {
+  background:linear-gradient(180deg,var(--esta130-plum-deep),var(--esta130-plum))!important;
+  border-right:1px solid rgba(243,222,191,.22)!important;
+  color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 #mobileSidebar .brand,
+#app.estaBrand130 #mobileSidebar .estaSidebarBrand {border-color:rgba(243,222,191,.24)!important}
+#app.estaBrand130 #mobileSidebar :is(.brand b,.estaSidebarBrand b,nav button.active,.estaNav button.active) {
+  color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 #mobileSidebar :is(.estaNav button.active,nav button.active) {
+  background:rgba(164,100,39,.28)!important;
+  border-color:rgba(243,222,191,.45)!important;
+  box-shadow:inset 3px 0 var(--esta130-copper)!important;
+}
+#app.estaBrand130 #mobileSidebar :is(nav button,.estaNav button) {color:#E4CFB9!important}
+#app.estaBrand130 main > header {
+  background:var(--esta130-card)!important;
+  color:var(--esta130-plum)!important;
+  border-bottom:1px solid var(--esta130-rule)!important;
+}
+#app.estaBrand130 :is(.topModuleTitle h1,.pageHead h1,.workEntryHeader h2,.tableTop h2,.energyTableTop h2) {
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(.pageEyebrow,.topModuleTitle p,.pageHead p,.headMeta,.workEntryHeader p) {
+  color:var(--esta130-taupe)!important;
+}
+#app.estaBrand130 :is(.heroStrip,.homeWelcome) {
+  background:linear-gradient(110deg,var(--esta130-plum-deep),var(--esta130-plum))!important;
+  border-color:rgba(164,100,39,.44)!important;
+  color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.heroStrip,.homeWelcome) :is(h1,h2,h3,strong,b,.unifiedCommandBrand) {
+  color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.homeWelcome,.heroStrip) :is(p,small,span) {color:#EBD9C0!important}
+#app.estaBrand130 :is(.inventoryCommand,.maintenanceHero,.inventoryHero,.contractorIntro,.workEntryCard,.kpiCard,.stats article,.premiumTableCard) {
+  background:var(--esta130-card)!important;
+  border-color:var(--esta130-rule)!important;
+  box-shadow:var(--esta130-shadow)!important;
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(.workEntryHeader,.premiumTableCard .tableTop,.premiumTableCard .energyTableTop) {
+  background:var(--esta130-card)!important;
+  border-color:var(--esta130-rule)!important;
+}
+#app.estaBrand130 :is(.workEntryHeader,.inventoryCommand,.maintenanceHero,.inventoryHero) :is(h1,h2,h3,strong,b) {
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(.inventoryCommand,.maintenanceHero,.inventoryHero,.stats article,.kpiCard) :is(p,small,label) {
+  color:var(--esta130-taupe)!important;
+}
+#app.estaBrand130 :is(.headIcon,.topModuleIcon,.maintenanceCommandIcon,.inventoryCommandIcon) {
+  background:var(--esta130-plum)!important;
+  color:var(--esta130-cream)!important;
+  box-shadow:none!important;
+}
+#app.estaBrand130 :is(.premiumTableCard, .workEntryCard) :is(th,td) {
+  border-color:var(--esta130-rule)!important;
+}
+#app.estaBrand130 :is(.premiumTableCard table thead th,.workTable thead th) {
+  background:var(--esta130-plum)!important;
+  color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.premiumTableCard table tbody tr,.workTable tbody tr) {
+  background:var(--esta130-card)!important;
+}
+#app.estaBrand130 :is(.premiumTableCard table tbody tr:hover,.workTable tbody tr:hover) {
+  background:#EEDABD!important;
+}
+#app.estaBrand130 :is(.premiumTableCard table tbody td,.workTable tbody td) {
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select) {
+  background:#FBF4E7!important;
+  border-color:#C8AF96!important;
+  color:#2B1526!important;
+}
+#app.estaBrand130 :is(input,textarea,select):focus-visible {
+  outline:2px solid var(--esta130-copper)!important;
+  outline-offset:1px!important;
+}
+#app.estaBrand130 :is(input,textarea)::placeholder {color:#806A61!important}
+#app.estaBrand130 :is(.energyTabs button,.inventoryLocalTabs button,.maintenanceViewSwitch button) {
+  background:#F9EDDC!important;
+  border-color:var(--esta130-rule)!important;
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(.energyTabs button.active,.inventoryLocalTabs button.active,.maintenanceViewSwitch button.active) {
+  background:var(--esta130-plum)!important;
+  border-color:var(--esta130-plum)!important;
+  color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.quickReturnAdmin,.pdfAction,.iconAction,#workSelectModeBtn) {
+  background:var(--esta130-card)!important;
+  border-color:var(--esta130-copper)!important;
+  color:var(--esta130-plum)!important;
+}
+#app.estaBrand130 :is(#saveBtn,#workSaveBtn,#energySaveBtn,.workSave,#workPrintSelected:not(:disabled)) {
+  background:var(--esta130-plum)!important;
+  border-color:var(--esta130-plum)!important;
+  color:var(--esta130-cream)!important;
+}
+#app.estaBrand130 :is(.energyTabs button,.inventoryLocalTabs button,.maintenanceViewSwitch button,.quickReturnAdmin):focus-visible {
+  outline:2px solid var(--esta130-copper)!important;
+  outline-offset:2px;
+}
+#app.estaBrand130 #estaBottomNav {
+  background:var(--esta130-card)!important;
+  border-color:var(--esta130-rule)!important;
+}
+#app.estaBrand130 #estaBottomNav button {color:var(--esta130-taupe)!important}
+#app.estaBrand130 #estaBottomNav button[aria-current="page"] {
+  color:var(--esta130-plum)!important;
+  background:rgba(164,100,39,.10)!important;
+}
+#app.estaBrand130 :is(.workSelectedPdfBar,#workSelectedPdfBar) {
+  background:var(--esta130-plum)!important;
+  color:var(--esta130-cream)!important;
+  border-color:var(--esta130-copper)!important;
+}
+@media(max-width:760px) {
+  #app.estaBrand130 .page {background:var(--esta130-cream)!important}
+  #app.estaBrand130 :is(.homeWelcome,.maintenanceHero,.inventoryCommand) {
+    box-shadow:none!important;
+  }
+  #app.estaBrand130 #estaBottomNav button {font-size:inherit}
+}
