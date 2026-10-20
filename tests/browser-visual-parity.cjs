@@ -39,6 +39,7 @@ async function fixture(page,scenario){
    window.eval('applyBuildingUI()');
    if(scenario==='admin')window.eval('openAdminPortal();renderAdminProjects();');
    else if(scenario==='admin-home')window.eval('projectOverviewActive=false;showHome();');
+   else if(scenario.startsWith('home-'))window.eval('projectOverviewActive=true;applyBuildingUI();showHome();');
    else if(scenario.startsWith('work-'))window.eval('showModule("work");');
    else if(scenario.startsWith('edit-'))window.eval('showModule("work");window.editTask(1001);');
    else window.eval('showModule('+JSON.stringify(scenario.split('-')[0])+');');
@@ -94,7 +95,7 @@ async function capture(browser,site,scenario,viewport){
     const base=await capture(browser,'http://127.0.0.1:8765/',scenario,viewport);
     const next=await capture(browser,'http://127.0.0.1:8766/',scenario,viewport);
     const moduleName=scenario.split('-')[0];
-    const expected=scenario==='login'?'#login':scenario==='admin'?'#adminPage':scenario==='admin-home'?'#homePage':(moduleName==='edit'?'#workPage':'#'+moduleName+'Page');
+    const expected=scenario==='login'?'#login':scenario==='admin'?'#adminPage':(scenario==='admin-home'||scenario.startsWith('home-'))?'#homePage':(moduleName==='edit'?'#workPage':'#'+moduleName+'Page');
     assert.equal(base.stats.section,expected,'main source should display '+expected+' for '+scenario);
     assert.equal(next.stats.section,expected,'candidate should display '+expected+' for '+scenario);
     if(scenario.startsWith('work-'))assert.ok(base.stats.tasks>=2,'fixture work tasks must actually render for '+scenario);
@@ -132,10 +133,11 @@ async function capture(browser,site,scenario,viewport){
     const candidateOverflow=next.stats.docWidth-next.stats.clientWidth>4;
     const shellChanged=process.env.ESTA_VISUAL_TOUCH_IMPROVEMENTS==="1"&&scenario!=="login";
     const compactAdminOverview=process.env.ESTA_VISUAL_COMPACT_ADMIN_OVERVIEW==="1"&&scenario==="admin-home"&&viewport.width<=760;
-    if(compactAdminOverview){
+    const compactProjectOverview=process.env.ESTA_VISUAL_COMPACT_PROJECT_OVERVIEW==="1"&&scenario.startsWith("home-")&&viewport.width<=760;
+    if(compactAdminOverview||compactProjectOverview){
      if(!significantDifferentPixels||base.errors.length||next.errors.length||candidateOverflow){
-      failures++;console.error("COMPACT ADMIN REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
-     }else console.log("PASS intentional compact Admin mobile dashboard "+label+" ("+significantDifferentPixels+" changed pixels, no overflow)");
+      failures++;console.error("COMPACT OVERVIEW REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
+     }else console.log("PASS intentional compact Admin/project mobile dashboard "+label+" ("+significantDifferentPixels+" changed pixels, no overflow)");
     }else if(touchChange){
      if(base.errors.length||next.errors.length||candidateOverflow){
       failures++;console.error("TOUCH REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
