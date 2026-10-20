@@ -298,3 +298,20 @@ body.estaBrand130 :is(.modalCard, .workEditDrawerCard, #m130Overlay .m130Dialog)
 #app.estaBrand130 .contractorIntro .contractorKicker {
   color:var(--esta-cream)!important;
 }
+
+/* 320px pilot: the inherited system-rail rules can leave a 36px card.
+   Give the 130HH branded text a real 64px touch area; no other project changes. */
+@media(max-width:560px){
+ #app.estaBrand130 #updateAssetsPage .ueRailCard{
+  box-sizing:border-box!important;
+  min-height:64px!important;
+  height:auto!important;
+  padding:9px 12px!important;
+  align-items:center!important;
+ }
+ #app.estaBrand130 #updateAssetsPage .ueRailCard .ueRailText{
+  height:auto!important;
+  min-height:40px!important;
+  overflow:visible!important;
+ }
+}
