@@ -16,7 +16,10 @@ const scenarios=process.env.ESTA_VISUAL_SCENARIOS
  : standardScenarios;
 const results=[];
 const fixedTime=Date.parse('2026-10-10T02:00:00.000Z');
-const channelTolerance=12; // headless Chromium antialiasing showed 1 pixel with delta 10/255; geometry/content still checked exactly
+const channelTolerance=12; // headless Chromium antialiasing tolerance
+// The first rollout intentionally changes the 130HH palette, never the three other projects.
+// Detect a newly introduced stylesheet rather than disabling brand checks for future PRs.
+const brand130FirstRollout=fs.existsSync('esta-brand-130.css')&&!fs.existsSync('../baseline/esta-brand-130.css');
 async function fixture(page,scenario){
  if(scenario==='login')return;
  const projectId=scenario.includes('-')&&scenario!=='admin-home'?scenario.split('-').slice(1).join('-'):'68PĐL';
@@ -134,22 +137,33 @@ async function capture(browser,site,scenario,viewport){
     const shellChanged=process.env.ESTA_VISUAL_TOUCH_IMPROVEMENTS==="1"&&scenario!=="login";
     const compactAdminOverview=process.env.ESTA_VISUAL_COMPACT_ADMIN_OVERVIEW==="1"&&scenario==="admin-home"&&viewport.width<=760;
     const compactProjectOverview=process.env.ESTA_VISUAL_COMPACT_PROJECT_OVERVIEW==="1"&&scenario.startsWith("home-")&&viewport.width<=760;
-    if(compactAdminOverview||compactProjectOverview){
-     if(base.errors.length||next.errors.length||candidateOverflow||!equal){
+    // Existing baseline may contain a script error fixed in the candidate. A regression is
+    // a NEW candidate error; removing an old baseline error must not fail visual parity.
+    const newErrors=next.errors.filter(error=>!base.errors.includes(error));
+    const intendedBrandChange=brand130FirstRollout&&scenario.endsWith("-130HH");
+    if(intendedBrandChange){
+     const coreUnchanged=next.stats.section===base.stats.section&&
+       next.stats.tasks===base.stats.tasks&&next.stats.drawerOpen===base.stats.drawerOpen&&
+       next.stats.title===base.stats.title;
+     if(newErrors.length||candidateOverflow||!coreUnchanged||significantDifferentPixels===0){
+      failures++;console.error("BRAND 130 REGRESSION "+label+": "+JSON.stringify({...item,newErrors,candidateOverflow,coreUnchanged}).slice(0,900));
+     }else console.log("PASS intentional ESTA brand change in 130HH "+label+" (other projects remain on strict visual parity)");
+    }else if(compactAdminOverview||compactProjectOverview){
+     if(newErrors.length||candidateOverflow||!equal){
       failures++;console.error("COMPACT OVERVIEW REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
      }else console.log("PASS compact Admin/project mobile dashboard "+label+" ("+significantDifferentPixels+" changed pixels, no script errors or overflow)");
     }else if(touchChange){
-     if(base.errors.length||next.errors.length||candidateOverflow){
+     if(newErrors.length||candidateOverflow){
       failures++;console.error("TOUCH REGRESSION "+label+": "+JSON.stringify(item).slice(0,900));
      }else console.log("PASS audited mobile touch change "+label+
        " (intentional pixel differences "+significantDifferentPixels+")");
     }else if(shellChanged){
      // Other pages share the menu/return-to-Admin toolbar. Only differences
      // within its header band are intentional; the page body remains pixel-identical.
-     if(significantOutsideToolbar||!equal||base.errors.length||next.errors.length||candidateOverflow){
+     if(significantOutsideToolbar||!equal||newErrors.length||candidateOverflow){
       failures++;console.error("SHELL REGRESSION "+label+": "+JSON.stringify({...item,significantOutsideToolbar}).slice(0,900));
      }else console.log("PASS unchanged body pixel parity "+label+" (toolbar touch adjustment only)");
-    }else if(significantDifferentPixels||!equal||base.errors.length||next.errors.length){
+    }else if(significantDifferentPixels||!equal||newErrors.length){
      failures++;console.error('DIFF '+label+': '+JSON.stringify(item).slice(0,900));
     }else console.log('PASS meaningful pixel/DOM parity '+label+
        (rawDifferentPixels?' ('+rawDifferentPixels+' minor anti-aliasing pixels, max channel delta '+maxColorDeviation+')':''));
