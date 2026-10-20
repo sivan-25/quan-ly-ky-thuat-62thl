@@ -920,6 +920,7 @@
 <link rel="stylesheet" href="contractor-job-mobile-130.css?v=20261019-fix-fullwidth03">
 <link rel="stylesheet" href="contractor-profile-form-mobile.css?v=20261019-profile-grid01">
 <link rel="stylesheet" href="overview-compact.css?v=20261020-compact03" media="screen">
+<link rel="stylesheet" href="tools-professional.css?v=20261020-tools01" media="screen">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2052,7 +2053,12 @@
         <p>Theo dõi số lượng, nhãn hiệu, vị trí lưu, người phụ trách và tình trạng sử dụng.</p>
       </div>
       <div class="inventoryToolbarActions">
-        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="toolSearch" placeholder="Tìm dụng cụ..."></div>
+        <div class="inventorySearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="toolSearch" type="search" autocomplete="off" placeholder="Tên, mã, hãng dụng cụ..." aria-label="Tìm kiếm dụng cụ kỹ thuật"></div>
+        <select id="toolStatusFilter" aria-label="Lọc tình trạng dụng cụ">
+          <option value="all">Tất cả tình trạng</option>
+          <option value="ready">Tốt / Đang sử dụng</option>
+          <option value="attention">Cần kiểm tra / Hư hỏng</option>
+        </select>
         <button id="toolExportPdf" class="inventorySecondary estaReportPdfBtn" type="button" aria-label="Xuất PDF dụng cụ kỹ thuật">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4M12 10v7M9 14l3 3 3-3"/></svg><span>Xuất PDF</span>
         </button>
@@ -2080,6 +2086,7 @@
         <div><span>DANH MỤC DỤNG CỤ</span><h3>Thiết bị cầm tay & dụng cụ kỹ thuật</h3></div>
         <small>Thông tin được lưu riêng theo từng dự án.</small>
       </div>
+      <div id="toolVisibleCount" aria-live="polite">Đang hiển thị 0 dụng cụ</div>
       <div class="inventoryTableScroll">
         <table class="toolsTable">
           <colgroup>
@@ -2680,11 +2687,11 @@
       <label><span>Mã dụng cụ</span><input id="toolCode" maxlength="40" placeholder="VD: DC-001"></label>
       <label class="wide"><span>Tên dụng cụ *</span><input id="toolName" maxlength="120" required placeholder="VD: Đồng hồ vạn năng"></label>
       <label><span>Nhãn hiệu</span><input id="toolBrand" maxlength="100" placeholder="VD: Kyoritsu, Bosch..."></label>
-      <label><span>Số lượng *</span><input id="toolQty" type="number" step="0.01" min="0" required value="1"></label>
-      <label><span>Đơn vị</span><input id="toolUnit" maxlength="30" value="Cái"></label>
-      <label><span>Tình trạng</span><select id="toolCondition"><option>Tốt</option><option>Đang sử dụng</option><option>Cần kiểm tra</option><option>Hư hỏng</option></select></label>
+      <label class="toolField-qty"><span>Số lượng *</span><input id="toolQty" type="number" step="0.01" min="0" required value="1"></label>
+      <label class="toolField-unit"><span>Đơn vị</span><input id="toolUnit" maxlength="30" value="Cái"></label>
+      <label class="toolField-status"><span>Tình trạng</span><select id="toolCondition"><option>Tốt</option><option>Đang sử dụng</option><option>Cần kiểm tra</option><option>Hư hỏng</option></select></label>
       <label><span>Vị trí lưu</span><input id="toolLocation" maxlength="120" placeholder="Kho kỹ thuật, tủ dụng cụ..."></label><label><span>Người phụ trách</span><select id="toolKeeper"><option value="">— Chọn —</option></select></label>
-      <label><span>Ngày mua</span><input id="toolAcquiredDate" type="date"></label>
+      <label class="toolField-date"><span>Ngày mua</span><input id="toolAcquiredDate" type="date"></label>
       <label class="wide toolNoteField"><span>Ghi chú</span><input id="toolNote" maxlength="300" placeholder="Model, serial, vị trí sử dụng, tình trạng chi tiết..."></label>
       <div class="inventoryFormActions"><button id="cancelToolModal" type="button" class="inventorySecondary">Hủy</button><button type="submit" class="inventoryPrimary">Lưu dụng cụ</button></div>
     </form>
@@ -2788,7 +2795,7 @@
   </div>
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
-<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261020-work-selection-fixed4"></script><script src="completion-certificate-130.js?v=20261015-upgrade01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261020-tools01"></script><script src="completion-certificate-130.js?v=20261015-upgrade01"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261020-copy-phone01"></script><script src="construction.js?v=20261007-esta-pdf-only03"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261002-signature02"></script><script src="demo-lab.js?v=20261016-priorityvi01"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261020-pdf-mobile01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261016-priorityvi01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261016-sharedsystems01"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){
