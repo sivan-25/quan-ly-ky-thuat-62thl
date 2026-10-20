@@ -289,3 +289,12 @@ body.estaBrand130 :is(.modalCard, .workEditDrawerCard, #m130Overlay .m130Dialog)
   }
   body.estaBrand130 #updateMobileNav.updateMobileNav.liveProjectMobileNav button > span { color: inherit !important; }
 }
+
+/* Readability: copper (#A46427) is a visual accent (3.61:1 on cream), not small-print text. */
+#app.estaBrand130 :is(.pageEyebrow,.energySectionKicker,.inventoryKicker) {
+  color:var(--esta-aubergine)!important;
+}
+#app.estaBrand130 .workEntryHeader > div > span,
+#app.estaBrand130 .contractorIntro .contractorKicker {
+  color:var(--esta-cream)!important;
+}
