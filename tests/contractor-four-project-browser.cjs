@@ -19,10 +19,17 @@ async function main(){
         await page.setContent('<!doctype html><html lang="vi"><head><meta name="viewport" content="width=device-width,initial-scale=1">'+
           '<link rel="stylesheet" href="/style.css">'+
           '<link rel="stylesheet" href="/contractor.css">'+
+          '<link rel="stylesheet" href="/contractor-mobile-130.css">'+
           '<link rel="stylesheet" href="/esta-mobile.css">'+
           '<link rel="stylesheet" href="/contractor-profile-form-mobile.css">'+
           '<link rel="stylesheet" href="/contractor-job-mobile-130.css">'+
-          '</head><body><div id="app" class="contractorMode"><nav class="estaBottomNav"><button>Hôm nay</button></nav></div>'+
+          '</head><body><div id="app" class="contractorMode"><nav class="estaBottomNav"><button>Hôm nay</button></nav>'+
+          '<section id="contractorPage" class="contractorMobileProjects"><div class="contractorDirectory"><div class="contractorGrid"><article class="contractorRowCard">'+
+          '<div class="contractorMobileCard"><div class="contractorMobileBottom">'+
+          '<span class="contractorMobileNumber">0868897511</span><div class="contractorMobilePhoneActions">'+
+          '<button class="contractorMobileCopy" type="button">Sao chép</button>'+
+          '<a class="contractorMobileCall" href="tel:0868897511">Gọi ngay</a></div></div></div>'+
+          '</article></div></div></section></div>'+
           profile+job+'</body></html>',{waitUntil:"load"});
         await page.evaluate(()=>document.getElementById("contractorModal").classList.remove("hide"));
         const geo=await page.evaluate(()=>{
@@ -62,7 +69,19 @@ async function main(){
         assert.ok(work.contractorJobDate.x<work.contractorJobCompletedDate.x,"job dates not paired at "+width);
         assert.ok(work.contractorJobContent.w>=width-50,"job content narrow at "+width);
         assert.ok(work.contractorJobSaveBtn.bottom<=812,"job confirm hidden at "+width);
-        console.log("PASS viewport",width,"profile+work modal geometry");
+        await page.evaluate(()=>document.getElementById("contractorJobModal").classList.add("hide"));
+        const actions=await page.evaluate(()=>{
+          const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,right:r.right,bottom:r.bottom}};
+          return {copy:rect(".contractorMobileCopy"),call:rect(".contractorMobileCall"),
+            number:rect(".contractorMobileNumber"),viewport:innerWidth,
+            scrollWidth:document.documentElement.scrollWidth};
+        });
+        assert.ok(actions.copy.w>=64&&actions.call.w>=64,"phone controls too narrow "+width);
+        assert.ok(actions.copy.x<actions.call.x&&Math.abs(actions.copy.y-actions.call.y)<=2,
+          "copy control must be beside call control at "+width);
+        assert.ok(actions.call.right<=width-7,"call button overflow at "+width);
+        assert.ok(actions.scrollWidth<=width+1,"horizontal page scroll at "+width);
+        console.log("PASS viewport",width,"profile + job + mobile copy/call geometry");
       }finally{await page.close()}
     }
   }finally{await browser.close()}
