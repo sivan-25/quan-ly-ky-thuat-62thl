@@ -363,3 +363,51 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
  #app.estaBrand130 #energyPage :is(.energySummaryCards article,.energyCard,.energyTableCard,#energyMobileCards){background:#F5ECD0!important}
  #app.estaBrand130 :is(.demoPanel,.contractorRowCard,.estaToolCard){background:#F5ECD0!important}
 }
+
+
+/* The live shell still carries legacy demoExactProject / updateProjectMode classes.
+   These higher-specificity rules MUST win over legacy blue module and mobile CSS. */
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode main,
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode main > .page,
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#constructionMaterialPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage){
+ background:#F3DEBF!important;
+ color:#2B1526!important;
+}
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode main > header.estaTopbar,
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode .estaTopbar,
+#app.estaBrand130.homeMode.opsOverviewMode.updateProjectMode .estaTopbar,
+#app.estaBrand130.demoExactProject.demoProjectMode.energyMode .estaTopbar {
+ background:#411437!important;
+ background-image:linear-gradient(105deg,#2B1526,#411437)!important;
+ border-bottom:1px solid #A46427!important;
+ color:#F3DEBF!important;
+}
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode .estaTopbar :is(.topModuleTitle h1,.topModuleTitle p,.account span,.account b,.headerTools button:not(.quickReturnAdmin),.headerTools svg){
+ color:#F3DEBF!important;
+}
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode .estaTopbar .headerTools button:not(.quickReturnAdmin){
+ background:rgba(43,21,38,.38)!important;
+ border:1px solid rgba(243,222,191,.48)!important;
+ box-shadow:none!important;
+}
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode .estaTopbar .headerTools :is(.headerSearch,.ccTopSearch,.energySearch){
+ background:rgba(43,21,38,.48)!important;
+ border-color:rgba(243,222,191,.48)!important;
+}
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode .estaTopbar .headerTools :is(.headerSearch,.ccTopSearch,.energySearch) input{
+ color:#F3DEBF!important;
+ background:transparent!important;
+ border:0!important;
+}
+#app.estaBrand130.homeMode.opsOverviewMode.updateProjectMode #homePage,
+#app.estaBrand130.homeMode.opsOverviewMode.updateProjectMode .homeDashboard{
+ background:#F3DEBF!important;
+}
+#app.estaBrand130.homeMode.opsOverviewMode.updateProjectMode #homePage .homeWelcome,
+#app.estaBrand130.homeMode.opsOverviewMode.updateProjectMode .unifiedCommand,
+#app.estaBrand130.demoExactProject.demoProjectMode.updateProjectMode .homeWelcome {
+ background:#411437!important;
+ background-image:linear-gradient(110deg,#2B1526,#411437)!important;
+ border-color:#A46427!important;
+ color:#F3DEBF!important;
+}
