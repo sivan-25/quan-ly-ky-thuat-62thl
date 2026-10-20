@@ -315,3 +315,20 @@ body.estaBrand130 :is(.modalCard, .workEditDrawerCard, #m130Overlay .m130Dialog)
   overflow:visible!important;
  }
 }
+/* Exact 130HH rail selector outranks shared compact rules that force 36px cards. */
+@media(max-width:560px){
+ #app.estaBrand130.estaFourProjectCompact #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard,
+ body.estaBrand130 #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard{
+  min-height:64px!important;
+  height:auto!important;
+  max-height:none!important;
+  padding:10px 12px!important;
+  box-sizing:border-box!important;
+ }
+ #app.estaBrand130.estaFourProjectCompact #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard .ueRailText,
+ body.estaBrand130 #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard .ueRailText{
+  min-height:40px!important;
+  height:auto!important;
+  overflow:visible!important;
+ }
+}
