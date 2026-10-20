@@ -68,6 +68,9 @@ jobs:
       - name: Audit approved compact maintenance across all four buildings
         working-directory: candidate
         run: node tests/maintenance-four-building-mobile-parity.cjs
+      - name: Verify Admin editor mobile form geometry
+        working-directory: candidate
+        run: node tests/admin-work-editor-mobile-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:

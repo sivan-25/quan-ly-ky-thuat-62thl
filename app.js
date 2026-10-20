@@ -1573,7 +1573,15 @@ function initWorkSelection(){
  // so route changes hide it automatically. It stays anchored to the viewport.
  $("#workPage").appendChild(bar);
  select.onclick=()=>{if(!currentAccount?.is_admin)return;workSelectMode=!workSelectMode;workSelectedIds.clear();render()};
- $("#workCancelSelect").onclick=()=>{workSelectMode=false;workSelectedIds.clear();render()};
+ $("#workCancelSelect").onclick=()=>{
+  workSelectMode=false;
+  workSelectedIds.clear();
+  // Dismiss the fixed PDF toolbar before re-rendering long task lists.
+  $("#workSelectedPdfBar")?.classList.add("hide");
+  $("#workPage")?.classList.remove("workSelectionActive");
+  syncWorkSelection();
+  render();
+ };
  $("#workSelectAll").onchange=e=>{filtered().forEach(x=>e.target.checked?workSelectedIds.add(String(x.id)):workSelectedIds.delete(String(x.id)));render()};
  $("#workDeleteSelected").onclick=async()=>{
   if(!currentAccount?.is_admin||!workSelectedIds.size)return;

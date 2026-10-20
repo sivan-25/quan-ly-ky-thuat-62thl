@@ -22,4 +22,6 @@ jobs:
       - run: npm ci
       - name: Verify Admin dispatch
         run: node --check command-center.js && node tests/admin-dispatch.test.cjs
+      - name: Verify PDF cancellation and Admin mobile dates
+        run: node tests/admin-mobile-date-pdf-cancel.test.cjs
       - run: npm test
