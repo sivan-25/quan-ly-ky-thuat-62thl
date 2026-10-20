@@ -289,7 +289,9 @@ async function exportAdminAssignedPdf(){
  if(pdfExportBusy)return;
  if(!globalScope()||!centralSession?.access_token)return toast("Cần đăng nhập Admin để xuất PDF");
  const available=new Map(taskRows().filter(isAdminTask).map(t=>[pdfTaskKey(t),t]));
- const selected=[...pdfSelectedKeys].map(key=>available.get(key)).filter(Boolean);
+ // Stable PDF-only priority: starred selected tasks first; preserve selection order within each group.
+ const selected=[...pdfSelectedKeys].map(key=>available.get(key)).filter(Boolean)
+  .sort((a,b)=>Number(b.supervisorStarred===true)-Number(a.supervisorStarred===true));
  if(!selected.length){$c("#ccPdfTools")?.scrollIntoView?.({behavior:"smooth",block:"center"});return toast("Hãy tick chọn công việc trong bảng để xuất PDF")}
  if(typeof window.exportGenericEstaPdf!=="function")return toast("Chức năng PDF ESTA chưa sẵn sàng. Hãy tải lại trang");
  const dated=selected.map(t=>String(t.d||t.dispatchedAt||"").slice(0,10)).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
@@ -350,7 +352,8 @@ function renderLists(){
  $c("#ccTaskTitle").textContent=taskScope==="admin"?"Công việc Admin đã giao":"Công việc toàn hệ thống";
  document.querySelectorAll("[data-cc-scope]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.ccScope===taskScope)));
  let tasks=(taskScope==="admin"?adminTasks:allTasks).filter(t=>(!project||String(t._buildingId)===project)&&(!status||(status==="overdue"?isOverdue(t):status==="Đã hoàn thành"?isDone(t):String(t.s||"Đang thực hiện")===status))&&(!priority||priorityVi(t.priority)===priority)&&(!q||[t.c,t.n,t.a,t._buildingName,t._buildingId,t.dispatchGroupId].some(v=>String(v||"").toLocaleLowerCase("vi-VN").includes(q))));
- tasks.sort((a,b)=>Number(b.supervisorStarred===true)-Number(a.supervisorStarred===true)||(()=>{if(taskScope==="admin")return String(b.dispatchedAt||b.d||"").localeCompare(String(a.dispatchedAt||a.d||""))||Number(b.id||0)-Number(a.id||0);const ac=isDone(a)?1:0,bc=isDone(b)?1:0;if(ac!==bc)return ac-bc;const ad=String(a.dueDate||"9999-12-31"),bd=String(b.dueDate||"9999-12-31");return ad.localeCompare(bd)||Number(b.id||0)-Number(a.id||0)})());
+ // Keep the screen order unchanged when a supervisor star is toggled; stars affect PDF order only.
+ tasks.sort((a,b)=>{if(taskScope==="admin")return String(b.dispatchedAt||b.d||"").localeCompare(String(a.dispatchedAt||a.d||""))||Number(b.id||0)-Number(a.id||0);const ac=isDone(a)?1:0,bc=isDone(b)?1:0;if(ac!==bc)return ac-bc;const ad=String(a.dueDate||"9999-12-31"),bd=String(b.dueDate||"9999-12-31");return ad.localeCompare(bd)||Number(b.id||0)-Number(a.id||0)});
  const validPdfKeys=new Set(adminTasks.map(pdfTaskKey));
  for(const key of pdfSelectedKeys)if(!validPdfKeys.has(key))pdfSelectedKeys.delete(key);
  pdfFilteredTasks=tasks.filter(isAdminTask);
