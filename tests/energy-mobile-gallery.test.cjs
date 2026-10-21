@@ -14,13 +14,17 @@ const $ = s => document.querySelector(s);
 for(const [galleryId,cameraId] of [["energyImage","energyImageCamera"],["energyImage2","energyImage2Camera"]]){
  const gallery=$("#"+galleryId),camera=$("#"+cameraId);
  assert.ok(gallery && camera, "Both pickers exist for "+galleryId);
- assert.equal(gallery.getAttribute("accept"),"image/*");
+ assert.ok(gallery.getAttribute("accept").includes("image/jpeg"),"Gallery accepts common photo-library formats");
  assert.equal(gallery.hasAttribute("capture"),false,"Gallery must not force camera");
+ assert.equal(gallery.hasAttribute("multiple"),true,"Multiple selection opens the photo-library picker on mobile browsers");
  assert.equal(camera.getAttribute("capture"),"environment","Camera must open rear-facing camera");
  assert.ok(document.querySelector('#energyForm [data-energy-picker="'+galleryId+'"]'));
  assert.ok(document.querySelector('#energyForm [data-energy-picker="'+cameraId+'"]'));
 }
 assert.match(css,/energyPhotoActions/);
+assert.ok(css.includes("#app #energyPage #energyForm .energyImage2Field.hide"),"Hidden EVN2 has an explicit hide override");
+assert.ok(css.includes("#app #energyPage #energyForm .energyImage2Field:not(.hide)"),"Only visible EVN2 fields get flex layout");
+assert.ok(css.includes("#app #energyPage #energyForm .energyImage2Field.hide,") && css.includes("display:none!important;"),"Hidden EVN2 uses display:none!important");
 assert.match(app,/const f=\$\("#energyImageCamera"\)\.files\[0\]\|\|\$\("#energyImage"\)\.files\[0\]/);
 assert.match(app,/const f2=\$\("#energyImage2Camera"\)\.files\[0\]\|\|\$\("#energyImage2"\)\.files\[0\]/);
 

@@ -1703,8 +1703,8 @@
 }
 
 /* Energy photo chooser: explicit camera or photo library, including 68 PDL dual EVN. */
-#app #energyPage #energyForm .energyImageField,
-#app #energyPage #energyForm .energyImage2Field{
+#app #energyPage #energyForm .energyImageField:not(.hide),
+#app #energyPage #energyForm .energyImage2Field:not(.hide){
   display:flex!important;
   flex-direction:column!important;
   gap:7px!important;
@@ -1778,4 +1778,10 @@
     font-size:10px!important;
     padding:8px 3px!important;
   }
+}
+
+/* Explicitly respect hidden state; never reveal EVN2 on single-meter projects. */
+#app #energyPage #energyForm .energyImage2Field.hide,
+#app #energyPage #energyForm .energyImageField.hide{
+  display:none!important;
 }
