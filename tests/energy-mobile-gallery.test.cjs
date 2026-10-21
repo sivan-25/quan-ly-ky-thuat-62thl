@@ -14,9 +14,9 @@ const $ = s => document.querySelector(s);
 for(const [galleryId,cameraId] of [["energyImage","energyImageCamera"],["energyImage2","energyImage2Camera"]]){
  const gallery=$("#"+galleryId),camera=$("#"+cameraId);
  assert.ok(gallery && camera, "Both pickers exist for "+galleryId);
- assert.ok(gallery.getAttribute("accept").includes("image/jpeg"),"Gallery accepts common photo-library formats");
+ assert.equal(gallery.getAttribute("accept"),"image/*","Gallery uses the standard image wildcard supported by mobile file pickers");
  assert.equal(gallery.hasAttribute("capture"),false,"Gallery must not force camera");
- assert.equal(gallery.hasAttribute("multiple"),true,"Multiple selection opens the photo-library picker on mobile browsers");
+ assert.equal(gallery.hasAttribute("multiple"),false,"Only one photo is processed per meter reading");
  assert.equal(camera.getAttribute("capture"),"environment","Camera must open rear-facing camera");
  assert.ok(document.querySelector('#energyForm [data-energy-picker="'+galleryId+'"]'));
  assert.ok(document.querySelector('#energyForm [data-energy-picker="'+cameraId+'"]'));
@@ -58,10 +58,12 @@ for(const id of ["energyImage","energyImageCamera","energyImage2","energyImage2C
 vm.runInContext(app.slice(begin,end),context);
 for(const id of ["energyImage","energyImageCamera","energyImage2","energyImage2Camera"]){
  const input=$("#"+id);
- let opened=0;
- input.click=()=>opened++;
+ let shown=0,clicked=0;
+ input.showPicker=()=>shown++;
+ input.click=()=>clicked++;
  document.querySelector('[data-energy-picker="'+id+'"]').click();
- assert.equal(opened,1,"Expected button to open picker: "+id);
+ assert.equal(shown,1,"Expected button to open native picker using showPicker(): "+id);
+ assert.equal(clicked,0,"Do not call click() when showPicker() succeeds: "+id);
 }
 const libraryFile=new File(["image"],"meter.jpg",{type:"image/jpeg"});
 picks.get("energyImage")([libraryFile]);
