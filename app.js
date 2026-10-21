@@ -2328,6 +2328,14 @@ $("#energyNoteToggle")?.addEventListener("click",()=>{
  setEnergyNoteOpen(open,{focus:open});
 });
 
+let energyPreviewObjectUrl="",energyPreviewObjectUrl2="";
+function clearEnergyPhotoSelections(){
+ ["energyImage","energyImageCamera","energyImage2","energyImage2Camera"].forEach(id=>{
+  const input=$("#"+id);if(input)input.value="";
+ });
+ if(energyPreviewObjectUrl){URL.revokeObjectURL(energyPreviewObjectUrl);energyPreviewObjectUrl=""}
+ if(energyPreviewObjectUrl2){URL.revokeObjectURL(energyPreviewObjectUrl2);energyPreviewObjectUrl2=""}
+}
 function resetEnergyForm(){
  sync68EnergyTabs();
  const m=ENERGY_META[energyType];
@@ -2343,8 +2351,7 @@ function resetEnergyForm(){
  setPeopleSelected("energy",[]);
  $("#energyNote").value="";
  setEnergyNoteOpen(false);
- $("#energyImage").value="";
- $("#energyImage2").value="";
+ clearEnergyPhotoSelections();
  $("#energyImagePreview").innerHTML="";
  $("#energyImage2Preview").innerHTML="";
  $("#energySaveBtn").textContent="Lưu chỉ số";
@@ -2357,23 +2364,32 @@ function resetEnergyForm(){
  $("#energyTableTitle").textContent="Bảng theo dõi "+m.name.toLowerCase();
 }
 $("#energyCancelEdit").onclick=resetEnergyForm;
-let energyPreviewObjectUrl="",energyPreviewObjectUrl2="";
-function bindEnergyImagePreview(inputId,previewId,slot){
- const input=$("#"+inputId),preview=$("#"+previewId);
- if(!input||!preview)return;
- input.onchange=e=>{
-  const file=e.target.files[0];
+function bindEnergyImagePreview(inputId,cameraId,previewId,slot){
+ const gallery=$("#"+inputId),camera=$("#"+cameraId),preview=$("#"+previewId);
+ if(!gallery||!camera||!preview)return;
+ [gallery,camera].forEach(input=>input.addEventListener("change",e=>{
+  const file=e.target.files?.[0];
+  // Canceling the system picker must not remove the existing image.
+  if(!file)return;
+  if(!file.type.startsWith("image/")){toast("Chỉ hỗ trợ file hình ảnh");input.value="";return}
+  // Keep the last chosen image without transferring FileList (unreliable on iOS).
+  (input===gallery?camera:gallery).value="";
   if(slot===1&&energyPreviewObjectUrl2){URL.revokeObjectURL(energyPreviewObjectUrl2);energyPreviewObjectUrl2=""}
   if(slot===0&&energyPreviewObjectUrl){URL.revokeObjectURL(energyPreviewObjectUrl);energyPreviewObjectUrl=""}
-  if(!file){preview.innerHTML="";return}
-  if(!file.type.startsWith("image/")){toast("Chỉ hỗ trợ file hình ảnh");e.target.value="";return}
   const url=URL.createObjectURL(file);
   if(slot===1)energyPreviewObjectUrl2=url;else energyPreviewObjectUrl=url;
   preview.innerHTML='<img src="'+url+'" alt="Ảnh đồng hồ"><span>Ảnh đã chọn</span>';
- };
+ }));
 }
-bindEnergyImagePreview("energyImage","energyImagePreview",0);
-bindEnergyImagePreview("energyImage2","energyImage2Preview",1);
+bindEnergyImagePreview("energyImage","energyImageCamera","energyImagePreview",0);
+bindEnergyImagePreview("energyImage2","energyImage2Camera","energyImage2Preview",1);
+document.querySelectorAll("#energyForm [data-energy-picker]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
+  const input=$("#"+button.dataset.energyPicker);
+  if(input&&!input.disabled)input.click();
+ });
+});
 
 $("#energyForm").onsubmit=async e=>{
  e.preventDefault();
@@ -2386,7 +2402,8 @@ $("#energyForm").onsubmit=async e=>{
   const editId=$("#energyEditId").value,id=editId||Date.now();
   const all=energyLoad(),old=editId?all.find(x=>String(x.id)===String(editId)):null;
   let image=old?.image||"",image2=old?.image2||"";
-  const f=$("#energyImage").files[0],f2=$("#energyImage2").files[0];
+  const f=$("#energyImageCamera").files[0]||$("#energyImage").files[0];
+  const f2=$("#energyImage2Camera").files[0]||$("#energyImage2").files[0];
   if(f){const blob=await imageFileToBlob(f);image=await uploadMediaBlob(blob,"energy",id,0)}
   if(dual&&f2){const blob=await imageFileToBlob(f2);image2=await uploadMediaBlob(blob,"energy",id,1)}
   const obj={
@@ -2566,6 +2583,7 @@ window.editEnergy=id=>{
   b.setAttribute("aria-selected",String(selected));
  });
  const dual=is68DualElectric();
+ clearEnergyPhotoSelections();
  $("#energyEditId").value=x.id;
  $("#energyDate").value=x.date;syncEnergyDateCompact();
  $("#energyValue").value=x.value;

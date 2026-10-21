@@ -1701,3 +1701,81 @@
   stroke:currentColor;
   stroke-width:1.8;
 }
+
+/* Energy photo chooser: explicit camera or photo library, including 68 PDL dual EVN. */
+#app #energyPage #energyForm .energyImageField,
+#app #energyPage #energyForm .energyImage2Field{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:7px!important;
+  min-width:0!important;
+  min-height:0!important;
+  position:relative;
+}
+#app #energyPage #energyForm .energyImageField>span:first-child,
+#app #energyPage #energyForm .energyImage2Field>span:first-child{
+  display:block;
+  margin:0!important;
+  color:#9eacc5;
+  font-size:10.5px;
+  font-weight:650;
+}
+#app #energyPage #energyForm .energyNativePicker,
+#app #energyPage.dualEvnMode #energyForm .energyNativePicker{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  min-height:1px!important;
+  max-width:1px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+  clip-path:inset(50%)!important;
+}
+#app #energyPage #energyForm .energyPhotoActions{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#app #energyPage #energyForm .energyPhotoActions button{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  min-width:0!important;
+  min-height:44px!important;
+  height:auto!important;
+  padding:9px 5px!important;
+  border:1px solid #3f5470!important;
+  border-radius:10px!important;
+  background:#1c2d48!important;
+  color:#f1f6ff!important;
+  font:inherit;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  white-space:normal!important;
+  text-align:center;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+#app #energyPage #energyForm .energyPhotoActions button:last-child{
+  background:#133c45!important;
+  border-color:#29818e!important;
+}
+#app #energyPage #energyForm .energyPhotoActions button:focus-visible{
+  outline:2px solid #32daf1!important;
+  outline-offset:2px;
+}
+#app #energyPage #energyForm .energyPhotoActions button span{flex:none;font-size:14px!important}
+@media(max-width:400px){
+  #app #energyPage #energyForm .energyPhotoActions button{
+    font-size:10px!important;
+    padding:8px 3px!important;
+  }
+}
