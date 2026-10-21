@@ -22,8 +22,9 @@ for(const [galleryId,cameraId] of [["energyImage","energyImageCamera"],["energyI
  assert.ok(document.querySelector('#energyForm [data-energy-picker="'+cameraId+'"]'));
 }
 assert.match(css,/energyPhotoActions/);
-assert.match(css,/#app #energyPage #energyForm \\.energyImage2Field\\.hide[\\s\\S]*?display:none!important/,"Hidden EVN2 must remain hidden despite form layout rules");
-assert.match(css,/energyImage2Field:not\\(\\.hide\\)/,"Only visible EVN2 fields get flex layout");
+assert.ok(css.includes("#app #energyPage #energyForm .energyImage2Field.hide"),"Hidden EVN2 has an explicit hide override");
+assert.ok(css.includes("#app #energyPage #energyForm .energyImage2Field:not(.hide)"),"Only visible EVN2 fields get flex layout");
+assert.ok(css.includes("#app #energyPage #energyForm .energyImage2Field.hide,") && css.includes("display:none!important;"),"Hidden EVN2 uses display:none!important");
 assert.match(app,/const f=\$\("#energyImageCamera"\)\.files\[0\]\|\|\$\("#energyImage"\)\.files\[0\]/);
 assert.match(app,/const f2=\$\("#energyImage2Camera"\)\.files\[0\]\|\|\$\("#energyImage2"\)\.files\[0\]/);
 
