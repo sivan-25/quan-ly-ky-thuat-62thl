@@ -2383,11 +2383,27 @@ function bindEnergyImagePreview(inputId,cameraId,previewId,slot){
 }
 bindEnergyImagePreview("energyImage","energyImageCamera","energyImagePreview",0);
 bindEnergyImagePreview("energyImage2","energyImage2Camera","energyImage2Preview",1);
+function openEnergyFilePicker(input){
+ if(!input||input.disabled)return;
+ const isLibraryPicker=input.id==="energyImage"||input.id==="energyImage2";
+ if(isLibraryPicker){
+  // Never inherit camera capture behavior on the library action.
+  input.removeAttribute("capture");
+  input.accept="image/*";
+  input.removeAttribute("multiple");
+ }
+ // showPicker is designed for native file pickers and preserves this tap's
+ // user activation. Fall back to click() on browsers without it.
+ if(typeof input.showPicker==="function"){
+  try{input.showPicker();return}catch(_){/* Compatibility fallback below. */}
+ }
+ input.click();
+}
 document.querySelectorAll("#energyForm [data-energy-picker]").forEach(button=>{
  button.addEventListener("click",()=>{
   if(!canProjectEdit()){toast("Tài khoản này chỉ có quyền xem");return}
   const input=$("#"+button.dataset.energyPicker);
-  if(input&&!input.disabled)input.click();
+  if(input&&!input.disabled)openEnergyFilePicker(input);
  });
 });
 
