@@ -14,7 +14,7 @@ const $ = s => document.querySelector(s);
 for(const [galleryId,cameraId] of [["energyImage","energyImageCamera"],["energyImage2","energyImage2Camera"]]){
  const gallery=$("#"+galleryId),camera=$("#"+cameraId);
  assert.ok(gallery && camera, "Both pickers exist for "+galleryId);
- assert.match(gallery.getAttribute("accept"),/image\\/jpeg/,"Gallery accepts common photo-library formats");
+ assert.ok(gallery.getAttribute("accept").includes("image/jpeg"),"Gallery accepts common photo-library formats");
  assert.equal(gallery.hasAttribute("capture"),false,"Gallery must not force camera");
  assert.equal(gallery.hasAttribute("multiple"),true,"Multiple selection opens the photo-library picker on mobile browsers");
  assert.equal(camera.getAttribute("capture"),"environment","Camera must open rear-facing camera");
