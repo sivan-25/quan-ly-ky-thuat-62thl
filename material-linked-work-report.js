@@ -20,12 +20,19 @@
     } catch (_) { return []; }
   }
   function linked(task, material) {
-    return arr(task?.materials).some(item => {
-      const id = String(item?.materialId || item?.id || "");
+    const taskMaterials = arr(task?.materials).some(item => {
+      const id = String(item?.materialId || item?.material_id || item?.id || "");
       const name = norm(item?.name || item?.material_name || "");
-      return (id && id === String(material?.id || "")) ||
-        (!!name && name === norm(material?.name));
+      return (id && id === String(material?.id || "")) || (!!name && name === norm(material?.name));
     });
+    const transactions = arr(typeof inventoryTransactions !== "undefined" ? inventoryTransactions : []);
+    const transactionLink = transactions.some(tx =>
+      String(tx?.source_task_id || "") === String(task?.id || "") &&
+      String(tx?.source_type || "") === "work_task" &&
+      String(tx?.material_id || "") === String(material?.id || "") &&
+      String(tx?.tx_type || "") === "out"
+    );
+    return taskMaterials || transactionLink;
   }
   function selectedMaterials() { return materials().filter(m => selectedMaterialIds.has(String(m.id))); }
   function linkedTasks() {
@@ -157,13 +164,21 @@
       {key:"result",label:"Kết quả / ghi chú",width:150}
     ];
     const rows=selected.map(t=>{
-      const linked=arr(t.materials).filter(item=>chosen.some(material=>{
+      const inline=arr(t.materials).filter(item=>chosen.some(material=>{
         const id=String(item?.materialId||item?.material_id||item?.id||"");
         const name=norm(item?.name||item?.material_name||"");
         return (id&&id===String(material.id))|| (!!name&&name===norm(material.name));
       }));
-      const qty=linked.reduce((sum,item)=>sum+(Number(item?.qty??item?.quantity??item?.used_qty)||0),0);
-      return {date:String(t.d||""),task:String(t.c||""),status:String(t.s||""),material:linked.map(item=>item.name||item.material_name||chosen.find(m=>String(m.id)===String(item.materialId||item.material_id||item.id))?.name).filter(Boolean).join(", ")||chosen.map(m=>m.name).join(", "),quantity:qty?qty.toLocaleString("vi-VN"): "—",result:String(t.result||t.kq||t.note||"")};
+      const txs=arr(typeof inventoryTransactions!=="undefined"?inventoryTransactions:[]).filter(tx=>
+        String(tx?.source_task_id||"")===String(t.id||"") &&
+        String(tx?.source_type||"")==="work_task" &&
+        String(tx?.tx_type||"")==="out" &&
+        chosen.some(material=>String(tx?.material_id||"")===String(material.id))
+      );
+      const inlineNames=inline.map(item=>item.name||item.material_name||chosen.find(m=>String(m.id)===String(item.materialId||item.material_id||item.id))?.name).filter(Boolean);
+      const txNames=txs.map(tx=>chosen.find(m=>String(m.id)===String(tx.material_id))?.name).filter(Boolean);
+      const qty=inline.reduce((sum,item)=>sum+(Number(item?.qty??item?.quantity??item?.used_qty)||0),0)+txs.reduce((sum,tx)=>sum+(Number(tx?.qty)||0),0);
+      return {date:String(t.d||""),task:String(t.c||""),status:String(t.s||""),material:[...new Set([...inlineNames,...txNames])].join(", ")||chosen.map(m=>m.name).join(", "),quantity:qty?qty.toLocaleString("vi-VN"): "—",result:String(t.result||t.kq||t.note||"")};
     });
     $("#emwrExport").disabled=true;
     $("#emwrStatus").textContent="Đang tạo báo cáo và đính kèm "+photos.length+" ảnh…";
