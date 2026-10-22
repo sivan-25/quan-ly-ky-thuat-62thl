@@ -135,6 +135,7 @@
       $("#emwrClear", modal).addEventListener("click", () => { selectedTaskIds=new Set(); renderJobs(); });
       $("#emwrExport", modal).addEventListener("click", () => { if ($("#emwrExportOptions").hidden) { showExportOptions(); modal.querySelector(".emwr-card").dataset.page="people"; } else exportReport(); });
       $("#emwrBackToTasks", modal).addEventListener("click", () => { $("#emwrExportOptions").hidden=true; modal.querySelector(".emwr-card").dataset.page="tasks"; $("#emwrExport").textContent="Tiếp tục: chọn người thực hiện"; });
+      modal.querySelectorAll('input[name="emwrPerformerMode"]').forEach(input=>input.addEventListener("change", updatePerformerMode));
       document.body.appendChild(modal);
     }
   }
@@ -195,6 +196,13 @@
     host.innerHTML=names.map(name=>'<label class="emwr-material"><input type="checkbox" data-export-person="'+esc(name)+'"><span>'+esc(name)+'</span></label>').join("")||'<p class="emwr-muted">Dự án chưa có danh sách nhân sự. Vui lòng thêm tên trong Cài đặt nhân sự hoặc chọn Tự điền.</p>';
     $("#emwrExportOptions").hidden=false;
     $("#emwrExport").textContent="Xuất PDF";
+    updatePerformerMode();
+  }
+  function updatePerformerMode() {
+    const mode=$('input[name="emwrPerformerMode"]:checked')?.value||"technical";
+    const people=$("#emwrProjectPeople"), manual=$("#emwrManualPerformer");
+    if(people) { people.style.opacity=mode==="technical"?"1":".45"; people.style.pointerEvents=mode==="technical"?"auto":"none"; people.setAttribute("aria-disabled",mode!=="technical"?"true":"false"); }
+    if(manual) { manual.disabled=mode!=="manual"; manual.style.opacity=mode==="manual"?"1":".45"; }
   }
   async function exportReport() {
     const mode=$('input[name="emwrPerformerMode"]:checked')?.value||"technical";
@@ -250,7 +258,7 @@
         periodLabel:"DỰ ÁN "+projectName()+" · "+selected.length+" CÔNG VIỆC",
         building:projectName(),
         columns,rows:rows.map(row=>columns.map(column=>row[column.key]??"")),photos,
-        signer:{name:"Sĩ Văn",image_data_url:""}
+        signer:{name:performer,image_data_url:""}
       });
       if(ok){ $("#emwrStatus").textContent="Đã xuất PDF thành công · "+selected.length+" công việc · "+photos.length+" ảnh."; }
       else { $("#emwrStatus").textContent="Chưa xuất PDF. Kiểm tra thông báo trên màn hình."; }
