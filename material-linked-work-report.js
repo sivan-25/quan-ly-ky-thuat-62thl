@@ -235,7 +235,7 @@
         subtitle:"Vật tư: "+chosen.map(m=>String(m.name||"")+(m.code?" ("+m.code+")":"")).join(", "),
         periodLabel:"DỰ ÁN "+projectName()+" · "+selected.length+" CÔNG VIỆC",
         building:projectName(),
-        columns,rows,photos,
+        columns,rows:rows.map(row=>columns.map(column=>row[column.key]??"")),photos,
         signer:{name:"Sĩ Văn",image_data_url:""}
       });
       if(ok){ $("#emwrStatus").textContent="Đã xuất PDF thành công · "+selected.length+" công việc · "+photos.length+" ảnh."; }
