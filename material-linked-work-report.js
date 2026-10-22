@@ -38,7 +38,25 @@
   function linkedTasks() {
     const chosen = selectedMaterials();
     if (!chosen.length) return [];
-    return tasks().filter(t => chosen.some(m => linked(t, m)));
+    // Index material transactions once per render instead of rescanning the
+    // entire transaction history for every task/material pair (avoids UI jank).
+    const txPairs = new Set();
+    for (const tx of arr(typeof inventoryTransactions !== "undefined" ? inventoryTransactions : [])) {
+      if (String(tx?.source_type || "") !== "work_task" || String(tx?.tx_type || "") !== "out") continue;
+      const taskId = String(tx?.source_task_id || ""), materialId = String(tx?.material_id || "");
+      if (taskId && materialId) txPairs.add(taskId + "::" + materialId);
+    }
+    const chosenIds = new Set(chosen.map(m => String(m.id || "")));
+    const chosenNames = new Set(chosen.map(m => norm(m.name)));
+    return tasks().filter(task => {
+      const taskId = String(task?.id || "");
+      const inlineMatch = arr(task?.materials).some(item => {
+        const id = String(item?.materialId || item?.material_id || item?.id || "");
+        const name = norm(item?.name || item?.material_name || "");
+        return (id && chosenIds.has(id)) || (name && chosenNames.has(name));
+      });
+      return inlineMatch || chosen.some(m => txPairs.has(taskId + "::" + String(m.id || "")));
+    });
   }
   function ensureStyles() {
     if ($("#estaMaterialWorkReportStyles")) return;
