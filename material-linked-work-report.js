@@ -10,6 +10,7 @@
   const arr = (v) => Array.isArray(v) ? v : [];
   let selectedMaterialIds = new Set();
   let selectedTaskIds = new Set();
+  let selectedPerformers = new Set();
 
   function projectId() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.id || "" : ""); }
   function projectName() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.name || projectId() : projectId() || "Dự án"); }
@@ -112,7 +113,7 @@
           <div class="emwr-head"><div><h2 id="emwrTitle">Công việc liên kết với vật tư</h2><p class="emwr-muted" id="emwrProject"></p></div><button class="emwr-close" type="button" aria-label="Đóng">×</button></div>
           <label for="emwrMaterial"><strong>Chọn nhiều vật tư</strong></label>
           <input id="emwrMaterialSearch" type="search" placeholder="Tìm vật tư theo tên hoặc mã…" autocomplete="off" aria-label="Tìm vật tư"><div class="emwr-tools"><button type="button" id="emwrMaterialSelectVisible">Chọn vật tư đang lọc</button><button type="button" id="emwrMaterialClear">Bỏ chọn vật tư</button><span id="emwrMaterialCount" class="emwr-muted">0 vật tư được chọn</span></div><div id="emwrMaterial" class="emwr-materials" aria-label="Danh sách vật tư"></div>
-          <div class="emwr-tools"><button type="button" id="emwrSelectAll">Chọn tất cả</button><button type="button" id="emwrClear">Bỏ chọn</button><span id="emwrCount" class="emwr-muted">0 công việc</span></div>
+          <label for="emwrPerformerSearch"><strong>Lọc theo người thực hiện</strong></label><input id="emwrPerformerSearch" type="search" placeholder="Tìm tên người thực hiện…" autocomplete="off" aria-label="Tìm người thực hiện"><div id="emwrPerformers" class="emwr-materials" aria-label="Danh sách người thực hiện"></div><div class="emwr-tools"><button type="button" id="emwrSelectAll">Chọn tất cả</button><button type="button" id="emwrClear">Bỏ chọn</button><span id="emwrCount" class="emwr-muted">0 công việc</span></div>
           <div id="emwrJobs" class="emwr-jobs"><p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p></div>
           <div class="emwr-actions"><span id="emwrStatus" class="emwr-muted" role="status" aria-live="polite"></span><div><button type="button" class="emwr-close">Đóng</button> <button type="button" id="emwrExport" class="emwr-primary" disabled>Xuất PDF kèm ảnh</button></div></div>
         </section>`;
@@ -126,6 +127,8 @@
         updateMaterialCount(); renderJobs();
       });
       $("#emwrMaterialSearch", modal).addEventListener("input", renderMaterials);
+      $("#emwrPerformerSearch", modal).addEventListener("input", renderPerformers);
+      $("#emwrPerformers", modal).addEventListener("change", e => { const input=e.target.closest("input[data-performer]"); if(!input)return; if(input.checked)selectedPerformers.add(input.dataset.performer);else selectedPerformers.delete(input.dataset.performer); selectedTaskIds=new Set(); renderJobs(); });
       $("#emwrMaterialSelectVisible", modal).addEventListener("click", () => {
         $("#emwrMaterial").querySelectorAll(".emwr-material:not([hidden]) input[data-material-id]").forEach(input => selectedMaterialIds.add(input.dataset.materialId));
         renderMaterials(); renderJobs(); updateMaterialCount();
@@ -144,9 +147,10 @@
     if (!projectId()) { if (typeof toast === "function") toast("Vui lòng chọn dự án trước."); return; }
     selectedMaterialIds = new Set();
     selectedTaskIds = new Set();
+    selectedPerformers = new Set();
     $("#emwrProject").textContent = "Dự án hiện tại: " + projectName() + " · Chỉ đọc dữ liệu của dự án này";
     const select = $("#emwrMaterial");
-    renderMaterials();
+    renderMaterials(); renderPerformers();
     $("#emwrJobs").innerHTML = '<p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p>';
     $("#emwrCount").textContent = "0 công việc";
     $("#emwrStatus").textContent = "";
@@ -161,10 +165,24 @@
     const list=materials().filter(m=>!q||norm(m.name).includes(q)||norm(m.code).includes(q));
     host.innerHTML=list.map(m=>'<label class="emwr-material"><input type="checkbox" data-material-id="'+esc(m.id)+'"'+(selectedMaterialIds.has(String(m.id))?" checked":"")+'><span><strong>'+esc(m.name)+'</strong>'+(m.code?'<small> · '+esc(m.code)+'</small>':'')+'</span></label>').join("")||'<p class="emwr-muted">Không tìm thấy vật tư phù hợp.</p>';
   }
+  function performerNames() {
+    const names=new Set();
+    for(const task of tasks()) {
+      const values=Array.isArray(task?.performers)?task.performers:String(task?.a||task?.performer||"").split(",");
+      for(const value of values) { const name=String(value||"").trim(); if(name)names.add(name); }
+    }
+    return [...names].sort((a,b)=>a.localeCompare(b,"vi"));
+  }
+  function renderPerformers() {
+    const host=$("#emwrPerformers"); if(!host)return;
+    const q=norm($("#emwrPerformerSearch")?.value||"");
+    const names=performerNames().filter(name=>!q||norm(name).includes(q));
+    host.innerHTML=names.map(name=>'<label class="emwr-material"><input type="checkbox" data-performer="'+esc(name)+'"'+(selectedPerformers.has(name)?" checked":"")+'><span>'+esc(name)+'</span></label>').join("")||'<p class="emwr-muted">Chưa có tên người thực hiện trong công việc của dự án.</p>';
+  }
   function updateMaterialCount(){const el=$("#emwrMaterialCount");if(el)el.textContent=selectedMaterialIds.size+" vật tư được chọn";}
   function closeModal() { const modal=$("#estaMaterialWorkReportModal"); if(modal) modal.hidden=true; }
   function renderJobs() {
-    const chosen=selectedMaterials(), rows=linkedTasks(), host=$("#emwrJobs");
+    const chosen=selectedMaterials(), rows=linkedTasks().filter(t=>{ if(!selectedPerformers.size)return true; const raw=Array.isArray(t?.performers)?t.performers:String(t?.a||t?.performer||"").split(","); return raw.some(name=>selectedPerformers.has(String(name||"").trim())); }), host=$("#emwrJobs");
     if (!chosen.length) {
       host.innerHTML='<p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p>';
       $("#emwrCount").textContent="0 công việc"; $("#emwrExport").disabled=true; return;
@@ -202,7 +220,8 @@
     }
     const columns=[
       {key:"date",label:"Ngày",width:62},
-      {key:"task",label:"Công việc",width:190},
+      {key:"task",label:"Công việc",width:150},
+      {key:"performer",label:"Người thực hiện",width:95},
       {key:"status",label:"Trạng thái",width:78},
       {key:"material",label:"Vật tư",width:100},
       {key:"quantity",label:"Số lượng",width:60},
@@ -223,7 +242,8 @@
       const inlineNames=inline.map(item=>item.name||item.material_name||chosen.find(m=>String(m.id)===String(item.materialId||item.material_id||item.id))?.name).filter(Boolean);
       const txNames=txs.map(tx=>chosen.find(m=>String(m.id)===String(tx.material_id))?.name).filter(Boolean);
       const qty=inline.reduce((sum,item)=>sum+(Number(item?.qty??item?.quantity??item?.used_qty)||0),0)+txs.reduce((sum,tx)=>sum+(Number(tx?.qty)||0),0);
-      return {date:String(t.d||""),task:String(t.c||""),status:String(t.s||""),material:[...new Set([...inlineNames,...txNames])].join(", ")||chosen.map(m=>m.name).join(", "),quantity:qty?qty.toLocaleString("vi-VN"): "—",result:String(t.result||t.kq||t.note||"")};
+      const performers=Array.isArray(t?.performers)?t.performers:String(t?.a||t?.performer||"").split(",");
+      return {date:String(t.d||""),task:String(t.c||""),performer:performers.map(n=>String(n||"").trim()).filter(Boolean).join(", ")||"—",status:String(t.s||""),material:[...new Set([...inlineNames,...txNames])].join(", ")||chosen.map(m=>m.name).join(", "),quantity:qty?qty.toLocaleString("vi-VN"): "—",result:String(t.result||t.kq||t.note||"")};
     });
     $("#emwrExport").disabled=true;
     $("#emwrStatus").textContent="Đang tạo PDF · "+selected.length+" công việc · "+photos.length+" ảnh duy nhất. Nếu cần xác nhận chữ ký, vui lòng hoàn tất hộp thoại chữ ký.";
