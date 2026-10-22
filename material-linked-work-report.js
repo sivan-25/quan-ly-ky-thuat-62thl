@@ -54,6 +54,7 @@
       #estaMaterialWorkReportModal .emwr-muted{font-size:12px;color:#625045;margin:0 0 12px}
       #estaMaterialWorkReportModal .emwr-close{font-size:24px;line-height:1;border:0;background:transparent;color:#411437;cursor:pointer}
       #estaMaterialWorkReportModal .emwr-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+      #estaMaterialWorkReportModal #emwrMaterialSearch{box-sizing:border-box;width:100%;margin-top:8px;padding:10px 12px;border:1px solid #a99586;border-radius:9px;background:#fffaf0;color:#30262c}
       #estaMaterialWorkReportModal .emwr-materials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}
       #estaMaterialWorkReportModal .emwr-material{display:flex;align-items:flex-start;gap:8px;padding:9px;border:1px solid #d2c2ae;border-radius:9px;background:#fffaf0;font-size:12px}
       #estaMaterialWorkReportModal .emwr-material input{accent-color:#411437;flex:none;margin-top:2px}
@@ -92,14 +93,17 @@
         <section class="emwr-card" role="dialog" aria-modal="true" aria-labelledby="emwrTitle">
           <div class="emwr-head"><div><h2 id="emwrTitle">Công việc liên kết với vật tư</h2><p class="emwr-muted" id="emwrProject"></p></div><button class="emwr-close" type="button" aria-label="Đóng">×</button></div>
           <label for="emwrMaterial"><strong>Chọn nhiều vật tư</strong></label>
-          <div id="emwrMaterial" class="emwr-materials" aria-label="Danh sách vật tư"></div>
+          <input id="emwrMaterialSearch" type="search" placeholder="Tìm vật tư theo tên hoặc mã…" autocomplete="off" aria-label="Tìm vật tư"><div class="emwr-tools"><button type="button" id="emwrMaterialSelectVisible">Chọn vật tư đang lọc</button><button type="button" id="emwrMaterialClear">Bỏ chọn vật tư</button><span id="emwrMaterialCount" class="emwr-muted">0 vật tư được chọn</span></div><div id="emwrMaterial" class="emwr-materials" aria-label="Danh sách vật tư"></div>
           <div class="emwr-tools"><button type="button" id="emwrSelectAll">Chọn tất cả</button><button type="button" id="emwrClear">Bỏ chọn</button><span id="emwrCount" class="emwr-muted">0 công việc</span></div>
           <div id="emwrJobs" class="emwr-jobs"><p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p></div>
           <div class="emwr-actions"><span id="emwrStatus" class="emwr-muted" role="status" aria-live="polite"></span><div><button type="button" class="emwr-close">Đóng</button> <button type="button" id="emwrExport" class="emwr-primary" disabled>Xuất PDF kèm ảnh</button></div></div>
         </section>`;
       modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
       modal.querySelectorAll(".emwr-close").forEach(b => b.addEventListener("click", closeModal));
-      $("#emwrMaterial", modal).addEventListener("change", e => { const id=e.target.dataset.materialId; if(!id)return; if(e.target.checked)selectedMaterialIds.add(id);else selectedMaterialIds.delete(id); selectedTaskIds=new Set(); renderJobs(); });
+      $("#emwrMaterial", modal).addEventListener("change", e => { const id=e.target.dataset.materialId; if(!id)return; if(e.target.checked)selectedMaterialIds.add(id);else selectedMaterialIds.delete(id); selectedTaskIds=new Set(); updateMaterialCount(); renderJobs(); });
+      $("#emwrMaterialSearch", modal).addEventListener("input", renderMaterials);
+      $("#emwrMaterialSelectVisible", modal).addEventListener("click", () => { $("#emwrMaterial").querySelectorAll(".emwr-material:not([hidden]) input[data-material-id]").forEach(input=>selectedMaterialIds.add(input.dataset.materialId)); renderMaterials(); selectedTaskIds=new Set(); renderJobs(); updateMaterialCount(); });
+      $("#emwrMaterialClear", modal).addEventListener("click", () => { selectedMaterialIds=new Set(); renderMaterials(); selectedTaskIds=new Set(); renderJobs(); updateMaterialCount(); });
       $("#emwrSelectAll", modal).addEventListener("click", () => { selectedTaskIds=new Set(linkedTasks().map(t=>String(t.id))); renderJobs(); });
       $("#emwrClear", modal).addEventListener("click", () => { selectedTaskIds=new Set(); renderJobs(); });
       $("#emwrExport", modal).addEventListener("click", exportReport);
@@ -112,16 +116,23 @@
     selectedTaskIds = new Set();
     $("#emwrProject").textContent = "Dự án hiện tại: " + projectName() + " · Chỉ đọc dữ liệu của dự án này";
     const select = $("#emwrMaterial");
-    select.innerHTML = materials().map(m =>
-      '<label class="emwr-material"><input type="checkbox" data-material-id="' + esc(m.id) + '"><span><strong>' + esc(m.name) + '</strong>' + (m.code ? '<small> · ' + esc(m.code) + '</small>' : '') + '</span></label>'
-    ).join("") || '<p class="emwr-muted">Dự án chưa có vật tư.</p>';
+    renderMaterials();
     $("#emwrJobs").innerHTML = '<p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p>';
     $("#emwrCount").textContent = "0 công việc";
     $("#emwrStatus").textContent = "";
     $("#emwrExport").disabled = true;
     $("#estaMaterialWorkReportModal").hidden = false;
-    select.querySelector("input")?.focus();
+    $("#emwrMaterialSearch").value=""; updateMaterialCount(); $("#emwrMaterialSearch").focus();
   }
+  function renderMaterials() {
+    const host=$("#emwrMaterial");
+    if(!host)return;
+    const q=norm($("#emwrMaterialSearch")?.value||"");
+    const list=materials().filter(m=>!q||norm(m.name).includes(q)||norm(m.code).includes(q));
+    host.innerHTML=list.map(m=>'<label class="emwr-material"><input type="checkbox" data-material-id="'+esc(m.id)+'"'+(selectedMaterialIds.has(String(m.id))?" checked":"")+'><span><strong>'+esc(m.name)+'</strong>'+(m.code?'<small> · '+esc(m.code)+'</small>':'')+'</span></label>').join("")||'<p class="emwr-muted">Không tìm thấy vật tư phù hợp.</p>';
+    host.querySelectorAll("input[data-material-id]").forEach(input=>input.addEventListener("change",()=>{const id=input.dataset.materialId;if(input.checked)selectedMaterialIds.add(id);else selectedMaterialIds.delete(id);selectedTaskIds=new Set();updateMaterialCount();renderJobs();}));
+  }
+  function updateMaterialCount(){const el=$("#emwrMaterialCount");if(el)el.textContent=selectedMaterialIds.size+" vật tư được chọn";}
   function closeModal() { const modal=$("#estaMaterialWorkReportModal"); if(modal) modal.hidden=true; }
   function renderJobs() {
     const chosen=selectedMaterials(), rows=linkedTasks(), host=$("#emwrJobs");
@@ -153,8 +164,13 @@
     const chosen=selectedMaterials(), selected=linkedTasks().filter(t=>selectedTaskIds.has(String(t.id)));
     if(!chosen.length||!selected.length)return;
     if(typeof window.exportGenericEstaPdf!=="function"){ $("#emwrStatus").textContent="Chức năng PDF chưa sẵn sàng. Vui lòng tải lại trang."; return; }
-    const photos=[];
-    for(const task of selected) for(const path of arr(task.imgs).filter(Boolean)) photos.push({path,caption:String(task.c||"Công việc")+" · "+projectName()});
+    const photos=[], seenPhotos=new Set();
+    for(const task of selected) for(const path of arr(task.imgs).filter(Boolean)) {
+      const key=String(path);
+      if(seenPhotos.has(key))continue;
+      seenPhotos.add(key);
+      photos.push({path:key,caption:String(task.c||"Công việc")+" · "+projectName()});
+    }
     const columns=[
       {key:"date",label:"Ngày",width:62},
       {key:"task",label:"Công việc",width:190},
@@ -181,7 +197,7 @@
       return {date:String(t.d||""),task:String(t.c||""),status:String(t.s||""),material:[...new Set([...inlineNames,...txNames])].join(", ")||chosen.map(m=>m.name).join(", "),quantity:qty?qty.toLocaleString("vi-VN"): "—",result:String(t.result||t.kq||t.note||"")};
     });
     $("#emwrExport").disabled=true;
-    $("#emwrStatus").textContent="Đang tạo báo cáo và đính kèm "+photos.length+" ảnh…";
+    $("#emwrStatus").textContent="Đang tạo PDF · "+selected.length+" công việc · "+photos.length+" ảnh duy nhất. Nếu cần xác nhận chữ ký, vui lòng hoàn tất hộp thoại chữ ký.";
     try {
       const ok=await window.exportGenericEstaPdf({
         title:"BÁO CÁO CÔNG VIỆC THEO VẬT TƯ",
@@ -193,7 +209,7 @@
         columns,rows,photos,
         signer:null
       });
-      if(ok){ $("#emwrStatus").textContent="Đã gửi yêu cầu xuất PDF."; }
+      if(ok){ $("#emwrStatus").textContent="Đã xuất PDF thành công · "+selected.length+" công việc · "+photos.length+" ảnh."; }
       else { $("#emwrStatus").textContent="Chưa xuất PDF. Kiểm tra thông báo trên màn hình."; }
     } catch(error) {
       console.error("ESTA material work report failed",error);
