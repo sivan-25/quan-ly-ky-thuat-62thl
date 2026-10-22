@@ -19,7 +19,7 @@ async function main() {
       {id:"c",d:"2026-10-21",c:"Sửa dây điện",s:"Hoàn thành",materials:[{materialId:"mat-2",name:"Dây điện",qty:5,unit:"m"}],imgs:[]}
     ];
     let lastPdfPayload = null;
-    async function exportGenericEstaPdf(payload) { lastPdfPayload=payload; return true; }
+    async function exportGenericEstaPdf(payload) { lastPdfPayload=payload; window.__lastPdfPayload=payload; return true; }
     function toast() {}
   `);
   w.eval(fs.readFileSync("material-linked-work-report.js", "utf8"));
@@ -37,7 +37,7 @@ async function main() {
   w.document.querySelectorAll("[data-emwr-task]").forEach(input => { input.checked=true; input.dispatchEvent(new w.Event("change", {bubbles:true})); });
   w.document.getElementById("emwrExport").click();
   await new Promise(resolve => w.setTimeout(resolve, 0));
-  const payload = w.lastPdfPayload;
+  const payload = w.__lastPdfPayload;
   assert.ok(payload, "PDF export is called");
   assert.equal(payload.title, "BÁO CÁO CÔNG VIỆC THEO VẬT TƯ");
   assert.equal(payload.building, "130 Hồng Hà");
