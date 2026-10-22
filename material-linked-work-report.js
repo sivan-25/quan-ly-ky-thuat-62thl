@@ -10,7 +10,6 @@
   const arr = (v) => Array.isArray(v) ? v : [];
   let selectedMaterialIds = new Set();
   let selectedTaskIds = new Set();
-  let selectedPerformers = new Set();
 
   function projectId() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.id || "" : ""); }
   function projectName() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.name || projectId() : projectId() || "Dự án"); }
@@ -70,6 +69,7 @@
       #estaMaterialWorkReportModal .emwr-card{width:min(760px,100%);max-height:min(88dvh,900px);overflow:auto;background:#f5ecd0;color:#30262c;border:1px solid #a99586;border-radius:16px;box-shadow:0 18px 55px #0004;padding:16px}
       #estaMaterialWorkReportModal .emwr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
       #estaMaterialWorkReportModal h2{font-size:19px;margin:0 0 5px;color:#411437}
+      #estaMaterialWorkReportModal .emwr-export-options{margin-top:12px;padding:12px;border:1px solid #a99586;border-radius:10px;background:#fff8ea}#estaMaterialWorkReportModal .emwr-export-options h3{margin:0 0 6px;color:#411437;font-size:16px}#estaMaterialWorkReportModal .emwr-export-options>label{display:block;margin:9px 0;font-weight:650}#estaMaterialWorkReportModal #emwrManualPerformer{box-sizing:border-box;width:100%;min-width:0;font-size:16px;padding:10px;border:1px solid #a99586;border-radius:8px;background:#fff;color:#30262c}
       #estaMaterialWorkReportModal .emwr-muted{font-size:12px;color:#625045;margin:0 0 12px}
       #estaMaterialWorkReportModal .emwr-close{font-size:24px;line-height:1;border:0;background:transparent;color:#411437;cursor:pointer}
       #estaMaterialWorkReportModal .emwr-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
@@ -113,9 +113,9 @@
           <div class="emwr-head"><div><h2 id="emwrTitle">Công việc liên kết với vật tư</h2><p class="emwr-muted" id="emwrProject"></p></div><button class="emwr-close" type="button" aria-label="Đóng">×</button></div>
           <label for="emwrMaterial"><strong>Chọn nhiều vật tư</strong></label>
           <input id="emwrMaterialSearch" type="search" placeholder="Tìm vật tư theo tên hoặc mã…" autocomplete="off" aria-label="Tìm vật tư"><div class="emwr-tools"><button type="button" id="emwrMaterialSelectVisible">Chọn vật tư đang lọc</button><button type="button" id="emwrMaterialClear">Bỏ chọn vật tư</button><span id="emwrMaterialCount" class="emwr-muted">0 vật tư được chọn</span></div><div id="emwrMaterial" class="emwr-materials" aria-label="Danh sách vật tư"></div>
-          <label for="emwrPerformerSearch"><strong>Lọc theo người thực hiện</strong></label><input id="emwrPerformerSearch" type="search" placeholder="Tìm tên người thực hiện…" autocomplete="off" aria-label="Tìm người thực hiện"><div id="emwrPerformers" class="emwr-materials" aria-label="Danh sách người thực hiện"></div><div class="emwr-tools"><button type="button" id="emwrSelectAll">Chọn tất cả</button><button type="button" id="emwrClear">Bỏ chọn</button><span id="emwrCount" class="emwr-muted">0 công việc</span></div>
+          <div class="emwr-tools"><button type="button" id="emwrSelectAll">Chọn tất cả</button><button type="button" id="emwrClear">Bỏ chọn</button><span id="emwrCount" class="emwr-muted">0 công việc</span></div>
           <div id="emwrJobs" class="emwr-jobs"><p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p></div>
-          <div class="emwr-actions"><span id="emwrStatus" class="emwr-muted" role="status" aria-live="polite"></span><div><button type="button" class="emwr-close">Đóng</button> <button type="button" id="emwrExport" class="emwr-primary" disabled>Xuất PDF kèm ảnh</button></div></div>
+          <section id="emwrExportOptions" hidden class="emwr-export-options"><h3>Người thực hiện trên báo cáo</h3><p>Chọn Kỹ thuật để lấy tên từ danh sách nhân sự của dự án, hoặc tự điền tên.</p><label><input type="radio" name="emwrPerformerMode" value="technical" checked> Kỹ thuật – chọn tên trong dự án</label><div id="emwrProjectPeople" class="emwr-materials"></div><label><input type="radio" name="emwrPerformerMode" value="manual"> Tự điền tên</label><input id="emwrManualPerformer" type="text" placeholder="Nhập tên người thực hiện…" autocomplete="name"><div class="emwr-tools"><button type="button" id="emwrBackToTasks">Quay lại chọn công việc</button></div></section><div class="emwr-actions"><span id="emwrStatus" class="emwr-muted" role="status" aria-live="polite"></span><div><button type="button" class="emwr-close">Đóng</button> <button type="button" id="emwrExport" class="emwr-primary" disabled>Xuất PDF kèm ảnh</button></div></div>
         </section>`;
       modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
       modal.querySelectorAll(".emwr-close").forEach(b => b.addEventListener("click", closeModal));
@@ -127,8 +127,6 @@
         updateMaterialCount(); renderJobs();
       });
       $("#emwrMaterialSearch", modal).addEventListener("input", renderMaterials);
-      $("#emwrPerformerSearch", modal).addEventListener("input", renderPerformers);
-      $("#emwrPerformers", modal).addEventListener("change", e => { const input=e.target.closest("input[data-performer]"); if(!input)return; if(input.checked)selectedPerformers.add(input.dataset.performer);else selectedPerformers.delete(input.dataset.performer); selectedTaskIds=new Set(); renderJobs(); });
       $("#emwrMaterialSelectVisible", modal).addEventListener("click", () => {
         $("#emwrMaterial").querySelectorAll(".emwr-material:not([hidden]) input[data-material-id]").forEach(input => selectedMaterialIds.add(input.dataset.materialId));
         renderMaterials(); renderJobs(); updateMaterialCount();
@@ -139,7 +137,8 @@
       });
       $("#emwrSelectAll", modal).addEventListener("click", () => { selectedTaskIds=new Set(linkedTasks().map(t=>String(t.id))); renderJobs(); });
       $("#emwrClear", modal).addEventListener("click", () => { selectedTaskIds=new Set(); renderJobs(); });
-      $("#emwrExport", modal).addEventListener("click", exportReport);
+      $("#emwrExport", modal).addEventListener("click", () => { if ($("#emwrExportOptions").hidden) showExportOptions(); else exportReport(); });
+      $("#emwrBackToTasks", modal).addEventListener("click", () => { $("#emwrExportOptions").hidden=true; $("#emwrExport").textContent="Tiếp tục: chọn người thực hiện"; });
       document.body.appendChild(modal);
     }
   }
@@ -147,10 +146,10 @@
     if (!projectId()) { if (typeof toast === "function") toast("Vui lòng chọn dự án trước."); return; }
     selectedMaterialIds = new Set();
     selectedTaskIds = new Set();
-    selectedPerformers = new Set();
     $("#emwrProject").textContent = "Dự án hiện tại: " + projectName() + " · Chỉ đọc dữ liệu của dự án này";
     const select = $("#emwrMaterial");
-    renderMaterials(); renderPerformers();
+    renderMaterials();
+    $("#emwrExportOptions").hidden=true; $("#emwrExport").textContent="Tiếp tục: chọn người thực hiện";
     $("#emwrJobs").innerHTML = '<p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p>';
     $("#emwrCount").textContent = "0 công việc";
     $("#emwrStatus").textContent = "";
@@ -165,24 +164,10 @@
     const list=materials().filter(m=>!q||norm(m.name).includes(q)||norm(m.code).includes(q));
     host.innerHTML=list.map(m=>'<label class="emwr-material"><input type="checkbox" data-material-id="'+esc(m.id)+'"'+(selectedMaterialIds.has(String(m.id))?" checked":"")+'><span><strong>'+esc(m.name)+'</strong>'+(m.code?'<small> · '+esc(m.code)+'</small>':'')+'</span></label>').join("")||'<p class="emwr-muted">Không tìm thấy vật tư phù hợp.</p>';
   }
-  function performerNames() {
-    const names=new Set();
-    for(const task of tasks()) {
-      const values=Array.isArray(task?.performers)?task.performers:String(task?.a||task?.performer||"").split(",");
-      for(const value of values) { const name=String(value||"").trim(); if(name)names.add(name); }
-    }
-    return [...names].sort((a,b)=>a.localeCompare(b,"vi"));
-  }
-  function renderPerformers() {
-    const host=$("#emwrPerformers"); if(!host)return;
-    const q=norm($("#emwrPerformerSearch")?.value||"");
-    const names=performerNames().filter(name=>!q||norm(name).includes(q));
-    host.innerHTML=names.map(name=>'<label class="emwr-material"><input type="checkbox" data-performer="'+esc(name)+'"'+(selectedPerformers.has(name)?" checked":"")+'><span>'+esc(name)+'</span></label>').join("")||'<p class="emwr-muted">Chưa có tên người thực hiện trong công việc của dự án.</p>';
-  }
   function updateMaterialCount(){const el=$("#emwrMaterialCount");if(el)el.textContent=selectedMaterialIds.size+" vật tư được chọn";}
   function closeModal() { const modal=$("#estaMaterialWorkReportModal"); if(modal) modal.hidden=true; }
   function renderJobs() {
-    const chosen=selectedMaterials(), rows=linkedTasks().filter(t=>{ if(!selectedPerformers.size)return true; const raw=Array.isArray(t?.performers)?t.performers:String(t?.a||t?.performer||"").split(","); return raw.some(name=>selectedPerformers.has(String(name||"").trim())); }), host=$("#emwrJobs");
+    const chosen=selectedMaterials(), rows=linkedTasks(), host=$("#emwrJobs");
     if (!chosen.length) {
       host.innerHTML='<p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p>';
       $("#emwrCount").textContent="0 công việc"; $("#emwrExport").disabled=true; return;
@@ -207,7 +192,20 @@
     $("#emwrCount").textContent=count+" công việc được chọn";
     $("#emwrExport").disabled=count===0;
   }
+  function showExportOptions() {
+    const modal=$("#estaMaterialWorkReportModal");
+    const host=$("#emwrProjectPeople");
+    const names=[...new Set((Array.isArray(projectPeople)?projectPeople:[]).map(p=>String(p?.name||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi"));
+    host.innerHTML=names.map(name=>'<label class="emwr-material"><input type="checkbox" data-export-person="'+esc(name)+'"><span>'+esc(name)+'</span></label>').join("")||'<p class="emwr-muted">Dự án chưa có danh sách nhân sự. Vui lòng thêm tên trong Cài đặt nhân sự hoặc chọn Tự điền.</p>';
+    $("#emwrExportOptions").hidden=false;
+    $("#emwrExport").textContent="Xuất PDF";
+  }
   async function exportReport() {
+    const mode=$('input[name="emwrPerformerMode"]:checked')?.value||"technical";
+    let performer="";
+    if(mode==="manual") performer=$("#emwrManualPerformer")?.value.trim()||"";
+    else performer=[...$("#emwrProjectPeople").querySelectorAll("input[data-export-person]:checked")].map(input=>input.dataset.exportPerson).join(", ");
+    if(!performer){ $("#emwrStatus").textContent=mode==="manual"?"Vui lòng nhập tên người thực hiện.":"Vui lòng chọn ít nhất một kỹ thuật viên của dự án."; return; }
     const chosen=selectedMaterials(), selected=linkedTasks().filter(t=>selectedTaskIds.has(String(t.id)));
     if(!chosen.length||!selected.length)return;
     if(typeof window.exportGenericEstaPdf!=="function"){ $("#emwrStatus").textContent="Chức năng PDF chưa sẵn sàng. Vui lòng tải lại trang."; return; }
@@ -243,7 +241,7 @@
       const txNames=txs.map(tx=>chosen.find(m=>String(m.id)===String(tx.material_id))?.name).filter(Boolean);
       const qty=inline.reduce((sum,item)=>sum+(Number(item?.qty??item?.quantity??item?.used_qty)||0),0)+txs.reduce((sum,tx)=>sum+(Number(tx?.qty)||0),0);
       const performers=Array.isArray(t?.performers)?t.performers:String(t?.a||t?.performer||"").split(",");
-      return {date:String(t.d||""),task:String(t.c||""),performer:performers.map(n=>String(n||"").trim()).filter(Boolean).join(", ")||"—",status:String(t.s||""),material:[...new Set([...inlineNames,...txNames])].join(", ")||chosen.map(m=>m.name).join(", "),quantity:qty?qty.toLocaleString("vi-VN"): "—",result:String(t.result||t.kq||t.note||"")};
+      return {date:String(t.d||""),task:String(t.c||""),performer:performer,status:String(t.s||""),material:[...new Set([...inlineNames,...txNames])].join(", ")||chosen.map(m=>m.name).join(", "),quantity:qty?qty.toLocaleString("vi-VN"): "—",result:String(t.result||t.kq||t.note||"")};
     });
     $("#emwrExport").disabled=true;
     $("#emwrStatus").textContent="Đang tạo PDF · "+selected.length+" công việc · "+photos.length+" ảnh duy nhất. Nếu cần xác nhận chữ ký, vui lòng hoàn tất hộp thoại chữ ký.";
