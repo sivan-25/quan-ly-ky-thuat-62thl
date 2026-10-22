@@ -11,13 +11,12 @@
   let selectedMaterialId = "";
   let selectedTaskIds = new Set();
 
-  function projectId() { return String(window.currentBuilding?.id || ""); }
-  function projectName() { return String(window.currentBuilding?.name || projectId() || "Dự án"); }
-  function materials() { return arr(window.inventoryMaterials).filter(m => !m.archived_at); }
+  function projectId() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.id || "" : ""); }
+  function projectName() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.name || projectId() : projectId() || "Dự án"); }
+  function materials() { return arr(typeof inventoryMaterials !== "undefined" ? inventoryMaterials : []).filter(m => !m.archived_at); }
   function tasks() {
     try {
-      const fn = window.load;
-      return typeof fn === "function" ? arr(fn()) : [];
+      return typeof load === "function" ? arr(load()) : [];
     } catch (_) { return []; }
   }
   function linked(task, material) {
@@ -100,7 +99,7 @@
     }
   }
   function openModal() {
-    if (!projectId()) { if (window.toast) toast("Vui lòng chọn dự án trước."); return; }
+    if (!projectId()) { if (typeof toast === "function") toast("Vui lòng chọn dự án trước."); return; }
     selectedMaterialId = "";
     selectedTaskIds = new Set();
     $("#emwrProject").textContent = "Dự án hiện tại: " + projectName() + " · Chỉ đọc dữ liệu của dự án này";
