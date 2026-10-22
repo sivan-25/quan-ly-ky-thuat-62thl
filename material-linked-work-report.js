@@ -64,7 +64,7 @@
     style.id = "estaMaterialWorkReportStyles";
     style.textContent = `
       #estaMaterialWorkReportLaunch{display:inline-flex;align-items:center;gap:7px;margin:8px 0;padding:9px 12px;border:1px solid #a46427;border-radius:10px;background:#411437;color:#f5ecd0;font-weight:750;cursor:pointer}
-      #estaMaterialWorkReportModal{position:fixed;inset:0;z-index:1200;background:rgba(20,14,22,.58);display:flex;align-items:center;justify-content:center;padding:12px}#estaMaterialWorkReportModal .emwr-card[ data-page="people"]{display:none}
+      #estaMaterialWorkReportModal{position:fixed;inset:0;z-index:1200;background:rgba(20,14,22,.58);display:flex;align-items:center;justify-content:center;padding:12px}#estaMaterialWorkReportModal .emwr-card[data-page="people"] #emwrTaskPage{display:none}#estaMaterialWorkReportModal .emwr-card[data-page="tasks"] #emwrExportOptions{display:none!important}
       #estaMaterialWorkReportModal[hidden]{display:none!important}
       #estaMaterialWorkReportModal .emwr-card{width:min(760px,100%);max-height:min(88dvh,900px);overflow:auto;background:#f5ecd0;color:#30262c;border:1px solid #a99586;border-radius:16px;box-shadow:0 18px 55px #0004;padding:16px}
       #estaMaterialWorkReportModal .emwr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -111,10 +111,10 @@
       modal.innerHTML = `
         <section class="emwr-card" role="dialog" aria-modal="true" aria-labelledby="emwrTitle">
           <div class="emwr-head"><div><h2 id="emwrTitle">Công việc liên kết với vật tư</h2><p class="emwr-muted" id="emwrProject"></p></div><button class="emwr-close" type="button" aria-label="Đóng">×</button></div>
-          <label for="emwrMaterial"><strong>Chọn nhiều vật tư</strong></label>
+          <div id="emwrTaskPage"><label for="emwrMaterial"><strong>Chọn nhiều vật tư</strong></label>
           <input id="emwrMaterialSearch" type="search" placeholder="Tìm vật tư theo tên hoặc mã…" autocomplete="off" aria-label="Tìm vật tư"><div class="emwr-tools"><button type="button" id="emwrMaterialClear">Bỏ chọn vật tư</button><span id="emwrMaterialCount" class="emwr-muted">0 vật tư được chọn</span></div><div id="emwrMaterial" class="emwr-materials" aria-label="Danh sách vật tư"></div>
           <div class="emwr-tools"><button type="button" id="emwrSelectAll">Chọn tất cả</button><button type="button" id="emwrClear">Bỏ chọn</button><span id="emwrCount" class="emwr-muted">0 công việc</span></div>
-          <div id="emwrJobs" class="emwr-jobs"><p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p></div>
+          <div id="emwrJobs" class="emwr-jobs"><p class="emwr-muted">Chọn vật tư để xem công việc đã liên kết.</p></div></div>
           <section id="emwrExportOptions" hidden class="emwr-export-options"><h3>Người thực hiện trên báo cáo</h3><p>Chọn Kỹ thuật để lấy tên từ danh sách nhân sự của dự án, hoặc tự điền tên.</p><label><input type="radio" name="emwrPerformerMode" value="technical" checked> Kỹ thuật – chọn tên trong dự án</label><div id="emwrProjectPeople" class="emwr-materials"></div><label><input type="radio" name="emwrPerformerMode" value="manual"> Tự điền tên</label><input id="emwrManualPerformer" type="text" placeholder="Nhập tên người thực hiện…" autocomplete="name"><div class="emwr-tools"><button type="button" id="emwrBackToTasks">Quay lại chọn công việc</button></div></section><div class="emwr-actions"><span id="emwrStatus" class="emwr-muted" role="status" aria-live="polite"></span><div><button type="button" class="emwr-close">Đóng</button> <button type="button" id="emwrExport" class="emwr-primary" disabled>Xuất PDF kèm ảnh</button></div></div>
         </section>`;
       modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
