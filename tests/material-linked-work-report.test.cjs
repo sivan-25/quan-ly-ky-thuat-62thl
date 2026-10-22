@@ -31,8 +31,14 @@ async function main() {
   const modal = w.document.getElementById("estaMaterialWorkReportModal");
   assert.equal(modal.hidden, false, "modal opens");
   const materialSelect = w.document.getElementById("emwrMaterial");
-  materialSelect.value = "mat-1";
-  materialSelect.dispatchEvent(new w.Event("change", {bubbles:true}));
+  const materialSearch = w.document.getElementById("emwrMaterialSearch");
+  assert.ok(materialSearch, "material search input should be available");
+  materialSearch.value = "LED";
+  materialSearch.dispatchEvent(new w.Event("input", {bubbles:true}));
+  assert.equal(materialSelect.querySelectorAll("input[data-material-id]").length, 1, "search filters material list");
+  const led = materialSelect.querySelector('input[data-material-id="mat-1"]');
+  led.checked = true;
+  led.dispatchEvent(new w.Event("change", {bubbles:true}));
   assert.equal(w.document.querySelectorAll("[data-emwr-task]").length, 2, "only jobs linked to the selected material appear");
   w.document.querySelectorAll("[data-emwr-task]").forEach(input => { input.checked=true; input.dispatchEvent(new w.Event("change", {bubbles:true})); });
   w.document.getElementById("emwrExport").click();
