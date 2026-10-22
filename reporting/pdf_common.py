@@ -50,10 +50,10 @@ FOOTER = "ESTA PROPERTY MANAGEMENT  ·  A L'MAK COMPANY  ·  HO CHI MINH CITY"
 IMAGE_COLS = 3
 IMAGE_CELL_HEIGHT = 50 * mm
 IMAGE_GAP = 3 * mm
-IMAGE_MAX_PX = 900
-IMAGE_JPEG_QUALITY = 72
+IMAGE_MAX_PX = 640
+IMAGE_JPEG_QUALITY = 62
 IMAGE_CACHE_LIMIT = 192
-IMAGE_WORKERS = 8
+IMAGE_WORKERS = 12
 
 _FONTS_READY = False
 _CACHE_LOCK = threading.Lock()
@@ -258,7 +258,7 @@ def process_image_bytes(
         image = image.resize(target, PILImage.Resampling.LANCZOS, reducing_gap=3.0)
 
     out = io.BytesIO()
-    image.save(out, "JPEG", quality=quality, optimize=True)
+    image.save(out, "JPEG", quality=quality, optimize=False)
     data = out.getvalue()
     width, height = image.size
     prepared = ProcessedImage(data, width, height, key[0])
@@ -320,7 +320,7 @@ def prepare_remote_images(
             return cache_id, None, True
 
     unique_pairs = list(keyed.values())
-    max_workers = max(1, min(int(workers or 1), len(unique_pairs) or 1, 8))
+    max_workers = max(1, min(int(workers or 1), len(unique_pairs) or 1, 12))
     prepared_by_id: dict[str, Optional[ProcessedImage]] = {}
     missing_by_id: dict[str, bool] = {}
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
