@@ -100,10 +100,22 @@
         </section>`;
       modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
       modal.querySelectorAll(".emwr-close").forEach(b => b.addEventListener("click", closeModal));
-      $("#emwrMaterial", modal).addEventListener("change", e => { const id=e.target.dataset.materialId; if(!id)return; if(e.target.checked)selectedMaterialIds.add(id);else selectedMaterialIds.delete(id); selectedTaskIds=new Set(); updateMaterialCount(); renderJobs(); });
+      $("#emwrMaterial", modal).addEventListener("change", e => {
+        const input = e.target.closest("input[data-material-id]");
+        if (!input) return;
+        const id = input.dataset.materialId;
+        if (input.checked) selectedMaterialIds.add(id); else selectedMaterialIds.delete(id);
+        updateMaterialCount(); renderJobs();
+      });
       $("#emwrMaterialSearch", modal).addEventListener("input", renderMaterials);
-      $("#emwrMaterialSelectVisible", modal).addEventListener("click", () => { $("#emwrMaterial").querySelectorAll(".emwr-material:not([hidden]) input[data-material-id]").forEach(input=>selectedMaterialIds.add(input.dataset.materialId)); renderMaterials(); selectedTaskIds=new Set(); renderJobs(); updateMaterialCount(); });
-      $("#emwrMaterialClear", modal).addEventListener("click", () => { selectedMaterialIds=new Set(); renderMaterials(); selectedTaskIds=new Set(); renderJobs(); updateMaterialCount(); });
+      $("#emwrMaterialSelectVisible", modal).addEventListener("click", () => {
+        $("#emwrMaterial").querySelectorAll(".emwr-material:not([hidden]) input[data-material-id]").forEach(input => selectedMaterialIds.add(input.dataset.materialId));
+        renderMaterials(); renderJobs(); updateMaterialCount();
+      });
+      $("#emwrMaterialClear", modal).addEventListener("click", () => {
+        selectedMaterialIds = new Set(); selectedTaskIds = new Set();
+        renderMaterials(); renderJobs(); updateMaterialCount();
+      });
       $("#emwrSelectAll", modal).addEventListener("click", () => { selectedTaskIds=new Set(linkedTasks().map(t=>String(t.id))); renderJobs(); });
       $("#emwrClear", modal).addEventListener("click", () => { selectedTaskIds=new Set(); renderJobs(); });
       $("#emwrExport", modal).addEventListener("click", exportReport);
@@ -130,7 +142,6 @@
     const q=norm($("#emwrMaterialSearch")?.value||"");
     const list=materials().filter(m=>!q||norm(m.name).includes(q)||norm(m.code).includes(q));
     host.innerHTML=list.map(m=>'<label class="emwr-material"><input type="checkbox" data-material-id="'+esc(m.id)+'"'+(selectedMaterialIds.has(String(m.id))?" checked":"")+'><span><strong>'+esc(m.name)+'</strong>'+(m.code?'<small> · '+esc(m.code)+'</small>':'')+'</span></label>').join("")||'<p class="emwr-muted">Không tìm thấy vật tư phù hợp.</p>';
-    host.querySelectorAll("input[data-material-id]").forEach(input=>input.addEventListener("change",()=>{const id=input.dataset.materialId;if(input.checked)selectedMaterialIds.add(id);else selectedMaterialIds.delete(id);selectedTaskIds=new Set();updateMaterialCount();renderJobs();}));
   }
   function updateMaterialCount(){const el=$("#emwrMaterialCount");if(el)el.textContent=selectedMaterialIds.size+" vật tư được chọn";}
   function closeModal() { const modal=$("#estaMaterialWorkReportModal"); if(modal) modal.hidden=true; }
@@ -207,7 +218,7 @@
         periodLabel:"DỰ ÁN "+projectName()+" · "+selected.length+" CÔNG VIỆC",
         building:projectName(),
         columns,rows,photos,
-        signer:null
+        signer:{name:"",image_data_url:""}
       });
       if(ok){ $("#emwrStatus").textContent="Đã xuất PDF thành công · "+selected.length+" công việc · "+photos.length+" ảnh."; }
       else { $("#emwrStatus").textContent="Chưa xuất PDF. Kiểm tra thông báo trên màn hình."; }
