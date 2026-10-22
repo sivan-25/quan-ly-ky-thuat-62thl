@@ -72,7 +72,7 @@
       #estaMaterialWorkReportModal .emwr-muted{font-size:12px;color:#625045;margin:0 0 12px}
       #estaMaterialWorkReportModal .emwr-close{font-size:24px;line-height:1;border:0;background:transparent;color:#411437;cursor:pointer}
       #estaMaterialWorkReportModal .emwr-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
-      #estaMaterialWorkReportModal #emwrMaterialSearch{box-sizing:border-box;width:100%;margin-top:8px;padding:10px 12px;border:1px solid #a99586;border-radius:9px;background:#fffaf0;color:#30262c}
+      #estaMaterialWorkReportModal #emwrMaterialSearch{box-sizing:border-box;width:100%;min-width:0;font-size:16px;line-height:1.35;margin-top:8px;padding:10px 12px;border:1px solid #a99586;border-radius:9px;background:#fffaf0;color:#30262c;touch-action:manipulation}
       #estaMaterialWorkReportModal .emwr-materials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}
       #estaMaterialWorkReportModal .emwr-material{display:flex;align-items:flex-start;gap:8px;padding:9px;border:1px solid #d2c2ae;border-radius:9px;background:#fffaf0;font-size:12px}
       #estaMaterialWorkReportModal .emwr-material input{accent-color:#411437;flex:none;margin-top:2px}
@@ -152,7 +152,7 @@
     $("#emwrStatus").textContent = "";
     $("#emwrExport").disabled = true;
     $("#estaMaterialWorkReportModal").hidden = false;
-    $("#emwrMaterialSearch").value=""; updateMaterialCount(); $("#emwrMaterialSearch").focus();
+    $("#emwrMaterialSearch").value=""; updateMaterialCount();
   }
   function renderMaterials() {
     const host=$("#emwrMaterial");
@@ -236,7 +236,7 @@
         periodLabel:"DỰ ÁN "+projectName()+" · "+selected.length+" CÔNG VIỆC",
         building:projectName(),
         columns,rows,photos,
-        signer:{name:"",image_data_url:""}
+        signer:{name:"Sĩ Văn",image_data_url:""}
       });
       if(ok){ $("#emwrStatus").textContent="Đã xuất PDF thành công · "+selected.length+" công việc · "+photos.length+" ảnh."; }
       else { $("#emwrStatus").textContent="Chưa xuất PDF. Kiểm tra thông báo trên màn hình."; }
@@ -250,7 +250,7 @@
     const observer=new MutationObserver(()=>{ if(!$("#estaMaterialWorkReportLaunch"))ensureUI(); });
     const app=$("#app");
     if(app)observer.observe(app,{childList:true,subtree:true});
-    document.addEventListener("visibilitychange",()=>{ if(!document.hidden && $("#estaMaterialWorkReportModal")&&!$("#estaMaterialWorkReportModal").hidden){ const selected=$("#emwrMaterial"); if(selected)renderJobs(); }});
+    // Do not rebuild the full jobs list on tab visibility changes: this caused scroll jumps and selection flicker.
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
