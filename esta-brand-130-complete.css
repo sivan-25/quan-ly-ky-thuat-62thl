@@ -1168,6 +1168,8 @@ body.estaBrand130 #app.estaBrand130#app :is(
   #incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage
 ) :is(.workTaskTable thead th,.energyHistoryTable thead th,.demoTable thead th,
      .rc-table thead th,.toolsTable thead th,.ccTable thead th){
+  background:#411437!important;
+  border-color:#A46427!important;
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
