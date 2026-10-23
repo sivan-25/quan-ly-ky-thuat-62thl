@@ -1367,3 +1367,26 @@ body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane #stockAlertCount
   background:#FDE8E8!important;border:1px solid #F1B5B5!important;
   color:#991B1B!important;-webkit-text-fill-color:#991B1B!important;
 }
+
+
+/* Inventory tools pane is separate from the materials pane in the legacy layout. */
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane :is(
+  .inventoryCommandControls,.inventoryCommandMeta,.inventoryYearOnly,.inventoryToolbar,
+  .inventorySectionBar,.inventoryCommand,.inventoryStats,.inventoryQuickAdd
+){
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane :is(.inventoryCommandMeta label,.inventoryYearOnly label,.inventoryYearOnly small){
+  background:#FBF3E3!important;border-color:#CFB394!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane :is(.inventoryCommandMeta label,.inventoryYearOnly label) *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+/* Copper is reserved as a border/accent; use a darker accessible tone for small kicker text. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(.inventoryKicker,.inventoryCardTitle .inventoryKicker),
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(.inventoryKicker,.inventoryCardTitle .inventoryKicker),
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane .inventoryKicker{
+  color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
+}
