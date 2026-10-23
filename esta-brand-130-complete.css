@@ -1139,3 +1139,28 @@ body.estaBrand130 #contractorJobModal#contractorJobModal .modalClose{
   background:#F5ECD0!important;border-color:#A46427!important;color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+
+/* Mobile contractor export/filter popovers sit on the plum hero but use light controls. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>summary,.contractorMobileFilter>summary){
+  background:#F5ECD0!important;border-color:#A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>summary,.contractorMobileFilter>summary) *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>div,.contractorMobileFilter>div,.contractorMobileMenu>div){
+  background:#FBF3E3!important;border:1px solid #D8BEA0!important;
+  color:#2B1526!important;box-shadow:0 12px 28px rgba(43,21,38,.12)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>div button,.contractorMobileMenu>div button){
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorMobileFilter label{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorMobileFilter label :is(span,small){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
