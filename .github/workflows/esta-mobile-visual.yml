@@ -47,7 +47,9 @@ jobs:
         run: |
           npm ci
           npm install --no-save --no-package-lock playwright@1.56.1 pngjs@7
-          npx playwright install --with-deps chromium
+          # GitHub's ubuntu-latest image already includes Chromium's shared system libraries.
+          # Install only the Playwright browser here; avoid a full apt dependency refresh on every CSS commit.
+          npx playwright install chromium
       - name: Start isolated static test servers
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 --directory baseline > /tmp/esta-baseline.log 2>&1 &
