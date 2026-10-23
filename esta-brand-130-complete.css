@@ -1164,3 +1164,14 @@ body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorMobileFilter 
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorMobileFilter label :is(span,small){
   color:#411437!important;-webkit-text-fill-color:#411437!important;
 }
+
+
+/* Table header cells inside branded dark table rails need cream foreground directly. */
+body.estaBrand130 #app.estaBrand130#app :is(
+  #workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,
+  #incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage
+) :is(.workTaskTable thead th,.energyHistoryTable thead th,.demoTable thead th,
+     .rc-table thead th,.toolsTable thead th,.ccTable thead th){
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
