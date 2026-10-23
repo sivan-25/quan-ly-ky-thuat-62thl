@@ -819,3 +819,69 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm #energyDate::-we
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyDateCompact{
   color:#411437!important;
 }
+
+
+/* Inventory / tools: neutralize legacy navy surfaces that conflict with ESTA
+   plum text, while keeping meaningful warning and success colors. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(
+  .inventoryWorkspace,.inventoryPane,.inventoryMonthRail,.inventoryMonthTabs,
+  .inventoryTableCard,.inventoryTableScroll,.inventorySupportGrid,.inventoryCommand,
+  .inventoryStats,.inventorySectionBar,.inventory130ListBar,.inventory130QuickMenu,
+  .inventoryQuickAdd,.inventoryMetric,.inventoryEmpty,.inventorySearch,.inventorySupportCard
+){
+  background:#F5ECD0!important;
+  border-color:#D8BEA0!important;
+  color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(.inventoryTableCard,.inventoryTableScroll,.inventoryEmpty){
+  background:#FBF3E3!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryTableCard th{
+  background:#EBD7BE!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+  border-color:#D8BEA0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryTableCard td{
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#E5D4BF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),select,textarea){
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#CFB394!important;
+  box-shadow:none!important;
+  color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),textarea)::placeholder{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+  opacity:1!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric{
+  background:#FFF0CC!important;
+  border-color:#E6C77F!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric :is(small,b,em,span){
+  color:#7C4C00!important;
+  -webkit-text-fill-color:#7C4C00!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty{
+  background:#EAF8F1!important;
+  color:#335D4A!important;
+  border:1px solid #B7DDC9!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty :is(span,b,small){
+  color:#335D4A!important;
+  -webkit-text-fill-color:#335D4A!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #inventory130QuickMenu summary{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
