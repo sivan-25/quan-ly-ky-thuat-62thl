@@ -1080,3 +1080,62 @@ body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorProfileFo
   background:#411437!important;border-color:#A46427!important;color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
+
+
+/* Contractor detail mode and modal/drawer surfaces follow the same theme. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorProfile,.contractorDetailTop,.contractorContactGrid,.contractorJobsPanel,.contractorJobsHead,.contractorJobList,.contractorJobCard,.contractorJobContent,.contractorJobDiagnosis>div,.contractorJobNote){
+  background:#FBF3E3!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain>span{
+  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain h1{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain p{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorRowActions button.danger,.contractorJobActions button.danger){
+  background:#FDE8E8!important;border-color:#F1B5B5!important;
+  color:#991B1B!important;-webkit-text-fill-color:#991B1B!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorModalCard,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorModalCard{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorModalHead,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorModalHead{
+  background:#411437!important;border-color:#A46427!important;color:#F3DEBF!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorModalHead *,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorModalHead *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorForm label>span,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorForm label>span{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorForm :is(input,select,textarea),
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorForm :is(input,select,textarea){
+  background:#FBF3E3!important;border-color:#CFB394!important;color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;color-scheme:light!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorForm :is(input,textarea)::placeholder,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorForm :is(input,textarea)::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorProfileFormActions,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorProfileFormActions{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;box-shadow:none!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorProfileFormActions button[type="submit"],
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorProfileFormActions button[type="submit"]{
+  background:#411437!important;border-color:#A46427!important;color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .modalClose,
+body.estaBrand130 #contractorJobModal#contractorJobModal .modalClose{
+  background:#F5ECD0!important;border-color:#A46427!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
