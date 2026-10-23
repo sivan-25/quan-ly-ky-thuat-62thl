@@ -1248,3 +1248,56 @@ body.estaBrand130 #app.estaBrand130#app #workPage .rowActionMenu>div button{
   background:#FBF3E3!important;border-color:#D8BEA0!important;
   color:#411437!important;-webkit-text-fill-color:#411437!important;
 }
+
+
+/* Energy history search and performer selector are light controls on the cream surface. */
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySearch{
+  background:#FBF3E3!important;border-color:#CFB394!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySearch input{
+  background:#FBF3E3!important;color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;border-color:#CFB394!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySearch input::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleButton{
+  background:#F5ECD0!important;border-color:#A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleButton :is(span,b,em,i,svg){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleButton .peopleButtonSummary>em{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;
+}
+/* Energy performer picker popup matches the branded modal language. */
+body.estaBrand130 #app.estaBrand130#app #energyPage :is(#energyPeopleMenu,.peopleSelectMenu){
+  background:#FBF3E3!important;border-color:#D8BEA0!important;color:#2B1526!important;
+  box-shadow:0 18px 34px rgba(43,21,38,.12)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleMenuHead{
+  background:#411437!important;border-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleMenuHead :is(b,span){
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOptions{
+  background:#FBF3E3!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption :is(.peopleName,.peopleAvatar){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption.selected{
+  background:#DDF5F5!important;border-color:#8ACBCB!important;box-shadow:inset 3px 0 0 #2B7A78!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption.selected :is(.peopleName,.peopleAvatar){
+  color:#155E63!important;-webkit-text-fill-color:#155E63!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleEditBtn{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
