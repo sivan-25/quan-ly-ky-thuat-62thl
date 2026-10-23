@@ -1171,3 +1171,25 @@ body.estaBrand130 #app.estaBrand130#app :is(
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
+
+
+/* Energy tabs: explicit selected/unselected states after legacy blue tab rules. */
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button.active,
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button[aria-selected="true"]{
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button.active *,
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button[aria-selected="true"] *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
