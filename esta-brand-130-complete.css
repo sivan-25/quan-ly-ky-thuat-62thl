@@ -1193,3 +1193,14 @@ body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button.active *,
 body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button[aria-selected="true"] *{
   color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
 }
+
+
+/* Demo/incident/inspection hero utility buttons: light ESTA buttons on plum heroes. */
+body.estaBrand130 #app.estaBrand130#app :is(#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage) .demoHeroActions .demoBtn{
+  background:#F5ECD0!important;background-image:none!important;
+  border:1px solid #A46427!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app :is(#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage) .demoHeroActions .demoBtn *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
