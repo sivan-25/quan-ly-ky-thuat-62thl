@@ -661,3 +661,12 @@ body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.risk,
 body.estaBrand130 #app.estaBrand130 .updateHealthMini.risk{color:#9B5E34!important}
 body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.danger,
 body.estaBrand130 #app.estaBrand130 .updateHealthMini.danger{color:#9C4242!important}
+
+/* Health score is a separate sibling of the hero, so it needs its own dark-text-surface rule. */
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore :is(span,small){
+  color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.good strong{color:#A9E0C3!important}
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.watch strong{color:#F2D69B!important}
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.risk strong{color:#EFC084!important}
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.danger strong{color:#F1A0A0!important}
