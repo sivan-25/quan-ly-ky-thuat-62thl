@@ -761,3 +761,15 @@ body.estaBrand130 #app.estaBrand130#app #estaBottomNav button[aria-current="page
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+/* Work list metadata and task-field placeholders still had legacy blue overrides. */
+body.estaBrand130 #app.estaBrand130#app#app #workPage #count{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+}
+body.estaBrand130 #app.estaBrand130#app#app #workPage input::placeholder,
+body.estaBrand130 #app.estaBrand130#app#app #workPage textarea::placeholder{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+  opacity:1!important;
+}
