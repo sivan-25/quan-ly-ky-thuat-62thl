@@ -885,3 +885,30 @@ body.estaBrand130 #app.estaBrand130#app #inventoryPage #inventory130QuickMenu su
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+
+/* Inventory metric values retain semantic hues, but use darker accessible tones. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.inMetric b{
+  color:#166534!important;-webkit-text-fill-color:#166534!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.outMetric b{
+  color:#92400E!important;-webkit-text-fill-color:#92400E!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.stockMetric b{
+  color:#1D4ED8!important;-webkit-text-fill-color:#1D4ED8!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric :is(small,b,em,span){
+  color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
+}
+/* Accessible green empty-state icon on the pale success surface. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty>span{
+  background:#D1FAE5!important;
+  border:1px solid #A7F3D0!important;
+  color:#166534!important;
+  -webkit-text-fill-color:#166534!important;
+}
+/* The inventory transaction heading used a legacy pale foreground on light card. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCardTitle h3{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
