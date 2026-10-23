@@ -684,3 +684,16 @@ body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#invento
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+/* Match the legacy selector's ID-level specificity without depending on which
+   dashboard wrapper the action is mounted into. */
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:first-child{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:first-child *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
