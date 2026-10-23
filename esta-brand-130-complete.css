@@ -627,9 +627,9 @@ body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview :is(.u
 }
 /* High-contrast text on the hero; the first hero action is a light button. */
 body.estaBrand130 #app.estaBrand130 :is(.heroStrip,.homeWelcome,.unifiedCommand,.opsHero,.ccHero,.updateHero,.contractorIntro,.constructionCommand,.constructionIntro,.demoHero,.rc-heading,.maintenanceHero,.m130Header,.updateHealthScore,.workTaskTable thead,.energyHistoryTable thead,.demoTable thead,.rc-table thead,.toolsTable thead,.ccTable thead,#workSelectedPdfBar,.workSelectedPdfBar,#energyDeleteBar,.energyDeleteBar)
-:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div,svg,button)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div,svg)
 :not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"])
-:not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="typeBadge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *):not([class*="tag"] *):not([class*="Tag"] *):not([class*="priority"] *):not([class*="Priority"] *){
+:not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="typeBadge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *):not([class*="tag"] *):not([class*="Tag"] *):not([class*="priority"] *):not([class*="Priority"] *):not(button):not(button *):not([role="button"]):not([role="button"] *){
   color:#F3DEBF!important;
 }
 body.estaBrand130 #app.estaBrand130 .updateHeroTags b,
@@ -713,3 +713,24 @@ body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"] *{
 /* Match the specificity of the legacy hero text rule so color itself is correct,
    not only WebKit's text-fill paint. */
 body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"]:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"]):not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="typeBadge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *):not([class*="tag"] *):not([class*="Tag"] *):not([class*="priority"] *):not([class*="Priority"] *){color:#411437!important;-webkit-text-fill-color:#411437!important;background:#F5ECD0!important;border-color:#A46427!important;}
+
+/* Hero secondary actions stay cream on the dark translucent hero. */
+body.estaBrand130 #app.estaBrand130#app :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:not(:first-child){
+  background:rgba(43,21,38,.38)!important;
+  border-color:rgba(243,222,191,.48)!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:not(:first-child) *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+/* Keep toolbar and navigation buttons cream over plum, with light exceptions below. */
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]){
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
