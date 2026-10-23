@@ -788,3 +788,34 @@ body.estaBrand130 #app.estaBrand130#app #energyPage textarea::placeholder{
   opacity:1!important;
   -webkit-text-fill-color:#625045!important;
 }
+
+
+/* Final high-specificity ESTA controls for Energy: legacy #energyForm rules
+   used to win over the theme and put muted placeholders on navy fields. */
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm :is(input:not([type="date"]):not([type="file"]):not([type="hidden"]),textarea,select){
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#CFB394!important;
+  box-shadow:none!important;
+  color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm :is(input:not([type="date"]):not([type="file"]):not([type="hidden"]),textarea,select)::placeholder{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+  opacity:1!important;
+}
+/* Keep the native date field accessible while preserving the compact date overlay. */
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm #energyDate{
+  background:#FBF3E3!important;
+  border-color:#CFB394!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm #energyDate::-webkit-calendar-picker-indicator{
+  filter:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyDateCompact{
+  color:#411437!important;
+}
