@@ -709,3 +709,7 @@ body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"] *{
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+/* Match the specificity of the legacy hero text rule so color itself is correct,
+   not only WebKit's text-fill paint. */
+body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"]:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"]):not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="typeBadge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *):not([class*="tag"] *):not([class*="Tag"] *):not([class*="priority"] *):not([class*="Priority"] *){color:#411437!important;-webkit-text-fill-color:#411437!important;background:#F5ECD0!important;border-color:#A46427!important;}
