@@ -697,3 +697,15 @@ body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.opsHeroActions,.upd
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+/* Explicit action hook for the hero's first button; this button has no class. */
+body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"]{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"] *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
