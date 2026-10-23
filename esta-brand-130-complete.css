@@ -1321,3 +1321,14 @@ body.estaBrand130 #app.estaBrand130#app #energyPage :is(
 )::placeholder{
   color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
 }
+
+
+/* Shared project search is outside the page panels; give it a light field on the plum top bar. */
+body.estaBrand130 #app.estaBrand130#app #globalSearch{
+  background:#F5ECD0!important;border:1px solid #A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+  box-shadow:none!important;color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #globalSearch::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
