@@ -1332,3 +1332,38 @@ body.estaBrand130 #app.estaBrand130#app #globalSearch{
 body.estaBrand130 #app.estaBrand130#app #globalSearch::placeholder{
   color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
 }
+
+
+/* Inventory's actual materials pane is mounted beside #inventoryPage; style it too. */
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(
+  .inventoryCommandControls,.inventoryCommandMeta,.inventoryYearOnly,
+  .inventoryQuickMenu,.inventoryQuickPopover,.inventoryQuickPopoverHead,
+  .stockAlertHead,.stockAlertTitle,.inventoryTableCard,.transactionCard,
+  .inventoryCardTitle,.inventoryQuickAdd,.inventorySectionBar
+){
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(.inventoryTableCard,.transactionCard,.inventoryQuickPopover){
+  background:#FBF3E3!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(.inventoryCommandMeta label,.inventoryYearOnly label,.inventoryCardTitle h3,.inventoryCardTitle p,.inventoryQuickPopoverHead span,.inventoryQuickPopoverHead small,.stockAlertTitle h3,.stockAlertTitle p){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickMenu>summary{
+  background:#F5ECD0!important;border:1px solid #A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickMenu>summary *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickPopoverHead .inventoryKicker,
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .stockAlertTitle .inventoryKicker,
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryCardTitle .inventoryKicker{
+  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane #stockAlertCount{
+  background:#FDE8E8!important;border:1px solid #F1B5B5!important;
+  color:#991B1B!important;-webkit-text-fill-color:#991B1B!important;
+}
