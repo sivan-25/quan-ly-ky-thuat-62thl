@@ -1301,3 +1301,23 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleEdi
   background:#F5ECD0!important;border-color:#D8BEA0!important;color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+
+/* All Energy module text controls (including history search outside #energyForm) are light. */
+body.estaBrand130 #app.estaBrand130#app #energyPage :is(
+  input:not([type="date"]):not([type="file"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+  textarea,select
+){
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#CFB394!important;
+  color-scheme:light!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage :is(
+  input:not([type="date"]):not([type="file"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+  textarea
+)::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
