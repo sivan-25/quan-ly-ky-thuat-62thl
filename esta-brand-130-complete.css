@@ -574,3 +574,90 @@ body.estaBrand130 #app.estaBrand130 :is(input,select,textarea,button):focus-visi
   outline:2px solid var(--esta130-copper)!important;
   outline-offset:2px!important;
 }
+
+
+/* Dashboard still had a high-specificity legacy dark palette on .homeMode. */
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode){
+  --ov-navy:#411437!important;
+  --ov-deep:#2B1526!important;
+  --ov-cream:#F3DEBF!important;
+  --ov-surface:#F5ECD0!important;
+  --ov-panel:#F5ECD0!important;
+  --ov-control:#FBF3E3!important;
+  --ov-soft:#EAD6BD!important;
+  --ov-line:#D7BE9C!important;
+  --ov-hover:#EAD6BD!important;
+  --ov-muted:#625045!important;
+  --ov-text:#2B1526!important;
+  --ov-accent:#411437!important;
+  color-scheme:light!important;
+  background:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .homeDashboard,
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview{
+  background:#F3DEBF!important;
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanel,
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .updatePanel{
+  background:#F5ECD0!important;
+  border-color:#D7BE9C!important;
+  color:#2B1526!important;
+  box-shadow:0 8px 23px rgba(65,20,55,.08)!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanelHead{
+  background:#F5ECD0!important;
+  border-color:#D7BE9C!important;
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanelHead :is(h2,h3,p,span,small,button){
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanelHead :is(button,button *){color:#411437!important}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview :is(.updateFocusNow,.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini,.updateEmpty,.updateLoading,.updateEnergyBriefRow){
+  background:#F5ECD0!important;
+  border-color:#D7BE9C!important;
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview :is(.updateFocusHead h2,.updateFocusRow>div b,.updateSystemHealth div b,.updateEnergyBriefRow b,.updateTeamMini div b,.updateAttentionRow div b,.updateEmpty,.updateLoading,.updateFocusHead p,.updateFocusRow>span,.updateFocusRow>div small,.updateSystemHealth small,.updateEnergyBriefRow small,.updateAttentionRow small,.updateTeamMini small){
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview :is(.updateFocusHead>div>span,.updateFocusHead>button,.opsPanelHead>button){
+  color:#411437!important;
+}
+/* High-contrast text on the hero; the first hero action is a light button. */
+body.estaBrand130 #app.estaBrand130 :is(.heroStrip,.homeWelcome,.unifiedCommand,.opsHero,.ccHero,.updateHero,.contractorIntro,.constructionCommand,.constructionIntro,.demoHero,.rc-heading,.maintenanceHero,.m130Header,.updateHealthScore,.workTaskTable thead,.energyHistoryTable thead,.demoTable thead,.rc-table thead,.toolsTable thead,.ccTable thead,#workSelectedPdfBar,.workSelectedPdfBar,#energyDeleteBar,.energyDeleteBar)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div,svg,button)
+:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"])
+:not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="typeBadge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *):not([class*="tag"] *):not([class*="Tag"] *):not([class*="priority"] *):not([class*="Priority"] *){
+  color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130 .updateHeroTags b,
+body.estaBrand130 #app.estaBrand130 .opsHeroTags b{
+  background:#F5ECD0!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 .opsHeroActions button:first-child,
+body.estaBrand130 #app.estaBrand130 .updateHeroActions button:first-child{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.opsHeroActions button:first-child,.updateHeroActions button:first-child) *{
+  color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore :is(span,small){color:#F3DEBF!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.good strong{color:#A9E0C3!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.watch strong{color:#F2D69B!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.risk strong{color:#EFC084!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.danger strong{color:#F1A0A0!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.good,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.good{color:#39765B!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.watch,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.watch{color:#94672C!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.risk,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.risk{color:#9B5E34!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.danger,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.danger{color:#9C4242!important}
