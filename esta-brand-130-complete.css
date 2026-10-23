@@ -670,3 +670,17 @@ body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#invento
 body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.watch strong{color:#F2D69B!important}
 body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.risk strong{color:#EFC084!important}
 body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.danger strong{color:#F1A0A0!important}
+
+/* The dashboard's high-specificity dark-surface rule includes ID selectors.
+   Match that specificity for the light primary action to keep its text plum. */
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .opsHeroActions button:first-child,
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHeroActions button:first-child{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) :is(.opsHeroActions button:first-child,.updateHeroActions button:first-child) *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
