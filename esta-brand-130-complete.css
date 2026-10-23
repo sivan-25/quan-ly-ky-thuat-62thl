@@ -1233,3 +1233,18 @@ body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button.active{
 body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button.active *{
   color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
 }
+
+
+/* Work-row overflow menu: readable light trigger and popover on cream task tables. */
+body.estaBrand130 #app.estaBrand130#app #workPage .rowActionMenu>summary{
+  background:#F5ECD0!important;border:1px solid #A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .rowActionMenu>div{
+  background:#FBF3E3!important;border:1px solid #D8BEA0!important;
+  color:#2B1526!important;box-shadow:0 12px 28px rgba(43,21,38,.12)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .rowActionMenu>div button{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
