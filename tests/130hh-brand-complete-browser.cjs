@@ -143,7 +143,7 @@ async function prep(page,p){
         const threshold=(size>=24||(size>=18.66&&weight>=700))?3:4.5;
         const bg=backgrounds(el);
         const worst=Math.min(...bg.map(c=>ratio(fg,c)));
-        if(worst+0.12<threshold)failures.push({tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,70),text:(el.innerText||el.textContent||"").trim().replace(/\s+/g," ").slice(0,50),color:st.color,bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:threshold});
+        if(worst+0.12<threshold)failures.push({tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,70),text:(el.innerText||el.textContent||"").trim().replace(/\s+/g," ").slice(0,50),color:st.color,textFill:st.webkitTextFillColor,html:el.outerHTML.slice(0,180),ancestors:[el.parentElement,el.parentElement?.parentElement,el.parentElement?.parentElement?.parentElement].filter(Boolean).map(n=>n.tagName.toLowerCase()+"#"+n.id+"."+String(n.className||"").replace(/\s+/g,".").slice(0,90)),actionMatch:el.matches('button[data-update-action="work-new"]'),heroActions:!!el.closest(".opsHeroActions"),updateHeroActions:!!el.closest(".updateHeroActions"),bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:threshold});
       }
       for(const el of document.body.querySelectorAll('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea')){
         if(!el.getClientRects().length||el.closest('.hide,[aria-hidden="true"]'))continue;
