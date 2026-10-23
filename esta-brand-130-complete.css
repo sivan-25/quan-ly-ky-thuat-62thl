@@ -1204,3 +1204,13 @@ body.estaBrand130 #app.estaBrand130#app :is(#incidentPage,#inspectionPage,#docum
 body.estaBrand130 #app.estaBrand130#app :is(#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage) .demoHeroActions .demoBtn *{
   color:#411437!important;-webkit-text-fill-color:#411437!important;
 }
+
+
+/* Documents page category tiles were still using legacy navy backgrounds. */
+body.estaBrand130 #app.estaBrand130#app #documentsPage :is(.demoDocCats,.demoDocCat){
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #documentsPage .demoDocCat :is(b,span,small){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
