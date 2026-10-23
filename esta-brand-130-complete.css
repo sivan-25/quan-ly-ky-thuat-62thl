@@ -1214,3 +1214,20 @@ body.estaBrand130 #app.estaBrand130#app #documentsPage :is(.demoDocCats,.demoDoc
 body.estaBrand130 #app.estaBrand130#app #documentsPage .demoDocCat :is(b,span,small){
   color:#411437!important;-webkit-text-fill-color:#411437!important;
 }
+
+
+/* Report-period segments: selected period is plum with cream text; idle tabs are light. */
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button.active{
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button.active *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
