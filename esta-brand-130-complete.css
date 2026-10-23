@@ -773,3 +773,18 @@ body.estaBrand130 #app.estaBrand130#app#app #workPage textarea::placeholder{
   -webkit-text-fill-color:#625045!important;
   opacity:1!important;
 }
+
+/* Energy month/native pickers retained a legacy dark surface and placeholder. */
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyNativePicker{
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  border-color:#CFB394!important;
+  color-scheme:light!important;
+  -webkit-text-fill-color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage input::placeholder,
+body.estaBrand130 #app.estaBrand130#app #energyPage textarea::placeholder{
+  color:#625045!important;
+  opacity:1!important;
+  -webkit-text-fill-color:#625045!important;
+}
