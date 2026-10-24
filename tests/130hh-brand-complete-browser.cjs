@@ -160,7 +160,7 @@ async function prep(page,p){
       const root=document.querySelector("#workPage");
       const colorOf=el=>el?getComputedStyle(el).color:"";
       const statCountColor=colorOf(document.querySelector("#statToday"));
-      const tableCountColor=colorOf(document.querySelector("#count"));
+      const tableCountColor=colorOf(document.querySelector("#workPage .workTableMeta #count"));
 
       const star=document.createElement("button");
       star.type="button";star.className="estaPriorityStar is-marked";star.setAttribute("aria-pressed","true");
