@@ -10535,3 +10535,55 @@ body.workEditOpen{overflow:hidden!important}
   }
   #contractorPage .contractorSearch input{min-width:0!important}
 }
+
+
+/* ESTA follow-up: status filter KPI contrast and energy value/unit hierarchy */
+#incidentPage .demoKpi.demoIncidentFilterKpi{
+  cursor:pointer!important;
+  border:1px solid #ded2dc!important;
+  background:#fffdf9!important;
+  color:#411437!important;
+  box-shadow:0 3px 12px rgba(65,20,55,.05)!important;
+  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease!important;
+}
+#incidentPage .demoKpi.demoIncidentFilterKpi b,
+#incidentPage .demoKpi.demoIncidentFilterKpi span,
+#incidentPage .demoKpi.demoIncidentFilterKpi small,
+#incidentPage .demoKpi.demoIncidentFilterKpi i{
+  color:#55404f!important;
+}
+#incidentPage .demoKpi.demoIncidentFilterKpi b{color:#411437!important}
+#incidentPage .demoKpi.demoIncidentFilterKpi.active{
+  border-color:#5a244d!important;
+  background:#5a244d!important;
+  box-shadow:0 0 0 2px rgba(90,36,77,.13)!important;
+}
+#incidentPage .demoKpi.demoIncidentFilterKpi.active b,
+#incidentPage .demoKpi.demoIncidentFilterKpi.active span,
+#incidentPage .demoKpi.demoIncidentFilterKpi.active small,
+#incidentPage .demoKpi.demoIncidentFilterKpi.active i{color:#fff!important}
+#incidentPage .demoKpi.demoIncidentFilterKpi:focus-visible{
+  outline:3px solid #b68b57!important;outline-offset:2px!important;
+}
+#energyPage .energySummaryCards .summaryIcon{
+  background:#5a244d!important;color:#fff!important;
+}
+#energyPage .energySummaryCards .summaryIcon svg{
+  color:inherit!important;stroke:currentColor!important;
+}
+#energyPage .energySummaryCards small{color:#625045!important}
+#energyPage .energySummaryCards strong{color:#411437!important;font-variant-numeric:tabular-nums}
+#energyPage .energySummaryCards .unit,
+#energyPage .energySummaryCards em,
+#energyPage .energySummaryCards .energyUnit,
+#energyPage .energySummaryCards [class*="unit"]{
+  color:#625045!important;
+}
+#energyPage .energyPhotoActions button:focus-visible,
+#contractorPage button:focus-visible,
+#inventoryPage .materialMonthTabs button:focus-visible{
+  outline:3px solid #b68b57!important;outline-offset:2px!important;
+}
+#inventoryPage #materialMonthTabs .yearOverviewBtn{
+  min-width:64px!important;font-weight:800!important;
+}
