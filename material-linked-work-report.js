@@ -63,10 +63,21 @@
     const style = document.createElement("style");
     style.id = "estaMaterialWorkReportStyles";
     style.textContent = `
-      #estaMaterialWorkReportLaunch{display:inline-flex;align-items:center;gap:7px;margin:8px 0;padding:9px 12px;border:1px solid #a46427;border-radius:10px;background:#411437;color:#f5ecd0;font-weight:750;cursor:pointer}
+      #estaMaterialWorkReportLaunch{display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:0 0 auto;min-height:34px;margin:0;padding:6px 9px;border:1px solid #a46427;border-radius:8px;background:#411437;color:#f5ecd0;font-size:11px;line-height:1.15;font-weight:750;white-space:nowrap;cursor:pointer}
+      #estaMaterialWorkReportLaunch:hover{filter:brightness(1.08)}
+      #estaMaterialWorkReportLaunch:focus-visible{outline:2px solid #a46427;outline-offset:2px}
+      @media(max-width:640px){#estaMaterialWorkReportLaunch{min-height:32px;padding:5px 7px;font-size:10px;gap:4px}}
       #estaMaterialWorkReportModal{position:fixed;inset:0;z-index:1200;background:rgba(20,14,22,.58);display:flex;align-items:center;justify-content:center;padding:12px}#estaMaterialWorkReportModal .emwr-card[data-page="people"] #emwrTaskPage{display:none}#estaMaterialWorkReportModal .emwr-card[data-page="tasks"] #emwrExportOptions{display:none!important}
       #estaMaterialWorkReportModal[hidden]{display:none!important}
-      #estaMaterialWorkReportModal .emwr-card{width:min(760px,100%);max-height:min(88dvh,900px);overflow:auto;background:#f5ecd0;color:#30262c;border:1px solid #a99586;border-radius:16px;box-shadow:0 18px 55px #0004;padding:16px}
+      #estaMaterialWorkReportModal .emwr-card{box-sizing:border-box;display:flex;flex-direction:column;width:min(760px,100%);height:min(760px,88dvh);max-height:88dvh;min-height:0;overflow:hidden;background:#f5ecd0;color:#30262c;border:1px solid #a99586;border-radius:16px;box-shadow:0 18px 55px #0004;padding:16px}
+      #estaMaterialWorkReportModal .emwr-head,#estaMaterialWorkReportModal .emwr-actions{flex:0 0 auto}
+      #estaMaterialWorkReportModal #emwrTaskPage{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden}
+      #estaMaterialWorkReportModal #emwrMaterialSearch{flex:0 0 auto}
+      #estaMaterialWorkReportModal .emwr-materials{flex:0 0 auto;max-height:clamp(90px,18dvh,160px);overflow-y:auto;overscroll-behavior:contain}
+      #estaMaterialWorkReportModal #emwrJobs{display:block;flex:1 1 auto;min-height:80px;max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable;padding:2px 5px 8px 0}
+      #estaMaterialWorkReportModal .emwr-tools{flex:0 0 auto}
+      #estaMaterialWorkReportModal #emwrExportOptions{flex:1 1 auto;min-height:0;overflow-y:auto}
+      #estaMaterialWorkReportModal .emwr-actions{padding-top:10px;border-top:1px solid #d2c2ae}
       #estaMaterialWorkReportModal .emwr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
       #estaMaterialWorkReportModal h2{font-size:19px;margin:0 0 5px;color:#411437}
       #estaMaterialWorkReportModal .emwr-export-options{margin-top:12px;padding:12px;border:1px solid #a99586;border-radius:10px;background:#fff8ea}#estaMaterialWorkReportModal .emwr-export-options h3{margin:0 0 6px;color:#411437;font-size:16px}#estaMaterialWorkReportModal .emwr-export-options>label{display:block;margin:9px 0;font-weight:650}#estaMaterialWorkReportModal #emwrManualPerformer{box-sizing:border-box;width:100%;min-width:0;font-size:16px;padding:10px;border:1px solid #a99586;border-radius:8px;background:#fff;color:#30262c}
@@ -87,7 +98,7 @@
       #estaMaterialWorkReportModal .emwr-actions button,#estaMaterialWorkReportModal .emwr-tools button{border:1px solid #a46427;border-radius:9px;padding:9px 12px;background:#fffaf0;color:#411437;font-weight:700;cursor:pointer}
       #estaMaterialWorkReportModal .emwr-actions .emwr-primary{background:#411437;color:#f5ecd0}
       #estaMaterialWorkReportModal button:disabled{opacity:.45;cursor:not-allowed}
-      @media(max-width:640px){#estaMaterialWorkReportModal{padding:8px;align-items:flex-end}#estaMaterialWorkReportModal .emwr-card{max-height:92dvh;padding:13px;border-radius:14px}#estaMaterialWorkReportModal h2{font-size:17px}}
+      @media(max-width:640px){#estaMaterialWorkReportModal{padding:8px;align-items:center}#estaMaterialWorkReportModal .emwr-card{height:88dvh;max-height:88dvh;min-height:0;padding:12px;border-radius:14px}#estaMaterialWorkReportModal h2{font-size:17px}#estaMaterialWorkReportModal #emwrJobs{min-height:70px}#estaMaterialWorkReportModal .emwr-materials{max-height:16dvh}}
     `;
     document.head.appendChild(style);
   }
@@ -98,11 +109,17 @@
       launch = document.createElement("button");
       launch.type = "button";
       launch.id = "estaMaterialWorkReportLaunch";
-      launch.textContent = "▤ Công việc theo vật tư · Xuất PDF";
+      launch.textContent = "▤ CV theo vật tư · PDF";
+      launch.title = "Mở công việc liên kết với vật tư và xuất PDF";
+      launch.setAttribute("aria-label", "Công việc liên kết với vật tư và xuất PDF");
       launch.addEventListener("click", openModal);
-      const page = $("#inventoryPage");
-      const anchor = page?.querySelector(".inventorySwitchBar");
-      if (page && anchor) anchor.insertAdjacentElement("afterend", launch);
+      const topbarTools = document.querySelector(".estaTopbar .headerTools");
+      if (topbarTools) topbarTools.insertAdjacentElement("afterbegin", launch);
+      else {
+        const page = $("#inventoryPage");
+        const anchor = page?.querySelector(".inventorySwitchBar");
+        if (page && anchor) anchor.insertAdjacentElement("afterend", launch);
+      }
     }
     if (!$("#estaMaterialWorkReportModal")) {
       const modal = document.createElement("div");
