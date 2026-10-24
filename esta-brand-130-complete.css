@@ -449,3 +449,981 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
  border-color:#D7BE9C!important;
  color:#2B1526!important;
 }
+
+
+/* 130HH — final text-contrast guard.
+   Legacy module CSS sometimes assigns its own text color after the shared card
+   backgrounds change. Scope this layer to the active 130HH app/body only. */
+body.estaBrand130 #app.estaBrand130{
+  --esta130-text:#2B1526;
+  --esta130-secondary:#625045;
+  color:#2B1526!important;
+  color-scheme:light;
+}
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div):where(:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"]):not(button)){
+  color:var(--esta130-text)!important;
+}
+/* The named dark brand surfaces always use cream text, including nested labels. */
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage)
+:is(.homeWelcome,.unifiedCommand,.opsHero,.ccHero,.updateHero,.heroStrip,.contractorIntro,.constructionCommand,.constructionIntro,.demoHero,.rc-heading,.maintenanceHero,.m130Header,.workTaskTable thead,.energyHistoryTable thead,.demoTable thead,.rc-table thead,.toolsTable thead,.ccTable thead,#workSelectedPdfBar,.workSelectedPdfBar,#energyDeleteBar,.energyDeleteBar)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div,svg):where(:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"])){
+  color:var(--esta130-cream)!important;
+}
+/* Topbar, side navigation and bottom navigation are also dark surfaces. */
+body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,li,a,div,svg,button)
+:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"])
+:not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *){
+  color:var(--esta130-cream)!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
+  color:var(--esta130-cream)!important;
+}
+/* Dialogs/drawers are mounted beside #app, but inherit the 130HH body scope. */
+body.estaBrand130 :is(.workEditDrawerCard,.workEditDrawer .workEntryCard,.workEditDrawer .workEntryForm,.demoDrawerCard,.modalCard,.contractorModalCard,.jobModalCard,.inventoryModalCard,.demoIncidentModalCard,.demoChecklistModalCard,#m130Overlay .m130Dialog,.ccModalCard,.updateModalCard,.viewerCard,.rc-modal,.technicalDocumentModal,.peopleManagerModal)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div):where(:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"])){
+  color:var(--esta130-text)!important;
+}
+body.estaBrand130 :is(.workEditDrawerHead,.workEditDrawer .workEntryHeader,.demoDrawerHead,.demoIncidentModalHead,.demoChecklistModalHead,.contractorModalHead,.ccModalHead,.inventoryModalHead,.m130ModalHead)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,li,a,div,svg){
+  color:var(--esta130-cream)!important;
+}
+/* Light controls and their placeholder text must stay readable. */
+body.estaBrand130 #app.estaBrand130 :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea,.peopleSelectBtn,.peopleSelectMenu,.energyImagePicker,.imagePicker,.uploadBox){
+  background:#FBF3E3!important;
+  color:var(--esta130-text)!important;
+  border-color:#CFB394!important;
+  -webkit-text-fill-color:var(--esta130-text);
+}
+body.estaBrand130 #app.estaBrand130#app :is(input,textarea)::placeholder{
+  color:#625045!important;
+  opacity:1!important;
+  -webkit-text-fill-color:#625045;
+}
+body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractorModalCard,.jobModalCard,.inventoryModalCard,.ccModalCard,.updateModalCard,.peopleManagerModal,#m130Overlay .m130Dialog)
+:is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  border-color:#CFB394!important;
+  -webkit-text-fill-color:#2B1526;
+}
+body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractorModalCard,.jobModalCard,.inventoryModalCard,.ccModalCard,.updateModalCard,.peopleManagerModal,#m130Overlay .m130Dialog)
+:is(input,textarea)::placeholder{color:#625045!important;opacity:1!important;-webkit-text-fill-color:#625045}
+/* Neutral buttons default to dark plum; keep semantic status/danger buttons untouched. */
+body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="danger"]):not([class*="Danger"]):not([class*="delete"]):not([class*="Delete"]):not([class*="remove"]):not([class*="Remove"]){
+  color:var(--esta130-plum)!important;
+}
+body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="danger"]):not([class*="Danger"]):not([class*="delete"]):not([class*="Delete"]):not([class*="remove"]):not([class*="Remove"]) *{
+  color:inherit!important;
+}
+/* Reapply high-contrast button states after neutral/dark-surface rules. */
+body.estaBrand130 #app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.contractorPrimary,.constructionPrimaryBtn,.m130AddButton,#saveBtn,#energySaveBtn,.formPrimary,button[type="submit"].primary,.demoHeroActions .primary,.contractorBtn.primary,.demoBtn.primary,.rc-button.primary){
+  background:var(--esta130-plum)!important;
+  border-color:var(--esta130-plum)!important;
+  color:var(--esta130-cream)!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.contractorPrimary,.constructionPrimaryBtn,.m130AddButton,#saveBtn,#energySaveBtn,.formPrimary,button[type="submit"].primary,.demoHeroActions .primary,.contractorBtn.primary,.demoBtn.primary,.rc-button.primary) *{
+  color:var(--esta130-cream)!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.secondary,.inventorySecondary,.contractorBtn.secondary,.workCancel,.rc-button:not(.primary),.quickReturnAdmin){
+  background:var(--esta130-lift)!important;
+  border-color:var(--esta130-copper)!important;
+  color:var(--esta130-plum)!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.secondary,.inventorySecondary,.contractorBtn.secondary,.workCancel,.rc-button:not(.primary),.quickReturnAdmin) *{
+  color:var(--esta130-plum)!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.energyTabs button.active,.inventoryLocalTabs button.active,.inventoryMonthRail button.active,.demoTabs button.active,.demoTaskTabs button.active,.rc-segments button.active,.maintenanceViewSwitch button.active,.m130Months button.sel,.workTypeTabs button.active,.maintenanceViewSwitch button[aria-pressed="true"],.energyTabs button[aria-selected="true"]){
+  background:var(--esta130-plum)!important;
+  border-color:var(--esta130-copper)!important;
+  color:var(--esta130-cream)!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.energyTabs button.active,.inventoryLocalTabs button.active,.inventoryMonthRail button.active,.demoTabs button.active,.demoTaskTabs button.active,.rc-segments button.active,.maintenanceViewSwitch button.active,.m130Months button.sel,.workTypeTabs button.active,.maintenanceViewSwitch button[aria-pressed="true"],.energyTabs button[aria-selected="true"]) *{
+  color:var(--esta130-cream)!important;
+}
+body.estaBrand130 #app.estaBrand130 .estaTopbar .quickReturnAdmin,
+body.estaBrand130 #app.estaBrand130 #estaBottomNav button[aria-current="page"],
+body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
+  background:var(--esta130-soft)!important;
+  color:var(--esta130-plum)!important;
+}
+body.estaBrand130 #app.estaBrand130 .estaTopbar .quickReturnAdmin *,
+body.estaBrand130 #app.estaBrand130 #estaBottomNav button[aria-current="page"] *,
+body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active *{
+  color:var(--esta130-plum)!important;
+}
+/* The topbar search remains dark with cream text, including typed and placeholder text. */
+body.estaBrand130 #app.estaBrand130 .estaTopbar :is(.headerSearch,.ccTopSearch,.energySearch) input{
+  background:transparent!important;
+  color:var(--esta130-cream)!important;
+  -webkit-text-fill-color:var(--esta130-cream);
+}
+body.estaBrand130 #app.estaBrand130 .estaTopbar :is(.headerSearch,.ccTopSearch,.energySearch) input::placeholder{
+  color:#DFCEBE!important;
+  -webkit-text-fill-color:#DFCEBE;
+}
+body.estaBrand130 #app.estaBrand130 :is(input,select,textarea,button):focus-visible{
+  outline:2px solid var(--esta130-copper)!important;
+  outline-offset:2px!important;
+}
+
+
+/* Dashboard still had a high-specificity legacy dark palette on .homeMode. */
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode){
+  --ov-navy:#411437!important;
+  --ov-deep:#2B1526!important;
+  --ov-cream:#F3DEBF!important;
+  --ov-surface:#F5ECD0!important;
+  --ov-panel:#F5ECD0!important;
+  --ov-control:#FBF3E3!important;
+  --ov-soft:#EAD6BD!important;
+  --ov-line:#D7BE9C!important;
+  --ov-hover:#EAD6BD!important;
+  --ov-muted:#625045!important;
+  --ov-text:#2B1526!important;
+  --ov-accent:#411437!important;
+  color-scheme:light!important;
+  background:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .homeDashboard,
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview{
+  background:#F3DEBF!important;
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanel,
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .updatePanel{
+  background:#F5ECD0!important;
+  border-color:#D7BE9C!important;
+  color:#2B1526!important;
+  box-shadow:0 8px 23px rgba(65,20,55,.08)!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanelHead{
+  background:#F5ECD0!important;
+  border-color:#D7BE9C!important;
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanelHead :is(h2,h3,p,span,small,button){
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsPanelHead :is(button,button *){color:#411437!important}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview :is(.updateFocusNow,.updateFocusRow,.updateSystemHealth,.updateAttentionRow,.updateTeamMini,.updateEmpty,.updateLoading,.updateEnergyBriefRow){
+  background:#F5ECD0!important;
+  border-color:#D7BE9C!important;
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview :is(.updateFocusHead h2,.updateFocusRow>div b,.updateSystemHealth div b,.updateEnergyBriefRow b,.updateTeamMini div b,.updateAttentionRow div b,.updateEmpty,.updateLoading,.updateFocusHead p,.updateFocusRow>span,.updateFocusRow>div small,.updateSystemHealth small,.updateEnergyBriefRow small,.updateAttentionRow small,.updateTeamMini small){
+  color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130.homeMode.opsOverviewMode .opsOverview :is(.updateFocusHead>div>span,.updateFocusHead>button,.opsPanelHead>button){
+  color:#411437!important;
+}
+/* High-contrast text on the hero; the first hero action is a light button. */
+body.estaBrand130 #app.estaBrand130#app :is(.heroStrip,.homeWelcome,.unifiedCommand,.opsHero,.ccHero,.updateHero,.contractorIntro,.constructionCommand,.constructionIntro,.demoHero,.rc-heading,.maintenanceHero,.m130Header,.updateHealthScore,.workTaskTable thead,.energyHistoryTable thead,.demoTable thead,.rc-table thead,.toolsTable thead,.ccTable thead,#workSelectedPdfBar,.workSelectedPdfBar,#energyDeleteBar,.energyDeleteBar)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div,svg):where(:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"]):not(button)){
+  color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130 .updateHeroTags b,
+body.estaBrand130 #app.estaBrand130 .opsHeroTags b{
+  background:#F5ECD0!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 .opsHeroActions button:first-child,
+body.estaBrand130 #app.estaBrand130 .updateHeroActions button:first-child{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(.opsHeroActions button:first-child,.updateHeroActions button:first-child) *{
+  color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore :is(span,small){color:#F3DEBF!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.good strong{color:#A9E0C3!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.watch strong{color:#F2D69B!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.risk strong{color:#EFC084!important}
+body.estaBrand130 #app.estaBrand130 .updateHealthScore.danger strong{color:#F1A0A0!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.good,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.good{color:#39765B!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.watch,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.watch{color:#94672C!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.risk,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.risk{color:#9B5E34!important}
+body.estaBrand130 #app.estaBrand130 .updateSystemHealth strong.danger,
+body.estaBrand130 #app.estaBrand130 .updateHealthMini.danger{color:#9C4242!important}
+
+/* Health score is a separate sibling of the hero, so it needs its own dark-text-surface rule. */
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore :is(span,small){
+  color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.good strong{color:#A9E0C3!important}
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.watch strong{color:#F2D69B!important}
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.risk strong{color:#EFC084!important}
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHealthScore.danger strong{color:#F1A0A0!important}
+
+/* The dashboard's high-specificity dark-surface rule includes ID selectors.
+   Match that specificity for the light primary action to keep its text plum. */
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .opsHeroActions button:first-child,
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) .updateHeroActions button:first-child{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage) :is(.opsHeroActions button:first-child,.updateHeroActions button:first-child) *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+/* Match the legacy selector's ID-level specificity without depending on which
+   dashboard wrapper the action is mounted into. */
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:first-child{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:first-child *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+/* Explicit action hook for the hero's first button; this button has no class. */
+body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"]{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"] *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+/* Match the specificity of the legacy hero text rule so color itself is correct,
+   not only WebKit's text-fill paint. */
+body.estaBrand130 #app.estaBrand130#app button[data-update-action="work-new"]:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"]){color:#411437!important;-webkit-text-fill-color:#411437!important;background:#F5ECD0!important;border-color:#A46427!important;}
+
+/* Hero secondary actions stay cream on the dark translucent hero. */
+body.estaBrand130 #app.estaBrand130#app :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:not(:first-child){
+  background:rgba(43,21,38,.38)!important;
+  border-color:rgba(243,222,191,.48)!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app :is(#workSelectedPdfBar,.opsHeroActions,.updateHeroActions) button:not(:first-child) *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+/* Keep toolbar and navigation buttons cream over plum, with light exceptions below. */
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]){
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+
+
+/* High-specificity corrections for legacy task-form controls and active mobile nav. */
+body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn{
+  background:#411437!important;
+  border-color:#411437!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #cc130Launch{
+  background:#F5ECD0!important;
+  border:1px solid #A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #cc130Launch *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #estaBottomNav button[aria-current="page"]{
+  background:#F5ECD0!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #estaBottomNav button[aria-current="page"] *{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+/* Work list metadata and task-field placeholders still had legacy blue overrides. */
+body.estaBrand130 #app.estaBrand130#app#app #workPage #count{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+}
+body.estaBrand130 #app.estaBrand130#app#app #workPage input::placeholder,
+body.estaBrand130 #app.estaBrand130#app#app #workPage textarea::placeholder{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+  opacity:1!important;
+}
+
+/* Energy month/native pickers retained a legacy dark surface and placeholder. */
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyNativePicker{
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  border-color:#CFB394!important;
+  color-scheme:light!important;
+  -webkit-text-fill-color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage input::placeholder,
+body.estaBrand130 #app.estaBrand130#app #energyPage textarea::placeholder{
+  color:#625045!important;
+  opacity:1!important;
+  -webkit-text-fill-color:#625045!important;
+}
+
+
+/* Final high-specificity ESTA controls for Energy: legacy #energyForm rules
+   used to win over the theme and put muted placeholders on navy fields. */
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm :is(input:not([type="date"]):not([type="file"]):not([type="hidden"]),textarea,select){
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#CFB394!important;
+  box-shadow:none!important;
+  color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm :is(input:not([type="date"]):not([type="file"]):not([type="hidden"]),textarea,select)::placeholder{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+  opacity:1!important;
+}
+/* Keep the native date field accessible while preserving the compact date overlay. */
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm #energyDate{
+  background:#FBF3E3!important;
+  border-color:#CFB394!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm #energyDate::-webkit-calendar-picker-indicator{
+  filter:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyDateCompact{
+  color:#411437!important;
+}
+
+
+/* Inventory / tools: neutralize legacy navy surfaces that conflict with ESTA
+   plum text, while keeping meaningful warning and success colors. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(
+  .inventoryWorkspace,.inventoryPane,.inventoryMonthRail,.inventoryMonthTabs,
+  .inventoryTableCard,.inventoryTableScroll,.inventorySupportGrid,.inventoryCommand,
+  .inventoryStats,.inventorySectionBar,.inventory130ListBar,.inventory130QuickMenu,
+  .inventoryQuickAdd,.inventoryMetric,.inventoryEmpty,.inventorySearch,.inventorySupportCard
+){
+  background:#F5ECD0!important;
+  border-color:#D8BEA0!important;
+  color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(.inventoryTableCard,.inventoryTableScroll,.inventoryEmpty){
+  background:#FBF3E3!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryTableCard th{
+  background:#EBD7BE!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+  border-color:#D8BEA0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryTableCard td{
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#E5D4BF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),select,textarea){
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#CFB394!important;
+  box-shadow:none!important;
+  color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),textarea)::placeholder{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+  opacity:1!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric{
+  background:#FFF0CC!important;
+  border-color:#E6C77F!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric :is(small,b,em,span){
+  color:#7C4C00!important;
+  -webkit-text-fill-color:#7C4C00!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty{
+  background:#EAF8F1!important;
+  color:#335D4A!important;
+  border:1px solid #B7DDC9!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty :is(span,b,small){
+  color:#335D4A!important;
+  -webkit-text-fill-color:#335D4A!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #inventory130QuickMenu summary{
+  background:#F5ECD0!important;
+  border-color:#A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+
+/* Inventory metric values retain semantic hues, but use darker accessible tones. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.inMetric b{
+  color:#166534!important;-webkit-text-fill-color:#166534!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.outMetric b{
+  color:#92400E!important;-webkit-text-fill-color:#92400E!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.stockMetric b{
+  color:#1D4ED8!important;-webkit-text-fill-color:#1D4ED8!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric :is(small,b,em,span){
+  color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
+}
+/* Accessible green empty-state icon on the pale success surface. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty>span{
+  background:#D1FAE5!important;
+  border:1px solid #A7F3D0!important;
+  color:#166534!important;
+  -webkit-text-fill-color:#166534!important;
+}
+/* The inventory transaction heading used a legacy pale foreground on light card. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCardTitle h3{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+
+/* Maintenance 130: replace legacy blue action and active view-switch colors. */
+body.estaBrand130 #app.estaBrand130#app #maintenancePage .maintenanceHeroActions .inventoryPrimary,
+body.estaBrand130 #app.estaBrand130#app #maintenancePage #addMaintenanceAsset{
+  background:#411437!important;
+  background-image:none!important;
+  border:1px solid #A46427!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #maintenancePage .maintenanceHeroActions .inventoryPrimary *,
+body.estaBrand130 #app.estaBrand130#app #maintenancePage #addMaintenanceAsset *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button[aria-pressed="true"]{
+  background:#411437!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+  border-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #maintenancePage #estaMaintenanceRedesign[data-kind="130"] .estamViewSwitch button[aria-pressed="true"] *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #maintenancePage #m130AuditButton{
+  background:#411437!important;
+  border-color:#A46427!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #maintenancePage #m130AuditButton *{
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+
+
+/* Contractor module: replace legacy navy cards with ESTA cream surfaces. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(
+  .contractorStats article,.contractorStatFeatured,.contractorToolbar,.contractorDirectory,
+  .contractorListHeader,.contractorGrid,.contractorRowCard,.contractorEmpty,.contractorTableCard,
+  .contractorContactGrid article,.contractorJobsPanel,.contractorJobsHead,.contractorJobList,
+  .contractorJobCard,.contractorJobRail,.contractorJobContent,.contractorJobDiagnosis>div,
+  .contractorJobNote,.contractorJobActions,.contractorRowActions button,
+  .contractorMobileExport>summary,.contractorMobileFilter>summary,
+  .contractorMobileExport>div,.contractorMobileMenu>div,.contractorSpecialtyFilters,
+  .contractorContactIcon,.contractorProfileIcon
+){
+  background:#F5ECD0!important;
+  background-image:none!important;
+  border-color:#D8BEA0!important;
+  color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorRowCard,.contractorJobCard,.contractorContactGrid article,.contractorJobsPanel,.contractorEmpty,.contractorDirectory){
+  background:#FBF3E3!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(
+  .contractorStats small,.contractorStats em,.contractorRowIdentity h3,.contractorRowIdentity p,
+  .contractorRowValue,.contractorLatest b,.contractorLatest span,.contractorToolbar h2,
+  .contractorDirectory h2,.contractorEmpty,.contractorEmpty b,.contractorEmpty span,
+  .contractorContactGrid small,.contractorContactGrid b,.contractorContactGrid a,
+  .contractorJobsHead h2,.contractorJobTop small,.contractorJobTop b,
+  .contractorJobContent p,.contractorJobDiagnosis p,.contractorJobNote p,
+  .contractorJobContent>span,.contractorJobDiagnosis span,.contractorJobNote>span,
+  .contractorProfileMain h1,.contractorProfileMain p,.contractorDetailTop,
+  .contractorRowCount span,.contractorJobRail span,.contractorJobActions button,
+  .contractorRowActions button,.contractorResultCount
+){
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorStats article,.contractorStatFeatured){
+  border:1px solid #D8BEA0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorStats :is(small,em){
+  color:#625045!important;-webkit-text-fill-color:#625045!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorStats :is(b,strong){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorStats article:nth-child(4) b{
+  color:#166534!important;-webkit-text-fill-color:#166534!important;
+}
+/* The intro stays plum; its primary action becomes a light, readable ESTA button. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage #addContractorBtn{
+  background:#F5ECD0!important;background-image:none!important;
+  border:1px solid #A46427!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage #addContractorBtn *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage #contractorBackBtn{
+  background:#F5ECD0!important;background-image:none!important;
+  border:1px solid #A46427!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage #contractorBackBtn *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+/* Search and other visible controls are light on the cream work surface. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),select,textarea){
+  background:#FBF3E3!important;color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;border-color:#CFB394!important;
+  color-scheme:light!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(input,textarea)::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+/* Preserve status meaning with accessible green / yellow / red variants. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorStatusBadge.active,.contractorJobStatus.done){
+  background:#EAF8F1!important;border-color:#A7D7BE!important;color:#166534!important;-webkit-text-fill-color:#166534!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorStatusBadge.paused,.contractorJobStatus.waiting){
+  background:#FFF0CC!important;border-color:#E6C77F!important;color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorStatusBadge.inactive,.contractorJobStatus.paused){
+  background:#E7E5E4!important;border-color:#C9C4C0!important;color:#57534E!important;-webkit-text-fill-color:#57534E!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorJobStatus.doing{
+  background:#E0F2FE!important;border-color:#7DD3FC!important;color:#075985!important;-webkit-text-fill-color:#075985!important;
+}
+/* Category pills remain distinct but readable on a light surface. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorFieldPill{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorFieldPill.hvac,.contractorFieldPill.electric){
+  background:#DDF5F5!important;border-color:#8ACBCB!important;color:#155E63!important;-webkit-text-fill-color:#155E63!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorFieldPill.pccc{
+  background:#FDE8E8!important;border-color:#F1B5B5!important;color:#991B1B!important;-webkit-text-fill-color:#991B1B!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorFieldPill.water{
+  background:#E0F2FE!important;border-color:#93C5FD!important;color:#1D4ED8!important;-webkit-text-fill-color:#1D4ED8!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorFieldPill.clean,.contractorFieldPill.elevator){
+  background:#FFF0CC!important;border-color:#E6C77F!important;color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
+}
+/* Contractor dialogs are outside #app; keep them in the same ESTA palette. */
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorModalCard{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorModalHead{
+  background:#411437!important;border-color:#A46427!important;color:#F3DEBF!important;
+}
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorModalHead :is(h1,h2,h3,p,span,small){
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorForm label>span{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorForm :is(input,select,textarea){
+  background:#FBF3E3!important;border-color:#CFB394!important;color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;color-scheme:light!important;
+}
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorForm :is(input,textarea)::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorProfileFormActions{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;box-shadow:none!important;
+}
+body.estaBrand130 :is(#contractorModal,#contractorJobModal) .contractorProfileFormActions button[type="submit"]{
+  background:#411437!important;border-color:#A46427!important;color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+
+
+/* Contractor detail mode and modal/drawer surfaces follow the same theme. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorProfile,.contractorDetailTop,.contractorContactGrid,.contractorJobsPanel,.contractorJobsHead,.contractorJobList,.contractorJobCard,.contractorJobContent,.contractorJobDiagnosis>div,.contractorJobNote){
+  background:#FBF3E3!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain>span{
+  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain h1{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain p{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorRowActions button.danger,.contractorJobActions button.danger){
+  background:#FDE8E8!important;border-color:#F1B5B5!important;
+  color:#991B1B!important;-webkit-text-fill-color:#991B1B!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorModalCard,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorModalCard{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorModalHead,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorModalHead{
+  background:#411437!important;border-color:#A46427!important;color:#F3DEBF!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorModalHead *,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorModalHead *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorForm label>span,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorForm label>span{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorForm :is(input,select,textarea),
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorForm :is(input,select,textarea){
+  background:#FBF3E3!important;border-color:#CFB394!important;color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;color-scheme:light!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorForm :is(input,textarea)::placeholder,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorForm :is(input,textarea)::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorProfileFormActions,
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorProfileFormActions{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;box-shadow:none!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .contractorProfileFormActions button[type="submit"],
+body.estaBrand130 #contractorJobModal#contractorJobModal .contractorProfileFormActions button[type="submit"]{
+  background:#411437!important;border-color:#A46427!important;color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #contractorModal#contractorModal .modalClose,
+body.estaBrand130 #contractorJobModal#contractorJobModal .modalClose{
+  background:#F5ECD0!important;border-color:#A46427!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+
+/* Mobile contractor export/filter popovers sit on the plum hero but use light controls. */
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>summary,.contractorMobileFilter>summary){
+  background:#F5ECD0!important;border-color:#A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>summary,.contractorMobileFilter>summary) *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>div,.contractorMobileFilter>div,.contractorMobileMenu>div){
+  background:#FBF3E3!important;border:1px solid #D8BEA0!important;
+  color:#2B1526!important;box-shadow:0 12px 28px rgba(43,21,38,.12)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorMobileExport>div button,.contractorMobileMenu>div button){
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorMobileFilter label{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorMobileFilter label :is(span,small){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+
+
+/* Table header cells inside branded dark table rails need cream foreground directly. */
+body.estaBrand130 #app.estaBrand130#app :is(
+  #workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,
+  #incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage
+) :is(.workTaskTable thead th,.energyHistoryTable thead th,.demoTable thead th,
+     .rc-table thead th,.toolsTable thead th,.ccTable thead th){
+  background:#411437!important;
+  border-color:#A46427!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+
+
+/* Energy tabs: explicit selected/unselected states after legacy blue tab rules. */
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button.active,
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button[aria-selected="true"]{
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button.active *,
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button[aria-selected="true"] *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+
+
+/* Demo/incident/inspection hero utility buttons: light ESTA buttons on plum heroes. */
+body.estaBrand130 #app.estaBrand130#app :is(#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage) .demoHeroActions .demoBtn{
+  background:#F5ECD0!important;background-image:none!important;
+  border:1px solid #A46427!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app :is(#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage) .demoHeroActions .demoBtn *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+
+
+/* Documents page category tiles were still using legacy navy backgrounds. */
+body.estaBrand130 #app.estaBrand130#app #documentsPage :is(.demoDocCats,.demoDocCat){
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #documentsPage .demoDocCat :is(b,span,small){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+
+
+/* Report-period segments: selected period is plum with cream text; idle tabs are light. */
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button.active{
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments button.active *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+
+
+/* Work-row overflow menu: readable light trigger and popover on cream task tables. */
+body.estaBrand130 #app.estaBrand130#app #workPage .rowActionMenu>summary{
+  background:#F5ECD0!important;border:1px solid #A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .rowActionMenu>div{
+  background:#FBF3E3!important;border:1px solid #D8BEA0!important;
+  color:#2B1526!important;box-shadow:0 12px 28px rgba(43,21,38,.12)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .rowActionMenu>div button{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+
+
+/* Energy history search and performer selector are light controls on the cream surface. */
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySearch{
+  background:#FBF3E3!important;border-color:#CFB394!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySearch input{
+  background:#FBF3E3!important;color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;border-color:#CFB394!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySearch input::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleButton{
+  background:#F5ECD0!important;border-color:#A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleButton :is(span,b,em,i,svg){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleButton .peopleButtonSummary>em{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;
+}
+/* Energy performer picker popup matches the branded modal language. */
+body.estaBrand130 #app.estaBrand130#app #energyPage :is(#energyPeopleMenu,.peopleSelectMenu){
+  background:#FBF3E3!important;border-color:#D8BEA0!important;color:#2B1526!important;
+  box-shadow:0 18px 34px rgba(43,21,38,.12)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleMenuHead{
+  background:#411437!important;border-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleMenuHead :is(b,span){
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOptions{
+  background:#FBF3E3!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption :is(.peopleName,.peopleAvatar){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption.selected{
+  background:#DDF5F5!important;border-color:#8ACBCB!important;box-shadow:inset 3px 0 0 #2B7A78!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption.selected :is(.peopleName,.peopleAvatar){
+  color:#155E63!important;-webkit-text-fill-color:#155E63!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleEditBtn{
+  background:#F5ECD0!important;border-color:#D8BEA0!important;color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+
+
+/* All Energy module text controls (including history search outside #energyForm) are light. */
+body.estaBrand130 #app.estaBrand130#app #energyPage :is(
+  input:not([type="date"]):not([type="file"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+  textarea,select
+){
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  border-color:#CFB394!important;
+  color-scheme:light!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage :is(
+  input:not([type="date"]):not([type="file"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+  textarea
+)::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+
+
+/* Shared project search is outside the page panels; give it a light field on the plum top bar. */
+body.estaBrand130 #app.estaBrand130#app #globalSearch{
+  background:#F5ECD0!important;border:1px solid #A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+  box-shadow:none!important;color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #globalSearch::placeholder{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+}
+
+
+/* Inventory's actual materials pane is mounted beside #inventoryPage; style it too. */
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(
+  .inventoryCommandControls,.inventoryCommandMeta,.inventoryYearOnly,
+  .inventoryQuickMenu,.inventoryQuickPopover,.inventoryQuickPopoverHead,
+  .stockAlertHead,.stockAlertTitle,.inventoryTableCard,.transactionCard,
+  .inventoryCardTitle,.inventoryQuickAdd,.inventorySectionBar
+){
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(.inventoryTableCard,.transactionCard,.inventoryQuickPopover){
+  background:#FBF3E3!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(.inventoryCommandMeta label,.inventoryYearOnly label,.inventoryCardTitle h3,.inventoryCardTitle p,.inventoryQuickPopoverHead span,.inventoryQuickPopoverHead small,.stockAlertTitle h3,.stockAlertTitle p){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickMenu>summary{
+  background:#F5ECD0!important;border:1px solid #A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickMenu>summary *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickPopoverHead .inventoryKicker,
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .stockAlertTitle .inventoryKicker,
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryCardTitle .inventoryKicker{
+  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane #stockAlertCount{
+  background:#FDE8E8!important;border:1px solid #F1B5B5!important;
+  color:#991B1B!important;-webkit-text-fill-color:#991B1B!important;
+}
+
+
+/* Inventory tools pane is separate from the materials pane in the legacy layout. */
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane :is(
+  .inventoryCommandControls,.inventoryCommandMeta,.inventoryYearOnly,.inventoryToolbar,
+  .inventorySectionBar,.inventoryCommand,.inventoryStats,.inventoryQuickAdd
+){
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane :is(.inventoryCommandMeta label,.inventoryYearOnly label,.inventoryYearOnly small){
+  background:#FBF3E3!important;border-color:#CFB394!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane :is(.inventoryCommandMeta label,.inventoryYearOnly label) *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+/* Copper is reserved as a border/accent; use a darker accessible tone for small kicker text. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(.inventoryKicker,.inventoryCardTitle .inventoryKicker),
+body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(.inventoryKicker,.inventoryCardTitle .inventoryKicker),
+body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane .inventoryKicker{
+  color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
+}
+
+
+/* Inventory's top switch/year rail lives directly under #inventoryPage, outside both panes. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCommand.inventorySwitchBar,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCommandControls,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCommandMeta,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs{
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly label{
+  background:#FBF3E3!important;border:1px solid #CFB394!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly :is(small,span,b){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly select{
+  background:#FBF3E3!important;border-color:#CFB394!important;
+  color:#2B1526!important;-webkit-text-fill-color:#2B1526!important;color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button.active{
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button.active *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}

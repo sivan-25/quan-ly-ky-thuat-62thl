@@ -18,8 +18,16 @@ const results=[];
 const fixedTime=Date.parse('2026-10-10T02:00:00.000Z');
 const channelTolerance=12; // headless Chromium antialiasing tolerance
 // The first rollout intentionally changes the 130HH palette, never the three other projects.
-// Detect a newly introduced stylesheet rather than disabling brand checks for future PRs.
-const brand130FirstRollout=(fs.existsSync('esta-brand-130.css')&&!fs.existsSync('../baseline/esta-brand-130.css'))||(fs.existsSync('esta-brand-130-complete.css')&&!fs.existsSync('../baseline/esta-brand-130-complete.css'));
+// Some baseline builds already contain an earlier partial stylesheet. Detect the explicit
+// contrast-guard layer as well, so intended 130HH color changes are not misreported as regressions.
+const brand130File='esta-brand-130-complete.css';
+const brand130Marker='130HH — final text-contrast guard';
+const candidateHasBrand130Layer=fs.existsSync(brand130File)&&fs.readFileSync(brand130File,'utf8').includes(brand130Marker);
+const baselineBrand130File='../baseline/'+brand130File;
+const baselineHasBrand130Layer=fs.existsSync(baselineBrand130File)&&fs.readFileSync(baselineBrand130File,'utf8').includes(brand130Marker);
+const brand130FirstRollout=(fs.existsSync('esta-brand-130.css')&&!fs.existsSync('../baseline/esta-brand-130.css'))||
+ (fs.existsSync('esta-brand-130-complete.css')&&!fs.existsSync('../baseline/esta-brand-130-complete.css'))||
+ (candidateHasBrand130Layer&&!baselineHasBrand130Layer);
 async function fixture(page,scenario){
  if(scenario==='login')return;
  const projectId=scenario.includes('-')&&scenario!=='admin-home'?scenario.split('-').slice(1).join('-'):'68PĐL';
