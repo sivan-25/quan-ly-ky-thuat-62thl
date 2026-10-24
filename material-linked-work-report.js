@@ -102,6 +102,16 @@
     `;
     document.head.appendChild(style);
   }
+  function syncLaunchVisibility() {
+    const launch = $("#estaMaterialWorkReportLaunch");
+    const page = $("#inventoryPage");
+    if (!launch) return;
+    const visible = !!page && page.getClientRects().length > 0 &&
+      getComputedStyle(page).display !== "none" &&
+      getComputedStyle(page).visibility !== "hidden" &&
+      page.getAttribute("aria-hidden") !== "true";
+    launch.hidden = !visible;
+  }
   function ensureUI() {
     ensureStyles();
     let launch = $("#estaMaterialWorkReportLaunch");
@@ -121,6 +131,7 @@
         if (page && anchor) anchor.insertAdjacentElement("afterend", launch);
       }
     }
+    syncLaunchVisibility();
     if (!$("#estaMaterialWorkReportModal")) {
       const modal = document.createElement("div");
       modal.id = "estaMaterialWorkReportModal";
@@ -286,9 +297,10 @@
   }
   function boot() {
     ensureUI();
-    const observer=new MutationObserver(()=>{ if(!$("#estaMaterialWorkReportLaunch"))ensureUI(); });
-    const app=$("#app");
-    if(app)observer.observe(app,{childList:true,subtree:true});
+    const observer=new MutationObserver(()=>{ if(!$("#estaMaterialWorkReportLaunch"))ensureUI(); else syncLaunchVisibility(); });
+    const app=$("#app") || document.body;
+    if(app)observer.observe(app,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style","hidden","aria-hidden"]});
+    document.addEventListener("click",()=>requestAnimationFrame(syncLaunchVisibility),true);
     // Do not rebuild the full jobs list on tab visibility changes: this caused scroll jumps and selection flicker.
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
