@@ -2856,6 +2856,43 @@ document.addEventListener("click",function estaDueDatePickerClick(event){
 <script src="pwa-register.js?v=20261012-autoupdate01"></script>
 <script src="overview-compact.js?v=20261020-brand-130-fix01"></script>
 <script src="material-linked-work-report.js?v=20261022-material-work-pdf01"></script>
+<!-- ESTA preview login interaction recovery -->
+<script>
+(function(){
+  function recoverLoginHit(e){
+    var login=document.getElementById('login');
+    if(!login || !login.classList.contains('loginV8') || login.classList.contains('hide')) return;
+    var x=e.clientX, y=e.clientY;
+    if(typeof x!=='number'||typeof y!=='number') return;
+    var targets=[
+      document.getElementById('user'),
+      document.getElementById('pass'),
+      document.getElementById('togglePassword'),
+      document.getElementById('rememberLogin'),
+      document.getElementById('forgotPasswordBtn'),
+      document.getElementById('loginBtn'),
+      document.getElementById('openAdminSetup')
+    ].filter(Boolean);
+    var hit=targets.find(function(el){
+      var r=el.getBoundingClientRect();
+      return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
+    });
+    if(!hit || e.target===hit || hit.contains(e.target)) return;
+    e.preventDefault();
+    if(hit.tagName==='INPUT' && hit.type!=='checkbox'){
+      hit.focus({preventScroll:true});
+      try{var p=hit.value.length;hit.setSelectionRange(p,p)}catch(_){}
+    } else if(hit.id==='loginBtn'){
+      var form=document.getElementById('loginForm');
+      if(form && typeof form.requestSubmit==='function') form.requestSubmit(hit);
+      else if(form) form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    } else {
+      hit.click();
+    }
+  }
+  document.addEventListener('pointerdown',recoverLoginHit,true);
+})();
+</script>
 </body></html>
 
 
