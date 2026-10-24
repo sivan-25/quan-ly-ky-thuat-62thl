@@ -10307,3 +10307,231 @@ body.workEditOpen{overflow:hidden!important}
   .adminProjectGrid{grid-template-columns:1fr!important;gap:8px!important}
   .adminProjectOpen{min-height:74px!important}
 }
+
+
+/* =========================================================
+   ESTA UI READABILITY FIX — INCIDENT / ENERGY / INVENTORY / CONTRACTORS
+   Contrast-first controls; preserve existing data and interactions.
+   ========================================================= */
+
+/* Incident & Defect: remove nested-box look from search/filter controls */
+#incidentPage .demoPanelHead,
+#incidentPage .demoPanelHead>div{min-width:0!important}
+#incidentPage input[type="search"],
+#incidentPage input:not([type="checkbox"]):not([type="radio"]),
+#incidentPage select{
+  min-width:0!important;
+  color:#263f50!important;
+  background:#fffdf9!important;
+  border:1px solid #c9d4d8!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+  outline:none;
+}
+#incidentPage input[type="search"]:focus,
+#incidentPage input:not([type="checkbox"]):not([type="radio"]):focus,
+#incidentPage select:focus{
+  border-color:#9a6a45!important;
+  box-shadow:0 0 0 2px rgba(154,106,69,.12)!important;
+}
+#incidentPage .demoPanelHead input,
+#incidentPage .demoPanelHead select{
+  margin:0!important;
+}
+#incidentPage .demoPanelHead label,
+#incidentPage .demoPanelHead .demoSearch,
+#incidentPage .demoPanelHead .demoFilter,
+#incidentPage .demoPanelHead .searchField{
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#incidentPage .demoBtn,
+#incidentPage button{
+  color:#4c3b32;
+}
+#incidentPage .demoBtn.primary{
+  background:#5a244d!important;
+  border-color:#5a244d!important;
+  color:#fff!important;
+}
+
+/* Energy: photo actions as one tidy segmented control */
+#energyPage .energyPhotoActions{
+  display:flex!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#energyPage .energyPhotoActions button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  flex:1 1 0!important;
+  min-width:0!important;
+  min-height:42px!important;
+  padding:9px 12px!important;
+  border:1px solid #cbb8c8!important;
+  border-radius:9px!important;
+  background:#f7f0f5!important;
+  color:#512448!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  line-height:1.25!important;
+  box-shadow:none!important;
+}
+#energyPage .energyPhotoActions button:hover{
+  border-color:#8f5b83!important;
+  background:#efe1ed!important;
+  color:#411437!important;
+}
+#energyPage .energyPhotoActions button span{
+  color:inherit!important;
+  flex:0 0 auto!important;
+}
+#energyPage .energyForm input,
+#energyPage .energyForm select{
+  color:#273f4e!important;
+  background:#fffdf8!important;
+  border-color:#d7c9d4!important;
+}
+#energyPage .energyForm label>span{
+  color:#625045!important;
+}
+#energyPage .energySummaryCards article{
+  background:#fffdf8!important;
+  border-color:#e1d5dc!important;
+}
+#energyPage .energySummaryCards small{
+  color:#6c5b65!important;
+}
+#energyPage .energySummaryCards strong{
+  color:#411437!important;
+}
+#energyPage .energySummaryCards .energyMetricIcon,
+#energyPage .energySummaryCards i{
+  color:#fff!important;
+}
+#energyPage .energySummaryCards article:nth-child(1) strong,
+#energyPage .energySummaryCards article:nth-child(2) strong,
+#energyPage .energySummaryCards article:nth-child(3) strong{
+  color:#411437!important;
+}
+
+/* Inventory / tools: readable month selection and year-end values */
+#inventoryPage .materialMonthTabs button,
+#inventoryPage #materialMonthTabs button{
+  color:#55463f!important;
+  background:#fffdf8!important;
+  border-color:#d9cbc2!important;
+}
+#inventoryPage .materialMonthTabs button.active,
+#inventoryPage #materialMonthTabs button.active{
+  color:#fff!important;
+  background:#5a244d!important;
+  border-color:#5a244d!important;
+  box-shadow:0 0 0 2px rgba(90,36,77,.12)!important;
+}
+#inventoryPage .materialMonthTabs .yearOverviewBtn,
+#inventoryPage #materialMonthTabs .yearOverviewBtn{
+  color:#65432f!important;
+  background:#f5e9d9!important;
+  border-color:#d8b992!important;
+}
+#inventoryPage .materialMonthTabs .yearOverviewBtn.active,
+#inventoryPage #materialMonthTabs .yearOverviewBtn.active{
+  color:#fff!important;
+  background:#65432f!important;
+  border-color:#65432f!important;
+}
+#inventoryPage .yearMonthHead span,
+#inventoryPage .yearMonthCell span{
+  color:#4c3d36!important;
+}
+#inventoryPage .yearMonthHead small{
+  color:#76675f!important;
+}
+#inventoryPage .yearMonthCell .in{color:#24734f!important}
+#inventoryPage .yearMonthCell .out{color:#a9433d!important}
+#inventoryPage .yearMonthCell.inactive{color:#82766f!important}
+
+/* Contractor directory and detail: prevent text-on-same-color controls */
+#contractorPage{
+  color:#2e3e47!important;
+}
+#contractorPage h1,
+#contractorPage h2,
+#contractorPage h3,
+#contractorPage .contractorRowIdentity h3,
+#contractorPage .contractorDetailName{
+  color:#411437!important;
+}
+#contractorPage p,
+#contractorPage small,
+#contractorPage label>span,
+#contractorPage .contractorRowIdentity p{
+  color:#625045!important;
+}
+#contractorPage input,
+#contractorPage select,
+#contractorPage textarea,
+#contractorPage .contractorSearch input{
+  color:#2f414b!important;
+  background:#fffdf8!important;
+  border-color:#d7c9d4!important;
+}
+#contractorPage .contractorSearch{
+  background:#fffdf8!important;
+  border-color:#d7c9d4!important;
+  box-shadow:none!important;
+}
+#contractorPage .contractorSearch svg{
+  color:#76576f!important;
+  stroke:#76576f!important;
+}
+#contractorPage .contractorBtn.primary,
+#contractorPage .contractorRowActions button.primary{
+  color:#fff!important;
+  background:#5a244d!important;
+  border-color:#5a244d!important;
+}
+#contractorPage .contractorBtn.ghost,
+#contractorPage .contractorRowActions button:not(.primary){
+  color:#512448!important;
+  background:#f7f0f5!important;
+  border-color:#cbb8c8!important;
+}
+#contractorPage .contractorStatFeatured{
+  background:#f5e9d9!important;
+  border-color:#d8b992!important;
+}
+#contractorPage .contractorStatFeatured b,
+#contractorPage .contractorStatFeatured small,
+#contractorPage .contractorStatFeatured em{
+  color:#65432f!important;
+}
+#contractorPage .contractorProfileSaveStatus{
+  color:#24734f!important;
+}
+
+@media(max-width:760px){
+  #energyPage .energyPhotoActions{gap:6px!important}
+  #energyPage .energyPhotoActions button{
+    min-height:44px!important;
+    padding:8px 7px!important;
+    font-size:11px!important;
+  }
+  #inventoryPage .materialMonthTabs button,
+  #inventoryPage #materialMonthTabs button{
+    min-height:36px!important;
+    font-size:11px!important;
+  }
+  #contractorPage .contractorSearch input{min-width:0!important}
+}
