@@ -1602,3 +1602,8 @@ body.estaBrand130 #app.estaBrand130#app #workPage .workTableMeta #count{
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+/* Final override matches the triple-app specificity used by the old count pill rule. */
+body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
