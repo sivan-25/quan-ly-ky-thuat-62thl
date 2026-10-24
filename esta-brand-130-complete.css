@@ -1427,3 +1427,183 @@ body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs butto
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button.active *{
   color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
 }
+
+/* 130HH — Work page readability repair.
+   The legacy work editor and task table still carry high-specificity blue/dark rules.
+   Keep this final override strictly behind the active 130 Hồng Hà body/app scope. */
+body.estaBrand130 #app.estaBrand130#app #workPage .stats strong,
+body.estaBrand130 #app.estaBrand130#app #workPage .stats :is(#statToday,#statDoing,#statDone,#statWait),
+body.estaBrand130 #app.estaBrand130#app #workPage #count{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .stats small{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+}
+
+/* Priority remains a warm gold when selected; the SVG inherits the button color. */
+body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPriorityStar,
+body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar{
+  color:#85776A!important;
+  -webkit-text-fill-color:#85776A!important;
+  background:transparent!important;
+  border:1px solid transparent!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPriorityStar.is-marked,
+body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPriorityStar[aria-pressed="true"],
+body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar.is-marked,
+body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed="true"]{
+  color:#9A6700!important;
+  -webkit-text-fill-color:#9A6700!important;
+  background:#FFF0B3!important;
+  border:1px solid #D6A12B!important;
+  border-radius:8px!important;
+  box-shadow:0 0 0 2px rgba(214,161,43,.16)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar svg,
+body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar svg path{
+  fill:currentColor!important;
+}
+
+/* Performer names are readable dark plum chips on the warm light surface. */
+body.estaBrand130 #app.estaBrand130#app #workPage .performerChips.pro>span{
+  background:#FBF3E3!important;
+  border:1px solid #B58A60!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .performerChips.pro>span b{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .performerChips.pro>em,
+body.estaBrand130 #app.estaBrand130#app #workPage .mutedDash{
+  background:#EAD6BD!important;
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+}
+
+/* Strong, consistent dividers between desktop rows and mobile work cards. */
+body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr>td{
+  border-bottom:1px solid #B58A60!important;
+  border-bottom-color:#B58A60!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .proTaskCard{
+  background:#F5ECD0!important;
+  border:1px solid #C6A27A!important;
+  border-bottom:2px solid #B58A60!important;
+  border-radius:12px!important;
+  margin:0 0 9px!important;
+}
+
+/* Work-to-material links use ESTA cream/plum instead of the old blue drawer theme.
+   Duplicate IDs intentionally outrank the legacy editor selectors in demo-lab.css. */
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks{
+  background:#F5ECD0!important;
+  background-image:none!important;
+  border:1px solid #B58A60!important;
+  color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks>summary,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks>summary{
+  background:transparent!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoWorkLinkGrid>label,
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskResultHead label,
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialsHead>span,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoWorkLinkGrid>label,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskResultHead label,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskMaterialsHead>span{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialsField,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskMaterialsField{
+  background:#FBF3E3!important;
+  border:1px solid #C6A27A!important;
+  color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks :is(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),select,textarea),
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks :is(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),select,textarea){
+  background:#FBF3E3!important;
+  border:1px solid #CFB394!important;
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  color-scheme:light!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks select option,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks select option{
+  background:#FBF3E3!important;
+  color:#2B1526!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks select option:checked,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks select option:checked{
+  background:#EAD6BD!important;
+  color:#411437!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoAddTaskMaterial,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoAddTaskMaterial{
+  background:#411437!important;
+  border:1px solid #A46427!important;
+  color:#F3DEBF!important;
+  -webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoAddTaskMaterial:hover,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoAddTaskMaterial:hover{
+  background:#2B1526!important;
+  border-color:#A46427!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoUseNoteAsResult:not(.hide),
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoUseNoteAsResult:not(.hide){
+  background:#F5ECD0!important;
+  border:1px solid #A46427!important;
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialsEmpty,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskMaterialsEmpty,
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialUnit,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskMaterialUnit,
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoTaskLinkSummary,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoTaskLinkSummary{
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
+}
+body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialRemove,
+body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskMaterialRemove{
+  background:#FDE8E8!important;
+  border-color:#F1B5B5!important;
+  color:#991B1B!important;
+  -webkit-text-fill-color:#991B1B!important;
+}
+
+/* The reverse link shown from stock transactions to a work order is also branded. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .materialTaskLink{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+  text-decoration-color:#A46427!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .materialTaskLink:hover{
+  color:#2B1526!important;
+  -webkit-text-fill-color:#2B1526!important;
+  background:#EAD6BD!important;
+}
+/* The task-count pill has a more specific legacy .workTableMeta rule; keep its final text plum. */
+body.estaBrand130 #app.estaBrand130#app #workPage .workTableMeta #count{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}
+/* Final override matches the triple-app specificity used by the old count pill rule. */
+body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
+  color:#411437!important;
+  -webkit-text-fill-color:#411437!important;
+}

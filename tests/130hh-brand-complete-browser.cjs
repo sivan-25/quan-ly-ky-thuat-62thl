@@ -154,6 +154,63 @@ async function prep(page,p){
       return {count:failures.length,failures:failures.slice(0,12)};
     });
     assert.equal(contrastAudit.count,0,"130HH text contrast failed in "+mode+" width "+width+": "+JSON.stringify(contrastAudit.failures));
+
+    if(mode==="work"){
+     const workReadability=await page.evaluate(()=>{
+      const root=document.querySelector("#workPage");
+      const colorOf=el=>el?getComputedStyle(el).color:"";
+      const statCountColor=colorOf(document.querySelector("#statToday"));
+      const tableCountColor=colorOf(document.querySelector("#workPage .workTableMeta #count"));
+
+      const star=document.createElement("button");
+      star.type="button";star.className="estaPriorityStar is-marked";star.setAttribute("aria-pressed","true");
+      star.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 2 15 8l7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/></svg>';
+      root.appendChild(star);
+      const starMarkedColor=colorOf(star);
+
+      const performer=document.createElement("div");
+      performer.className="performerChips pro";performer.innerHTML="<span><b>Người thực hiện</b></span>";
+      root.appendChild(performer);
+      const performerBackground=getComputedStyle(performer.querySelector("span")).backgroundColor;
+      const performerTextColor=colorOf(performer.querySelector("b"));
+
+      const table=document.createElement("table");table.className="workTaskTable";
+      table.innerHTML="<tbody><tr><td>Hàng kiểm tra</td></tr></tbody>";root.appendChild(table);
+      const dividerColor=getComputedStyle(table.querySelector("td")).borderBottomColor;
+
+      const mobileCard=document.createElement("article");mobileCard.className="mcard proTaskCard";
+      const mobileCards=document.querySelector("#mobileCards");mobileCards?.appendChild(mobileCard);
+      const mobileDividerColor=getComputedStyle(mobileCard).borderBottomColor;
+
+      const probeParent=document.createElement("div");
+      probeParent.className="workEditDrawer demoWorkEditDrawer";
+      probeParent.style.cssText="position:fixed!important;left:-10000px!important;top:0!important;width:320px!important;display:block!important;visibility:visible!important;pointer-events:none!important";
+      probeParent.innerHTML='<details id="demoWorkLinks" class="demoWorkLinks"><summary>Liên kết nâng cao</summary><div class="demoWorkLinkGrid"><div class="demoTaskMaterialsField"><div class="demoTaskMaterialsHead"><span>Vật tư sử dụng</span><button id="demoAddTaskMaterial" type="button">+ Thêm vật tư</button></div><select><option>Vật tư thử</option></select></div></div></details>';
+      document.body.appendChild(probeParent);
+      const panel=probeParent.querySelector("#demoWorkLinks");
+      const linkBackground=getComputedStyle(panel).backgroundColor;
+      const linkSummaryColor=colorOf(panel.querySelector("summary"));
+      const linkMaterialTitleColor=colorOf(panel.querySelector(".demoTaskMaterialsHead>span"));
+      const addButton=getComputedStyle(panel.querySelector("#demoAddTaskMaterial"));
+      const addButtonBackground=addButton.backgroundColor;
+      const addButtonColor=addButton.color;
+
+      star.remove();performer.remove();table.remove();mobileCard.remove();probeParent.remove();
+      return {statCountColor,tableCountColor,starMarkedColor,performerBackground,performerTextColor,dividerColor,mobileDividerColor,linkBackground,linkSummaryColor,linkMaterialTitleColor,addButtonBackground,addButtonColor};
+     });
+     assert.equal(workReadability.statCountColor,"rgb(65, 20, 55)","130HH work statistic number must be plum, not yellow/low-contrast");
+     assert.equal(workReadability.tableCountColor,"rgb(65, 20, 55)","130HH work list count must be plum");
+     assert.equal(workReadability.starMarkedColor,"rgb(154, 103, 0)","130HH priority star must remain visibly gold when marked");
+     assert.equal(workReadability.performerBackground,"rgb(251, 243, 227)","130HH performer chip must use a light ESTA surface");
+     assert.equal(workReadability.performerTextColor,"rgb(65, 20, 55)","130HH performer name must be readable plum");
+     assert.equal(workReadability.dividerColor,"rgb(181, 138, 96)","130HH desktop work rows must have a visible copper divider");
+     assert.equal(workReadability.mobileDividerColor,"rgb(181, 138, 96)","130HH mobile work cards must have a visible copper divider");
+     assert.equal(workReadability.linkBackground,"rgb(245, 236, 208)","130HH work-link panel must use the ESTA cream surface");
+     assert.equal(workReadability.linkSummaryColor,"rgb(65, 20, 55)","130HH work-link title must use plum, not blue");
+     assert.equal(workReadability.linkMaterialTitleColor,"rgb(65, 20, 55)","130HH materials heading must use plum");
+     assert.equal(workReadability.addButtonBackground,"rgb(65, 20, 55)","130HH add-material button must use plum");
+     assert.equal(workReadability.addButtonColor,"rgb(243, 222, 191)","130HH add-material button text must use cream");
+    }
     assert.ok(state.topbar.includes("rgb(65, 20, 55)")&&state.topbar.includes("rgb(43, 21, 38)"),
      "Unbranded blue header "+mode+" width "+width+": "+JSON.stringify(state));
     assert.equal(state.area,cream,"Page background in "+mode+" width "+width);
