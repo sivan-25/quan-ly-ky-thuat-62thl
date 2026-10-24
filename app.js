@@ -1,4 +1,33 @@
 const $=s=>document.querySelector(s);
+
+// Login safety net: if a runtime error prevents the normal submit handler
+// from being registered, keep the sign-in button functional and show errors.
+document.querySelector("#loginForm")?.addEventListener("submit", async e=>{
+ const form=e.currentTarget;
+ if(typeof form.onsubmit==="function") return;
+ e.preventDefault();
+ const u=$("#user")?.value?.trim(), p=$("#pass")?.value;
+ const er=$("#loginError"), btn=$("#loginBtn");
+ if(!u||!p){ if(er) er.textContent="Vui lòng nhập tên đăng nhập và mật khẩu."; return; }
+ if(!btn || typeof centralLogin!=="function" || typeof window.enterAccount!=="function"){
+  if(er) er.textContent="Trang đăng nhập đang gặp lỗi khởi tạo. Vui lòng tải lại trang; nếu vẫn lỗi, báo quản trị viên.";
+  return;
+ }
+ if(er) er.textContent="";
+ btn.disabled=true; btn.textContent="Đang đăng nhập...";
+ try {
+  const central=await centralLogin(u,p);
+  if($("#rememberLogin")?.checked) localStorage.setItem("esta_remember_username",u);
+  else localStorage.removeItem("esta_remember_username");
+  window.enterAccount(central.account,central.session);
+ } catch(err) {
+  if(er) er.textContent=err?.status===400||err?.status===401
+   ?"Tài khoản hoặc mật khẩu chưa đúng."
+   :"Không thể kết nối hệ thống trung tâm. Vui lòng thử lại.";
+ } finally {
+  btn.disabled=false; btn.innerHTML='Đăng nhập <b>→</b>';
+ }
+});
 const SB_URL="https://upcjcrycahdfroxggsdz.supabase.co";
 const SB_KEY="sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
 let me=null,centralSession=null,currentAccount=null,currentBuilding={id:"62THL",name:"62 Trần Huy Liệu",role:"editor"};
