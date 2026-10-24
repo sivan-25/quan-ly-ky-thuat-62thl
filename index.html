@@ -926,6 +926,24 @@
 <link rel="stylesheet" href="task-drawer-compact.css?v=20261020-compact01" media="screen">
 <link rel="stylesheet" href="esta-brand-130.css?v=20261020-01">
 <link rel="stylesheet" href="esta-brand-130-complete.css?v=20261020-full-130-01">
+<style id="esta-preview-login-hitarea-fix">
+/* Preview-only login hit-area fix: ensure no decorative layer blocks form controls. */
+html body #login.loginV8{position:relative!important;z-index:2147483000!important;pointer-events:auto!important;isolation:isolate!important}
+html body #login.loginV8 .lv8Left,
+html body #login.loginV8 .lv8LeftInner,
+html body #login.loginV8 .lv8FormBlock,
+html body #login.loginV8 .lv8Form{position:relative!important;z-index:2!important;pointer-events:auto!important}
+html body #login.loginV8 .lv8Form label,
+html body #login.loginV8 .lv8Input,
+html body #login.loginV8 .lv8Input input,
+html body #login.loginV8 .lv8Input button,
+html body #login.loginV8 #loginBtn,
+html body #login.loginV8 #rememberLogin,
+html body #login.loginV8 #forgotPasswordBtn,
+html body #login.loginV8 #openAdminSetup{position:relative!important;z-index:3!important;pointer-events:auto!important;touch-action:manipulation!important}
+html body #login.loginV8 .lv8Hero,
+html body #login.loginV8 .lv8HeroShade{pointer-events:none!important}
+</style>
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
