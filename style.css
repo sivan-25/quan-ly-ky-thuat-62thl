@@ -10587,3 +10587,28 @@ body.workEditOpen{overflow:hidden!important}
 #inventoryPage #materialMonthTabs .yearOverviewBtn{
   min-width:64px!important;font-weight:800!important;
 }
+
+
+/* Incident mode header search: one outer field, no nested inner rectangle */
+#app.incidentMode .headerSearch{
+  display:flex!important;align-items:center!important;gap:9px!important;
+  min-width:0!important;padding:0 12px!important;
+  border:1px solid #d8cbd5!important;border-radius:10px!important;
+  background:#fffdf9!important;box-shadow:none!important;
+}
+#app.incidentMode .headerSearch:focus-within{
+  border-color:#9a6a45!important;
+  box-shadow:0 0 0 2px rgba(154,106,69,.12)!important;
+}
+#app.incidentMode .headerSearch input,
+#app.incidentMode #globalSearch{
+  width:100%!important;min-width:0!important;
+  border:0!important;outline:0!important;box-shadow:none!important;
+  background:transparent!important;color:#263f50!important;
+  padding:10px 0!important;
+}
+#app.incidentMode .headerSearch input:focus,
+#app.incidentMode #globalSearch:focus{
+  border:0!important;outline:0!important;box-shadow:none!important;
+}
+#app.incidentMode .headerSearch svg{flex:0 0 auto!important;color:#76576f!important;stroke:#76576f!important}
