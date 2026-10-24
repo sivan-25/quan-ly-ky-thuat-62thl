@@ -1390,3 +1390,40 @@ body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane :is(.inventoryKi
 body.estaBrand130 #app.estaBrand130#app #inventoryToolsPane .inventoryKicker{
   color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
 }
+
+
+/* Inventory's top switch/year rail lives directly under #inventoryPage, outside both panes. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCommand.inventorySwitchBar,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCommandControls,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryCommandMeta,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly,
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs{
+  background:#F5ECD0!important;background-image:none!important;
+  border-color:#D8BEA0!important;color:#2B1526!important;
+  box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly label{
+  background:#FBF3E3!important;border:1px solid #CFB394!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly :is(small,span,b){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryYearOnly select{
+  background:#FBF3E3!important;border-color:#CFB394!important;
+  color:#2B1526!important;-webkit-text-fill-color:#2B1526!important;color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button{
+  background:#FBF3E3!important;border-color:#D8BEA0!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button *{
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button.active{
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryLocalTabs button.active *{
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+}
