@@ -48,12 +48,12 @@ FOOTER = "ESTA PROPERTY MANAGEMENT  ·  A L'MAK COMPANY  ·  HO CHI MINH CITY"
 
 # Image tuning: change these constants once and all PDF types follow.
 IMAGE_COLS = 3
-IMAGE_CELL_HEIGHT = 50 * mm
+IMAGE_CELL_HEIGHT = 42 * mm
 IMAGE_GAP = 3 * mm
-IMAGE_MAX_PX = 900
-IMAGE_JPEG_QUALITY = 72
+IMAGE_MAX_PX = 960
+IMAGE_JPEG_QUALITY = 76
 IMAGE_CACHE_LIMIT = 192
-IMAGE_WORKERS = 8
+IMAGE_WORKERS = 12
 
 _FONTS_READY = False
 _CACHE_LOCK = threading.Lock()
@@ -258,7 +258,7 @@ def process_image_bytes(
         image = image.resize(target, PILImage.Resampling.LANCZOS, reducing_gap=3.0)
 
     out = io.BytesIO()
-    image.save(out, "JPEG", quality=quality, optimize=True)
+    image.save(out, "JPEG", quality=quality, optimize=False)
     data = out.getvalue()
     width, height = image.size
     prepared = ProcessedImage(data, width, height, key[0])
@@ -320,7 +320,7 @@ def prepare_remote_images(
             return cache_id, None, True
 
     unique_pairs = list(keyed.values())
-    max_workers = max(1, min(int(workers or 1), len(unique_pairs) or 1, 8))
+    max_workers = max(1, min(int(workers or 1), len(unique_pairs) or 1, 12))
     prepared_by_id: dict[str, Optional[ProcessedImage]] = {}
     missing_by_id: dict[str, bool] = {}
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
@@ -391,19 +391,40 @@ class ImageSlot(Flowable):
         if self.prepared:
             from reportlab.lib.utils import ImageReader
 
-            reader = ImageReader(self.prepared.buffer())
-            iw, ih = max(1, self.prepared.width), max(1, self.prepared.height)
-            scale = min((w - 4) / iw, (h - 4) / ih)
-            dw, dh = iw * scale, ih * scale
+            # Crop to the image frame's aspect ratio so each photo fills its
+            # column. Cropping is centered, preserves proportions, and avoids
+            # the whitespace caused by contain/letterboxing.
+            with PILImage.open(self.prepared.buffer()) as source:
+                image = source.convert("RGB")
+                iw, ih = image.size
+                target_ratio = max(1, int((w - 2) * 1000)) / max(1, int((h - 2) * 1000))
+                source_ratio = iw / max(1, ih)
+                if source_ratio > target_ratio:
+                    crop_w = max(1, int(ih * target_ratio))
+                    left = max(0, (iw - crop_w) // 2)
+                    image = image.crop((left, 0, left + crop_w, ih))
+                elif source_ratio < target_ratio:
+                    crop_h = max(1, int(iw / target_ratio))
+                    top = max(0, (ih - crop_h) // 2)
+                    image = image.crop((0, top, iw, top + crop_h))
+                image_buffer = io.BytesIO()
+                image.save(image_buffer, "JPEG", quality=82, optimize=False)
+                image_buffer.seek(0)
+            reader = ImageReader(image_buffer)
+            c.saveState()
+            path = c.beginPath()
+            path.rect(1, y + 1, w - 2, h - 2)
+            c.clipPath(path, stroke=0, fill=0)
             c.drawImage(
                 reader,
-                (w - dw) / 2,
-                y + (h - dh) / 2,
-                dw,
-                dh,
-                preserveAspectRatio=True,
+                1,
+                y + 1,
+                w - 2,
+                h - 2,
+                preserveAspectRatio=False,
                 mask="auto",
             )
+            c.restoreState()
 
         self._caption_paragraph.drawOn(c, 2, 2.5)
 

@@ -947,7 +947,7 @@ def _download_image(source, token):
         return None, ".jpg"
 
     req = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(req, timeout=22) as resp:
+    with urllib.request.urlopen(req, timeout=5) as resp:
         raw = resp.read()
         ctype = (resp.headers.get("Content-Type") or "").lower()
     ext = ".png" if "png" in ctype else ".jpg"

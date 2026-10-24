@@ -10307,3 +10307,96 @@ body.workEditOpen{overflow:hidden!important}
   .adminProjectGrid{grid-template-columns:1fr!important;gap:8px!important}
   .adminProjectOpen{min-height:74px!important}
 }
+
+
+/* ESTA FIXED VIEWPORT: dữ liệu dài cuộn bên trong vùng nội dung, không kéo giãn toàn trang. */
+html,body{height:100%;min-height:0;overscroll-behavior:none}
+body{overflow:hidden}
+#app:not(.hide){
+  height:100vh;
+  height:100dvh;
+  min-height:0!important;
+  overflow:hidden;
+}
+#app aside{
+  height:100vh;
+  height:100dvh;
+  min-height:0;
+  overscroll-behavior:contain;
+}
+#app main{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  height:100dvh;
+  min-height:0;
+  overflow:hidden;
+}
+#app main>header{flex:0 0 58px}
+#app main>.page:not(.hide){
+  flex:1 1 auto;
+  min-height:0;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+#app main>.heroStrip:not(.hide){flex:0 0 auto}
+@media(max-width:760px){
+  #app:not(.hide){height:100vh;height:100dvh;min-height:0!important;overflow:hidden}
+  #app main{height:100vh;height:100dvh;min-height:0;overflow:hidden}
+  #app main>header{flex:0 0 54px}
+  #app main>.page:not(.hide){padding-bottom:max(22px,env(safe-area-inset-bottom));}
+  #app aside{height:100vh;height:100dvh}
+}
+
+/* INVENTORY_STABLE_VIEWPORT_20261023
+   Giữ trang Vật tư ở đúng khung màn hình ngay từ lúc mở; phần nội dung dài cuộn bên trong,
+   tránh layout nhảy/phóng lớn khi số liệu được tải và render. */
+#app main{min-height:0!important}
+#app main>.page#inventoryPage:not(.hide){
+  display:flex!important;
+  flex-direction:column!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  flex:1 1 0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  contain:layout paint;
+  overscroll-behavior:contain;
+}
+#inventoryPage .inventoryCommand,
+#inventoryPage .inventorySwitchBar{flex:0 0 auto!important}
+#inventoryPage .inventoryPane{
+  min-width:0!important;
+  max-width:100%!important;
+  flex:0 0 auto!important;
+}
+#inventoryPage #inventoryMaterialsPane,
+#inventoryPage #inventoryToolsPane{
+  min-height:0!important;
+  max-height:none!important;
+}
+#inventoryPage .inventoryMonthRail,
+#inventoryPage .inventoryStats,
+#inventoryPage .inventorySectionBar{flex-shrink:0!important}
+#inventoryPage .inventoryTableWrap,
+#inventoryPage .materialTableWrap,
+#inventoryPage .inventoryTableScroll,
+#inventoryPage .tableScroll{
+  max-width:100%!important;
+  overflow:auto!important;
+  overscroll-behavior:contain;
+}
+@media(max-width:760px){
+  #app main>.page#inventoryPage:not(.hide){
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    padding-top:10px!important;
+    padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+  }
+  #inventoryPage .inventoryCommand{margin-bottom:8px!important}
+  #inventoryPage .inventoryPane{width:100%!important}
+}
