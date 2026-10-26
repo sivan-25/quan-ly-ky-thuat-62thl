@@ -2893,7 +2893,62 @@ document.addEventListener("click",function estaDueDatePickerClick(event){
   document.addEventListener('pointerdown',recoverLoginHit,true);
 })();
 </script>
-<!-- ESTA preview login hard interaction recovery v2 -->
+<!-- ESTA preview login hard interaction recovery v3 -->
+<style id="esta-preview-login-hard-interaction-v3">
+/* Keep the login screen as the topmost full-viewport hit-test layer on preview. */
+html,body{min-height:100%;margin:0!important}
+body>#login.loginRebuild.loginV8{
+  display:grid!important;position:fixed!important;inset:0!important;
+  width:100vw!important;height:100vh!important;min-height:100vh!important;
+  z-index:2147483647!important;isolation:isolate!important;
+  pointer-events:auto!important;overflow:auto!important;
+}
+body>#login.loginRebuild.loginV8.hide{display:none!important}
+body>#login.loginRebuild.loginV8 .lv8Left,
+body>#login.loginRebuild.loginV8 .lv8LeftInner,
+body>#login.loginRebuild.loginV8 .lv8FormBlock,
+body>#login.loginRebuild.loginV8 #loginForm,
+body>#login.loginRebuild.loginV8 #loginForm label,
+body>#login.loginRebuild.loginV8 .lv8Input{
+  position:relative!important;z-index:2!important;pointer-events:auto!important;
+}
+body>#login.loginRebuild.loginV8 input,
+body>#login.loginRebuild.loginV8 button{
+  pointer-events:auto!important;touch-action:manipulation!important;
+}
+body>#login.loginRebuild.loginV8 .lv8Hero,
+body>#login.loginRebuild.loginV8 .lv8Hero *{
+  pointer-events:none!important;
+}
+body>#login.loginRebuild.loginV8 input:not([type=checkbox]){
+  -webkit-user-select:text!important;user-select:text!important;caret-color:#173b56!important;
+}
+</style>
+<script>
+(function(){
+ if(window.__estaLoginHardRecoveryV3)return;
+ window.__estaLoginHardRecoveryV3=true;
+ function focusLoginControl(e){
+  var root=document.getElementById('login');
+  if(!root||root.classList.contains('hide'))return;
+  var x=e.clientX,y=e.clientY;
+  if(!Number.isFinite(x)||!Number.isFinite(y))return;
+  var el=document.elementFromPoint(x,y);
+  var user=document.getElementById('user'),pass=document.getElementById('pass');
+  [user,pass].forEach(function(input){
+   if(!input)return;
+   var r=input.getBoundingClientRect();
+   if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom){
+    if(el!==input){e.preventDefault();e.stopPropagation();}
+    if(document.activeElement!==input)input.focus({preventScroll:true});
+    try{var p=input.value.length;input.setSelectionRange(p,p)}catch(_){}
+   }
+  });
+ }
+ document.addEventListener('pointerdown',focusLoginControl,true);
+})();
+</script>
+
 <style id="esta-preview-login-hard-interaction-v2">
 html body #login.loginRebuild.loginV8{
   position:relative!important;z-index:2147483647!important;
