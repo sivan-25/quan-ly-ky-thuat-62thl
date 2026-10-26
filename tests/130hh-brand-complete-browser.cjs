@@ -200,11 +200,11 @@ async function prep(page,p){
      });
      assert.equal(workReadability.statCountColor,"rgb(65, 20, 55)","130HH work statistic number must be plum, not yellow/low-contrast");
      assert.equal(workReadability.tableCountColor,"rgb(65, 20, 55)","130HH work list count must be plum");
-     assert.equal(workReadability.starMarkedColor,"rgb(154, 103, 0)","130HH priority star must remain visibly gold when marked");
+     assert.equal(workReadability.starMarkedColor,"rgb(244, 180, 0)","130HH priority star must be bright gold when marked");
      assert.equal(workReadability.performerBackground,"rgb(251, 243, 227)","130HH performer chip must use a light ESTA surface");
      assert.equal(workReadability.performerTextColor,"rgb(65, 20, 55)","130HH performer name must be readable plum");
-     assert.equal(workReadability.dividerColor,"rgb(181, 138, 96)","130HH desktop work rows must have a visible copper divider");
-     assert.equal(workReadability.mobileDividerColor,"rgb(181, 138, 96)","130HH mobile work cards must have a visible copper divider");
+     assert.equal(workReadability.dividerColor,"rgb(164, 100, 39)","130HH desktop work rows must have a strong copper divider");
+     assert.equal(workReadability.mobileDividerColor,"rgb(164, 100, 39)","130HH mobile work cards must have a strong copper divider");
      assert.equal(workReadability.linkBackground,"rgb(245, 236, 208)","130HH work-link panel must use the ESTA cream surface");
      assert.equal(workReadability.linkSummaryColor,"rgb(65, 20, 55)","130HH work-link title must use plum, not blue");
      assert.equal(workReadability.linkMaterialTitleColor,"rgb(65, 20, 55)","130HH materials heading must use plum");
