@@ -2893,6 +2893,74 @@ document.addEventListener("click",function estaDueDatePickerClick(event){
   document.addEventListener('pointerdown',recoverLoginHit,true);
 })();
 </script>
+<!-- ESTA preview login hard interaction recovery v2 -->
+<style id="esta-preview-login-hard-interaction-v2">
+html body #login.loginRebuild.loginV8{
+  position:relative!important;z-index:2147483647!important;
+  isolation:isolate!important;pointer-events:auto!important;
+}
+html body #login.loginRebuild.loginV8,
+html body #login.loginRebuild.loginV8 *{
+  visibility:visible!important;
+}
+html body #login.loginRebuild.loginV8 .lv8Left,
+html body #login.loginRebuild.loginV8 .lv8LeftInner,
+html body #login.loginRebuild.loginV8 .lv8FormBlock,
+html body #login.loginRebuild.loginV8 #loginForm,
+html body #login.loginRebuild.loginV8 #loginForm label,
+html body #login.loginRebuild.loginV8 #loginForm .lv8Input{
+  position:relative!important;z-index:2147483647!important;
+  pointer-events:auto!important;transform:none!important;
+}
+html body #login.loginRebuild.loginV8 #user,
+html body #login.loginRebuild.loginV8 #pass,
+html body #login.loginRebuild.loginV8 #togglePassword,
+html body #login.loginRebuild.loginV8 #rememberLogin,
+html body #login.loginRebuild.loginV8 #forgotPasswordBtn,
+html body #login.loginRebuild.loginV8 #loginBtn,
+html body #login.loginRebuild.loginV8 #openAdminSetup{
+  position:relative!important;z-index:2147483647!important;
+  pointer-events:auto!important;touch-action:manipulation!important;
+  user-select:text!important;-webkit-user-select:text!important;
+}
+html body #login.loginRebuild.loginV8 .lv8Hero,
+html body #login.loginRebuild.loginV8 .lv8Hero:before,
+html body #login.loginRebuild.loginV8 .lv8HeroShade,
+html body #login.loginRebuild.loginV8 .lv8HeroCopy,
+html body #login.loginRebuild.loginV8 .lv8Top{
+  pointer-events:none!important;
+}
+</style>
+<script>
+(function(){
+ if(window.__estaLoginHardRecoveryV2)return;
+ window.__estaLoginHardRecoveryV2=true;
+ function forceLoginTarget(e){
+  var root=document.getElementById('login');
+  if(!root||root.classList.contains('hide'))return;
+  var x=e.clientX,y=e.clientY;
+  if(typeof x!=='number'||typeof y!=='number')return;
+  var ids=['user','pass','togglePassword','rememberLogin','forgotPasswordBtn','loginBtn','openAdminSetup'];
+  var el=null;
+  for(var i=0;i<ids.length;i++){
+   var candidate=document.getElementById(ids[i]);if(!candidate)continue;
+   var r=candidate.getBoundingClientRect();
+   if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom){el=candidate;break;}
+  }
+  if(!el)return;
+  if(el.tagName==='INPUT'&&el.type!=='checkbox'){
+   if(document.activeElement!==el)el.focus({preventScroll:true});
+  }else if(el.id==='loginBtn'){
+   if(e.type==='click'){
+    var form=document.getElementById('loginForm');
+    if(form&&typeof form.requestSubmit==='function')form.requestSubmit(el);
+   }
+  }else if(e.type==='click'&&e.target!==el)el.click();
+ }
+ document.addEventListener('pointerdown',forceLoginTarget,true);
+ document.addEventListener('click',forceLoginTarget,true);
+})();
+</script>
 </body></html>
 
 
