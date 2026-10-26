@@ -10612,3 +10612,279 @@ body.workEditOpen{overflow:hidden!important}
   border:0!important;outline:0!important;box-shadow:none!important;
 }
 #app.incidentMode .headerSearch svg{flex:0 0 auto!important;color:#76576f!important;stroke:#76576f!important}
+
+
+/* ESTA Core shared module treatment: project overview, incidents, energy and stock */
+:root{
+  --esta-core-ink:#1d425c;
+  --esta-core-muted:#718493;
+  --esta-core-border:#dce5ea;
+  --esta-core-surface:#fff;
+  --esta-core-canvas:#f5f7f8;
+  --esta-core-plum:#5a244d;
+  --esta-core-copper:#a46427;
+  --esta-core-shadow:0 5px 18px rgba(25,57,77,.055);
+}
+#homeAdminProjects .homePanelHead,
+#homeProjectGrid,
+#adminProjectGrid,
+#settingsProjects .settingsPaneTitle,
+#settingsProjects .projectForm,
+#settingsProjectList{
+  min-width:0;
+}
+#homeAdminProjects .homePanelHead h2,
+#settingsProjects .settingsPaneTitle h4{
+  color:var(--esta-core-ink)!important;
+  font-weight:780!important;
+  letter-spacing:-.02em;
+}
+#homeProjectGrid,.adminProjectGrid{
+  gap:12px!important;
+}
+#homeProjectGrid>*,#adminProjectGrid>*{
+  min-width:0!important;
+  border:1px solid var(--esta-core-border)!important;
+  border-radius:14px!important;
+  background:var(--esta-core-surface)!important;
+  box-shadow:var(--esta-core-shadow)!important;
+  transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease!important;
+}
+#homeProjectGrid>*:hover,#adminProjectGrid>*:hover{
+  border-color:#b9cbd5!important;
+  box-shadow:0 8px 22px rgba(25,57,77,.09)!important;
+}
+#settingsProjects .projectForm{
+  gap:10px!important;
+  padding:14px!important;
+  border:1px solid var(--esta-core-border)!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:var(--esta-core-shadow)!important;
+}
+#settingsProjects .projectForm label,
+#settingsProjects .projectForm input{
+  min-width:0!important;
+}
+#settingsProjects .projectForm input,
+#settingsProjects .projectForm select,
+#settingsProjects .projectForm button{
+  min-height:40px!important;
+  border-radius:9px!important;
+}
+#incidentPage .demoHero,
+#energyPage .pageHead,
+#inventoryPage .inventoryCommand,
+#constructionMaterialPage .pageHead{
+  border:1px solid var(--esta-core-border)!important;
+  border-radius:15px!important;
+  box-shadow:var(--esta-core-shadow)!important;
+}
+#incidentPage .demoHero{
+  background:#fff!important;
+  color:var(--esta-core-ink)!important;
+}
+#incidentPage .demoHeroCopy>span,
+#energyPage .pageEyebrow,
+#inventoryPage .inventoryKicker{
+  color:var(--esta-core-copper)!important;
+  font-weight:800!important;
+  letter-spacing:.075em!important;
+}
+#incidentPage .demoHero h1,
+#energyPage .pageHead h1{
+  color:var(--esta-core-ink)!important;
+  letter-spacing:-.025em!important;
+}
+#incidentPage .demoKpis{
+  gap:11px!important;
+  margin-block:12px!important;
+}
+#incidentPage .demoKpi{
+  min-width:0!important;
+  border:1px solid var(--esta-core-border)!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:var(--esta-core-shadow)!important;
+}
+#incidentPage .demoKpi i{
+  flex:0 0 auto!important;
+  background:#edf2f5!important;
+  color:var(--esta-core-ink)!important;
+}
+#incidentPage .demoGrid2{gap:12px!important;align-items:start!important}
+#incidentPage .demoPanel,
+#energyPage .energyCard,
+#inventoryPage .inventoryWorkspace,
+#inventoryPage .inventoryToolsPane{
+  min-width:0!important;
+  border:1px solid var(--esta-core-border)!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  box-shadow:var(--esta-core-shadow)!important;
+}
+#incidentPage .demoPanelHead,
+#energyPage .energyTableTop,
+#inventoryPage .inventorySectionBar,
+#inventoryPage .inventoryToolbar{
+  border-bottom:1px solid #e8eef1!important;
+  background:#fff!important;
+}
+#incidentPage .demoPanelHead h2,
+#energyPage .energyTableTop h2,
+#inventoryPage .inventorySectionBar h2,
+#inventoryPage .inventoryToolbar h2{
+  color:var(--esta-core-ink)!important;
+  font-weight:780!important;
+}
+#incidentPage .demoTable thead th,
+#energyPage table thead th,
+#inventoryPage table thead th{
+  background:#f2f6f8!important;
+  color:#516b7b!important;
+  font-weight:780!important;
+  border-bottom:1px solid var(--esta-core-border)!important;
+}
+#incidentPage .demoTable tbody tr:hover,
+#energyPage table tbody tr:hover,
+#inventoryPage table tbody tr:hover{
+  background:#f7fafb!important;
+}
+#incidentPage .demoTable td,
+#energyPage table td,
+#inventoryPage table td{
+  border-bottom-color:#e9eef1!important;
+}
+#energyPage .energyHead{
+  background:#fff!important;
+  color:var(--esta-core-ink)!important;
+}
+#energyPage .energyHeadCopy p,
+#energyPage .headMeta,
+#energyPage .headMeta small{
+  color:var(--esta-core-muted)!important;
+}
+#energyPage .energyTabs{
+  border-color:var(--esta-core-border)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:var(--esta-core-shadow)!important;
+}
+#energyPage .energyTabs button{
+  min-height:38px!important;
+  border-radius:9px!important;
+  color:#5d7180!important;
+  font-size:12px!important;
+  font-weight:750!important;
+}
+#energyPage .energyTabs button.active{
+  border-color:#d8c8d5!important;
+  background:#f3eaf1!important;
+  color:var(--esta-core-plum)!important;
+}
+#energyPage .energyForm input,
+#energyPage .energyForm select,
+#energyPage .energyForm textarea,
+#inventoryPage input:not([type=checkbox]):not([type=radio]),
+#inventoryPage select,
+#inventoryPage textarea{
+  min-width:0!important;
+  border:1px solid #d4dfe5!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:#263f50!important;
+  box-shadow:none!important;
+}
+#energyPage .energyForm input:focus,
+#energyPage .energyForm select:focus,
+#energyPage .energyForm textarea:focus,
+#inventoryPage input:focus,
+#inventoryPage select:focus,
+#inventoryPage textarea:focus{
+  border-color:#9a6a45!important;
+  outline:0!important;
+  box-shadow:0 0 0 2px rgba(154,106,69,.12)!important;
+}
+#inventoryPage .inventoryCommand{
+  padding:10px 12px!important;
+  background:#fff!important;
+}
+#inventoryPage .inventoryLocalTabs{
+  gap:5px!important;
+  padding:4px!important;
+  border:1px solid var(--esta-core-border)!important;
+  border-radius:11px!important;
+  background:#f7f9fa!important;
+}
+#inventoryPage .inventoryLocalTabs button{
+  min-height:38px!important;
+  border:1px solid transparent!important;
+  border-radius:8px!important;
+  color:#607786!important;
+  font-weight:760!important;
+}
+#inventoryPage .inventoryLocalTabs button.active{
+  border-color:#ddcbd9!important;
+  background:var(--esta-core-plum)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#inventoryPage .materialMonthTabs{
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:5px!important;
+  padding:6px!important;
+  border-color:var(--esta-core-border)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:var(--esta-core-shadow)!important;
+}
+#inventoryPage .materialMonthTabs button{
+  min-width:0!important;
+  border-color:#dbe4e9!important;
+  border-radius:8px!important;
+  background:#f4f7f8!important;
+  color:#4f6878!important;
+  font-size:11px!important;
+  font-weight:780!important;
+}
+#inventoryPage .materialMonthTabs button.active{
+  border-color:var(--esta-core-plum)!important;
+  background:var(--esta-core-plum)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#inventoryPage #materialMonthTabs .yearOverviewBtn,
+#inventoryPage .yearOverviewBtn{
+  background:#f4e8d8!important;
+  border-color:#d4b18d!important;
+  color:#68411f!important;
+}
+#inventoryPage .yearOverviewBtn.active{
+  background:var(--esta-core-copper)!important;
+  border-color:var(--esta-core-copper)!important;
+  color:#fff!important;
+}
+#incidentPage button:focus-visible,
+#energyPage button:focus-visible,
+#inventoryPage button:focus-visible,
+#settingsProjects button:focus-visible,
+#homeAdminProjects button:focus-visible,
+#homeProjectGrid button:focus-visible{
+  outline:3px solid #b68b57!important;
+  outline-offset:2px!important;
+}
+@media(max-width:760px){
+  #incidentPage .demoHero{padding:14px!important;gap:10px!important}
+  #incidentPage .demoHero h1,#energyPage .pageHead h1{font-size:22px!important}
+  #incidentPage .demoKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #incidentPage .demoGrid2{grid-template-columns:minmax(0,1fr)!important}
+  #incidentPage .demoTableWrap{max-width:100%!important;overflow-x:auto!important}
+  #energyPage .pageHead{gap:10px!important}
+  #energyPage .energyTabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important}
+  #energyPage .energyTabs button{min-width:0!important;padding:0 7px!important}
+  #inventoryPage .inventoryCommand{padding:8px!important}
+  #inventoryPage .inventoryLocalTabs{width:100%!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #inventoryPage .inventoryLocalTabs button{min-width:0!important;padding:0 7px!important}
+  #inventoryPage .materialMonthTabs{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  #settingsProjects .projectForm{grid-template-columns:minmax(0,1fr)!important}
+}
