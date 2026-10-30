@@ -13,14 +13,14 @@ async function checkProject(building){
  const dom=new JSDOM('<!doctype html><html><head></head><body><div id="app"><div id="inventoryPage" class="page"><section class="inventorySwitchBar"></section></div></div></body></html>',{runScripts:"outside-only",url:"https://example.test/"});
  const w=dom.window;
  w.eval(`
- let currentBuilding=${JSON.stringify(building)};
- let inventoryLoadedBuilding=currentBuilding.id;
- let inventoryMaterials=[{id:"mat-"+currentBuilding.id,name:"Đèn LED "+currentBuilding.id,code:"VT-01",unit:"Cái"}];
- let inventoryTransactions=[];
- let projectPeople=[{name:"Nhân viên kỹ thuật"}];
- let cloudCalls=[];
+ var currentBuilding=${JSON.stringify(building)};
+ var inventoryLoadedBuilding=currentBuilding.id;
+ var inventoryMaterials=[{id:"mat-"+currentBuilding.id,name:"Đèn LED "+currentBuilding.id,code:"VT-01",unit:"Cái"}];
+ var inventoryTransactions=[];
+ var projectPeople=[{name:"Nhân viên kỹ thuật"}];
+ var cloudCalls=[];
  async function loadInventoryData(id){cloudCalls.push(id);inventoryLoadedBuilding=id}
- const load=()=>[{id:"task-"+currentBuilding.id,d:"2026-10-30",c:"Thay đèn "+currentBuilding.id,s:"Hoàn thành",materials:[{materialId:"mat-"+currentBuilding.id,name:"Đèn LED "+currentBuilding.id,qty:2}],imgs:["storage:"+currentBuilding.id+"/tasks/one.jpg"]}];
+ var load=()=>[{id:"task-"+currentBuilding.id,d:"2026-10-30",c:"Thay đèn "+currentBuilding.id,s:"Hoàn thành",materials:[{materialId:"mat-"+currentBuilding.id,name:"Đèn LED "+currentBuilding.id,qty:2}],imgs:["storage:"+currentBuilding.id+"/tasks/one.jpg"]}];
  function toast(m){}
  async function exportGenericEstaPdf(m){window.__pdf=m;return true}
  `);
