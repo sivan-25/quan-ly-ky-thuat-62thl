@@ -144,9 +144,9 @@
     if(!selectedReportPeriod)return true;
     const source=String(task?.d||task?.date||"").trim();
     let year=0,month=0,match;
-    if((match=/^(\\d{4})-(\\d{1,2})-(\\d{1,2})/.exec(source))){
+    if((match=new RegExp("^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})").exec(source))){
       year=Number(match[1]);month=Number(match[2]);
-    }else if((match=/^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})/.exec(source))){
+    }else if((match=new RegExp("^([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})").exec(source))){
       year=Number(match[3]);month=Number(match[2]);
     }
     return year===selectedReportPeriod.year&&month===selectedReportPeriod.month;
