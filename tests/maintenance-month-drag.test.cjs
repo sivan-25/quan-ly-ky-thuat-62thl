@@ -153,6 +153,13 @@ async function fixture(sourceDate,otherDate){
  {
   const f=await fixture("2026-10-10","2026-11-12");
   assert.ok(f.d.getElementById("estaMaintenanceSettingsToggle"),"maintenance settings exists");
+  const settings=f.d.getElementById("estaMaintenanceSettings");
+  assert.equal(settings.hidden,false,"130HH settings must be visible without needing a particular view attribute");
+  assert.equal(settings.parentElement?.id,"estamNativeActions","settings sits next to Add maintenance");
+  assert.ok(f.d.getElementById("m130Create").parentElement===settings.parentElement,"settings and Add maintenance share a toolbar");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
+  assert.equal(f.d.getElementById("estaMaintenanceSettingsMenu").hidden,false,"settings menu expands with move and clone choices");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
   f.activate("move");
   assert.equal(f.w.estaMaintenance130Mode(),"move");
   const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
@@ -206,5 +213,7 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
  assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
+ assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
+ assert.doesNotMatch(css,/#maintenancePage\[data-estam-building="130HH"\]\[data-estam-view="calendar"\] #estaMaintenanceSettings/,"fragile view-specific hiding removed");
  console.log("PASS: normal clicks, opt-in quick move, clone next empty day, cross-month clone, drop-only calendar changes and February clamping");
 })().catch(err=>{console.error(err);process.exitCode=1});
