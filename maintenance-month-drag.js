@@ -189,9 +189,21 @@
   setHelp(mode==="move"?"Di chuyển: chọn công việc rồi chọn ngày hoặc mũi tên tháng. Cũng có thể kéo thả trực tiếp.":mode==="clone"?"Nhân bản: chọn công việc để tạo bản sao ở ngày trống gần nhất.":"");
   syncChips();
  }
+ function is130(){return String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"")==="130HH";}
+ function syncSettingsVisibility(){
+  const el=byId("estaMaintenanceSettings");
+  if(!el)return;
+  const visible=is130();
+  el.hidden=!visible;
+  if(!visible&&mode!=="off")applyMode("off");
+  // The controller is beside "Thêm bảo trì", never tucked into the filter overflow.
+  const actions=byId("estamNativeActions");
+  if(actions&&el.parentElement!==actions)actions.appendChild(el);
+ }
  function ensureSettings(){
-  const container=byId("estaMaintenanceRedesign")?.querySelector(".estamActionArea");
-  if(!container||byId("estaMaintenanceSettings"))return;
+  const container=byId("estamNativeActions");
+  if(!container)return;
+  if(byId("estaMaintenanceSettings")){syncSettingsVisibility();return;}
   const el=document.createElement("div");
   el.id="estaMaintenanceSettings";
   el.className="estaMaintenanceSettings";
@@ -203,6 +215,7 @@
    '<small>Di chuyển: chọn công việc rồi chọn ngày hoặc tháng. Nhân bản: tự chọn ngày trống kế tiếp.</small></div>'+
    '<span id="estaMaintenanceModeHelp" class="estaMaintenanceModeHelp" role="status" aria-live="polite"></span>';
   container.appendChild(el);
+  syncSettingsVisibility();
   el.querySelector("#estaMaintenanceSettingsToggle").addEventListener("click",()=>{
    const menu=byId("estaMaintenanceSettingsMenu"),opening=menu.hidden;
    menu.hidden=!opening;
@@ -210,8 +223,10 @@
   });
   el.querySelectorAll("[data-esta-action]").forEach(button=>button.addEventListener("click",()=>applyMode(button.dataset.estaAction)));
   applyMode("off");
+  syncSettingsVisibility();
  }
  function contextSync(){
+  ensureSettings();
   const page=byId("maintenancePage"),building=String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"");
   if(building!=="130HH"||page?.dataset.estamView!=="calendar"){
    if(mode!=="off")applyMode("off");
@@ -279,7 +294,7 @@
   const page=byId("maintenancePage");
   if(page)new MutationObserver(mutations=>{
    if(mutations.some(m=>m.type==="attributes"))contextSync();
-  }).observe(page,{attributes:true,attributeFilter:["data-estam-building","data-estam-view"]});
+  }).observe(page,{attributes:true,attributeFilter:["data-estam-building","data-estam-view","class"]});
   const list=byId("m130List");
   if(list)new MutationObserver(()=>{if(mode!=="off")syncChips();}).observe(list,{childList:true});
  };
