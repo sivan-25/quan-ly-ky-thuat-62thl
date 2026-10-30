@@ -296,7 +296,7 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
 #app.estaBrand130 :is(label,.workField>span,.energyForm label>span,.inventoryForm label>span,.rc-field>span){
  color:var(--esta130-secondary)!important;
 }
-#app.estaBrand130 :is(input,select,textarea,button):focus-visible{
+#app.estaBrand130 :is(input,select,textarea,button,[role="button"],a):focus-visible{
  outline:2px solid var(--esta130-copper)!important;
  outline-offset:2px!important;
 }
@@ -318,6 +318,7 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
  border-color:var(--esta130-copper)!important;
  color:var(--esta130-cream)!important;
 }
+#app.estaBrand130 #workSelectedPdfBar button{min-height:44px}
 /* A readable fixed PDF-selection bar in project mode. */
 #app.estaBrand130 :is(#workSelectedPdfBar,.workSelectedPdfBar,#energyDeleteBar,.energyDeleteBar){
  background:var(--esta130-plum)!important;
@@ -513,6 +514,7 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
 /* Neutral buttons default to dark plum; keep semantic status/danger buttons untouched. */
 body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="danger"]):not([class*="Danger"]):not([class*="delete"]):not([class*="Delete"]):not([class*="remove"]):not([class*="Remove"]){
   color:var(--esta130-plum)!important;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease;
 }
 body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="danger"]):not([class*="Danger"]):not([class*="delete"]):not([class*="Delete"]):not([class*="remove"]):not([class*="Remove"]) *{
   color:inherit!important;
@@ -563,7 +565,7 @@ body.estaBrand130 #app.estaBrand130 .estaTopbar :is(.headerSearch,.ccTopSearch,.
   color:#DFCEBE!important;
   -webkit-text-fill-color:#DFCEBE;
 }
-body.estaBrand130 #app.estaBrand130 :is(input,select,textarea,button):focus-visible{
+body.estaBrand130 #app.estaBrand130 :is(input,select,textarea,button,[role="button"],a):focus-visible{
   outline:2px solid var(--esta130-copper)!important;
   outline-offset:2px!important;
 }
@@ -729,7 +731,7 @@ body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSid
 
 /* High-specificity corrections for legacy task-form controls and active mobile nav. */
 body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn{
-  background:#411437!important;
+  background:var(--esta130-plum)!important;
   border-color:#411437!important;
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
@@ -1607,3 +1609,5 @@ body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+@media (prefers-reduced-motion:reduce){body.estaBrand130 #app.estaBrand130 button{transition:none!important}}
