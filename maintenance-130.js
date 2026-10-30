@@ -510,7 +510,7 @@ function renderAlternative(events){
   const date=year+"-"+pad(month)+"-"+pad(day),daily=eventsByDay.get(date)||[];
   const chips=daily.map(o=>{
    const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
-   return '<button type="button" draggable="'+(canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" title="'+esc(o.item.work_title)+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
+   return '<button type="button" draggable="'+(B==="130HH"&&window.estaMaintenance130Mode?.()==="move"&&canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" title="'+esc(o.item.work_title)+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
   }).join("");
   const count=daily.length?'<small class="m130DayCount" aria-label="'+daily.length+' công việc">'+daily.length+'</small>':"";
   const keyboard=canWrite()?' role="group" tabindex="0" aria-label="Ngày '+fmt(date)+'. Nhấn Enter để thêm lịch bảo trì"':"";
@@ -971,6 +971,63 @@ async function exportPdf(){
  if(!list.length)return toast("Không có công việc để xuất.");
  const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,shownDate(o),demo(o.item)?"Mẫu · Chưa xác minh":status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
  try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ "+projectLabel().toUpperCase(),tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_"+B+"_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed"&&!demo(o.item)).length,label:"HOÀN THÀNH ĐÃ XÁC MINH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
+}
+// 130HH quick duplication: search actual + recurring work, irrespective of visible filters.
+function nearestEmptyMaintenanceDate(fromDate){
+ const start=Date.parse(String(fromDate).slice(0,10)+"T12:00:00Z");
+ if(!Number.isFinite(start))return "";
+ const occupied=new Set(),years=new Set();
+ for(let shift=1;shift<=370;shift++){
+  const date=new Date(start+shift*86400000).toISOString().slice(0,10),y=Number(date.slice(0,4));
+  if(!years.has(y)){
+   years.add(y);
+   for(const occurrence of schedule(y)){
+    if(!isMonthOnly(occurrence))occupied.add(dateOf(occurrence));
+   }
+  }
+  if(!occupied.has(date))return date;
+ }
+ return "";
+}
+async function cloneMaintenanceOccurrence(source){
+ if(B!=="130HH"||busy||!canWrite()||!active()||!ready||source?.building!==B)return false;
+ const src=items.find(i=>i.id===source.occurrence?.item?.id&&!i.deleted_at);
+ if(!src)return toast("Không tìm thấy công việc gốc để nhân bản.");
+ const date=nearestEmptyMaintenanceDate(source.date);
+ if(!date)return toast("Không tìm được ngày trống trong phạm vi 370 ngày.");
+ busy=true;const project=B,token=centralSession.access_token;
+ const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code=project+"-COPY-"+id.slice(0,13);
+ const item={id,building_id:project,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Nhân bản từ lịch bảo trì ESTA",
+  work_title:src.work_title,system_group:src.system_group||"Khác",subsystem:src.subsystem||"",assigned_to:src.assigned_to||"Kỹ thuật dự án",asset_code:src.asset_code||"",
+  work_type:src.work_type||"PM",priority:src.priority||"normal",cadence:"Không lặp"};
+ if(src.equipment_profile_id)item.equipment_profile_id=src.equipment_profile_id;
+ const occurrence={id:eventId,item_id:id,building_id:project,event_key:code+":"+date.slice(0,7),planned_month:monthISO(date),planned_date:date,due_date:date,status:"planned",source_kind:"year",location:item.subsystem};
+ let itemCreated=false,occurrenceCreated=false;
+ try{
+  await sbFetch("/rest/v1/esta_maintenance_plan_items",{method:"POST",token,body:item});itemCreated=true;
+  await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:occurrence});occurrenceCreated=true;
+  await verifyMaintenanceSaved("esta_maintenance_plan_items",id,{work_title:item.work_title,cadence:item.cadence,building_id:project},project);
+  await verifyMaintenanceSaved("esta_maintenance_plan_occurrences",eventId,{item_id:id,planned_date:date,planned_month:monthISO(date),status:"planned"},project);
+  if(project!==B)return false;
+  items.push(item);stored.push(occurrence);
+  clearScheduleCache();year=Number(date.slice(0,4));month=Number(date.slice(5,7));
+  render();notifyMaintenance130Nav();
+  toast("✓ Đã nhân bản công việc sang "+fmt(date));
+  return {date,id,eventId};
+ }catch(error){
+  if(itemCreated&&!occurrenceCreated){
+   try{
+    const deleted_at=new Date().toISOString();
+    await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+project,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Nhân bản không tạo được lịch; hoàn tác"}});
+    await verifyMaintenanceSaved("esta_maintenance_plan_items",id,{deleted_at},project);
+   }catch(rollbackError){
+    toast("Không thể hoàn tác bản sao. Hãy kiểm tra dữ liệu trước khi thử lại.");
+    return false;
+   }
+  }
+  toast("Nhân bản chưa được xác nhận: "+(error.message||error)+". Hãy kiểm tra trước khi thử lại.");
+  return false;
+ }finally{busy=false;}
 }
 // Stable API for the visible ESTA month arrows (rendered by maintenance-redesign.js).
 // Capture the occurrence before changing month, so re-rendering cannot lose the drag source.
