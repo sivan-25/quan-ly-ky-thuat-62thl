@@ -229,7 +229,7 @@ async function fixture(sourceDate,otherDate){
   assert.ok(state.items.find(i=>i.id==="job1"&&!i.deleted_at),"original plan was not deleted");
   assert.equal(state.items.filter(i=>i.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&!i.deleted_at).length,1,"remaining duplicate retained");
   assert.ok(f.calls.some(c=>c.opts?.method==="PATCH"&&c.url.includes("esta_maintenance_plan_items")&&c.url.includes("id=eq."+deletedId)&&c.opts.body.deleted_at),"deletion sent to scoped API");
-  assert.equal(f.d.querySelector('[data-m130-drag="'+first.plan_code+':2026-10"]'),null,"deleted copy disappears after verified soft delete");
+  assert.equal(f.d.querySelector('[data-m130-drag="'+first.plan_code+':2026-10"]'),null,"deleted copy disappears after verified soft delete; state="+JSON.stringify({layout:f.d.getElementById("m130List")?.className,all:f.d.querySelectorAll("#m130List .m130CalendarChip").length,toasts:f.calls.filter(x=>x.toast).slice(-4)}));
   f.dom.window.close();
  }
  // At month boundaries, an occupied first day is skipped and the duplicate remains independently scheduled.
