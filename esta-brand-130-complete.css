@@ -1607,3 +1607,101 @@ body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+/* 130HH inventory: header is the same old plum/cream theme, no new stylesheet. */
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode .estaTopbar{
+ display:flex!important;align-items:center!important;gap:12px!important;min-height:68px!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #topInventoryTitle,
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode .estaTopbar :is(.headerSearch,#peopleSettingsBtn,.account,#workControls){display:none!important}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs{
+ display:flex!important;align-items:center!important;min-width:0;flex:0 1 auto;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs .inventoryLocalTabs{
+ display:flex!important;align-items:center;gap:4px;padding:4px!important;margin:0!important;
+ background:rgba(243,222,191,.09)!important;border:1px solid rgba(243,222,191,.35)!important;
+ border-radius:11px!important;box-shadow:none!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs .inventoryLocalTabs button{
+ min-height:42px!important;padding:9px 13px!important;background:transparent!important;
+ color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+ border:1px solid transparent!important;border-radius:8px!important;white-space:nowrap;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs .inventoryLocalTabs button :is(span,svg){
+ color:inherit!important;-webkit-text-fill-color:currentColor!important;stroke:currentColor!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs .inventoryLocalTabs button.active{
+ background:#F5ECD0!important;border-color:#A46427!important;color:#411437!important;
+ -webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopYear{
+ display:flex!important;margin-left:auto!important;align-items:center;flex:0 0 auto;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopYear .inventoryYearOnly{
+ background:transparent!important;border:0!important;padding:0!important;margin:0!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopYear .inventoryYearOnly label{
+ display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;
+ padding:7px 10px!important;background:#F5ECD0!important;border:1px solid #A46427!important;
+ border-radius:10px!important;color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopYear .inventoryYearOnly :is(small,select){
+ color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopYear #inventoryYear{
+ background:#F5ECD0!important;min-width:92px;max-width:120px;min-height:34px!important;
+ border:0!important;box-shadow:none!important;color-scheme:light!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode .estaTopbar .headerTools{
+ margin-left:0!important;flex:0 0 auto!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode .estaTopbar .headerBell{
+ display:inline-flex!important;margin-left:auto!important;
+}
+body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventoryPage .inventoryCommand.inventorySwitchBar{
+ display:none!important;
+}
+/* One PDF entry point: keep the original export implementation reachable by the two menu actions. */
+body.estaBrand130 #app.estaBrand130 #inventoryPage #estaMaterialWorkReportLaunch,
+body.estaBrand130 #app.estaBrand130 #inventoryPage #materialExportPdf[hidden]{display:none!important}
+body.estaBrand130 #app.estaBrand130 #inventoryPage .inventory130PdfMenu{
+ position:relative!important;display:inline-flex!important;align-items:center;z-index:25;
+}
+body.estaBrand130 #app.estaBrand130 #inventoryPage .inventory130PdfMenu summary{
+ list-style:none;display:inline-flex;align-items:center;gap:7px;min-height:42px;
+ border:1px solid #A46427;border-radius:9px;padding:9px 13px;cursor:pointer;
+ background:#411437;color:#F3DEBF;font-weight:700;white-space:nowrap;
+}
+body.estaBrand130 #app.estaBrand130 #inventoryPage .inventory130PdfMenu summary::-webkit-details-marker{display:none}
+body.estaBrand130 #app.estaBrand130 #inventoryPage .inventory130PdfChoices{
+ position:absolute;z-index:80;top:calc(100% + 6px);right:0;width:max-content;min-width:256px;
+ max-width:min(92vw,350px);padding:5px;background:#FBF3E3;border:1px solid #D7BE9C;
+ border-radius:11px;box-shadow:0 10px 28px rgba(43,21,38,.22);
+}
+body.estaBrand130 #app.estaBrand130 #inventoryPage .inventory130PdfChoices button{
+ display:block;width:100%;min-height:46px;padding:10px;text-align:left;border:0;
+ border-radius:7px;background:transparent;color:#411437;-webkit-text-fill-color:#411437;
+ font-size:13px;font-weight:700;cursor:pointer;white-space:normal;
+}
+body.estaBrand130 #app.estaBrand130 #inventoryPage .inventory130PdfChoices button:hover,
+body.estaBrand130 #app.estaBrand130 #inventoryPage .inventory130PdfChoices button:focus-visible{
+ background:#F3DEBF!important;color:#411437!important;
+}
+@media(max-width:880px){
+ body.estaBrand130 #app.estaBrand130.inventory130HeaderMode .estaTopbar{
+  flex-wrap:wrap!important;gap:8px!important;padding-block:9px!important;
+ }
+ body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs{
+  order:4;flex:1 0 100%!important;
+ }
+ body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs .inventoryLocalTabs{
+  width:100%;justify-content:stretch;
+ }
+ body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopTabs button{
+  flex:1 1 50%;padding:8px 5px!important;white-space:normal!important;
+ }
+ body.estaBrand130 #app.estaBrand130.inventory130HeaderMode #inventory130TopYear{
+  order:2;margin-left:auto!important;
+ }
+ body.estaBrand130 #app.estaBrand130.inventory130HeaderMode .estaTopbar .headerTools{order:3}
+}
