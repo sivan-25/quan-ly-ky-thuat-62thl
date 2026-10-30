@@ -146,7 +146,7 @@
  document.addEventListener("visibilitychange",()=>{if(document.hidden&&drag)finish();});
  // Prevent only the synthetic trusted click emitted by browsers *after a drag*.
  document.addEventListener("click",ev=>{
-  if(ev.isTrusted&&Date.now()-lastDragEnd<400&&
+  if(ev.isTrusted&&Date.now()-lastDragEnd<100&&
    ev.target.closest?.("#estamPrev,#estamNext,[data-esta-month-drop],#maint130 .m130CalendarChip")){
    ev.preventDefault();ev.stopImmediatePropagation();
   }
