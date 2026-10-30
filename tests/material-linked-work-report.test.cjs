@@ -8,17 +8,17 @@ async function main() {
   </body></html>`, { runScripts: "outside-only", url: "https://example.test/" });
   const w = dom.window;
   w.eval(`
-    let currentBuilding = {id:"130HH",name:"130 Hồng Hà"};
-    let inventoryMaterials = [
+    var currentBuilding = {id:"130HH",name:"130 Hồng Hà"};
+    var inventoryMaterials = [
       {id:"mat-1",name:"Đèn LED 18W",code:"VT-001",unit:"Cái"},
       {id:"mat-2",name:"Dây điện",code:"VT-002",unit:"m"}
     ];
-    const load = () => [
+    var load = () => [
       {id:"a",d:"2026-10-20",c:"Thay đèn hành lang",s:"Hoàn thành",materials:[{materialId:"mat-1",name:"Đèn LED 18W",qty:3,unit:"Cái"}],imgs:["storage:130HH/tasks/a1.jpg","storage:130HH/tasks/a2.jpg"],result:"Đã thay"},
       {id:"b",d:"2026-10-21",c:"Kiểm tra đèn",s:"Đang thực hiện",materials:[{materialId:"mat-1",name:"Đèn LED 18W",qty:1,unit:"Cái"}],imgs:["storage:130HH/tasks/b1.jpg"]},
       {id:"c",d:"2026-10-21",c:"Sửa dây điện",s:"Hoàn thành",materials:[{materialId:"mat-2",name:"Dây điện",qty:5,unit:"m"}],imgs:[]}
     ];
-    let lastPdfPayload = null;
+    var lastPdfPayload = null;
     async function exportGenericEstaPdf(payload) { lastPdfPayload=payload; window.__lastPdfPayload=payload; return true; }
     function toast() {}
   `);
