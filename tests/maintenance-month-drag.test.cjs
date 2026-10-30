@@ -73,6 +73,7 @@ async function fixture(sourceDate,otherDate){
  {
   const f=await fixture("2026-10-31","2026-11-30");
   f.activate("move");
+  f.w.confirm=()=>{throw new Error("Move mode must not show confirmation");};
   f.down();f.move();
   assert.equal(f.d.getElementById("maintenancePage").classList.contains("estaMonthDragging"),true,"drag starts");
   assert.ok(f.d.querySelector(".estaMonthDragGhost"),"visible drag feedback");
@@ -162,6 +163,7 @@ async function fixture(sourceDate,otherDate){
   f.d.getElementById("estaMaintenanceSettingsToggle").click();
   f.activate("move");
   assert.equal(f.w.estaMaintenance130Mode(),"move");
+  f.w.confirm=()=>{throw new Error("Selected Move mode must not confirm");};
   const persistent=f.d.querySelector(".estaMonthDragTargets");
   assert.ok(persistent&&persistent.querySelectorAll("[data-esta-month-drop]").length===2,"previous/next arrows show immediately upon selecting Move");
   const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
@@ -169,6 +171,7 @@ async function fixture(sourceDate,otherDate){
   chip.click();
   assert.ok(chip.classList.contains("estaTaskSelected"),"click selects work item instead of opening editor");
   assert.equal(f.d.getElementById("m130Overlay").hidden,true);
+  assert.equal(f.d.getElementById("estaMaintenanceModeHelp").textContent,"","no yellow instruction banner in move mode");
   persistent.querySelector('[data-esta-month-drop="next"]').click();await flush();
   assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-10");
   assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026");
@@ -223,7 +226,10 @@ async function fixture(sourceDate,otherDate){
   duplicates=f.w.__dragState().items.filter(i=>i.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&!i.deleted_at);
   assert.equal(duplicates.length,2,"can create two independent copies");
   const deletedId=first.id;
+  const toastCount=f.calls.filter(c=>c.toast).length;
+  f.w.confirm=()=>{throw new Error("Minus must delete without a confirm dialog");};
   f.d.querySelector('[data-m130-drag="'+first.plan_code+':2026-10"]').parentElement.querySelector(".estaCloneMinus").click();await flush();
+  assert.equal(f.calls.filter(c=>c.toast).length,toastCount,"successful minus delete is silent");
   const state=f.w.__dragState();
   assert.ok(state.items.find(i=>i.id===deletedId).deleted_at,"minus soft deletes only selected copy");
   assert.ok(state.items.find(i=>i.id==="job1"&&!i.deleted_at),"original plan was not deleted");
@@ -243,13 +249,36 @@ async function fixture(sourceDate,otherDate){
   f.dom.window.close();
  }
 
+ // The settings button exists only in Calendar, not Bảng/Thẻ/Timeline.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  const settings=f.d.getElementById("estaMaintenanceSettings");
+  assert.equal(settings.hidden,false,"settings visible in calendar");
+  assert.ok(f.d.querySelector("#estaMaintenanceSettingsToggle svg.estaSettingsIcon"),"custom SVG settings icon is rendered");
+  f.activate("move");
+  f.d.querySelector('[data-estam-view="rows"]').click();await flush();
+  assert.equal(f.d.getElementById("maintenancePage").dataset.estamView,"rows");
+  assert.equal(settings.hidden,true,"settings hidden in Bảng");
+  assert.equal(f.w.estaMaintenance130Mode(),"off","leaving calendar exits Move mode");
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"month dock removed outside Calendar");
+  f.d.querySelector('[data-estam-view="cards"]').click();await flush();
+  assert.equal(settings.hidden,true,"settings hidden in Thẻ");
+  f.d.querySelector('[data-estam-view="timeline"]').click();await flush();
+  assert.equal(settings.hidden,true,"settings hidden in Timeline");
+  f.d.querySelector('[data-estam-view="calendar"]').click();await flush();
+  assert.equal(settings.hidden,false,"settings restored only in Calendar");
+  f.dom.window.close();
+ }
+
  const index=read("index.html"),css=read("maintenance-month-drag.css");
  assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261030-clone08">'),"new module loaded into real page");
  assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
  assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
  assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
+ assert.match(css,/grid-template-columns:minmax\(0,1fr\) minmax\(0,1fr\)/,"month arrows use equal grid columns");
+ assert.match(css,/#estaMaintenanceModeHelp\{display:none!important\}/,"yellow helper is hidden");
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
  assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
  assert.doesNotMatch(css,/#maintenancePage\[data-estam-building="130HH"\]\[data-estam-view="calendar"\] #estaMaintenanceSettings/,"fragile view-specific hiding removed");
- console.log("PASS: persistent month arrows, click/drag move, clone +/minus soft deletion, copy separation, original safety, February clamping");
+ console.log("PASS: silent move and minus delete, calendar-only settings, balanced arrows, clone safety and month clamping");
 })().catch(err=>{console.error(err);process.exitCode=1});
