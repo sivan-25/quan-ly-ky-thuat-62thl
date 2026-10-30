@@ -300,3 +300,58 @@
  #maintenancePage .estaMaintenanceModeHelp{display:none;}
  #maintenancePage #estaMaintenanceSettingsMenu{right:0;width:min(282px,calc(100vw - 30px));}
 }
+
+/* Explicit month navigation is visible throughout Move mode, not only while dragging. */
+#maintenancePage[data-esta-work-mode="move"] ~ .estaMonthDragTargets,
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets{
+ display:flex!important;
+}
+.estaMonthDragTargets{flex-wrap:wrap;max-width:calc(100vw - 20px)}
+.estaMonthDockCaption{
+ flex:0 0 100%;width:100%;text-align:center;
+ color:#52738d;font:750 10px/1.3 system-ui,sans-serif;letter-spacing:.09em;
+ padding:1px 0;
+}
+.estaMonthDragTargets button{
+ transition:background-color .12s ease,box-shadow .12s ease;
+ cursor:pointer;
+}
+.estaMonthDragTargets button:focus-visible{
+ outline:3px solid #247dab;outline-offset:2px;
+}
+/* Plus on top, minus directly below, with independent hit targets (not nested buttons). */
+#maintenancePage #maint130 .estaCloneWorkWrap{
+ position:relative;display:block;min-width:0;margin:4px 0;
+}
+#maintenancePage #maint130 .estaCloneWorkWrap>.m130CalendarChip{
+ margin:0!important;padding-right:35px!important;min-height:60px!important;
+}
+#maintenancePage #maint130 .estaCloneWorkWrap>.m130CalendarChip::after{content:none!important}
+#maintenancePage #maint130 .estaCloneControls{
+ position:absolute;z-index:3;right:5px;top:50%;transform:translateY(-50%);
+ display:flex;flex-direction:column;gap:3px;
+}
+#maintenancePage #maint130 .estaCloneControls button{
+ display:flex;align-items:center;justify-content:center;
+ width:24px;height:23px;min-height:23px;padding:0;
+ border:1px solid #bcd9e8;border-radius:6px;background:#dff1fa;
+ color:#1a6284;font:800 19px/20px system-ui,sans-serif;
+ box-shadow:none;cursor:pointer;
+}
+#maintenancePage #maint130 .estaCloneControls button:hover{
+ background:#bddff2;border-color:#7bafd1;
+}
+#maintenancePage #maint130 .estaCloneControls .estaCloneMinus{
+ background:#fff1f0;color:#aa4b4b;border-color:#edc7c7;
+ font-size:20px;
+}
+#maintenancePage #maint130 .estaCloneControls .estaCloneMinus:hover{
+ background:#fbdcda;border-color:#df9999;
+}
+#maintenancePage #maint130 .estaCloneControls button:focus-visible{
+ outline:2px solid #287fae;outline-offset:1px;
+}
+@media(max-width:760px){
+ .estaMonthDragTargets{justify-content:center}
+ .estaMonthDockCaption{font-size:9px}
+}
