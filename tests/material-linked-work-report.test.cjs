@@ -57,7 +57,7 @@ async function main() {
   assert.equal(payload.rows.length, 2, "only selected linked jobs are exported");
   assert.equal(payload.photos.length, 3, "all photos from selected jobs are attached");
   assert.ok(payload.photos.every(photo => photo.path.startsWith("storage:130HH/")), "photo refs remain scoped to the current project");
-  assert.equal(payload.rows[0].quantity, "3");
+  assert.equal(payload.rows[0][5], "3", "quantity is the sixth PDF table column");
   w.close();
   console.log("material-linked-work-report: OK");
 }
