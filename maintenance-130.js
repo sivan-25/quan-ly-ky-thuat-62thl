@@ -118,7 +118,10 @@ function schedule(y,sourceItems=items,sourceStored=stored){
    const date=k===0?origin:addMonths(origin,k*n);
    if(!date||Number(date.slice(0,4))!==targetYear)continue;
    const key=i.plan_code+":"+date.slice(0,7),real=known.get(key)||null;
-   result.push({item:i,event:real||{item_id:i.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,status:"planned",result_note:"",completed_by:"",image_paths:[]},virtual:!real,scheduled:date});
+   // A moved occurrence keeps its original event key, so it replaces the source
+   // slot instead of creating a second copy in the source or target month.
+   if(!real&&explicit.some(e=>e.event_key!==key&&String(e.planned_date||"").slice(0,7)===date.slice(0,7)&&String(e.event_key||"").slice(-7)!==date.slice(0,7)))continue;
+   result.push({item:i,event:real||{item_id:i.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,status:"planned",result_note:"",completed_by:"",image_paths:[]},virtual:!real,scheduled:real?.planned_date||date});
   }
  }
  return result.sort((a,b)=>String(a.event.planned_date||a.scheduled).localeCompare(String(b.event.planned_date||b.scheduled))||a.item.work_title.localeCompare(b.item.work_title,"vi"));
@@ -506,14 +509,15 @@ async function rescheduleOccurrence(key,date){
  if(!o||o.event.status==="completed")return toast("Chỉ có thể chuyển công việc chưa hoàn thành.");
  if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||Number(date.slice(8,10))>new Date(Date.UTC(Number(date.slice(0,4)),Number(date.slice(5,7)),0)).getUTCDate())return toast("Ngày chuyển không hợp lệ.");
  const newMonth=date.slice(0,7),oldMonth=o.scheduled.slice(0,7);
- if(newMonth!==oldMonth&&getYearSchedule(Number(date.slice(0,4))).some(x=>x.item.id===o.item.id&&x.event.event_key!==key&&x.scheduled.slice(0,7)===newMonth))
+ if(newMonth!==oldMonth&&getYearSchedule(Number(date.slice(0,4))).some(x=>x.item.id===o.item.id&&x.event.event_key!==key&&x.scheduled.slice(0,7)===newMonth&&!x.virtual))
    return toast("Công việc này đã có một kỳ trong tháng đích. Hãy chọn tháng khác.");
  if(date===dateOf(o))return;
  if(!confirm("Chuyển lịch "+o.item.work_title+" sang "+fmt(date)+"? Nếu là ngày đầu chu kỳ, các kỳ lặp tương lai cũng sẽ tính lại."))return;
  busy=true;
  try{
   const token=centralSession.access_token,id=o.virtual?crypto.randomUUID():o.event.id;
-  const newKey=newMonth===oldMonth?key:o.item.plan_code+":"+newMonth;
+  // Keep occurrence identity tied to the original recurrence slot.
+  const newKey=key;
   if(o.virtual){
    const event={id,item_id:o.item.id,building_id:B,event_key:newKey,planned_month:monthISO(date),planned_date:date,due_date:date,location:o.item.subsystem||"",status:"planned",source_kind:"year"};
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:event});
