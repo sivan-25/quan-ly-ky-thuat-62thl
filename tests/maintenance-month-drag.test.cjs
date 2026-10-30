@@ -107,7 +107,7 @@ async function fixture(sourceDate,otherDate){
   f.dom.window.close();
  }
  const index=read("index.html"),css=read("maintenance-month-drag.css");
- assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261030-dragfix03">'),"new module loaded into real page");
+ assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261030-dragfix04">'),"new module loaded into real page");
  assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
  console.log("PASS: click stability, unchanged month-header position, two-way navigation, drop dock, February clamp, and same-day stacking");
