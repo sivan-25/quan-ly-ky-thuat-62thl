@@ -15,6 +15,8 @@ function readView(){
  return typeof window!=="undefined"&&window.matchMedia?.("(max-width:640px)")?.matches?"rows":"cards";
 }
 let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],systemCatalog=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="",planSuccessTimer=null;
+let maintenanceDrag=null,maintenanceHoverTimer=null,maintenanceHoverTarget="";
+function clearMaintenanceHover(){if(maintenanceHoverTimer)clearTimeout(maintenanceHoverTimer);maintenanceHoverTimer=null;maintenanceHoverTarget="";}
 function clearScheduleCache(){scheduleCache=null}
 function getYearSchedule(y){if(scheduleCache?.year===y)return scheduleCache.events;const events=schedule(y);scheduleCache={year:y,events};return events}
 function personLabel(value){
@@ -61,6 +63,10 @@ function addMonths(anchor,delta){
  const abs=p[0]*12+p[1]-1+delta,y=Math.floor(abs/12),m=abs%12+1;
  const day=Math.min(p[2],new Date(Date.UTC(y,m,0)).getUTCDate());
  return y+"-"+pad(m)+"-"+pad(day);
+}
+function clampMaintenanceDate(source,y,m){
+ const day=Number(String(source).slice(8,10));
+ return y+"-"+pad(m)+"-"+pad(Math.min(day,new Date(Date.UTC(y,m,0)).getUTCDate()));
 }
 function interval(i){const n=Number(String(i?.cadence||"").match(/\d+/)?.[0]||0);return Number.isInteger(n)&&n>=1&&n<=120?n:0;}
 function cycleLabel(n){return n===0?"1 lần":n===12?"1 năm":n+" tháng";}
@@ -263,13 +269,43 @@ function ensure(){
  });
  root.addEventListener("dragstart",ev=>{
   const chip=ev.target.closest("[data-m130-drag]");
-  if(chip&&ev.dataTransfer)ev.dataTransfer.setData("text/plain",chip.dataset.m130Drag);
+  if(!chip||!ev.dataTransfer||!canWrite())return;
+  const key=chip.dataset.m130Drag,o=getYearSchedule(year).find(x=>x.event.event_key===key);
+  if(!o||o.event.status==="completed")return;
+  maintenanceDrag={key,sourceDate:dateOf(o)};
+  ev.dataTransfer.effectAllowed="move";
+  ev.dataTransfer.setData("text/plain",key);
  });
- root.addEventListener("dragover",ev=>{if(ev.target.closest("[data-m130-date]"))ev.preventDefault();});
+ root.addEventListener("dragend",()=>{clearMaintenanceHover();maintenanceDrag=null;});
+ root.addEventListener("dragover",ev=>{
+  if(!maintenanceDrag)return;
+  const cell=ev.target.closest("[data-m130-date]"),target=ev.target.closest("[data-m130-month],#m130Prev,#m130Next");
+  if(cell){ev.preventDefault();clearMaintenanceHover();return;}
+  if(!target){clearMaintenanceHover();return;}
+  ev.preventDefault();ev.dataTransfer.dropEffect="move";
+  const nextYear=target.id==="m130Prev"?year-1:target.id==="m130Next"?year+1:year;
+  const nextMonth=target.dataset.m130Month?Number(target.dataset.m130Month):month;
+  if(nextYear<2020||nextYear>2100||nextYear===year&&nextMonth===month){clearMaintenanceHover();return;}
+  const targetKey=nextYear+"-"+nextMonth;
+  if(maintenanceHoverTarget===targetKey)return;
+  clearMaintenanceHover();maintenanceHoverTarget=targetKey;
+  maintenanceHoverTimer=setTimeout(()=>{
+   if(!maintenanceDrag||maintenanceHoverTarget!==targetKey)return;
+   year=nextYear;month=nextMonth;clearMaintenanceHover();render();
+  },650);
+ });
  root.addEventListener("drop",ev=>{
-  const cell=ev.target.closest("[data-m130-date]");
-  if(!cell||!ev.dataTransfer)return;ev.preventDefault();
-  const key=ev.dataTransfer.getData("text/plain");if(key)rescheduleOccurrence(key,cell.dataset.m130Date);
+  if(!maintenanceDrag||!ev.dataTransfer)return;
+  const cell=ev.target.closest("[data-m130-date]"),target=ev.target.closest("[data-m130-month],#m130Prev,#m130Next");
+  if(!cell&&!target)return;
+  ev.preventDefault();clearMaintenanceHover();
+  const source=maintenanceDrag;
+  const targetYear=cell?Number(cell.dataset.m130Date.slice(0,4)):target.id==="m130Prev"?year-1:target.id==="m130Next"?year+1:year;
+  const targetMonth=cell?Number(cell.dataset.m130Date.slice(5,7)):target.dataset.m130Month?Number(target.dataset.m130Month):month;
+  if(targetYear<2020||targetYear>2100)return;
+  const date=cell?cell.dataset.m130Date:clampMaintenanceDate(source.sourceDate,targetYear,targetMonth);
+  maintenanceDrag=null;
+  rescheduleOccurrence(source.key,date);
  });
  root.addEventListener("click",ev=>{
   const photo=ev.target.closest("[data-m130-gallery]");
@@ -465,22 +501,29 @@ function renderAlternative(events){
 }
 async function rescheduleOccurrence(key,date){
  if(busy||!canWrite()||!active())return;
- const o=getYearSchedule(year).find(x=>x.event.event_key===key);
- if(!o||o.event.status==="completed"||date.slice(0,7)!==o.scheduled.slice(0,7))return toast("Chỉ đổi lịch việc chưa hoàn thành trong cùng tháng.");
+ const sourceYear=Number(String(key).match(/:(\\d{4})-\\d{2}/)?.[1]||year);
+ const o=getYearSchedule(sourceYear).find(x=>x.event.event_key===key);
+ if(!o||o.event.status==="completed")return toast("Chỉ có thể chuyển công việc chưa hoàn thành.");
+ if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||Number(date.slice(8,10))>new Date(Date.UTC(Number(date.slice(0,4)),Number(date.slice(5,7)),0)).getUTCDate())return toast("Ngày chuyển không hợp lệ.");
+ const newMonth=date.slice(0,7),oldMonth=o.scheduled.slice(0,7);
+ if(newMonth!==oldMonth&&getYearSchedule(Number(date.slice(0,4))).some(x=>x.item.id===o.item.id&&x.event.event_key!==key&&x.scheduled.slice(0,7)===newMonth))
+   return toast("Công việc này đã có một kỳ trong tháng đích. Hãy chọn tháng khác.");
  if(date===dateOf(o))return;
  if(!confirm("Chuyển lịch "+o.item.work_title+" sang "+fmt(date)+"? Nếu là ngày đầu chu kỳ, các kỳ lặp tương lai cũng sẽ tính lại."))return;
  busy=true;
  try{
   const token=centralSession.access_token,id=o.virtual?crypto.randomUUID():o.event.id;
+  const newKey=newMonth===oldMonth?key:o.item.plan_code+":"+newMonth;
   if(o.virtual){
-   const event={id,item_id:o.item.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,due_date:date,location:o.item.subsystem||"",status:"planned",source_kind:"year"};
+   const event={id,item_id:o.item.id,building_id:B,event_key:newKey,planned_month:monthISO(date),planned_date:date,due_date:date,location:o.item.subsystem||"",status:"planned",source_kind:"year"};
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:event});
    stored.push(event);
   }else{
-   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{planned_date:date,due_date:date,updated_at:new Date().toISOString()}});
-   stored=stored.map(e=>e.id===id?{...e,planned_date:date,due_date:date}:e);
+   const update={event_key:newKey,planned_month:monthISO(date),planned_date:date,due_date:date,updated_at:new Date().toISOString()};
+   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:update});
+   stored=stored.map(e=>e.id===id?{...e,...update}:e);
   }
-  clearScheduleCache();render();notifyMaintenance130Nav();toast("Đã đổi lịch sang "+fmt(date));
+  clearScheduleCache();year=Number(date.slice(0,4));month=Number(date.slice(5,7));render();notifyMaintenance130Nav();toast("Đã đổi lịch sang "+fmt(date));
  }catch(err){toast("Không đổi được lịch: "+(err.message||err));}
  finally{busy=false;}
 }
