@@ -39,12 +39,34 @@ async function fixture(sourceDate,otherDate){
  return {dom,w,d,calls,down,move,up,setHit:el=>{hit=el}};
 }
 (async()=>{
+ // Clicking a work card should not start dragging, move month header, or block normal arrow navigation.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  const source=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  const before=f.d.getElementById("estamMonth").textContent;
+  f.down();
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"no floating controls on pointer down");
+  f.d.dispatchEvent(new f.w.MouseEvent("pointerup",{bubbles:true,cancelable:true,button:0,clientX:100,clientY:450}));
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"no floating controls after a click");
+  assert.equal(f.d.querySelector(".estamMonthNav").parentElement.classList.contains("estamSummary"),true);
+  assert.equal(f.d.getElementById("estamMonth").textContent,before,"clicking a job does not change its month");
+  assert.equal(source.draggable,true,"job is restored to draggable after clicking");
+  source.click();
+  assert.equal(f.d.getElementById("m130Overlay").hidden,false,"ordinary click still opens work item editor");
+  f.d.getElementById("estamNext").click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","next arrow works as a normal click");
+  f.d.getElementById("estamPrev").click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","previous arrow works as a normal click");
+  f.dom.window.close();
+ }
  // Drop directly on the visible right arrow: preserve the 31st by clipping to Nov 30.
  {
   const f=await fixture("2026-10-31","2026-11-30");
   f.down();f.move();
   assert.equal(f.d.getElementById("maintenancePage").classList.contains("estaMonthDragging"),true,"drag starts");
   assert.ok(f.d.querySelector(".estaMonthDragGhost"),"visible drag feedback");
+  assert.ok(f.d.querySelector(".estaMonthDragTargets"),"separate accessible month drop targets appear only during a real drag");
+  assert.equal(f.d.querySelector(".estamMonthNav").parentElement.classList.contains("estamSummary"),true,"original header stays inside the summary panel");
   f.up();await flush();
   assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","real header moves to November");
   const ev=f.w.__dragState().stored.find(o=>o.item_id==="job1");
@@ -86,6 +108,7 @@ async function fixture(sourceDate,otherDate){
  }
  const index=read("index.html"),css=read("maintenance-month-drag.css");
  assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261030-dragfix03">'),"new module loaded into real page");
- assert.match(css,/position:fixed!important/,"real visible arrows float during drag from day 31");
- console.log("PASS: actual ESTA arrow drag, hover, February clipping, two jobs in cell, cache bust");
+ assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
+ assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
+ console.log("PASS: click stability, unchanged month-header position, two-way navigation, drop dock, February clamp, and same-day stacking");
 })().catch(err=>{console.error(err);process.exitCode=1});
