@@ -173,9 +173,10 @@ async function fixture(sourceDate,otherDate){
   assert.equal(f.w.estaMaintenance130Mode(),"clone");
   const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
   assert.equal(chip.draggable,false,"clone mode is click-only");
+  const probe=f.w.estaMaintenance130DragActions.getSource("job1:2026-10","clone");
   chip.click();await flush();
   const copied=f.w.__dragState().items.filter(i=>i.id!=="plan1"&&i.id!=="job1"&&i.id!=="job2");
-  assert.equal(copied.length,1,"clone inserts one new plan; calls="+JSON.stringify(f.calls).slice(0,1400)+", uuidType="+typeof f.w.crypto.randomUUID);
+  assert.equal(copied.length,1,"clone inserts one new plan; calls="+JSON.stringify(f.calls).slice(0,1400)+", source="+Boolean(probe)+", mode="+f.w.estaMaintenance130Mode()+", help="+f.d.getElementById("estaMaintenanceModeHelp").textContent);
   const clonePlan=copied[0];
   const newEvent=f.w.__dragState().stored.find(e=>e.item_id===clonePlan.id);
   assert.equal(newEvent.planned_date,"2026-10-16","occupied Thursday skipped for empty Friday");
