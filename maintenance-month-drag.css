@@ -223,10 +223,13 @@
 }
 
 /* 130HH calendar actions are opt-in. Keep settings beside native maintenance actions. */
-#maintenancePage #estaMaintenanceSettings{display:none}
-#maintenancePage[data-estam-building="130HH"][data-estam-view="calendar"] #estaMaintenanceSettings{
- display:flex;align-items:center;gap:9px;position:relative;flex-wrap:wrap;min-width:0;
+/* Always show the 130HH settings beside "Thêm bảo trì" regardless of month/view
+   attribute initialization order; JavaScript hides it for other projects. */
+#maintenancePage #estamNativeActions #estaMaintenanceSettings:not([hidden]){
+ display:inline-flex!important;align-items:center;gap:8px;position:relative;
+ flex:0 0 auto;min-width:0;
 }
+#maintenancePage #estaMaintenanceSettings[hidden]{display:none!important}
 #maintenancePage #estaMaintenanceSettingsToggle{
  display:inline-flex;align-items:center;justify-content:center;gap:7px;
  min-height:42px;padding:9px 14px;white-space:nowrap;
@@ -292,8 +295,8 @@
  outline:3px solid #368db9;outline-offset:2px;
 }
 @media(max-width:760px){
- #maintenancePage[data-estam-building="130HH"][data-estam-view="calendar"] #estaMaintenanceSettings{gap:5px;}
+ #maintenancePage #estamNativeActions #estaMaintenanceSettings:not([hidden]){gap:5px;}
  #maintenancePage #estaMaintenanceSettingsToggle{padding:8px 10px;font-size:12px;}
- #maintenancePage .estaMaintenanceModeHelp{width:100%;max-width:none;font-size:10px;}
+ #maintenancePage .estaMaintenanceModeHelp{display:none;}
  #maintenancePage #estaMaintenanceSettingsMenu{right:0;width:min(282px,calc(100vw - 30px));}
 }
