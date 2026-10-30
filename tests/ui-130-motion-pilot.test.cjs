@@ -8,3 +8,8 @@ assert.ok(demo.includes('demoLoad(String(currentBuilding?.id||"")!=="130HH")'));
 assert.ok(demo.includes('buildingId==="130HH"&&!syncResult'));
 assert.ok(demo.includes('if(buildingId!=="130HH")await new Promise'));
 console.log('PASS 130HH scoped cache, save acknowledgement, consolidated brand and mobile interaction');
+
+// WCAG AA normal-text contrast for the core light theme combinations.
+function luminance(h){const c=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4);return c[0]*0.2126+c[1]*0.7152+c[2]*0.0722}
+function contrast(a,b){const x=luminance(a),y=luminance(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)}
+for(const [fg,bg] of [['#0F172A','#F8FAFC'],['#1E293B','#FFFFFF'],['#475569','#F8FAFC'],['#1D4ED8','#FFFFFF'],['#FFFFFF','#2563EB'],['#8A5A00','#FFF0B3']])assert.ok(contrast(fg,bg)>=4.5,'low contrast '+fg+' / '+bg);
