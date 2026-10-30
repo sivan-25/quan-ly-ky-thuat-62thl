@@ -3,7 +3,7 @@ const fs = require('node:fs');
 
 const html = fs.readFileSync('index.html', 'utf8');
 const css = fs.readFileSync('work-page-130-readability.css', 'utf8');
-const brandLink = html.indexOf('esta-brand-130-complete.css?v=20261030-130hh-classic-contrast02');
+const brandLink = html.indexOf('esta-brand-130-complete.css?v=20261030-130hh-docs-readability03');
 const finalLink = html.indexOf('work-page-130-readability.css?v=20261030-130hh-classic-contrast02');
 
 assert.ok(brandLink >= 0, 'the 130HH brand stylesheet remains linked');
