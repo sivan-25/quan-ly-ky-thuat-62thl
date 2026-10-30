@@ -17,7 +17,7 @@
   return year+"-"+pad(month)+"-"+pad(Math.min(day,new Date(Date.UTC(year,month,0)).getUTCDate()));
  };
  let drag=null,ghost=null,dock=null,scrollFrame=null,lastDragEnd=0;
- let mode="off",selected=null,clonePending=false;
+ let mode="off",selected=null,clonePending=false,navigatingByDrag=false;
  window.estaMaintenance130Mode=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")==="130HH"?mode:"off";
  function clearHover(){
   if(drag)drag.hoverSide="";
@@ -90,7 +90,8 @@
   if(!el||!drag)return false;
   const before=byId("estamMonth")?.textContent||"";
   // This is the real navigation handler of ESTA (with year rollover).
-  el.click();
+  navigatingByDrag=true;
+  try{el.click();}finally{navigatingByDrag=false;}
   return (byId("estamMonth")?.textContent||"")!==before;
  }
  function hoverArrow(side){
@@ -178,7 +179,15 @@
   });
   const page=byId("maintenancePage");
   page?.setAttribute("data-esta-work-mode",mode);
-  if(mode==="clone")decorateCloneControls();else document.querySelectorAll("#maint130 .estaCloneControls").forEach(el=>el.remove());
+  if(mode==="clone")decorateCloneControls();
+  else{
+   document.querySelectorAll("#maint130 .estaCloneControls").forEach(el=>el.remove());
+   document.querySelectorAll("#maint130 .estaCloneWorkWrap").forEach(wrapper=>{
+    const chip=wrapper.querySelector(".m130CalendarChip");
+    if(chip&&wrapper.parentNode)wrapper.parentNode.insertBefore(chip,wrapper);
+    wrapper.remove();
+   });
+  }
   if(mode==="move"&&page?.dataset.estamView==="calendar")ensureDock();
   refreshSelected();
  }
@@ -288,6 +297,7 @@
  // Capture only while a mode is selected: ordinary work-item clicks are unchanged.
  document.addEventListener("click",ev=>{
   if(mode==="off"||String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")!=="130HH")return;
+  if(navigatingByDrag)return;
   const control=ev.target.closest?.("#estaMaintenanceSettings");if(control)return;
   const cloneButton=ev.target.closest?.("[data-esta-clone-action]");
   if(cloneButton&&mode==="clone"){
