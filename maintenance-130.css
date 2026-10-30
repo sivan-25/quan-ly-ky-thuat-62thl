@@ -523,3 +523,9 @@ body:has(#maintenancePage.maint130-mode:not(.hide)) #updateAiButton:not(.hide) s
 #m130Overlay .m130LegacyEvidence{display:block;padding:9px 12px;border:1px solid #d4b87e;border-radius:8px;background:#fff4dd;color:#674918;font-size:12px;font-weight:650;line-height:1.5;overflow-wrap:anywhere}
 #m130Overlay .m130LegacyEvidence[hidden]{display:none!important}
 @media(max-width:640px){#maint130 .m130EvidenceWarning{font-size:10px}#m130Overlay .m130LegacyEvidence{font-size:12px}}
+
+/* Keep month navigation reachable while dragging from day 31 at the bottom. */
+#maint130 .m130Cal{position:sticky;top:78px;z-index:100;box-shadow:0 5px 20px rgba(18,35,55,.12)}
+#maint130 .m130Year button{min-width:48px;min-height:36px;touch-action:none}
+#maint130 .m130Months button{min-height:42px}
+@media(max-width:640px){#maint130 .m130Cal{top:64px}}
