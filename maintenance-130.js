@@ -16,6 +16,8 @@ function readView(){
 }
 let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],systemCatalog=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="",planSuccessTimer=null;
 let maintenanceDrag=null,maintenanceHoverTimer=null,maintenanceHoverTarget="";
+let maintenanceDragSource=null;
+function shiftMaintenanceMonth(delta){const d=new Date(year,month-1+delta,1);if(d.getFullYear()<2020||d.getFullYear()>2100)return;year=d.getFullYear();month=d.getMonth()+1;render();}
 function clearMaintenanceHover(){if(maintenanceHoverTimer)clearTimeout(maintenanceHoverTimer);maintenanceHoverTimer=null;maintenanceHoverTarget="";}
 function clearScheduleCache(){scheduleCache=null}
 function getYearSchedule(y){if(scheduleCache?.year===y)return scheduleCache.events;const events=schedule(y);scheduleCache={year:y,events};return events}
@@ -248,7 +250,7 @@ function ensure(){
  if(!page||!anchor)return;
  const root=document.createElement("section");root.id="maint130";
  root.innerHTML='<div class="m130Header"><div><small>ESTA · QUẢN LÝ BẢO TRÌ</small><h2>Kế hoạch công việc theo tháng</h2><p>Công việc mẫu được đánh dấu riêng. Lịch lặp theo tháng lịch, không tự xác nhận hoàn thành.</p></div><div class="m130Actions"><button type="button" id="m130Pdf">↓ Xuất PDF</button></div></div>'+
- '<div class="m130Stats" id="m130Stats"></div><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Năm trước">‹</button><b id="m130Year">Năm 2026</b><button type="button" id="m130Next" aria-label="Năm sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
+ '<div class="m130Stats" id="m130Stats"></div><div class="m130Cal"><div class="m130Year"><button type="button" id="m130Prev" aria-label="Tháng trước" title="Tháng trước">‹</button><b id="m130Year">Th 10/2026</b><button type="button" id="m130Next" aria-label="Tháng sau" title="Tháng sau">›</button></div><div class="m130Months" id="m130Months"></div></div>'+
  '<div class="m130Toolbar"><input id="m130Search" type="search" placeholder="Tìm nội dung, vị trí, hệ thống..." aria-label="Tìm công việc bảo trì"><select id="m130Group"><option value="">Tất cả hệ thống</option></select><select id="m130State"><option value="">Tất cả trạng thái</option><option value="planned">Chưa thực hiện</option><option value="working">Đang thực hiện</option><option value="review">Chờ duyệt</option><option value="done">Hoàn thành</option><option value="late">Quá hạn</option><option value="cancelled">Hoãn / Hủy</option></select><select id="m130PriorityFilter"><option value="">Mọi ưu tiên</option><option value="normal">Bình thường</option><option value="high">Cao</option><option value="urgent">Khẩn cấp</option></select><select id="m130TypeFilter"><option value="">PM + CM</option><option value="PM">PM</option><option value="CM">CM</option></select><select id="m130TechnicianFilter"><option value="">Mọi KTV</option></select><select id="m130SampleFilter"><option value="all">Tất cả dữ liệu</option><option value="real">Chỉ công việc thật</option><option value="sample">Chỉ dữ liệu mẫu</option></select></div>'+
  '<div class="m130ListTop"><div class="m130Heading"><b id="m130ListTitle">Công việc theo tháng</b><small id="m130ListCount"></small></div><div class="m130ListTools"><button type="button" id="m130Create" class="m130AddButton">＋ Thêm bảo trì</button><div class="m130ViewSwitch" role="group" aria-label="Chọn cách hiển thị"><button type="button" data-m130-view="cards" aria-pressed="true">▦ Thẻ</button><button type="button" data-m130-view="rows" aria-pressed="false">☰ Dòng</button></div><div class="m130LayoutSwitch" role="group" aria-label="Chế độ xem lịch"><button type="button" data-m130-layout="list" aria-pressed="true">Danh sách</button><button type="button" data-m130-layout="calendar" aria-pressed="false">Lịch</button><button type="button" data-m130-layout="timeline" aria-pressed="false">Timeline</button></div><button type="button" id="m130Legacy" aria-expanded="false">Thiết bị / nhật ký <span>⌄</span></button></div></div><div class="m130List" id="m130List"></div><details class="m130AuditPanel"><summary>Nhật ký chỉnh sửa / xóa</summary><button type="button" id="m130AuditButton" class="m130AuditButton">Xem nhật ký</button><div id="m130AuditHistory" aria-live="polite"></div></details>';
  anchor.parentNode.insertBefore(root,anchor);
@@ -257,8 +259,8 @@ function ensure(){
  '<div class="m130Two"><label>Ngày bắt đầu chu kỳ *<input type="date" id="m130First" min="2020-01-01" max="2100-12-31" aria-label="Chọn ngày bắt đầu chu kỳ bảo trì" required></label><label>Chu kỳ bảo trì<select id="m130Cycle" required><option value="0">1 lần</option><option value="1">1 tháng</option><option value="3">3 tháng</option><option value="4">4 tháng</option><option value="6">6 tháng</option><option value="12">1 năm</option></select></label></div><p class="m130Hint" id="m130NextHint">Chọn chu kỳ, hệ thống sẽ tự tính ngày lặp. Ví dụ 10/10/2026 + 3 tháng → 10/01/2027 → 10/04/2027.</p><label>Tên kỹ thuật / người phụ trách *<input id="m130Assignee" maxlength="500" autocomplete="off" placeholder="Chọn nhiều người hoặc nhập tên, cách nhau bằng dấu phẩy" required></label><small class="m130PersonCount" id="m130AssigneeCount" aria-live="polite">Chọn một hoặc nhiều người bên dưới</small><div class="m130PersonQuick" id="m130AssigneeQuick" role="group" aria-label="Chọn nhiều kỹ thuật viên phụ trách"></div><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu kế hoạch</button><span id="m130PlanSaveSuccess" role="status" aria-live="polite" hidden>✓ Đã lưu thành công</span></div></form>'+
  '<form id="m130EventForm" hidden><p id="m130EventInfo" class="m130Hint"></p><p id="m130LegacyEvidence" class="m130LegacyEvidence" role="note" hidden></p><div class="m130Two"><label>Ngày dự kiến<input id="m130EventDate" type="date" required></label><label>Trạng thái<select id="m130EventStatus"><option value="planned">Chưa thực hiện</option><option value="in_progress">Đang thực hiện</option><option value="awaiting_approval">Chờ duyệt</option><option value="completed">Hoàn thành</option><option value="postponed">Hoãn</option><option value="cancelled">Hủy</option><option value="skipped">Không thực hiện</option></select></label></div><label>Kỹ thuật viên thực hiện *<input id="m130Who" maxlength="500" placeholder="Chọn nhiều kỹ thuật viên hoặc nhập tên" autocomplete="off"></label><small class="m130PersonCount" id="m130WhoCount" aria-live="polite">Chọn một hoặc nhiều người bên dưới</small><div class="m130PersonQuick" id="m130WhoQuick" role="group" aria-label="Chọn nhiều kỹ thuật viên thực hiện"></div><label>Kết quả kiểm tra<select id="m130ResultCode"><option value="">— Chọn kết quả —</option><option value="pass">Đạt</option><option value="fail">Không đạt</option><option value="monitor">Cần theo dõi</option></select></label><label>Kết quả thực hiện / ghi chú<textarea id="m130Result" rows="3" maxlength="2000" placeholder="Ghi nhận thực tế và hướng xử lý"></textarea></label><label>Lý do hoãn / hủy<input id="m130PostponeReason" maxlength="600" placeholder="Bắt buộc nếu Hoãn hoặc Hủy"></label><div class="m130Two"><label>Nhân công (đ)<input id="m130LaborCost" type="number" min="0" step="1000" placeholder="0"></label><label>Vật tư (đ)<input id="m130MaterialCost" type="number" min="0" step="1000" placeholder="0"></label></div><div class="m130PhotoFields"><label>Ảnh trước bảo trì<input id="m130BeforePhotos" type="file" accept="image/*" multiple></label><label>Ảnh sau bảo trì<input id="m130AfterPhotos" type="file" accept="image/*" multiple></label></div><div id="m130PhotoPreview" class="m130PhotoPreview"></div><p class="m130Hint">Hoàn thành cần chọn KTV, kết quả Đạt/Không đạt/Cần theo dõi, ghi chú và ít nhất 1 ảnh trước hoặc sau.</p><div class="m130Foot"><button type="button" data-m130-cancel>Hủy</button><button type="submit">Lưu công việc</button></div></form><datalist id="m130PeopleOptions"></datalist></div>';
  document.body.appendChild(overlay);
- $("m130Prev").onclick=()=>{year=Math.max(2020,year-1);render();};
- $("m130Next").onclick=()=>{year=Math.min(2100,year+1);render();};
+ $("m130Prev").onclick=()=>shiftMaintenanceMonth(-1);
+ $("m130Next").onclick=()=>shiftMaintenanceMonth(1);
  $("m130Create").onclick=()=>openPlan();
  $("m130Pdf").onclick=exportPdf;
  $("m130AuditButton").onclick=loadAuditHistory;
@@ -275,26 +277,32 @@ function ensure(){
   if(!chip||!ev.dataTransfer||!canWrite())return;
   const key=chip.dataset.m130Drag,o=getYearSchedule(year).find(x=>x.event.event_key===key);
   if(!o||o.event.status==="completed")return;
-  maintenanceDrag={key,sourceDate:dateOf(o)};
+  maintenanceDrag={key,sourceDate:dateOf(o),sourceYear:year};
+  maintenanceDragSource=getYearSchedule(year).find(x=>x.event.event_key===key);
   ev.dataTransfer.effectAllowed="move";
   ev.dataTransfer.setData("text/plain",key);
  });
- root.addEventListener("dragend",()=>{clearMaintenanceHover();maintenanceDrag=null;});
+ root.addEventListener("dragend",()=>{clearMaintenanceHover();maintenanceDrag=null;maintenanceDragSource=null;});
  root.addEventListener("dragover",ev=>{
   if(!maintenanceDrag)return;
   const cell=ev.target.closest("[data-m130-date]"),target=ev.target.closest("[data-m130-month],#m130Prev,#m130Next");
   if(cell){ev.preventDefault();clearMaintenanceHover();return;}
   if(!target){clearMaintenanceHover();return;}
   ev.preventDefault();ev.dataTransfer.dropEffect="move";
-  const nextYear=target.id==="m130Prev"?year-1:target.id==="m130Next"?year+1:year;
-  const nextMonth=target.dataset.m130Month?Number(target.dataset.m130Month):month;
+  const offset=target.id==="m130Prev"?-1:target.id==="m130Next"?1:0;
+  const adjacent=new Date(year,month-1+offset,1);
+  const nextYear=offset?adjacent.getFullYear():year;
+  const nextMonth=offset?adjacent.getMonth()+1:target.dataset.m130Month?Number(target.dataset.m130Month):month;
   if(nextYear<2020||nextYear>2100||nextYear===year&&nextMonth===month){clearMaintenanceHover();return;}
   const targetKey=nextYear+"-"+nextMonth;
   if(maintenanceHoverTarget===targetKey)return;
   clearMaintenanceHover();maintenanceHoverTarget=targetKey;
   maintenanceHoverTimer=setTimeout(()=>{
    if(!maintenanceDrag||maintenanceHoverTarget!==targetKey)return;
-   year=nextYear;month=nextMonth;clearMaintenanceHover();render();
+   // Do not replace the drag source DOM while a native HTML drag is active.
+   year=nextYear;month=nextMonth;clearMaintenanceHover();
+   $("m130Year").textContent="Th "+pad(month)+"/"+year;
+   root.querySelectorAll("[data-m130-month]").forEach(b=>b.classList.toggle("sel",Number(b.dataset.m130Month)===month));
   },650);
  });
  root.addEventListener("drop",ev=>{
@@ -303,12 +311,15 @@ function ensure(){
   if(!cell&&!target)return;
   ev.preventDefault();clearMaintenanceHover();
   const source=maintenanceDrag;
-  const targetYear=cell?Number(cell.dataset.m130Date.slice(0,4)):target.id==="m130Prev"?year-1:target.id==="m130Next"?year+1:year;
-  const targetMonth=cell?Number(cell.dataset.m130Date.slice(5,7)):target.dataset.m130Month?Number(target.dataset.m130Month):month;
+  const offset=target?.id==="m130Prev"?-1:target?.id==="m130Next"?1:0;
+  const adjacent=new Date(year,month-1+offset,1);
+  const targetYear=cell?Number(cell.dataset.m130Date.slice(0,4)):offset?adjacent.getFullYear():year;
+  const targetMonth=cell?Number(cell.dataset.m130Date.slice(5,7)):offset?adjacent.getMonth()+1:target.dataset.m130Month?Number(target.dataset.m130Month):month;
   if(targetYear<2020||targetYear>2100)return;
   const date=cell?cell.dataset.m130Date:clampMaintenanceDate(source.sourceDate,targetYear,targetMonth);
   maintenanceDrag=null;
-  rescheduleOccurrence(source.key,date);
+  rescheduleOccurrence(source.key,date,maintenanceDragSource);
+  maintenanceDragSource=null;
  });
  root.addEventListener("click",ev=>{
   const photo=ev.target.closest("[data-m130-gallery]");
@@ -405,7 +416,7 @@ function render(){
   if(m>=1&&m<=12)monthCounts[m-1]++;
   if(m===month)subset.push(o);
  }
- $("m130Year").textContent="Năm "+year;
+ $("m130Year").textContent="Th "+pad(month)+"/"+year;
  $("m130Months").innerHTML=monthCounts.map((count,idx)=>{const m=idx+1;return '<button type="button" data-m130-month="'+m+'" class="'+(m===month?"sel":"")+'"><small>Th '+pad(m)+'</small><b>'+count+'</b></button>';}).join("");
  const groups=[...new Set(items.map(i=>i.system_group).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi")),select=$("m130Group"),old=select.value;
  if(select.options.length!==groups.length+1||groups.some(g=>![...select.options].some(o=>o.value===g))){select.innerHTML='<option value="">Tất cả hệ thống</option>'+groups.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");select.value=old;}
@@ -502,12 +513,12 @@ function renderAlternative(events){
  }).join("");
  list.innerHTML='<div class="m130CalendarWrap"><div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
 }
-async function rescheduleOccurrence(key,date){
+async function rescheduleOccurrence(key,date,sourceOccurrence=null){
  if(busy||!canWrite()||!active())return;
- const sourceYear=Number(String(key).match(/:(\\d{4})-\\d{2}/)?.[1]||year);
- const o=getYearSchedule(sourceYear).find(x=>x.event.event_key===key);
+ const sourceYear=Number(String(key).match(/:(\d{4})-\d{2}/)?.[1]||year);
+ const o=sourceOccurrence||getYearSchedule(sourceYear).find(x=>x.event.event_key===key);
  if(!o||o.event.status==="completed")return toast("Chỉ có thể chuyển công việc chưa hoàn thành.");
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||Number(date.slice(8,10))>new Date(Date.UTC(Number(date.slice(0,4)),Number(date.slice(5,7)),0)).getUTCDate())return toast("Ngày chuyển không hợp lệ.");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number(date.slice(8,10))>new Date(Date.UTC(Number(date.slice(0,4)),Number(date.slice(5,7)),0)).getUTCDate())return toast("Ngày chuyển không hợp lệ.");
  const newMonth=date.slice(0,7),oldMonth=o.scheduled.slice(0,7);
  if(newMonth!==oldMonth&&getYearSchedule(Number(date.slice(0,4))).some(x=>x.item.id===o.item.id&&x.event.event_key!==key&&x.scheduled.slice(0,7)===newMonth&&!x.virtual))
    return toast("Công việc này đã có một kỳ trong tháng đích. Hãy chọn tháng khác.");
