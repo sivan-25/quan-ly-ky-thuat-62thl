@@ -16,7 +16,7 @@ async function fixture(sourceDate,otherDate){
  w.sbFetch=async(url,opts={})=>{
   calls.push({url,opts});
   const table=url.includes("esta_maintenance_plan_items")?"item":url.includes("esta_maintenance_plan_occurrences")?"event":"other";
-  const id=decodeURIComponent(url.match(/[?&]id=eq\\.([^&]+)/)?.[1]||opts.body?.id||"");
+  const id=decodeURIComponent(url.match(/[?&]id=eq\.([^&]+)/)?.[1]||opts.body?.id||"");
   if(opts.method==="POST"){savedRows.set(table+":"+id,{...opts.body});return [];}
   if(opts.method==="PATCH"){savedRows.set(table+":"+id,{...savedRows.get(table+":"+id),...opts.body});return [];}
   if(url.includes("select=*")&&id)return savedRows.has(table+":"+id)?[savedRows.get(table+":"+id)]:[];
