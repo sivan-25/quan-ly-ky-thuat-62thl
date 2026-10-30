@@ -532,7 +532,9 @@ async function rescheduleOccurrence(key,date,sourceOccurrence=null){
  if(newMonth!==oldMonth&&getYearSchedule(Number(date.slice(0,4))).some(x=>x.item.id===o.item.id&&x.event.event_key!==key&&x.scheduled.slice(0,7)===newMonth&&!x.virtual))
    return toast("Công việc này đã có một kỳ trong tháng đích. Hãy chọn tháng khác.");
  if(date===dateOf(o))return;
- if(!confirm("Chuyển lịch "+o.item.work_title+" sang "+fmt(date)+"? Nếu là ngày đầu chu kỳ, các kỳ lặp tương lai cũng sẽ tính lại."))return;
+ // Explicit Move mode already expresses user intent; no browser confirmation.
+ const directMove=B==="130HH"&&window.estaMaintenance130Mode?.()==="move";
+ if(!directMove&&!confirm("Chuyển lịch "+o.item.work_title+" sang "+fmt(date)+"? Nếu là ngày đầu chu kỳ, các kỳ lặp tương lai cũng sẽ tính lại."))return;
  busy=true;
  try{
   const token=centralSession.access_token,id=o.virtual?crypto.randomUUID():o.event.id;
@@ -547,7 +549,8 @@ async function rescheduleOccurrence(key,date,sourceOccurrence=null){
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:update});
    stored=stored.map(e=>e.id===id?{...e,...update}:e);
   }
-  clearScheduleCache();year=Number(date.slice(0,4));month=Number(date.slice(5,7));render();notifyMaintenance130Nav();toast("Đã đổi lịch sang "+fmt(date));
+  clearScheduleCache();year=Number(date.slice(0,4));month=Number(date.slice(5,7));render();notifyMaintenance130Nav();
+   if(!directMove)toast("Đã đổi lịch sang "+fmt(date));
  }catch(err){toast("Không đổi được lịch: "+(err.message||err));}
  finally{busy=false;}
 }
@@ -1002,7 +1005,6 @@ async function removeClonedMaintenanceOccurrence(source){
   toast("Bản sao đã hoàn thành có hồ sơ lịch sử; không thể xóa bằng dấu trừ.");
   return false;
  }
- if(!confirm('Xóa bản sao "'+item.work_title+'" khỏi lịch? Công việc gốc không thay đổi.'))return false;
  busy=true;
  try{
   const deleted_at=new Date().toISOString();
@@ -1011,7 +1013,6 @@ async function removeClonedMaintenanceOccurrence(source){
   await verifyMaintenanceSaved("esta_maintenance_plan_items",item.id,{deleted_at},B);
   items=items.map(i=>i.id===item.id?{...i,deleted_at}:i);
   clearScheduleCache();render();notifyMaintenance130Nav();
-  toast("✓ Đã xóa bản sao; công việc gốc vẫn được giữ nguyên.");
   return true;
  }catch(error){
   toast("Chưa xác nhận xóa bản sao: "+(error.message||error)+". Hãy kiểm tra trước khi thử lại.");
