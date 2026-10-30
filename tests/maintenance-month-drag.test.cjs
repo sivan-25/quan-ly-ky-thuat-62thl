@@ -10,7 +10,7 @@ const flush=()=>new Promise(r=>setTimeout(r,30));
 async function fixture(sourceDate,otherDate){
  const dom=new JSDOM('<!doctype html><html><body>'+html+'</body></html>',{url:"https://esta.local",runScripts:"outside-only",pretendToBeVisual:true});
  const w=dom.window,d=w.document,calls=[];
- w.currentBuilding={id:"130HH"};w.canProjectEdit=()=>true;w.centralSession={access_token:"test"};w.confirm=()=>true;w.toast=()=>{};
+ w.currentBuilding={id:"130HH"};w.canProjectEdit=()=>true;w.centralSession={access_token:"test"};w.confirm=()=>true;w.toast=(message)=>calls.push({toast:message});
  const savedRows=new Map();
  w.crypto.randomUUID=(()=>{let count=0;return ()=>"00000000-0000-4000-8000-"+String(++count).padStart(12,"0")})();
  w.sbFetch=async(url,opts={})=>{
@@ -175,7 +175,7 @@ async function fixture(sourceDate,otherDate){
   assert.equal(chip.draggable,false,"clone mode is click-only");
   chip.click();await flush();
   const copied=f.w.__dragState().items.filter(i=>i.id!=="plan1"&&i.id!=="job1"&&i.id!=="job2");
-  assert.equal(copied.length,1,"clone inserts one new plan");
+  assert.equal(copied.length,1,"clone inserts one new plan; calls="+JSON.stringify(f.calls).slice(0,1400)+", uuidType="+typeof f.w.crypto.randomUUID);
   const clonePlan=copied[0];
   const newEvent=f.w.__dragState().stored.find(e=>e.item_id===clonePlan.id);
   assert.equal(newEvent.planned_date,"2026-10-16","occupied Thursday skipped for empty Friday");
