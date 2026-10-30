@@ -1,8 +1,8 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const html=fs.readFileSync('index.html','utf8'),css=fs.readFileSync('esta-brand-130-complete.css','utf8'),demo=fs.readFileSync('demo-lab.js','utf8');
-assert.match(html,/esta-brand-130-complete.css\?v=20261030-130hh-speed-colors01/);
+assert.match(html,/esta-brand-130-complete.css\?v=20261030-130hh-slate-blue01/);
 assert.doesNotMatch(html,/ui-130-motion-pilot.css/);
-for(const token of ['--esta130-plum:#411437','--esta130-cream:#F3DEBF','--esta130-copper:#A46427','--esta130-copper-ink:#82491D','prefers-reduced-motion:reduce',':focus-visible','min-height:44px'])assert.ok(css.includes(token),token);
+for(const token of ['--esta130-plum:#1E293B','--esta130-cream:#F8FAFC','--esta130-copper:#2563EB','--esta130-copper-ink:#1D4ED8','prefers-reduced-motion:reduce',':focus-visible','min-height:44px'])assert.ok(css.includes(token),token);
 assert.ok(demo.includes('buildingId!=="130HH"||Date.now()-(demoCache.loadedAt||0)<15000'));
 assert.ok(demo.includes('demoLoad(String(currentBuilding?.id||"")!=="130HH")'));
 assert.ok(demo.includes('buildingId==="130HH"&&!syncResult'));
