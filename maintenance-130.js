@@ -120,11 +120,21 @@ function schedule(y,sourceItems=items,sourceStored=stored){
    const date=k===0?origin:addMonths(origin,k*n);
    if(!date||Number(date.slice(0,4))!==targetYear)continue;
    const key=i.plan_code+":"+date.slice(0,7),real=known.get(key)||null;
+   if(real&&String(real.planned_month||real.planned_date).slice(0,7)!==date.slice(0,7))continue;
    // A moved occurrence keeps its original event key, so it replaces the source
    // slot instead of creating a second copy in the source or target month.
    if(!real&&explicit.some(e=>e.event_key!==key&&String(e.planned_date||"").slice(0,7)===date.slice(0,7)&&String(e.event_key||"").slice(-7)!==date.slice(0,7)))continue;
    result.push({item:i,event:real||{item_id:i.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,status:"planned",result_note:"",completed_by:"",image_paths:[]},virtual:!real,scheduled:real?.planned_date||date});
   }
+ }
+ // Explicitly include moved recurrence slots in their new month, not their original event-key month.
+ const already=new Set(result.filter(x=>!x.virtual).map(x=>x.event.id));
+ for(const e of sourceStored){
+  const dest=String(e.planned_date||e.planned_month||"").slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(dest)||Number(dest.slice(0,4))!==targetYear)continue;
+  if(String(e.event_key||"").slice(-7)===dest.slice(0,7)||already.has(e.id))continue;
+  const item=sourceItems.find(x=>x.id===e.item_id&&!x.deleted_at);
+  if(item){result.push({item,event:e,virtual:false,scheduled:dest});already.add(e.id);}
  }
  return result.sort((a,b)=>String(a.event.planned_date||a.scheduled).localeCompare(String(b.event.planned_date||b.scheduled))||a.item.work_title.localeCompare(b.item.work_title,"vi"));
 }
