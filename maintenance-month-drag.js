@@ -34,7 +34,7 @@
    try{if(held.chip.hasPointerCapture?.(held.pointerId))held.chip.releasePointerCapture(held.pointerId)}catch(_){}
   }
   ghost?.remove();ghost=null;
-  dock?.remove();dock=null;
+  if(mode!=="move"){dock?.remove();dock=null;}
   byId("maintenancePage")?.classList.remove("estaMonthDragging");
   // Normal clicks are never suppressed. Only prevent the browser's synthetic click after an actual drag.
   if(held?.started)lastDragEnd=Date.now();
@@ -45,18 +45,24 @@
   if(!button)return "";
   return button.id==="estamPrev"?"prev":button.id==="estamNext"?"next":button.dataset.estaMonthDrop||"";
  }
+ function ensureDock(){
+  if(dock?.isConnected)return dock;
+  dock=document.createElement("div");
+  dock.className="estaMonthDragTargets";
+  dock.setAttribute("role","group");
+  dock.setAttribute("aria-label","Điều hướng di chuyển công việc bảo trì");
+  dock.innerHTML='<span class="estaMonthDockCaption">DI CHUYỂN CÔNG VIỆC</span><button type="button" data-esta-month-drop="prev" aria-label="Di chuyển sang tháng trước"><span aria-hidden="true">‹</span> Tháng trước</button><button type="button" data-esta-month-drop="next" aria-label="Di chuyển sang tháng sau">Tháng sau <span aria-hidden="true">›</span></button>';
+  document.body.appendChild(dock);
+  return dock;
+ }
+ function destroyDock(){dock?.remove();dock=null;}
  function beginVisual(){
   if(!drag||drag.started)return;
   drag.started=true;
   // Do not relocate the original month header. A separate bottom dock remains reachable
   // even when dragging from the 31st, without covering the 'Thêm bảo trì' action.
   byId("maintenancePage")?.classList.add("estaMonthDragging");
-  dock=document.createElement("div");
-  dock.className="estaMonthDragTargets";
-  dock.setAttribute("role","group");
-  dock.setAttribute("aria-label","Đưa lịch sang tháng trước hoặc tháng sau");
-  dock.innerHTML='<button type="button" data-esta-month-drop="prev" aria-label="Thả để chuyển công việc sang tháng trước"><span aria-hidden="true">‹</span> Tháng trước</button><button type="button" data-esta-month-drop="next" aria-label="Thả để chuyển công việc sang tháng sau">Tháng sau <span aria-hidden="true">›</span></button>';
-  document.body.appendChild(dock);
+  ensureDock();
   ghost=document.createElement("div");
   ghost.className="estaMonthDragGhost";
   ghost.setAttribute("aria-hidden","true");
@@ -170,13 +176,51 @@
   document.querySelectorAll("#maint130 .m130CalendarChip").forEach(chip=>{
    chip.draggable=allowed&&!chip.classList.contains("done");
   });
-  byId("maintenancePage")?.setAttribute("data-esta-work-mode",mode);
+  const page=byId("maintenancePage");
+  page?.setAttribute("data-esta-work-mode",mode);
+  if(mode==="clone")decorateCloneControls();else document.querySelectorAll("#maint130 .estaCloneControls").forEach(el=>el.remove());
+  if(mode==="move"&&page?.dataset.estamView==="calendar")ensureDock();
   refreshSelected();
+ }
+ function decorateCloneControls(){
+  document.querySelectorAll("#maint130 .m130CalendarChip[data-m130-drag]").forEach(chip=>{
+   const cell=chip.closest(".m130CalendarDay");
+   if(!cell)return;
+   let wrapper=chip.parentElement?.classList.contains("estaCloneWorkWrap")?chip.parentElement:null;
+   if(!wrapper){
+    wrapper=document.createElement("div");
+    wrapper.className="estaCloneWorkWrap";
+    chip.parentNode.insertBefore(wrapper,chip);
+    wrapper.appendChild(chip);
+   }
+   if(wrapper.querySelector(".estaCloneControls"))return;
+   const controls=document.createElement("div");
+   controls.className="estaCloneControls";
+   const source=api()?.getSource?.(chip.dataset.m130Drag,"clone");
+   const isCopied=source?.occurrence?.item?.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&
+     String(source.occurrence.item.plan_code||"").startsWith("130HH-COPY-");
+   const plus=document.createElement("button");
+   plus.type="button";plus.className="estaClonePlus";plus.dataset.estaCloneAction="plus";
+   plus.dataset.estaCloneKey=chip.dataset.m130Drag;plus.textContent="+";
+   plus.title="Nhân bản công việc vào ngày trống gần nhất";
+   plus.setAttribute("aria-label","Nhân bản "+(source?.title||"công việc"));
+   controls.appendChild(plus);
+   if(isCopied){
+    const minus=document.createElement("button");
+    minus.type="button";minus.className="estaCloneMinus";minus.dataset.estaCloneAction="minus";
+    minus.dataset.estaCloneKey=chip.dataset.m130Drag;minus.textContent="−";
+    minus.title="Xóa bản sao này (giữ nguyên công việc gốc)";
+    minus.setAttribute("aria-label","Xóa bản sao "+(source?.title||"công việc"));
+    controls.appendChild(minus);
+   }
+   wrapper.appendChild(controls);
+  });
  }
  function applyMode(next){
   if(drag)finish();
   mode=["off","move","clone"].includes(next)?next:"off";
   selected=null;
+  if(mode==="move")ensureDock();else destroyDock();
   const pane=byId("estaMaintenanceSettingsMenu");
   if(pane)pane.hidden=true;
   const trigger=byId("estaMaintenanceSettingsToggle");
@@ -186,7 +230,7 @@
    b.setAttribute("aria-pressed",String(current));
    b.classList.toggle("isActive",current);
   });
-  setHelp(mode==="move"?"Di chuyển: chọn công việc rồi chọn ngày hoặc mũi tên tháng. Cũng có thể kéo thả trực tiếp.":mode==="clone"?"Nhân bản: chọn công việc để tạo bản sao ở ngày trống gần nhất.":"");
+  setHelp(mode==="move"?"Di chuyển: hai nút ‹ › đang hiển thị phía dưới. Chọn công việc rồi bấm nút, hoặc kéo trực tiếp.":mode==="clone"?"Nhân bản: bấm + để sao chép; bấm − ngay bên dưới để xóa bản sao.":"");
   syncChips();
  }
  function is130(){return String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"")==="130HH";}
@@ -230,7 +274,10 @@
   const page=byId("maintenancePage"),building=String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"");
   if(building!=="130HH"||page?.dataset.estamView!=="calendar"){
    if(mode!=="off")applyMode("off");
-  }else syncChips();
+  }else{
+   if(mode==="move")ensureDock();
+   syncChips();
+  }
  }
  async function commitSelected(source,date){
   selected=null;refreshSelected();setHelp("Đang chuyển lịch sang "+date.split("-").reverse().join("/")+"…");
@@ -242,6 +289,35 @@
  document.addEventListener("click",ev=>{
   if(mode==="off"||String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")!=="130HH")return;
   const control=ev.target.closest?.("#estaMaintenanceSettings");if(control)return;
+  const cloneButton=ev.target.closest?.("[data-esta-clone-action]");
+  if(cloneButton&&mode==="clone"){
+   ev.preventDefault();ev.stopImmediatePropagation();
+   if(clonePending)return;
+   const source=api()?.getSource?.(cloneButton.dataset.estaCloneKey,"clone");
+   if(!source)return;
+   clonePending=true;
+   setHelp(cloneButton.dataset.estaCloneAction==="minus"?"Đang xác nhận xóa bản sao…":"Đang nhân bản vào ngày trống gần nhất…");
+   const action=cloneButton.dataset.estaCloneAction==="minus"?"removeClone":"clone";
+   Promise.resolve(api()?.[action]?.(source)).catch(err=>{
+    if(typeof window.toast==="function")window.toast("Không thực hiện được: "+(err?.message||err));
+   }).finally(()=>{clonePending=false;if(mode==="clone")setHelp("Nhân bản: bấm + để sao chép, bấm − dưới + để xóa bản sao đã tạo.");});
+   return;
+  }
+  const dockBtn=ev.target.closest?.("[data-esta-month-drop]");
+  if(dockBtn&&mode==="move"){
+   ev.preventDefault();ev.stopImmediatePropagation();
+   const side=dockBtn.dataset.estaMonthDrop;
+   if(!selected){
+    byId(side==="prev"?"estamPrev":"estamNext")?.click();
+    setHelp("Chọn công việc trước, sau đó bấm ‹ hoặc › để di chuyển.");
+    return;
+   }
+   const shown=currentCalendar();if(!shown)return;
+   const next=new Date(Date.UTC(shown.year,shown.month-1+(side==="prev"?-1:1),1));
+   const date=clamp(selected.date,next.getUTCFullYear(),next.getUTCMonth()+1);
+   commitSelected(selected,date);
+   return;
+  }
   const chip=ev.target.closest?.("#maint130 .m130CalendarChip[data-m130-drag]");
   if(chip){
    // A drag release is not a second click selection.
