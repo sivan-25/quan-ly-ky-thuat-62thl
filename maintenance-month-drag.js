@@ -239,14 +239,14 @@
    b.setAttribute("aria-pressed",String(current));
    b.classList.toggle("isActive",current);
   });
-  setHelp(mode==="move"?"Di chuyển: hai nút ‹ › đang hiển thị phía dưới. Chọn công việc rồi bấm nút, hoặc kéo trực tiếp.":mode==="clone"?"Nhân bản: bấm + để sao chép; bấm − ngay bên dưới để xóa bản sao.":"");
+  setHelp("");
   syncChips();
  }
  function is130(){return String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"")==="130HH";}
  function syncSettingsVisibility(){
   const el=byId("estaMaintenanceSettings");
   if(!el)return;
-  const visible=is130();
+  const visible=is130()&&byId("maintenancePage")?.dataset.estamView==="calendar";
   el.hidden=!visible;
   if(!visible&&mode!=="off")applyMode("off");
   // The controller is beside "Thêm bảo trì", never tucked into the filter overflow.
@@ -260,7 +260,7 @@
   const el=document.createElement("div");
   el.id="estaMaintenanceSettings";
   el.className="estaMaintenanceSettings";
-  el.innerHTML='<button type="button" id="estaMaintenanceSettingsToggle" aria-expanded="false" aria-controls="estaMaintenanceSettingsMenu" aria-label="Cài đặt thao tác công việc bảo trì"><span aria-hidden="true">⚙</span> Cài đặt</button>'+
+  el.innerHTML='<button type="button" id="estaMaintenanceSettingsToggle" aria-expanded="false" aria-controls="estaMaintenanceSettingsMenu" aria-label="Cài đặt thao tác công việc bảo trì"><svg class="estaSettingsIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.05.05-1.9 1.9-.05-.05a1.65 1.65 0 0 0-1.82-.33c-.42.18-.7.6-.7 1.07V20h-2.7v-.54c0-.47-.28-.89-.7-1.07a1.65 1.65 0 0 0-1.82.33l-.05.05-1.9-1.9.05-.05a1.65 1.65 0 0 0 .33-1.82c-.18-.42-.6-.7-1.07-.7H6v-2.7h.54c.47 0 .89-.28 1.07-.7a1.65 1.65 0 0 0-.33-1.82l-.05-.05 1.9-1.9.05.05a1.65 1.65 0 0 0 1.82.33c.42-.18.7-.6.7-1.07V5h2.7v.54c0 .47.28.89.7 1.07a1.65 1.65 0 0 0 1.82-.33l.05-.05 1.9 1.9-.05.05a1.65 1.65 0 0 0-.33 1.82c.18.42.6.7 1.07.7H20v2.7h-.54c-.47 0-.89.28-1.07.7Z"/></svg><span>Cài đặt</span></button>'+
    '<div id="estaMaintenanceSettingsMenu" class="estaMaintenanceSettingsMenu" hidden><b>Thao tác công việc</b>'+
    '<button type="button" data-esta-action="off" aria-pressed="true">✓ Xem và chỉnh sửa</button>'+
    '<button type="button" data-esta-action="move" aria-pressed="false">↔ Di chuyển công việc</button>'+
@@ -283,16 +283,18 @@
   const page=byId("maintenancePage"),building=String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"");
   if(building!=="130HH"||page?.dataset.estamView!=="calendar"){
    if(mode!=="off")applyMode("off");
+   syncSettingsVisibility();
   }else{
+   syncSettingsVisibility();
    if(mode==="move")ensureDock();
    syncChips();
   }
  }
  async function commitSelected(source,date){
-  selected=null;refreshSelected();setHelp("Đang chuyển lịch sang "+date.split("-").reverse().join("/")+"…");
+  selected=null;refreshSelected();
   try{await api()?.move?.(source,date);}catch(err){
    if(typeof window.toast==="function")window.toast("Không chuyển lịch: "+(err.message||err));
-  }finally{if(mode==="move")setHelp("Di chuyển: chọn công việc rồi chọn ngày hoặc mũi tên tháng.");}
+  }finally{setHelp("");}
  }
  // Capture only while a mode is selected: ordinary work-item clicks are unchanged.
  document.addEventListener("click",ev=>{
@@ -306,11 +308,11 @@
    const source=api()?.getSource?.(cloneButton.dataset.estaCloneKey,"clone");
    if(!source)return;
    clonePending=true;
-   setHelp(cloneButton.dataset.estaCloneAction==="minus"?"Đang xác nhận xóa bản sao…":"Đang nhân bản vào ngày trống gần nhất…");
+   
    const action=cloneButton.dataset.estaCloneAction==="minus"?"removeClone":"clone";
    Promise.resolve(api()?.[action]?.(source)).catch(err=>{
     if(typeof window.toast==="function")window.toast("Không thực hiện được: "+(err?.message||err));
-   }).finally(()=>{clonePending=false;if(mode==="clone")setHelp("Nhân bản: bấm + để sao chép, bấm − dưới + để xóa bản sao đã tạo.");});
+   }).finally(()=>{clonePending=false;});
    return;
   }
   const dockBtn=ev.target.closest?.("[data-esta-month-drop]");
@@ -319,7 +321,7 @@
    const side=dockBtn.dataset.estaMonthDrop;
    if(!selected){
     byId(side==="prev"?"estamPrev":"estamNext")?.click();
-    setHelp("Chọn công việc trước, sau đó bấm ‹ hoặc › để di chuyển.");
+    
     return;
    }
    const shown=currentCalendar();if(!shown)return;
@@ -338,13 +340,13 @@
    if(mode==="move"){
     selected=selected?.key===key?null:source;
     refreshSelected();
-    setHelp(selected?"Đã chọn: "+source.title+" — chọn ngày đích hoặc mũi tên ‹ ›.":"Di chuyển: chọn một công việc để bắt đầu.");
+    
    }else if(mode==="clone"&&!clonePending){
     clonePending=true;
-    setHelp("Đang nhân bản và tìm ngày trống kế tiếp…");
+    
     Promise.resolve(api()?.clone?.(source)).catch(err=>{
      if(typeof window.toast==="function")window.toast("Nhân bản không thành công: "+(err?.message||err));
-    }).finally(()=>{clonePending=false;if(mode==="clone")setHelp("Nhân bản: chọn công việc tiếp theo để tạo bản sao.");});
+    }).finally(()=>{clonePending=false;});
    }
    return;
   }
