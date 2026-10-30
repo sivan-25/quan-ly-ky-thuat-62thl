@@ -99,6 +99,22 @@ function finish(from,to,label){
  sandbox.active=false;
  await load();
  assert.equal(calls.length,64,'inactive app should not fetch');
+ // 130HH: recent navigation reuses loaded data; after 15s it refreshes.
+ sandbox.active=true;
+ sandbox.currentBuilding={id:'130HH'};
+ sandbox.projectOpenSeq=4;
+ const pilot=load();
+ assert.equal(calls.length,72);
+ finish(64,72,'130HH-initial');
+ await pilot;
+ await load();
+ assert.equal(calls.length,72,'recent 130HH navigation reuses existing 8-table snapshot');
+ vm.runInContext('demoCache.loadedAt=Date.now()-16000',sandbox);
+ const expired=load();
+ assert.equal(calls.length,80,'expired 130HH snapshot is refreshed');
+ finish(72,80,'130HH-updated');
+ await expired;
+ assert.equal(getCache().materials[0].label,'130HH-updated');
 
  console.log('PASS: material stock calculation, 8-table project load coalescing, explicit reload, cache, stale responses, A-B-A navigation, retry and inactive guard; no live Supabase.');
 })().catch(error=>{console.error(error);process.exitCode=1;});
