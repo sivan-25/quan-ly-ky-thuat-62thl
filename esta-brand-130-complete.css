@@ -9,6 +9,7 @@
  --esta130-soft:#F5ECD0;
  --esta130-lift:#FBF3E3;
  --esta130-copper:#A46427;
+ --esta130-copper-ink:#82491D;
  --esta130-text:#2B1526;
  --esta130-secondary:#625045;
  --esta130-line:#D7BE9C;
@@ -1086,7 +1087,7 @@ body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorProfile,.
   border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain>span{
-  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+  color:var(--esta130-copper-ink)!important;-webkit-text-fill-color:var(--esta130-copper-ink)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain h1{
   color:#411437!important;-webkit-text-fill-color:#411437!important;
@@ -1363,7 +1364,7 @@ body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickM
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickPopoverHead .inventoryKicker,
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .stockAlertTitle .inventoryKicker,
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryCardTitle .inventoryKicker{
-  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+  color:var(--esta130-copper-ink)!important;-webkit-text-fill-color:var(--esta130-copper-ink)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane #stockAlertCount{
   background:#FDE8E8!important;border:1px solid #F1B5B5!important;
