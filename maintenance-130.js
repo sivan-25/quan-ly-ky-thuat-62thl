@@ -1032,16 +1032,18 @@ async function cloneMaintenanceOccurrence(source){
 // Stable API for the visible ESTA month arrows (rendered by maintenance-redesign.js).
 // Capture the occurrence before changing month, so re-rendering cannot lose the drag source.
 window.estaMaintenance130DragActions={
- getSource(key){
-  if(!active()||!ready||busy||!canWrite())return null;
+ getSource(key,requestedMode="move"){
+  if(B!=="130HH"||!active()||!ready||busy||!canWrite())return null;
   const occurrence=getYearSchedule(year).find(o=>o.event.event_key===key);
-  if(!occurrence||occurrence.event.status==="completed")return null;
+  if(!occurrence||(requestedMode!=="clone"&&occurrence.event.status==="completed"))return null;
   return {key,date:dateOf(occurrence),title:occurrence.item.work_title,occurrence,building:B};
  },
  move(source,date){
   if(!source||source.building!==B||!canWrite()||!active())return;
   return rescheduleOccurrence(source.key,date,source.occurrence);
- }
+ },
+ clone:cloneMaintenanceOccurrence,
+ findNextEmptyDate:nearestEmptyMaintenanceDate
 };
 window.mountMaintenance130=()=>{
  const next=String(typeof currentBuilding!=="undefined"?(currentBuilding?.id||""):"");
