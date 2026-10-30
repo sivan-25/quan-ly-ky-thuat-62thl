@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const html=fs.readFileSync('index.html','utf8');
+const css=fs.readFileSync('ui-130-motion-pilot.css','utf8');
+assert.ok(html.includes('ui-130-motion-pilot.css?v=20261030-pilot01'));
+assert.ok(html.indexOf('ui-130-motion-pilot.css')>html.indexOf('work-page-130-readability.css'));
+assert.ok(css.includes('body.estaBrand130 #app.estaBrand130'));
+assert.ok(css.includes('prefers-reduced-motion:reduce'));
+assert.ok(css.includes(':focus-visible'));
+assert.ok(css.includes('min-height:44px'));
+assert.ok(!css.includes('body:not(.estaBrand130)'));
+console.log('130HH motion CSS scoped and accessible: PASS');
