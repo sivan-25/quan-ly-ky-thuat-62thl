@@ -989,6 +989,35 @@ function nearestEmptyMaintenanceDate(fromDate){
  }
  return "";
 }
+// Only duplicates created with the dedicated copy action can be removed by its minus button.
+// Soft deletion preserves the audit trail and does not touch the original maintenance plan.
+async function removeClonedMaintenanceOccurrence(source){
+ if(B!=="130HH"||busy||!canWrite()||!active()||!ready||source?.building!==B)return false;
+ const item=items.find(i=>i.id===source.occurrence?.item?.id&&!i.deleted_at);
+ if(!item||item.source_notes!=="Nhân bản từ lịch bảo trì ESTA"||!String(item.plan_code||"").startsWith(B+"-COPY-")){
+  toast("Dấu trừ chỉ xóa bản sao được tạo từ chức năng Nhân bản; công việc gốc được giữ nguyên.");
+  return false;
+ }
+ if(stored.some(e=>e.item_id===item.id&&e.status==="completed")){
+  toast("Bản sao đã hoàn thành có hồ sơ lịch sử; không thể xóa bằng dấu trừ.");
+  return false;
+ }
+ if(!confirm('Xóa bản sao "'+item.work_title+'" khỏi lịch? Công việc gốc không thay đổi.'))return false;
+ busy=true;
+ try{
+  const deleted_at=new Date().toISOString();
+  await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+B,
+    {method:"PATCH",token:centralSession.access_token,body:{deleted_at,deletion_reason:"Xóa bản sao tạo nhầm từ chế độ Nhân bản"}});
+  await verifyMaintenanceSaved("esta_maintenance_plan_items",item.id,{deleted_at},B);
+  items=items.map(i=>i.id===item.id?{...i,deleted_at}:i);
+  clearScheduleCache();render();notifyMaintenance130Nav();
+  toast("✓ Đã xóa bản sao; công việc gốc vẫn được giữ nguyên.");
+  return true;
+ }catch(error){
+  toast("Chưa xác nhận xóa bản sao: "+(error.message||error)+". Hãy kiểm tra trước khi thử lại.");
+  return false;
+ }finally{busy=false;}
+}
 async function cloneMaintenanceOccurrence(source){
  if(B!=="130HH"||busy||!canWrite()||!active()||!ready||source?.building!==B)return false;
  const src=items.find(i=>i.id===source.occurrence?.item?.id&&!i.deleted_at);
@@ -1043,6 +1072,7 @@ window.estaMaintenance130DragActions={
   return rescheduleOccurrence(source.key,date,source.occurrence);
  },
  clone:cloneMaintenanceOccurrence,
+ removeClone:removeClonedMaintenanceOccurrence,
  findNextEmptyDate:nearestEmptyMaintenanceDate
 };
 window.mountMaintenance130=()=>{
