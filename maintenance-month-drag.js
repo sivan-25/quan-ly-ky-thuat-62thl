@@ -16,11 +16,9 @@
   const day=Math.max(1,Number(String(date).slice(8,10))||1);
   return year+"-"+pad(month)+"-"+pad(Math.min(day,new Date(Date.UTC(year,month,0)).getUTCDate()));
  };
- let drag=null,hoverTimer=null,ghost=null,dock=null,scrollFrame=null,lastDragEnd=0;
+ let drag=null,ghost=null,dock=null,scrollFrame=null,lastDragEnd=0;
  function clearHover(){
-  if(hoverTimer!==null)clearTimeout(hoverTimer);
-  hoverTimer=null;
-  if(drag){drag.hoverSide="";drag.hoverApplied=false;}
+  if(drag)drag.hoverSide="";
   document.querySelectorAll("#estamPrev,#estamNext,[data-esta-month-drop]").forEach(el=>el.classList.remove("estaDragHover"));
  }
  function finish(){
@@ -55,12 +53,13 @@
   dock.className="estaMonthDragTargets";
   dock.setAttribute("role","group");
   dock.setAttribute("aria-label","Đưa lịch sang tháng trước hoặc tháng sau");
-  dock.innerHTML='<button type="button" data-esta-month-drop="prev">‹ Tháng trước</button><button type="button" data-esta-month-drop="next">Tháng sau ›</button>';
+  dock.innerHTML='<button type="button" data-esta-month-drop="prev" aria-label="Thả để chuyển công việc sang tháng trước"><span aria-hidden="true">‹</span> Tháng trước</button><button type="button" data-esta-month-drop="next" aria-label="Thả để chuyển công việc sang tháng sau">Tháng sau <span aria-hidden="true">›</span></button>';
   document.body.appendChild(dock);
   ghost=document.createElement("div");
   ghost.className="estaMonthDragGhost";
   ghost.setAttribute("aria-hidden","true");
-  ghost.textContent=drag.source.title||"Công việc bảo trì";
+  ghost.innerHTML='<span class="estaMonthDragGhostLabel">ĐANG KÉO CÔNG VIỆC</span><strong></strong>';
+  ghost.querySelector("strong").textContent=drag.source.title||"Công việc bảo trì";
   document.body.appendChild(ghost);
   if(typeof window.requestAnimationFrame==="function")scrollFrame=window.requestAnimationFrame(scrollLoop);
  }
@@ -92,11 +91,8 @@
   clearHover();
   drag.hoverSide=side;
   document.querySelectorAll(side==="prev"?"#estamPrev,[data-esta-month-drop='prev']":"#estamNext,[data-esta-month-drop='next']").forEach(el=>el.classList.add("estaDragHover"));
-  hoverTimer=setTimeout(()=>{
-   hoverTimer=null;
-   if(!drag?.started||drag.hoverSide!==side)return;
-   drag.hoverApplied=changeMonth(side);
-  },550);
+  // Hover is only a visual highlight. Never navigate or save before pointerup
+  // on the exact destination button: long presses and far-away movement are safe.
  }
  function selectedMonth(){
   const match=(byId("estamMonth")?.textContent||"").match(/(\d{1,2})\s*\/\s*(\d{4})/);
@@ -111,7 +107,7 @@
   // IMPORTANT: don't preventDefault here. Ordinary work-item clicks must remain native clicks.
   // Temporarily turn off HTML native drag so only this pointer controller handles a drag.
   chip.draggable=false;
-  drag={pointerId:ev.pointerId,source,chip,x:ev.clientX,y:ev.clientY,lastY:ev.clientY,started:false,hoverSide:"",hoverApplied:false};
+  drag={pointerId:ev.pointerId,source,chip,x:ev.clientX,y:ev.clientY,lastY:ev.clientY,started:false,hoverSide:""};
   try{chip.setPointerCapture?.(ev.pointerId)}catch(_){}
  },true);
  document.addEventListener("pointermove",ev=>{
@@ -126,13 +122,13 @@
  document.addEventListener("pointerup",ev=>{
   if(!drag||ev.pointerId!==drag.pointerId)return;
   const held=drag;
-  if(!held.started){finish();return;} // Browser performs exactly one normal click.
+  if(!held.started){finish();return;} // No long-press activation; browser performs one normal click.
   ev.preventDefault();
   const node=nodeAt(ev),side=directionOf(node);
   const cell=node?.closest?.("#maint130 [data-m130-date]");
   let date="";
   if(side){
-   if(!(drag.hoverSide===side&&drag.hoverApplied))changeMonth(side);
+   changeMonth(side);
    const dest=selectedMonth();
    if(dest)date=clamp(held.source.date,dest.year,dest.month);
   }else if(cell)date=cell.dataset.m130Date;
