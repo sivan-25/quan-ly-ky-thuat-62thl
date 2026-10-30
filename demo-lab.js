@@ -43,7 +43,7 @@ async function demoLoad(force=false){
  if(!buildingId)return demoCache;
  const loadKey=buildingId+":"+projectOpenSeq;
  if(!force&&demoLoadsInFlight.has(loadKey))return demoLoadsInFlight.get(loadKey);
- if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force)return demoCache;
+ if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force&&(buildingId!=="130HH"||Date.now()-(demoCache.loadedAt||0)<15000))return demoCache;
  const requestId=++demoLoadRequestId;
  const pending=(async()=>{
   try{
@@ -60,7 +60,7 @@ async function demoLoad(force=false){
    ]);
    // Never replace a newer reload, or data from a project we have left.
    if(String(currentBuilding?.id||"")!==buildingId||requestId!==demoLoadRequestId)return demoCache;
-   demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
+   demoCache={loaded:true,buildingId,loadedAt:Date.now(),incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
   }catch(e){console.warn("Project operations data load failed",e)}
   return demoCache;
  })();
@@ -306,7 +306,7 @@ function demoShowSpecial(name){
  if(demoSearch){demoSearch.value="";demoSearch.placeholder=demoSpecialSearchPlaceholder(name)}
  $("#filterBar")?.classList.add("hide");
  setMobileMenuOpen(false,true);
- demoLoad(true).then(()=>{
+ demoLoad(String(currentBuilding?.id||"")!=="130HH").then(()=>{
   if(name==="incident")demoRenderIncidents();
   if(name==="inspection")demoRenderInspections();
   if(name==="documents")demoRenderDocuments();
@@ -697,7 +697,7 @@ async function demoFinalizeLinks(obj,old,buildingId=currentBuilding?.id){
  }
  if(linkJobs.length)await Promise.allSettled(linkJobs);
  if(old?.s==="Đã hoàn thành"||obj.s!=="Đã hoàn thành"){
-  if(String(currentBuilding?.id||"")===String(buildingId)){demoCache.loaded=false;await demoLoad(true)}
+  if(buildingId!=="130HH"&&String(currentBuilding?.id||"")===String(buildingId)){demoCache.loaded=false;await demoLoad(true)}
   return;
  }
  const jobs=[];
@@ -716,7 +716,7 @@ async function demoFinalizeLinks(obj,old,buildingId=currentBuilding?.id){
   jobs.push(demoPatch("incidents","building_id=eq."+demoQs(buildingId)+"&incident_code=eq."+demoQs(obj.incidentCode),{status:"Theo dõi",solution:obj.result||obj.n||"Đã xử lý qua công việc "+obj.id,related_task_id:String(obj.id),updated_at:new Date().toISOString()}));
  }
  await Promise.allSettled(jobs);
- if(String(currentBuilding?.id||"")===String(buildingId)){
+ if(buildingId!=="130HH"&&String(currentBuilding?.id||"")===String(buildingId)){
   demoCache.loaded=false;await demoLoad(true);
  }
 }
@@ -745,7 +745,9 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
  }
  const btn=$("#saveBtn"),quickButton=demo130MobileQuick()?document.getElementById("task130QuickSave"):null;
  if(btn.disabled)return;
+ const saving130=currentBuilding?.id==="130HH",originalSaveLabel=btn.querySelector("span")?.textContent||"Lưu công việc";
  btn.disabled=true;
+ if(saving130)setWorkSaveLabel("Đang lưu...");
  if(quickButton){quickButton.disabled=true;quickButton.textContent="◌ Đang lưu...";quickButton.setAttribute("aria-busy","true")}
  let saved130=false;
  try{
@@ -758,11 +760,12 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
 
   // Inventory reconciliation is blocking: insufficient stock means the work order is not saved.
   const syncResult=await syncTaskRecord("upsert_task",obj,buildingId);
+  if(buildingId==="130HH"&&!syncResult)throw new Error("Chưa có xác nhận lưu từ máy chủ. Công việc vẫn ở biểu mẫu để thử lại.");
   if(syncResult?.item)obj={...obj,...syncResult.item};
   a=editId?a.map(x=>String(x.id)===String(editId)?obj:x):[...a,obj];
   localStorage.setItem(storageKey,JSON.stringify(a));
   if(String(currentBuilding?.id||"")===String(buildingId)){
-   if(quickButton){saved130=true;quickButton.textContent="✓ Đã lưu";quickButton.style.background="#216d50";quickButton.setAttribute("aria-busy","false");await new Promise(resolve=>setTimeout(resolve,100))}
+   if(quickButton){saved130=true;quickButton.textContent="✓ Đã lưu";quickButton.style.background="#216d50";quickButton.setAttribute("aria-busy","false");if(buildingId!=="130HH")await new Promise(resolve=>setTimeout(resolve,100))}
    resetForm();render();renderHomeDashboard();
    toast(files.length?"Đã lưu · "+files.length+" hình đang tải nền":"Đã lưu công việc và cập nhật vật tư");
   }
@@ -798,7 +801,7 @@ if($("#taskForm"))$("#taskForm").onsubmit=async e=>{
   if(quickButton)quickButton.textContent="Thử lưu lại";
   if(/tồn kho|vật tư/i.test(message))$("#demoWorkLinks")?.setAttribute("open","");
  }
- finally{btn.disabled=false;if(quickButton){quickButton.disabled=false;quickButton.removeAttribute("aria-busy");quickButton.style.background="";if(saved130)quickButton.textContent="✓ Lưu công việc"}}
+ finally{btn.disabled=false;if(saving130)setWorkSaveLabel(btn.querySelector("span")?.textContent==="Đang lưu..."?originalSaveLabel:"Lưu công việc");if(quickButton){quickButton.disabled=false;quickButton.removeAttribute("aria-busy");quickButton.style.background="";if(saved130)quickButton.textContent="✓ Lưu công việc"}}
 };
 
 const originalDemoDelTask=window.delTask;
