@@ -1025,7 +1025,7 @@ async function cloneMaintenanceOccurrence(source){
  const date=nearestEmptyMaintenanceDate(source.date);
  if(!date)return toast("Không tìm được ngày trống trong phạm vi 370 ngày.");
  busy=true;const project=B,token=centralSession.access_token;
- const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code=project+"-COPY-"+id.slice(0,13);
+ const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code=project+"-COPY-"+id.replace(/-/g,"").slice(-20);
  const item={id,building_id:project,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Nhân bản từ lịch bảo trì ESTA",
   work_title:src.work_title,system_group:src.system_group||"Khác",subsystem:src.subsystem||"",assigned_to:src.assigned_to||"Kỹ thuật dự án",asset_code:src.asset_code||"",
   work_type:src.work_type||"PM",priority:src.priority||"normal",cadence:"Không lặp"};
