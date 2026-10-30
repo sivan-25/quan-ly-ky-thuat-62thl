@@ -93,22 +93,51 @@ async function fixture(sourceDate,otherDate){
   assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2028-02-29");
   f.dom.window.close();
  }
- // Hover the real arrow until next month appears, then drop into a specific day.
+ // A long press, including a long hover over the next-month arrow, must never change the month.
  {
   const f=await fixture("2026-10-10","2026-11-15");
+  f.down();
+  await new Promise(resolve=>setTimeout(resolve,750));
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","holding a task does not navigate");
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"long press alone does not begin drag");
+  f.move();
+  await new Promise(resolve=>setTimeout(resolve,800));
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","hovering over arrow does not navigate");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-10","hovering does not save a new date");
+  f.up();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","only releasing over arrow navigates");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-10");
+  f.dom.window.close();
+ }
+ // Moving far away from the original task or hovering over the arrow must never reschedule.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  const out=f.d.querySelector("#maintenancePage .maintenanceHero");
   f.down();f.move();
-  await new Promise(resolve=>setTimeout(resolve,600));
-  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","hover opens next month while pointer remains active");
-  const cell=f.d.querySelector('[data-m130-date="2026-11-15"]');
+  await new Promise(resolve=>setTimeout(resolve,700));
+  f.setHit(out);
+  f.move();f.up();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","releasing outside drop target leaves current month unchanged");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-10","releasing outside does not update the task");
+  assert.ok(!f.calls.some(c=>c.opts.method==="PATCH"),"outside drop makes no database write");
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"drag targets removed after cancellation");
+  f.dom.window.close();
+ }
+ // Dropping onto an exact date still supports two maintenance cards in the same day.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  const cell=f.d.querySelector('[data-m130-date="2026-10-20"]');
   assert.ok(cell);
-  f.setHit(cell);f.move();f.up();await flush();
-  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-15");
-  assert.equal(f.d.querySelectorAll('[data-m130-date="2026-11-15"] .m130CalendarChip').length,2);
+  f.setHit(cell);f.down();f.move();f.up();await flush();
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-20");
+  assert.equal(f.d.querySelectorAll('[data-m130-date="2026-10-20"] .m130CalendarChip').length,2);
   f.dom.window.close();
  }
  const index=read("index.html"),css=read("maintenance-month-drag.css");
  assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261030-dragfix04">'),"new module loaded into real page");
  assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
+ assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
+ assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
- console.log("PASS: click stability, unchanged month-header position, two-way navigation, drop dock, February clamp, and same-day stacking");
+ console.log("PASS: click stability, no long-hold or hover navigation, safe outside drops, explicit arrow drop, February clamp, and readable same-day cards");
 })().catch(err=>{console.error(err);process.exitCode=1});
