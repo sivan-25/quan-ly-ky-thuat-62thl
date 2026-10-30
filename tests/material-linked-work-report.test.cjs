@@ -18,6 +18,7 @@ async function main() {
       {id:"b",d:"2026-10-21",c:"Kiểm tra đèn",s:"Đang thực hiện",materials:[{materialId:"mat-1",name:"Đèn LED 18W",qty:1,unit:"Cái"}],imgs:["storage:130HH/tasks/b1.jpg"]},
       {id:"c",d:"2026-10-21",c:"Sửa dây điện",s:"Hoàn thành",materials:[{materialId:"mat-2",name:"Dây điện",qty:5,unit:"m"}],imgs:[]}
     ];
+    var projectPeople = [{name:"Nhân viên kỹ thuật"}];
     var lastPdfPayload = null;
     async function exportGenericEstaPdf(payload) { lastPdfPayload=payload; window.__lastPdfPayload=payload; return true; }
     function toast() {}
@@ -41,6 +42,12 @@ async function main() {
   led.dispatchEvent(new w.Event("change", {bubbles:true}));
   assert.equal(w.document.querySelectorAll("[data-emwr-task]").length, 2, "only jobs linked to the selected material appear");
   w.document.querySelectorAll("[data-emwr-task]").forEach(input => { input.checked=true; input.dispatchEvent(new w.Event("change", {bubbles:true})); });
+  // Current PDF flow asks for performer confirmation before exporting.
+  w.document.getElementById("emwrExport").click();
+  const manual=w.document.querySelector('input[name="emwrPerformerMode"][value="manual"]');
+  manual.checked=true;
+  manual.dispatchEvent(new w.Event("change",{bubbles:true}));
+  w.document.getElementById("emwrManualPerformer").value="Nhân viên kỹ thuật";
   w.document.getElementById("emwrExport").click();
   await new Promise(resolve => w.setTimeout(resolve, 0));
   const payload = w.__lastPdfPayload;
