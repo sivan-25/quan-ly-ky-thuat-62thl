@@ -52,7 +52,7 @@
     }
     const chosenIds = new Set(chosen.map(m => String(m.id || "")));
     const chosenNames = new Set(chosen.map(m => norm(m.name)));
-    return tasks().filter(task => {
+    return tasks().filter(inSelectedReportMonth).filter(task => {
       const taskId = String(task?.id || "");
       const inlineMatch = arr(task?.materials).some(item => {
         const id = String(item?.materialId || item?.material_id || item?.id || "");
@@ -102,6 +102,55 @@
     `;
     document.head.appendChild(style);
   }
+
+  // The existing work-report modal remains the implementation; only the 130HH entrypoint is merged.
+  function sync130PdfMenu(){
+    const original=$("#materialExportPdf"),launcher=$("#estaMaterialWorkReportLaunch");
+    const existing=$("#inventory130PdfMenu");
+    const active=isSupportedProject()&&projectId().toUpperCase()==="130HH";
+    if(!active){
+      existing?.remove();
+      if(original)original.hidden=false;
+      if(launcher)launcher.hidden=false;
+      return;
+    }
+    const toolbar=original?.parentElement;
+    if(!toolbar||!launcher)return;
+    launcher.hidden=true;
+    original.hidden=true;
+    if(existing)return;
+    const menu=document.createElement("details");
+    menu.id="inventory130PdfMenu";
+    menu.className="inventory130PdfMenu";
+    menu.innerHTML='<summary aria-label="Chọn loại xuất PDF">⇩ Xuất PDF ▾</summary><div class="inventory130PdfChoices"><button type="button" data-report="work">Xuất PDF công việc theo vật tư</button><button type="button" data-report="materials">Xuất PDF vật tư tiêu hao</button></div>';
+    menu.querySelector('[data-report="work"]').addEventListener("click",()=>{menu.open=false;launcher.click()});
+    menu.querySelector('[data-report="materials"]').addEventListener("click",()=>{menu.open=false;original.click()});
+    menu.addEventListener("toggle",()=>{
+      if(menu.open&&typeof inventoryActiveMonth!=="undefined"&&inventoryActiveMonth!=="all"){
+       const month=String(inventoryActiveMonth).padStart(2,"0"),year=$("#inventoryYear")?.value||new Date().getFullYear();
+       for(const button of menu.querySelectorAll("button"))button.title="Dữ liệu tháng "+month+"/"+year;
+      }
+    });
+    toolbar.insertBefore(menu,original);
+  }
+  function reportPeriod(){
+    if(projectId().toUpperCase()!=="130HH")return null;
+    const month=typeof inventoryActiveMonth!=="undefined"?Number(inventoryActiveMonth):NaN;
+    const year=Number($("#inventoryYear")?.value);
+    return Number.isInteger(month)&&month>=1&&month<=12&&Number.isInteger(year)?{month,year}:null;
+  }
+  let selectedReportPeriod=null;
+  function inSelectedReportMonth(task){
+    if(!selectedReportPeriod)return true;
+    const source=String(task?.d||task?.date||"").trim();
+    let year=0,month=0,match;
+    if((match=new RegExp("^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})").exec(source))){
+      year=Number(match[1]);month=Number(match[2]);
+    }else if((match=new RegExp("^([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})").exec(source))){
+      year=Number(match[3]);month=Number(match[2]);
+    }
+    return year===selectedReportPeriod.year&&month===selectedReportPeriod.month;
+  }
   function ensureUI() {
     const current = projectId().toUpperCase();
     if (modalProjectId && modalProjectId !== current) {
@@ -112,6 +161,7 @@
       modalProjectId = "";
     }
     if (!isSupportedProject()) {
+      sync130PdfMenu();
       $("#estaMaterialWorkReportLaunch")?.remove();
       const modal = $("#estaMaterialWorkReportModal");
       if (modal) modal.hidden = true;
@@ -163,6 +213,7 @@
       modal.querySelectorAll('input[name="emwrPerformerMode"]').forEach(input=>input.addEventListener("change", updatePerformerMode));
       document.body.appendChild(modal);
     }
+    sync130PdfMenu();
   }
   async function openModal() {
     if (!isSupportedProject()) { closeModal(); return; }
@@ -181,6 +232,11 @@
     }
     if (projectId() !== openingProject) return;
     modalProjectId = openingProject.toUpperCase();
+    if (openingProject.toUpperCase()==="130HH"&&!reportPeriod()){
+      if(typeof toast==="function")toast("Vui lòng chọn tháng trước khi xuất PDF công việc.");
+      return;
+    }
+    selectedReportPeriod=reportPeriod();
     selectedMaterialIds = new Set();
     selectedTaskIds = new Set();
     $("#emwrProject").textContent = "Dự án hiện tại: " + projectName() + " · Chỉ đọc dữ liệu của dự án này";
@@ -202,7 +258,7 @@
     host.innerHTML=list.map(m=>'<label class="emwr-material"><input type="checkbox" data-material-id="'+esc(m.id)+'"'+(selectedMaterialIds.has(String(m.id))?" checked":"")+'><span><strong>'+esc(m.name)+'</strong>'+(m.code?'<small> · '+esc(m.code)+'</small>':'')+'</span></label>').join("")||'<p class="emwr-muted">Không tìm thấy vật tư phù hợp.</p>';
   }
   function updateMaterialCount(){const el=$("#emwrMaterialCount");if(el)el.textContent=selectedMaterialIds.size+" vật tư được chọn";}
-  function closeModal() { const modal=$("#estaMaterialWorkReportModal"); if(modal) modal.hidden=true; }
+  function closeModal() { const modal=$("#estaMaterialWorkReportModal"); if(modal) modal.hidden=true;selectedReportPeriod=null; }
   function renderJobs() {
     const chosen=selectedMaterials(), rows=linkedTasks(), host=$("#emwrJobs");
     if (!chosen.length) {
@@ -253,6 +309,9 @@
     if(!performer){ $("#emwrStatus").textContent=mode==="manual"?"Vui lòng nhập tên người thực hiện.":"Vui lòng chọn ít nhất một kỹ thuật viên của dự án."; return; }
     const chosen=selectedMaterials(), selected=linkedTasks().filter(t=>selectedTaskIds.has(String(t.id)));
     if (modalProjectId !== projectId().toUpperCase()) { closeModal(); return; }
+    if(projectId().toUpperCase()==="130HH"&&(!selectedReportPeriod||reportPeriod()?.month!==selectedReportPeriod.month||reportPeriod()?.year!==selectedReportPeriod.year)){
+      $("#emwrStatus").textContent="Tháng báo cáo đã thay đổi. Vui lòng mở lại Xuất PDF và chọn công việc.";return;
+    }
     if(!chosen.length||!selected.length)return;
     if(typeof window.exportGenericEstaPdf!=="function"){ $("#emwrStatus").textContent="Chức năng PDF chưa sẵn sàng. Vui lòng tải lại trang."; return; }
     const photos=[], seenPhotos=new Set();

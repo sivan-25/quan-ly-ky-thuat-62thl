@@ -10,10 +10,11 @@ const buildings=[
   {id:"130HH",name:"130 Hồng Hà"}
 ];
 async function checkProject(building){
- const dom=new JSDOM('<!doctype html><html><head></head><body><div id="app"><div id="inventoryPage" class="page"><section class="inventorySwitchBar"></section></div></div></body></html>',{runScripts:"outside-only",url:"https://example.test/"});
+ const dom=new JSDOM('<!doctype html><html><head></head><body><div id="app"><div id="inventoryPage" class="page"><section class="inventorySwitchBar"></section><select id="inventoryYear"><option selected value="2026">2026</option></select></div></div></body></html>',{runScripts:"outside-only",url:"https://example.test/"});
  const w=dom.window;
  w.eval(`
  var currentBuilding=${JSON.stringify(building)};
+ var inventoryActiveMonth=10;
  var inventoryLoadedBuilding=currentBuilding.id;
  var inventoryMaterials=[{id:"mat-"+currentBuilding.id,name:"Đèn LED "+currentBuilding.id,code:"VT-01",unit:"Cái"}];
  var inventoryTransactions=[];

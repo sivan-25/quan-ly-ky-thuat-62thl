@@ -879,7 +879,28 @@ function syncOverviewNavigation(){
  }
 
 }
+/* 130HH: move the EXISTING inventory tabs/year into the shared header, retaining listeners and values.
+   Other buildings and modules always get their controls back in the original container. */
+function sync130InventoryHeader(moduleName=""){
+ const app=$("#app"),home=$("#inventoryPage .inventoryCommandControls");
+ const tabs=$("#inventory130TopTabs"),year=$("#inventory130TopYear");
+ if(!app||!home||!tabs||!year)return;
+ const enabled=moduleName==="inventory"&&projectOverviewActive&&String(currentBuilding?.id||"")==="130HH";
+ const tabControls=app.querySelector(".inventoryLocalTabs");
+ const yearControls=app.querySelector(".inventoryYearOnly");
+ if(!tabControls||!yearControls)return;
+ if(enabled){
+  if(tabControls.parentElement!==tabs)tabs.appendChild(tabControls);
+  if(yearControls.parentElement!==year)year.appendChild(yearControls);
+ }else{
+  if(tabControls.parentElement!==home)home.insertBefore(tabControls,home.firstChild);
+  if(yearControls.parentElement!==home)home.appendChild(yearControls);
+ }
+ tabs.hidden=!enabled;year.hidden=!enabled;
+ app.classList.toggle("inventory130HeaderMode",enabled);
+}
 function showHome(){
+ sync130InventoryHeader();
  closeWorkFilter();
  syncOverviewNavigation();
  $("#homePage").classList.remove("hide");
@@ -958,6 +979,7 @@ function openAdminOverview(){
  showHome();
 }
 function prepareProjectContext(building){
+ sync130InventoryHeader();
  closeProjectOverlays();
  projectOverviewActive=true;
  syncOverviewNavigation();
@@ -1000,6 +1022,7 @@ async function enterProject(building,{target="home"}={}){
  return true;
 }
 function openAdminPortal(){
+ sync130InventoryHeader();
  rememberAdminProject();
  closeWorkFilter();
  if(!currentAccount?.is_admin)return;
@@ -2264,11 +2287,12 @@ function showModule(name){
  $(pages[name])?.classList.remove("hide");$(tops[name])?.classList.remove("hide");$(navs[name])?.classList.add("active");
  $("#app").classList.remove("adminMode","homeMode","workMode","energyMode","inventoryMode","maintenanceMode","contractorMode","constructionMode");
  $("#app").classList.add(name+"Mode");
+ sync130InventoryHeader(name);
  setMobileMenuOpen(false,true);
  if(name==="energy")renderEnergy();
  if(name==="inventory"){
    const now=new Date();
-   inventoryActiveMonth="all";
+   inventoryActiveMonth=String(currentBuilding?.id||"")==="130HH"?now.getMonth()+1:"all";
    inventorySetYears();
    if($("#inventoryYear"))$("#inventoryYear").value=String(now.getFullYear());
    setInventoryTab("materials");

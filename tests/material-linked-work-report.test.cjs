@@ -4,11 +4,12 @@ const { JSDOM } = require("jsdom");
 
 async function main() {
   const dom = new JSDOM(`<!doctype html><html><head></head><body>
-    <div id="app"><div id="inventoryPage" class="page"><section class="inventorySwitchBar"></section></div></div>
+    <div id="app"><div id="inventoryPage" class="page"><section class="inventorySwitchBar"></section><select id="inventoryYear"><option selected value="2026">2026</option></select></div></div>
   </body></html>`, { runScripts: "outside-only", url: "https://example.test/" });
   const w = dom.window;
   w.eval(`
     var currentBuilding = {id:"130HH",name:"130 Hồng Hà"};
+    var inventoryActiveMonth = 10;
     var inventoryMaterials = [
       {id:"mat-1",name:"Đèn LED 18W",code:"VT-001",unit:"Cái"},
       {id:"mat-2",name:"Dây điện",code:"VT-002",unit:"m"}
