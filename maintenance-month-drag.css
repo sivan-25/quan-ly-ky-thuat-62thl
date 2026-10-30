@@ -1,31 +1,35 @@
-/* Only activate the floating toolbar while a task is being dragged. */
-#maintenancePage.estaMonthDragging .estamMonthNav{
- position:fixed!important;top:132px;right:25px;left:auto;z-index:10020;
- display:grid!important;grid-template-columns:52px minmax(128px,170px) 52px;
- gap:6px;padding:9px;background:#ffffff!important;
- border:2px solid #1b6695;border-radius:13px;
- box-shadow:0 12px 28px rgba(13,37,68,.32);
+/* The actual month header never moves, even while selecting or dragging a work item. */
+#maintenancePage.estaMonthDragging .estamMonthNav{position:static!important;transform:none!important;z-index:auto!important}
+#maintenancePage.estaMonthDragging #estamPrev.estaDragHover,
+#maintenancePage.estaMonthDragging #estamNext.estaDragHover{
+ background:#176ea5!important;color:#fff!important;border-color:#176ea5!important;
 }
-#maintenancePage.estaMonthDragging #estamPrev,
-#maintenancePage.estaMonthDragging #estamNext{
- min-width:52px;min-height:48px;background:#e6f2ff;color:#143d6c;
- border:2px solid #5a9bd4;cursor:copy;
+.estaMonthDragTargets{
+ position:fixed;left:50%;transform:translateX(-50%);
+ bottom:max(18px,env(safe-area-inset-bottom,0px));z-index:10040;
+ display:flex;align-items:stretch;gap:10px;
+ padding:9px;border:1px solid #37749d;border-radius:14px;
+ background:#fff;box-shadow:0 12px 30px rgba(13,37,68,.28);
+ pointer-events:auto;
 }
-#maintenancePage.estaMonthDragging .estamMonthNav button.estaDragHover{
- background:#136b9c!important;color:white!important;
- box-shadow:0 0 0 4px rgba(30,139,209,.24);
+.estaMonthDragTargets button{
+ border:1px solid #b7d2e4;border-radius:10px;
+ min-height:48px;min-width:133px;padding:8px 14px;
+ background:#e8f3fb;color:#173f63;font:750 13px/1.2 system-ui,sans-serif;cursor:copy;
+}
+.estaMonthDragTargets button.estaDragHover{
+ background:#166b9b!important;color:#fff!important;border-color:#166b9b!important;
+ box-shadow:0 0 0 3px #6bb6e655;
 }
 .estaMonthDragGhost{
- position:fixed;z-index:10050;max-width:240px;min-width:120px;max-height:80px;
+ position:fixed;z-index:10050;min-width:120px;max-width:240px;max-height:80px;
  padding:10px 12px;border:1px solid #217aaa;border-radius:9px;
  overflow:hidden;pointer-events:none;background:#fff;color:#183451;
  font:700 12px/1.4 system-ui,sans-serif;
  box-shadow:0 10px 23px rgba(0,24,60,.28);
 }
 #maint130 .m130CalendarChip[draggable="true"]{touch-action:none;cursor:grab}
-#maintenancePage.estaMonthDragging .m130CalendarDay{outline-offset:-2px}
 @media(max-width:760px){
- #maintenancePage.estaMonthDragging .estamMonthNav{
-  top:68px;right:8px;left:8px;grid-template-columns:52px minmax(90px,1fr) 52px;
- }
+ .estaMonthDragTargets{left:8px;right:8px;transform:none;bottom:calc(80px + env(safe-area-inset-bottom,0px));}
+ .estaMonthDragTargets button{min-width:0;flex:1;padding:8px 5px;}
 }
