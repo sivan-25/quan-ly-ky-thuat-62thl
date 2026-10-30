@@ -1,0 +1,31 @@
+/* Only activate the floating toolbar while a task is being dragged. */
+#maintenancePage.estaMonthDragging .estamMonthNav{
+ position:fixed!important;top:132px;right:25px;left:auto;z-index:10020;
+ display:grid!important;grid-template-columns:52px minmax(128px,170px) 52px;
+ gap:6px;padding:9px;background:#ffffff!important;
+ border:2px solid #1b6695;border-radius:13px;
+ box-shadow:0 12px 28px rgba(13,37,68,.32);
+}
+#maintenancePage.estaMonthDragging #estamPrev,
+#maintenancePage.estaMonthDragging #estamNext{
+ min-width:52px;min-height:48px;background:#e6f2ff;color:#143d6c;
+ border:2px solid #5a9bd4;cursor:copy;
+}
+#maintenancePage.estaMonthDragging .estamMonthNav button.estaDragHover{
+ background:#136b9c!important;color:white!important;
+ box-shadow:0 0 0 4px rgba(30,139,209,.24);
+}
+.estaMonthDragGhost{
+ position:fixed;z-index:10050;max-width:240px;min-width:120px;max-height:80px;
+ padding:10px 12px;border:1px solid #217aaa;border-radius:9px;
+ overflow:hidden;pointer-events:none;background:#fff;color:#183451;
+ font:700 12px/1.4 system-ui,sans-serif;
+ box-shadow:0 10px 23px rgba(0,24,60,.28);
+}
+#maint130 .m130CalendarChip[draggable="true"]{touch-action:none;cursor:grab}
+#maintenancePage.estaMonthDragging .m130CalendarDay{outline-offset:-2px}
+@media(max-width:760px){
+ #maintenancePage.estaMonthDragging .estamMonthNav{
+  top:68px;right:8px;left:8px;grid-template-columns:52px minmax(90px,1fr) 52px;
+ }
+}
