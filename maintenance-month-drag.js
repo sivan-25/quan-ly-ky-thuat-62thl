@@ -154,7 +154,7 @@
   if(drag&&ev.target.closest?.("#maint130 .m130CalendarChip"))ev.preventDefault();
  },true);
 
- function currentCalendar(){const v=(byId("estamMonth")?.textContent||"").match(/(\\d{1,2})\\s*\\/\\s*(\\d{4})/);return v?{month:Number(v[1]),year:Number(v[2])}:null;}
+ function currentCalendar(){const v=(byId("estamMonth")?.textContent||"").match(/(\d{1,2})\s*\/\s*(\d{4})/);return v?{month:Number(v[1]),year:Number(v[2])}:null;}
  function setHelp(message){
   const help=byId("estaMaintenanceModeHelp");if(help)help.textContent=message;
  }
