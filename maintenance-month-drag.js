@@ -10,13 +10,15 @@
    typeof currentBuilding!=="undefined"&&String(currentBuilding?.id)==="130HH"&&
    !!byId("estamPrev")&&!!byId("estamNext")&&
    !!document.querySelector("#maint130 [data-m130-date]")&&
-   typeof api()?.getSource==="function";
+   typeof api()?.getSource==="function"&&mode==="move";
  };
  const clamp=(date,year,month)=>{
   const day=Math.max(1,Number(String(date).slice(8,10))||1);
   return year+"-"+pad(month)+"-"+pad(Math.min(day,new Date(Date.UTC(year,month,0)).getUTCDate()));
  };
  let drag=null,ghost=null,dock=null,scrollFrame=null,lastDragEnd=0;
+ let mode="off",selected=null,clonePending=false;
+ window.estaMaintenance130Mode=()=>String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")==="130HH"?mode:"off";
  function clearHover(){
   if(drag)drag.hoverSide="";
   document.querySelectorAll("#estamPrev,#estamNext,[data-esta-month-drop]").forEach(el=>el.classList.remove("estaDragHover"));
@@ -101,7 +103,7 @@
  document.addEventListener("pointerdown",ev=>{
   if(ev.button!==0||ev.isPrimary===false||!uiActive()||drag)return;
   const chip=ev.target.closest?.("#maint130 .m130CalendarChip[data-m130-drag]");
-  if(!chip||!chip.draggable)return;
+  if(!chip||!chip.draggable||mode!=="move")return;
   const source=api().getSource(chip.dataset.m130Drag);
   if(!source)return;
   // IMPORTANT: don't preventDefault here. Ordinary work-item clicks must remain native clicks.
@@ -109,11 +111,12 @@
   chip.draggable=false;
   drag={pointerId:ev.pointerId,source,chip,x:ev.clientX,y:ev.clientY,lastY:ev.clientY,started:false,hoverSide:""};
   try{chip.setPointerCapture?.(ev.pointerId)}catch(_){}
+  // One small movement is enough; the mode already provides intentionality.
  },true);
  document.addEventListener("pointermove",ev=>{
   if(!drag||ev.pointerId!==drag.pointerId)return;
   drag.lastY=ev.clientY;
-  if(!drag.started&&Math.hypot(ev.clientX-drag.x,ev.clientY-drag.y)<9)return;
+  if(!drag.started&&Math.hypot(ev.clientX-drag.x,ev.clientY-drag.y)<4)return;
   beginVisual();
   ev.preventDefault();
   moveGhost(ev);
@@ -122,7 +125,7 @@
  document.addEventListener("pointerup",ev=>{
   if(!drag||ev.pointerId!==drag.pointerId)return;
   const held=drag;
-  if(!held.started){finish();return;} // No long-press activation; browser performs one normal click.
+  if(!held.started){finish();return;} // A click selects in Move mode; dragging begins immediately after 4px.
   ev.preventDefault();
   const node=nodeAt(ev),side=directionOf(node);
   const cell=node?.closest?.("#maint130 [data-m130-date]");
@@ -150,5 +153,137 @@
  document.addEventListener("dragstart",ev=>{
   if(drag&&ev.target.closest?.("#maint130 .m130CalendarChip"))ev.preventDefault();
  },true);
+
+ function currentCalendar(){const v=(byId("estamMonth")?.textContent||"").match(/(\\d{1,2})\\s*\\/\\s*(\\d{4})/);return v?{month:Number(v[1]),year:Number(v[2])}:null;}
+ function setHelp(message){
+  const help=byId("estaMaintenanceModeHelp");if(help)help.textContent=message;
+ }
+ function refreshSelected(){
+  document.querySelectorAll("#maint130 .m130CalendarChip").forEach(chip=>{
+   const active=!!selected&&chip.dataset.m130Drag===selected.key;
+   chip.classList.toggle("estaTaskSelected",active);
+   if(active)chip.setAttribute("aria-selected","true");else chip.removeAttribute("aria-selected");
+  });
+ }
+ function syncChips(){
+  const allowed=mode==="move"&&String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")==="130HH";
+  document.querySelectorAll("#maint130 .m130CalendarChip").forEach(chip=>{
+   chip.draggable=allowed&&!chip.classList.contains("done");
+  });
+  byId("maintenancePage")?.setAttribute("data-esta-work-mode",mode);
+  refreshSelected();
+ }
+ function applyMode(next){
+  if(drag)finish();
+  mode=["off","move","clone"].includes(next)?next:"off";
+  selected=null;
+  const pane=byId("estaMaintenanceSettingsMenu");
+  if(pane)pane.hidden=true;
+  const trigger=byId("estaMaintenanceSettingsToggle");
+  if(trigger)trigger.setAttribute("aria-expanded","false");
+  document.querySelectorAll("[data-esta-action]").forEach(b=>{
+   const current=b.dataset.estaAction===mode;
+   b.setAttribute("aria-pressed",String(current));
+   b.classList.toggle("isActive",current);
+  });
+  setHelp(mode==="move"?"Di chuyển: chọn công việc rồi chọn ngày hoặc mũi tên tháng. Cũng có thể kéo thả trực tiếp.":mode==="clone"?"Nhân bản: chọn công việc để tạo bản sao ở ngày trống gần nhất.":"");
+  syncChips();
+ }
+ function ensureSettings(){
+  const container=byId("estaMaintenanceRedesign")?.querySelector(".estamActionArea");
+  if(!container||byId("estaMaintenanceSettings"))return;
+  const el=document.createElement("div");
+  el.id="estaMaintenanceSettings";
+  el.className="estaMaintenanceSettings";
+  el.innerHTML='<button type="button" id="estaMaintenanceSettingsToggle" aria-expanded="false" aria-controls="estaMaintenanceSettingsMenu" aria-label="Cài đặt thao tác công việc bảo trì"><span aria-hidden="true">⚙</span> Cài đặt</button>'+
+   '<div id="estaMaintenanceSettingsMenu" class="estaMaintenanceSettingsMenu" hidden><b>Thao tác công việc</b>'+
+   '<button type="button" data-esta-action="off" aria-pressed="true">✓ Xem và chỉnh sửa</button>'+
+   '<button type="button" data-esta-action="move" aria-pressed="false">↔ Di chuyển công việc</button>'+
+   '<button type="button" data-esta-action="clone" aria-pressed="false">▣ Nhân bản công việc</button>'+
+   '<small>Di chuyển: chọn công việc rồi chọn ngày hoặc tháng. Nhân bản: tự chọn ngày trống kế tiếp.</small></div>'+
+   '<span id="estaMaintenanceModeHelp" class="estaMaintenanceModeHelp" role="status" aria-live="polite"></span>';
+  container.appendChild(el);
+  el.querySelector("#estaMaintenanceSettingsToggle").addEventListener("click",()=>{
+   const menu=byId("estaMaintenanceSettingsMenu"),opening=menu.hidden;
+   menu.hidden=!opening;
+   byId("estaMaintenanceSettingsToggle").setAttribute("aria-expanded",String(opening));
+  });
+  el.querySelectorAll("[data-esta-action]").forEach(button=>button.addEventListener("click",()=>applyMode(button.dataset.estaAction)));
+  applyMode("off");
+ }
+ function contextSync(){
+  const page=byId("maintenancePage"),building=String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"");
+  if(building!=="130HH"||page?.dataset.estamView!=="calendar"){
+   if(mode!=="off")applyMode("off");
+  }else syncChips();
+ }
+ async function commitSelected(source,date){
+  selected=null;refreshSelected();setHelp("Đang chuyển lịch sang "+date.split("-").reverse().join("/")+"…");
+  try{await api()?.move?.(source,date);}catch(err){
+   if(typeof window.toast==="function")window.toast("Không chuyển lịch: "+(err.message||err));
+  }finally{if(mode==="move")setHelp("Di chuyển: chọn công việc rồi chọn ngày hoặc mũi tên tháng.");}
+ }
+ // Capture only while a mode is selected: ordinary work-item clicks are unchanged.
+ document.addEventListener("click",ev=>{
+  if(mode==="off"||String(typeof currentBuilding!=="undefined"?currentBuilding?.id:"")!=="130HH")return;
+  const control=ev.target.closest?.("#estaMaintenanceSettings");if(control)return;
+  const chip=ev.target.closest?.("#maint130 .m130CalendarChip[data-m130-drag]");
+  if(chip){
+   // A drag release is not a second click selection.
+   if(Date.now()-lastDragEnd<130){ev.preventDefault();ev.stopImmediatePropagation();return;}
+   ev.preventDefault();ev.stopImmediatePropagation();
+   const key=chip.dataset.m130Drag,source=api()?.getSource?.(key,mode);
+   if(!source)return;
+   if(mode==="move"){
+    selected=selected?.key===key?null:source;
+    refreshSelected();
+    setHelp(selected?"Đã chọn: "+source.title+" — chọn ngày đích hoặc mũi tên ‹ ›.":"Di chuyển: chọn một công việc để bắt đầu.");
+   }else if(mode==="clone"&&!clonePending){
+    clonePending=true;
+    setHelp("Đang nhân bản và tìm ngày trống kế tiếp…");
+    Promise.resolve(api()?.clone?.(source)).catch(err=>{
+     if(typeof window.toast==="function")window.toast("Nhân bản không thành công: "+(err?.message||err));
+    }).finally(()=>{clonePending=false;if(mode==="clone")setHelp("Nhân bản: chọn công việc tiếp theo để tạo bản sao.");});
+   }
+   return;
+  }
+  if(mode!=="move"||!selected)return;
+  const arrow=ev.target.closest?.("#estamPrev,#estamNext");
+  const cell=ev.target.closest?.("#maint130 [data-m130-date]");
+  if(!arrow&&!cell)return;
+  ev.preventDefault();ev.stopImmediatePropagation();
+  let date=cell?.dataset.m130Date||"";
+  if(arrow){
+   const shown=currentCalendar();
+   if(!shown)return;
+   const delta=arrow.id==="estamPrev"?-1:1;
+   const next=new Date(Date.UTC(shown.year,shown.month-1+delta,1));
+   date=clamp(selected.date,next.getUTCFullYear(),next.getUTCMonth()+1);
+  }
+  if(date)commitSelected(selected,date);
+ },true);
+ document.addEventListener("click",ev=>{
+  const menu=byId("estaMaintenanceSettingsMenu");
+  if(menu&&!menu.hidden&&!ev.target.closest?.("#estaMaintenanceSettings")){
+   menu.hidden=true;byId("estaMaintenanceSettingsToggle")?.setAttribute("aria-expanded","false");
+  }
+ });
+ document.addEventListener("keydown",ev=>{
+  if(ev.key!=="Escape")return;
+  const menu=byId("estaMaintenanceSettingsMenu");
+  if(menu&&!menu.hidden){menu.hidden=true;byId("estaMaintenanceSettingsToggle")?.setAttribute("aria-expanded","false");return;}
+  if(mode!=="off")applyMode("off");
+ });
+ const attach=()=>{
+  ensureSettings();
+  const page=byId("maintenancePage");
+  if(page)new MutationObserver(mutations=>{
+   if(mutations.some(m=>m.type==="attributes"))contextSync();
+  }).observe(page,{attributes:true,attributeFilter:["data-estam-building","data-estam-view"]});
+  const list=byId("m130List");
+  if(list)new MutationObserver(()=>{if(mode!=="off")syncChips();}).observe(list,{childList:true});
+ };
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",attach,{once:true});else attach();
+
  window.estaMaintenance130DragDebug={clamp,isDragging:()=>!!drag?.started};
 })();
