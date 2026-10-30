@@ -1,4 +1,5 @@
 /* ESTA: Tra cứu công việc theo vật tư và xuất PDF kèm ảnh.
+ * Shared across four project buildings (68PĐL, 62THL, 127HH, 130HH).
  * Reads only the selected project's cached tasks and inventory materials.
  * This module never writes task, stock, or material records.
  */
@@ -10,9 +11,11 @@
   const arr = (v) => Array.isArray(v) ? v : [];
   let selectedMaterialIds = new Set();
   let selectedTaskIds = new Set();
+  let modalProjectId = "";
+  const SUPPORTED_PROJECTS = new Set(["130HH","127HH","62THL","68PĐL","68PDL"]);
 
   function projectId() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.id || "" : ""); }
-  function is130HH() { return projectId().toUpperCase() === "130HH"; }
+  function isSupportedProject() { return SUPPORTED_PROJECTS.has(projectId().toUpperCase()); }
   function projectName() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.name || projectId() : projectId() || "Dự án"); }
   function materials() { return arr(typeof inventoryMaterials !== "undefined" ? inventoryMaterials : []).filter(m => !m.archived_at); }
   function tasks() {
@@ -65,7 +68,7 @@
     style.id = "estaMaterialWorkReportStyles";
     style.textContent = `
       #estaMaterialWorkReportLaunch{display:inline-flex;align-items:center;gap:7px;margin:8px 0;padding:9px 12px;border:1px solid #a46427;border-radius:10px;background:#411437;color:#f5ecd0;font-weight:750;cursor:pointer}
-      /* 130HH only: force readable, tappable controls against shared ESTA themes. */
+      /* Four-project report: readable, tappable controls on shared ESTA themes. */
       #inventoryPage #estaMaterialWorkReportLaunch{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:10!important;align-items:center!important;justify-content:center!important;min-height:44px!important;max-width:100%!important;white-space:normal!important;line-height:1.4!important;text-align:center!important;font-size:14px!important;font-weight:750!important;background:#173b56!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;border:2px solid #246e90!important;box-shadow:0 2px 8px rgba(9,33,52,.16)!important;pointer-events:auto!important}
       #estaMaterialWorkReportModal .emwr-actions button,#estaMaterialWorkReportModal .emwr-tools button{display:inline-flex!important;visibility:visible!important;align-items:center!important;justify-content:center!important;min-height:44px!important;font-size:14px!important;line-height:1.4!important;white-space:normal!important;opacity:1!important;color:#173b56!important;-webkit-text-fill-color:#173b56!important;background:#ffffff!important;border:1px solid #7897ad!important;cursor:pointer!important}
       #estaMaterialWorkReportModal .emwr-actions button.emwr-primary{background:#173b56!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;border-color:#173b56!important}
@@ -100,7 +103,15 @@
     document.head.appendChild(style);
   }
   function ensureUI() {
-    if (!is130HH()) {
+    const current = projectId().toUpperCase();
+    if (modalProjectId && modalProjectId !== current) {
+      selectedMaterialIds.clear();
+      selectedTaskIds.clear();
+      const open = $("#estaMaterialWorkReportModal");
+      if (open) open.hidden = true;
+      modalProjectId = "";
+    }
+    if (!isSupportedProject()) {
       $("#estaMaterialWorkReportLaunch")?.remove();
       const modal = $("#estaMaterialWorkReportModal");
       if (modal) modal.hidden = true;
@@ -153,9 +164,23 @@
       document.body.appendChild(modal);
     }
   }
-  function openModal() {
-    if (!is130HH()) { closeModal(); return; }
-    if (!projectId()) { if (typeof toast === "function") toast("Vui lòng chọn dự án trước."); return; }
+  async function openModal() {
+    if (!isSupportedProject()) { closeModal(); return; }
+    const openingProject = projectId();
+    if (!openingProject) { if (typeof toast === "function") toast("Vui lòng chọn dự án trước."); return; }
+    // Guard against showing stock cached from the previously visited building.
+    if (typeof loadInventoryData === "function" && typeof inventoryLoadedBuilding !== "undefined" &&
+        String(inventoryLoadedBuilding) !== openingProject) {
+      try { await loadInventoryData(openingProject); }
+      catch (error) { console.warn("Material report inventory load failed", error); }
+      if (projectId() !== openingProject) return;
+      if (String(inventoryLoadedBuilding) !== openingProject) {
+        if (typeof toast === "function") toast("Chưa tải được vật tư của dự án. Vui lòng thử lại.");
+        return;
+      }
+    }
+    if (projectId() !== openingProject) return;
+    modalProjectId = openingProject.toUpperCase();
     selectedMaterialIds = new Set();
     selectedTaskIds = new Set();
     $("#emwrProject").textContent = "Dự án hiện tại: " + projectName() + " · Chỉ đọc dữ liệu của dự án này";
@@ -220,13 +245,14 @@
     if(manual) { manual.disabled=mode!=="manual"; manual.style.opacity=mode==="manual"?"1":".45"; }
   }
   async function exportReport() {
-    if (!is130HH()) { closeModal(); return; }
+    if (!isSupportedProject() || modalProjectId !== projectId().toUpperCase()) { closeModal(); return; }
     const mode=$('input[name="emwrPerformerMode"]:checked')?.value||"technical";
     let performer="";
     if(mode==="manual") performer=$("#emwrManualPerformer")?.value.trim()||"";
     else performer=[...$("#emwrProjectPeople").querySelectorAll("input[data-export-person]:checked")].map(input=>input.dataset.exportPerson).join(", ");
     if(!performer){ $("#emwrStatus").textContent=mode==="manual"?"Vui lòng nhập tên người thực hiện.":"Vui lòng chọn ít nhất một kỹ thuật viên của dự án."; return; }
     const chosen=selectedMaterials(), selected=linkedTasks().filter(t=>selectedTaskIds.has(String(t.id)));
+    if (modalProjectId !== projectId().toUpperCase()) { closeModal(); return; }
     if(!chosen.length||!selected.length)return;
     if(typeof window.exportGenericEstaPdf!=="function"){ $("#emwrStatus").textContent="Chức năng PDF chưa sẵn sàng. Vui lòng tải lại trang."; return; }
     const photos=[], seenPhotos=new Set();
