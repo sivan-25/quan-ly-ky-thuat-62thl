@@ -973,6 +973,20 @@ async function exportPdf(){
  const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,shownDate(o),demo(o.item)?"Mẫu · Chưa xác minh":status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
  try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ "+projectLabel().toUpperCase(),tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_"+B+"_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed"&&!demo(o.item)).length,label:"HOÀN THÀNH ĐÃ XÁC MINH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
 }
+// Stable API for the visible ESTA month arrows (rendered by maintenance-redesign.js).
+// Capture the occurrence before changing month, so re-rendering cannot lose the drag source.
+window.estaMaintenance130DragActions={
+ getSource(key){
+  if(!active()||!ready||busy||!canWrite())return null;
+  const occurrence=getYearSchedule(year).find(o=>o.event.event_key===key);
+  if(!occurrence||occurrence.event.status==="completed")return null;
+  return {key,date:dateOf(occurrence),title:occurrence.item.work_title,occurrence,building:B};
+ },
+ move(source,date){
+  if(!source||source.building!==B||!canWrite()||!active())return;
+  return rescheduleOccurrence(source.key,date,source.occurrence);
+ }
+};
 window.mountMaintenance130=()=>{
  const next=String(typeof currentBuilding!=="undefined"?(currentBuilding?.id||""):"");
  if(!PROJECT_IDS.has(next)){show();return;}
