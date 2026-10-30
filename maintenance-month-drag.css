@@ -355,3 +355,52 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets{
  .estaMonthDragTargets{justify-content:center}
  .estaMonthDockCaption{font-size:9px}
 }
+
+/* Compact settings button with a vector icon, only in the Calendar view. */
+#maintenancePage #estaMaintenanceSettingsToggle{
+ gap:8px!important;padding:9px 13px!important;
+ border:1px solid #bed5e3!important;border-radius:10px!important;
+ background:#f7fbfe!important;color:#185577!important;
+ box-shadow:0 1px 3px rgba(30,70,100,.06)!important;
+ font:700 13px/1.2 system-ui,sans-serif!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle:hover,
+#maintenancePage #estaMaintenanceSettingsToggle[aria-expanded="true"]{
+ background:#eaf5fd!important;border-color:#8ab8d2!important;
+}
+#maintenancePage .estaSettingsIcon{width:19px;height:19px;flex:0 0 19px;stroke:currentColor}
+#maintenancePage #estaMaintenanceModeHelp{display:none!important}
+#maintenancePage #estaMaintenanceSettings[hidden]{display:none!important}
+/* Never let the settings control appear in Bảng / Thẻ / Timeline. */
+#maintenancePage:not([data-estam-view="calendar"]) #estaMaintenanceSettings{display:none!important}
+
+/* Equal buttons for previous and next month, including smaller screens. */
+.estaMonthDragTargets{
+ width:min(374px,calc(100vw - 24px))!important;
+ max-width:calc(100vw - 24px)!important;
+ box-sizing:border-box!important;
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+ align-items:stretch!important;
+ justify-content:stretch!important;
+ gap:8px!important;
+ padding:9px!important;
+}
+.estaMonthDockCaption{
+ grid-column:1/-1!important;flex:none!important;width:auto!important;
+ margin:0!important;text-align:center!important;
+}
+.estaMonthDragTargets button{
+ width:100%!important;min-width:0!important;max-width:none!important;
+ min-height:48px!important;padding:9px 8px!important;
+ box-sizing:border-box!important;gap:6px!important;
+ justify-content:center!important;
+ font-size:12px!important;white-space:nowrap!important;
+}
+.estaMonthDragTargets button span{font-size:20px!important;line-height:1!important}
+@media(max-width:760px){
+ .estaMonthDragTargets{
+  left:50%!important;right:auto!important;transform:translateX(-50%)!important;
+  width:min(344px,calc(100vw - 16px))!important;
+ }
+}
