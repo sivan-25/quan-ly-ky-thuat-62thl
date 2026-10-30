@@ -9,6 +9,7 @@
  --esta130-soft:#F5ECD0;
  --esta130-lift:#FBF3E3;
  --esta130-copper:#A46427;
+ --esta130-copper-ink:#82491D;
  --esta130-text:#2B1526;
  --esta130-secondary:#625045;
  --esta130-line:#D7BE9C;
@@ -296,7 +297,7 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
 #app.estaBrand130 :is(label,.workField>span,.energyForm label>span,.inventoryForm label>span,.rc-field>span){
  color:var(--esta130-secondary)!important;
 }
-#app.estaBrand130 :is(input,select,textarea,button):focus-visible{
+#app.estaBrand130 :is(input,select,textarea,button,[role="button"],a):focus-visible{
  outline:2px solid var(--esta130-copper)!important;
  outline-offset:2px!important;
 }
@@ -318,6 +319,7 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
  border-color:var(--esta130-copper)!important;
  color:var(--esta130-cream)!important;
 }
+#app.estaBrand130 #workSelectedPdfBar button{min-height:44px}
 /* A readable fixed PDF-selection bar in project mode. */
 #app.estaBrand130 :is(#workSelectedPdfBar,.workSelectedPdfBar,#energyDeleteBar,.energyDeleteBar){
  background:var(--esta130-plum)!important;
@@ -513,6 +515,7 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
 /* Neutral buttons default to dark plum; keep semantic status/danger buttons untouched. */
 body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="danger"]):not([class*="Danger"]):not([class*="delete"]):not([class*="Delete"]):not([class*="remove"]):not([class*="Remove"]){
   color:var(--esta130-plum)!important;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease;
 }
 body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="danger"]):not([class*="Danger"]):not([class*="delete"]):not([class*="Delete"]):not([class*="remove"]):not([class*="Remove"]) *{
   color:inherit!important;
@@ -563,7 +566,7 @@ body.estaBrand130 #app.estaBrand130 .estaTopbar :is(.headerSearch,.ccTopSearch,.
   color:#DFCEBE!important;
   -webkit-text-fill-color:#DFCEBE;
 }
-body.estaBrand130 #app.estaBrand130 :is(input,select,textarea,button):focus-visible{
+body.estaBrand130 #app.estaBrand130 :is(input,select,textarea,button,[role="button"],a):focus-visible{
   outline:2px solid var(--esta130-copper)!important;
   outline-offset:2px!important;
 }
@@ -729,7 +732,7 @@ body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSid
 
 /* High-specificity corrections for legacy task-form controls and active mobile nav. */
 body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn{
-  background:#411437!important;
+  background:var(--esta130-plum)!important;
   border-color:#411437!important;
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
@@ -1084,7 +1087,7 @@ body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorProfile,.
   border-color:#D8BEA0!important;color:#2B1526!important;box-shadow:none!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain>span{
-  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+  color:var(--esta130-copper-ink)!important;-webkit-text-fill-color:var(--esta130-copper-ink)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain h1{
   color:#411437!important;-webkit-text-fill-color:#411437!important;
@@ -1217,6 +1220,25 @@ body.estaBrand130 #app.estaBrand130#app #documentsPage .demoDocCat :is(b,span,sm
   color:#411437!important;-webkit-text-fill-color:#411437!important;
 }
 
+/* Documents details: readable notes, metadata and absent-file status on light cards. */
+body.estaBrand130 #app.estaBrand130#app #documentsPage #demoDocDetail .demoDetailSection{
+  border-top-color:#D8BEA0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #documentsPage #demoDocDetail .demoDetailSection :is(p,strong){
+  color:#2B1526!important;-webkit-text-fill-color:#2B1526!important;
+}
+body.estaBrand130 #app.estaBrand130#app #documentsPage #demoDocDetail .demoDetailSection>span{
+  color:#625045!important;-webkit-text-fill-color:#625045!important;
+}
+body.estaBrand130 #app.estaBrand130#app #documentsPage #demoDocDetail .demoDocumentFileCard :is(b,small){
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+}
+body.estaBrand130 #app.estaBrand130#app #documentsPage #demoDocDetail .demoBtn:disabled{
+  background:#F5ECD0!important;border:1px solid #A46427!important;
+  color:#411437!important;-webkit-text-fill-color:#411437!important;
+  opacity:1!important;cursor:not-allowed!important;
+}
+
 
 /* Report-period segments: selected period is plum with cream text; idle tabs are light. */
 body.estaBrand130 #app.estaBrand130#app #reportsPage .rc-segments{
@@ -1323,14 +1345,15 @@ body.estaBrand130 #app.estaBrand130#app #energyPage :is(
 }
 
 
-/* Shared project search is outside the page panels; give it a light field on the plum top bar. */
-body.estaBrand130 #app.estaBrand130#app #globalSearch{
-  background:#F5ECD0!important;border:1px solid #A46427!important;
-  color:#411437!important;-webkit-text-fill-color:#411437!important;
-  box-shadow:none!important;color-scheme:light!important;
+/* One continuous topbar search surface for every 130HH module. */
+body.estaBrand130 #app.estaBrand130#app .estaTopbar .headerSearch #globalSearch{
+  background:transparent!important;background-image:none!important;
+  border:0!important;box-shadow:none!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
+  color-scheme:dark!important;
 }
-body.estaBrand130 #app.estaBrand130#app #globalSearch::placeholder{
-  color:#625045!important;-webkit-text-fill-color:#625045!important;opacity:1!important;
+body.estaBrand130 #app.estaBrand130#app .estaTopbar .headerSearch #globalSearch::placeholder{
+  color:#DFCEBE!important;-webkit-text-fill-color:#DFCEBE!important;opacity:1!important;
 }
 
 
@@ -1361,7 +1384,7 @@ body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickM
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryQuickPopoverHead .inventoryKicker,
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .stockAlertTitle .inventoryKicker,
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane .inventoryCardTitle .inventoryKicker{
-  color:#A46427!important;-webkit-text-fill-color:#A46427!important;
+  color:var(--esta130-copper-ink)!important;-webkit-text-fill-color:var(--esta130-copper-ink)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryMaterialsPane #stockAlertCount{
   background:#FDE8E8!important;border:1px solid #F1B5B5!important;
@@ -1445,8 +1468,8 @@ body.estaBrand130 #app.estaBrand130#app #workPage .stats small{
 /* Priority remains a warm gold when selected; the SVG inherits the button color. */
 body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPriorityStar,
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar{
-  color:#85776A!important;
-  -webkit-text-fill-color:#85776A!important;
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
   background:transparent!important;
   border:1px solid transparent!important;
   box-shadow:none!important;
@@ -1455,8 +1478,8 @@ body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPrioritySt
 body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPriorityStar[aria-pressed="true"],
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar.is-marked,
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed="true"]{
-  color:#9A6700!important;
-  -webkit-text-fill-color:#9A6700!important;
+  color:#8A5A00!important;
+  -webkit-text-fill-color:#8A5A00!important;
   background:#FFF0B3!important;
   border:1px solid #D6A12B!important;
   border-radius:8px!important;
@@ -1607,3 +1630,5 @@ body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
+
+@media (prefers-reduced-motion:reduce){body.estaBrand130 #app.estaBrand130 button{transition:none!important}}

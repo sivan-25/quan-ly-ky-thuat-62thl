@@ -18,20 +18,20 @@ body.estaBrand130 #app.estaBrand130#app #workPage .sttCell .estaStarStack > span
 
 /* Priority star: muted when off, clearly gold when selected. */
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar {
-  color:#A99586!important;
-  -webkit-text-fill-color:#A99586!important;
+  color:#625045!important;
+  -webkit-text-fill-color:#625045!important;
   background:transparent!important;
   border:1px solid transparent!important;
   box-shadow:none!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar:not(.is-marked):not([aria-pressed="true"]) svg path {
-  fill:#A99586!important;
+  fill:#625045!important;
   stroke:none!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar.is-marked,
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed="true"] {
-  color:#F4B400!important;
-  -webkit-text-fill-color:#F4B400!important;
+  color:#8A5A00!important;
+  -webkit-text-fill-color:#8A5A00!important;
   background:#FFF0B3!important;
   border:1px solid #D6A12B!important;
   border-radius:8px!important;
@@ -39,7 +39,7 @@ body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar.is-marked svg path,
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed="true"] svg path {
-  fill:#F4B400!important;
+  fill:#8A5A00!important;
   stroke:#8A5A00!important;
   stroke-width:.65px!important;
   stroke-linejoin:round!important;
