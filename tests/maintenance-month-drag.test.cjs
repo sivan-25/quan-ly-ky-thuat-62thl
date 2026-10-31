@@ -355,6 +355,8 @@ async function fixture(sourceDate,otherDate){
   const f=await fixture("2026-10-09","2026-10-09");
   const day=f.d.querySelector('[data-m130-date="2026-10-09"]');
   assert.ok(day,"the ninth exists in the calendar");
+  assert.equal(f.d.querySelectorAll(".m130CalendarLegend .m130LegendItem").length,4,"professional status legend identifies four core maintenance states");
+  assert.deepEqual([...f.d.querySelectorAll(".m130CalendarLegend .m130LegendItem")].map(x=>x.textContent.trim()),["Hoàn thành","Chưa thực hiện","Quá hạn","Đang thực hiện"],"legend status labels are explicit");
   assert.equal(day.querySelectorAll(":scope > .m130CalendarChip").length,2,"two tasks are directly inside one compact date cell");
   assert.equal(day.querySelector(".m130DaySystems")?.textContent,"HVAC","system is visible right next to day number");
   assert.equal(day.querySelector(".m130DaySystemName")?.textContent,"HVAC","full native system label is kept");
@@ -378,21 +380,22 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
  assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
  assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
- assert.match(css,/dense calendar 2026-10-31/,"new 130HH compact calendar CSS loaded");
- assert.match(css,/\.m130CalendarWrap\{\s*padding:2px!important;\s*border:0!important/,"outer redundant calendar card is removed");
- assert.match(css,/\.m130CalendarGrid\{\s*gap:2px!important/,"day grid has tight spacing");
- assert.match(css,/\.m130CalendarDay\{[\s\S]*?padding:0!important/,"day cells use no wasteful inner padding");
- assert.match(css,/\.m130CalendarChip\{[\s\S]*?min-height:29px!important/,"calendar chips use compact height");
- assert.match(css,/\.m130CalendarChip::after\{\s*content:none!important;\s*display:none!important/,"decorative four-dot grip is removed");
- assert.match(css,/\.m130DayHead>\.m130DaySystems\{/,"system badge visible next to day");
- assert.match(css,/\.m130CalendarSystem\{\s*display:none!important/,"single-system dates avoid redundant per-chip labels");
- assert.match(css,/\.m130MixedSystems \.m130CalendarChip \.m130CalendarSystem\{\s*display:block!important/,"mixed systems reveal per-task identity");
- assert.match(css,/-webkit-line-clamp:2!important/,"work name is legible in two compact lines");
- for(const [state,color] of [["planned","#ffe7ad"],["late","#ffd7d5"],["done","#d0f1dc"],["working","#d5e9ff"]]){
-  assert.ok(css.includes(".m130CalendarChip."+state+"{"),"status "+state+" has a dedicated calendar background");
-  assert.ok(css.includes("background:"+color+"!important"),"color for "+state+" appears in updated palette");
+ assert.match(css,/Enterprise calendar design, v16/,"new corporate visual system loaded");
+ assert.match(css,/\.m130CalendarWrap\{\s*padding:0!important;\s*border:0!important/,"no outer redundant calendar card");
+ assert.match(css,/\.m130CalendarLegend\{/,"calendar has a concise visual status key");
+ assert.match(css,/\.m130CalendarGrid\{[\s\S]*?gap:3px!important/,"days keep a consistent tight grid");
+ assert.match(css,/\.m130CalendarDay\{[\s\S]*?padding:0 0 3px!important/,"calendar day padding remains compact");
+ assert.match(css,/\.m130CalendarChip\{[\s\S]*?min-height:31px!important/,"work cards remain compact");
+ assert.match(css,/\.m130CalendarChip::after\{\s*content:none!important;\s*display:none!important/,"unnecessary four-dot drag grip removed");
+ assert.match(css,/\.m130DayHead>\.m130DaySystems\{/,"system stays visible next to the date");
+ assert.match(css,/\.m130MixedSystems \.m130CalendarChip \.m130CalendarSystem\{\s*display:block!important/,"mixed systems keep their per-task identity");
+ assert.match(css,/-webkit-line-clamp:2!important/,"task name uses a compact two-line limit");
+ assert.match(css,/\.m130CalendarDay\.m130Today\{/,"today has an accessible visual highlight");
+ assert.match(css,/\.m130CalendarDay\.m130Weekend\{/,"weekends have a differentiated neutral surface");
+ for(const [state,color] of [["planned","#fff0ce"],["late","#ffe2df"],["done","#dbf3e5"],["working","#dfeeff"]]){
+  assert.ok(css.includes(".m130CalendarChip."+state+"{"),"status "+state+" keeps a distinct surface");
+  assert.ok(css.includes("background:"+color+"!important"),"corporate color for "+state+" is present");
  }
-
  assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,"month arrows use two equal columns");
  assert.match(css,/body:has\(#maintenancePage\[data-esta-work-mode="move"\]\) \.estaMonthDragTargets\s*\{\s*display:grid!important/,"Move mode selector uses grid");
  assert.doesNotMatch(css,/body:has\(#maintenancePage\[data-esta-work-mode="move"\]\) \.estaMonthDragTargets\s*\{\s*display:flex!important/,"no flex stacking override");
@@ -404,5 +407,5 @@ async function fixture(sourceDate,otherDate){
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
  assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
  assert.doesNotMatch(css,/#maintenancePage\[data-estam-building="130HH"\]\[data-estam-view="calendar"\] #estaMaintenanceSettings/,"fragile view-specific hiding removed");
- console.log("PASS: dense calendar with vibrant status colors, no grip dots, same-day stacking, move/clone and cross-month regressions");
+ console.log("PASS: enterprise calendar legend, font, compact days, system labels, status colors; move/clone and cross-month regressions");
 })().catch(err=>{console.error(err);process.exitCode=1});
