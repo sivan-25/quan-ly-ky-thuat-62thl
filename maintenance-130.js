@@ -281,7 +281,13 @@ function ensure(){
   if(r&&ev.target===r){ev.preventDefault();openEvent(r.dataset.m130Open);}
   else if(day&&ev.target===day&&canWrite()&&!busy){ev.preventDefault();openPlan(null,day.dataset.m130Date);}
  });
+ // Modern pointer control owns the full drag lifecycle only for 130HH Move mode.
+ const custom130Move=()=>B==="130HH"&&window.estaMaintenance130Mode?.()==="move";
  root.addEventListener("dragstart",ev=>{
+  if(custom130Move()){
+   ev.preventDefault();clearMaintenanceHover();maintenanceDrag=null;maintenanceDragSource=null;
+   return;
+  }
   const chip=ev.target.closest("[data-m130-drag]");
   if(!chip||!ev.dataTransfer||!canWrite())return;
   const key=chip.dataset.m130Drag,o=getYearSchedule(year).find(x=>x.event.event_key===key);
@@ -293,6 +299,7 @@ function ensure(){
  });
  root.addEventListener("dragend",()=>{clearMaintenanceHover();maintenanceDrag=null;maintenanceDragSource=null;});
  root.addEventListener("dragover",ev=>{
+  if(custom130Move()){clearMaintenanceHover();return;}
   if(!maintenanceDrag)return;
   const cell=ev.target.closest("[data-m130-date]"),target=ev.target.closest("[data-m130-month],#m130Prev,#m130Next");
   if(cell){ev.preventDefault();clearMaintenanceHover();return;}
@@ -315,6 +322,10 @@ function ensure(){
   },650);
  });
  root.addEventListener("drop",ev=>{
+  if(custom130Move()){
+   if(maintenanceDrag){ev.preventDefault();maintenanceDrag=null;maintenanceDragSource=null;}
+   clearMaintenanceHover();return;
+  }
   if(!maintenanceDrag||!ev.dataTransfer)return;
   const cell=ev.target.closest("[data-m130-date]"),target=ev.target.closest("[data-m130-month],#m130Prev,#m130Next");
   if(!cell&&!target)return;
@@ -543,10 +554,12 @@ async function rescheduleOccurrence(key,date,sourceOccurrence=null){
   if(o.virtual){
    const event={id,item_id:o.item.id,building_id:B,event_key:newKey,planned_month:monthISO(date),planned_date:date,due_date:date,location:o.item.subsystem||"",status:"planned",source_kind:"year"};
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:event});
+   await verifyMaintenanceSaved("esta_maintenance_plan_occurrences",id,{item_id:o.item.id,planned_date:date,planned_month:monthISO(date)},B);
    stored.push(event);
   }else{
    const update={event_key:newKey,planned_month:monthISO(date),planned_date:date,due_date:date,updated_at:new Date().toISOString()};
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:update});
+   await verifyMaintenanceSaved("esta_maintenance_plan_occurrences",id,{planned_date:date,planned_month:monthISO(date)},B);
    stored=stored.map(e=>e.id===id?{...e,...update}:e);
   }
   // Keep the displayed month fixed in Move mode so the user can continue moving other tasks.
