@@ -415,3 +415,55 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
 }
 body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button:first-of-type{grid-column:1!important}
 body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button:last-of-type{grid-column:2!important}
+
+/* 2026-10-31: Settings uses the site's native font/spacing, not an unrelated system-ui font. */
+#maintenancePage #estaMaintenanceSettingsToggle{
+ min-height:43px!important;height:43px!important;
+ padding:0 13px!important;gap:8px!important;
+ border:1px solid #d9cfe2!important;border-radius:10px!important;
+ background:#fffefa!important;color:#38115b!important;
+ box-shadow:0 1px 3px rgba(54,18,83,.08)!important;
+ font-family:inherit!important;font-size:12px!important;
+ font-weight:800!important;line-height:1.3!important;
+ letter-spacing:normal!important;text-transform:none!important;
+ font-synthesis:none!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle:hover,
+#maintenancePage #estaMaintenanceSettingsToggle[aria-expanded="true"]{
+ background:#f4eff8!important;border-color:#9a77b5!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive{
+ width:43px!important;min-width:43px!important;
+ padding:0!important;background:#38115b!important;
+ border-color:#38115b!important;color:#fff!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive:hover{
+ background:#542875!important;color:#fff!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle svg{
+ width:19px!important;height:19px!important;flex:0 0 19px!important;
+ stroke:currentColor!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle .estaSettingsClose{display:none!important}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsIcon,
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsLabel{display:none!important}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsClose{
+ display:block!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle .estaSettingsLabel{
+ display:inline!important;font-family:inherit!important;
+ font-size:12px!important;font-weight:800!important;line-height:1.3!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsLabel{
+ display:none!important;
+}
+#maintenancePage #estaMaintenanceSettingsMenu,
+#maintenancePage #estaMaintenanceSettingsMenu button{
+ font-family:inherit!important;
+ font-size:12px!important;
+ font-weight:700!important;
+ line-height:1.4!important;
+ letter-spacing:normal!important;
+}
+#maintenancePage #estaMaintenanceSettingsMenu{width:196px!important}
+#maintenancePage #estaMaintenanceSettingsMenu button{min-height:43px!important}
