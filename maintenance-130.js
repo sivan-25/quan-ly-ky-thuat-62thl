@@ -531,13 +531,21 @@ function renderAlternative(events){
    '<span class="m130DaySystems" title="'+esc(systemNames)+'" aria-label="Hệ thống: '+esc(systemNames)+'"><span class="m130DaySystemName">'+esc(systems[0])+'</span>'+(systems.length>1?'<small class="m130DaySystemMore" aria-hidden="true">+'+(systems.length-1)+'</small>':"")+'</span>':"";
   const count=daily.length?'<small class="m130DayCount" aria-label="'+daily.length+' công việc">'+daily.length+'</small>':"";
   const keyboard=canWrite()?' role="group" tabindex="0" aria-label="Ngày '+fmt(date)+'. Nhấn Enter để thêm lịch bảo trì"':"";
-  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+(systems.length>1?' m130MixedSystems':'')+'" data-m130-date="'+date+'"'+keyboard+'><div class="m130DayHead"><b>'+day+'</b>'+daySystem+count+'</div>'+chips+'</div>');
+  const extraDayClass=typeof B!=="undefined"&&B==="130HH"?
+   ((offset+day-1)%7>=5?' m130Weekend':'')+(typeof isoToday==="function"&&date===isoToday()?' m130Today':''):"";
+  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+(systems.length>1?' m130MixedSystems':'')+extraDayClass+'" data-m130-date="'+date+'"'+keyboard+'><div class="m130DayHead"><b>'+day+'</b>'+daySystem+count+'</div>'+chips+'</div>');
  }
  const agenda=events.map(o=>{
   const st=status(o),key=esc(o.event.event_key);
   return '<div class="m130AgendaItem"><div class="m130AgendaDate">'+shownDate(o)+'</div><button type="button" data-m130-event="'+key+'" class="m130AgendaButton '+st[1]+'"><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+st[0]+'</small></button></div>';
  }).join("");
- list.innerHTML='<div class="m130CalendarWrap"><div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
+ const legend=typeof B!=="undefined"&&B==="130HH"?
+  '<div class="m130CalendarLegend" role="group" aria-label="Chú giải trạng thái bảo trì">'+
+  '<span class="m130LegendItem m130LegendDone"><i aria-hidden="true"></i>Hoàn thành</span>'+
+  '<span class="m130LegendItem m130LegendPlanned"><i aria-hidden="true"></i>Chưa thực hiện</span>'+
+  '<span class="m130LegendItem m130LegendLate"><i aria-hidden="true"></i>Quá hạn</span>'+
+  '<span class="m130LegendItem m130LegendWorking"><i aria-hidden="true"></i>Đang thực hiện</span></div>':"";
+ list.innerHTML='<div class="m130CalendarWrap">'+legend+'<div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
 }
 async function rescheduleOccurrence(key,date,sourceOccurrence=null){
  if(busy||!canWrite()||!active())return;
