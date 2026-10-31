@@ -78,10 +78,8 @@
    border:1px solid #e0d0b9!important;border-radius:10px!important;font-size:14px!important;font-weight:650!important;
    color:#371f33!important;-webkit-text-fill-color:#371f33!important;padding:0 10px!important;
  }
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls::after{
-   content:"◷";display:grid;place-items:center;flex:0 0 42px;height:42px;background:#fff8ed;
-   border:1px solid #e0d0b9;border-radius:10px;font-size:26px;color:#401533;
- }
+ /* Decorative clock removed: do not render a pseudo-control. */
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls::after{content:none!important;display:none!important}
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.headerBell{
    display:grid!important;order:2!important;margin:0!important;flex:0 0 42px!important;
    width:42px!important;height:42px!important;background:#fff8ed!important;
@@ -95,6 +93,25 @@
    color:#401533!important;-webkit-text-fill-color:#401533!important;
  }
  #app #inventoryPage.inventoryRef130>.inventoryCommand{display:none!important}
+}
+/* Sharper text, comfortable year alignment, and no redundant total-item tile. */
+@media(min-width:761px){
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly{margin-right:8px!important}
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar #inventoryYear{
+   color:#22101f!important;-webkit-text-fill-color:#22101f!important;
+   font-weight:750!important;opacity:1!important;text-shadow:none!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs button:not(.active){
+   color:#33202d!important;-webkit-text-fill-color:#33202d!important;opacity:1!important;text-shadow:none!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs button.active{
+   color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;text-shadow:none!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.account #headerRole{
+   color:#321427!important;-webkit-text-fill-color:#321427!important;font-weight:750!important;opacity:1!important;
+ }
+ #app #inventoryPage.inventoryRef130 .monthlyStats>.inventoryMetric:first-child{display:none!important}
+ #app #inventoryPage.inventoryRef130 #inventoryMaterialsPane>.inventoryStats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
 @media(min-width:761px) and (max-width:1250px){
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventory130PageTitle{font-size:18px!important}
