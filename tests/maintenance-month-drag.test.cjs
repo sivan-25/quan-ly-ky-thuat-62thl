@@ -356,7 +356,19 @@ async function fixture(sourceDate,otherDate){
   const day=f.d.querySelector('[data-m130-date="2026-10-09"]');
   assert.ok(day,"the ninth exists in the calendar");
   assert.equal(day.querySelectorAll(":scope > .m130CalendarChip").length,2,"two tasks are directly inside one compact date cell");
-  assert.equal(day.querySelectorAll(".m130CalendarSystem").length,2,"accessible system metadata is preserved");
+  assert.equal(day.querySelector(".m130DaySystems")?.textContent,"HVAC","system is visible right next to day number");
+  assert.equal(day.querySelector(".m130DaySystemName")?.textContent,"HVAC","full native system label is kept");
+  assert.equal(day.querySelectorAll(".m130CalendarSystem").length,2,"each task keeps its original system metadata");
+  // A date with more than one system must not leave task-to-system mapping ambiguous.
+  f.w.__dragState().items[1].system_group="PCCC";
+  f.d.getElementById("estamNext").click();
+  f.d.getElementById("estamPrev").click();
+  const mixed=f.d.querySelector('[data-m130-date="2026-10-09"]');
+  assert.ok(mixed.classList.contains("m130MixedSystems"),"mixed-system dates are labelled explicitly");
+  assert.equal(mixed.querySelector(".m130DaySystemName").textContent,"HVAC");
+  assert.equal(mixed.querySelector(".m130DaySystemMore").textContent,"+1");
+  assert.equal(mixed.querySelector(".m130DaySystems").title,"HVAC · PCCC","full list of systems accessible on hover");
+  assert.deepEqual([...mixed.querySelectorAll(".m130CalendarChip .m130CalendarSystem")].map(x=>x.textContent),["HVAC","PCCC"],"each card identifies its own system");
   f.dom.window.close();
  }
 
@@ -372,7 +384,9 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/\.m130CalendarDay\{[\s\S]*?padding:0!important/,"day cells use no wasteful inner padding");
  assert.match(css,/\.m130CalendarChip\{[\s\S]*?min-height:29px!important/,"calendar chips use compact height");
  assert.match(css,/\.m130CalendarChip::after\{\s*content:none!important;\s*display:none!important/,"decorative four-dot grip is removed");
- assert.match(css,/\.m130CalendarSystem\{\s*display:none!important/,"redundant system label is visually hidden");
+ assert.match(css,/\.m130DayHead>\.m130DaySystems\{/,"system badge visible next to day");
+ assert.match(css,/\.m130CalendarSystem\{\s*display:none!important/,"single-system dates avoid redundant per-chip labels");
+ assert.match(css,/\.m130MixedSystems \.m130CalendarChip \.m130CalendarSystem\{\s*display:block!important/,"mixed systems reveal per-task identity");
  assert.match(css,/-webkit-line-clamp:2!important/,"work name is legible in two compact lines");
  for(const [state,color] of [["planned","#ffe7ad"],["late","#ffd7d5"],["done","#d0f1dc"],["working","#d5e9ff"]]){
   assert.ok(css.includes(".m130CalendarChip."+state+"{"),"status "+state+" has a dedicated calendar background");
