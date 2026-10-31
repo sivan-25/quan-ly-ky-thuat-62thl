@@ -2,8 +2,20 @@
 (() => {
  "use strict";
  const $ = s => document.querySelector(s);
- let bellParent=null,bellNext=null;
+ let bellParent=null,bellNext=null,controlsParent=null,controlsNext=null;
  function isPilot(){const page=$("#inventoryPage");return !!(page?.classList.contains("inventoryRef130")&&!page.classList.contains("hide"));}
+ function syncApprovedTopbar(){
+   const controls=$("#inventoryPage .inventoryCommandControls"),header=$("header.estaTopbar"),account=$("header .account");
+   if(!controls||!header||!account)return;
+   const enabled=isPilot() && window.matchMedia("(min-width: 761px)").matches;
+   if(enabled){
+     if(!controlsParent){controlsParent=controls.parentNode;controlsNext=controls.nextSibling;}
+     if(controls.parentNode!==header)header.insertBefore(controls,account);
+   }else if(controlsParent&&controls.parentNode!==controlsParent){
+     if(controlsNext?.parentNode===controlsParent)controlsParent.insertBefore(controls,controlsNext);
+     else controlsParent.appendChild(controls);
+   }
+ }
  function syncHeader(){
    const bell=$(".headerBell"), account=$("header .account");
    if(!bell||!account)return;
@@ -60,10 +72,11 @@
  function sync(){
    if(scheduled)return;
    scheduled=true;
-   queueMicrotask(()=>{scheduled=false;ensureMenu();syncHeader();});
+   queueMicrotask(()=>{scheduled=false;ensureMenu();syncHeader();syncApprovedTopbar();});
  }
  function boot(){
    sync();
+   window.addEventListener("resize",sync,{passive:true});
    const root=$("#app");
    if(root)new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:["class"],childList:true,subtree:true});
  }
