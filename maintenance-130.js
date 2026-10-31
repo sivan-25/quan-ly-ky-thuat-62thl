@@ -539,13 +539,8 @@ function renderAlternative(events){
   const st=status(o),key=esc(o.event.event_key);
   return '<div class="m130AgendaItem"><div class="m130AgendaDate">'+shownDate(o)+'</div><button type="button" data-m130-event="'+key+'" class="m130AgendaButton '+st[1]+'"><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+st[0]+'</small></button></div>';
  }).join("");
- const legend=typeof B!=="undefined"&&B==="130HH"?
-  '<div class="m130CalendarLegend" role="group" aria-label="Chú giải trạng thái bảo trì">'+
-  '<span class="m130LegendItem m130LegendDone"><i aria-hidden="true"></i>Hoàn thành</span>'+
-  '<span class="m130LegendItem m130LegendPlanned"><i aria-hidden="true"></i>Chưa thực hiện</span>'+
-  '<span class="m130LegendItem m130LegendLate"><i aria-hidden="true"></i>Quá hạn</span>'+
-  '<span class="m130LegendItem m130LegendWorking"><i aria-hidden="true"></i>Đang thực hiện</span></div>':"";
- list.innerHTML='<div class="m130CalendarWrap">'+legend+'<div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
+ // Keep the calendar self-contained; status is already conveyed by each task color.
+ list.innerHTML='<div class="m130CalendarWrap"><div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
 }
 async function rescheduleOccurrence(key,date,sourceOccurrence=null){
  if(busy||!canWrite()||!active())return;
