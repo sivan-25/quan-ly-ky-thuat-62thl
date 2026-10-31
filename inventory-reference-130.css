@@ -1,3 +1,5 @@
+/* Hide pilot-only export control on projects outside 130HH. */
+#inventoryPage:not(.inventoryRef130) #materialExportExcel{display:none!important}
 /* Pilot 130HH - inventory desktop layout matching approved screenshot. Scoped to one building. */
 @media (min-width:761px) {
  #app #inventoryPage.inventoryRef130{max-width:none!important;padding:20px 26px 34px!important;background:#f2ddbd!important;color:#38132f!important}
