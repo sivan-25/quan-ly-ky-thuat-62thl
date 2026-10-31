@@ -523,9 +523,15 @@ function renderAlternative(events){
    const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
    return '<button type="button" draggable="'+(typeof B!=="undefined"&&B==="130HH"&&typeof window!=="undefined"&&window.estaMaintenance130Mode?.()==="move"&&canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" title="'+esc(o.item.work_title)+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
   }).join("");
+  // On 130HH, the system name sits beside the day number. When multiple
+  // systems share a date, each task also receives its own visible system label.
+  const systems=B==="130HH"?[...new Set(daily.map(o=>String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại"))]:[];
+  const systemNames=systems.join(" · ");
+  const daySystem=systems.length?
+   '<span class="m130DaySystems" title="'+esc(systemNames)+'" aria-label="Hệ thống: '+esc(systemNames)+'"><span class="m130DaySystemName">'+esc(systems[0])+'</span>'+(systems.length>1?'<small class="m130DaySystemMore" aria-hidden="true">+'+(systems.length-1)+'</small>':"")+'</span>':"";
   const count=daily.length?'<small class="m130DayCount" aria-label="'+daily.length+' công việc">'+daily.length+'</small>':"";
   const keyboard=canWrite()?' role="group" tabindex="0" aria-label="Ngày '+fmt(date)+'. Nhấn Enter để thêm lịch bảo trì"':"";
-  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+'" data-m130-date="'+date+'"'+keyboard+'><div class="m130DayHead"><b>'+day+'</b>'+count+'</div>'+chips+'</div>');
+  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+(systems.length>1?' m130MixedSystems':'')+'" data-m130-date="'+date+'"'+keyboard+'><div class="m130DayHead"><b>'+day+'</b>'+daySystem+count+'</div>'+chips+'</div>');
  }
  const agenda=events.map(o=>{
   const st=status(o),key=esc(o.event.event_key);
