@@ -360,19 +360,20 @@ async function fixture(sourceDate,otherDate){
   assert.equal(blanks.length,3,"October 2026 correctly has three blank leading slots");
   assert.equal(blanks.some(x=>x.textContent.trim()),false,"out-of-month cells stay empty");
   assert.equal(day.querySelectorAll(":scope > .m130CalendarChip").length,2,"two tasks are directly inside one compact date cell");
-  assert.equal(day.querySelector(".m130DaySystems")?.textContent,"HVAC","system is visible right next to day number");
-  assert.equal(day.querySelector(".m130DaySystemName")?.textContent,"HVAC","full native system label is kept");
-  assert.equal(day.querySelectorAll(".m130CalendarSystem").length,2,"each task keeps its original system metadata");
-  // A date with more than one system must not leave task-to-system mapping ambiguous.
-  f.w.__dragState().items[1].system_group="PCCC";
+  assert.equal(day.querySelector(".m130DaySystems"),null,"system is never summarized beside the day number");
+  assert.deepEqual([...day.querySelectorAll(".m130CalendarChip .m130CalendarSystem")].map(x=>x.textContent),["HVAC","HVAC"],"each job shows its own system even when systems match");
+  f.w.__dragState().items[1].system_group="Cấp thoát nước";
   f.d.getElementById("estamNext").click();
   f.d.getElementById("estamPrev").click();
   const mixed=f.d.querySelector('[data-m130-date="2026-10-09"]');
-  assert.ok(mixed.classList.contains("m130MixedSystems"),"mixed-system dates are labelled explicitly");
-  assert.equal(mixed.querySelector(".m130DaySystemName").textContent,"HVAC");
-  assert.equal(mixed.querySelector(".m130DaySystemMore").textContent,"+1");
-  assert.equal(mixed.querySelector(".m130DaySystems").title,"HVAC · PCCC","full list of systems accessible on hover");
-  assert.deepEqual([...mixed.querySelectorAll(".m130CalendarChip .m130CalendarSystem")].map(x=>x.textContent),["HVAC","PCCC"],"each card identifies its own system");
+  assert.equal(mixed.querySelector(".m130DaySystemMore"),null,"no +1 summary for mixed systems");
+  assert.equal(mixed.classList.contains("m130MixedSystems"),false,"mixed-system dates no longer require special display logic");
+  assert.deepEqual([...mixed.querySelectorAll(".m130CalendarChip .m130CalendarSystem")].map(x=>x.textContent),["HVAC","Cấp thoát nước"],"the full system name travels with the correct job");
+  assert.deepEqual([...mixed.querySelectorAll(".m130CalendarChip")].map(x=>x.textContent.includes("Bảo trì quạt")), [true,true], "task titles stay with their system labels");
+  f.w.__dragState().items[1].system_group="Điện hạ thế và điều khiển tự động";
+  f.d.getElementById("estamNext").click();
+  f.d.getElementById("estamPrev").click();
+  assert.equal(f.d.querySelectorAll(".m130CalendarChip .m130CalendarSystem")[1].textContent,"Điện hạ thế và điều khiển tự động","long systems are not abbreviated");
   f.dom.window.close();
  }
 
@@ -393,8 +394,9 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/\.m130CalendarDay\{[\s\S]*?padding:0 0 3px!important/,"calendar day padding remains compact");
  assert.match(css,/\.m130CalendarChip\{[\s\S]*?min-height:31px!important/,"work cards remain compact");
  assert.match(css,/\.m130CalendarChip::after\{\s*content:none!important;\s*display:none!important/,"unnecessary four-dot drag grip removed");
- assert.match(css,/\.m130DayHead>\.m130DaySystems\{/,"system stays visible next to the date");
- assert.match(css,/\.m130MixedSystems \.m130CalendarChip \.m130CalendarSystem\{\s*display:block!important/,"mixed systems keep their per-task identity");
+ assert.doesNotMatch(css,/m130DaySystems|m130DaySystemMore|m130MixedSystems/,"remove date-level summary and unnecessary special-case CSS");
+ assert.match(css,/\.m130CalendarChip \.m130CalendarSystem\{\s*display:block!important/,"every colored work card displays its system");
+ assert.match(css,/\.m130CalendarSystem\{[\s\S]*?white-space:normal!important;[\s\S]*?overflow:visible!important;/,"long system names wrap without ellipsis");
  assert.match(css,/-webkit-line-clamp:2!important/,"task name uses a compact two-line limit");
  assert.match(css,/\.m130CalendarDay\.m130Today\{/,"today has an accessible visual highlight");
  assert.match(css,/\.m130CalendarDay\.m130Weekend\{/,"weekends have a differentiated neutral surface");
