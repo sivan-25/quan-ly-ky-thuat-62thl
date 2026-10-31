@@ -3,7 +3,7 @@
  "use strict";
  const $ = s => document.querySelector(s);
  let bellParent=null,bellNext=null,controlsParent=null,controlsNext=null;
- function isPilot(){const page=$("#inventoryPage");return !!(page?.classList.contains("inventoryRef130")||page?.classList.contains("inventoryRef127")&&!page.classList.contains("hide"));}
+ function isPilot(){const page=$("#inventoryPage");return !!(page&&(page.classList.contains("inventoryRef130")||page.classList.contains("inventoryRef127"))&&!page.classList.contains("hide"));}
  function syncApprovedTopbar(){
    const controls=$("#inventoryPage .inventoryCommandControls"),header=$("header.estaTopbar"),account=$("header .account");
    if(!controls||!header||!account)return;
