@@ -525,7 +525,7 @@ function renderAlternative(events){
   }).join("");
   // On 130HH, the system name sits beside the day number. When multiple
   // systems share a date, each task also receives its own visible system label.
-  const systems=B==="130HH"?[...new Set(daily.map(o=>String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại"))]:[];
+  const systems=typeof B!=="undefined"&&B==="130HH"?[...new Set(daily.map(o=>String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại"))]:[];
   const systemNames=systems.join(" · ");
   const daySystem=systems.length?
    '<span class="m130DaySystems" title="'+esc(systemNames)+'" aria-label="Hệ thống: '+esc(systemNames)+'"><span class="m130DaySystemName">'+esc(systems[0])+'</span>'+(systems.length>1?'<small class="m130DaySystemMore" aria-hidden="true">+'+(systems.length-1)+'</small>':"")+'</span>':"";
