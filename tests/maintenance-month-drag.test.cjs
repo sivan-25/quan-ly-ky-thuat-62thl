@@ -355,8 +355,10 @@ async function fixture(sourceDate,otherDate){
   const f=await fixture("2026-10-09","2026-10-09");
   const day=f.d.querySelector('[data-m130-date="2026-10-09"]');
   assert.ok(day,"the ninth exists in the calendar");
-  assert.equal(f.d.querySelectorAll(".m130CalendarLegend .m130LegendItem").length,4,"professional status legend identifies four core maintenance states");
-  assert.deepEqual([...f.d.querySelectorAll(".m130CalendarLegend .m130LegendItem")].map(x=>x.textContent.trim()),["Hoàn thành","Chưa thực hiện","Quá hạn","Đang thực hiện"],"legend status labels are explicit");
+  assert.equal(f.d.querySelector(".m130CalendarLegend"),null,"unwanted status legend bar is removed");
+  const blanks=[...f.d.querySelectorAll(".m130CalendarBlank")];
+  assert.equal(blanks.length,3,"October 2026 correctly has three blank leading slots");
+  assert.equal(blanks.some(x=>x.textContent.trim()),false,"out-of-month cells stay empty");
   assert.equal(day.querySelectorAll(":scope > .m130CalendarChip").length,2,"two tasks are directly inside one compact date cell");
   assert.equal(day.querySelector(".m130DaySystems")?.textContent,"HVAC","system is visible right next to day number");
   assert.equal(day.querySelector(".m130DaySystemName")?.textContent,"HVAC","full native system label is kept");
@@ -380,9 +382,13 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
  assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
  assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
- assert.match(css,/Enterprise calendar design, v16/,"new corporate visual system loaded");
+ assert.match(css,/Uniform-day calendar design, v17/,"unified day background is loaded");
  assert.match(css,/\.m130CalendarWrap\{\s*padding:0!important;\s*border:0!important/,"no outer redundant calendar card");
- assert.match(css,/\.m130CalendarLegend\{/,"calendar has a concise visual status key");
+ assert.doesNotMatch(css,/\.m130CalendarLegend\{|\.m130LegendItem\{/,"legend styling removed completely");
+ assert.match(css,/\.m130CalendarBlank\{\s*min-height:0!important;background:transparent!important/,"out-of-month blank cells retain their transparent appearance");
+ assert.match(css,/\.m130CalendarDay\{[\s\S]*?background:#fffaf2!important/,"the date body uses a single cream surface");
+ assert.match(css,/\.m130CalendarDay\.m130Weekend\{\s*background:#fffaf2!important/,"weekend date cells use the same surface");
+ assert.match(css,/\.m130DayHead\{[\s\S]*?border-bottom:0!important;\s*background:transparent!important/,"date header has no separate white panel or dividing line");
  assert.match(css,/\.m130CalendarGrid\{[\s\S]*?gap:3px!important/,"days keep a consistent tight grid");
  assert.match(css,/\.m130CalendarDay\{[\s\S]*?padding:0 0 3px!important/,"calendar day padding remains compact");
  assert.match(css,/\.m130CalendarChip\{[\s\S]*?min-height:31px!important/,"work cards remain compact");
@@ -407,5 +413,5 @@ async function fixture(sourceDate,otherDate){
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
  assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
  assert.doesNotMatch(css,/#maintenancePage\[data-estam-building="130HH"\]\[data-estam-view="calendar"\] #estaMaintenanceSettings/,"fragile view-specific hiding removed");
- console.log("PASS: enterprise calendar legend, font, compact days, system labels, status colors; move/clone and cross-month regressions");
+ console.log("PASS: no legend, uniform date/header surface, blank calendar dates preserved, task status colors and move/clone regressions");
 })().catch(err=>{console.error(err);process.exitCode=1});
