@@ -551,8 +551,57 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
   display:none!important;
   background:none!important;
 }
+/* A short system tag appears directly next to each day number. */
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130DayHead>.m130DaySystems{
+  display:inline-flex!important;
+  align-items:center!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  max-width:calc(100% - 20px)!important;
+  margin:0 0 0 2px!important;
+  padding:2px 4px!important;
+  border-radius:3px!important;
+  background:#f0e5f0!important;
+  color:#56315c!important;
+  font-family:inherit!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  line-height:1.2!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130DaySystemName{
+  display:inline-block!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130DaySystemMore{
+  margin-left:3px!important;
+  color:#6b4570!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip .m130CalendarSystem{
-  display:none!important; /* full system remains in the accessible button label */
+  display:none!important; /* same system as the label next to the date */
+}
+/* When a date contains different systems, show exact system on each task. */
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130MixedSystems .m130CalendarChip .m130CalendarSystem{
+  display:block!important;
+  margin:0 0 2px!important;
+  padding:0!important;
+  max-width:100%!important;
+  border:0!important;
+  background:none!important;
+  color:inherit!important;
+  opacity:.85!important;
+  font-family:inherit!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
 }
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip .m130CalendarTitle{
   display:-webkit-box!important;
