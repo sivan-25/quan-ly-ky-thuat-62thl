@@ -311,6 +311,7 @@
       $("#emwrStatus").textContent="Không xuất được PDF. Vui lòng thử lại.";
     } finally { updateCount(); }
   }
+  window.estaOpenMaterialWorkReport = () => { if (!isSupportedProject()) return; ensureUI(); return openModal(); };
   function boot() {
     ensureUI();
     const observer=new MutationObserver(()=>{ ensureUI(); });
