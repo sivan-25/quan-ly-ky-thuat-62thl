@@ -85,15 +85,6 @@
   }
   if(drag?.started)scrollFrame=window.requestAnimationFrame(scrollLoop);
  }
- function changeMonth(side){
-  const el=byId(side==="prev"?"estamPrev":"estamNext");
-  if(!el||!drag)return false;
-  const before=byId("estamMonth")?.textContent||"";
-  // This is the real navigation handler of ESTA (with year rollover).
-  navigatingByDrag=true;
-  try{el.click();}finally{navigatingByDrag=false;}
-  return (byId("estamMonth")?.textContent||"")!==before;
- }
  function hoverArrow(side){
   if(!side){clearHover();return;}
   if(drag.hoverSide===side)return;
@@ -102,10 +93,6 @@
   document.querySelectorAll(side==="prev"?"#estamPrev,[data-esta-month-drop='prev']":"#estamNext,[data-esta-month-drop='next']").forEach(el=>el.classList.add("estaDragHover"));
   // Hover is only a visual highlight. Never navigate or save before pointerup
   // on the exact destination button: long presses and far-away movement are safe.
- }
- function selectedMonth(){
-  const match=(byId("estamMonth")?.textContent||"").match(/(\d{1,2})\s*\/\s*(\d{4})/);
-  return match?{month:Number(match[1]),year:Number(match[2])}:null;
  }
  document.addEventListener("pointerdown",ev=>{
   if(ev.button!==0||ev.isPrimary===false||!uiActive()||drag)return;
@@ -138,9 +125,14 @@
   const cell=node?.closest?.("#maint130 [data-m130-date]");
   let date="";
   if(side){
-   changeMonth(side);
-   const dest=selectedMonth();
-   if(dest)date=clamp(held.source.date,dest.year,dest.month);
+   // Resolve the destination without calling the header's navigation click.
+   // Moving a work item must NOT change the month currently on screen.
+   const shown=currentCalendar();
+   if(shown){
+    const offset=side==="prev"?-1:1;
+    const destination=new Date(Date.UTC(shown.year,shown.month-1+offset,1));
+    date=clamp(held.source.date,destination.getUTCFullYear(),destination.getUTCMonth()+1);
+   }
   }else if(cell)date=cell.dataset.m130Date;
   finish();
   if(date)Promise.resolve(api()?.move?.(held.source,date)).catch(err=>{
@@ -229,7 +221,13 @@
   const pane=byId("estaMaintenanceSettingsMenu");
   if(pane)pane.hidden=true;
   const trigger=byId("estaMaintenanceSettingsToggle");
-  if(trigger)trigger.setAttribute("aria-expanded","false");
+  if(trigger){
+   trigger.setAttribute("aria-expanded","false");
+   const active=mode!=="off";
+   trigger.classList.toggle("estaSettingsActive",active);
+   trigger.setAttribute("aria-label",active?"Thoát chế độ "+(mode==="move"?"Di chuyển":"Nhân bản"):"Cài đặt công việc bảo trì");
+   trigger.title=active?"Đóng chế độ và trở lại xem lịch":"Cài đặt";
+  }
   document.querySelectorAll("[data-esta-action]").forEach(b=>{
    const current=b.dataset.estaAction===mode;
    b.setAttribute("aria-pressed",String(current));
@@ -256,16 +254,18 @@
   const el=document.createElement("div");
   el.id="estaMaintenanceSettings";
   el.className="estaMaintenanceSettings";
-  el.innerHTML='<button type="button" id="estaMaintenanceSettingsToggle" aria-expanded="false" aria-controls="estaMaintenanceSettingsMenu" aria-label="Cài đặt thao tác công việc bảo trì"><svg class="estaSettingsIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.05.05-1.9 1.9-.05-.05a1.65 1.65 0 0 0-1.82-.33c-.42.18-.7.6-.7 1.07V20h-2.7v-.54c0-.47-.28-.89-.7-1.07a1.65 1.65 0 0 0-1.82.33l-.05.05-1.9-1.9.05-.05a1.65 1.65 0 0 0 .33-1.82c-.18-.42-.6-.7-1.07-.7H6v-2.7h.54c.47 0 .89-.28 1.07-.7a1.65 1.65 0 0 0-.33-1.82l-.05-.05 1.9-1.9.05.05a1.65 1.65 0 0 0 1.82.33c.42-.18.7-.6.7-1.07V5h2.7v.54c0 .47.28.89.7 1.07a1.65 1.65 0 0 0 1.82-.33l.05-.05 1.9 1.9-.05.05a1.65 1.65 0 0 0-.33 1.82c.18.42.6.7 1.07.7H20v2.7h-.54c-.47 0-.89.28-1.07.7Z"/></svg><span>Cài đặt</span></button>'+
+  el.innerHTML='<button type="button" id="estaMaintenanceSettingsToggle" aria-expanded="false" aria-controls="estaMaintenanceSettingsMenu" aria-label="Cài đặt công việc bảo trì" title="Cài đặt">'+
+   '<svg class="estaSettingsIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9m4 0h3M4 17h3m4 0h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>'+
+   '<span class="estaSettingsLabel">Cài đặt</span>'+
+   '<svg class="estaSettingsClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"/></svg>'+
+   '</button>'+
    '<div id="estaMaintenanceSettingsMenu" class="estaMaintenanceSettingsMenu" hidden>'+
-   '<button type="button" data-esta-action="off" aria-pressed="true">Xem và chỉnh sửa</button>'+
    '<button type="button" data-esta-action="move" aria-pressed="false">Di chuyển</button>'+
-   '<button type="button" data-esta-action="clone" aria-pressed="false">Nhân bản</button></div>'+
-   
-   '<span id="estaMaintenanceModeHelp" class="estaMaintenanceModeHelp" role="status" aria-live="polite"></span>';
+   '<button type="button" data-esta-action="clone" aria-pressed="false">Nhân bản</button></div>';
   container.appendChild(el);
   syncSettingsVisibility();
   el.querySelector("#estaMaintenanceSettingsToggle").addEventListener("click",()=>{
+   if(mode!=="off"){applyMode("off");return;}
    const menu=byId("estaMaintenanceSettingsMenu"),opening=menu.hidden;
    menu.hidden=!opening;
    byId("estaMaintenanceSettingsToggle").setAttribute("aria-expanded",String(opening));
@@ -315,11 +315,7 @@
   if(dockBtn&&mode==="move"){
    ev.preventDefault();ev.stopImmediatePropagation();
    const side=dockBtn.dataset.estaMonthDrop;
-   if(!selected){
-    byId(side==="prev"?"estamPrev":"estamNext")?.click();
-    
-    return;
-   }
+   if(!selected)return; // No task selected: never change the viewed calendar month.
    const shown=currentCalendar();if(!shown)return;
    const next=new Date(Date.UTC(shown.year,shown.month-1+(side==="prev"?-1:1),1));
    const date=clamp(selected.date,next.getUTCFullYear(),next.getUTCMonth()+1);
