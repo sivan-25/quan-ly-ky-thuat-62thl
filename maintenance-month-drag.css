@@ -469,7 +469,7 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
 #maintenancePage #estaMaintenanceSettingsMenu button{min-height:43px!important}
 
 
-/* ESTA 130 Hồng Hà | Enterprise calendar design, v16.
+/* ESTA 130 Hồng Hà | Uniform-day calendar design, v17.
    Compact surfaces, legible typography, coherent brand and status hierarchy.
    Scoped to this project, leaving other buildings and board/card views untouched. */
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarWrap{
@@ -479,32 +479,6 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
  background:transparent!important;
  box-shadow:none!important;
 }
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarLegend{
- display:flex;align-items:center;flex-wrap:wrap;
- gap:5px 15px;
- margin:0 0 9px!important;
- padding:7px 11px!important;
- border:1px solid #e8e1e8!important;
- border-radius:8px!important;
- background:#fffcfa!important;
- color:#514251!important;
- font-family:inherit!important;
- font-size:11px!important;
- font-weight:650!important;
- line-height:1.4!important;
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130LegendItem{
- display:inline-flex;align-items:center;gap:6px;
- white-space:nowrap;
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130LegendItem i{
- display:inline-block;flex:0 0 9px;width:9px;height:9px;
- border-radius:3px;background:var(--legend-color);
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130LegendDone{--legend-color:#268059}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130LegendPlanned{--legend-color:#b77c21}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130LegendLate{--legend-color:#c5444c}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130LegendWorking{--legend-color:#397abd}
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarGrid{
  display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
  gap:3px!important;min-width:0;
@@ -531,19 +505,19 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
  padding:0 0 3px!important;
  border:1px solid #e3dce4!important;
  border-radius:7px!important;
- background:#fff!important;
+ background:#fffaf2!important;
  box-shadow:0 1px 2px rgba(54,29,57,.035)!important;
  overflow:hidden!important;
 }
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarDay.m130Weekend{
- background:#fcfafc!important;
+ background:#fffaf2!important;
 }
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarDay.m130Today{
  border-color:#ad83a9!important;
  box-shadow:inset 0 0 0 1px #ad83a9!important;
 }
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarDay.m130CanAdd:hover{
- background:#fffafc!important;
+ background:#fffaf2!important;
  border-color:#b49ab2!important;
 }
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130DayHead{
@@ -552,9 +526,9 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
  gap:5px!important;
  min-height:28px!important;
  padding:4px 6px!important;
- margin:0 0 1px!important;
- border-bottom:1px solid #f0edf0!important;
- background:#fefcfd!important;
+ margin:0!important;
+ border-bottom:0!important;
+ background:transparent!important;
 }
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130DayHead>b{
  flex:0 0 auto;
