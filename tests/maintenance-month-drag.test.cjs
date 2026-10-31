@@ -292,7 +292,7 @@ async function fixture(sourceDate,otherDate){
  }
 
  const index=read("index.html"),css=read("maintenance-month-drag.css");
- assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261030-ux09">'),"new module loaded into real page");
+ assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261031-final10">'),"new module loaded into real page");
  assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
  assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
  assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
