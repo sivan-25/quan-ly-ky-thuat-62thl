@@ -19,7 +19,12 @@ async function fixture(sourceDate,otherDate){
   const id=decodeURIComponent(url.match(/[?&]id=eq\.([^&]+)/)?.[1]||opts.body?.id||"");
   if(opts.method==="POST"){savedRows.set(table+":"+id,{...opts.body});return [];}
   if(opts.method==="PATCH"){savedRows.set(table+":"+id,{...savedRows.get(table+":"+id),...opts.body});return [];}
-  if(url.includes("select=*")&&id)return savedRows.has(table+":"+id)?[savedRows.get(table+":"+id)]:[];
+  if(url.includes("select=*")&&id){
+   const row=savedRows.get(table+":"+id);
+   if(!row)return [];
+   // Postgres can return +00:00 although the PATCH sent Z for the same instant.
+   return [{...row,...(row.deleted_at?{deleted_at:row.deleted_at.replace(/Z$/,"+00:00")}: {})}];
+  }
   return [];
  };
  const injected=native.replace(/\}\)\(\);\s*$/,`window.__seedMaintenanceDrag=(date,other)=>{
@@ -296,7 +301,11 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
  assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
  assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
- assert.match(css,/grid-template-columns:minmax\(0,1fr\) minmax\(0,1fr\)/,"month arrows use equal grid columns");
+ assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,"month arrows use two equal columns");
+ assert.match(css,/body:has\(#maintenancePage\[data-esta-work-mode="move"\]\) \.estaMonthDragTargets\s*\{\s*display:grid!important/,"Move mode selector uses grid");
+ assert.doesNotMatch(css,/body:has\(#maintenancePage\[data-esta-work-mode="move"\]\) \.estaMonthDragTargets\s*\{\s*display:flex!important/,"no flex stacking override");
+ assert.match(css,/>button:first-of-type\{grid-column:1!important\}/,"month previous pinned left");
+ assert.match(css,/>button:last-of-type\{grid-column:2!important\}/,"month next pinned right");
  assert.match(css,/#estaMaintenanceModeHelp\{display:none!important\}/,"yellow helper is hidden");
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
  assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
