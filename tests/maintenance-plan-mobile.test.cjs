@@ -7,7 +7,7 @@ const css=fs.readFileSync(path.join(base,"maintenance-plan-mobile.css"),"utf8");
 const html=fs.readFileSync(path.join(base,"index.html"),"utf8");
 new Function(js);
 assert.ok(html.includes("maintenance-plan-mobile.css?v=20261019-plancompact01"),"new mobile CSS is linked");
-assert.ok(html.includes("maintenance-130.js?v=20261031-drag13"),"cached PWA receives the currently released shared-four-building logic");
+assert.ok(html.includes("maintenance-130.js?v=20261031-sys15"),"cached PWA receives the currently released shared-four-building logic");
 assert.ok(js.includes('<div class="m130Two"><label>Hệ thống<select id="m130System">'),"system/location are paired");
 assert.ok(js.includes('<label>Vị trí<input id="m130Location"'),"location remains editable");
 assert.ok(js.includes('<div class="m130Two"><label>Ngày bắt đầu chu kỳ *<input type="date" id="m130First"'),"date and cycle are paired");
