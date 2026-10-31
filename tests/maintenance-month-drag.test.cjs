@@ -90,6 +90,7 @@ async function fixture(sourceDate,otherDate){
   assert.equal(ev.planned_date,"2026-11-30");
   assert.equal(ev.planned_month,"2026-11-01");
   assert.ok(f.calls.some(c=>c.opts.method==="PATCH"&&c.opts.body?.planned_date==="2026-11-30"),"new date persisted");
+  assert.ok(f.calls.some(c=>c.opts.method!=="PATCH"&&c.url.includes("esta_maintenance_plan_occurrences?select=*")&&c.url.includes("id=eq.occ-job1")),"moved job is re-read and verified on server");
   assert.equal(f.w.__dragState().year,2026);
   assert.equal(f.w.__dragState().month,10);
   assert.equal(f.d.querySelector('[data-m130-drag="job1:2026-10"]'),null,"moved task disappears from the source month");
@@ -114,6 +115,24 @@ async function fixture(sourceDate,otherDate){
   f.setHit(f.d.getElementById("estamPrev"));
   f.down();f.move();f.up();await flush();
   assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2028-02-29");
+  f.dom.window.close();
+ }
+ // Legacy HTML5 drag events must not arm the old 650ms month-switch timer.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  f.activate("move");
+  const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  const nativeStart=new f.w.Event("dragstart",{bubbles:true,cancelable:true});
+  Object.defineProperty(nativeStart,"dataTransfer",{value:{effectAllowed:"",setData(){}}});
+  chip.dispatchEvent(nativeStart);
+  assert.equal(nativeStart.defaultPrevented,true,"legacy native drag explicitly cancelled in 130 Move mode");
+  const hover=new f.w.Event("dragover",{bubbles:true,cancelable:true});
+  Object.defineProperty(hover,"dataTransfer",{value:{dropEffect:""}});
+  f.d.querySelector('[data-m130-month="11"]').dispatchEvent(hover);
+  await new Promise(resolve=>setTimeout(resolve,730));
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","legacy hover cannot auto-navigate after timeout");
+  assert.equal(f.w.__dragState().month,10,"native drag leaves calendar state unchanged");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-10","legacy drag does not reschedule task");
   f.dom.window.close();
  }
  // A long press, including a long hover over the next-month arrow, must never change the month.
