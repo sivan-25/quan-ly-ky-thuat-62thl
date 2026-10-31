@@ -37,31 +37,67 @@
 #app #inventoryPage.inventoryRef130 #inventory130PdfDropdown[hidden]{display:none!important}
 #app #inventoryPage.inventoryRef130 #inventory130PdfDropdown:not([hidden]){display:grid!important}
 
-/* Approved screenshot: entire inventory title/tabs/year share the fixed app header. */
+/* Approved header, consolidated palette and sizing for 130HH desktop. */
 @media(min-width:761px){
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar{display:flex!important;align-items:center!important;gap:9px!important;padding:0 16px!important;overflow:visible!important;min-height:72px!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .topModuleTitle,
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .headerSearch,
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .headerTools,
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar #peopleSettingsBtn{display:none!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls{display:flex!important;align-items:center!important;flex:1 1 auto!important;min-width:0!important;gap:12px!important;order:1!important}
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar{
+   display:flex!important;align-items:center!important;gap:9px!important;padding:0 16px!important;
+   min-height:72px!important;overflow:visible!important;background:#f2ddbd!important;
+   color:#3d1431!important;border-bottom:1px solid #c89e6b!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar :is(.topModuleTitle,.headerSearch,.headerTools,#peopleSettingsBtn){display:none!important}
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls{
+   display:flex!important;align-items:center!important;flex:1 1 auto!important;
+   min-width:0!important;gap:12px!important;order:1!important;background:transparent!important;
+ }
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls::before{display:none!important;content:none!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventory130PageTitle{display:block!important;white-space:nowrap!important;font-size:25px!important;font-weight:800!important;margin:0!important;color:#401533!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs{display:flex!important;flex:0 0 auto!important;width:auto!important;padding:4px!important;gap:4px!important;background:#e9d5ba!important;border-radius:12px!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs button{display:flex!important;align-items:center!important;min-height:39px!important;font-size:14px!important;padding:0 12px!important}
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventory130PageTitle{
+   display:block!important;white-space:nowrap!important;font-size:24px!important;line-height:1.25!important;
+   font-weight:800!important;margin:0!important;color:#3d1431!important;-webkit-text-fill-color:#3d1431!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs{
+   display:flex!important;flex:0 0 auto!important;width:auto!important;margin:0!important;
+   padding:4px!important;gap:4px!important;background:#e9d5ba!important;border:1px solid #d8bea1!important;border-radius:12px!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs button{
+   display:flex!important;align-items:center!important;min-height:39px!important;font-size:14px!important;padding:0 12px!important;
+   color:#5d4b48!important;-webkit-text-fill-color:#5d4b48!important;background:transparent!important;
+ }
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs svg{display:none!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs button.active{background:#401533!important;color:white!important;-webkit-text-fill-color:white!important;border-radius:9px!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly{display:block!important;flex:0 0 auto!important;margin-left:auto!important;min-width:125px!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly label{display:block!important;border:0!important;padding:0!important}
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs button.active{
+   background:#401533!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-radius:9px!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly{
+   display:block!important;flex:0 0 auto!important;margin-left:auto!important;min-width:125px!important;background:transparent!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly label{
+   display:block!important;background:transparent!important;border:0!important;padding:0!important;margin:0!important;
+ }
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly small{display:none!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar #inventoryYear{display:block!important;width:125px!important;height:43px!important;background:#fff9ee!important;border:1px solid #e0d0b9!important;border-radius:10px!important;font-size:14px!important;color:#371f33!important;padding:0 10px!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls::after{content:"◷";display:grid;place-items:center;flex:0 0 42px;height:42px;background:#fff8ed;border:1px solid #e0d0b9;border-radius:10px;font-size:26px;color:#401533}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.headerBell{order:2!important;margin:0!important;flex:0 0 42px!important;width:42px!important;height:42px!important;background:#fff8ed!important;border:1px solid #e0d0b9!important;border-radius:10px!important}
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.account{order:3!important;min-width:0!important;margin:0!important;flex:0 0 auto!important;background:#fff8ed!important;border-radius:10px!important}
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar #inventoryYear{
+   display:block!important;width:125px!important;height:43px!important;background:#fff9ee!important;
+   border:1px solid #e0d0b9!important;border-radius:10px!important;font-size:14px!important;font-weight:650!important;
+   color:#371f33!important;-webkit-text-fill-color:#371f33!important;padding:0 10px!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls::after{
+   content:"◷";display:grid;place-items:center;flex:0 0 42px;height:42px;background:#fff8ed;
+   border:1px solid #e0d0b9;border-radius:10px;font-size:26px;color:#401533;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.headerBell{
+   display:grid!important;order:2!important;margin:0!important;flex:0 0 42px!important;
+   width:42px!important;height:42px!important;background:#fff8ed!important;
+   color:#401533!important;border:1px solid #e0d0b9!important;border-radius:10px!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.account{
+   display:flex!important;order:3!important;min-width:0!important;margin:0!important;flex:0 0 auto!important;
+   background:#fff8ed!important;color:#401533!important;border-radius:10px!important;padding:6px 10px!important;
+ }
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.account :is(span,b,strong,#headerRole){
+   color:#401533!important;-webkit-text-fill-color:#401533!important;
+ }
  #app #inventoryPage.inventoryRef130>.inventoryCommand{display:none!important}
 }
 @media(min-width:761px) and (max-width:1250px){
- #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventory130PageTitle{font-size:19px!important}
+ #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventory130PageTitle{font-size:18px!important}
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar .inventoryLocalTabs button{font-size:12px!important;padding:0 7px!important}
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls{gap:6px!important}
  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar>.inventoryCommandControls::after{display:none!important}
