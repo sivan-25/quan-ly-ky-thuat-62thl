@@ -549,8 +549,11 @@ async function rescheduleOccurrence(key,date,sourceOccurrence=null){
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:update});
    stored=stored.map(e=>e.id===id?{...e,...update}:e);
   }
-  clearScheduleCache();year=Number(date.slice(0,4));month=Number(date.slice(5,7));render();notifyMaintenance130Nav();
-   if(!directMove)toast("Đã đổi lịch sang "+fmt(date));
+  // Keep the displayed month fixed in Move mode so the user can continue moving other tasks.
+  clearScheduleCache();
+  if(!directMove){year=Number(date.slice(0,4));month=Number(date.slice(5,7));}
+  render();notifyMaintenance130Nav();
+  if(!directMove)toast("Đã đổi lịch sang "+fmt(date));
  }catch(err){toast("Không đổi được lịch: "+(err.message||err));}
  finally{busy=false;}
 }
