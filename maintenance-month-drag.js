@@ -51,7 +51,7 @@
   dock.className="estaMonthDragTargets";
   dock.setAttribute("role","group");
   dock.setAttribute("aria-label","Điều hướng di chuyển công việc bảo trì");
-  dock.innerHTML='<span class="estaMonthDockCaption">DI CHUYỂN CÔNG VIỆC</span><button type="button" data-esta-month-drop="prev" aria-label="Di chuyển sang tháng trước"><span aria-hidden="true">‹</span> Tháng trước</button><button type="button" data-esta-month-drop="next" aria-label="Di chuyển sang tháng sau">Tháng sau <span aria-hidden="true">›</span></button>';
+  dock.innerHTML='<button type="button" data-esta-month-drop="prev" aria-label="Di chuyển sang tháng trước"><span aria-hidden="true">‹</span> Tháng trước</button><button type="button" data-esta-month-drop="next" aria-label="Di chuyển sang tháng sau">Tháng sau <span aria-hidden="true">›</span></button>';
   document.body.appendChild(dock);
   return dock;
  }
@@ -206,22 +206,18 @@
    const controls=document.createElement("div");
    controls.className="estaCloneControls";
    const source=api()?.getSource?.(chip.dataset.m130Drag,"clone");
-   const isCopied=source?.occurrence?.item?.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&
-     String(source.occurrence.item.plan_code||"").startsWith("130HH-COPY-");
    const plus=document.createElement("button");
    plus.type="button";plus.className="estaClonePlus";plus.dataset.estaCloneAction="plus";
    plus.dataset.estaCloneKey=chip.dataset.m130Drag;plus.textContent="+";
    plus.title="Nhân bản công việc vào ngày trống gần nhất";
    plus.setAttribute("aria-label","Nhân bản "+(source?.title||"công việc"));
    controls.appendChild(plus);
-   if(isCopied){
-    const minus=document.createElement("button");
-    minus.type="button";minus.className="estaCloneMinus";minus.dataset.estaCloneAction="minus";
-    minus.dataset.estaCloneKey=chip.dataset.m130Drag;minus.textContent="−";
-    minus.title="Xóa bản sao này (giữ nguyên công việc gốc)";
-    minus.setAttribute("aria-label","Xóa bản sao "+(source?.title||"công việc"));
-    controls.appendChild(minus);
-   }
+   const minus=document.createElement("button");
+   minus.type="button";minus.className="estaCloneMinus";minus.dataset.estaCloneAction="minus";
+   minus.dataset.estaCloneKey=chip.dataset.m130Drag;minus.textContent="−";
+   minus.title="Xóa khỏi lịch (lưu lịch sử; với kế hoạch lặp, các kỳ cũng được ẩn)";
+   minus.setAttribute("aria-label","Xóa "+(source?.title||"công việc"));
+   controls.appendChild(minus);
    wrapper.appendChild(controls);
   });
  }
@@ -261,11 +257,11 @@
   el.id="estaMaintenanceSettings";
   el.className="estaMaintenanceSettings";
   el.innerHTML='<button type="button" id="estaMaintenanceSettingsToggle" aria-expanded="false" aria-controls="estaMaintenanceSettingsMenu" aria-label="Cài đặt thao tác công việc bảo trì"><svg class="estaSettingsIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.05.05-1.9 1.9-.05-.05a1.65 1.65 0 0 0-1.82-.33c-.42.18-.7.6-.7 1.07V20h-2.7v-.54c0-.47-.28-.89-.7-1.07a1.65 1.65 0 0 0-1.82.33l-.05.05-1.9-1.9.05-.05a1.65 1.65 0 0 0 .33-1.82c-.18-.42-.6-.7-1.07-.7H6v-2.7h.54c.47 0 .89-.28 1.07-.7a1.65 1.65 0 0 0-.33-1.82l-.05-.05 1.9-1.9.05.05a1.65 1.65 0 0 0 1.82.33c.42-.18.7-.6.7-1.07V5h2.7v.54c0 .47.28.89.7 1.07a1.65 1.65 0 0 0 1.82-.33l.05-.05 1.9 1.9-.05.05a1.65 1.65 0 0 0-.33 1.82c.18.42.6.7 1.07.7H20v2.7h-.54c-.47 0-.89.28-1.07.7Z"/></svg><span>Cài đặt</span></button>'+
-   '<div id="estaMaintenanceSettingsMenu" class="estaMaintenanceSettingsMenu" hidden><b>Thao tác công việc</b>'+
-   '<button type="button" data-esta-action="off" aria-pressed="true">✓ Xem và chỉnh sửa</button>'+
-   '<button type="button" data-esta-action="move" aria-pressed="false">↔ Di chuyển công việc</button>'+
-   '<button type="button" data-esta-action="clone" aria-pressed="false">▣ Nhân bản công việc</button>'+
-   '<small>Di chuyển: chọn công việc rồi chọn ngày hoặc tháng. Nhân bản: tự chọn ngày trống kế tiếp.</small></div>'+
+   '<div id="estaMaintenanceSettingsMenu" class="estaMaintenanceSettingsMenu" hidden>'+
+   '<button type="button" data-esta-action="off" aria-pressed="true">Xem và chỉnh sửa</button>'+
+   '<button type="button" data-esta-action="move" aria-pressed="false">Di chuyển</button>'+
+   '<button type="button" data-esta-action="clone" aria-pressed="false">Nhân bản</button></div>'+
+   
    '<span id="estaMaintenanceModeHelp" class="estaMaintenanceModeHelp" role="status" aria-live="polite"></span>';
   container.appendChild(el);
   syncSettingsVisibility();
