@@ -1,0 +1,19 @@
+/* ESTA 130HH - focused header & inventory corrections. */
+#app #inventoryPage.inventoryRef130 #inventoryMaterialsPane .inventorySearch,
+#app #inventoryPage.inventoryRef130 #inventoryToolsPane .inventorySearch,
+#app #inventoryPage.inventoryRef130 #inventory130SearchRow,
+#app #inventoryPage.inventoryRef130 #estaMaterialWorkReportLaunch{display:none!important}
+#app:has(#inventoryPage.inventoryRef130:not(.hide)) #peopleSettingsBtn{display:none!important}
+#app:has(#inventoryPage.inventoryRef130:not(.hide)) .headerSearch{display:none!important}
+#app:has(#inventoryPage.inventoryRef130:not(.hide)) .headerBell{order:8!important;margin-left:auto!important}
+#app:has(#inventoryPage.inventoryRef130:not(.hide)) .account{order:9!important;margin-left:0!important}
+#app #inventoryPage.inventoryRef130 .inventoryToolbarActions{justify-content:flex-end!important}
+#app #inventoryPage.inventoryRef130 .inventory130PdfMenu{position:relative;display:inline-flex;align-items:center;min-width:0}
+#app #inventoryPage.inventoryRef130 .inventory130PdfMenu>button{min-height:44px;border:1px solid #dccbb3;border-radius:12px;padding:0 14px;background:#fbf3e6;color:#392c31;-webkit-text-fill-color:#392c31;font-weight:750;font-size:14px;cursor:pointer}
+#app #inventoryPage.inventoryRef130 .inventory130PdfMenu[open]>button{background:#401533;color:#fff;-webkit-text-fill-color:#fff}
+#app #inventoryPage.inventoryRef130 .inventory130PdfDropdown{position:absolute;top:calc(100% + 5px);right:0;z-index:999;min-width:240px;display:grid;gap:4px;padding:6px;border:1px solid #d9c5a9;border-radius:12px;background:#fffaf0;box-shadow:0 10px 25px #341b2929}
+#app #inventoryPage.inventoryRef130 .inventory130PdfDropdown button{width:100%;min-height:44px;white-space:normal;text-align:left;padding:10px 12px;border:0;border-radius:8px;background:transparent;color:#361a30;-webkit-text-fill-color:#361a30;font-size:13px;font-weight:700;cursor:pointer}
+#app #inventoryPage.inventoryRef130 .inventory130PdfDropdown button:hover,#app #inventoryPage.inventoryRef130 .inventory130PdfDropdown button:focus-visible{background:#f1ddc5}
+#app #inventoryPage.inventoryRef130 #materialExportPdf{display:none!important}
+@media(min-width:761px){#app #inventoryPage.inventoryRef130 .inventoryCommandControls:before{flex:none!important}}
+@media(max-width:760px){#app #inventoryPage.inventoryRef130 .inventory130PdfDropdown{min-width:210px}}
