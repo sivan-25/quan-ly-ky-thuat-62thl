@@ -103,6 +103,8 @@
     document.head.appendChild(style);
   }
   function ensureUI() {
+    const inventoryPage = $("#inventoryPage");
+    if (inventoryPage) inventoryPage.classList.toggle("inventoryRef130", isSupportedProject());
     const current = projectId().toUpperCase();
     if (modalProjectId && modalProjectId !== current) {
       selectedMaterialIds.clear();
