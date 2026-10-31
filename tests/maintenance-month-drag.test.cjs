@@ -85,12 +85,16 @@ async function fixture(sourceDate,otherDate){
   assert.ok(f.d.querySelector(".estaMonthDragTargets"),"month arrows remain visible during drag");
   assert.equal(f.d.querySelector(".estamMonthNav").parentElement.classList.contains("estamSummary"),true,"original header stays inside the summary panel");
   f.up();await flush();
-  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","real header moves to November");
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","drag only moves task; calendar stays in source month");
   const ev=f.w.__dragState().stored.find(o=>o.item_id==="job1");
   assert.equal(ev.planned_date,"2026-11-30");
   assert.equal(ev.planned_month,"2026-11-01");
   assert.ok(f.calls.some(c=>c.opts.method==="PATCH"&&c.opts.body?.planned_date==="2026-11-30"),"new date persisted");
-  assert.equal(f.d.querySelectorAll('[data-m130-date="2026-11-30"] .m130CalendarChip').length,2,"two tasks displayed together");
+  assert.equal(f.w.__dragState().year,2026);
+  assert.equal(f.w.__dragState().month,10);
+  assert.equal(f.d.querySelector('[data-m130-drag="job1:2026-10"]'),null,"moved task disappears from the source month");
+  f.d.getElementById("estamNext").click();await flush(); // Ordinary navigation remains available.
+  assert.equal(f.d.querySelectorAll('[data-m130-date="2026-11-30"] .m130CalendarChip').length,2,"two tasks can be viewed together in destination month");
   assert.ok(!f.d.querySelector(".estaMonthDragGhost"),"drag ghost cleaned");
   f.dom.window.close();
  }
@@ -125,7 +129,7 @@ async function fixture(sourceDate,otherDate){
   assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","hovering over arrow does not navigate");
   assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-10","hovering does not save a new date");
   f.up();await flush();
-  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","only releasing over arrow navigates");
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","releasing over arrow updates task but does not navigate");
   assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-10");
   f.dom.window.close();
  }
@@ -155,6 +159,26 @@ async function fixture(sourceDate,otherDate){
   assert.equal(f.d.querySelectorAll('[data-m130-date="2026-10-20"] .m130CalendarChip').length,2);
   f.dom.window.close();
  }
+ // Move multiple tasks from the same source month without navigating away.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  f.activate("move");
+  let original=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  original.click();
+  f.d.querySelector('[data-esta-month-drop="next"]').click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","first move keeps October visible");
+  assert.equal(f.w.__dragState().stored.find(x=>x.item_id==="job1").planned_date,"2026-11-10");
+  const second=f.d.querySelector('[data-m130-drag="job2:2026-10"]');
+  assert.ok(second,"next task stays visible without changing tabs");
+  second.click();
+  f.d.querySelector('[data-esta-month-drop="next"]').click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","second move also keeps October visible");
+  assert.equal(f.w.__dragState().stored.find(x=>x.item_id==="job2").planned_date,"2026-11-20");
+  f.d.getElementById("estamNext").click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","manual navigation still works after moves");
+  assert.equal(f.d.querySelectorAll(".m130CalendarChip").length,2,"both moved jobs appear in destination");
+  f.dom.window.close();
+ }
  // Settings: select a work item, then use a month arrow without dragging or holding.
  {
   const f=await fixture("2026-10-10","2026-11-12");
@@ -180,7 +204,7 @@ async function fixture(sourceDate,otherDate){
   assert.equal(f.d.getElementById("estaMaintenanceModeHelp").textContent,"","no yellow instruction banner in move mode");
   persistent.querySelector('[data-esta-month-drop="next"]').click();await flush();
   assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-10");
-  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026");
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","quick move keeps the displayed month");
   assert.ok(!f.d.querySelector(".estaTaskSelected"),"selection clears after moving");
   f.dom.window.close();
  }
@@ -278,9 +302,20 @@ async function fixture(sourceDate,otherDate){
   const f=await fixture("2026-10-10","2026-10-20");
   const settings=f.d.getElementById("estaMaintenanceSettings");
   assert.equal(settings.hidden,false,"settings visible in calendar");
-  assert.deepEqual([...settings.querySelectorAll("[data-esta-action]")].map(x=>x.textContent.trim()),["Xem và chỉnh sửa","Di chuyển","Nhân bản"],"settings has exactly three actions, no extra heading or help");
+  assert.deepEqual([...settings.querySelectorAll("[data-esta-action]")].map(x=>x.textContent.trim()),["Di chuyển","Nhân bản"],"settings offers only Move and Clone");
   assert.equal(settings.querySelector("small, b"),null,"settings removes extra heading and help");
-  assert.ok(f.d.querySelector("#estaMaintenanceSettingsToggle svg.estaSettingsIcon"),"custom SVG settings icon is rendered");
+  assert.ok(f.d.querySelector("#estaMaintenanceSettingsToggle svg.estaSettingsIcon"),"vector Settings icon is rendered");
+  assert.ok(f.d.querySelector("#estaMaintenanceSettingsToggle svg.estaSettingsClose"),"dedicated close X icon exists");
+  f.activate("move");
+  assert.equal(f.d.getElementById("estaMaintenanceSettingsToggle").classList.contains("estaSettingsActive"),true,"Settings becomes close X in Move mode");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
+  assert.equal(f.w.estaMaintenance130Mode(),"off","clicking X exits Move to normal mode");
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"X removes move navigation dock");
+  f.activate("clone");
+  assert.equal(f.d.getElementById("estaMaintenanceSettingsToggle").classList.contains("estaSettingsActive"),true,"Settings becomes X in Clone mode");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
+  assert.equal(f.w.estaMaintenance130Mode(),"off","X exits Clone mode too");
+  assert.equal(f.d.querySelector(".estaCloneControls"),null,"X removes plus/minus controls");
   f.activate("move");
   f.d.querySelector('[data-estam-view="rows"]').click();await flush();
   assert.equal(f.d.getElementById("maintenancePage").dataset.estamView,"rows");
@@ -307,8 +342,10 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/>button:first-of-type\{grid-column:1!important\}/,"month previous pinned left");
  assert.match(css,/>button:last-of-type\{grid-column:2!important\}/,"month next pinned right");
  assert.match(css,/#estaMaintenanceModeHelp\{display:none!important\}/,"yellow helper is hidden");
+ assert.match(css,/#estaMaintenanceSettingsToggle\{[\s\S]*?font-family:inherit!important/,"Settings inherits the site's font");
+ assert.match(css,/\.estaSettingsActive \.estaSettingsClose\{[\s\S]*?display:block!important/,"Settings switches to a close X icon");
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
  assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
  assert.doesNotMatch(css,/#maintenancePage\[data-estam-building="130HH"\]\[data-estam-view="calendar"\] #estaMaintenanceSettings/,"fragile view-specific hiding removed");
- console.log("PASS: silent move and minus delete, calendar-only settings, balanced arrows, clone safety and month clamping");
+ console.log("PASS: multiple moves without calendar navigation; two menu modes; close X restores normal; native font; clone and delete regressions");
 })().catch(err=>{console.error(err);process.exitCode=1});
