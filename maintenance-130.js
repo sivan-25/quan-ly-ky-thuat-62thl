@@ -591,7 +591,9 @@ async function verifyMaintenanceSaved(table,id,fields,building){
  const rows=await sbFetch("/rest/v1/"+table+"?select=*&id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(building)+"&limit=1",{token:centralSession.access_token});
  const saved=Array.isArray(rows)?rows[0]:null;
  const same=(a,b)=>Array.isArray(b)||b&&typeof b==="object"?JSON.stringify(a)===JSON.stringify(b):String(a??"")===String(b??"");
- if(!saved||!Object.entries(fields).every(([key,value])=>same(saved[key],value)))
+ // PostgreSQL timestamptz commonly returns +00:00 instead of Z for an identical instant.
+ const matches=([key,value])=>key==="deleted_at"&&value?Number.isFinite(Date.parse(saved?.[key]))&&Date.parse(saved[key])===Date.parse(value):same(saved?.[key],value);
+ if(!saved||!Object.entries(fields).every(matches))
   throw new Error("Máy chủ chưa xác nhận đầy đủ dữ liệu. Vui lòng kiểm tra hoặc tải lại trang trước khi lưu lần nữa.");
  return saved;
 }
@@ -1004,9 +1006,9 @@ async function removeMaintenanceWork(source){
   const isCopy=item.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&String(item.plan_code||"").startsWith(B+"-COPY-");
   await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+project,
    {method:"PATCH",token:centralSession.access_token,body:{deleted_at,deletion_reason:isCopy?"Ẩn bản sao từ chế độ Nhân bản":"Ẩn kế hoạch từ dấu trừ chế độ Nhân bản"}});
-  await verifyMaintenanceSaved("esta_maintenance_plan_items",item.id,{deleted_at},project);
+  const verified=await verifyMaintenanceSaved("esta_maintenance_plan_items",item.id,{deleted_at},project);
   if(project!==B)return false;
-  items=items.map(i=>i.id===item.id?{...i,deleted_at}:i);
+  items=items.map(i=>i.id===item.id?{...i,deleted_at:verified.deleted_at}:i);
   clearScheduleCache();render();notifyMaintenance130Nav();
   return true;
  }catch(error){
