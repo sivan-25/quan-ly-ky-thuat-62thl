@@ -166,6 +166,7 @@ async function fixture(sourceDate,otherDate){
   f.w.confirm=()=>{throw new Error("Selected Move mode must not confirm");};
   const persistent=f.d.querySelector(".estaMonthDragTargets");
   assert.ok(persistent&&persistent.querySelectorAll("[data-esta-month-drop]").length===2,"previous/next arrows show immediately upon selecting Move");
+  assert.equal(persistent.children.length,2,"exactly two buttons on one row, no caption");
   const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
   assert.equal(chip.draggable,true,"move mode activates immediate dragging");
   chip.click();
@@ -209,7 +210,7 @@ async function fixture(sourceDate,otherDate){
   const originalControls=original.parentElement.querySelector(".estaCloneControls");
   assert.ok(originalControls,"clone controls appear on original work item");
   assert.ok(originalControls.querySelector(".estaClonePlus"),"plus appears on original work item");
-  assert.equal(originalControls.querySelector(".estaCloneMinus"),null,"minus is NOT shown on an original plan");
+  assert.ok(originalControls.querySelector(".estaCloneMinus"),"minus is available on original plans too");
   originalControls.querySelector(".estaClonePlus").click();await flush();
   let duplicates=f.w.__dragState().items.filter(i=>i.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&!i.deleted_at);
   assert.equal(duplicates.length,1);
@@ -238,6 +239,24 @@ async function fixture(sourceDate,otherDate){
   assert.equal(f.d.querySelector('[data-m130-drag="'+first.plan_code+':2026-10"]'),null,"deleted copy disappears after verified soft delete; state="+JSON.stringify({layout:f.d.getElementById("m130List")?.className,all:f.d.querySelectorAll("#m130List .m130CalendarChip").length,toasts:f.calls.filter(x=>x.toast).slice(-4)}));
   f.dom.window.close();
  }
+ // Original maintenance plans can also be soft-deleted immediately from their own minus button.
+ {
+  const f=await fixture("2026-10-14","2026-10-15");
+  f.activate("clone");
+  const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  const minus=chip.parentElement.querySelector(".estaCloneMinus");
+  assert.ok(minus,"original maintenance work also has minus");
+  const beforeToast=f.calls.filter(x=>x.toast).length;
+  f.w.confirm=()=>{throw new Error("Minus action may not ask for confirmation");};
+  minus.click();await flush();
+  const plan=f.w.__dragState().items.find(i=>i.id==="job1");
+  assert.ok(plan?.deleted_at,"original plan is soft-deleted");
+  assert.equal(f.d.querySelector('[data-m130-drag="job1:2026-10"]'),null,"original card disappears");
+  assert.ok(f.d.querySelector('[data-m130-drag="job2:2026-10"]'),"other plans are retained");
+  assert.ok(f.calls.some(c=>c.opts?.method==="PATCH"&&c.url.includes("id=eq.job1")&&c.opts.body?.deleted_at),"original scoped deletion persisted");
+  assert.equal(f.calls.filter(x=>x.toast).length,beforeToast,"original deletion shows no success notification");
+  f.dom.window.close();
+ }
  // At month boundaries, an occupied first day is skipped and the duplicate remains independently scheduled.
  {
   const f=await fixture("2026-10-31","2026-11-01");
@@ -254,6 +273,8 @@ async function fixture(sourceDate,otherDate){
   const f=await fixture("2026-10-10","2026-10-20");
   const settings=f.d.getElementById("estaMaintenanceSettings");
   assert.equal(settings.hidden,false,"settings visible in calendar");
+  assert.deepEqual([...settings.querySelectorAll("[data-esta-action]")].map(x=>x.textContent.trim()),["Xem và chỉnh sửa","Di chuyển","Nhân bản"],"settings has exactly three actions, no extra heading or help");
+  assert.equal(settings.querySelector("small, b"),null,"settings removes extra heading and help");
   assert.ok(f.d.querySelector("#estaMaintenanceSettingsToggle svg.estaSettingsIcon"),"custom SVG settings icon is rendered");
   f.activate("move");
   f.d.querySelector('[data-estam-view="rows"]').click();await flush();
