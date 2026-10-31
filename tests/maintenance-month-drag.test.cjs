@@ -201,7 +201,7 @@ async function fixture(sourceDate,otherDate){
   chip.click();
   assert.ok(chip.classList.contains("estaTaskSelected"),"click selects work item instead of opening editor");
   assert.equal(f.d.getElementById("m130Overlay").hidden,true);
-  assert.equal(f.d.getElementById("estaMaintenanceModeHelp").textContent,"","no yellow instruction banner in move mode");
+  assert.equal(f.d.getElementById("estaMaintenanceModeHelp"),null,"no redundant helper banner in move mode");
   persistent.querySelector('[data-esta-month-drop="next"]').click();await flush();
   assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-10");
   assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","quick move keeps the displayed month");
