@@ -31,8 +31,8 @@
  function ensureMenu(){
    const page=$("#inventoryPage");
    if(!page?.classList.contains("inventoryRef130"))return;
-   const original=$("#materialExportPdf"),launch=$("#estaMaterialWorkReportLaunch");
-   if(!original||!launch)return;
+   const original=$("#materialExportPdf");
+   if(!original)return;
    const toolbar=original.parentElement;
    if(!toolbar)return;
    let wrapper=$("#inventory130PdfMenu");
@@ -62,7 +62,12 @@
       const type=option.getAttribute("data-esta-pdf");
       closeMenu();
       if(type==="inventory")$("#materialExportPdf")?.click();
-      if(type==="work")$("#estaMaterialWorkReportLaunch")?.click();
+      if(type==="work"){
+         const launch=$("#estaMaterialWorkReportLaunch");
+         if(launch)launch.click();
+         else if(typeof window.estaOpenMaterialWorkReport==="function")window.estaOpenMaterialWorkReport();
+         else window.alert("Báo cáo công việc theo vật tư chưa tải xong. Vui lòng tải lại trang.");
+      }
       return;
    }
    if(!target.closest("#inventory130PdfMenu"))closeMenu();
