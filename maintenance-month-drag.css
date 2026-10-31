@@ -687,12 +687,6 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
  width:22px!important;height:21px!important;min-height:21px!important;
 }
 @media(max-width:760px){
- #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarLegend{
-  gap:6px 12px!important;
-  margin-bottom:7px!important;
-  padding:8px 10px!important;
-  font-size:10px!important;
- }
  #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.planned{background:#fff0ce!important;border-left-color:#b77c21!important;color:#744b12!important}
  #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.late{background:#ffe2df!important;border-left-color:#c5444c!important;color:#872e35!important}
  #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.done{background:#dbf3e5!important;border-left-color:#268059!important;color:#225c42!important}
