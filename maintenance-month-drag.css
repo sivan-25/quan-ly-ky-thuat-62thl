@@ -302,11 +302,15 @@
 }
 
 /* Explicit month navigation is visible throughout Move mode, not only while dragging. */
-#maintenancePage[data-esta-work-mode="move"] ~ .estaMonthDragTargets,
+/* This high-specificity state selector must also use grid:
+   it previously overrode the equal-column grid with display:flex!important. */
 body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets{
- display:flex!important;
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-flow:row!important;
+ grid-auto-rows:minmax(48px,auto)!important;
 }
-.estaMonthDragTargets{flex-wrap:wrap;max-width:calc(100vw - 20px)}
+.estaMonthDragTargets{max-width:calc(100vw - 20px)}
 .estaMonthDockCaption{
  flex:0 0 100%;width:100%;text-align:center;
  color:#52738d;font:750 10px/1.3 system-ui,sans-serif;letter-spacing:.09em;
@@ -380,7 +384,7 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets{
  max-width:calc(100vw - 24px)!important;
  box-sizing:border-box!important;
  display:grid!important;
- grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
  align-items:stretch!important;
  justify-content:stretch!important;
  gap:8px!important;
@@ -404,3 +408,10 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets{
   width:min(344px,calc(100vw - 16px))!important;
  }
 }
+
+/* DOM contains exactly two direct button children, with no caption. */
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button{
+ grid-row:1!important;min-width:0!important;width:100%!important;
+}
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button:first-of-type{grid-column:1!important}
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button:last-of-type{grid-column:2!important}
