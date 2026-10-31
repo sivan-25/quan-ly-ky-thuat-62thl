@@ -12,7 +12,7 @@
   let selectedMaterialIds = new Set();
   let selectedTaskIds = new Set();
   let modalProjectId = "";
-  const SUPPORTED_PROJECTS = new Set(["130HH"]);
+  const SUPPORTED_PROJECTS = new Set(["130HH","127HH"]);
 
   function projectId() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.id || "" : ""); }
   function isSupportedProject() { return SUPPORTED_PROJECTS.has(projectId().toUpperCase()); }
@@ -105,6 +105,7 @@
   function ensureUI() {
     const inventoryPage = $("#inventoryPage");
     if (inventoryPage) inventoryPage.classList.toggle("inventoryRef130", isSupportedProject());
+    inventoryPage.classList.toggle("inventoryRef127", projectId().toUpperCase() === "127HH");
     const current = projectId().toUpperCase();
     if (modalProjectId && modalProjectId !== current) {
       selectedMaterialIds.clear();
