@@ -15,6 +15,9 @@ function readView(){
  return typeof window!=="undefined"&&window.matchMedia?.("(max-width:640px)")?.matches?"rows":"cards";
 }
 let year=now.getFullYear(),month=now.getMonth()+1,items=[],stored=[],people=[],equipmentProfiles=[],systemCatalog=[],ready=false,busy=false,currentEvent=null,currentPlan=null,viewMode=readView(),scheduleCache=null,layoutMode="list",pendingFocusPlanId="",planSuccessTimer=null;
+let maintenanceDrag=null,maintenanceHoverTimer=null,maintenanceHoverTarget="";
+let maintenanceDragSource=null;
+function clearMaintenanceHover(){if(maintenanceHoverTimer)clearTimeout(maintenanceHoverTimer);maintenanceHoverTimer=null;maintenanceHoverTarget="";}
 function clearScheduleCache(){scheduleCache=null}
 function getYearSchedule(y){if(scheduleCache?.year===y)return scheduleCache.events;const events=schedule(y);scheduleCache={year:y,events};return events}
 function personLabel(value){
@@ -61,6 +64,10 @@ function addMonths(anchor,delta){
  const abs=p[0]*12+p[1]-1+delta,y=Math.floor(abs/12),m=abs%12+1;
  const day=Math.min(p[2],new Date(Date.UTC(y,m,0)).getUTCDate());
  return y+"-"+pad(m)+"-"+pad(day);
+}
+function clampMaintenanceDate(source,y,m){
+ const day=Number(String(source).slice(8,10));
+ return y+"-"+pad(m)+"-"+pad(Math.min(day,new Date(Date.UTC(y,m,0)).getUTCDate()));
 }
 function interval(i){const n=Number(String(i?.cadence||"").match(/\d+/)?.[0]||0);return Number.isInteger(n)&&n>=1&&n<=120?n:0;}
 function cycleLabel(n){return n===0?"1 lần":n===12?"1 năm":n+" tháng";}
@@ -112,8 +119,21 @@ function schedule(y,sourceItems=items,sourceStored=stored){
    const date=k===0?origin:addMonths(origin,k*n);
    if(!date||Number(date.slice(0,4))!==targetYear)continue;
    const key=i.plan_code+":"+date.slice(0,7),real=known.get(key)||null;
-   result.push({item:i,event:real||{item_id:i.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,status:"planned",result_note:"",completed_by:"",image_paths:[]},virtual:!real,scheduled:date});
+   if(real&&String(real.planned_month||real.planned_date).slice(0,7)!==date.slice(0,7))continue;
+   // A moved occurrence keeps its original event key, so it replaces the source
+   // slot instead of creating a second copy in the source or target month.
+   if(!real&&explicit.some(e=>e.event_key!==key&&String(e.planned_date||"").slice(0,7)===date.slice(0,7)&&String(e.event_key||"").slice(-7)!==date.slice(0,7)))continue;
+   result.push({item:i,event:real||{item_id:i.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,status:"planned",result_note:"",completed_by:"",image_paths:[]},virtual:!real,scheduled:real?.planned_date||date});
   }
+ }
+ // Explicitly include moved recurrence slots in their new month, not their original event-key month.
+ const already=new Set(result.filter(x=>!x.virtual).map(x=>x.event.id));
+ for(const e of sourceStored){
+  const dest=String(e.planned_date||e.planned_month||"").slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(dest)||Number(dest.slice(0,4))!==targetYear)continue;
+  if(String(e.event_key||"").slice(-7)===dest.slice(0,7)||already.has(e.id))continue;
+  const item=sourceItems.find(x=>x.id===e.item_id&&!x.deleted_at);
+  if(item){result.push({item,event:e,virtual:false,scheduled:dest});already.add(e.id);}
  }
  return result.sort((a,b)=>String(a.event.planned_date||a.scheduled).localeCompare(String(b.event.planned_date||b.scheduled))||a.item.work_title.localeCompare(b.item.work_title,"vi"));
 }
@@ -261,15 +281,65 @@ function ensure(){
   if(r&&ev.target===r){ev.preventDefault();openEvent(r.dataset.m130Open);}
   else if(day&&ev.target===day&&canWrite()&&!busy){ev.preventDefault();openPlan(null,day.dataset.m130Date);}
  });
+ // Modern pointer control owns the full drag lifecycle only for 130HH Move mode.
+ const custom130Move=()=>B==="130HH"&&window.estaMaintenance130Mode?.()==="move";
  root.addEventListener("dragstart",ev=>{
+  if(custom130Move()){
+   ev.preventDefault();clearMaintenanceHover();maintenanceDrag=null;maintenanceDragSource=null;
+   return;
+  }
   const chip=ev.target.closest("[data-m130-drag]");
-  if(chip&&ev.dataTransfer)ev.dataTransfer.setData("text/plain",chip.dataset.m130Drag);
+  if(!chip||!ev.dataTransfer||!canWrite())return;
+  const key=chip.dataset.m130Drag,o=getYearSchedule(year).find(x=>x.event.event_key===key);
+  if(!o||o.event.status==="completed")return;
+  maintenanceDrag={key,sourceDate:dateOf(o),sourceYear:year};
+  maintenanceDragSource=getYearSchedule(year).find(x=>x.event.event_key===key);
+  ev.dataTransfer.effectAllowed="move";
+  ev.dataTransfer.setData("text/plain",key);
  });
- root.addEventListener("dragover",ev=>{if(ev.target.closest("[data-m130-date]"))ev.preventDefault();});
+ root.addEventListener("dragend",()=>{clearMaintenanceHover();maintenanceDrag=null;maintenanceDragSource=null;});
+ root.addEventListener("dragover",ev=>{
+  if(custom130Move()){clearMaintenanceHover();return;}
+  if(!maintenanceDrag)return;
+  const cell=ev.target.closest("[data-m130-date]"),target=ev.target.closest("[data-m130-month],#m130Prev,#m130Next");
+  if(cell){ev.preventDefault();clearMaintenanceHover();return;}
+  if(!target){clearMaintenanceHover();return;}
+  ev.preventDefault();ev.dataTransfer.dropEffect="move";
+  const offset=target.id==="m130Prev"?-1:target.id==="m130Next"?1:0;
+  const adjacent=new Date(year,month-1+offset,1);
+  const nextYear=offset?adjacent.getFullYear():year;
+  const nextMonth=offset?adjacent.getMonth()+1:target.dataset.m130Month?Number(target.dataset.m130Month):month;
+  if(nextYear<2020||nextYear>2100||nextYear===year&&nextMonth===month){clearMaintenanceHover();return;}
+  const targetKey=nextYear+"-"+nextMonth;
+  if(maintenanceHoverTarget===targetKey)return;
+  clearMaintenanceHover();maintenanceHoverTarget=targetKey;
+  maintenanceHoverTimer=setTimeout(()=>{
+   if(!maintenanceDrag||maintenanceHoverTarget!==targetKey)return;
+   // Do not replace the drag source DOM while a native HTML drag is active.
+   year=nextYear;month=nextMonth;clearMaintenanceHover();
+   $("m130Year").textContent="Năm "+year;
+   root.querySelectorAll("[data-m130-month]").forEach(b=>b.classList.toggle("sel",Number(b.dataset.m130Month)===month));
+  },650);
+ });
  root.addEventListener("drop",ev=>{
-  const cell=ev.target.closest("[data-m130-date]");
-  if(!cell||!ev.dataTransfer)return;ev.preventDefault();
-  const key=ev.dataTransfer.getData("text/plain");if(key)rescheduleOccurrence(key,cell.dataset.m130Date);
+  if(custom130Move()){
+   if(maintenanceDrag){ev.preventDefault();maintenanceDrag=null;maintenanceDragSource=null;}
+   clearMaintenanceHover();return;
+  }
+  if(!maintenanceDrag||!ev.dataTransfer)return;
+  const cell=ev.target.closest("[data-m130-date]"),target=ev.target.closest("[data-m130-month],#m130Prev,#m130Next");
+  if(!cell&&!target)return;
+  ev.preventDefault();clearMaintenanceHover();
+  const source=maintenanceDrag;
+  const offset=target?.id==="m130Prev"?-1:target?.id==="m130Next"?1:0;
+  const adjacent=new Date(year,month-1+offset,1);
+  const targetYear=cell?Number(cell.dataset.m130Date.slice(0,4)):offset?adjacent.getFullYear():year;
+  const targetMonth=cell?Number(cell.dataset.m130Date.slice(5,7)):offset?adjacent.getMonth()+1:target.dataset.m130Month?Number(target.dataset.m130Month):month;
+  if(targetYear<2020||targetYear>2100)return;
+  const date=cell?cell.dataset.m130Date:clampMaintenanceDate(source.sourceDate,targetYear,targetMonth);
+  maintenanceDrag=null;
+  rescheduleOccurrence(source.key,date,maintenanceDragSource);
+  maintenanceDragSource=null;
  });
  root.addEventListener("click",ev=>{
   const photo=ev.target.closest("[data-m130-gallery]");
@@ -451,36 +521,56 @@ function renderAlternative(events){
   const date=year+"-"+pad(month)+"-"+pad(day),daily=eventsByDay.get(date)||[];
   const chips=daily.map(o=>{
    const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
-   return '<button type="button" draggable="'+(canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
+   return '<button type="button" draggable="'+(typeof B!=="undefined"&&B==="130HH"&&typeof window!=="undefined"&&window.estaMaintenance130Mode?.()==="move"&&canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" title="'+esc(o.item.work_title)+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
   }).join("");
+  // Each work card carries its own complete system name, never a day-level summary.
   const count=daily.length?'<small class="m130DayCount" aria-label="'+daily.length+' công việc">'+daily.length+'</small>':"";
   const keyboard=canWrite()?' role="group" tabindex="0" aria-label="Ngày '+fmt(date)+'. Nhấn Enter để thêm lịch bảo trì"':"";
-  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+'" data-m130-date="'+date+'"'+keyboard+'><div class="m130DayHead"><b>'+day+'</b>'+count+'</div>'+chips+'</div>');
+  const extraDayClass=typeof B!=="undefined"&&B==="130HH"?
+   ((offset+day-1)%7>=5?' m130Weekend':'')+(typeof isoToday==="function"&&date===isoToday()?' m130Today':''):"";
+  cells.push('<div class="m130CalendarDay'+(canWrite()?' m130CanAdd':'')+extraDayClass+'" data-m130-date="'+date+'"'+keyboard+'><div class="m130DayHead"><b>'+day+'</b>'+count+'</div>'+chips+'</div>');
  }
  const agenda=events.map(o=>{
   const st=status(o),key=esc(o.event.event_key);
   return '<div class="m130AgendaItem"><div class="m130AgendaDate">'+shownDate(o)+'</div><button type="button" data-m130-event="'+key+'" class="m130AgendaButton '+st[1]+'"><b>'+esc(o.item.work_title)+'</b><small>'+esc(o.item.system_group)+' · '+st[0]+'</small></button></div>';
  }).join("");
+ // Keep the calendar self-contained; status is already conveyed by each task color.
  list.innerHTML='<div class="m130CalendarWrap"><div class="m130CalendarGrid">'+headings.map(n=>'<strong class="m130CalendarWeek">'+n+'</strong>').join("")+cells.join("")+'</div><div class="m130CalendarAgenda">'+(agenda||'<p>Tháng này chưa có lịch bảo trì.</p>')+'</div></div>';
 }
-async function rescheduleOccurrence(key,date){
+async function rescheduleOccurrence(key,date,sourceOccurrence=null){
  if(busy||!canWrite()||!active())return;
- const o=getYearSchedule(year).find(x=>x.event.event_key===key);
- if(!o||o.event.status==="completed"||date.slice(0,7)!==o.scheduled.slice(0,7))return toast("Chỉ đổi lịch việc chưa hoàn thành trong cùng tháng.");
+ const sourceYear=Number(String(key).match(/:(\d{4})-\d{2}/)?.[1]||year);
+ const o=sourceOccurrence||getYearSchedule(sourceYear).find(x=>x.event.event_key===key);
+ if(!o||o.event.status==="completed")return toast("Chỉ có thể chuyển công việc chưa hoàn thành.");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number(date.slice(8,10))>new Date(Date.UTC(Number(date.slice(0,4)),Number(date.slice(5,7)),0)).getUTCDate())return toast("Ngày chuyển không hợp lệ.");
+ const newMonth=date.slice(0,7),oldMonth=o.scheduled.slice(0,7);
+ if(newMonth!==oldMonth&&getYearSchedule(Number(date.slice(0,4))).some(x=>x.item.id===o.item.id&&x.event.event_key!==key&&x.scheduled.slice(0,7)===newMonth&&!x.virtual))
+   return toast("Công việc này đã có một kỳ trong tháng đích. Hãy chọn tháng khác.");
  if(date===dateOf(o))return;
- if(!confirm("Chuyển lịch "+o.item.work_title+" sang "+fmt(date)+"? Nếu là ngày đầu chu kỳ, các kỳ lặp tương lai cũng sẽ tính lại."))return;
+ // Explicit Move mode already expresses user intent; no browser confirmation.
+ const directMove=B==="130HH"&&window.estaMaintenance130Mode?.()==="move";
+ if(!directMove&&!confirm("Chuyển lịch "+o.item.work_title+" sang "+fmt(date)+"? Nếu là ngày đầu chu kỳ, các kỳ lặp tương lai cũng sẽ tính lại."))return;
  busy=true;
  try{
   const token=centralSession.access_token,id=o.virtual?crypto.randomUUID():o.event.id;
+  // Keep occurrence identity tied to the original recurrence slot.
+  const newKey=key;
   if(o.virtual){
-   const event={id,item_id:o.item.id,building_id:B,event_key:key,planned_month:monthISO(date),planned_date:date,due_date:date,location:o.item.subsystem||"",status:"planned",source_kind:"year"};
+   const event={id,item_id:o.item.id,building_id:B,event_key:newKey,planned_month:monthISO(date),planned_date:date,due_date:date,location:o.item.subsystem||"",status:"planned",source_kind:"year"};
    await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:event});
+   await verifyMaintenanceSaved("esta_maintenance_plan_occurrences",id,{item_id:o.item.id,planned_date:date,planned_month:monthISO(date)},B);
    stored.push(event);
   }else{
-   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:{planned_date:date,due_date:date,updated_at:new Date().toISOString()}});
-   stored=stored.map(e=>e.id===id?{...e,planned_date:date,due_date:date}:e);
+   const update={event_key:newKey,planned_month:monthISO(date),planned_date:date,due_date:date,updated_at:new Date().toISOString()};
+   await sbFetch("/rest/v1/esta_maintenance_plan_occurrences?id=eq."+encodeURIComponent(id)+"&building_id=eq."+B,{method:"PATCH",token,body:update});
+   await verifyMaintenanceSaved("esta_maintenance_plan_occurrences",id,{planned_date:date,planned_month:monthISO(date)},B);
+   stored=stored.map(e=>e.id===id?{...e,...update}:e);
   }
-  clearScheduleCache();render();notifyMaintenance130Nav();toast("Đã đổi lịch sang "+fmt(date));
+  // Keep the displayed month fixed in Move mode so the user can continue moving other tasks.
+  clearScheduleCache();
+  if(!directMove){year=Number(date.slice(0,4));month=Number(date.slice(5,7));}
+  render();notifyMaintenance130Nav();
+  if(!directMove)toast("Đã đổi lịch sang "+fmt(date));
  }catch(err){toast("Không đổi được lịch: "+(err.message||err));}
  finally{busy=false;}
 }
@@ -521,7 +611,9 @@ async function verifyMaintenanceSaved(table,id,fields,building){
  const rows=await sbFetch("/rest/v1/"+table+"?select=*&id=eq."+encodeURIComponent(id)+"&building_id=eq."+encodeURIComponent(building)+"&limit=1",{token:centralSession.access_token});
  const saved=Array.isArray(rows)?rows[0]:null;
  const same=(a,b)=>Array.isArray(b)||b&&typeof b==="object"?JSON.stringify(a)===JSON.stringify(b):String(a??"")===String(b??"");
- if(!saved||!Object.entries(fields).every(([key,value])=>same(saved[key],value)))
+ // PostgreSQL timestamptz commonly returns +00:00 instead of Z for an identical instant.
+ const matches=([key,value])=>key==="deleted_at"&&value?Number.isFinite(Date.parse(saved?.[key]))&&Date.parse(saved[key])===Date.parse(value):same(saved?.[key],value);
+ if(!saved||!Object.entries(fields).every(matches))
   throw new Error("Máy chủ chưa xác nhận đầy đủ dữ liệu. Vui lòng kiểm tra hoặc tải lại trang trước khi lưu lần nữa.");
  return saved;
 }
@@ -905,6 +997,102 @@ async function exportPdf(){
  const rows=list.map((o,k)=>[k+1,o.item.system_group,o.item.work_title,shownDate(o),demo(o.item)?"Mẫu · Chưa xác minh":status(o)[0],o.item.assigned_to||"Kỹ thuật",[o.item.subsystem,o.event.result_note,interval(o.item)?("Chu kỳ "+interval(o.item)+" tháng"):""].filter(Boolean).join(" · ")]);
  try{await window.exportGenericEstaPdf({title:"BÁO CÁO BẢO TRÌ THIẾT BỊ",sectionLabel:"KẾ HOẠCH BẢO TRÌ "+projectLabel().toUpperCase(),tableLabel:"CÔNG VIỆC BẢO TRÌ",periodLabel:"THÁNG "+pad(month)+"/"+year,subtitle:"Công việc mẫu chỉ là minh họa, chưa được xác nhận hoàn thành thực tế.",filename:"ESTA_BaoTri_"+B+"_"+year+"_Thang"+pad(month)+".pdf",columns:[{label:"STT",weight:.5},{label:"Hệ thống",weight:1.3},{label:"Công việc",weight:2.8},{label:"Ngày",weight:1.2},{label:"Trạng thái",weight:1.3},{label:"Phụ trách",weight:1},{label:"Vị trí / KQ / Chu kỳ",weight:2.4}],rows,summaries:[{value:items.length,label:"KẾ HOẠCH"},{value:list.length,label:"CÔNG VIỆC THÁNG"},{value:list.filter(o=>o.event.status==="completed"&&!demo(o.item)).length,label:"HOÀN THÀNH ĐÃ XÁC MINH"}]});}catch(err){toast(err.message||"Lỗi xuất PDF");}
 }
+// 130HH quick duplication: search actual + recurring work, irrespective of visible filters.
+function nearestEmptyMaintenanceDate(fromDate){
+ const start=Date.parse(String(fromDate).slice(0,10)+"T12:00:00Z");
+ if(!Number.isFinite(start))return "";
+ const occupied=new Set(),years=new Set();
+ for(let shift=1;shift<=370;shift++){
+  const date=new Date(start+shift*86400000).toISOString().slice(0,10),y=Number(date.slice(0,4));
+  if(!years.has(y)){
+   years.add(y);
+   for(const occurrence of schedule(y)){
+    if(!isMonthOnly(occurrence))occupied.add(dateOf(occurrence));
+   }
+  }
+  if(!occupied.has(date))return date;
+ }
+ return "";
+}
+// Minus in Clone mode performs an immediate, audit-preserving soft delete.
+// For an original recurring plan this removes all its future schedule entries too.
+async function removeMaintenanceWork(source){
+ if(B!=="130HH"||busy||!canWrite()||!active()||!ready||source?.building!==B)return false;
+ const item=items.find(i=>i.id===source.occurrence?.item?.id&&!i.deleted_at);
+ if(!item)return false;
+ busy=true;
+ try{
+  const deleted_at=new Date().toISOString(),project=B;
+  const isCopy=item.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&String(item.plan_code||"").startsWith(B+"-COPY-");
+  await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(item.id)+"&building_id=eq."+project,
+   {method:"PATCH",token:centralSession.access_token,body:{deleted_at,deletion_reason:isCopy?"Ẩn bản sao từ chế độ Nhân bản":"Ẩn kế hoạch từ dấu trừ chế độ Nhân bản"}});
+  const verified=await verifyMaintenanceSaved("esta_maintenance_plan_items",item.id,{deleted_at},project);
+  if(project!==B)return false;
+  items=items.map(i=>i.id===item.id?{...i,deleted_at:verified.deleted_at}:i);
+  clearScheduleCache();render();notifyMaintenance130Nav();
+  return true;
+ }catch(error){
+  toast("Không thể xóa công việc: "+(error.message||error)+". Hãy kiểm tra trước khi thử lại.");
+  return false;
+ }finally{busy=false;}
+}
+async function cloneMaintenanceOccurrence(source){
+ if(B!=="130HH"||busy||!canWrite()||!active()||!ready||source?.building!==B)return false;
+ const src=items.find(i=>i.id===source.occurrence?.item?.id&&!i.deleted_at);
+ if(!src)return toast("Không tìm thấy công việc gốc để nhân bản.");
+ const date=nearestEmptyMaintenanceDate(source.date);
+ if(!date)return toast("Không tìm được ngày trống trong phạm vi 370 ngày.");
+ busy=true;const project=B,token=centralSession.access_token;
+ const id=crypto.randomUUID(),eventId=crypto.randomUUID(),code=project+"-COPY-"+id.replace(/-/g,"").slice(-20);
+ const item={id,building_id:project,plan_year:Number(date.slice(0,4)),plan_code:code,plan_months:[Number(date.slice(5,7))],plan_status:"Có lịch",source_notes:"Nhân bản từ lịch bảo trì ESTA",
+  work_title:src.work_title,system_group:src.system_group||"Khác",subsystem:src.subsystem||"",assigned_to:src.assigned_to||"Kỹ thuật dự án",asset_code:src.asset_code||"",
+  work_type:src.work_type||"PM",priority:src.priority||"normal",cadence:"Không lặp"};
+ if(src.equipment_profile_id)item.equipment_profile_id=src.equipment_profile_id;
+ const occurrence={id:eventId,item_id:id,building_id:project,event_key:code+":"+date.slice(0,7),planned_month:monthISO(date),planned_date:date,due_date:date,status:"planned",source_kind:"year",location:item.subsystem};
+ let itemCreated=false,occurrenceCreated=false;
+ try{
+  await sbFetch("/rest/v1/esta_maintenance_plan_items",{method:"POST",token,body:item});itemCreated=true;
+  await sbFetch("/rest/v1/esta_maintenance_plan_occurrences",{method:"POST",token,body:occurrence});occurrenceCreated=true;
+  await verifyMaintenanceSaved("esta_maintenance_plan_items",id,{work_title:item.work_title,cadence:item.cadence,building_id:project},project);
+  await verifyMaintenanceSaved("esta_maintenance_plan_occurrences",eventId,{item_id:id,planned_date:date,planned_month:monthISO(date),status:"planned"},project);
+  if(project!==B)return false;
+  items.push(item);stored.push(occurrence);
+  clearScheduleCache();year=Number(date.slice(0,4));month=Number(date.slice(5,7));
+  render();notifyMaintenance130Nav();
+  toast("✓ Đã nhân bản công việc sang "+fmt(date));
+  return {date,id,eventId};
+ }catch(error){
+  if(itemCreated&&!occurrenceCreated){
+   try{
+    const deleted_at=new Date().toISOString();
+    await sbFetch("/rest/v1/esta_maintenance_plan_items?id=eq."+encodeURIComponent(id)+"&building_id=eq."+project,{method:"PATCH",token,body:{deleted_at,deletion_reason:"Nhân bản không tạo được lịch; hoàn tác"}});
+    await verifyMaintenanceSaved("esta_maintenance_plan_items",id,{deleted_at},project);
+   }catch(rollbackError){
+    toast("Không thể hoàn tác bản sao. Hãy kiểm tra dữ liệu trước khi thử lại.");
+    return false;
+   }
+  }
+  toast("Nhân bản chưa được xác nhận: "+(error.message||error)+". Hãy kiểm tra trước khi thử lại.");
+  return false;
+ }finally{busy=false;}
+}
+// Stable API for the visible ESTA month arrows (rendered by maintenance-redesign.js).
+// Capture the occurrence before changing month, so re-rendering cannot lose the drag source.
+window.estaMaintenance130DragActions={
+ getSource(key,requestedMode="move"){
+  if(B!=="130HH"||!active()||!ready||busy||!canWrite())return null;
+  const occurrence=getYearSchedule(year).find(o=>o.event.event_key===key);
+  if(!occurrence||(requestedMode!=="clone"&&occurrence.event.status==="completed"))return null;
+  return {key,date:dateOf(occurrence),title:occurrence.item.work_title,occurrence,building:B};
+ },
+ move(source,date){
+  if(!source||source.building!==B||!canWrite()||!active())return;
+  return rescheduleOccurrence(source.key,date,source.occurrence);
+ },
+ clone:cloneMaintenanceOccurrence,
+ removeClone:removeMaintenanceWork,
+ findNextEmptyDate:nearestEmptyMaintenanceDate
+};
 window.mountMaintenance130=()=>{
  const next=String(typeof currentBuilding!=="undefined"?(currentBuilding?.id||""):"");
  if(!PROJECT_IDS.has(next)){show();return;}

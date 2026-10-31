@@ -1,0 +1,679 @@
+/* ESTA 130HH — deliberate drop-only month navigation and readable maintenance cards.
+   Never detach or float the real month header. */
+#maintenancePage .estamMonthNav{
+  position:static!important;
+  transform:none!important;
+  margin:0;
+}
+#maintenancePage.estaMonthDragging .estamMonthNav{
+  position:static!important;
+  transform:none!important;
+  z-index:auto!important;
+}
+#maintenancePage .estamMonthNav button:focus-visible,
+#maintenancePage #maint130 .m130CalendarChip:focus-visible{
+  outline:3px solid #318bb5!important;
+  outline-offset:2px;
+}
+#maintenancePage.estaMonthDragging #estamPrev.estaDragHover,
+#maintenancePage.estaMonthDragging #estamNext.estaDragHover{
+  background:#176b91!important;
+  color:#fff!important;
+  border-color:#176b91!important;
+}
+
+/* Work chip: clear text hierarchy, small drag affordance, no oversized hand icon. */
+#maintenancePage #maint130 .m130CalendarChip{
+  --chip-accent:#5787ab;
+  position:relative!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:52px!important;
+  max-height:none!important;
+  margin:4px 0!important;
+  padding:8px 25px 8px 9px!important;
+  border:1px solid #d7e2eb!important;
+  border-left:3px solid var(--chip-accent)!important;
+  border-radius:9px!important;
+  background:#f8fbfe!important;
+  color:#17314a!important;
+  box-shadow:0 1px 2px rgba(25,58,86,.06)!important;
+  text-align:left!important;
+  white-space:normal!important;
+  overflow:hidden!important;
+  overflow-wrap:anywhere!important;
+  font-family:inherit!important;
+  cursor:pointer;
+  transition:background-color .14s ease,border-color .14s ease,box-shadow .14s ease,transform .14s ease;
+}
+#maintenancePage #maint130 .m130CalendarChip[draggable="true"]{
+  cursor:grab!important;
+  touch-action:none;
+}
+#maintenancePage.estaMonthDragging #maint130 .m130CalendarChip[draggable="true"]{
+  cursor:grabbing!important;
+}
+#maintenancePage #maint130 .m130CalendarChip:hover{
+  background:#fff!important;
+  border-color:#b9cedf!important;
+  border-left-color:var(--chip-accent)!important;
+  box-shadow:0 3px 9px rgba(25,58,86,.11)!important;
+  transform:translateY(-1px);
+}
+#maintenancePage #maint130 .m130CalendarChip:active{
+  transform:none!important;
+}
+#maintenancePage #maint130 .m130CalendarChip::after{
+  content:"";
+  position:absolute;
+  right:8px;
+  top:11px;
+  width:8px;
+  height:16px;
+  opacity:.58;
+  pointer-events:none;
+  background-image:radial-gradient(circle,#6786a0 1.25px,transparent 1.5px);
+  background-size:4px 5px;
+  background-repeat:repeat;
+}
+#maintenancePage #maint130 .m130CalendarChip:not([draggable="true"])::after{opacity:.2}
+#maintenancePage #maint130 .m130CalendarChip .m130CalendarSystem{
+  display:block!important;
+  margin:0 0 4px!important;
+  padding:0!important;
+  background:none!important;
+  color:#4d718d!important;
+  opacity:1!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  letter-spacing:.015em;
+  white-space:normal!important;
+}
+#maintenancePage #maint130 .m130CalendarChip .m130CalendarTitle{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3!important;
+  line-clamp:3!important;
+  overflow:hidden!important;
+  color:#16334f!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.4!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#maintenancePage #maint130 .m130CalendarChip.late{
+  --chip-accent:#cb654c;
+  background:#fff6f3!important;
+  border-color:#efd7d0!important;
+}
+#maintenancePage #maint130 .m130CalendarChip.done{
+  --chip-accent:#40916b;
+  background:#f0f9f3!important;
+  border-color:#d1e8da!important;
+}
+#maintenancePage #maint130 .m130CalendarChip.working{
+  --chip-accent:#417fc1;
+  background:#f0f6fe!important;
+  border-color:#d6e5f8!important;
+}
+#maintenancePage #maint130 .m130CalendarChip.review{
+  --chip-accent:#be9241;
+  background:#fff9ee!important;
+  border-color:#ecdcb9!important;
+}
+#maintenancePage #maint130 .m130CalendarDay{
+  align-content:start;
+}
+
+/* A dedicated drop bar exists only during a real drag. Normal navigation never moves. */
+.estaMonthDragTargets{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:max(18px,env(safe-area-inset-bottom,0px));
+  z-index:10040;
+  display:flex;
+  align-items:stretch;
+  gap:10px;
+  padding:8px;
+  border:1px solid #cfdae5;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 14px 34px rgba(13,37,68,.22);
+  pointer-events:auto;
+}
+.estaMonthDragTargets button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-height:50px;
+  min-width:145px;
+  padding:10px 15px;
+  border:1px solid #c7dae9;
+  border-radius:10px;
+  background:#eff6fb;
+  color:#164b6b;
+  font:750 13px/1.2 system-ui,sans-serif;
+  cursor:copy;
+  transition:background-color .12s ease,border-color .12s ease;
+}
+.estaMonthDragTargets button span{
+  font-size:24px;
+  line-height:1;
+  font-weight:400;
+}
+.estaMonthDragTargets button.estaDragHover{
+  background:#176b91!important;
+  color:#fff!important;
+  border-color:#176b91!important;
+  box-shadow:0 0 0 3px rgba(49,139,181,.2);
+}
+.estaMonthDragGhost{
+  position:fixed;
+  z-index:10050;
+  pointer-events:none;
+  box-sizing:border-box;
+  min-width:140px;
+  max-width:240px;
+  max-height:84px;
+  overflow:hidden;
+  border:1px solid #b6cfe1;
+  border-left:3px solid #367ea6;
+  border-radius:10px;
+  padding:9px 12px;
+  background:#fff;
+  color:#17314a;
+  box-shadow:0 9px 26px rgba(0,24,60,.19);
+  font-family:system-ui,sans-serif;
+}
+.estaMonthDragGhostLabel{
+  display:block;
+  margin-bottom:3px;
+  font:700 9px/1.3 system-ui,sans-serif;
+  letter-spacing:.05em;
+  color:#5d7f97;
+}
+.estaMonthDragGhost strong{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  font:700 12px/1.35 system-ui,sans-serif;
+  color:#183851;
+}
+@media(max-width:760px){
+ .estaMonthDragTargets{
+  left:8px;
+  right:8px;
+  transform:none;
+  gap:7px;
+  bottom:calc(80px + env(safe-area-inset-bottom,0px));
+ }
+ .estaMonthDragTargets button{min-width:0;flex:1;padding:8px 7px;font-size:12px;}
+}
+@media(prefers-reduced-motion:reduce){
+ #maintenancePage #maint130 .m130CalendarChip,
+ .estaMonthDragTargets button{transition:none!important}
+}
+
+/* 130HH calendar actions are opt-in. Keep settings beside native maintenance actions. */
+/* Always show the 130HH settings beside "Thêm bảo trì" regardless of month/view
+   attribute initialization order; JavaScript hides it for other projects. */
+#maintenancePage #estamNativeActions #estaMaintenanceSettings:not([hidden]){
+ display:inline-flex!important;align-items:center;gap:8px;position:relative;
+ flex:0 0 auto;min-width:0;
+}
+#maintenancePage #estaMaintenanceSettings[hidden]{display:none!important}
+#maintenancePage #estaMaintenanceSettingsToggle{
+ display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ min-height:42px;padding:9px 14px;white-space:nowrap;
+ border:1px solid #c9d8e4;border-radius:10px;background:#fff;color:#1e496a;
+ font:700 13px/1.2 system-ui,sans-serif;cursor:pointer;
+ box-shadow:0 1px 3px rgba(10,45,75,.06);
+}
+#maintenancePage #estaMaintenanceSettingsToggle span{font-size:20px;font-weight:400;line-height:1}
+#maintenancePage #estaMaintenanceSettingsToggle:hover,
+#maintenancePage #estaMaintenanceSettingsToggle[aria-expanded="true"]{
+ background:#edf6fd;border-color:#80accb;
+}
+#maintenancePage #estaMaintenanceSettingsMenu{
+ position:absolute;right:0;top:calc(100% + 8px);z-index:150;
+ width:282px;max-width:min(282px,calc(100vw - 24px));
+ padding:10px;border:1px solid #d0dce7;border-radius:13px;
+ background:#fff;color:#213b53;box-shadow:0 12px 30px rgba(15,48,76,.17);
+}
+#maintenancePage #estaMaintenanceSettingsMenu[hidden]{display:none!important}
+#maintenancePage #estaMaintenanceSettingsMenu>b{
+ display:block;padding:4px 7px 9px;font:800 13px/1.3 system-ui,sans-serif;color:#1b3d57;
+}
+#maintenancePage #estaMaintenanceSettingsMenu button{
+ display:flex;align-items:center;width:100%;min-height:41px;padding:9px 11px;
+ margin:2px 0;border:1px solid transparent;border-radius:8px;
+ background:transparent;color:#27445f;font:650 12px/1.4 system-ui,sans-serif;
+ text-align:left;cursor:pointer;
+}
+#maintenancePage #estaMaintenanceSettingsMenu button:hover{
+ background:#edf6fb;border-color:#d8e7f1;
+}
+#maintenancePage #estaMaintenanceSettingsMenu button.isActive,
+#maintenancePage #estaMaintenanceSettingsMenu button[aria-pressed="true"]{
+ background:#e8f4fb;color:#135781;border-color:#b9d8eb;
+}
+#maintenancePage #estaMaintenanceSettingsMenu small{
+ display:block;padding:9px 7px 3px;color:#6d7f8e;font:500 11px/1.5 system-ui,sans-serif;
+}
+#maintenancePage .estaMaintenanceModeHelp{
+ color:#3c718a;font:600 11px/1.35 system-ui,sans-serif;
+ max-width:330px;
+}
+#maintenancePage[data-esta-work-mode="move"] #maint130 .m130CalendarChip[draggable="true"]{
+ cursor:grab!important;border-left-width:4px!important;
+}
+#maintenancePage[data-esta-work-mode="move"].estaMonthDragging #maint130 .m130CalendarChip{
+ cursor:grabbing!important;
+}
+#maintenancePage[data-esta-work-mode="clone"] #maint130 .m130CalendarChip{
+ cursor:copy!important;
+}
+#maintenancePage[data-esta-work-mode="clone"] #maint130 .m130CalendarChip::after{
+ content:"+";width:17px;height:17px;right:7px;top:9px;opacity:1;
+ border-radius:6px;background:#d4ebf7;color:#146187;
+ font:800 15px/17px system-ui,sans-serif;text-align:center;
+}
+#maintenancePage #maint130 .m130CalendarChip.estaTaskSelected{
+ border:2px solid #176b9b!important;border-left:4px solid #176b9b!important;
+ background:#eaf5fd!important;box-shadow:0 0 0 3px rgba(55,143,190,.14)!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle:focus-visible,
+#maintenancePage #estaMaintenanceSettingsMenu button:focus-visible{
+ outline:3px solid #368db9;outline-offset:2px;
+}
+@media(max-width:760px){
+ #maintenancePage #estamNativeActions #estaMaintenanceSettings:not([hidden]){gap:5px;}
+ #maintenancePage #estaMaintenanceSettingsToggle{padding:8px 10px;font-size:12px;}
+ #maintenancePage .estaMaintenanceModeHelp{display:none;}
+ #maintenancePage #estaMaintenanceSettingsMenu{right:0;width:min(282px,calc(100vw - 30px));}
+}
+
+/* Explicit month navigation is visible throughout Move mode, not only while dragging. */
+/* This high-specificity state selector must also use grid:
+   it previously overrode the equal-column grid with display:flex!important. */
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-flow:row!important;
+ grid-auto-rows:minmax(48px,auto)!important;
+}
+.estaMonthDragTargets{max-width:calc(100vw - 20px)}
+.estaMonthDockCaption{
+ flex:0 0 100%;width:100%;text-align:center;
+ color:#52738d;font:750 10px/1.3 system-ui,sans-serif;letter-spacing:.09em;
+ padding:1px 0;
+}
+.estaMonthDragTargets button{
+ transition:background-color .12s ease,box-shadow .12s ease;
+ cursor:pointer;
+}
+.estaMonthDragTargets button:focus-visible{
+ outline:3px solid #247dab;outline-offset:2px;
+}
+/* Plus on top, minus directly below, with independent hit targets (not nested buttons). */
+#maintenancePage #maint130 .estaCloneWorkWrap{
+ position:relative;display:block;min-width:0;margin:4px 0;
+}
+#maintenancePage #maint130 .estaCloneWorkWrap>.m130CalendarChip{
+ margin:0!important;padding-right:35px!important;min-height:60px!important;
+}
+#maintenancePage #maint130 .estaCloneWorkWrap>.m130CalendarChip::after{content:none!important}
+#maintenancePage #maint130 .estaCloneControls{
+ position:absolute;z-index:3;right:5px;top:50%;transform:translateY(-50%);
+ display:flex;flex-direction:column;gap:3px;
+}
+#maintenancePage #maint130 .estaCloneControls button{
+ display:flex;align-items:center;justify-content:center;
+ width:24px;height:23px;min-height:23px;padding:0;
+ border:1px solid #bcd9e8;border-radius:6px;background:#dff1fa;
+ color:#1a6284;font:800 19px/20px system-ui,sans-serif;
+ box-shadow:none;cursor:pointer;
+}
+#maintenancePage #maint130 .estaCloneControls button:hover{
+ background:#bddff2;border-color:#7bafd1;
+}
+#maintenancePage #maint130 .estaCloneControls .estaCloneMinus{
+ background:#fff1f0;color:#aa4b4b;border-color:#edc7c7;
+ font-size:20px;
+}
+#maintenancePage #maint130 .estaCloneControls .estaCloneMinus:hover{
+ background:#fbdcda;border-color:#df9999;
+}
+#maintenancePage #maint130 .estaCloneControls button:focus-visible{
+ outline:2px solid #287fae;outline-offset:1px;
+}
+@media(max-width:760px){
+ .estaMonthDragTargets{justify-content:center}
+ .estaMonthDockCaption{font-size:9px}
+}
+
+/* Compact settings button with a vector icon, only in the Calendar view. */
+#maintenancePage #estaMaintenanceSettingsToggle{
+ gap:8px!important;padding:9px 13px!important;
+ border:1px solid #bed5e3!important;border-radius:10px!important;
+ background:#f7fbfe!important;color:#185577!important;
+ box-shadow:0 1px 3px rgba(30,70,100,.06)!important;
+ font:700 13px/1.2 system-ui,sans-serif!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle:hover,
+#maintenancePage #estaMaintenanceSettingsToggle[aria-expanded="true"]{
+ background:#eaf5fd!important;border-color:#8ab8d2!important;
+}
+#maintenancePage .estaSettingsIcon{width:19px;height:19px;flex:0 0 19px;stroke:currentColor}
+#maintenancePage #estaMaintenanceModeHelp{display:none!important}
+#maintenancePage #estaMaintenanceSettings[hidden]{display:none!important}
+/* Never let the settings control appear in Bảng / Thẻ / Timeline. */
+#maintenancePage:not([data-estam-view="calendar"]) #estaMaintenanceSettings{display:none!important}
+
+/* Equal buttons for previous and next month, including smaller screens. */
+.estaMonthDragTargets{
+ width:min(374px,calc(100vw - 24px))!important;
+ max-width:calc(100vw - 24px)!important;
+ box-sizing:border-box!important;
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ align-items:stretch!important;
+ justify-content:stretch!important;
+ gap:8px!important;
+ padding:9px!important;
+}
+.estaMonthDockCaption{
+ grid-column:1/-1!important;flex:none!important;width:auto!important;
+ margin:0!important;text-align:center!important;
+}
+.estaMonthDragTargets button{
+ width:100%!important;min-width:0!important;max-width:none!important;
+ min-height:48px!important;padding:9px 8px!important;
+ box-sizing:border-box!important;gap:6px!important;
+ justify-content:center!important;
+ font-size:12px!important;white-space:nowrap!important;
+}
+.estaMonthDragTargets button span{font-size:20px!important;line-height:1!important}
+@media(max-width:760px){
+ .estaMonthDragTargets{
+  left:50%!important;right:auto!important;transform:translateX(-50%)!important;
+  width:min(344px,calc(100vw - 16px))!important;
+ }
+}
+
+/* DOM contains exactly two direct button children, with no caption. */
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button{
+ grid-row:1!important;min-width:0!important;width:100%!important;
+}
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button:first-of-type{grid-column:1!important}
+body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>button:last-of-type{grid-column:2!important}
+
+/* 2026-10-31: Settings uses the site's native font/spacing, not an unrelated system-ui font. */
+#maintenancePage #estaMaintenanceSettingsToggle{
+ min-height:43px!important;height:43px!important;
+ padding:0 13px!important;gap:8px!important;
+ border:1px solid #d9cfe2!important;border-radius:10px!important;
+ background:#fffefa!important;color:#38115b!important;
+ box-shadow:0 1px 3px rgba(54,18,83,.08)!important;
+ font-family:inherit!important;font-size:12px!important;
+ font-weight:800!important;line-height:1.3!important;
+ letter-spacing:normal!important;text-transform:none!important;
+ font-synthesis:none!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle:hover,
+#maintenancePage #estaMaintenanceSettingsToggle[aria-expanded="true"]{
+ background:#f4eff8!important;border-color:#9a77b5!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive{
+ width:43px!important;min-width:43px!important;
+ padding:0!important;background:#38115b!important;
+ border-color:#38115b!important;color:#fff!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive:hover{
+ background:#542875!important;color:#fff!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle svg{
+ width:19px!important;height:19px!important;flex:0 0 19px!important;
+ stroke:currentColor!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle .estaSettingsClose{display:none!important}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsIcon,
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsLabel{display:none!important}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsClose{
+ display:block!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle .estaSettingsLabel{
+ display:inline!important;font-family:inherit!important;
+ font-size:12px!important;font-weight:800!important;line-height:1.3!important;
+}
+#maintenancePage #estaMaintenanceSettingsToggle.estaSettingsActive .estaSettingsLabel{
+ display:none!important;
+}
+#maintenancePage #estaMaintenanceSettingsMenu,
+#maintenancePage #estaMaintenanceSettingsMenu button{
+ font-family:inherit!important;
+ font-size:12px!important;
+ font-weight:700!important;
+ line-height:1.4!important;
+ letter-spacing:normal!important;
+}
+#maintenancePage #estaMaintenanceSettingsMenu{width:196px!important}
+#maintenancePage #estaMaintenanceSettingsMenu button{min-height:43px!important}
+
+
+/* ESTA 130 Hồng Hà | Uniform-day calendar design, v17.
+   Compact surfaces, legible typography, coherent brand and status hierarchy.
+   Scoped to this project, leaving other buildings and board/card views untouched. */
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarWrap{
+ padding:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarGrid{
+ display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+ gap:3px!important;min-width:0;
+ align-items:stretch;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarWeek{
+ padding:6px 2px!important;
+ border-radius:5px!important;
+ background:#eee7ec!important;
+ color:#5e3a58!important;
+ font-family:inherit!important;
+ font-size:11px!important;
+ font-weight:800!important;
+ letter-spacing:.03em!important;
+ line-height:1.25!important;
+ text-align:center!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarBlank{
+ min-height:0!important;background:transparent!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarDay{
+ display:block;position:relative;
+ min-width:0!important;min-height:57px!important;
+ padding:0 0 3px!important;
+ border:1px solid #e3dce4!important;
+ border-radius:7px!important;
+ background:#fffaf2!important;
+ box-shadow:0 1px 2px rgba(54,29,57,.035)!important;
+ overflow:hidden!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarDay.m130Weekend{
+ background:#fffaf2!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarDay.m130Today{
+ border-color:#ad83a9!important;
+ box-shadow:inset 0 0 0 1px #ad83a9!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarDay.m130CanAdd:hover{
+ background:#fffaf2!important;
+ border-color:#b49ab2!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130DayHead{
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;
+ gap:5px!important;
+ min-height:28px!important;
+ padding:4px 6px!important;
+ margin:0!important;
+ border-bottom:0!important;
+ background:transparent!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130DayHead>b{
+ flex:0 0 auto;
+ margin:0!important;padding:0!important;
+ color:#4b314b!important;
+ font-family:inherit!important;
+ font-size:12px!important;font-weight:850!important;
+ line-height:1.2!important;
+ font-variant-numeric:tabular-nums;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130Today .m130DayHead>b{
+ color:#fff!important;
+ background:#653b61!important;
+ min-width:20px;height:20px;
+ display:inline-flex;align-items:center;justify-content:center;
+ border-radius:5px!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip{
+ --chip-accent:#b77c21;
+ display:block!important;
+ width:calc(100% - 6px)!important;
+ height:auto!important;min-height:31px!important;
+ max-height:none!important;
+ margin:2px 3px 0!important;
+ padding:6px 7px!important;
+ border:1px solid #f2e1b8!important;
+ border-left:3px solid var(--chip-accent)!important;
+ border-radius:5px!important;
+ background:#fff0ce!important;color:#744b12!important;
+ box-shadow:none!important;
+ text-align:left!important;
+ white-space:normal!important;
+ overflow:hidden!important;
+ overflow-wrap:break-word!important;
+ word-break:normal!important;
+ font-family:inherit!important;
+ cursor:pointer!important;
+ transition:filter .14s ease,border-color .14s ease!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip[draggable="true"]{cursor:grab!important}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip:hover{
+ filter:brightness(.97);
+ transform:none!important;
+ box-shadow:0 1px 3px rgba(54,29,57,.06)!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip:focus-visible{
+ outline:2px solid #7a4f80!important;outline-offset:0!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.estaTaskSelected{
+ outline:2px solid #703d72!important;outline-offset:0!important;
+ box-shadow:0 0 0 2px rgba(112,61,114,.13)!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip::after{
+ content:none!important;display:none!important;
+ background:none!important;
+}
+/* Each maintenance job shows its own complete system, including mixed-system days.
+   Keep it inside the same colored chip to avoid extra nested card spacing. */
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip .m130CalendarSystem{
+ display:block!important;
+ max-width:100%!important;
+ margin:0 0 3px!important;
+ padding:0!important;
+ border:0!important;
+ background:transparent!important;
+ color:inherit!important;
+ opacity:.9!important;
+ font-family:inherit!important;
+ font-size:10px!important;
+ font-weight:800!important;
+ line-height:1.3!important;
+ white-space:normal!important;
+ overflow:visible!important;
+ overflow-wrap:anywhere!important;
+ text-overflow:clip!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip .m130CalendarTitle{
+ display:-webkit-box!important;
+ -webkit-box-orient:vertical;
+ -webkit-line-clamp:2!important;line-clamp:2!important;
+ max-width:100%;margin:0!important;padding:0!important;
+ overflow:hidden!important;
+ color:inherit!important;
+ font-family:inherit!important;
+ font-size:11.5px!important;font-weight:700!important;
+ line-height:1.36!important;
+ letter-spacing:-.01em!important;
+ white-space:normal!important;
+ overflow-wrap:break-word!important;word-break:normal!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.planned{
+ --chip-accent:#b77c21;
+ background:#fff0ce!important;color:#744b12!important;
+ border-color:#f2e1b8!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.late{
+ --chip-accent:#c5444c;
+ background:#ffe2df!important;color:#872e35!important;
+ border-color:#f3cbc8!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.done{
+ --chip-accent:#268059;
+ background:#dbf3e5!important;color:#225c42!important;
+ border-color:#bfe7d0!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.working{
+ --chip-accent:#397abd;
+ background:#dfeeff!important;color:#214f83!important;
+ border-color:#c9def4!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.review{
+ --chip-accent:#8562aa;
+ background:#f0e8fa!important;color:#563779!important;
+ border-color:#dfd0f0!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.postponed,
+#maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip.cancelled{
+ --chip-accent:#89838f;
+ background:#eeebf0!important;color:#4d4852!important;
+ border-color:#dfdbe2!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .estaCloneWorkWrap{
+ position:relative!important;
+ display:block!important;
+ width:calc(100% - 6px)!important;
+ min-width:0!important;
+ margin:2px 3px 0!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .estaCloneWorkWrap>.m130CalendarChip{
+ width:100%!important;
+ min-height:50px!important;
+ margin:0!important;
+ padding:5px 30px 5px 6px!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .estaCloneControls{
+ right:3px!important;
+ gap:2px!important;
+}
+#maintenancePage[data-estam-building="130HH"] #maint130 .estaCloneControls button{
+ width:22px!important;height:21px!important;min-height:21px!important;
+}
+@media(max-width:760px){
+ #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.planned{background:#fff0ce!important;border-left-color:#b77c21!important;color:#744b12!important}
+ #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.late{background:#ffe2df!important;border-left-color:#c5444c!important;color:#872e35!important}
+ #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.done{background:#dbf3e5!important;border-left-color:#268059!important;color:#225c42!important}
+ #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.working{background:#dfeeff!important;border-left-color:#397abd!important;color:#214f83!important}
+ #maintenancePage[data-estam-building="130HH"] #maint130 .m130AgendaButton.review{background:#f0e8fa!important;border-left-color:#8562aa!important;color:#563779!important}
+}

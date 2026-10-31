@@ -1,0 +1,419 @@
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const path=require("node:path");
+const {JSDOM}=require("jsdom");
+const read=name=>fs.readFileSync(path.join(__dirname,"..",name),"utf8");
+const native=read("maintenance-130.js"),redesign=read("maintenance-redesign.js"),drag=read("maintenance-month-drag.js");
+new Function(native);new Function(redesign);new Function(drag);
+const html='<div id="app" class="maintenanceMode"><header class="estaTopbar"><div class="headerTools"><button id="peopleSettingsBtn">Kỹ thuật</button></div></header><div id="maintenancePage" class="maintenancePage"><section class="maintenanceHero"></section><section class="maintenanceSchedule"></section></div></div>';
+const flush=()=>new Promise(r=>setTimeout(r,30));
+async function fixture(sourceDate,otherDate){
+ const dom=new JSDOM('<!doctype html><html><body>'+html+'</body></html>',{url:"https://esta.local",runScripts:"outside-only",pretendToBeVisual:true});
+ const w=dom.window,d=w.document,calls=[];
+ w.currentBuilding={id:"130HH"};w.canProjectEdit=()=>true;w.centralSession={access_token:"test"};w.confirm=()=>true;w.toast=(message)=>calls.push({toast:message});
+ const savedRows=new Map();
+ w.crypto.randomUUID=(()=>{let count=0;return ()=>"00000000-0000-4000-8000-"+String(++count).padStart(12,"0")})();
+ w.sbFetch=async(url,opts={})=>{
+  calls.push({url,opts});
+  const table=url.includes("esta_maintenance_plan_items")?"item":url.includes("esta_maintenance_plan_occurrences")?"event":"other";
+  const id=decodeURIComponent(url.match(/[?&]id=eq\.([^&]+)/)?.[1]||opts.body?.id||"");
+  if(opts.method==="POST"){savedRows.set(table+":"+id,{...opts.body});return [];}
+  if(opts.method==="PATCH"){savedRows.set(table+":"+id,{...savedRows.get(table+":"+id),...opts.body});return [];}
+  if(url.includes("select=*")&&id){
+   const row=savedRows.get(table+":"+id);
+   if(!row)return [];
+   // Postgres can return +00:00 although the PATCH sent Z for the same instant.
+   return [{...row,...(row.deleted_at?{deleted_at:row.deleted_at.replace(/Z$/,"+00:00")}: {})}];
+  }
+  return [];
+ };
+ const injected=native.replace(/\}\)\(\);\s*$/,`window.__seedMaintenanceDrag=(date,other)=>{
+   const plan=(id,title)=>({id,building_id:"130HH",plan_code:id,cadence:"0",work_title:title,system_group:"HVAC",subsystem:"Hầm 1",assigned_to:"KTV",priority:"normal",source_notes:"Dữ liệu thật"});
+   const ev=(id,date)=>({id:"occ-"+id,item_id:id,building_id:"130HH",event_key:id+":"+date.slice(0,7),planned_month:date.slice(0,7)+"-01",planned_date:date,due_date:date,status:"planned"});
+   items=[plan("job1","Bảo trì quạt số 1"),plan("job2","Bảo trì quạt số 2")];
+   stored=[ev("job1",date),ev("job2",other)];
+   year=Number(date.slice(0,4));month=Number(date.slice(5,7));ready=true;clearScheduleCache();render();
+ };
+ window.__dragState=()=>({year,month,items,stored});})();`);
+ assert.notEqual(injected,native,"native module fixture injection");
+ w.eval(injected);w.eval(redesign);w.eval(drag);
+ d.dispatchEvent(new w.Event("DOMContentLoaded",{bubbles:true}));
+ await flush();
+ w.__seedMaintenanceDrag(sourceDate,otherDate);
+ d.querySelector('[data-estam-view="calendar"]').click();
+ await flush();
+ const chip=d.querySelector('[data-m130-drag="job1:'+sourceDate.slice(0,7)+'"]');
+ assert.ok(chip,"source chip appears in actual maintenance calendar");
+ assert.equal(chip.draggable,false,"normal mode never captures drag gestures");
+ let hit=d.getElementById("estamNext");
+ d.elementFromPoint=()=>hit;
+ const pointer=(type,x,y)=>d.dispatchEvent(new w.MouseEvent(type,{bubbles:true,cancelable:true,button:0,clientX:x,clientY:y}));
+ function down(){chip.dispatchEvent(new w.MouseEvent("pointerdown",{bubbles:true,cancelable:true,button:0,clientX:100,clientY:450}));}
+ function move(){pointer("pointermove",480,150);}
+ function up(){pointer("pointerup",480,150);}
+ return {dom,w,d,calls,down,move,up,activate:mode=>{d.getElementById("estaMaintenanceSettingsToggle").click();d.querySelector(`[data-esta-action="${mode}"]`).click();},setHit:el=>{hit=el}};
+}
+(async()=>{
+ // Clicking a work card should not start dragging, move month header, or block normal arrow navigation.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  const source=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  const before=f.d.getElementById("estamMonth").textContent;
+  f.down();
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"no floating controls on pointer down");
+  f.d.dispatchEvent(new f.w.MouseEvent("pointerup",{bubbles:true,cancelable:true,button:0,clientX:100,clientY:450}));
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"no floating controls after a click");
+  assert.equal(f.d.querySelector(".estamMonthNav").parentElement.classList.contains("estamSummary"),true);
+  assert.equal(f.d.getElementById("estamMonth").textContent,before,"clicking a job does not change its month");
+  assert.equal(source.draggable,false,"ordinary mode keeps native work-item clicks responsive");
+  source.click();
+  assert.equal(f.d.getElementById("m130Overlay").hidden,false,"ordinary click still opens work item editor");
+  f.d.getElementById("estamNext").click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","next arrow works as a normal click");
+  f.d.getElementById("estamPrev").click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","previous arrow works as a normal click");
+  f.dom.window.close();
+ }
+ // Drop directly on the visible right arrow: preserve the 31st by clipping to Nov 30.
+ {
+  const f=await fixture("2026-10-31","2026-11-30");
+  f.activate("move");
+  f.w.confirm=()=>{throw new Error("Move mode must not show confirmation");};
+  f.down();f.move();
+  assert.equal(f.d.getElementById("maintenancePage").classList.contains("estaMonthDragging"),true,"drag starts");
+  assert.ok(f.d.querySelector(".estaMonthDragGhost"),"visible drag feedback");
+  assert.ok(f.d.querySelector(".estaMonthDragTargets"),"month arrows remain visible during drag");
+  assert.equal(f.d.querySelector(".estamMonthNav").parentElement.classList.contains("estamSummary"),true,"original header stays inside the summary panel");
+  f.up();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","drag only moves task; calendar stays in source month");
+  const ev=f.w.__dragState().stored.find(o=>o.item_id==="job1");
+  assert.equal(ev.planned_date,"2026-11-30");
+  assert.equal(ev.planned_month,"2026-11-01");
+  assert.ok(f.calls.some(c=>c.opts.method==="PATCH"&&c.opts.body?.planned_date==="2026-11-30"),"new date persisted");
+  assert.ok(f.calls.some(c=>c.opts.method!=="PATCH"&&c.url.includes("esta_maintenance_plan_occurrences?select=*")&&c.url.includes("id=eq.occ-job1")),"moved job is re-read and verified on server");
+  assert.equal(f.w.__dragState().year,2026);
+  assert.equal(f.w.__dragState().month,10);
+  assert.equal(f.d.querySelector('[data-m130-drag="job1:2026-10"]'),null,"moved task disappears from the source month");
+  f.d.getElementById("estamNext").click();await flush(); // Ordinary navigation remains available.
+  assert.equal(f.d.querySelectorAll('[data-m130-date="2026-11-30"] .m130CalendarChip').length,2,"two tasks can be viewed together in destination month");
+  assert.ok(!f.d.querySelector(".estaMonthDragGhost"),"drag ghost cleaned");
+  f.dom.window.close();
+ }
+ // Left arrow can move from March 31 to February 28 in a non-leap year.
+ {
+  const f=await fixture("2027-03-31","2027-02-12");
+  f.activate("move");
+  f.setHit(f.d.getElementById("estamPrev"));
+  f.down();f.move();f.up();await flush();
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2027-02-28");
+  f.dom.window.close();
+ }
+ // Leap-year February takes day 29 instead of a nonexistent 31.
+ {
+  const f=await fixture("2028-03-31","2028-02-12");
+  f.activate("move");
+  f.setHit(f.d.getElementById("estamPrev"));
+  f.down();f.move();f.up();await flush();
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2028-02-29");
+  f.dom.window.close();
+ }
+ // Legacy HTML5 drag events must not arm the old 650ms month-switch timer.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  f.activate("move");
+  const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  const nativeStart=new f.w.Event("dragstart",{bubbles:true,cancelable:true});
+  Object.defineProperty(nativeStart,"dataTransfer",{value:{effectAllowed:"",setData(){}}});
+  chip.dispatchEvent(nativeStart);
+  assert.equal(nativeStart.defaultPrevented,true,"legacy native drag explicitly cancelled in 130 Move mode");
+  const hover=new f.w.Event("dragover",{bubbles:true,cancelable:true});
+  Object.defineProperty(hover,"dataTransfer",{value:{dropEffect:""}});
+  f.d.querySelector('[data-m130-month="11"]').dispatchEvent(hover);
+  await new Promise(resolve=>setTimeout(resolve,730));
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","legacy hover cannot auto-navigate after timeout");
+  assert.equal(f.w.__dragState().month,10,"native drag leaves calendar state unchanged");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-10","legacy drag does not reschedule task");
+  f.dom.window.close();
+ }
+ // A long press, including a long hover over the next-month arrow, must never change the month.
+ {
+  const f=await fixture("2026-10-10","2026-11-15");
+  f.activate("move");
+  f.down();
+  await new Promise(resolve=>setTimeout(resolve,750));
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","holding a task does not navigate");
+  assert.ok(f.d.querySelector(".estaMonthDragTargets"),"month arrows already visible in Move mode, even before drag");
+  f.move();
+  await new Promise(resolve=>setTimeout(resolve,800));
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","hovering over arrow does not navigate");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-10","hovering does not save a new date");
+  f.up();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","releasing over arrow updates task but does not navigate");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-10");
+  f.dom.window.close();
+ }
+ // Moving far away from the original task or hovering over the arrow must never reschedule.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  f.activate("move");
+  const out=f.d.querySelector("#maintenancePage .maintenanceHero");
+  f.down();f.move();
+  await new Promise(resolve=>setTimeout(resolve,700));
+  f.setHit(out);
+  f.move();f.up();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","releasing outside drop target leaves current month unchanged");
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-10","releasing outside does not update the task");
+  assert.ok(!f.calls.some(c=>c.opts.method==="PATCH"),"outside drop makes no database write");
+  assert.ok(f.d.querySelector(".estaMonthDragTargets"),"persistent arrows remain after drag cancellation");
+  f.dom.window.close();
+ }
+ // Dropping onto an exact date still supports two maintenance cards in the same day.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  f.activate("move");
+  const cell=f.d.querySelector('[data-m130-date="2026-10-20"]');
+  assert.ok(cell);
+  f.setHit(cell);f.down();f.move();f.up();await flush();
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-10-20");
+  assert.equal(f.d.querySelectorAll('[data-m130-date="2026-10-20"] .m130CalendarChip').length,2);
+  f.dom.window.close();
+ }
+ // Move multiple tasks from the same source month without navigating away.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  f.activate("move");
+  let original=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  original.click();
+  f.d.querySelector('[data-esta-month-drop="next"]').click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","first move keeps October visible");
+  assert.equal(f.w.__dragState().stored.find(x=>x.item_id==="job1").planned_date,"2026-11-10");
+  const second=f.d.querySelector('[data-m130-drag="job2:2026-10"]');
+  assert.ok(second,"next task stays visible without changing tabs");
+  second.click();
+  f.d.querySelector('[data-esta-month-drop="next"]').click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","second move also keeps October visible");
+  assert.equal(f.w.__dragState().stored.find(x=>x.item_id==="job2").planned_date,"2026-11-20");
+  f.d.getElementById("estamNext").click();await flush();
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026","manual navigation still works after moves");
+  assert.equal(f.d.querySelectorAll(".m130CalendarChip").length,2,"both moved jobs appear in destination");
+  f.dom.window.close();
+ }
+ // Settings: select a work item, then use a month arrow without dragging or holding.
+ {
+  const f=await fixture("2026-10-10","2026-11-12");
+  assert.ok(f.d.getElementById("estaMaintenanceSettingsToggle"),"maintenance settings exists");
+  const settings=f.d.getElementById("estaMaintenanceSettings");
+  assert.equal(settings.hidden,false,"130HH settings must be visible without needing a particular view attribute");
+  assert.equal(settings.parentElement?.id,"estamNativeActions","settings sits next to Add maintenance");
+  assert.ok(f.d.getElementById("m130Create").parentElement===settings.parentElement,"settings and Add maintenance share a toolbar");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
+  assert.equal(f.d.getElementById("estaMaintenanceSettingsMenu").hidden,false,"settings menu expands with move and clone choices");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
+  f.activate("move");
+  assert.equal(f.w.estaMaintenance130Mode(),"move");
+  f.w.confirm=()=>{throw new Error("Selected Move mode must not confirm");};
+  const persistent=f.d.querySelector(".estaMonthDragTargets");
+  assert.ok(persistent&&persistent.querySelectorAll("[data-esta-month-drop]").length===2,"previous/next arrows show immediately upon selecting Move");
+  assert.equal(persistent.children.length,2,"exactly two buttons on one row, no caption");
+  const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  assert.equal(chip.draggable,true,"move mode activates immediate dragging");
+  chip.click();
+  assert.ok(chip.classList.contains("estaTaskSelected"),"click selects work item instead of opening editor");
+  assert.equal(f.d.getElementById("m130Overlay").hidden,true);
+  assert.equal(f.d.getElementById("estaMaintenanceModeHelp"),null,"no redundant helper banner in move mode");
+  persistent.querySelector('[data-esta-month-drop="next"]').click();await flush();
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id==="job1").planned_date,"2026-11-10");
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 10/2026","quick move keeps the displayed month");
+  assert.ok(!f.d.querySelector(".estaTaskSelected"),"selection clears after moving");
+  f.dom.window.close();
+ }
+ // Clone mode creates an independent one-off plan in the nearest completely empty day.
+ {
+  const f=await fixture("2026-10-14","2026-10-15");
+  f.activate("clone");
+  assert.equal(f.w.estaMaintenance130Mode(),"clone");
+  const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  assert.equal(chip.draggable,false,"clone mode is click-only");
+  const probe=f.w.estaMaintenance130DragActions.getSource("job1:2026-10","clone");
+  chip.click();await flush();
+  const copied=f.w.__dragState().items.filter(i=>i.id!=="plan1"&&i.id!=="job1"&&i.id!=="job2");
+  assert.equal(copied.length,1,"clone inserts one new plan; calls="+JSON.stringify(f.calls).slice(0,1400)+", source="+Boolean(probe)+", mode="+f.w.estaMaintenance130Mode()+", help="+String(f.d.getElementById("estaMaintenanceModeHelp")?.textContent||""));
+  const clonePlan=copied[0];
+  const newEvent=f.w.__dragState().stored.find(e=>e.item_id===clonePlan.id);
+  assert.equal(newEvent.planned_date,"2026-10-16","occupied Thursday skipped for empty Friday");
+  assert.equal(clonePlan.work_title,"Bảo trì quạt số 1");
+  assert.equal(clonePlan.cadence,"Không lặp","copy never creates recurring work unexpectedly");
+  assert.equal(newEvent.status,"planned");
+  assert.notEqual(newEvent.item_id,"job1");
+  assert.ok(f.calls.some(c=>c.opts.method==="POST"&&c.url.includes("esta_maintenance_plan_items")));
+  assert.ok(f.calls.some(c=>c.opts.method==="POST"&&c.url.includes("esta_maintenance_plan_occurrences")));
+  assert.equal(f.d.querySelectorAll('[data-m130-date="2026-10-16"] .m130CalendarChip').length,1);
+  f.dom.window.close();
+ }
+ // Two accidental copies can be removed independently using a minus beneath plus.
+ {
+  const f=await fixture("2026-10-14","2026-10-15");
+  f.activate("clone");
+  const original=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  const originalControls=original.parentElement.querySelector(".estaCloneControls");
+  assert.ok(originalControls,"clone controls appear on original work item");
+  assert.ok(originalControls.querySelector(".estaClonePlus"),"plus appears on original work item");
+  assert.ok(originalControls.querySelector(".estaCloneMinus"),"minus is available on original plans too");
+  originalControls.querySelector(".estaClonePlus").click();await flush();
+  let duplicates=f.w.__dragState().items.filter(i=>i.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&!i.deleted_at);
+  assert.equal(duplicates.length,1);
+  const first=duplicates[0];
+  assert.equal(f.w.__dragState().stored.find(e=>e.item_id===first.id).planned_date,"2026-10-16");
+  const firstChip=f.d.querySelector('[data-m130-drag="'+first.plan_code+':2026-10"]');
+  assert.ok(firstChip,"copy is rendered in the destination day");
+  const controls=firstChip.parentElement.querySelector(".estaCloneControls");
+  assert.ok(controls.querySelector(".estaClonePlus"),"copy also has plus");
+  assert.ok(controls.querySelector(".estaCloneMinus"),"copy has a minus underneath its plus");
+  const buttons=[...controls.querySelectorAll("button")];
+  assert.deepEqual(buttons.map(x=>x.textContent.trim()),["+","−"],"plus above minus in DOM and CSS flex-column");
+  f.d.querySelector('[data-m130-drag="job1:2026-10"]').parentElement.querySelector(".estaClonePlus").click();await flush();
+  duplicates=f.w.__dragState().items.filter(i=>i.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&!i.deleted_at);
+  assert.equal(duplicates.length,2,"can create two independent copies");
+  const deletedId=first.id;
+  const toastCount=f.calls.filter(c=>c.toast).length;
+  f.w.confirm=()=>{throw new Error("Minus must delete without a confirm dialog");};
+  f.d.querySelector('[data-m130-drag="'+first.plan_code+':2026-10"]').parentElement.querySelector(".estaCloneMinus").click();await flush();
+  assert.equal(f.calls.filter(c=>c.toast).length,toastCount,"successful minus delete is silent");
+  const state=f.w.__dragState();
+  assert.ok(state.items.find(i=>i.id===deletedId).deleted_at,"minus soft deletes only selected copy");
+  assert.ok(state.items.find(i=>i.id==="job1"&&!i.deleted_at),"original plan was not deleted");
+  assert.equal(state.items.filter(i=>i.source_notes==="Nhân bản từ lịch bảo trì ESTA"&&!i.deleted_at).length,1,"remaining duplicate retained");
+  assert.ok(f.calls.some(c=>c.opts?.method==="PATCH"&&c.url.includes("esta_maintenance_plan_items")&&c.url.includes("id=eq."+deletedId)&&c.opts.body.deleted_at),"deletion sent to scoped API");
+  assert.equal(f.d.querySelector('[data-m130-drag="'+first.plan_code+':2026-10"]'),null,"deleted copy disappears after verified soft delete; state="+JSON.stringify({layout:f.d.getElementById("m130List")?.className,all:f.d.querySelectorAll("#m130List .m130CalendarChip").length,toasts:f.calls.filter(x=>x.toast).slice(-4)}));
+  f.dom.window.close();
+ }
+ // Original maintenance plans can also be soft-deleted immediately from their own minus button.
+ {
+  const f=await fixture("2026-10-14","2026-10-15");
+  f.activate("clone");
+  const chip=f.d.querySelector('[data-m130-drag="job1:2026-10"]');
+  const minus=chip.parentElement.querySelector(".estaCloneMinus");
+  assert.ok(minus,"original maintenance work also has minus");
+  const beforeToast=f.calls.filter(x=>x.toast).length;
+  f.w.confirm=()=>{throw new Error("Minus action may not ask for confirmation");};
+  minus.click();await flush();
+  const plan=f.w.__dragState().items.find(i=>i.id==="job1");
+  assert.ok(plan?.deleted_at,"original plan is soft-deleted");
+  assert.equal(f.d.querySelector('[data-m130-drag="job1:2026-10"]'),null,"original card disappears");
+  assert.ok(f.d.querySelector('[data-m130-drag="job2:2026-10"]'),"other plans are retained");
+  assert.ok(f.calls.some(c=>c.opts?.method==="PATCH"&&c.url.includes("id=eq.job1")&&c.opts.body?.deleted_at),"original scoped deletion persisted");
+  assert.equal(f.calls.filter(x=>x.toast).length,beforeToast,"original deletion shows no success notification");
+  f.dom.window.close();
+ }
+ // At month boundaries, an occupied first day is skipped and the duplicate remains independently scheduled.
+ {
+  const f=await fixture("2026-10-31","2026-11-01");
+  f.activate("clone");
+  f.d.querySelector('[data-m130-drag="job1:2026-10"]').click();await flush();
+  const extra=f.w.__dragState().stored.find(e=>e.item_id!=="job1"&&e.item_id!=="job2");
+  assert.equal(extra?.planned_date,"2026-11-02");
+  assert.equal(f.d.getElementById("estamMonth").textContent,"Tháng 11/2026");
+  f.dom.window.close();
+ }
+
+ // The settings button exists only in Calendar, not Bảng/Thẻ/Timeline.
+ {
+  const f=await fixture("2026-10-10","2026-10-20");
+  const settings=f.d.getElementById("estaMaintenanceSettings");
+  assert.equal(settings.hidden,false,"settings visible in calendar");
+  assert.deepEqual([...settings.querySelectorAll("[data-esta-action]")].map(x=>x.textContent.trim()),["Di chuyển","Nhân bản"],"settings offers only Move and Clone");
+  assert.equal(settings.querySelector("small, b"),null,"settings removes extra heading and help");
+  assert.ok(f.d.querySelector("#estaMaintenanceSettingsToggle svg.estaSettingsIcon"),"vector Settings icon is rendered");
+  assert.ok(f.d.querySelector("#estaMaintenanceSettingsToggle svg.estaSettingsClose"),"dedicated close X icon exists");
+  f.activate("move");
+  assert.equal(f.d.getElementById("estaMaintenanceSettingsToggle").classList.contains("estaSettingsActive"),true,"Settings becomes close X in Move mode");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
+  assert.equal(f.w.estaMaintenance130Mode(),"off","clicking X exits Move to normal mode");
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"X removes move navigation dock");
+  f.activate("clone");
+  assert.equal(f.d.getElementById("estaMaintenanceSettingsToggle").classList.contains("estaSettingsActive"),true,"Settings becomes X in Clone mode");
+  f.d.getElementById("estaMaintenanceSettingsToggle").click();
+  assert.equal(f.w.estaMaintenance130Mode(),"off","X exits Clone mode too");
+  assert.equal(f.d.querySelector(".estaCloneControls"),null,"X removes plus/minus controls");
+  f.activate("move");
+  f.d.querySelector('[data-estam-view="rows"]').click();await flush();
+  assert.equal(f.d.getElementById("maintenancePage").dataset.estamView,"rows");
+  assert.equal(settings.hidden,true,"settings hidden in Bảng");
+  assert.equal(f.w.estaMaintenance130Mode(),"off","leaving calendar exits Move mode");
+  assert.equal(f.d.querySelector(".estaMonthDragTargets"),null,"month dock removed outside Calendar");
+  f.d.querySelector('[data-estam-view="cards"]').click();await flush();
+  assert.equal(settings.hidden,true,"settings hidden in Thẻ");
+  f.d.querySelector('[data-estam-view="timeline"]').click();await flush();
+  assert.equal(settings.hidden,true,"settings hidden in Timeline");
+  f.d.querySelector('[data-estam-view="calendar"]').click();await flush();
+  assert.equal(settings.hidden,false,"settings restored only in Calendar");
+  f.dom.window.close();
+ }
+
+ // Compact calendar has one day cell and direct, stackable task chips; no nested white card.
+ {
+  const f=await fixture("2026-10-09","2026-10-09");
+  const day=f.d.querySelector('[data-m130-date="2026-10-09"]');
+  assert.ok(day,"the ninth exists in the calendar");
+  assert.equal(f.d.querySelector(".m130CalendarLegend"),null,"unwanted status legend bar is removed");
+  const blanks=[...f.d.querySelectorAll(".m130CalendarBlank")];
+  assert.equal(blanks.length,3,"October 2026 correctly has three blank leading slots");
+  assert.equal(blanks.some(x=>x.textContent.trim()),false,"out-of-month cells stay empty");
+  assert.equal(day.querySelectorAll(":scope > .m130CalendarChip").length,2,"two tasks are directly inside one compact date cell");
+  assert.equal(day.querySelector(".m130DaySystems"),null,"system is never summarized beside the day number");
+  assert.deepEqual([...day.querySelectorAll(".m130CalendarChip .m130CalendarSystem")].map(x=>x.textContent),["HVAC","HVAC"],"each job shows its own system even when systems match");
+  f.w.__dragState().items[1].system_group="Cấp thoát nước";
+  f.d.getElementById("estamNext").click();
+  f.d.getElementById("estamPrev").click();
+  const mixed=f.d.querySelector('[data-m130-date="2026-10-09"]');
+  assert.equal(mixed.querySelector(".m130DaySystemMore"),null,"no +1 summary for mixed systems");
+  assert.equal(mixed.classList.contains("m130MixedSystems"),false,"mixed-system dates no longer require special display logic");
+  assert.deepEqual([...mixed.querySelectorAll(".m130CalendarChip .m130CalendarSystem")].map(x=>x.textContent),["HVAC","Cấp thoát nước"],"the full system name travels with the correct job");
+  assert.deepEqual([...mixed.querySelectorAll(".m130CalendarChip")].map(x=>x.textContent.includes("Bảo trì quạt")), [true,true], "task titles stay with their system labels");
+  f.w.__dragState().items[1].system_group="Điện hạ thế và điều khiển tự động";
+  f.d.getElementById("estamNext").click();
+  f.d.getElementById("estamPrev").click();
+  assert.equal(f.d.querySelectorAll(".m130CalendarChip .m130CalendarSystem")[1].textContent,"Điện hạ thế và điều khiển tự động","long systems are not abbreviated");
+  f.dom.window.close();
+ }
+
+ const index=read("index.html"),css=read("maintenance-month-drag.css");
+ assert.ok(index.includes('<link rel="stylesheet" href="maintenance-month-drag.css?v=20261031-perjob18">'),"dense calendar stylesheet cache-busted");
+ assert.ok(index.includes('<script src="maintenance-month-drag.js?v=20261031-drag13">'),"new module loaded into real page");
+ assert.match(css,/\.estaMonthDragTargets\{[\s\S]*position:fixed/,"a separate dock is reachable when dragging from day 31");
+ assert.match(css,/\.m130CalendarChip\[draggable="true"\]/,"draggable work cards have an intentional cursor");
+ assert.match(css,/\.m130CalendarTitle/,"work title typography is styled");
+ assert.match(css,/Uniform-day calendar design, v17/,"unified day background is loaded");
+ assert.match(css,/\.m130CalendarWrap\{\s*padding:0!important;\s*border:0!important/,"no outer redundant calendar card");
+ assert.doesNotMatch(css,/\.m130CalendarLegend\{|\.m130LegendItem\{/,"legend styling removed completely");
+ assert.match(css,/\.m130CalendarBlank\{\s*min-height:0!important;background:transparent!important/,"out-of-month blank cells retain their transparent appearance");
+ assert.match(css,/\.m130CalendarDay\{[\s\S]*?background:#fffaf2!important/,"the date body uses a single cream surface");
+ assert.match(css,/\.m130CalendarDay\.m130Weekend\{\s*background:#fffaf2!important/,"weekend date cells use the same surface");
+ assert.match(css,/\.m130DayHead\{[\s\S]*?border-bottom:0!important;\s*background:transparent!important/,"date header has no separate white panel or dividing line");
+ assert.match(css,/\.m130CalendarGrid\{[\s\S]*?gap:3px!important/,"days keep a consistent tight grid");
+ assert.match(css,/\.m130CalendarDay\{[\s\S]*?padding:0 0 3px!important/,"calendar day padding remains compact");
+ assert.match(css,/\.m130CalendarChip\{[\s\S]*?min-height:31px!important/,"work cards remain compact");
+ assert.match(css,/\.m130CalendarChip::after\{\s*content:none!important;\s*display:none!important/,"unnecessary four-dot drag grip removed");
+ assert.doesNotMatch(css,/m130DaySystems|m130DaySystemMore|m130MixedSystems/,"remove date-level summary and unnecessary special-case CSS");
+ assert.match(css,/\.m130CalendarChip \.m130CalendarSystem\{\s*display:block!important/,"every colored work card displays its system");
+ assert.match(css,/\.m130CalendarSystem\{[\s\S]*?white-space:normal!important;[\s\S]*?overflow:visible!important;/,"long system names wrap without ellipsis");
+ assert.match(css,/-webkit-line-clamp:2!important/,"task name uses a compact two-line limit");
+ assert.match(css,/\.m130CalendarDay\.m130Today\{/,"today has an accessible visual highlight");
+ assert.match(css,/\.m130CalendarDay\.m130Weekend\{/,"weekends have a differentiated neutral surface");
+ for(const [state,color] of [["planned","#fff0ce"],["late","#ffe2df"],["done","#dbf3e5"],["working","#dfeeff"]]){
+  assert.ok(css.includes(".m130CalendarChip."+state+"{"),"status "+state+" keeps a distinct surface");
+  assert.ok(css.includes("background:"+color+"!important"),"corporate color for "+state+" is present");
+ }
+ assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,"month arrows use two equal columns");
+ assert.match(css,/body:has\(#maintenancePage\[data-esta-work-mode="move"\]\) \.estaMonthDragTargets\s*\{\s*display:grid!important/,"Move mode selector uses grid");
+ assert.doesNotMatch(css,/body:has\(#maintenancePage\[data-esta-work-mode="move"\]\) \.estaMonthDragTargets\s*\{\s*display:flex!important/,"no flex stacking override");
+ assert.match(css,/>button:first-of-type\{grid-column:1!important\}/,"month previous pinned left");
+ assert.match(css,/>button:last-of-type\{grid-column:2!important\}/,"month next pinned right");
+ assert.match(css,/#estaMaintenanceModeHelp\{display:none!important\}/,"yellow helper is hidden");
+ assert.match(css,/#estaMaintenanceSettingsToggle\{[\s\S]*?font-family:inherit!important/,"Settings inherits the site's font");
+ assert.match(css,/\.estaSettingsActive \.estaSettingsClose\{[\s\S]*?display:block!important/,"Settings switches to a close X icon");
+ assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
+ assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
+ assert.doesNotMatch(css,/#maintenancePage\[data-estam-building="130HH"\]\[data-estam-view="calendar"\] #estaMaintenanceSettings/,"fragile view-specific hiding removed");
+ console.log("PASS: no legend, uniform date/header surface, blank calendar dates preserved, task status colors and move/clone regressions");
+})().catch(err=>{console.error(err);process.exitCode=1});
