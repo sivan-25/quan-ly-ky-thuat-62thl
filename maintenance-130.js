@@ -522,7 +522,7 @@ function renderAlternative(events){
   const chips=daily.map(o=>{
    const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
    // System identity uses its own accessible badge palette, independent of job status.
-   const name=system.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").toLowerCase();
+   const name=system.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/đ/g,"d");
    const tone=/dien|electrical|power/.test(name)?"electric":
     /nuoc|bom nuoc|water|plumbing/.test(name)?"water":
     /pccc|chua chay|bao chay|fire/.test(name)?"fire":
