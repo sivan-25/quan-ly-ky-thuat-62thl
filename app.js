@@ -3032,12 +3032,12 @@ function renderMaterials(){
  $("#materialMonthLabel").textContent=periodText;
  $("#materialSelectedMonth").textContent=periodText;
  $("#materialTitleCount").textContent="("+list.length+" mục)";
- const referenceMobile=isEstaInventoryProject()&&(!window.matchMedia||window.matchMedia("(max-width:760px)").matches);
- $("#materialInLabel").textContent=referenceMobile?(allYear?"Nhập năm":"Nhập tháng"):(allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG");
- $("#materialOutLabel").textContent=referenceMobile?(allYear?"Xuất năm":"Xuất tháng"):(allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG");
- $("#materialStockLabel").textContent=referenceMobile?"Mặt hàng tồn":(allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN");
+ const compactInventory=isEstaInventoryProject();
+ $("#materialInLabel").textContent=compactInventory?(allYear?"Nhập năm":"Nhập tháng"):(allYear?"TỔNG NHẬP NĂM":"TỔNG NHẬP THÁNG");
+ $("#materialOutLabel").textContent=compactInventory?(allYear?"Xuất năm":"Xuất tháng"):(allYear?"TỔNG XUẤT NĂM":"TỔNG XUẤT THÁNG");
+ $("#materialStockLabel").textContent=compactInventory?"Mặt hàng tồn":(allYear?"MẶT HÀNG TỒN CUỐI NĂM":"MẶT HÀNG CÒN TỒN");
  const fullYearButton=$("#materialMonthTabs .yearOverviewBtn");
- if(fullYearButton)fullYearButton.textContent=referenceMobile?"Cả năm":"12 tháng";
+ if(fullYearButton)fullYearButton.textContent="Cả năm";
 
  const periodRows=inventoryActiveMaterials().map(m=>({m,s:inventorySnapshot(m,y)})).filter(x=>allYear?x.s.months.some(mm=>mm.active):x.s.months[month-1]?.active);
  const totalIn=periodRows.reduce((sum,x)=>sum+(allYear?inventoryNum(x.s.totalIn):inventoryNum(x.s.months[month-1]?.inQty)),0);

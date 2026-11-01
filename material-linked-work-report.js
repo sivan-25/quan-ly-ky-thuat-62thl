@@ -104,8 +104,10 @@
   }
   function ensureUI() {
     const inventoryPage = $("#inventoryPage");
-    if (inventoryPage) inventoryPage.classList.toggle("inventoryRef130", projectId().toUpperCase() === "130HH");
-    inventoryPage.classList.toggle("inventoryRef127", projectId().toUpperCase() === "127HH");
+    if (inventoryPage) {
+      inventoryPage.classList.toggle("inventoryRef130", projectId().toUpperCase() === "130HH");
+      inventoryPage.classList.toggle("inventoryRef127", projectId().toUpperCase() === "127HH");
+    }
     const current = projectId().toUpperCase();
     if (modalProjectId && modalProjectId !== current) {
       selectedMaterialIds.clear();

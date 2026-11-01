@@ -5,7 +5,7 @@
  let bellParent=null,bellNext=null,controlsParent=null,controlsNext=null;
  function isPilot(){const page=$("#inventoryPage");return !!(page&&(page.classList.contains("inventoryRef130")||page.classList.contains("inventoryRef127"))&&!page.classList.contains("hide"));}
  function syncApprovedTopbar(){
-   const controls=$("#inventoryPage .inventoryCommandControls"),header=$("header.estaTopbar"),account=$("header .account");
+   const controls=$("#inventoryPage .inventoryCommandControls")||$("header.estaTopbar>.inventoryCommandControls"),header=$("header.estaTopbar"),account=$("header .account");
    if(!controls||!header||!account)return;
    const enabled=isPilot() && window.matchMedia("(min-width: 761px)").matches;
    if(enabled){
@@ -30,7 +30,11 @@
  }
  function ensureMenu(){
    const page=$("#inventoryPage");
-   if(!page?.classList.contains("inventoryRef130")&&!page?.classList.contains("inventoryRef127"))return;
+   if(!page?.classList.contains("inventoryRef130")&&!page?.classList.contains("inventoryRef127")){
+      closeMenu();
+      $("#inventory130PdfMenu")?.remove();
+      return;
+   }
    const original=$("#materialExportPdf");
    if(!original)return;
    const toolbar=original.parentElement;

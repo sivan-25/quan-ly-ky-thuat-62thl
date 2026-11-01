@@ -2,6 +2,7 @@
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import os
+import argparse
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,11 @@ class Handler(SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     os.chdir(ROOT)
-    port = int(os.environ.get('ESTA_DEV_PORT', '8080'))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', default='0.0.0.0')
+    parser.add_argument('--port', type=int, default=int(os.environ.get('ESTA_DEV_PORT', '8080')))
+    parser.add_argument('--strictPort', action='store_true')
+    args = parser.parse_args()
+    port = args.port
     print(f'ESTA: http://localhost:{port}', flush=True)
-    ThreadingHTTPServer(('0.0.0.0', port), Handler).serve_forever()
+    ThreadingHTTPServer((args.host, port), Handler).serve_forever()
