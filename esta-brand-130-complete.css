@@ -33,13 +33,13 @@
  --upd-shadow:0 8px 23px rgba(65,20,55,.08);
  color:var(--esta130-text)!important;
  background:var(--esta130-cream)!important;
- font-family:Montserrat,Arial,sans-serif!important;
+ font-family:Inter,Arial,sans-serif!important;
  color-scheme:light;
 }
 #app.estaBrand130 :is(main,.page,.modulePage,.homeDashboard,.demoFeaturePage,.maintenancePage,.inventoryPage,.contractorPage,.constructionMaterialPage,#updateAssetsPage.uePage,.ueSnapshot) {
  background:var(--esta130-cream)!important;
 }
-#app.estaBrand130 :is(h1,h2,h3,h4) {font-family:Montserrat,Arial,sans-serif!important}
+#app.estaBrand130 :is(h1,h2,h3,h4) {font-family:Inter,Arial,sans-serif!important}
 /* Topbar was formerly navy on every module, overriding the initial 130 theme. */
 #app.estaBrand130 main > header.estaTopbar,
 #app.estaBrand130 .estaTopbar,

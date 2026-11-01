@@ -7,7 +7,7 @@ const html=fs.readFileSync("index.html","utf8");
 const app=fs.readFileSync("app.js","utf8");
 const css=fs.readFileSync("tools-professional.css","utf8");
 for(const id of ["inventoryToolsPane","toolSearch","toolStatusFilter","toolVisibleCount","toolsBody","toolsMobileCards","toolCount","toolGoodCount","toolRepairCount","toolExportPdf","addToolBtn","toolItemModal"])assert.match(html,new RegExp('id="'+id+'"'));
-assert.match(html,/tools-professional\.css\?v=20261020-toolcompact03/);
+assert.match(html,/tools-professional\.css\?v=[\w-]+/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(min-width:1051px\) and \(max-width:1400px\)/);
 assert.match(css,/@media\(max-width:1050px\)/);

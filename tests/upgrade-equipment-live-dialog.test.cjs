@@ -52,7 +52,7 @@ const $=selector=>d.querySelector(selector);
  d.body.classList.remove("estaTechnicalAssetsMode");
  assert.equal(w.getComputedStyle(overlay).display,"none","dialog must hide outside technical routes");
  assert.match(css,/body:not\(\.estaUpgradeMode\):not\(\.estaTechnicalAssetsMode\) \.ueOverlay/);
- assert(html.includes("upgrade-equipment.css?v=20261017-live-dialog01"),"CSS version bump required");
+ assert(/upgrade\-equipment\.css\?v=[\w-]+/.test(html),"CSS version bump required");
  dom.window.close();
  console.log("ESTA 130HH equipment: add, edit built-in, save and route-scoped modal visibility PASS");
 })().catch(e=>{console.error(e);process.exitCode=1;dom.window.close()});

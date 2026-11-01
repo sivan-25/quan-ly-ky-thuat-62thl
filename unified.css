@@ -5044,7 +5044,7 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
 html,body,#login,#app,#adminPage,#homePage,.page,.modulePage,
 button,input,select,textarea,option,table,thead,tbody,tfoot,tr,th,td,
 label,span,b,strong,small,p,h1,h2,h3,h4,h5,h6,a,summary,details{
-  font-family:"Inter",sans-serif!important;
+  font-family:Inter,Arial,sans-serif!important;
 }
 
 /* One pair of work controls in the topbar. Visibility follows the actual page,

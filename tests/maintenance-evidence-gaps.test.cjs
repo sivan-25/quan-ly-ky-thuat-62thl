@@ -13,6 +13,9 @@ const statuses={
 };
 const dom=new JSDOM('<!doctype html><html><body><div id="maintenancePage"><section class="maintenanceSchedule"></section><section class="maintenanceStats"></section><section class="maintenanceBoard"></section><section class="maintenanceHistoryCard"></section></div></body></html>',{url:"https://esta.test",runScripts:"outside-only"});
 const w=dom.window,d=w.document;
+// Freeze only the test clock; production still opens the actual current month.
+const RealDate=w.Date;
+w.Date=class extends RealDate{constructor(...args){super(...(args.length?args:["2026-10-17T12:00:00Z"]))}static now(){return new RealDate("2026-10-17T12:00:00Z").getTime()}};
 w.currentBuilding={id:"68PĐL"};w.centralSession={access_token:"fixture"};
 w.canProjectEdit=()=>true;w.toast=()=>{};w.estaRefreshProjectNavAlerts=()=>{};
 w.mediaImgHtml=()=>'<img>';w.hydrateMediaImages=async()=>{};

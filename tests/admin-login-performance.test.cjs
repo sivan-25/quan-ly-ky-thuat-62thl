@@ -96,7 +96,7 @@ function authFixture(saved,refreshError=false){
  const state={textContent:'',classList:{add(){},remove(){}}};
  const currentAccount={is_admin:true,buildings:[]};
  const ctx={
-  rows:[],activity:[],personalTasks:[],loading:false,lastUpdated:'',lastFetchedAt:0,
+  rows:[],activity:[],personalTasks:[],loading:false,centerDirtyWhileLoading:false,lastUpdated:'',lastFetchedAt:0,
   dataAccount:null,currentAccount,centralSession:{access_token:'MOCK'},
   globalScope:()=>true,ensureRoot:()=>rootEl,syncAdminHeader:()=>{},
   renderCenter:()=>{ctx.rendered++},rendered:0,

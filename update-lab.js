@@ -18,7 +18,7 @@ const updateNewState=(buildingId="")=>({
  technicians:[],skills:[],shifts:[],handovers:[],materials:[],materialTx:[],
  contractors:[],vendorScores:[],baselines:[],anomalies:[],costs:[],plans:[],meters:[]
 });
-let updateState=updateNewState();
+let updateState=updateNewState(),updateDataRevision=0;
 let updatePmGenerating=false,updateScannerStream=null,updateScannerTimer=null,updateNotifTimer=null,updateNavSeq=0,updateCurrentRoute="";
 let updateRolePreview=sessionStorage.getItem("esta_update_role_preview")||"leader";
 const updateScopeId=()=>String(currentBuilding?.id||"");
@@ -90,8 +90,12 @@ function updateCacheRead(buildingId=updateScopeId()){
 async function updateLoad(force=false){
  if(!updateIs())return updateState;
  const buildingId=updateEnsureStateScope();
- const state=updateState;
- if(state.loading)return state.loading;
+ const state=updateState,revision=updateDataRevision;
+ if(state.loading){
+  await state.loading;
+  if(updateState===state&&updateIs()&&updateScopeId()===buildingId&&!state.loaded)return updateLoad(true);
+  return state;
+ }
  if(!force&&state.loaded&&Date.now()-state.loadedAt<15000)return state;
  state.loading=(async()=>{
   const b="building_id=eq."+uq(buildingId);
@@ -118,13 +122,13 @@ async function updateLoad(force=false){
     updateRest("ops_maintenance_plans",b+"&active=eq.true&select=*&order=next_due_date.asc"),
     updateRest("ops_asset_meter_readings",b+"&select=*&order=reading_at.asc")
    ]);
-   if(updateState!==state||!updateIs()||updateScopeId()!==buildingId)return state;
+   if(updateState!==state||!updateIs()||updateScopeId()!==buildingId||revision!==updateDataRevision)return state;
    const keys=["systems","areas","assets","records","incidents","incidentExt","inspections","technicians","skills","shifts","handovers","materials","materialTx","contractors","vendorScores","baselines","anomalies","costs","plans","meters"];
    keys.forEach((k,i)=>state[k]=Array.isArray(r[i])?r[i]:[]);
    state.buildingId=buildingId;state.loaded=true;state.offline=false;state.loadedAt=Date.now();updateCacheSave(buildingId);
   }catch(e){
    console.warn("Operations load failed",buildingId,e);
-   if(updateState!==state||!updateIs()||updateScopeId()!==buildingId)return state;
+   if(updateState!==state||!updateIs()||updateScopeId()!==buildingId||revision!==updateDataRevision)return state;
    const cached=updateCacheRead(buildingId);
    if(cached){
     Object.assign(state,cached,{buildingId,loaded:true,offline:true,loadedAt:Date.now(),loading:null});
@@ -134,7 +138,10 @@ async function updateLoad(force=false){
   }finally{if(state.buildingId===buildingId)state.loading=null}
   return state;
  })();
- return state.loading;
+ const pending=state.loading;
+ const result=await pending;
+ if(updateState===state&&updateIs()&&updateScopeId()===buildingId&&revision!==updateDataRevision)return updateLoad(true);
+ return result;
 }
 
 function updateAsset(id){return updateState.assets.find(x=>String(x.id)===String(id))}
@@ -1627,4 +1634,12 @@ document.addEventListener("DOMContentLoaded",()=>{
  if(params.get("asset"))$("#updateScannerCode")&&($("#updateScannerCode").value=params.get("asset"));
 });
 
+window.addEventListener("esta:data-changed",({detail})=>{
+ if(!detail||!["*",updateScopeId()].includes(detail.buildingId))return;
+ updateDataRevision++;updateState.loaded=false;updateState.loadedAt=0;
+});
+window.addEventListener("esta:inventory-ready",({detail})=>{
+ if(!detail||updateState.buildingId!==String(detail.buildingId))return;
+ updateState.materials=detail.materials.filter(m=>!m.archived_at);updateState.materialTx=detail.transactions;
+});
 })();

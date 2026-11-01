@@ -1,5 +1,5 @@
 /* ESTA: Tra cứu công việc theo vật tư và xuất PDF kèm ảnh.
- * Pilot release: only project 130HH, until approved for other buildings.
+ * Shared report for all four buildings; selections stay project-scoped.
  * Reads only the selected project's cached tasks and inventory materials.
  * This module never writes task, stock, or material records.
  */
@@ -12,7 +12,7 @@
   let selectedMaterialIds = new Set();
   let selectedTaskIds = new Set();
   let modalProjectId = "";
-  const SUPPORTED_PROJECTS = new Set(["130HH","127HH"]);
+  const SUPPORTED_PROJECTS = new Set(["130HH","127HH","62THL","68PĐL","68PDL"]);
 
   function projectId() { return String(typeof currentBuilding !== "undefined" ? currentBuilding?.id || "" : ""); }
   function isSupportedProject() { return SUPPORTED_PROJECTS.has(projectId().toUpperCase()); }

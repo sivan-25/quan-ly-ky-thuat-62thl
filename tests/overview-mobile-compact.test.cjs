@@ -10,7 +10,8 @@ assert.ok(css.includes("#app.homeMode.opsOverviewMode.adminCommandHome"),"scope 
 assert.ok(css.includes("#ccSelectToggle{display:none!important}"),"PDF selection toggle hidden on desktop");
 assert.ok(css.includes(".ccPdfTools"),"PDF controls available in select mode");
 assert.ok(css.includes(".ccTable"),"task rows remain available");
-assert.ok(js.includes("aria-pressed"),"PDF toggle accessible");
+assert.ok(js.includes("removeDuplicatePdfControl"),"duplicate PDF control is removed");
+assert.ok(read("command-center.js").includes('aria-label="Chọn tất cả công việc Admin theo bộ lọc"'),"canonical PDF selection remains accessible");
 assert.ok(js.includes("MutationObserver"),"dynamic dashboard updates observed");
 assert.ok(!js.includes("localStorage")&&!js.includes("fetch("),"presentation has no data side effects");
 console.log("PASS ESTA Admin mobile compact patch scope, assets, PDF toggle and syntax");

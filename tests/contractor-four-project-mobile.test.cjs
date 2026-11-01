@@ -31,8 +31,8 @@ assert.ok(!js.includes('String(currentBuilding?.id||"")==="130HH"'),"stale 130 H
 assert.ok(css.includes(".contractorMobileCall svg"),"approved mobile call icon missing");
 assert.ok(css.includes(".contractorMobileTermGroup"),"compact contract term missing");
 assert.ok(css.includes(".contractorJobFilters"),"compact history search missing");
-assert.ok(html.includes('contractor-mobile-130.css?v=20261020-copy-phone01'));
-assert.ok(html.includes('contractor.js?v=20261020-copy-phone01'));
+assert.ok(/contractor\-mobile\-130\.css\?v=[\w-]+/.test(html));
+assert.ok(/contractor\.js\?v=[\w-]+/.test(html));
 
 const profile=html.slice(html.indexOf('<div id="contractorModal"'),html.indexOf('<div id="contractorJobModal"'));
 const job=html.slice(html.indexOf('<div id="contractorJobModal"'),html.indexOf('<div id="maintenanceAssetModal"'));

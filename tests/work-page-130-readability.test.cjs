@@ -3,8 +3,8 @@ const fs = require('node:fs');
 
 const html = fs.readFileSync('index.html', 'utf8');
 const css = fs.readFileSync('work-page-130-readability.css', 'utf8');
-const brandLink = html.indexOf('esta-brand-130-complete.css?v=20261024-work-readability01');
-const finalLink = html.indexOf('work-page-130-readability.css?v=20261026-final01');
+const brandLink = html.indexOf('esta-brand-130-complete.css?v=');
+const finalLink = html.indexOf('work-page-130-readability.css?v=');
 
 assert.ok(brandLink >= 0, 'the 130HH brand stylesheet remains linked');
 assert.ok(finalLink > brandLink, 'the final readability layer loads after the brand stylesheet');

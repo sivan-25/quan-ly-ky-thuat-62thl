@@ -223,4 +223,11 @@
   window.ESTAReports = { open, renderHistory: history };
   window.demoReportSelectAll = selectAll;
   window.demoExportSelectedReports = exportPdf;
+  let refreshTimer;
+  window.addEventListener("esta:data-changed",({detail})=>{
+    if(!detail||!["*",state.buildingId].includes(detail.buildingId))return;
+    state.sequence++;state.loading=false;state.data=null;state.model=null;buttons();
+    clearTimeout(refreshTimer);
+    refreshTimer=setTimeout(()=>{if(!page.classList.contains("hide")&&!state.busy)open(true)},100);
+  });
 })();

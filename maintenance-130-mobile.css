@@ -112,7 +112,7 @@
   #app.estaFourProjectCompact.maintenanceMode #maintenancePage:is([data-estam-building="130HH"],[data-estam-building="127HH"],[data-estam-building="62THL"],[data-estam-building="68PĐL"]) #estam130MobileMore{
     display:flex!important;align-items:center;justify-content:center;width:100%;
     min-height:44px;padding:4px 8px;border:0;background:transparent;color:#285574;
-    font:800 11px Montserrat,system-ui,sans-serif;cursor:pointer;
+    font:800 11px Inter,system-ui,sans-serif;cursor:pointer;
   }
 
   /* Two controls rows: [search | system | filters] + [Bảng/Thẻ/Lịch | Add]. */

@@ -1,3 +1,4 @@
+let contractorRequestSeq=0;
 /* ESTA Contractor Module */
 const ESTA_CONTRACTOR_PROJECTS=new Set(["68PĐL","68PDL","62THL","127HH","130HH"]);
 const isEstaContractorProject=()=>ESTA_CONTRACTOR_PROJECTS.has(String(currentBuilding?.id||""));
@@ -114,13 +115,14 @@ async function loadContractorData(buildingId=currentBuilding?.id,force=false){
     if(selectedContractorId)renderContractorDetail();
     return;
   }
+  const requestId=++contractorRequestSeq;
   try{
     const b=encodeURIComponent(buildingId),token=centralSession.access_token;
     const result=await Promise.all([
       sbFetch("/rest/v1/contractors?select=*&building_id=eq."+b+"&order=name.asc",{token}),
       sbFetch("/rest/v1/contractor_jobs?select=*&building_id=eq."+b+"&order=work_date.desc,created_at.desc",{token})
     ]);
-    if(String(currentBuilding?.id||"")!==String(buildingId))return;
+    if(requestId!==contractorRequestSeq||String(currentBuilding?.id||"")!==String(buildingId))return;
     contractors=Array.isArray(result[0])?result[0]:[];
     contractorJobs=Array.isArray(result[1])?result[1]:[];
     contractorLoadedBuilding=buildingId;
@@ -834,3 +836,8 @@ document.addEventListener("keydown",contractorEscapeHandler);
 window.addEventListener("resize",()=>{
   if(selectedContractorId)syncContractorDetailMobile();
 },{passive:true});
+
+window.addEventListener("esta:data-changed",({detail})=>{
+ if(!detail||!["*",String(currentBuilding?.id||"")].includes(detail.buildingId))return;
+ if(detail.tables.some(t=>["contractors", "contractor_jobs"].includes(t))){contractorLoadedBuilding="";contractorRequestSeq++}
+});

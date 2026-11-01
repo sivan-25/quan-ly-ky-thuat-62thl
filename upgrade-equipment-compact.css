@@ -601,7 +601,7 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueDialog footer .ueDelete[hi
  border:1px solid #874b16!important;
  border-radius:8px!important;
  box-shadow:0 1px 3px rgba(65,20,55,.22);
- font-family:Arial,sans-serif!important;
+ font-family:Inter,Arial,sans-serif!important;
  font-size:25px!important;
  line-height:1!important;
  font-weight:800!important;

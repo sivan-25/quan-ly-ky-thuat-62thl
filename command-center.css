@@ -14,7 +14,7 @@
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .topModuleTitle h1,#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .account b{color:#fff!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .topModuleTitle p,#app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .account span{color:#cfdee6!important}
 #app.homeMode.adminCommandHome #homePage>:not(#estaCommandCenter):not(#overviewScopeBar),#app.homeMode.updateProjectMode #homePage>:not(#updateCommandCenter):not(#overviewScopeBar){display:none!important}
-#app.homeMode .opsOverview{width:100%!important;max-width:none!important;display:grid!important;gap:10px!important;margin:0!important;padding:0!important;color:var(--ov-text);font-family:Inter,sans-serif}
+#app.homeMode .opsOverview{width:100%!important;max-width:none!important;display:grid!important;gap:10px!important;margin:0!important;padding:0!important;color:var(--ov-text);font-family:Inter,Arial,sans-serif}
 #app .opsOverview.hide{display:none!important}
 #app.homeMode .opsHero{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;min-height:0!important;padding:16px 20px!important;border:1px solid var(--ov-line)!important;border-radius:16px!important;background:linear-gradient(125deg,#111b30,#102236 60%,#0d2d38)!important;box-shadow:0 6px 18px #1f384814!important;overflow:hidden!important;color:#fff!important}
 #app.homeMode .opsHero:after{display:none!important}
@@ -59,7 +59,7 @@
 #app.homeMode .ccProjectStats{display:flex;flex-wrap:wrap;gap:4px;font-size:11px;color:var(--ov-muted)}
 #app.homeMode .ccProjectStats span{padding:3px 5px;background:var(--ov-soft);border-radius:5px}
 #app.homeMode .ccProjectStats .hot{color:#a64c4c;background:#f8e7e7}
-#app.homeMode .ccWorkspace{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(290px,.85fr);gap:10px;align-items:start}
+#app.homeMode .ccWorkspace{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start}
 #app.homeMode .ccFilters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(160px,1.3fr);gap:7px;padding:10px 12px;background:var(--ov-soft);border-bottom:1px solid var(--ov-line)}
 #app.homeMode .ccFilters :is(input,select){width:100%;min-width:0;height:38px;border:1px solid var(--ov-line);border-radius:8px;padding:0 9px;background:var(--ov-control);color:#c9d5e8;font-size:12px;box-sizing:border-box}
 #app.homeMode .ccTableWrap{max-height:490px;overflow-y:auto;overflow-x:hidden}
@@ -162,7 +162,7 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(h2,.update
 body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>header p,.updateNotifRow>div small,.updateNotifRow>div em,.updateNotifRank,aside>footer,.updateNotifEmpty){color:var(--ov-muted)}
 body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>header span,.updateNotifToolbar button){color:var(--ov-accent)}
 @media(max-width:1200px){
- #app.homeMode .ccWorkspace{grid-template-columns:minmax(0,1fr) 300px}
+ #app.homeMode .ccWorkspace{grid-template-columns:minmax(0,1fr)}
  #app.homeMode .ccFilters{grid-template-columns:repeat(2,minmax(0,1fr))}
  #app.homeMode .ccTable :is(thead,tbody,tr,td){display:block}
  #app.homeMode .ccTable thead{display:none}
@@ -307,7 +307,7 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
    Scoped to Admin Command Center, not project dashboards or mobile. */
 @media (min-width:1024px){
  #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace{
-   grid-template-columns:minmax(0,2.35fr) minmax(310px,.82fr);
+   grid-template-columns:minmax(0,1fr);
    gap:16px;align-items:stretch;
  }
  #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace>.opsPanel{
@@ -617,3 +617,10 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 @media(max-width:640px){
  #estaPdfErrorNotice{top:max(8px,env(safe-area-inset-top));padding:11px 12px;font-size:12px}
 }
+
+/* Admin panels occupy the entire available content width, on separate rows. */
+#app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace,
+#app.homeMode.adminCommandHome #estaCommandCenter .opsDashboardGrid{grid-template-columns:minmax(0,1fr)!important;width:100%;min-width:0}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel{width:100%;max-width:none;min-width:0}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccProjectCard h3{margin:0!important}
+#app.homeMode.adminCommandHome #ccAdminHeaderActions .ccTopSearch{display:none!important}

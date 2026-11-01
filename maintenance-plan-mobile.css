@@ -7,7 +7,7 @@
 #m130Overlay #m130PlanSaveSuccess{
  display:block;flex:1 1 100%;text-align:center;padding:4px 7px;
  color:#176444;background:#e4f7ee;border:1px solid #bce6cf;border-radius:8px;
- font:800 12px Montserrat,system-ui,sans-serif;
+ font:800 12px Inter,system-ui,sans-serif;
 }
 @media(max-width:760px){
   #m130Overlay[data-m130-view="plan"]:not([hidden]){

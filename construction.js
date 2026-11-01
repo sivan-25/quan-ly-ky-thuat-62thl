@@ -1,3 +1,4 @@
+let constructionRequestSeq=0;
 /* ESTA Construction Materials Module */
 let constructionMaterials=[],constructionLogs=[],constructionTransactions=[],constructionLoadedBuilding="",selectedConstructionMaterialId="",constructionCategoryFilter="",constructionActiveMonth=new Date().getMonth()+1;
 
@@ -81,6 +82,7 @@ async function loadConstructionMaterialData(buildingId=currentBuilding?.id,force
     if(selectedConstructionMaterialId)renderConstructionDetail();
     return;
   }
+  const requestId=++constructionRequestSeq;
   try{
     const b=encodeURIComponent(buildingId),token=centralSession.access_token;
     constructionSetYears();
@@ -89,7 +91,7 @@ async function loadConstructionMaterialData(buildingId=currentBuilding?.id,force
       sbFetch("/rest/v1/construction_material_logs?select=*&building_id=eq."+b+"&order=work_date.desc,created_at.desc",{token}),
       sbFetch("/rest/v1/construction_material_transactions?select=*&building_id=eq."+b+"&order=tx_date.desc,created_at.desc",{token})
     ]);
-    if(String(currentBuilding?.id||"")!==String(buildingId))return;
+    if(requestId!==constructionRequestSeq||String(currentBuilding?.id||"")!==String(buildingId))return;
     constructionMaterials=Array.isArray(result[0])?result[0]:[];
     constructionLogs=Array.isArray(result[1])?result[1]:[];
     constructionTransactions=Array.isArray(result[2])?result[2]:[];
@@ -580,3 +582,8 @@ $("#constructionExportPdf").onclick=constructionExportDirectoryEstaPdf;
 $("#constructionDetailPdf").onclick=constructionExportDetailEstaPdf;
 $("#constructionExportExcel").onclick=()=>{if(!constructionMaterials.length)return toast("Chưa có vật tư để xuất Excel");constructionDownloadWorkbook(false)};
 $("#constructionDetailExcel").onclick=()=>constructionDownloadWorkbook(true);
+
+window.addEventListener("esta:data-changed",({detail})=>{
+ if(!detail||!["*",String(currentBuilding?.id||"")].includes(detail.buildingId))return;
+ if(detail.tables.some(t=>["construction_materials", "construction_material_logs", "construction_material_transactions"].includes(t))){constructionLoadedBuilding="";constructionRequestSeq++}
+});
