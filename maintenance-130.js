@@ -521,14 +521,7 @@ function renderAlternative(events){
   const date=year+"-"+pad(month)+"-"+pad(day),daily=eventsByDay.get(date)||[];
   const chips=daily.map(o=>{
    const key=esc(o.event.event_key),st=stateKey(o),system=String(o.item.system_group||"Chưa phân loại").trim()||"Chưa phân loại";
-   // System identity uses its own accessible badge palette, independent of job status.
-   const name=system.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/đ/g,"d");
-   const tone=/dien|electrical|power/.test(name)?"electric":
-    /nuoc|bom nuoc|water|plumbing/.test(name)?"water":
-    /pccc|chua chay|bao chay|fire/.test(name)?"fire":
-    /hvac|dieu hoa|thong gio|vrv|fcu|ahu|air/.test(name)?"hvac":
-    /camera|cctv|an ninh|security/.test(name)?"security":"other";
-   return '<button type="button" draggable="'+(typeof B!=="undefined"&&B==="130HH"&&typeof window!=="undefined"&&window.estaMaintenance130Mode?.()==="move"&&canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" title="'+esc(o.item.work_title)+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem m130SystemTone-'+tone+'">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
+   return '<button type="button" draggable="'+(typeof B!=="undefined"&&B==="130HH"&&typeof window!=="undefined"&&window.estaMaintenance130Mode?.()==="move"&&canWrite()&&o.event.status!=="completed"?"true":"false")+'" data-m130-event="'+key+'" data-m130-drag="'+key+'" class="m130CalendarChip '+st+'" title="'+esc(o.item.work_title)+'" aria-label="'+esc(system+": "+o.item.work_title)+'"><span class="m130CalendarSystem">'+esc(system)+'</span><span class="m130CalendarTitle">'+esc(o.item.work_title)+'</span></button>';
   }).join("");
   // Each work card carries its own complete system name, never a day-level summary.
   const count=daily.length?'<small class="m130DayCount" aria-label="'+daily.length+' công việc">'+daily.length+'</small>':"";
