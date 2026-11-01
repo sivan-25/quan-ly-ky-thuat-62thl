@@ -594,10 +594,10 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
  margin:0 0 5px!important;
  padding:2px 6px!important;
  box-sizing:border-box!important;
- border:1px solid var(--system-edge,#c7ccd7)!important;
+ border:1px solid #cbbbea!important;
  border-radius:5px!important;
- background:var(--system-bg,#ebeff4)!important;
- color:var(--system-fg,#35465e)!important;
+ background:#eee7ff!important;
+ color:#55358c!important;
  opacity:1!important;
  font-family:inherit!important;
  font-size:10px!important;
@@ -610,25 +610,7 @@ body:has(#maintenancePage[data-esta-work-mode="move"]) .estaMonthDragTargets>but
  word-break:normal!important;
  text-overflow:clip!important;
 }
-/* Recognisable, stable system hues (not tied to green/amber/red/blue job statuses). */
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130SystemTone-electric{
- --system-bg:#eee7ff;--system-fg:#55358c;--system-edge:#cbbbea;
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130SystemTone-water{
- --system-bg:#ddf5f0;--system-fg:#155f60;--system-edge:#a6dcd2;
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130SystemTone-hvac{
- --system-bg:#e7edff;--system-fg:#344a8c;--system-edge:#b9c9ed;
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130SystemTone-fire{
- --system-bg:#f9e7f2;--system-fg:#8a2f66;--system-edge:#e8bdd7;
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130SystemTone-security{
- --system-bg:#e0f1f2;--system-fg:#255d6a;--system-edge:#b1d7dc;
-}
-#maintenancePage[data-estam-building="130HH"] #maint130 .m130SystemTone-other{
- --system-bg:#e9edf3;--system-fg:#3d4c64;--system-edge:#c3cbda;
-}
+/* Every system shares the same calm violet badge; status is encoded by the task card. */
 #maintenancePage[data-estam-building="130HH"] #maint130 .m130CalendarChip .m130CalendarTitle{
  display:-webkit-box!important;
  -webkit-box-orient:vertical;
