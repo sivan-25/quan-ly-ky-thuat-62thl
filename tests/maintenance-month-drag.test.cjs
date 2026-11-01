@@ -374,6 +374,15 @@ async function fixture(sourceDate,otherDate){
   f.d.getElementById("estamNext").click();
   f.d.getElementById("estamPrev").click();
   assert.equal(f.d.querySelectorAll(".m130CalendarChip .m130CalendarSystem")[1].textContent,"Điện hạ thế và điều khiển tự động","long systems are not abbreviated");
+  assert.ok(f.d.querySelectorAll(".m130CalendarChip .m130CalendarSystem")[1].classList.contains("m130SystemTone-electric"),"Điện receives dedicated violet badge, independent of job status");
+  f.w.__dragState().items[0].system_group="Cấp thoát nước";
+  f.d.getElementById("estamNext").click();
+  f.d.getElementById("estamPrev").click();
+  const badges=[...f.d.querySelectorAll('[data-m130-date="2026-10-09"] .m130CalendarSystem')];
+  assert.equal(badges.length,2,"both jobs retain visible system labels");
+  assert.ok(badges[0].classList.contains("m130SystemTone-water"),"Cấp thoát nước has teal identity");
+  assert.ok(badges[1].classList.contains("m130SystemTone-electric"),"Điện retains a distinct violet identity");
+  assert.notEqual([...badges[0].classList].find(x=>x.startsWith("m130SystemTone-")),[...badges[1].classList].find(x=>x.startsWith("m130SystemTone-")),"different systems cannot share a badge in the example");
   f.dom.window.close();
  }
 
@@ -396,6 +405,11 @@ async function fixture(sourceDate,otherDate){
  assert.match(css,/\.m130CalendarChip::after\{\s*content:none!important;\s*display:none!important/,"unnecessary four-dot drag grip removed");
  assert.doesNotMatch(css,/m130DaySystems|m130DaySystemMore|m130MixedSystems/,"remove date-level summary and unnecessary special-case CSS");
  assert.match(css,/\.m130CalendarChip \.m130CalendarSystem\{\s*display:block!important/,"every colored work card displays its system");
+ assert.match(css,/\.m130CalendarChip \.m130CalendarSystem\{[\s\S]*?background:var\(--system-bg,[^;]+;[\s\S]*?color:var\(--system-fg,[^;]+;/,"system badge has independent background and text variables");
+ assert.match(css,/\.m130CalendarChip \.m130CalendarSystem\{[\s\S]*?opacity:1!important/,"badge text remains fully opaque");
+ assert.match(css,/\.m130SystemTone-electric\{\s*--system-bg:#eee7ff/,"electrical badge uses violet");
+ assert.match(css,/\.m130SystemTone-water\{\s*--system-bg:#ddf5f0/,"plumbing badge uses teal");
+ assert.match(css,/\.m130SystemTone-other\{/,"unknown systems receive accessible neutral fallback");
  assert.match(css,/\.m130CalendarSystem\{[\s\S]*?white-space:normal!important;[\s\S]*?overflow:visible!important;/,"long system names wrap without ellipsis");
  assert.match(css,/-webkit-line-clamp:2!important/,"task name uses a compact two-line limit");
  assert.match(css,/\.m130CalendarDay\.m130Today\{/,"today has an accessible visual highlight");
@@ -415,5 +429,5 @@ async function fixture(sourceDate,otherDate){
  assert.doesNotMatch(css,/#maintenancePage\.estaMonthDragging \.estamMonthNav\s*\{\s*position:fixed/,"month heading must never become floating and overlap add-maintenance controls");
  assert.match(css,/#estamNativeActions #estaMaintenanceSettings:not\(\[hidden\]\)/,"settings visibility no longer depends on a calendar attribute");
  assert.doesNotMatch(css,/#maintenancePage\[data-estam-building="130HH"\]\[data-estam-view="calendar"\] #estaMaintenanceSettings/,"fragile view-specific hiding removed");
- console.log("PASS: no legend, uniform date/header surface, blank calendar dates preserved, task status colors and move/clone regressions");
+ console.log("PASS: distinct system-color badges, long Vietnamese system labels, date layout, independent status colors and move/clone regressions");
 })().catch(err=>{console.error(err);process.exitCode=1});
