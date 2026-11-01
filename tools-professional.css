@@ -1,6 +1,6 @@
 /* ESTA 2026-10-20 · Technical tool register.
    Presentation only: shared UI across four building IDs; no changes to persistence. */
-#app.inventoryMode #inventoryToolsPane{min-width:0!important;overflow-x:clip!important;font-family:"Be Vietnam Pro",Montserrat,system-ui,sans-serif!important}
+#app.inventoryMode #inventoryToolsPane{min-width:0!important;overflow-x:clip!important;font-family:Inter,Arial,sans-serif!important}
 #app.inventoryMode #inventoryToolsPane :is(.inventorySectionBar,.inventoryStats,.toolsMainCard,.toolsQuickAdd){min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
 #app.inventoryMode #inventoryToolsPane .inventorySectionBar{gap:14px!important}
 #app.inventoryMode #inventoryToolsPane .inventorySectionBar h2{font-size:clamp(17px,1.6vw,23px)!important;line-height:1.35!important;font-weight:800!important;letter-spacing:0!important}
@@ -8,7 +8,7 @@
 #app.inventoryMode #inventoryToolsPane .inventoryToolbarActions{display:flex!important;flex-wrap:wrap!important;gap:9px!important;align-items:center!important;justify-content:flex-end!important;max-width:100%!important}
 #app.inventoryMode #inventoryToolsPane .inventoryToolbarActions .inventorySearch{flex:1 1 195px!important;min-width:155px!important;max-width:340px!important;height:45px!important}
 #app.inventoryMode #inventoryToolsPane .inventoryToolbarActions .inventorySearch input{font-size:14px!important;min-width:0!important}
-#app.inventoryMode #inventoryToolsPane #toolStatusFilter{flex:0 1 195px;min-width:155px;max-width:100%;height:45px;box-sizing:border-box;border:1px solid #465b76;border-radius:10px;padding:0 11px;background:#152742;color:#e8f2ff;font:600 13px "Be Vietnam Pro",sans-serif;cursor:pointer}
+#app.inventoryMode #inventoryToolsPane #toolStatusFilter{flex:0 1 195px;min-width:155px;max-width:100%;height:45px;box-sizing:border-box;border:1px solid #465b76;border-radius:10px;padding:0 11px;background:#152742;color:#e8f2ff;font:600 13px Inter,sans-serif;cursor:pointer}
 #app.inventoryMode #inventoryToolsPane :is(#toolExportPdf,#addToolBtn){min-height:45px!important;font-size:13px!important;font-weight:750!important;padding:0 13px!important;white-space:nowrap!important}
 #app.inventoryMode #inventoryToolsPane :is(#toolStatusFilter,#toolSearch,#toolExportPdf,#addToolBtn):focus-visible{outline:2px solid #f1c37d!important;outline-offset:3px!important}
 #app.inventoryMode #inventoryToolsPane #toolVisibleCount{display:block;margin:0;padding:0 15px 12px;font-size:12px;font-weight:650;line-height:1.5;color:#a9c3dc}

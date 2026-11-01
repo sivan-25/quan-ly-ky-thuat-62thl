@@ -24,7 +24,7 @@
   --esta-muted:var(--upgrade-muted);
   color:var(--upgrade-deep);
   background:var(--upgrade-bg)!important;
-  font-family:Inter,system-ui,sans-serif;
+  font-family:Inter,Arial,sans-serif;
 }
 body:is(.estaUpgradeMode,.estaTechnicalAssetsMode){background:#eee9dd}
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .estaSidebar{

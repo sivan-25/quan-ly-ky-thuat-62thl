@@ -43,7 +43,7 @@ async function demoLoad(force=false){
  if(!buildingId)return demoCache;
  const loadKey=buildingId+":"+projectOpenSeq;
  if(!force&&demoLoadsInFlight.has(loadKey))return demoLoadsInFlight.get(loadKey);
- if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force)return demoCache;
+ if(demoCache.loaded&&demoCache.buildingId===buildingId&&!force&&Date.now()-(demoCache.loadedAt||0)<30000)return demoCache;
  const requestId=++demoLoadRequestId;
  const pending=(async()=>{
   try{
@@ -60,7 +60,7 @@ async function demoLoad(force=false){
    ]);
    // Never replace a newer reload, or data from a project we have left.
    if(String(currentBuilding?.id||"")!==buildingId||requestId!==demoLoadRequestId)return demoCache;
-   demoCache={loaded:true,buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
+   demoCache={loaded:true,loadedAt:Date.now(),buildingId,incidents:inc||[],inspections:ins||[],documents:docs||[],reports:reps||[],assets:assets||[],contractors:cons||[],materials:mats||[],materialTx:tx||[]};
   }catch(e){console.warn("Project operations data load failed",e)}
   return demoCache;
  })();
@@ -306,7 +306,7 @@ function demoShowSpecial(name){
  if(demoSearch){demoSearch.value="";demoSearch.placeholder=demoSpecialSearchPlaceholder(name)}
  $("#filterBar")?.classList.add("hide");
  setMobileMenuOpen(false,true);
- demoLoad(true).then(()=>{
+ demoLoad().then(()=>{
   if(name==="incident")demoRenderIncidents();
   if(name==="inspection")demoRenderInspections();
   if(name==="documents")demoRenderDocuments();
@@ -1775,4 +1775,25 @@ window.demoRefresh=async()=>{
 };
 
 setTimeout(()=>{demoEnsureWorkPanel();demoSetProjectMode()},400);
+/* Cross-module cache invalidation; retain unfinished forms and selection. */
+let demoSyncTimer;
+window.addEventListener("esta:data-changed",({detail})=>{
+ if(!detail||!["*",String(currentBuilding?.id||"")].includes(detail.buildingId))return;
+ const relevant=detail.tables.some(t=>["inventory_materials","inventory_material_transactions","incidents","inspections","technical_documents","report_registry","maintenance_assets","contractors","contractor_jobs"].includes(t));
+ if(!relevant)return;
+ demoCache.loaded=false;demoLoadRequestId++;
+ demoLoadsInFlight.delete(String(currentBuilding?.id||"")+":"+projectOpenSeq);
+ clearTimeout(demoSyncTimer);
+ demoSyncTimer=setTimeout(async()=>{
+  if(!demoIs()||String(currentBuilding?.id||"")!==detail.buildingId&&detail.buildingId!=="*")return;
+  if(!$("#workPage")?.classList.contains("hide")){
+   await demoLoad();demoPopulateWorkOptions();demoRefreshTaskMaterialOptions();
+  }
+ },80);
+});
+window.addEventListener("esta:inventory-ready",({detail})=>{
+ if(!detail||String(currentBuilding?.id||"")!==String(detail.buildingId)||demoCache.buildingId!==String(detail.buildingId))return;
+ demoCache.materials=detail.materials.filter(m=>!m.archived_at);demoCache.materialTx=detail.transactions;
+ demoRefreshTaskMaterialOptions();
+});
 })();

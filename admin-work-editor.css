@@ -9,7 +9,7 @@
 }
 #estaCommandCenter .ccAdminTaskEdit:hover{background:#17607b;color:#fff;border-color:#65d3df}
 #estaCommandCenter .ccAdminTaskEdit:focus-visible{outline:3px solid #61d7ed;outline-offset:2px}
-.ccAdminWorkEdit{position:fixed;inset:0;z-index:17000;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Inter,system-ui,sans-serif;color:#203950}
+.ccAdminWorkEdit{position:fixed;inset:0;z-index:17000;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Inter,Arial,sans-serif;color:#203950}
 .ccAdminWorkEdit.hide,.ccAdminWorkEdit .hide{display:none!important}
 .ccWeBackdrop{position:absolute;inset:0;background:rgba(4,13,27,.76);backdrop-filter:blur(5px)}
 .ccWeCard{position:relative;width:min(960px,100%);max-height:min(92dvh,1000px);display:flex;flex-direction:column;min-width:0;border:1px solid #50829b;border-radius:18px;background:#eef7fc;box-shadow:0 30px 90px rgba(0,0,0,.42);overflow:hidden}

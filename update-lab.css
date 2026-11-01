@@ -53,7 +53,7 @@
 #app.updateProjectMode #homePage>.homeBottomGrid{display:none!important}
 
 .updateCommandCenter,.updateOpsPage{
-  color:var(--upd-ink);font-family:Inter,sans-serif;
+  color:var(--upd-ink);font-family:Inter,Arial,sans-serif;
 }
 .updateCommandCenter{
   width:min(1500px,100%);margin:0 auto;padding:18px 20px 30px;
@@ -278,7 +278,7 @@
 .updateCostTable>div{display:grid;grid-template-columns:75px 1.4fr 1fr 75px 100px;gap:8px;align-items:center;padding:8px;border-bottom:1px solid #edf0f0}.updateCostTable span{color:#798991;font-size:7px}.updateCostTable b{color:#344f5b;font-size:7.5px}.updateCostTable small{color:#859299;font-size:7px}.updateCostTable em{font-style:normal;color:#657984;font-size:7px}.updateCostTable strong{text-align:right;color:#173b56;font-size:8px}
 
 .updateIntelligencePanel{
-  margin:0 0 12px;padding:14px 15px;border:1px solid #d8e2e3;border-radius:16px;background:linear-gradient(135deg,#fffdf9,#f5f1e9);box-shadow:0 6px 20px rgba(34,59,72,.05);font-family:Inter,sans-serif;
+  margin:0 0 12px;padding:14px 15px;border:1px solid #d8e2e3;border-radius:16px;background:linear-gradient(135deg,#fffdf9,#f5f1e9);box-shadow:0 6px 20px rgba(34,59,72,.05);font-family:Inter,Arial,sans-serif;
 }
 .updateIntelligencePanel>header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}.updateIntelligencePanel>header span{display:block;color:#926e59;font-size:7px;font-weight:850;letter-spacing:1px}.updateIntelligencePanel>header h2{margin:2px 0;color:#173b56;font-size:14px}.updateIntelligencePanel>header p{margin:3px 0 0;color:#7d8d94;font-size:8px}.updateIntelligencePanel>header>b{padding:5px 7px;border-radius:8px;background:#edf2ef;color:#426879;font-size:8px}
 .updateEnergyIntelGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.updateEnergyIntelGrid article{display:grid;grid-template-columns:32px 1fr 45px;gap:8px;align-items:center;padding:8px;border:1px solid #e2e8e9;border-radius:10px;background:#fff}.updateEnergyIntelGrid article>span{display:grid;place-items:center;width:31px;height:31px;border-radius:9px;background:#eef3f3}.updateEnergyIntelGrid b{font-size:8px;color:#344f5b}.updateEnergyIntelGrid small{display:block;color:#849198;font-size:6.5px}.updateEnergyIntelGrid p{margin:2px 0 0;color:#657982;font-size:6.7px}.updateEnergyIntelGrid strong{text-align:right;font-size:9px}.updateEnergyIntelGrid strong.danger{color:#a14848}.updateEnergyIntelGrid strong.warn{color:#96682f}
@@ -335,7 +335,7 @@
     box-shadow:0 12px 34px rgba(25,48,61,.22);backdrop-filter:blur(14px);
   }
   .updateMobileNav:not(.hide){display:grid}
-  .updateMobileNav button{height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:transparent;color:#607681;font-family:Inter,sans-serif;cursor:pointer}
+  .updateMobileNav button{height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:transparent;color:#607681;font-family:Inter,Arial,sans-serif;cursor:pointer}
   .updateMobileNav button span{font-size:15px;line-height:1}.updateMobileNav button b{font-size:6.4px;font-weight:750;white-space:nowrap}
   /* Mobile bottom navigation: all 5 actions use one visual standard. */
   .updateMobileNav button.scan{align-self:stretch;height:46px;margin:0;border-radius:0;background:transparent;color:#607681;box-shadow:none}
@@ -718,7 +718,7 @@
   border-radius:13px;
   background:#fffdf9;
   box-shadow:0 4px 14px rgba(34,59,72,.04);
-  font-family:Inter,sans-serif;
+  font-family:Inter,Arial,sans-serif;
 }
 .updateStripTitle{
   min-width:112px;
@@ -1877,9 +1877,9 @@
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineActions .peopleEditBtn{width:44px!important;min-width:44px!important;height:44px!important;flex:0 0 44px!important;margin:0!important;font-size:22px!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineConfirm{display:block!important;flex:1 1 auto!important;min-width:0!important;min-height:44px!important;margin:0!important;padding:8px 12px!important;border:0!important;border-radius:9px!important;background:#183263!important;color:#fff!important;font-size:16px!important;font-weight:600!important;scroll-margin-bottom:120px!important}
 
- :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;color-scheme:light!important;padding:10px!important;background:#f5fbff!important;border-color:#bdd8eb!important;border-radius:12px!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker{font-family:Inter,Arial,sans-serif!important;color-scheme:light!important;padding:10px!important;background:#f5fbff!important;border-color:#bdd8eb!important;border-radius:12px!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineHead{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin:0 0 10px!important;min-height:36px!important}
- :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineCount{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;font-size:14px!important;font-weight:600!important;color:#183263!important;min-width:0!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineCount{font-family:Inter,Arial,sans-serif!important;font-size:14px!important;font-weight:600!important;color:#183263!important;min-width:0!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineHead .peopleEditBtn{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;flex:0 0 auto!important;width:auto!important;min-height:36px!important;height:36px!important;margin:0!important;padding:4px 2px!important;border:0!important;border-radius:6px!important;background:transparent!important;color:#1674ed!important;box-shadow:none!important;font-size:14px!important;font-weight:500!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleEditBtn svg{width:19px!important;height:19px!important;flex:0 0 19px!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleOptions{color-scheme:light!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}

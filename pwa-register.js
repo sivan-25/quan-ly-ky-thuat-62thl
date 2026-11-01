@@ -59,13 +59,13 @@
     const notice = document.createElement('div');
     notice.setAttribute('role', 'status');
     notice.setAttribute('aria-live', 'polite');
-    notice.style.cssText = 'position:fixed;z-index:2147483000;right:12px;left:12px;bottom:calc(78px + env(safe-area-inset-bottom, 0px));max-width:430px;margin-left:auto;padding:12px 14px;border-radius:12px;background:#173b56;color:#fff;box-shadow:0 8px 28px #102b4055;font:600 13px/1.45 system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:10px';
+    notice.style.cssText = 'position:fixed;z-index:2147483000;right:12px;left:12px;bottom:calc(78px + env(safe-area-inset-bottom, 0px));max-width:430px;margin-left:auto;padding:12px 14px;border-radius:12px;background:#173b56;color:#fff;box-shadow:0 8px 28px #102b4055;font:600 13px/1.45 Inter,Arial,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:10px';
     const label = document.createElement('span');
     label.textContent = 'ESTA có phiên bản mới';
     const button = document.createElement('button');
     button.type = 'button';
     button.textContent = 'Cập nhật';
-    button.style.cssText = 'flex:none;cursor:pointer;border:0;border-radius:8px;background:#f3debf;color:#173b56;padding:9px 12px;font:700 12px system-ui,-apple-system,sans-serif';
+    button.style.cssText = 'flex:none;cursor:pointer;border:0;border-radius:8px;background:#f3debf;color:#173b56;padding:9px 12px;font:700 12px Inter,Arial,sans-serif';
     button.addEventListener('click', () => applyUpdate(true));
     notice.append(label, button);
     document.body.appendChild(notice);

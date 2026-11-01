@@ -26,6 +26,9 @@ data["130HH"].events.push({id:"130HH-real-event",building_id:"130HH",item_id:"13
 const dom=new JSDOM('<!doctype html><html><body><div id="homePage"></div><nav id="navAdmin"></nav><div id="maintenancePage"><section class="maintenanceSchedule"></section></div></body></html>',{url:"https://esta.test",runScripts:"outside-only"});
 const w=dom.window,d=w.document,calls=[],pdfs=[],notices=[];
 let canEdit=true,swallowPatch=false;
+// Freeze only the test clock; production still opens the actual current month.
+const RealDate=w.Date;
+w.Date=class extends RealDate{constructor(...args){super(...(args.length?args:["2026-10-17T12:00:00Z"]))}static now(){return new RealDate("2026-10-17T12:00:00Z").getTime()}};
 w.currentBuilding={id:"68PĐL"};w.currentAccount={is_admin:true};w.projectOverviewActive=false;
 w.centralSession={access_token:"fixture"};w.canProjectEdit=()=>canEdit;w.ESTAReportModel={localDay:()=>"2026-10-17"};
 w.toast=msg=>notices.push(msg);w.estaRefreshProjectNavAlerts=()=>{};

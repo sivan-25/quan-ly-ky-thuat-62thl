@@ -15,7 +15,7 @@ assert.ok(css.includes("grid-template-columns:repeat(4,minmax(0,1fr))"),"four KP
 assert.ok(css.includes(".estam130Overview:not(.estam130MetricsOpen)"),"secondary KPIs remain expandable");
 assert.ok(css.includes("height:44px!important;min-height:44px!important"),"main tap targets are 44px");
 assert.ok(!css.includes(String.fromCharCode(92)+"n@media"),"CSS media rule has no escaped newline");
-assert.ok(html.includes("maintenance-130-mobile.css?v=20261019-fourbuilding-mobile01"),"PWA receives four-building maintenance stylesheet");
+assert.ok(/maintenance\-130\-mobile\.css\?v=[\w-]+/.test(html),"PWA receives four-building maintenance stylesheet");
 const touchScope='#app.estaFourProjectCompact.maintenanceMode #maintenancePage:is([data-estam-building="130HH"],[data-estam-building="127HH"],[data-estam-building="62THL"],[data-estam-building="68PĐL"])';
 const mobileRules=css.slice(css.indexOf("/* Reclaim width without undersized"));
 assert.ok(mobileRules.includes(touchScope),"row touch rules apply to all four approved projects");

@@ -79,13 +79,8 @@ function ensureAdminHeader(admin){
  if(tools&&!$c("#ccAdminHeaderActions")){
   const box=document.createElement("div");box.id="ccAdminHeaderActions";box.className="ccAdminHeaderActions hide";
   box.setAttribute("role","group");box.setAttribute("aria-label","Thao tác nhanh Tổng quan Admin");
-  box.innerHTML='<label class="ccTopSearch" for="ccHeaderSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input type="search" id="ccHeaderSearch" autocomplete="off" placeholder="Tìm công việc..." aria-label="Tìm công việc Admin"></label><button id="ccHeaderDispatch" type="button" class="ccTopAction primary">＋ Giao công việc</button><button id="ccHeaderRefresh" type="button" class="ccTopAction">↻ Làm mới</button><button id="ccHeaderPdf" type="button" class="ccTopAction">Xuất PDF <b class="ccTopCount hide" id="ccHeaderPdfCount">0</b></button>';
+  box.innerHTML='<button id="ccHeaderDispatch" type="button" class="ccTopAction primary">＋ Giao công việc</button><button id="ccHeaderRefresh" type="button" class="ccTopAction">↻ Làm mới</button><button id="ccHeaderPdf" type="button" class="ccTopAction">Xuất PDF <b class="ccTopCount hide" id="ccHeaderPdfCount">0</b></button>';
   tools.insertBefore(box,tools.querySelector(".headerSearch"));
-  box.querySelector("#ccHeaderSearch").addEventListener("input",e=>{
-   if(!globalScope())return;
-   const search=$c("#ccSearch");
-   if(search){search.value=e.target.value;search.dispatchEvent(new Event("input",{bubbles:true}))}
-  });
   box.querySelector("#ccHeaderDispatch").addEventListener("click",()=>{if(globalScope())openDispatch()});
   box.querySelector("#ccHeaderRefresh").addEventListener("click",()=>{if(globalScope())loadCenter(true)});
   box.querySelector("#ccHeaderPdf").addEventListener("click",()=>{if(globalScope())runAdminPdfAction()});
@@ -101,8 +96,6 @@ function ensureAdminHeader(admin){
  $c("#ccAdminHeaderActions")?.classList.toggle("hide",!admin);
  $c("#ccTopContext")?.classList.toggle("hide",!admin);
  if(admin){
-  const topSearch=$c("#ccHeaderSearch"),bottomSearch=$c("#ccSearch");
-  if(topSearch&&bottomSearch&&topSearch.value!==bottomSearch.value)topSearch.value=bottomSearch.value;
   syncAdminHeader();
  }
 }
@@ -135,7 +128,7 @@ function ensureRoot(){
  let root=$c("#"+ROOT_ID);
  if(!root){
   root=document.createElement("section");root.id=ROOT_ID;root.className="ccRoot opsOverview hide";
-  root.innerHTML='<div class="ccHero opsHero"><div class="ccHeroCopy opsHeroCopy"><div class="ccHeroTags opsHeroTags"><span>ESTA OPERATIONS</span><b>ĐA DỰ ÁN</b><i id="ccDataState">Đang tải dữ liệu</i></div><h2>Trung tâm điều hành</h2><p>Tổng hợp công việc, cảnh báo và năng lượng của các dự án.</p></div><div class="ccHeroActions opsHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary opsKpiGrid"></div><div class="ccProjectHeading"><h3>Dự án đang vận hành</h3><span>Chạm để mở →</span></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>THEO DÕI CÔNG VIỆC</span><h3 id="ccTaskTitle">Công việc Admin đã giao</h3><p id="ccTaskMeta" aria-live="polite">Đang tải dữ liệu...</p></div><button id="ccBeginPdf" type="button" class="ccBeginPdf ccBtn">Xuất PDF</button></div><div id="ccPdfTools" class="ccPdfTools"><label><input id="ccPdfSelectAll" type="checkbox" aria-label="Chọn tất cả công việc Admin theo bộ lọc"><span>Chọn tất cả đang lọc</span></label><label><input id="ccPdfWithPhotos" type="checkbox" checked><span>Kèm hình ảnh</span></label><button id="ccPrintSelected" class="ccBtn primary" type="button" disabled>📄 Xuất PDF (0)</button><span id="ccPdfSelectionStatus" class="hide" role="status" aria-live="polite"></span><button id="ccCancelPdf" class="ccBtn ccPdfCancel hide" type="button" aria-label="Đóng chế độ chọn PDF" title="Đóng chọn PDF">×</button></div><div class="ccTaskScopes" role="group" aria-label="Nguồn công việc"><button type="button" data-cc-scope="admin" aria-pressed="true">Admin đã giao <b id="ccAdminTaskCount">0</b></button><button type="button" data-cc-scope="all" aria-pressed="false">Tất cả công việc <b id="ccAllTaskCount">0</b></button></div><div class="ccFilters"><select id="ccProjectFilter" aria-label="Lọc dự án"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter" aria-label="Lọc trạng thái"><option value="">Tất cả trạng thái</option><option>Bắt đầu</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option><option value="overdue">Quá hạn</option></select><select id="ccPriorityFilter" aria-label="Lọc mức độ"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" aria-label="Tìm công việc" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th scope="col" class="ccPdfCol">Chọn</th><th scope="col">Dự án</th><th scope="col">Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div><div id="ccTaskPager" class="opsPager"></div></section><aside class="ccPanel ccAlertsPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div><div id="ccAlertPager" class="opsPager"></div></aside></div><div class="opsDashboardGrid"><section class="ccPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>NĂNG LƯỢNG</span><h3>Năng lượng tháng này</h3><p>Tiêu thụ theo dự án · EVN1 và EVN2 hiển thị riêng.</p></div></div><div id="ccEnergyList" class="opsEnergyList"></div></section><section class="ccPanel ccActivityPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>NHẬT KÝ VẬN HÀNH</span><h3>Hoạt động gần đây</h3><p>Lịch sử cập nhật theo dự án và tài khoản thực hiện.</p></div></div><div id="ccActivityList" class="ccActivityList"></div><div id="ccActivityPager" class="opsPager"></div></section></div><section class="opsQuickActions" aria-label="Thao tác nhanh"><button type="button" data-cc-dispatch>＋ Giao công việc</button><button type="button" data-cc-directory>Quản lý dự án →</button></section><p id="ccLoadMessage" class="opsLoadMessage" role="status" aria-live="polite"></p>';
+  root.innerHTML='<div class="ccHero opsHero"><div class="ccHeroCopy opsHeroCopy"><div class="ccHeroTags opsHeroTags"><span>ESTA OPERATIONS</span><b>ĐA DỰ ÁN</b><i id="ccDataState">Đang tải dữ liệu</i></div><h2>Trung tâm điều hành</h2><p>Tổng hợp công việc, cảnh báo và năng lượng của các dự án.</p></div><div class="ccHeroActions opsHeroActions"><button id="ccRefresh" class="ccBtn ghost" type="button">Làm mới</button><button id="ccDispatch" class="ccBtn primary" type="button">＋ Giao công việc</button></div></div><div id="ccSummary" class="ccSummary opsKpiGrid"></div><div class="ccProjectHeading"><h3>Dự án đang vận hành</h3><span>Chạm để mở →</span></div><div id="ccProjectCards" class="ccProjects"></div><div class="ccWorkspace"><section class="ccPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>THEO DÕI CÔNG VIỆC</span><h3 id="ccTaskTitle">Công việc Admin đã giao</h3><p id="ccTaskMeta" aria-live="polite">Đang tải dữ liệu...</p></div><button id="ccBeginPdf" type="button" class="ccBeginPdf ccBtn">Xuất PDF</button></div><div id="ccPdfTools" class="ccPdfTools"><label><input id="ccPdfSelectAll" type="checkbox" aria-label="Chọn tất cả công việc Admin theo bộ lọc"><span>Chọn tất cả đang lọc</span></label><label><input id="ccPdfWithPhotos" type="checkbox" checked><span>Kèm hình ảnh</span></label><button id="ccPrintSelected" class="ccBtn primary" type="button" disabled>📄 Xuất PDF (0)</button><span id="ccPdfSelectionStatus" class="hide" role="status" aria-live="polite"></span><button id="ccCancelPdf" class="ccBtn ccPdfCancel hide" type="button" aria-label="Đóng chế độ chọn PDF" title="Đóng chọn PDF">×</button></div><div class="ccTaskScopes" role="group" aria-label="Nguồn công việc"><button type="button" data-cc-scope="admin" aria-pressed="true">Admin đã giao <b id="ccAdminTaskCount">0</b></button><button type="button" data-cc-scope="all" aria-pressed="false">Tất cả công việc <b id="ccAllTaskCount">0</b></button></div><div class="ccFilters"><select id="ccProjectFilter" aria-label="Lọc dự án"><option value="">Tất cả dự án</option></select><select id="ccStatusFilter" aria-label="Lọc trạng thái"><option value="">Tất cả trạng thái</option><option>Bắt đầu</option><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option><option value="overdue">Quá hạn</option></select><select id="ccPriorityFilter" aria-label="Lọc mức độ"><option value="">Tất cả mức độ</option><option>Khẩn cấp</option><option>Cao</option><option>Trung bình</option><option>Thấp</option></select><input id="ccSearch" aria-label="Tìm công việc" type="search" autocomplete="off" placeholder="Tìm công việc, người thực hiện..."></div><div class="ccTableWrap"><table class="ccTable"><thead><tr><th scope="col" class="ccPdfCol">Chọn</th><th scope="col">Dự án</th><th scope="col">Công việc</th><th>Trạng thái</th><th>Mức độ</th><th>Người thực hiện</th><th>Hạn</th><th>Cảnh báo</th></tr></thead><tbody id="ccTaskBody"></tbody></table></div><div id="ccTaskPager" class="opsPager"></div></section><section class="ccPanel ccAlertsPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>CẢNH BÁO</span><h3>Cần xử lý</h3><p>Ưu tiên theo mức độ và hạn.</p></div><b id="ccAlertCount" class="ccAlertCount">0</b></div><div id="ccAlertList" class="ccAlertList"></div><div id="ccAlertPager" class="opsPager"></div></section></div><div class="opsDashboardGrid"><section class="ccPanel ccActivityPanel opsPanel"><div class="ccPanelHead opsPanelHead"><div><span>NHẬT KÝ VẬN HÀNH</span><h3>Hoạt động gần đây</h3><p>Lịch sử cập nhật theo dự án và tài khoản thực hiện.</p></div></div><div id="ccActivityList" class="ccActivityList"></div><div id="ccActivityPager" class="opsPager"></div></section></div><section class="opsQuickActions" aria-label="Thao tác nhanh"><button type="button" data-cc-dispatch>＋ Giao công việc</button><button type="button" data-cc-directory>Quản lý dự án →</button></section><p id="ccLoadMessage" class="opsLoadMessage" role="status" aria-live="polite"></p>';
   const anchor=home.querySelector(".homeKpis");if(anchor)anchor.insertAdjacentElement("afterend",root);else home.prepend(root);
   root.querySelector("#ccRefresh").addEventListener("click",()=>loadCenter(true));
   root.querySelector("#ccDispatch").addEventListener("click",openDispatch);
@@ -161,7 +154,7 @@ function ensureRoot(){
    renderLists();
   });
   ["#ccProjectFilter","#ccStatusFilter","#ccPriorityFilter"].forEach(id=>root.querySelector(id).addEventListener("change",()=>{taskPage=alertPage=activityPage=1;renderLists();renderActivity()}));
-  root.querySelector("#ccSearch").addEventListener("input",e=>{const top=$c("#ccHeaderSearch");if(top&&top.value!==e.target.value)top.value=e.target.value;taskPage=alertPage=activityPage=1;renderLists();renderActivity()});
+  root.querySelector("#ccSearch").addEventListener("input",e=>{taskPage=alertPage=activityPage=1;renderLists();renderActivity()});
   root.addEventListener("click",e=>{
    const star=e.target.closest("[data-cc-star-building][data-cc-star-id]");
    if(star){e.preventDefault();e.stopPropagation();void ccTogglePriorityStar(star.dataset.ccStarBuilding,star.dataset.ccStarId);return}
@@ -272,7 +265,12 @@ function renderSummary(a,t){
   '<button type="button" data-cc-jump="alerts" aria-label="Xem danh sách cảnh báo và quá hạn" class="opsKpi danger"><span>QUÁ HẠN</span><b>'+overdue+'</b><small>Công việc / bảo trì</small></button>'+
   '<button type="button" data-cc-jump="alerts" aria-label="Xem cảnh báo và sự cố cần xử lý" class="opsKpi"><span>SỰ CỐ ĐANG MỞ</span><b>'+openInc+'</b><small>Chưa đóng hồ sơ</small></button>';
 }
-function renderProjects(a){const box=$c("#ccProjectCards");if(!box)return;box.innerHTML=activeRows().map(r=>{const b=r.building||{},tasks=r.snapshot?.tasks||[],open=tasks.filter(x=>!isDone(x)).length,aa=a.filter(x=>x.bid===String(b.id)),red=aa.filter(x=>x.sev===3).length;return '<button class="ccProjectCard" type="button" data-cc-project="'+escC(b.id)+'"><div><span>'+escC(b.id)+'</span><h3>'+escC(b.name||b.id)+'</h3><div class="ccProjectStats"><span><b>'+open+'</b> việc mở</span><span><b>'+aa.length+'</b> cảnh báo</span><span class="'+(red?"hot":"")+'"><b>'+red+'</b> khẩn</span></div></div><i>→</i></button>'}).join("")||'<div class="ccEmpty">Chưa có dự án đang hoạt động.</div>'}
+function renderProjects(){
+ const box=$c("#ccProjectCards");if(!box)return;
+ box.innerHTML=activeRows().map(r=>{const b=r.building||{},name=b.name||b.id;
+  return '<button class="ccProjectCard" type="button" data-cc-project="'+escC(b.id)+'" aria-label="Mở dự án '+escC(name)+'"><div><h3>'+escC(name)+'</h3></div><i aria-hidden="true">→</i></button>';
+ }).join("")||'<div class="ccEmpty">Chưa có dự án đang hoạt động.</div>';
+}
 function pager(id,kind,page,total,size){
  const count=Math.max(1,Math.ceil(total/size)),node=$c("#"+id);if(!node)return;
  node.innerHTML=total?'<span>'+((page-1)*size+1)+'–'+Math.min(page*size,total)+' / '+total+'</span><div><button type="button" data-cc-page="'+kind+'" data-page="'+(page-1)+'" '+(page<=1?'disabled':'')+' aria-label="Trang trước">‹</button><span>'+page+' / '+count+'</span><button type="button" data-cc-page="'+kind+'" data-page="'+(page+1)+'" '+(page>=count?'disabled':'')+' aria-label="Trang sau">›</button></div>':'';
@@ -421,7 +419,7 @@ function renderActivity(){
    return '<button type="button" class="ccActivity" data-cc-project="'+escC(x.building_id)+'"><span class="ccActivityDot"></span><div><b>'+escC(x.building_id)+' · '+escC(label)+'</b><small>'+escC(x.actor||"Hệ thống")+' · '+escC(when)+(summary?' · '+escC(summary):'')+'</small></div><em>Chi tiết</em></button>';
  }).join(""):'<div class="ccEmpty">Chưa có lịch sử cập nhật.</div>';
 }
-function renderCenter(){const root=ensureRoot();if(!root||!globalScope())return;renderFilters();const a=alerts(),t=taskRows();renderSummary(a,t);renderProjects(a);renderLists();renderActivity();renderEnergySummary();if(lastUpdated&&$c("#homeUpdatedAt"))$c("#homeUpdatedAt").textContent="Cập nhật "+new Date(lastUpdated).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}
+function renderCenter(){const root=ensureRoot();if(!root||!globalScope())return;renderFilters();const a=alerts(),t=taskRows();renderSummary(a,t);renderProjects(a);renderLists();renderActivity();if(lastUpdated&&$c("#homeUpdatedAt"))$c("#homeUpdatedAt").textContent="Cập nhật "+new Date(lastUpdated).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}
 function renderEnergySummary(){const box=$c("#ccEnergyList");if(box)box.innerHTML=window.estaOverviewUI.energyHtml(activeRows().map(r=>({id:r.building.id,name:r.building.name,energy:r.snapshot?.energy||[]})))}
 async function loadCenter(force=false){
  if(!globalScope())return;
@@ -464,6 +462,7 @@ async function loadCenter(force=false){
    if(refresh){refresh.disabled=false;refresh.textContent=oldRefreshText}
    syncAdminHeader();
    if(currentAccount!==account&&globalScope())loadCenter(false);
+   else if(centerDirtyWhileLoading){centerDirtyWhileLoading=false;lastFetchedAt=0;if(globalScope())loadCenter(true)}
  }
 }
 async function openEnergy(id){const b=(currentAccount?.buildings||[]).find(x=>String(x.id)===String(id));if(!b)return;const opening=enterProject(b,{target:"work"});showModule("energy");await opening}
@@ -810,5 +809,13 @@ window.estaCommandCenterRefresh=()=>loadCenter(true);
 // Keyboard activation uses the same project/task link as a pointer click.
 $c("#homePage")?.addEventListener("keydown",e=>{const row=e.target.closest("tr[data-cc-task]");if(row&&e.target===row&&["Enter"," "].includes(e.key)){e.preventDefault();row.click()}});
 setTimeout(()=>{ensureRoot();scheduleNavAlerts(0);if(globalScope()&&!$c("#homePage")?.classList.contains("hide"))loadCenter(false)},650);
+let centerSyncTimer,centerDirtyWhileLoading=false;
+window.addEventListener("esta:data-changed",({detail})=>{
+ if(!detail)return;
+ lastFetchedAt=0;
+ if(loading)centerDirtyWhileLoading=true;
+ clearTimeout(centerSyncTimer);
+ centerSyncTimer=setTimeout(()=>{if(globalScope()&&!document.hidden)loadCenter(false);scheduleNavAlerts(0)},100);
+});
 })();
 

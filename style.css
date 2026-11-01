@@ -1,4 +1,4 @@
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Inter";color:#173653;background:#f4f8fc}button,input,select,textarea{font:inherit}.hide{display:none!important}button{cursor:pointer}#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);z-index:1000;padding:11px 16px;border-radius:10px;background:#082d52;color:#fff;font-size:12px;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 14px 40px #00172d40}#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;color:#173653;background:#f4f8fc}button,input,select,textarea{font:inherit}.hide{display:none!important}button{cursor:pointer}#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);z-index:1000;padding:11px 16px;border-radius:10px;background:#082d52;color:#fff;font-size:12px;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 14px 40px #00172d40}#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* LOGIN ESTA */
 #login{display:grid;grid-template-columns:minmax(0,1fr) 37%;place-items:stretch;min-height:100vh;overflow:hidden;color:#fff;background:linear-gradient(90deg,rgba(1,18,35,.93) 0%,rgba(3,34,59,.34) 58%,rgba(1,18,34,.86) 100%),url("https://images.splitshire.com/full/The-Office-Building-Glowing-Blue-at-Night_BMndD.png") center/cover no-repeat}
@@ -6573,7 +6573,7 @@ img[data-storage-path]:not([src]){
 #app input,
 #app select,
 #app textarea{
-  font-family:inherit!important;
+  font-family:Inter,Arial,sans-serif!important;
 }
 
 /* Sidebar + header */
@@ -7592,12 +7592,12 @@ h1,h2,h3,h4,h5,h6,
 svg text,
 input::placeholder,
 textarea::placeholder{
-  font-family:"Inter"!important;
+  font-family:Inter,Arial,sans-serif!important;
 }
 
 html,
 body{
-  font-family:"Inter"!important;
+  font-family:Inter,Arial,sans-serif!important;
   font-optical-sizing:auto;
   font-synthesis:none;
   -webkit-font-smoothing:antialiased;
@@ -7611,7 +7611,7 @@ select,
 textarea,
 option,
 optgroup{
-  font-family:"Inter"!important;
+  font-family:Inter,Arial,sans-serif!important;
   font-style:normal!important;
 }
 
@@ -7626,7 +7626,7 @@ i{
 .loginLogo strong,
 .lv8Brand small,
 .estaSidebarBrand small{
-  font-family:"Inter"!important;
+  font-family:Inter,Arial,sans-serif!important;
 }
 
 /* =========================================================

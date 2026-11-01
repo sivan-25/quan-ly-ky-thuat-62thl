@@ -8,7 +8,7 @@
   --rc-paper: #fff;
   --rc-soft: #f4f8fb;
   color: var(--rc-ink);
-  font-family: Inter, Arial, sans-serif;
+  font-family:Inter,Arial,sans-serif;
   padding: 24px;
 }
 #reportsPage *, #reportsPage *::before, #reportsPage *::after { box-sizing: border-box; }

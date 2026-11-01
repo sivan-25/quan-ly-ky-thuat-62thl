@@ -487,7 +487,7 @@ async function rescheduleOccurrence(key,date){
 async function load(force){
  if(!show()||busy||!centralSession?.access_token)return;
  if(ready&&!force){render();return;}
- const requestBuilding=B;
+ const requestBuilding=B,revision=window.ESTADataSync?.version(B)||0;
  busy=true;$("m130List").innerHTML='<p class="m130Empty">Đang tải dữ liệu bảo trì...</p>';
  try{
   const token=centralSession.access_token,[i,e,persons,profiles,systems]=await Promise.all([
@@ -498,9 +498,12 @@ async function load(force){
    LINK_BUILDINGS.has(B)?sbFetch("/rest/v1/ops_systems?select=name,active&building_id=eq."+encodeURIComponent(requestBuilding)+"&active=eq.true&order=sort_order.asc,name.asc",{token}).catch(()=>[]):Promise.resolve([])
   ]);
   if(!active()||B!==requestBuilding)return;
+  if(revision!==(window.ESTADataSync?.version(B)||0)){ready=false;return}
   items=Array.isArray(i)?i:[];stored=Array.isArray(e)?e:[];people=Array.isArray(persons)?persons.map(p=>String(p.name||"").trim()).filter(Boolean):[];equipmentProfiles=LINK_BUILDINGS.has(B)&&Array.isArray(profiles)?profiles.filter(p=>!p.specs?._estaUpgrade?.archived):[];systemCatalog=LINK_BUILDINGS.has(B)&&Array.isArray(systems)?systems.filter(x=>x.active!==false):[];fillMaintenanceSystemSelect();clearScheduleCache();renderPersonPickers();const staff=$("m130TechnicianFilter"),oldStaff=staff.value;staff.innerHTML='<option value="">Mọi KTV</option>'+peopleOptions().map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");staff.value=oldStaff;ready=true;render();if(pendingFocusPlanId)focusPlanInList(pendingFocusPlanId);
- }catch(err){$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
- finally{if(B===requestBuilding)busy=false;}
+ }catch(err){if(B===requestBuilding&&active())$("m130List").textContent="Không tải được kế hoạch: "+(err.message||err);}
+ finally{
+  if(B===requestBuilding){busy=false;if(active()&&revision!==(window.ESTADataSync?.version(B)||0))load(true)}
+ }
 }
 function resetPlanSaveFeedback(){
  if(planSuccessTimer!==null){clearTimeout(planSuccessTimer);planSuccessTimer=null;}
@@ -924,4 +927,11 @@ window.mountMaintenance130=()=>{
  load(ready);
 };
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{ensure();show();},{once:true});else{ensure();show();}
+window.addEventListener("esta:data-changed",({detail})=>{
+ if(!detail||!["*",B].includes(detail.buildingId))return;
+ if(detail.tables.some(t=>["esta_maintenance_plan_items","esta_maintenance_plan_occurrences","building_equipment_profiles_nangcap","building_people","ops_systems"].includes(t))){
+  if(detail.remote||detail.tables.some(t=>["building_equipment_profiles_nangcap","building_people","ops_systems"].includes(t)))ready=false;
+  clearScheduleCache();
+ }
+});
 })();

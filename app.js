@@ -144,6 +144,7 @@ async function sbFetch(path,{method="GET",body=null,token=null}={}){
  if(res.status===401&&usesCentral&&centralSession?.refresh_token){await ensureCentralSessionFresh(true);token=centralSession.access_token;res=await make()}
  let data=null;try{data=await res.json()}catch(e){}
  if(!res.ok){const err=new Error(data?.msg||data?.message||data?.error_description||data?.error||"Không thể kết nối máy chủ");err.status=res.status;throw err}
+ window.ESTADataSync?.requestSucceeded(path,method,body,currentBuilding?.id);
  return data;
 }
 const MEDIA_BUCKET="task-images";
@@ -2834,6 +2835,7 @@ document.addEventListener("submit",e=>{
 
 
 /* ===== DỤNG CỤ - VẬT TƯ ===== */
+let inventoryRequestSeq=0;
 let inventoryMaterials=[],inventoryTransactions=[],inventoryTools=[],inventoryLoadedBuilding="",inventoryActiveTab="materials",inventoryActiveMonth=new Date().getMonth()+1,inventoryShowAlertsOnly=false;
 function inventoryActiveMaterials(){return inventoryMaterials.filter(m=>!m.archived_at)}
 const INV_MONTHS=["T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"];
@@ -2910,6 +2912,7 @@ async function loadInventoryData(buildingId=currentBuilding?.id,force=false){
  if(!centralSession?.access_token||!buildingId)return;
  if(!force&&inventoryLoadedBuilding===buildingId){renderInventory();return}
  try{
+   const requestId=++inventoryRequestSeq,revision=window.ESTADataSync?.version(buildingId)||0;
    const b=encodeURIComponent(buildingId),token=centralSession.access_token;
    const result=await Promise.all([
      sbFetch("/rest/v1/inventory_materials?select=*&building_id=eq."+b+"&order=name.asc",{token}),
@@ -2917,10 +2920,12 @@ async function loadInventoryData(buildingId=currentBuilding?.id,force=false){
      sbFetch("/rest/v1/inventory_tools?select=*&building_id=eq."+b+"&order=name.asc",{token})
    ]);
    if(String(currentBuilding?.id||"")!==String(buildingId))return;
+   if(requestId!==inventoryRequestSeq||revision!==(window.ESTADataSync?.version(buildingId)||0))return;
    inventoryMaterials=Array.isArray(result[0])?result[0]:[];
    inventoryTransactions=Array.isArray(result[1])?result[1]:[];
    inventoryTools=Array.isArray(result[2])?result[2]:[];
    inventoryLoadedBuilding=buildingId;inventoryShowAlertsOnly=false;inventoryFillPeople();renderInventory();
+   window.dispatchEvent(new CustomEvent("esta:inventory-ready",{detail:{buildingId,materials:inventoryMaterials,transactions:inventoryTransactions}}));
  }catch(e){if(String(currentBuilding?.id||"")!==String(buildingId))return;console.warn("Load inventory failed",e);toast("Không tải được dữ liệu vật tư")}
 }
 function renderInventory(){
@@ -4018,3 +4023,14 @@ applyBuildingUI=function(){
  if(restored)window.enterAccount(restored.account,restored.session);
 })();
 
+
+/* Invalidate only caches belonging to the changed building; existing save paths reload once. */
+window.addEventListener("esta:data-changed",({detail})=>{
+ if(!detail||!["*",String(currentBuilding?.id||"")].includes(detail.buildingId))return;
+ if(detail.tables.some(t=>t.startsWith("inventory_"))){inventoryLoadedBuilding="";inventoryRequestSeq++}
+ if(detail.tables.includes("building_people"))loadProjectPeople(currentBuilding?.id);
+ if(detail.remote){
+  if(detail.tables.some(t=>t.startsWith("inventory_"))&&!$("#inventoryPage")?.classList.contains("hide"))loadInventoryData(currentBuilding?.id);
+  if(detail.tables.some(t=>["tasks","energy"].includes(t)))pollProjectSnapshot();
+ }
+});

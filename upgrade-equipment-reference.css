@@ -5,7 +5,7 @@
  --ues-sand:#f8f2e8;--ues-head:#f2ebdf;--ues-white:#fff;
  width:100%;min-width:0;max-width:100%;background:var(--ues-sand)!important;
  color:var(--ues-ink);padding:0!important;border:0!important;border-radius:0;
- font-family:Inter,Montserrat,system-ui,sans-serif;
+ font-family:Inter,Arial,sans-serif;
 }
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage.ueSnapshot *{box-sizing:border-box}
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueVisuallyHidden{

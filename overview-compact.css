@@ -82,7 +82,7 @@
     gap:7px!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccProjectCard{
-    width:100%!important;min-width:0!important;min-height:93px!important;
+    width:100%!important;min-width:0!important;min-height:48px!important;
     padding:10px 9px!important;border-radius:11px!important;align-items:center!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome #estaCommandCenter .ccProjectCard>div{
