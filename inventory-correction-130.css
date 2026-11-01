@@ -134,3 +134,34 @@
 #app #inventoryPage.inventoryRef127 #materialMonthTabs button.active{background:#215d87!important;border-color:#215d87!important;color:white!important;-webkit-text-fill-color:white!important}
 #app #inventoryPage.inventoryRef127 #inventory130PdfTrigger{background:#fff!important;color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;border-color:#b8d0e4!important}
 }
+
+/* Shared inventory controls: descendants must follow their button after relocation
+   to the topbar. Legacy header span rules otherwise override the button color. */
+body #app#app.inventoryMode :is(header.estaTopbar,#inventoryPage) .inventoryLocalTabs button span{
+ color:inherit!important;-webkit-text-fill-color:currentColor!important;opacity:1!important;text-shadow:none!important;
+}
+body #app.inventoryMode #topInventoryTitle p{display:none!important}
+/* One compact summary and period rail across all four buildings; retain data nodes. */
+@media(min-width:761px){
+ body #app#app #inventoryPage .monthlyStats article{min-height:68px!important;padding:10px 14px!important;border-radius:12px!important}
+ body #app#app #inventoryPage .monthlyStats small{font-size:12px!important;letter-spacing:0!important;line-height:1.35!important}
+ body #app#app #inventoryPage .monthlyStats b{font-size:24px!important;line-height:1.2!important;margin-top:3px!important}
+ body #app#app #inventoryPage .monthlyStats em{display:none!important}
+ body #app#app #inventoryPage #materialMonthTabs{display:grid!important;grid-template-columns:repeat(13,minmax(0,1fr))!important;gap:4px!important;padding:0!important}
+ body #app#app #inventoryPage #materialMonthTabs button{min-width:0!important;min-height:34px!important;height:34px!important;padding:2px!important;font-size:12px!important;white-space:nowrap!important}
+ body #app#app #inventoryPage #materialMonthTabs .yearOverviewBtn{display:block!important}
+ body #app#app #inventoryPage #inventoryMaterialsPane>.inventoryStats{gap:8px!important;margin-bottom:10px!important}
+ body #app#app #inventoryPage #inventoryMaterialsPane>.inventoryMonthRail{margin-bottom:10px!important}
+}
+@media(min-width:761px) and (max-width:1000px){
+ body #app#app #inventoryPage #materialMonthTabs{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+}
+
+/* Explicit states also defeat the legacy brand rule on topbar button descendants. */
+body #app#app#app.inventoryMode header.estaTopbar .inventoryLocalTabs button:not(.active),
+body #app#app#app.inventoryMode header.estaTopbar .inventoryLocalTabs button:not(.active) span{
+ color:#33202d!important;-webkit-text-fill-color:#33202d!important;
+}
+body #app#app#app.inventoryMode header.estaTopbar .inventoryLocalTabs button.active span{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
