@@ -33,5 +33,7 @@ jobs:
         run: node tests/maintenance-asset-mobile-modal.test.cjs
       - name: Verify mobile maintenance planning and saved confirmation
         run: node tests/maintenance-plan-mobile.test.cjs
+      - name: Verify month-arrow drag and same-day maintenance stacking
+        run: node tests/maintenance-month-drag.test.cjs
       - name: Run ESTA test suite
         run: npm test
