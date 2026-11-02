@@ -3,7 +3,7 @@
  "use strict";
  function exportExcel() {
    const page=document.getElementById("inventoryPage");
-   if(!page?.classList.contains("inventoryRef130")) return;
+   if(!page?.classList.contains("inventoryRefShared")) return;
    const table=document.getElementById("materialInventoryTable");
    if(!table) return;
    const rows=[...table.querySelectorAll("tr")].filter(row=>row.getClientRects().length);
@@ -18,7 +18,8 @@
    const month=page.querySelector("#materialMonthTabs button.active")?.dataset.materialMonth||"all";
    const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
    const url=URL.createObjectURL(blob), link=document.createElement("a");
-   link.href=url;link.download="ESTA_130HH_VatTu_"+year+"_"+month+".csv";
+   const project=String(typeof currentBuilding!=="undefined"?currentBuilding?.id||"":"").replace(/[^a-zA-Z0-9_-]/g,"");
+   link.href=url;link.download="ESTA_"+project+"_VatTu_"+year+"_"+month+".csv";
    document.body.appendChild(link);link.click();link.remove();
    setTimeout(()=>URL.revokeObjectURL(url),1000);
  }

@@ -3090,7 +3090,7 @@ function renderMaterials(){
      const mm=s.months[month-1],lowRow=inventoryNum(m.min_qty)>0&&inventoryNum(mm.stock)<=inventoryNum(m.min_qty);
      return '<tr class="'+(lowRow?"lowStock":"")+'">'+
        '<td class="sttCell">'+(i+1)+'</td>'+
-       '<td class="materialNameCell"><b>'+esc(m.name)+'</b><small>'+esc(m.code||"")+(inventoryTrackingStart(m).slice(0,7)===y+"-"+String(month).padStart(2,"0")?' · Bắt đầu '+fmt(inventoryTrackingStart(m)):'')+'</small></td>'+
+       '<td class="materialNameCell"><b>'+esc(m.name)+'</b><small>'+esc(m.code||"")+(inventoryTrackingStart(m).slice(0,7)===y+"-"+String(month).padStart(2,"0")?' Bắt đầu '+fmt(inventoryTrackingStart(m)):'')+'</small></td>'+
        '<td>'+esc(m.unit)+'</td>'+
        '<td><b>'+inventoryFmt(mm.begin)+'</b></td>'+
        '<td class="inText '+(mm.inQty?"hasValue":"")+'">'+(mm.inQty?"+"+inventoryFmt(mm.inQty):"0")+'</td>'+

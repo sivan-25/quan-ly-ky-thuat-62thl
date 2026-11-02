@@ -3,7 +3,7 @@
  "use strict";
  const $ = s => document.querySelector(s);
  let bellParent=null,bellNext=null,controlsParent=null,controlsNext=null;
- function isPilot(){const page=$("#inventoryPage");return !!(page&&(page.classList.contains("inventoryRef130")||page.classList.contains("inventoryRef127"))&&!page.classList.contains("hide"));}
+ function isPilot(){const page=$("#inventoryPage");return !!(page&&page.matches(".inventoryRefShared,.inventoryRef130,.inventoryRef127")&&!page.classList.contains("hide"));}
  function syncApprovedTopbar(){
    const controls=$("#inventoryPage .inventoryCommandControls")||$("header.estaTopbar>.inventoryCommandControls"),header=$("header.estaTopbar"),account=$("header .account");
    if(!controls||!header||!account)return;
@@ -30,7 +30,7 @@
  }
  function ensureMenu(){
    const page=$("#inventoryPage");
-   if(!page?.classList.contains("inventoryRef130")&&!page?.classList.contains("inventoryRef127")){
+   if(!page?.matches(".inventoryRefShared,.inventoryRef130,.inventoryRef127")){
       closeMenu();
       $("#inventory130PdfMenu")?.remove();
       return;
@@ -44,9 +44,13 @@
       wrapper=document.createElement("div");
       wrapper.id="inventory130PdfMenu";
       wrapper.className="inventory130PdfMenu";
-      wrapper.innerHTML='<button type="button" aria-haspopup="true" aria-expanded="false" id="inventory130PdfTrigger">↓ Xuất PDF ▾</button><div class="inventory130PdfDropdown" id="inventory130PdfDropdown" hidden><button type="button" data-esta-pdf="inventory">Xuất PDF vật tư</button><button type="button" data-esta-pdf="work">Công việc theo vật tư</button></div>';
+      wrapper.innerHTML='<button type="button" aria-haspopup="true" aria-expanded="false" aria-controls="inventory130PdfDropdown" id="inventory130PdfTrigger">↓ Xuất file ▾</button><div class="inventory130PdfDropdown" id="inventory130PdfDropdown" hidden><button type="button" data-esta-pdf="inventory">Xuất PDF vật tư</button><button type="button" data-esta-pdf="work">Xuất PDF công việc</button><button type="button" data-esta-pdf="excel">Xuất Excel</button></div>';
       toolbar.insertBefore(wrapper,original);
    }
+   const year=$("header.estaTopbar #inventoryYear")||$("#inventoryPage #inventoryYear");
+   const controls=year?.closest(".inventoryCommandControls");
+   const yearContainer=year?.closest(".inventoryCommandMeta");
+   if(controls&&yearContainer&&wrapper.nextElementSibling!==yearContainer)controls.insertBefore(wrapper,yearContainer);
  }
  function closeMenu(){
    const dropdown=$("#inventory130PdfDropdown"),trigger=$("#inventory130PdfTrigger");
@@ -66,6 +70,7 @@
       const type=option.getAttribute("data-esta-pdf");
       closeMenu();
       if(type==="inventory")$("#materialExportPdf")?.click();
+      if(type==="excel")$("#materialExportExcel")?.click();
       if(type==="work"){
          const launch=$("#estaMaterialWorkReportLaunch");
          if(launch)launch.click();
