@@ -342,6 +342,11 @@
   body #app#app #inventoryPage.inventoryRef127 .monthlyStats article{min-height:76px!important;padding:11px 12px!important}
   body #app#app #inventoryPage.inventoryRef127 .monthlyStats b{font-size:24px!important}
 }
+/* The legacy three-ID topbar rule must not tint the 127HH tab plum. */
+body #app#app#app.inventoryMode:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs button:not(.active),
+body #app#app#app.inventoryMode:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs button:not(.active) span{
+  color:#23475d!important;-webkit-text-fill-color:#23475d!important;
+}
 /* Mobile: readable cards without changing the existing mobile layout or actions. */
 @media(max-width:760px){
   #app #inventoryPage.inventoryRef127 .inventoryCommand,
