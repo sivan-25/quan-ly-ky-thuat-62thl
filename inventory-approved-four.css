@@ -34,17 +34,19 @@
   #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.inventoryStats>.inMetric{display:none!important}
   body #app#app #inventoryPage.inventoryRefShared .monthlyStats article{display:block!important;min-height:88px!important;padding:15px 20px!important;background:#101b31!important;border:1px solid #30415d!important;border-radius:15px!important;box-shadow:none!important}
   body #app#app #inventoryPage.inventoryRefShared .monthlyStats :is(small,b){color:#f5f8ff!important;-webkit-text-fill-color:#f5f8ff!important;opacity:1!important;letter-spacing:0!important;text-shadow:none!important}
-  body #app#app #inventoryPage.inventoryRefShared .monthlyStats small{font-size:15px!important;font-weight:550!important}
-  body #app#app #inventoryPage.inventoryRefShared .monthlyStats b{font-size:29px!important;font-weight:800!important;line-height:1.2!important;margin-top:6px!important}
+  body #app#app #inventoryPage.inventoryRefShared .monthlyStats article>div{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;width:100%!important;min-width:0!important}
+  body #app#app #inventoryPage.inventoryRefShared .monthlyStats small{font-size:15px!important;font-weight:550!important;white-space:nowrap!important;flex:1 1 auto!important;min-width:0!important}
+  body #app#app #inventoryPage.inventoryRefShared .monthlyStats b{font-size:29px!important;font-weight:800!important;line-height:1.2!important;margin:0!important;white-space:nowrap!important;flex:0 0 auto!important}
   body #app#app #inventoryPage.inventoryRefShared .monthlyStats .lowMetric b{color:#f49b41!important;-webkit-text-fill-color:#f49b41!important}
   #app #inventoryPage.inventoryRefShared .monthlyStats :is(.invStatIcon,em){display:none!important}
   #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.inventoryMonthRail{order:2!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
   #app #inventoryPage.inventoryRefShared .inventoryMonthRailHead{display:none!important}
   #app #inventoryPage.inventoryRefShared #materialMonthTabs{display:grid!important;grid-template-columns:repeat(13,minmax(0,1fr))!important;gap:4px!important;margin:0!important;padding:0!important}
-  #app #inventoryPage.inventoryRefShared #materialMonthTabs button{display:block!important;height:46px!important;min-height:46px!important;min-width:0!important;padding:0 2px!important;background:#fff6e9!important;border:1px solid #d9c7b2!important;border-radius:11px!important;color:#665a55!important;-webkit-text-fill-color:#665a55!important;font-size:13px!important;font-weight:750!important}
+  #app #inventoryPage.inventoryRefShared #materialMonthTabs button{display:block!important;height:46px!important;min-height:46px!important;min-width:0!important;padding:0 2px!important;background:#fff6e9!important;border:1px solid #d9c7b2!important;border-radius:11px!important;color:#665a55!important;-webkit-text-fill-color:#665a55!important;font-size:13px!important;font-weight:750!important;position:relative!important;overflow:visible!important}
   #app #inventoryPage.inventoryRefShared #materialMonthTabs .yearOverviewBtn{display:block!important}
-  #app #inventoryPage.inventoryRefShared #materialMonthTabs button.active{background:var(--inv-selected)!important;border-color:var(--inv-selected)!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
-  #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.inventorySectionBar{order:3!important;margin:0!important;padding:12px 0 22px!important;background:#101b31!important;border:0!important;box-shadow:none!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #materialMonthTabs button.active{background:var(--inv-selected)!important;border:2px solid #e63946!important;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:0 0 0 2px rgba(230,57,70,.16)!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #materialMonthTabs button.active:not(.yearOverviewBtn)::after{content:"★"!important;position:absolute!important;right:3px!important;top:2px!important;line-height:1!important;font-size:13px!important;color:#ffda77!important;-webkit-text-fill-color:#ffda77!important;pointer-events:none!important}
+  #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.inventorySectionBar{order:3!important;margin:0!important;padding:10px 12px!important;background:#101b31!important;border:1px solid #30415d!important;border-radius:12px!important;box-shadow:0 6px 20px rgba(7,20,41,.16)!important;position:sticky!important;top:64px!important;z-index:19!important;align-self:stretch!important}
   #app #inventoryPage.inventoryRefShared .inventorySectionBar>div:first-child{display:none!important}
   #app #inventoryPage.inventoryRefShared .inventoryToolbarActions{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:10px!important;flex-wrap:nowrap!important;width:100%!important}
   #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .inventorySearch{display:flex!important;flex:0 1 275px!important;width:275px!important;max-width:275px!important;margin:0!important;background:#fff!important;border:1px solid #c3d3e2!important;border-radius:11px!important}
@@ -150,4 +152,53 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolNam
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryCardTitle :is(h2,h3,b,strong,span) {
   color:#eff5ff!important;
   -webkit-text-fill-color:#eff5ff!important;
+}
+
+
+/* Small screens: keep the material search/add controls available while scrolling,
+   and show counts next to their labels instead of stacking the figures. */
+@media (max-width:760px) {
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventory130SearchRow{
+    position:sticky!important;top:64px!important;z-index:19!important;
+    background:#101b31!important;padding:7px 0!important;
+    border-radius:9px!important;box-shadow:0 5px 12px rgba(7,20,41,.18)!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventory130ListBar{
+    position:sticky!important;top:124px!important;z-index:18!important;
+    background:#101b31!important;padding:6px!important;border-radius:9px!important;
+    box-shadow:0 5px 12px rgba(7,20,41,.14)!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventoryToolsPane>.inventorySectionBar{
+    position:sticky!important;top:64px!important;z-index:19!important;
+    background:#101b31!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article>div{
+    flex-direction:row!important;align-items:center!important;
+    justify-content:space-between!important;gap:5px!important;
+    padding:0 7px!important;text-align:left!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article b{
+    margin:0!important;white-space:nowrap!important;font-size:20px!important;
+    flex:0 0 auto!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article small{
+    text-align:left!important;min-width:0!important;font-size:10px!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article:nth-child(3){
+    border-left:0!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article:nth-child(n+3){
+    border-top:1px solid #24344f!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button.active{
+    border:2px solid #e63946!important;box-shadow:inset 0 0 0 1px rgba(230,57,70,.15)!important;
+  }
+  body #app#app #inventoryPage.inventorySharedMobileCompact #materialMonthTabs button.active:not(.yearOverviewBtn)::after{
+    content:"★"!important;position:absolute!important;top:1px!important;right:2px!important;
+    font-size:9px!important;line-height:1!important;color:#873c13!important;
+    -webkit-text-fill-color:#873c13!important;pointer-events:none!important;
+  }
 }
