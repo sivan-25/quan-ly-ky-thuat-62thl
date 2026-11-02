@@ -105,3 +105,49 @@
     color:#f49b41!important;-webkit-text-fill-color:#f49b41!important
   }
 }
+
+
+/* 2026-11-02: one inventory palette for both tabs; uniform table headings.
+   Keep scoped to inventory to avoid changing other modules/project colors. */
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane {
+  background:#101b31!important;
+  color:#eff5ff!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane :is(.toolsMainCard,.inventoryTableCard,.inventoryTableScroll) {
+  background:#101b31!important;
+  border-color:#30415d!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane :is(.inventoryCardTitle,.inventorySectionBar) {
+  background:#101b31!important;
+  color:#eff5ff!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article {
+  background:#17253a!important;
+  border-color:#30415d!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsTable thead th,
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable thead th {
+  background:#0e192d!important;
+  background-image:none!important;
+  color:#ffb956!important;
+  -webkit-text-fill-color:#ffb956!important;
+  opacity:1!important;
+  border-color:#30415d!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsTable tbody td {
+  background:#101b31!important;
+  color:#eff5ff!important;
+  -webkit-text-fill-color:#eff5ff!important;
+  border-bottom:1px solid #263750!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsTable tbody tr:hover td {
+  background:#17253a!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolNameCell b {
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryCardTitle :is(h2,h3,b,strong,span) {
+  color:#eff5ff!important;
+  -webkit-text-fill-color:#eff5ff!important;
+}
