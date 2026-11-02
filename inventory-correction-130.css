@@ -120,20 +120,297 @@
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar>.inventoryCommandControls::after{display:none!important}
 }
 
-/* 127HH brand: retain existing cool-blue project palette rather than 130HH plum. */
-@media(min-width:761px){
-#app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar{background:#eff5fb!important;border-bottom-color:#c4d7e8!important;color:#173e5e!important}
-#app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventory130PageTitle{color:#173e5e!important;-webkit-text-fill-color:#173e5e!important}
-#app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs{background:#dceaf5!important;border-color:#b8d0e4!important}
-#app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs button.active{background:#215d87!important;color:white!important;-webkit-text-fill-color:white!important}
-#app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs button:not(.active){color:#23475d!important;-webkit-text-fill-color:#23475d!important}
-#app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar :is(#inventoryYear,.headerBell,.account){background:#ffffff!important;border-color:#bbd2e4!important;color:#173e5e!important;-webkit-text-fill-color:#173e5e!important}
-#app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .account :is(span,b,strong,#headerRole){color:#173e5e!important;-webkit-text-fill-color:#173e5e!important}
-#app #inventoryPage.inventoryRef127{background:#edf4fa!important;color:#173e5e!important}
-#app #inventoryPage.inventoryRef127 .monthlyStats article{background:#fff!important;border-color:#cedde8!important}
-#app #inventoryPage.inventoryRef127 #materialMonthTabs button.active{background:#215d87!important;border-color:#215d87!important;color:white!important;-webkit-text-fill-color:white!important}
-#app #inventoryPage.inventoryRef127 #inventory130PdfTrigger{background:#fff!important;color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;border-color:#b8d0e4!important}
+/* 127 Hồng Hà: accessible inventory presentation. Scoped exclusively to 127HH;
+   no DOM changes, data mutations, or cross-project palette overrides. */
+#app #inventoryPage.inventoryRef127{
+  --inv127-ink:#193c55;
+  --inv127-muted:#577287;
+  --inv127-blue:#215d87;
+  --inv127-border:#d5e2ec;
+  --inv127-soft:#f2f7fb;
+  background:#eef4f9!important;
+  color:var(--inv127-ink)!important;
 }
+#app #inventoryPage.inventoryRef127 :is(.inventoryWorkspace,.inventoryPane,.inventorySupportGrid){
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+#app #inventoryPage.inventoryRef127 :is(button,select,input):focus-visible{
+  outline:3px solid #5ea8d5!important;
+  outline-offset:2px!important;
+}
+#app #inventoryPage.inventoryRef127 :is(.inventorySecondary,.inventoryPrimary,.inventory130PdfMenu>button):hover{
+  filter:brightness(.97);
+}
+
+/* Keep existing 127HH blue in the relocated desktop header. */
+@media(min-width:761px){
+  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar{
+    background:#eff5fb!important;
+    border-bottom-color:#c4d7e8!important;
+    color:#173e5e!important;
+  }
+  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventory130PageTitle{
+    color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
+  }
+  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs{
+    background:#dceaf5!important;border-color:#b8d0e4!important;
+  }
+  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs button.active{
+    background:#215d87!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+  }
+  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs button:not(.active){
+    color:#23475d!important;-webkit-text-fill-color:#23475d!important;
+  }
+  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar :is(#inventoryYear,.headerBell,.account){
+    background:#fff!important;border-color:#bbd2e4!important;
+    color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
+  }
+  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .account :is(span,b,strong,#headerRole){
+    color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
+  }
+  /* Clear, short metrics; semantic colors belong to values rather than dark blocks. */
+  body #app#app #inventoryPage.inventoryRef127 #inventoryMaterialsPane>.inventoryStats{
+    gap:12px!important;margin:0 0 14px!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats article{
+    display:flex!important;align-items:center!important;
+    min-height:84px!important;padding:14px 18px!important;
+    background:#fff!important;border:1px solid var(--inv127-border)!important;
+    border-radius:14px!important;box-shadow:0 3px 12px #244b6910!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats article:first-child{display:none!important}
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats small{
+    font-size:12px!important;font-weight:700!important;line-height:1.35!important;
+    letter-spacing:.15px!important;color:#536e82!important;
+    -webkit-text-fill-color:#536e82!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats b{
+    display:block!important;font-size:28px!important;line-height:1.2!important;
+    margin-top:4px!important;font-variant-numeric:tabular-nums!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats .outMetric b{
+    color:#b34b35!important;-webkit-text-fill-color:#b34b35!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats .stockMetric b{
+    color:#205d89!important;-webkit-text-fill-color:#205d89!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats .lowMetric b{
+    color:#ae641d!important;-webkit-text-fill-color:#ae641d!important;
+  }
+  /* No oversized empty band between action buttons and the first data row. */
+  body #app#app #inventoryPage.inventoryRef127 #inventoryMaterialsPane>.inventoryMonthRail{
+    padding:10px!important;margin:0 0 12px!important;
+    background:#fff!important;border:1px solid var(--inv127-border)!important;
+    border-radius:13px!important;box-shadow:none!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #materialMonthTabs{
+    margin:0!important;padding:0!important;gap:6px!important;
+    border:0!important;background:transparent!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #materialMonthTabs button{
+    min-height:39px!important;height:39px!important;
+    border:1px solid #d6e3ee!important;border-radius:9px!important;
+    background:#f4f8fc!important;color:#37576c!important;
+    -webkit-text-fill-color:#37576c!important;
+    font-size:12.5px!important;font-weight:700!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #materialMonthTabs button:is(.active,[aria-pressed="true"]){
+    background:#215d87!important;border-color:#215d87!important;
+    color:#fff!important;-webkit-text-fill-color:#fff!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #materialMonthTabs button:hover:not(.active){
+    background:#e2eef7!important;border-color:#98bed7!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #inventoryMaterialsPane>.inventorySectionBar{
+    padding:0!important;margin:0 0 10px!important;min-height:0!important;
+    background:transparent!important;border:0!important;box-shadow:none!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .inventoryToolbarActions{gap:10px!important}
+  body #app#app #inventoryPage.inventoryRef127 .inventoryToolbarActions :is(button,summary),
+  body #app#app #inventoryPage.inventoryRef127 .inventory130PdfMenu>button{
+    min-height:42px!important;padding:0 15px!important;border-radius:10px!important;
+    border:1px solid #c6d9e8!important;background:#fff!important;
+    color:#244962!important;-webkit-text-fill-color:#244962!important;
+    font-weight:700!important;font-size:13px!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #addMaterialBtn{
+    background:#215d87!important;border-color:#215d87!important;
+    color:#fff!important;-webkit-text-fill-color:#fff!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .inventory130PdfDropdown{
+    border:1px solid #c6d9e8!important;background:#fff!important;
+    box-shadow:0 12px 32px #1e476622!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .inventory130PdfDropdown button{
+    color:#224962!important;-webkit-text-fill-color:#224962!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .inventory130PdfDropdown button:hover{
+    background:#eaf3fa!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #inventoryMaterialsPane>.inventoryTableCard.materialMonthlyCard{
+    margin:0 0 14px!important;border:1px solid #ccdeeb!important;
+    border-radius:14px!important;overflow:hidden!important;
+    background:#fff!important;box-shadow:0 4px 20px #1a496810!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #inventoryMaterialsPane>.materialMonthlyCard>.inventoryCardTitle{
+    display:none!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .inventoryTableScroll{
+    background:#fff!important;max-width:100%!important;overflow-x:auto!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable{
+    min-width:920px!important;background:#fff!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable thead th{
+    height:48px!important;padding:10px 13px!important;
+    background:#e7f0f7!important;color:#244b68!important;
+    -webkit-text-fill-color:#244b68!important;
+    border-top:0!important;border-bottom:1px solid #cbddea!important;
+    font-weight:800!important;font-size:13px!important;
+    letter-spacing:0!important;text-transform:none!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable tbody td,
+  body #app#app #inventoryPage.inventoryRef127 .inventoryTableCard.materialMonthlyCard td{
+    height:62px!important;padding:10px 13px!important;
+    background:#fff!important;color:#243f55!important;
+    -webkit-text-fill-color:#243f55!important;
+    border-bottom:1px solid #e3ecf3!important;
+    font-size:13px!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable tbody tr:nth-child(even) td{
+    background:#f7fafc!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable tbody tr:hover td{
+    background:#eaf4fb!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable .sttCell{
+    color:#58748a!important;-webkit-text-fill-color:#58748a!important;
+    font-size:12px!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable .materialNameCell{
+    min-width:230px!important;max-width:none!important;white-space:normal!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable .materialNameCell b{
+    color:#173f5c!important;-webkit-text-fill-color:#173f5c!important;
+    font-size:14px!important;line-height:1.4!important;
+    white-space:normal!important;overflow:visible!important;
+    text-overflow:clip!important;overflow-wrap:anywhere!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable .materialNameCell small{
+    color:#627b8f!important;-webkit-text-fill-color:#627b8f!important;
+    font-size:11px!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable td:nth-child(n+3):nth-child(-n+7){
+    color:#284861!important;-webkit-text-fill-color:#284861!important;
+    font-size:13px!important;font-variant-numeric:tabular-nums!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .stockFinal{
+    min-width:55px!important;min-height:30px!important;
+    background:#e1f4ea!important;border:1px solid #b2dfc6!important;
+    border-radius:999px!important;color:#17633d!important;
+    -webkit-text-fill-color:#17633d!important;font-weight:800!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .stockFinal.low{
+    background:#fff0de!important;border-color:#efc591!important;
+    color:#94520c!important;-webkit-text-fill-color:#94520c!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .invRowActions button{
+    min-width:38px!important;min-height:38px!important;
+    border-radius:9px!important;border:1px solid #cedfe9!important;
+    background:#f3f8fc!important;color:#245978!important;
+    -webkit-text-fill-color:#245978!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 .invRowActions button:hover{
+    background:#e1eef7!important;border-color:#9cc4dc!important;
+  }
+  /* Tools and low-stock cards follow the same light 127HH hierarchy. */
+  body #app#app #inventoryPage.inventoryRef127 #inventoryToolsPane :is(.inventoryTableCard,.inventoryStats article),
+  body #app#app #inventoryPage.inventoryRef127 #stockAlertPanel{
+    background:#fff!important;border:1px solid #d5e2ec!important;
+    border-radius:13px!important;color:#193c55!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #inventoryToolsPane .toolsTable th{
+    background:#e7f0f7!important;color:#244b68!important;-webkit-text-fill-color:#244b68!important;
+  }
+  body #app#app #inventoryPage.inventoryRef127 #inventoryToolsPane .toolsTable td{
+    background:#fff!important;color:#243f55!important;-webkit-text-fill-color:#243f55!important;
+  }
+}
+@media(min-width:761px) and (max-width:1150px){
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats article{min-height:76px!important;padding:11px 12px!important}
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats b{font-size:24px!important}
+}
+/* Mobile: readable cards without changing the existing mobile layout or actions. */
+@media(max-width:760px){
+  #app #inventoryPage.inventoryRef127 .inventoryCommand,
+  #app #inventoryPage.inventoryRef127 .inventoryMonthRail,
+  #app #inventoryPage.inventoryRef127 .inventoryTableCard{
+    background:#fff!important;border-color:#d5e2ec!important;color:#193c55!important;
+  }
+  #app #inventoryPage.inventoryRef127 .inventory130PageTitle{
+    color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
+  }
+  #app #inventoryPage.inventoryRef127 .inventoryLocalTabs button.active{
+    background:#215d87!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+  }
+  #app #inventoryPage.inventoryRef127 .inventoryLocalTabs button:not(.active){
+    color:#294b61!important;-webkit-text-fill-color:#294b61!important;
+  }
+  #app #inventoryPage.inventoryRef127 .inventoryMobilePeriod,
+  #app #inventoryPage.inventoryRef127 .inventoryMobilePeriod select{
+    color:#294e68!important;-webkit-text-fill-color:#294e68!important;
+  }
+  #app #inventoryPage.inventoryRef127 .inventoryMobilePeriod select{
+    background:#fff!important;border:1px solid #b7d0e3!important;
+    min-height:44px!important;color-scheme:light!important;
+  }
+  #app #inventoryPage.inventoryRef127 .monthlyStats article{
+    background:#fff!important;border:1px solid #d5e2ec!important;
+  }
+  #app #inventoryPage.inventoryRef127 .monthlyStats small{
+    color:#536e82!important;-webkit-text-fill-color:#536e82!important;
+  }
+  #app #inventoryPage.inventoryRef127 .monthlyStats b{
+    color:#215d87!important;-webkit-text-fill-color:#215d87!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileCard{
+    background:#fff!important;border:1px solid #d5e2ec!important;color:#193c55!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileCardName strong,
+  #app #inventoryPage.inventoryRef127 .invMobileMeta b{
+    color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
+  }
+  #app #inventoryPage.inventoryRef127 :is(.invMobileCardName small,.invMobileNumber,.invMobileValue span,.invMobileUnit){
+    color:#55758b!important;-webkit-text-fill-color:#55758b!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileValue{
+    background:#eff5fa!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileValue b{
+    color:#1d4d6e!important;-webkit-text-fill-color:#1d4d6e!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileValue.is-closing{
+    background:#e0f4e9!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileValue.is-closing b{
+    color:#17633d!important;-webkit-text-fill-color:#17633d!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileCardActions{
+    border-top-color:#deebf3!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileCardActions button{
+    min-height:44px!important;border:1px solid #c6d9e8!important;
+    background:#f1f7fb!important;color:#245978!important;
+    -webkit-text-fill-color:#245978!important;
+  }
+  #app #inventoryPage.inventoryRef127 .invMobileCardActions button.is-delete{
+    background:#fff0f0!important;color:#9b343a!important;
+    -webkit-text-fill-color:#9b343a!important;border-color:#edc4c4!important;
+  }
+}
+
 
 /* Shared inventory controls: descendants must follow their button after relocation
    to the topbar. Legacy header span rules otherwise override the button color. */
