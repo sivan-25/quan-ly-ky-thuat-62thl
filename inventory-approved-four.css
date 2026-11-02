@@ -74,3 +74,34 @@
   #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.transactionCard{order:6!important}
 }
 @media (min-width:761px) and (max-width:1100px){#app #inventoryPage.inventoryRefShared #materialMonthTabs{overflow-x:auto!important;grid-template-columns:repeat(13,minmax(72px,1fr))!important}#app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar .inventory130PageTitle{font-size:18px!important}}
+
+/* The older 127HH light table rules have stronger selectors. Override the
+   complete surface and text together so project switching never hides names. */
+@media (min-width:761px) {
+  body #app#app#app #inventoryPage.inventoryRefShared #updateInventoryIntel{display:none!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.materialMonthlyCard{
+    background:#101b31!important;border:1px solid #30415d!important;box-shadow:none!important
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyCard .inventoryTableScroll,
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable{
+    background:#101b31!important
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable tbody td,
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable tbody tr:nth-child(even) td,
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable tbody tr:hover td{
+    background:#101b31!important;color:#eff5ff!important;-webkit-text-fill-color:#eff5ff!important;
+    border-bottom:1px solid #263750!important
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable .materialNameCell b{
+    color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable .materialNameCell small{
+    color:#9ab7d8!important;-webkit-text-fill-color:#9ab7d8!important
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats :is(.outMetric,.stockMetric) b{
+    color:#f5f8ff!important;-webkit-text-fill-color:#f5f8ff!important
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats .lowMetric b{
+    color:#f49b41!important;-webkit-text-fill-color:#f49b41!important
+  }
+}
