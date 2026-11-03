@@ -826,6 +826,13 @@ renderHomeDashboard=function(){
 };
 const baseOpenAdmin=openAdminPortal;
 openAdminPortal=function(){const result=baseOpenAdmin.apply(this,arguments);ensureRoot();return result};
+// Read-only snapshot for instant Admin editing; saving still reloads the server state.
+window.estaCommandCenterCachedTask=(buildingId,taskId)=>{
+ const row=activeRows().find(r=>String(r?.building?.id)===String(buildingId));
+ if(!row)return null;
+ const task=(row.snapshot?.tasks||[]).find(t=>String(t.id)===String(taskId));
+ return task?{snapshot:{tasks:[task],people:row.snapshot?.people||row.ops?.people||[]}}:null;
+};
 window.estaCommandCenterRefresh=()=>loadCenter(true);
 // Keyboard activation uses the same project/task link as a pointer click.
 $c("#homePage")?.addEventListener("keydown",e=>{const row=e.target.closest("tr[data-cc-task]");if(row&&e.target===row&&["Enter"," "].includes(e.key)){e.preventDefault();row.click()}});
