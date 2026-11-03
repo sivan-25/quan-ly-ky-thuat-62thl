@@ -216,68 +216,82 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
  .ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{font-size:16px}
 }
 .ccModal{position:fixed;inset:0;z-index:2200;display:grid;place-items:center;padding:18px}.ccModal.hide{display:none!important}.ccModalBackdrop{position:absolute;inset:0;border:0;background:rgba(5,22,34,.58);backdrop-filter:blur(2px)}.ccModalCard{position:relative;z-index:1;width:min(940px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--ov-line);border-radius:18px;background:var(--ov-panel);box-shadow:0 28px 90px rgba(0,22,38,.28)}.ccModalHead{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:18px 20px;border-bottom:1px solid var(--ov-line);background:var(--ov-surface)}.ccModalHead span{color:var(--ov-accent);font-size:8.5px;font-weight:800;letter-spacing:1px}.ccModalHead h3{margin:4px 0;color:var(--ov-text);font-size:19px}.ccModalHead p{margin:0;color:var(--ov-muted);font-size:10px}.ccClose{width:36px;height:36px;border:1px solid var(--ov-line);border-radius:10px;background:var(--ov-control);color:var(--ov-muted);font-size:22px}
-.ccDispatchForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:18px 20px 20px}.ccDispatchInline{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.8fr);gap:11px;min-width:0}.ccDispatchInline label{min-width:0}.ccDispatchForm label{display:grid;gap:5px;color:var(--ov-muted);font-size:9px;font-weight:720}.ccDispatchForm label.wide{grid-column:1/-1}.ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{width:100%;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);color:var(--ov-text);padding:0 10px;font-size:11px;outline:none}.ccDispatchForm input,.ccDispatchForm select{height:40px}.ccDispatchForm textarea{padding:10px;resize:vertical}.ccDispatchForm input:focus,.ccDispatchForm select:focus,.ccDispatchForm textarea:focus{border-color:#66bdcd;background:var(--ov-control);box-shadow:0 0 0 3px rgba(66,170,193,.09)}
-.ccDispatchProjectsHead{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;color:var(--ov-muted);font-size:10px}.ccDispatchProjectsHead label{display:flex;align-items:center;gap:6px}.ccDispatchProjectsHead input{width:15px;height:15px}.ccDispatchProjects{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ccDispatchProjects label{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-surface);cursor:pointer}.ccDispatchProjects input{width:16px;height:16px;flex:0 0 16px}.ccDispatchProjects span{display:block;color:var(--ov-muted);font-size:9px;font-weight:560}.ccDispatchProjects b{display:block;color:var(--ov-text);font-size:9px}.ccDispatchActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:5px}
+.ccDispatchForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 16px 14px}.ccDispatchInline{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.8fr);gap:8px;min-width:0}.ccDispatchInline label{min-width:0}.ccDispatchForm label{display:grid;gap:4px;color:var(--ov-muted);font-size:9px;font-weight:720}.ccDispatchForm label.wide{grid-column:1/-1}.ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{width:100%;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);color:var(--ov-text);padding:0 10px;font-size:11px;outline:none}.ccDispatchForm input,.ccDispatchForm select{height:40px}.ccDispatchForm textarea{padding:9px 10px;resize:none;overflow-y:hidden;min-height:42px;line-height:1.4}.ccDispatchForm input:focus,.ccDispatchForm select:focus,.ccDispatchForm textarea:focus{border-color:#66bdcd;background:var(--ov-control);box-shadow:0 0 0 3px rgba(66,170,193,.09)}
+.ccDispatchProjectsHead{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;color:var(--ov-muted);font-size:10px}.ccDispatchProjectsHead label{display:flex;align-items:center;gap:6px}.ccDispatchProjectsHead input{width:15px;height:15px}.ccDispatchProjects{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.ccDispatchProjects label{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-surface);cursor:pointer}.ccDispatchProjects input{width:16px;height:16px;flex:0 0 16px}.ccDispatchProjects span{display:block;color:var(--ov-muted);font-size:9px;font-weight:560}.ccDispatchProjects b{display:block;color:var(--ov-text);font-size:9px}.ccDispatchActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:5px}
 #ccDispatchModal .ccBtn{min-height:38px;padding:8px 14px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-control);color:var(--ov-text);font-size:12px;cursor:pointer}
 #ccDispatchModal .ccBtn.primary{background:#0f2837;border-color:#1d5368;color:var(--ov-accent)}
 #ccDispatchModal #ccDispatchSave.ccDispatchSaved{background:#176347;border-color:#48b88e;color:#f3fff9;box-shadow:0 0 0 1px rgba(72,184,142,.2)}
 #ccDispatchModal .ccBtn:focus-visible{outline:2px solid #18d9f3;outline-offset:2px}
 
+
+/* Compact dispatch controls share a single baseline; mobile rules follow below. */
+#ccDispatchModal{max-width:100vw;overflow:hidden;overscroll-behavior-x:none}
+#ccDispatchModal .ccModalCard{min-width:0;max-width:min(940px,100%);box-sizing:border-box;overflow-x:hidden}
+#ccDispatchModal .ccDispatchForm{min-width:0;box-sizing:border-box}
+#ccDispatchModal .ccDispatchForm :is(#ccDispatchTitle,#ccDispatchNote){
+ display:block;width:100%;min-width:0;min-height:42px;height:42px;
+ padding:9px 10px;box-sizing:border-box;resize:none;overflow-y:hidden;
+ line-height:1.4;font-family:inherit;overflow-wrap:anywhere;
+}
+#ccDispatchModal .ccDispatchForm .ccDispatchDateControl{position:relative;display:block;min-width:0;width:100%;height:42px;box-sizing:border-box}
+#ccDispatchModal .ccDispatchForm .ccDispatchDateValue{display:none}
+
+@media(max-width:760px){
+ body.ccDispatchModalOpen{overflow:hidden!important;overscroll-behavior:none}
+ #ccDispatchModal.ccModal{width:100vw;height:100dvh;max-width:100vw;padding:0!important;box-sizing:border-box;touch-action:pan-y}
+ #ccDispatchModal .ccModalCard{
+  width:100%;max-width:100%;height:100dvh;max-height:100dvh;
+  border:0;border-radius:0;display:flex;flex-direction:column;overflow:hidden;
+ }
+ #ccDispatchModal .ccModalHead{flex:0 0 auto;padding:12px 12px 10px}
+ #ccDispatchModal .ccDispatchForm{
+  flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;
+  overscroll-behavior:contain;touch-action:pan-y;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;padding:10px 12px 10px;
+ }
+ #ccDispatchModal .ccDispatchProjectsHead,#ccDispatchModal .ccDispatchProjects,
+ #ccDispatchModal .ccDispatchForm label.wide,#ccDispatchModal .ccDispatchMedia,#ccDispatchModal .ccDispatchActions{grid-column:1/-1}
+ #ccDispatchModal .ccDispatchInline,
+ #ccDispatchModal.ccPersonalMode .ccDispatchInline{
+  grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+ }
+ #ccDispatchModal .ccDispatchInline > label{min-width:0;max-width:100%}
+ #ccDispatchModal .ccDispatchInline > label:has(#ccDispatchAssignee){grid-column:1/-1}
+ #ccDispatchModal .ccDispatchInline > label:has(#ccDispatchPersonalStatus){grid-column:1/-1}
+ #ccDispatchModal .ccDispatchForm :is(input:not([type="checkbox"]):not([type="file"]),select){min-width:0;box-sizing:border-box}
+ #ccDispatchModal .ccDispatchInline > label > select{width:100%;height:44px;min-height:44px;font-size:16px}
+ #ccDispatchModal .ccDispatchForm .ccDispatchDateControl{
+  width:100%;min-width:0;height:44px;min-height:44px;overflow:hidden;
+  border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);
+ }
+ #ccDispatchModal .ccDispatchForm .ccDispatchDateValue{
+  display:flex;align-items:center;position:absolute;inset:0;
+  padding:0 9px;color:var(--ov-text);font-size:15px;
+  font-weight:500;line-height:1.3;pointer-events:none;white-space:nowrap;
+ }
+ #ccDispatchModal .ccDispatchForm .ccDispatchDateControl input[type="date"]{
+  position:absolute;inset:0;width:100%;height:100%;min-width:0;
+  padding:0;margin:0;border:0;opacity:.01;cursor:pointer;
+ }
+ #ccDispatchModal .ccDispatchForm :is(#ccDispatchTitle,#ccDispatchNote){font-size:16px;min-height:44px}
+ #ccDispatchModal .ccDispatchForm .ccDispatchActions{
+  position:sticky;bottom:-10px;z-index:2;
+  background:var(--ov-panel);padding:9px 0 calc(10px + env(safe-area-inset-bottom));
+ }
+ #ccDispatchModal .ccDispatchActions .ccBtn{min-height:44px}
+}
+@media(max-width:370px){
+ #ccDispatchModal .ccDispatchForm{gap:7px;padding-inline:9px}
+ #ccDispatchModal .ccDispatchInline,#ccDispatchModal.ccPersonalMode .ccDispatchInline{gap:7px}
+ #ccDispatchModal .ccDispatchForm .ccDispatchDateValue{font-size:13px;padding-inline:5px}
+}
+
 .estaNav button .ccNavBadge{margin-left:auto;min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#e8f3f6;color:#34798a;font-size:8px;font-weight:800;line-height:1;box-shadow:inset 0 0 0 1px rgba(52,121,138,.12)}
 .estaNav button .ccNavBadge.high{background:#fff1dd;color:#a7681e}.estaNav button .ccNavBadge.critical{background:#ffe9e7;color:#bd4b48}
 
 
-/* Mobile: keep Admin Dispatch fields inside the modal (iOS/Safari date inputs). */
-@media (max-width:700px){
-  #ccDispatchModal .ccModalCard{
-    width:100%;
-    max-width:100%;
-    overflow-x:hidden;
-  }
-  #ccDispatchModal .ccDispatchForm{
-    grid-template-columns:minmax(0,1fr)!important;
-    gap:10px;
-    padding:14px 14px 18px;
-    min-width:0;
-  }
-  #ccDispatchModal .ccDispatchForm > label,
-  #ccDispatchModal .ccDispatchForm label.wide,
-  #ccDispatchModal .ccDispatchProjectsHead,
-  #ccDispatchModal .ccDispatchProjects,
-  #ccDispatchModal .ccDispatchActions{
-    grid-column:1/-1!important;
-    min-width:0;
-    max-width:100%;
-  }
-  #ccDispatchModal .ccDispatchProjects{
-    grid-template-columns:minmax(0,1fr)!important;
-  }
-  #ccDispatchModal .ccDispatchInline{
-    grid-column:1/-1!important;
-    grid-template-columns:minmax(0,1fr)!important;
-    gap:10px;
-    min-width:0;
-  }
-  #ccDispatchModal .ccDispatchForm input,
-  #ccDispatchModal .ccDispatchForm select,
-  #ccDispatchModal .ccDispatchForm textarea{
-    width:100%!important;
-    min-width:0!important;
-    max-width:100%!important;
-    box-sizing:border-box!important;
-  }
-  #ccDispatchModal input[type="date"]{
-    display:block;
-    width:100%!important;
-    min-width:0!important;
-    max-width:100%!important;
-    height:42px;
-    font-size:16px!important;
-  }
-  #ccDispatchModal .ccDispatchActions{
-    flex-wrap:wrap;
-  }
-}
+
 
 
 /* ADMIN_DISPATCH_MEDIA_20261007 */
@@ -624,72 +638,3 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel{width:100%;max-width:none;min-width:0}
 #app.homeMode.adminCommandHome #estaCommandCenter .ccProjectCard h3{margin:0!important}
 #app.homeMode.adminCommandHome #ccAdminHeaderActions .ccTopSearch{display:none!important}
-
-/* ESTA dispatch form: compact responsive controls, one-line auto-growing text.
-   Scoped to #ccDispatchModal so other modals and the Admin editor are unchanged. */
-#ccDispatchModal{max-width:100vw;overflow:hidden;overscroll-behavior-x:none}
-#ccDispatchModal .ccModalCard{min-width:0;max-width:min(940px,100%);box-sizing:border-box;overflow-x:hidden}
-#ccDispatchModal .ccDispatchForm{gap:8px;padding:12px 16px 14px;min-width:0;box-sizing:border-box}
-#ccDispatchModal .ccDispatchForm label{gap:4px;min-width:0}
-#ccDispatchModal .ccDispatchForm .ccDispatchInline{gap:8px}
-#ccDispatchModal .ccDispatchForm :is(#ccDispatchTitle,#ccDispatchNote){
- display:block;width:100%;min-width:0;min-height:42px;height:42px;
- padding:9px 10px;box-sizing:border-box;resize:none;overflow-y:hidden;
- line-height:1.4;font-family:inherit;overflow-wrap:anywhere;
-}
-#ccDispatchModal .ccDispatchForm .ccDispatchDateControl{position:relative;display:block;min-width:0;width:100%;height:42px;box-sizing:border-box}
-#ccDispatchModal .ccDispatchForm .ccDispatchDateValue{display:none}
-#ccDispatchModal .ccDispatchProjects{gap:6px}
-#ccDispatchModal .ccDispatchProjects label{padding:7px 9px}
-#ccDispatchModal .ccDispatchMedia{gap:7px;padding:9px 11px}
-#ccDispatchModal .ccDispatchActions{gap:7px;padding-top:3px}
-@media(max-width:760px){
- body.ccDispatchModalOpen{overflow:hidden!important;overscroll-behavior:none}
- #ccDispatchModal.ccModal{width:100vw;height:100dvh;max-width:100vw;padding:0!important;box-sizing:border-box;touch-action:pan-y}
- #ccDispatchModal .ccModalCard{
-  width:100%;max-width:100%;height:100dvh;max-height:100dvh;
-  border:0;border-radius:0;display:flex;flex-direction:column;overflow:hidden;
- }
- #ccDispatchModal .ccModalHead{flex:0 0 auto;padding:12px 12px 10px}
- #ccDispatchModal .ccDispatchForm{
-  flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;
-  overscroll-behavior:contain;touch-action:pan-y;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:8px;padding:10px 12px 10px;
- }
- #ccDispatchModal .ccDispatchProjectsHead,#ccDispatchModal .ccDispatchProjects,
- #ccDispatchModal .ccDispatchForm label.wide,#ccDispatchModal .ccDispatchMedia,#ccDispatchModal .ccDispatchActions{grid-column:1/-1}
- #ccDispatchModal .ccDispatchInline,
- #ccDispatchModal.ccPersonalMode .ccDispatchInline{
-  grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
- }
- #ccDispatchModal .ccDispatchInline > label{min-width:0;max-width:100%}
- #ccDispatchModal .ccDispatchInline > label:has(#ccDispatchAssignee){grid-column:1/-1}
- #ccDispatchModal .ccDispatchInline > label:has(#ccDispatchPersonalStatus){grid-column:1/-1}
- #ccDispatchModal .ccDispatchForm :is(input:not([type="checkbox"]):not([type="file"]),select){min-width:0;box-sizing:border-box}
- #ccDispatchModal .ccDispatchInline > label > select{width:100%;height:44px;min-height:44px;font-size:16px}
- #ccDispatchModal .ccDispatchForm .ccDispatchDateControl{
-  width:100%;min-width:0;height:44px;min-height:44px;overflow:hidden;
-  border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);
- }
- #ccDispatchModal .ccDispatchForm .ccDispatchDateValue{
-  display:flex;align-items:center;position:absolute;inset:0;
-  padding:0 9px;color:var(--ov-text);font-size:15px;
-  font-weight:500;line-height:1.3;pointer-events:none;white-space:nowrap;
- }
- #ccDispatchModal .ccDispatchForm .ccDispatchDateControl input[type="date"]{
-  position:absolute;inset:0;width:100%;height:100%;min-width:0;
-  padding:0;margin:0;border:0;opacity:.01;cursor:pointer;
- }
- #ccDispatchModal .ccDispatchForm :is(#ccDispatchTitle,#ccDispatchNote){font-size:16px;min-height:44px}
- #ccDispatchModal .ccDispatchForm .ccDispatchActions{
-  position:sticky;bottom:-10px;z-index:2;
-  background:var(--ov-panel);padding:9px 0 calc(10px + env(safe-area-inset-bottom));
- }
- #ccDispatchModal .ccDispatchActions .ccBtn{min-height:44px}
-}
-@media(max-width:370px){
- #ccDispatchModal .ccDispatchForm{gap:7px;padding-inline:9px}
- #ccDispatchModal .ccDispatchInline,#ccDispatchModal.ccPersonalMode .ccDispatchInline{gap:7px}
- #ccDispatchModal .ccDispatchForm .ccDispatchDateValue{font-size:13px;padding-inline:5px}
-}
