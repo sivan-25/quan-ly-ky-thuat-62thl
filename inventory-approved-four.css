@@ -128,21 +128,34 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   border-color:#ddc7a9!important;
   color:#173e5e!important;
 }
-body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane :is(.inventorySearch,#toolSearch,#toolStatusFilter) {
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane :is(.inventorySearch,#toolSearch) {
   background:#f9eedf!important;
   border-color:#d8c7ad!important;
   color:#173e5e!important;
   -webkit-text-fill-color:#173e5e!important;
 }
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolStatusFilter {
+  background:#163f61!important;
+  border-color:#123653!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  color-scheme:dark!important;
+}
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolExportPdf {
-  background:#fbefdc!important;
-  border-color:#d9bda2!important;
-  color:#173e5e!important;
-  -webkit-text-fill-color:#173e5e!important;
+  background:#163f61!important;
+  border-color:#123653!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolExportPdf svg {
-  stroke:#d52a36!important;
-  color:#d52a36!important;
+  stroke:#ff8181!important;
+  color:#ff8181!important;
+}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #addToolBtn {
+  background:#ad551a!important;
+  border:1px solid #924515!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats {
   display:grid!important;

@@ -74,23 +74,23 @@
  }
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly small{display:none!important}
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar #inventoryYear{
-   display:block!important;width:125px!important;height:43px!important;background:#fff9ee!important;
-   border:1px solid #e0d0b9!important;border-radius:10px!important;font-size:14px!important;font-weight:650!important;
-   color:#371f33!important;-webkit-text-fill-color:#371f33!important;padding:0 10px!important;
+   display:block!important;width:125px!important;height:43px!important;background:#163f61!important;
+   border:1px solid #123653!important;border-radius:10px!important;font-size:14px!important;font-weight:650!important;
+   color:#fff!important;-webkit-text-fill-color:#fff!important;color-scheme:dark!important;padding:0 10px!important;
  }
  /* Decorative clock removed: do not render a pseudo-control. */
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar>.inventoryCommandControls::after{content:none!important;display:none!important}
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar>.headerBell{
    display:grid!important;order:2!important;margin:0!important;flex:0 0 42px!important;
-   width:42px!important;height:42px!important;background:#fff8ed!important;
-   color:#401533!important;border:1px solid #e0d0b9!important;border-radius:10px!important;
+   width:42px!important;height:42px!important;background:#ad551a!important;
+   color:#fff!important;border:1px solid #924515!important;border-radius:10px!important;
  }
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar>.account{
    display:flex!important;order:3!important;min-width:0!important;margin:0!important;flex:0 0 auto!important;
-   background:#fff8ed!important;color:#401533!important;border-radius:10px!important;padding:6px 10px!important;
+   background:#163f61!important;color:#fff!important;border:1px solid #123653!important;border-radius:10px!important;padding:6px 10px!important;
  }
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar>.account :is(span,b,strong,#headerRole){
-   color:#401533!important;-webkit-text-fill-color:#401533!important;
+   color:#fff!important;-webkit-text-fill-color:#fff!important;
  }
  #app #inventoryPage:is(.inventoryRef130,.inventoryRef127)>.inventoryCommand{display:none!important}
 }
@@ -98,7 +98,7 @@
 @media(min-width:761px){
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly{margin-right:0!important}
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar #inventoryYear{
-   color:#22101f!important;-webkit-text-fill-color:#22101f!important;
+   color:#fff!important;-webkit-text-fill-color:#fff!important;
    font-weight:750!important;opacity:1!important;text-shadow:none!important;
  }
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar .inventoryLocalTabs button:not(.active){
@@ -108,7 +108,7 @@
    color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;text-shadow:none!important;
  }
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar>.account #headerRole{
-   color:#321427!important;-webkit-text-fill-color:#321427!important;font-weight:750!important;opacity:1!important;
+   color:#fff!important;-webkit-text-fill-color:#fff!important;font-weight:750!important;opacity:1!important;
  }
  #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .monthlyStats>.inventoryMetric:first-child{display:none!important}
  #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) #inventoryMaterialsPane>.inventoryStats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
@@ -162,13 +162,6 @@
   }
   #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventoryLocalTabs button:not(.active){
     color:#23475d!important;-webkit-text-fill-color:#23475d!important;
-  }
-  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar :is(#inventoryYear,.headerBell,.account){
-    background:#f9eedf!important;border-color:#ddc8b0!important;
-    color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
-  }
-  #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .account :is(span,b,strong,#headerRole){
-    color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
   }
   /* Clear, short metrics; semantic colors belong to values rather than dark blocks. */
   body #app#app #inventoryPage.inventoryRef127 #inventoryMaterialsPane>.inventoryStats{
