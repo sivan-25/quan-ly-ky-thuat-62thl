@@ -1,5 +1,24 @@
 /* 130 HH completion-certificate pilot: visually scoped, no changes to existing tables. */
-#cc130Launch.cc130-launch{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:#1d4c57;border:1px solid #497d78;color:#fff7e7;border-radius:9px;padding:8px 11px;font-weight:750;font-size:13px;cursor:pointer;white-space:nowrap}
+#cc130Launch.cc130-launch{margin-left:0;display:inline-flex;align-items:center;gap:6px;background:#1d4c57;border:1px solid #497d78;color:#fff7e7;border-radius:9px;padding:8px 11px;min-height:44px;box-sizing:border-box;font-weight:750;font-size:13px;cursor:pointer;white-space:nowrap}
+#app #workPage .premiumTableCard .tableTop.workTableMeta{flex-wrap:wrap!important;gap:7px!important}
+#app #workPage .premiumTableCard .tableTop.workTableMeta .workExportActions{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  flex:0 0 auto!important;gap:7px!important;margin-left:auto!important;max-width:100%!important;
+}
+#app #workPage .premiumTableCard .tableTop.workTableMeta .workExportActions #workSelectModeBtn,
+#app #workPage .premiumTableCard .tableTop.workTableMeta .workExportActions #cc130Launch{
+  flex:0 0 auto!important;min-height:44px!important;height:44px!important;
+  box-sizing:border-box!important;margin:0!important;white-space:nowrap!important;
+}
+@media(max-width:640px){
+  #app #workPage .premiumTableCard .tableTop.workTableMeta .workExportActions{
+    width:max-content!important;max-width:100%!important;gap:6px!important;
+  }
+  #app #workPage .premiumTableCard .tableTop.workTableMeta .workExportActions #workSelectModeBtn,
+  #app #workPage .premiumTableCard .tableTop.workTableMeta .workExportActions #cc130Launch{
+    font-size:11px!important;padding:0 9px!important;
+  }
+}
 #cc130Launch.cc130-launch:hover{background:#24606a}
 #cc130Launch[hidden]{display:none!important}
 .cc130-overlay{display:none;position:fixed;inset:0;z-index:99950;background:rgba(15,26,37,.75);padding:18px;overflow-y:auto;overscroll-behavior:contain}

@@ -51,6 +51,17 @@
       host.appendChild(btn);
     }
     btn.hidden = !onProject();
+    // Put both existing actions in one container so phone wrapping never
+    // separates PDF export from the completion certificate action.
+    let group = host.querySelector(".workExportActions");
+    if(!group){
+      group=document.createElement("div");
+      group.className="workExportActions";
+      host.appendChild(group);
+    }
+    const pdf = byId("workSelectModeBtn");
+    if(pdf && pdf.parentElement!==group)group.appendChild(pdf);
+    if(btn.parentElement!==group)group.appendChild(btn);
     if (byId("cc130Modal")?.classList.contains("is-open") && !sameProject()) close();
   }
   function modal() {

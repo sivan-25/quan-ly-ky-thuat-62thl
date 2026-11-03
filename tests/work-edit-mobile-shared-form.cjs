@@ -59,6 +59,43 @@ const widths=[320,390,430,1024];
      assert.equal(info.cardParent,'workPage','same CSS scope for add and edit');
      assert.equal(info.title,'Chỉnh sửa công việc');
      for(const k of ['date','note','camera','library'])assert.ok(Math.abs(info.rects[k].h-44)<1.1,buildingId+' '+k+' should be 44px at '+width+'; got '+info.rects[k].h);
+     // Open the real linked-work details and measure the three paired rows.
+     const linkInfo=await page.evaluate(()=>{
+       const panel=document.getElementById('demoWorkLinks');
+       if(!panel)throw Error('Linked-work details not mounted');
+       panel.classList.remove('hide');panel.open=true;
+       const pairs=[['demoTaskPriority','demoTaskDue'],['demoTaskAsset','demoTaskIncident'],['demoTaskInspection','demoTaskContractor']];
+       return pairs.map(pair=>pair.map(id=>{
+         const control=document.getElementById(id),label=control?.closest('label');
+         if(!control||!label)throw Error('Missing linked-work control '+id);
+         const r=control.getBoundingClientRect(),p=label.getBoundingClientRect();
+         return {id,h:r.height,x:r.x,y:r.y,right:r.right,labelY:p.y,labelH:p.height,display:getComputedStyle(label).display};
+       }));
+     });
+     for(const pair of linkInfo){
+       const [left,right]=pair;
+       for(const item of pair){
+         assert.equal(item.display!=='none',true,buildingId+' linked field '+item.id+' must show at '+width);
+         assert.ok(Math.abs(item.h-44)<1.1,buildingId+' linked '+item.id+' must measure 44px, got '+item.h);
+       }
+       assert.ok(Math.abs(left.y-right.y)<2,buildingId+' paired controls have different row heights');
+       assert.ok(right.x>left.right-1,buildingId+' paired fields are not left/right');
+       assert.ok(Math.abs((right.right-right.x)-(left.right-left.x))<2,buildingId+' paired fields must be equal width');
+     }
+     const exportInfo=await page.evaluate(()=>{
+       const group=document.querySelector('#workPage .workTableMeta .workExportActions');
+       const pdf=document.getElementById('workSelectModeBtn');
+       const cert=document.getElementById('cc130Launch');
+       if(!group||!pdf||!cert)throw Error('PDF and certificate actions not grouped');
+       const a=pdf.getBoundingClientRect(),b=cert.getBoundingClientRect(),g=group.getBoundingClientRect(),h=group.parentElement.getBoundingClientRect();
+       return {pdfRight:a.right,certX:b.x,pdfY:a.y,certY:b.y,groupRight:g.right,hostRight:h.right};
+     });
+     assert.ok(exportInfo.certX>=exportInfo.pdfRight-1,'PDF and certificate order should be adjacent');
+     assert.ok(Math.abs(exportInfo.pdfY-exportInfo.certY)<1,'PDF and certificate should share a row');
+     assert.ok(Math.abs(exportInfo.groupRight-exportInfo.hostRight)<18,'PDF group should align to right edge');
+     assert.ok(info.btn2.x-info.btn1.right<16,'Cancel should be adjacent to Save at '+width);
+     const cancelStyle=await page.locator('#cancelEdit').evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color}));
+     assert.notEqual(cancelStyle.background,'rgb(255, 255, 255)','Cancel must have a distinct warning background');
      const long='Kiểm tra chi tiết hệ thống điều hòa toàn bộ các tầng, kiểm tra FCU AHU cùng phụ kiện và thông số vận hành '.repeat(4);
      await page.locator('#content').fill(long);
      await page.waitForTimeout(60);

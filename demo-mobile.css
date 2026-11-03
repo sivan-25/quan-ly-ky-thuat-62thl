@@ -510,6 +510,44 @@
   #app.demoMobilePilot #workPage #taskForm .workFormActions #cancelEdit{
     order:1!important;flex:0 0 auto!important;width:auto!important;
   }
+  /* Only editing shows the red Cancel action immediately beside Save. */
+  #app.demoMobilePilot #workPage .workEntryCard.workEditInPlace #taskForm .workFormActions{
+    justify-content:flex-end!important;
+    gap:7px!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryCard.workEditInPlace #taskForm .workFormActions #saveBtn{
+    margin:0!important;
+    order:2!important;
+    flex:0 0 auto!important;
+    min-width:125px!important;
+    max-width:62%!important;
+    height:48px!important;
+    white-space:nowrap!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryCard.workEditInPlace #taskForm .workFormActions #cancelEdit:not(.hide){
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    margin:0!important;
+    order:1!important;
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:76px!important;
+    max-width:35%!important;
+    height:48px!important;
+    min-height:48px!important;
+    padding:0 12px!important;
+    border:1.5px solid #cb6256!important;
+    border-radius:10px!important;
+    background:#fff0ed!important;
+    color:#982e26!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    box-shadow:0 2px 8px rgba(160,44,35,.12)!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryCard.workEditInPlace #taskForm .workFormActions #cancelEdit:not(.hide):before{
+    content:none!important;
+  }
   #app.demoMobilePilot #workPage .stats{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     gap:8px!important;
@@ -565,19 +603,79 @@
     max-width:100%!important;
     margin:0 0 12px!important;
   }
+  /* Linked work shares three fixed two-column rows across every phone.
+     Each control is 44px; textarea starts at 44px and can grow on input.
+     We replace the former 1-column / 48px rules instead of stacking CSS. */
   #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid{
-    grid-template-columns:1fr!important;
-    gap:10px!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px 8px!important;
+    align-items:start!important;
   }
-  #app.demoMobilePilot #demoWorkLinks input,
-  #app.demoMobilePilot #demoWorkLinks select,
-  #app.demoMobilePilot #demoWorkLinks textarea{
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>.demoPriorityField{grid-area:1/1!important}
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>.demoDueField{grid-area:1/2!important}
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>.demoAdvancedAsset{grid-area:2/1!important}
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>.demoIncidentField{grid-area:2/2!important}
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>.demoAdvancedInspection{grid-area:3/1!important}
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>.demoContractorField{grid-area:3/2!important}
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>:is(
+    .demoPriorityField,.demoDueField,.demoAdvancedAsset,
+    .demoIncidentField,.demoAdvancedInspection,.demoContractorField){
+    display:flex!important;
+    flex-direction:column!important;
+    grid-column:auto!important;
+    gap:5px!important;
+    min-width:0!important;
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    box-sizing:border-box!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid> :is(.span2,.demoTaskResultField,.demoTaskMaterialsField){
+    grid-column:1/-1!important;
+    min-width:0!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>label>input,
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>label>select{
+    display:block!important;
     width:100%!important;
     min-width:0!important;
-    min-height:48px!important;
+    min-inline-size:0!important;
+    max-width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    block-size:44px!important;
+    min-block-size:44px!important;
+    max-block-size:44px!important;
+    margin:0!important;
+    padding:0 8px!important;
+    box-sizing:border-box!important;
+    border-radius:9px!important;
     font-size:16px!important;
+    line-height:normal!important;
+    overflow:hidden!important;
   }
-  #app.demoMobilePilot #demoWorkLinks textarea{min-height:96px!important}
+  #app.demoMobilePilot #demoWorkLinks .demoWorkLinkGrid>label>#demoTaskDue{
+    -webkit-appearance:none!important;
+    appearance:none!important;
+    text-align:center!important;
+    padding:0 3px!important;
+  }
+  #app.demoMobilePilot #demoWorkLinks textarea{
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:none!important;
+    padding:10px!important;
+    font-size:16px!important;
+    line-height:1.4!important;
+    resize:none!important;
+    overflow-y:hidden!important;
+  }
 
   /* Work edit drawer */
   #app.demoMobilePilot .workEditDrawer{
