@@ -1130,9 +1130,14 @@ else mobileNavQuery.addListener(()=>setMobileMenuOpen(false));
 setMobileMenuOpen(false);
 function syncWorkContentHeight(){
  const el=$("#content");if(!el)return;
- if(!mobileNavQuery.matches){el.style.removeProperty("height");el.style.removeProperty("overflow-y");return}
- el.style.height="auto";
- el.style.height=Math.max(76,el.scrollHeight)+"px";
+ if(!mobileNavQuery.matches){
+  el.style.removeProperty("height");
+  el.style.removeProperty("overflow-y");
+  return;
+ }
+ // Single source of truth: measure one text line before growing.
+ el.style.setProperty("height","0px","important");
+ el.style.setProperty("height",Math.max(44,el.scrollHeight)+"px","important");
  el.style.overflowY="hidden";
 }
 function setWorkSaveLabel(label){
