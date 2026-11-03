@@ -69,14 +69,14 @@ const widths=[320,390,430,1024];
          const control=document.getElementById(id),label=control?.closest('label');
          if(!control||!label)throw Error('Missing linked-work control '+id);
          const r=control.getBoundingClientRect(),p=label.getBoundingClientRect();
-         return {id,h:r.height,x:r.x,y:r.y,right:r.right,labelY:p.y,labelH:p.height,display:getComputedStyle(label).display};
+         const cs=getComputedStyle(control);return {id,h:r.height,x:r.x,y:r.y,right:r.right,labelY:p.y,labelH:p.height,display:getComputedStyle(label).display,cssHeight:cs.height,cssMin:cs.minHeight,cssMax:cs.maxHeight,boxSizing:cs.boxSizing,padding:cs.padding,border:cs.borderWidth};
        }));
      });
      for(const pair of linkInfo){
        const [left,right]=pair;
        for(const item of pair){
          assert.equal(item.display!=='none',true,buildingId+' linked field '+item.id+' must show at '+width);
-         assert.ok(Math.abs(item.h-44)<1.1,buildingId+' linked '+item.id+' must measure 44px, got '+item.h);
+         assert.ok(Math.abs(item.h-44)<1.1,buildingId+' linked '+item.id+' must measure 44px, got '+JSON.stringify(item));
        }
        assert.ok(Math.abs(left.y-right.y)<2,buildingId+' paired controls have different row heights');
        assert.ok(right.x>left.right-1,buildingId+' paired fields are not left/right');
