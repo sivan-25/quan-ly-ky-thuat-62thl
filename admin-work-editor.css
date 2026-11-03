@@ -205,3 +205,50 @@
  }
  .ccAdminWorkEdit .ccWeGrid > label:nth-child(5) select{font-size:13px;padding-inline:5px}
 }
+
+
+/* Structural mobile layout: paired controls are grouped in dedicated rows in the form markup. */
+.ccAdminWorkEdit .ccWeGrid > .ccWePairRow{display:contents}
+@media (max-width:760px){
+ .ccAdminWorkEdit .ccWeGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-areas:none!important;
+  grid-auto-flow:row;
+  align-items:start;
+ }
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:11px;
+  grid-column:1/-1!important;
+  grid-area:auto!important;
+  min-width:0;
+ }
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow > label{
+  grid-column:auto!important;
+  width:100%;min-width:0;max-width:100%;
+ }
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow input[type="date"],
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow select{
+  width:100%;min-width:0;max-width:100%;
+  box-sizing:border-box;
+  min-height:49px;height:49px;
+  padding:0 7px;
+  font-size:13px;
+  letter-spacing:-.25px;
+ }
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow input[type="date"]{
+  -webkit-appearance:none;appearance:none;
+ }
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow input[type="date"]::-webkit-date-and-time-value{
+  text-align:left;min-width:0;
+ }
+}
+@media (max-width:370px){
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow{gap:7px}
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow input[type="date"],
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow select{
+  padding-inline:4px;font-size:12px;
+ }
+}
