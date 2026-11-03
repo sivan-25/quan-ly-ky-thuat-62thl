@@ -1749,9 +1749,9 @@
   justify-content:center!important;
   gap:5px!important;
   min-width:0!important;
-  min-height:64px!important;
-  height:64px!important;
-  padding:8px 7px!important;
+  min-height:42px!important;
+  height:42px!important;
+  padding:5px 6px!important;
   border:1px solid #3f5470!important;
   border-radius:10px!important;
   background:#1c2d48!important;
@@ -1775,9 +1775,9 @@
   outline-offset:2px;
 }
 #app #energyPage #energyForm .energyPhotoActions .energyActionIcon{
-  width:18px;
-  height:18px;
-  flex:0 0 18px;
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
   stroke:currentColor;
 }
 #app #energyPage #energyForm .energyPhotoActions .energyActionText{
@@ -1790,14 +1790,14 @@
 }
 @media(max-width:400px){
   #app #energyPage #energyForm .energyPhotoActions button{
-    flex-direction:column!important;
-    gap:3px!important;
+    flex-direction:row!important;
+    gap:4px!important;
     font-size:10px!important;
-    padding:7px 4px!important;
+    padding:5px 3px!important;
   }
   #app #energyPage #energyForm .energyPhotoActions .energyActionText{
     font-size:10px!important;
-    text-align:center;
+    text-align:left;
   }
 }
 
