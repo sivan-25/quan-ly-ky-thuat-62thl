@@ -10,6 +10,15 @@ const done=t=>["Đã hoàn thành","Hoàn thành"].includes(String(t?.s||""));
 const priorityVi=p=>{const raw=String(p??"").trim();return ({critical:"Khẩn cấp",high:"Cao",medium:"Trung bình",low:"Thấp","khẩn cấp":"Khẩn cấp",cao:"Cao","trung bình":"Trung bình","thấp":"Thấp"})[raw.toLocaleLowerCase("vi-VN")]||(raw||"Trung bình")};
 const projectTitle=id=>({"62THL":"62 THL","68PĐL":"68 PĐL","68PDL":"68 PĐL","127HH":"127 HH","130HH":"130 HH","399CH":"399 CH"})[id]||id;
 function error(text){const el=$("ccWeError");if(el){el.textContent=text||"";el.classList.toggle("hide",!text)}}
+const dateFields=["ccWeAssigned","ccWeStart","ccWeDue"];
+function refreshDateLabels(){
+ for(const id of dateFields){
+  const input=$(id),value=input?.parentElement?.querySelector(".ccWeDateValue");
+  if(!input||!value)continue;
+  const raw=input.value,parts=raw.split("-");
+  value.textContent=parts.length===3?parts[2]+"/"+parts[1]+"/"+parts[0]:"Chọn ngày";
+ }
+}
 function ui(){
  let m=$("ccAdminWorkEdit");if(m)return m;
  m=document.createElement("div");m.id="ccAdminWorkEdit";m.className="ccAdminWorkEdit hide";
@@ -18,12 +27,12 @@ function ui(){
  <form id="ccWeForm"><div class="ccWeGrid">
  <label class="full"><span>Nội dung công việc *</span><textarea id="ccWeContent" rows="3" required maxlength="2500"></textarea></label>
  <div class="ccWePairRow ccWeDispatchRow">
- <label class="ccWeDate"><span>Ngày giao *</span><input id="ccWeAssigned" type="date" required></label>
+ <label class="ccWeDate"><span>Ngày giao *</span><span class="ccWeDateControl"><span class="ccWeDateValue" aria-hidden="true"></span><input id="ccWeAssigned" type="date" required></span></label>
  <label class="ccWeType"><span>Loại công việc</span><select id="ccWeType"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label>
  </div>
  <div class="ccWePairRow ccWeScheduleRow">
- <label class="ccWeDate"><span>Ngày bắt đầu *</span><input id="ccWeStart" type="date" required></label>
- <label class="ccWeDate"><span>Hạn hoàn thành *</span><input id="ccWeDue" type="date" required></label>
+ <label class="ccWeDate"><span>Ngày bắt đầu *</span><span class="ccWeDateControl"><span class="ccWeDateValue" aria-hidden="true"></span><input id="ccWeStart" type="date" required></span></label>
+ <label class="ccWeDate"><span>Hạn hoàn thành *</span><span class="ccWeDateControl"><span class="ccWeDateValue" aria-hidden="true"></span><input id="ccWeDue" type="date" required></span></label>
  </div>
  <label><span>Mức độ ưu tiên</span><select id="ccWePriority"><option>Thấp</option><option>Trung bình</option><option>Cao</option><option>Khẩn cấp</option></select></label>
  <label><span>Trạng thái</span><select id="ccWeStatus"><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option><option>Hoàn thành</option><option>Bắt đầu</option></select></label>
@@ -44,6 +53,7 @@ function ui(){
   if(view)void viewImage(view.dataset.weView,Number(view.dataset.index));
  });
  $("ccWeFiles").addEventListener("change",e=>{files.push(...[...e.target.files].filter(f=>f.type.startsWith("image/")));e.target.value="";renderImages()});
+ $("ccWeForm").addEventListener("change",e=>{if(dateFields.includes(e.target.id))refreshDateLabels()});
  $("ccWeForm").addEventListener("submit",save);
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!m.classList.contains("hide"))close()});
  return m;
@@ -82,6 +92,7 @@ function setBusy(value){
 function close(){
  if(busy)return;
  $("ccAdminWorkEdit")?.classList.add("hide");
+ document.body.classList.remove("ccWeModalOpen");
  current=null;initial=null;photos=[];files=[];serial++;purgeUrls();
 }
 async function open(buildingId,taskId){
@@ -91,6 +102,7 @@ async function open(buildingId,taskId){
  if(!authorized)return toast("Bạn không có quyền truy cập dự án này");
  const root=ui(),v=++serial;current=null;initial=null;photos=[];files=[];purgeUrls();error("");
  root.classList.remove("hide");
+ document.body.classList.add("ccWeModalOpen");
  $("ccWeForm").classList.add("ccWeLoading");
  $("ccWeProject").textContent="Đang tải từ "+projectTitle(buildingId)+"...";
  try{
@@ -107,6 +119,7 @@ async function open(buildingId,taskId){
    ccWeNote:task.n||"",ccWeResult:task.result||""
   };
   for(const [id,value] of Object.entries(fill))$(id).value=value;
+  refreshDateLabels();
   $("ccWePeople").innerHTML=(reply?.snapshot?.people||[]).map(p=>'<option value="'+esc(p.name||"")+'"></option>').join("");
   $("ccWeProject").textContent=projectTitle(buildingId)+" · Mã công việc "+task.id+" · Cập nhật trực tiếp";
   await renderImages();
