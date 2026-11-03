@@ -105,39 +105,50 @@ function close(){
  document.body.classList.remove("ccWeModalOpen");
  current=null;initial=null;photos=[];files=[];serial++;purgeUrls();
 }
+function populateEditor(reply,buildingId,taskId){
+ const task=(reply?.snapshot?.tasks||[]).find(t=>String(t.id)===String(taskId));
+ if(!task||!isAdminTask(task))throw new Error("Không tìm thấy công việc Admin đã giao trong dự án");
+ current={buildingId,id:String(task.id)};initial={...task};photos=Array.isArray(task.imgs)?[...task.imgs]:[];
+ const fill={
+  ccWeContent:task.c||"",ccWeAssigned:d(task.dispatchedAt)||d(task.d)||now(),
+  ccWeStart:d(task.d)||now(),ccWeDue:d(task.dueDate)||d(task.d)||now(),
+  ccWeType:task.t||"Hằng ngày",ccWePriority:priorityVi(task.priority),
+  ccWeStatus:task.s||"Đang thực hiện",ccWeAssignee:task.a||"",
+  ccWeNote:task.n||"",ccWeResult:task.result||""
+ };
+ for(const [id,value] of Object.entries(fill))$(id).value=value;
+ refreshDateLabels();resizeWorkTextareas();
+ $("ccWePeople").innerHTML=(reply?.snapshot?.people||[]).map(p=>'<option value="'+esc(p.name||"")+'"></option>').join("");
+ $("ccWeProject").textContent=projectTitle(buildingId)+" · Mã công việc "+task.id+" · Cập nhật trực tiếp";
+ // Images load separately and must never block form interaction.
+ void renderImages();
+}
 async function open(buildingId,taskId){
  if(busy)return;
  if(!currentAccount?.is_admin||typeof isAdminOverview!=="function"||!isAdminOverview())return toast("Chỉ Admin được chỉnh sửa tại Tổng quan Admin");
  const authorized=(currentAccount.buildings||[]).some(b=>String(b.id)===String(buildingId)&&String(b.id).toUpperCase()!=="UPDATE");
  if(!authorized)return toast("Bạn không có quyền truy cập dự án này");
  const root=ui(),v=++serial;current=null;initial=null;photos=[];files=[];purgeUrls();error("");
- root.classList.remove("hide");
- document.body.classList.add("ccWeModalOpen");
- $("ccWeForm").classList.add("ccWeLoading");
+ root.classList.remove("hide");document.body.classList.add("ccWeModalOpen");
+ const form=$("ccWeForm");form.classList.remove("ccWeLoading");
+ $("ccWeProject").textContent="Công việc "+projectTitle(buildingId);
+ // The Admin overview already has the task snapshot. Use it synchronously.
+ const cached=window.estaCommandCenterCachedTask?.(buildingId,taskId);
+ if(cached?.snapshot?.tasks?.length){
+  try{populateEditor(cached,buildingId,taskId);return}
+  catch(e){console.warn("Admin edit cached task",e)}
+ }
+ // Only the cache-miss path must fetch over the network.
+ form.classList.add("ccWeLoading");
  $("ccWeProject").textContent="Đang tải từ "+projectTitle(buildingId)+"...";
  try{
   const reply=await projectSync("get",{},buildingId);
   if(v!==serial)return;
-  const task=(reply?.snapshot?.tasks||[]).find(t=>String(t.id)===String(taskId));
-  if(!task||!isAdminTask(task))throw new Error("Không tìm thấy công việc Admin đã giao trong dự án");
-  current={buildingId,id:String(task.id)};initial={...task};photos=Array.isArray(task.imgs)?[...task.imgs]:[];
-  const fill={
-   ccWeContent:task.c||"",ccWeAssigned:d(task.dispatchedAt)||d(task.d)||now(),
-   ccWeStart:d(task.d)||now(),ccWeDue:d(task.dueDate)||d(task.d)||now(),
-   ccWeType:task.t||"Hằng ngày",ccWePriority:priorityVi(task.priority),
-   ccWeStatus:task.s||"Đang thực hiện",ccWeAssignee:task.a||"",
-   ccWeNote:task.n||"",ccWeResult:task.result||""
-  };
-  for(const [id,value] of Object.entries(fill))$(id).value=value;
-  refreshDateLabels();
-  resizeWorkTextareas();
-  $("ccWePeople").innerHTML=(reply?.snapshot?.people||[]).map(p=>'<option value="'+esc(p.name||"")+'"></option>').join("");
-  $("ccWeProject").textContent=projectTitle(buildingId)+" · Mã công việc "+task.id+" · Cập nhật trực tiếp";
-  await renderImages();
-  if(v===serial)$("ccWeContent").focus();
+  populateEditor(reply,buildingId,taskId);
  }catch(e){if(v===serial){console.warn("Admin edit open",e);error(e?.message||"Không thể tải công việc")}}
- finally{if(v===serial)$("ccWeForm").classList.remove("ccWeLoading")}
+ finally{if(v===serial)form.classList.remove("ccWeLoading")}
 }
+
 async function save(e){
  e.preventDefault();
  if(busy||!current||!initial)return;
