@@ -125,3 +125,37 @@
 @media (max-width:370px){
  .ccAdminWorkEdit .ccWeGrid{grid-template-columns:1fr}
 }
+
+
+/* 2026-11-03: Compact paired date/type rows on the Admin work editor (mobile). */
+@media (max-width:600px){
+ .ccAdminWorkEdit .ccWeGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-areas:
+   "content content"
+   "assigned type"
+   "start due"
+   "priority status"
+   "assignee assignee"
+   "note note"
+   "result result";
+ }
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeContent){grid-area:content}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeAssigned){grid-area:assigned;grid-column:auto}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeType){grid-area:type;grid-column:auto}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeStart){grid-area:start;grid-column:auto}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeDue){grid-area:due;grid-column:auto}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWePriority){grid-area:priority}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeStatus){grid-area:status}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeAssignee){grid-area:assignee}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeNote){grid-area:note}
+ .ccAdminWorkEdit .ccWeGrid > label:has(#ccWeResult){grid-area:result}
+ .ccAdminWorkEdit .ccWeGrid > label.ccWeDate > input[type="date"]{
+  padding-inline:7px;font-size:13px;letter-spacing:-.2px;
+ }
+ .ccAdminWorkEdit .ccWeGrid > label.ccWeType > select{padding-inline:8px;font-size:14px}
+}
+@media (max-width:370px){
+ .ccAdminWorkEdit .ccWeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ccAdminWorkEdit .ccWeGrid > label.ccWeDate > input[type="date"]{padding-inline:5px;font-size:12px}
+}
