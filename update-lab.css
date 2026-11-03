@@ -1132,17 +1132,22 @@
     gap:7px!important;
     padding:0 9px 10px!important;
   }
+  /* The six linked-work labels size naturally; their actual controls have
+     the same 44px geometry as the primary mobile task form. */
   #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2),
   #app.updateProjectMode #demoWorkLinks .updateUniformLinkField{
-    min-height:62px!important;
-    height:62px!important;
-    grid-template-rows:auto 46px!important;
+    min-height:0!important;
+    height:auto!important;
+    grid-template-rows:auto 44px!important;
   }
   #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > select,
   #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > input,
   #app.updateProjectMode #demoWorkLinks .updateUniformLinkField > select{
-    min-height:46px!important;
-    height:46px!important;
+    min-height:44px!important;
+    height:44px!important;
+    max-height:44px!important;
+    block-size:44px!important;
+    padding:0 8px!important;
     font-size:16px!important;
   }
   #app.updateProjectMode .updateWorkExtrasCompact{
@@ -1173,9 +1178,9 @@
     height:auto!important;
   }
   #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid textarea{
-    min-height:46px!important;
-    height:46px!important;
-    max-height:92px!important;
+    min-height:44px!important;
+    height:44px!important;
+    max-height:none!important;
     font-size:16px!important;
   }
 }
