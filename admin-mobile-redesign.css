@@ -17,7 +17,7 @@
   #app.homeMode.opsOverviewMode.adminCommandHome #homePage,
   #app.homeMode.opsOverviewMode.adminCommandHome .homeDashboard,
   #app.homeMode.opsOverviewMode.adminCommandHome main {
-    background:#f3eee5!important;
+    background:#eef7fc!important;
   }
   #app.homeMode.opsOverviewMode.adminCommandHome #homePage {
     padding:12px 12px calc(76px + env(safe-area-inset-bottom))!important;
