@@ -355,6 +355,21 @@ document.addEventListener("DOMContentLoaded",demoSetProjectMode);
 
 function demoEnsureWorkPanel(){
  const card=(typeof workEntryCard==="function"?workEntryCard():document.querySelector("#workPage .workEntryCard"));if(!card)return;
+ const form=card.querySelector("#taskForm");
+ if(form&&!form.dataset.autoGrowWorkBound){
+  form.dataset.autoGrowWorkBound="1";
+  const grow=()=>{
+   ["content","demoTaskCause","demoTaskResult"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el||!el.isConnected)return;
+    el.style.height="auto";
+    el.style.height=Math.max(44,el.scrollHeight)+"px";
+   });
+  };
+  form.addEventListener("input",e=>{if(["content","demoTaskCause","demoTaskResult"].includes(e.target.id))grow()});
+  window.estaResizeWorkFields=grow;
+  requestAnimationFrame(grow);
+ }
  let box=$("#demoWorkLinks");
  if(!box){
   box=document.createElement("details");
@@ -366,8 +381,8 @@ function demoEnsureWorkPanel(){
    '<label class="demoMobileHalf demoIncidentField">Sự cố / Defect<select id="demoTaskIncident"><option value="">Không liên kết</option></select></label>'+
    '<label class="demoAdvancedInspection demoMobileHalf">Checklist<select id="demoTaskInspection"><option value="">Không liên kết</option></select></label>'+
    '<label class="demoMobileHalf demoContractorField">Nhà thầu<select id="demoTaskContractor"><option value="">Không liên kết</option></select></label>'+
-   '<label class="span2"><span>Nguyên nhân</span><textarea id="demoTaskCause" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
-   '<div class="span2 demoTaskResultField"><div class="demoTaskResultHead"><label id="demoTaskResultLabel" for="demoTaskResult">Hướng xử lý / Kết quả</label><button id="demoUseNoteAsResult" class="demoUseNoteInline hide" type="button" title="Chép nội dung ghi chú sang kết quả thực hiện">↗ Lấy từ ghi chú</button></div><textarea id="demoTaskResult" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></div>'+
+   '<label class="span2"><span>Nguyên nhân</span><textarea id="demoTaskCause" rows="1" placeholder="Nhập nguyên nhân / chẩn đoán. Nếu chọn Sự cố, hệ thống có thể lấy nguyên nhân từ hồ sơ sự cố."></textarea></label>'+
+   '<div class="span2 demoTaskResultField"><div class="demoTaskResultHead"><label id="demoTaskResultLabel" for="demoTaskResult">Hướng xử lý / Kết quả</label><button id="demoUseNoteAsResult" class="demoUseNoteInline hide" type="button" title="Chép nội dung ghi chú sang kết quả thực hiện">↗ Lấy từ ghi chú</button></div><textarea id="demoTaskResult" rows="1" placeholder="Ghi hướng xử lý; bắt buộc khi chuyển sang Đã hoàn thành..."></textarea></div>'+
    '<div class="span2 demoTaskMaterialsField"><div class="demoTaskMaterialsHead"><span>Vật tư sử dụng</span><button id="demoAddTaskMaterial" type="button">+ Thêm vật tư</button></div><div id="demoTaskMaterialsRows" class="demoTaskMaterialsRows"></div><small id="demoTaskMaterialsEmpty" class="demoTaskMaterialsEmpty hide">Chưa có vật tư trong kho dự án.</small></div>'+
    '</div>';
   card.appendChild(box);
@@ -636,7 +651,7 @@ window.editTask=id=>{
  if(demoIs()){
   const x=load().find(y=>String(y.id)===String(id));
   if(x)demoFillWorkLinks(x);
-  requestAnimationFrame(demoArrangeWorkEditDrawer);
+  requestAnimationFrame(()=>{demoArrangeWorkEditDrawer();window.estaResizeWorkFields?.()});
  }
 };
 const originalResetForm=resetForm;
