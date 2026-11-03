@@ -6,7 +6,7 @@ const panel=demo.slice(demo.indexOf('function demoEnsureWorkPanel'),demo.indexOf
 const submit=demo.slice(demo.indexOf('const originalTaskSubmit='),demo.indexOf('const originalDemoDelTask='));
 (async()=>{
  const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<link\b[^>]*>/gi,'');
- const dom=new JSDOM(html,{url:'https://fixture.test',runScripts:'outside-only'});
+ const dom=new JSDOM(html,{url:'https://fixture.test',runScripts:'outside-only',pretendToBeVisual:true});
  dom.window.HTMLElement.prototype.scrollIntoView=function(){};
  dom.window.matchMedia=()=>({matches:false,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){}});
  const page={addScriptTag:async({content})=>dom.window.eval(content),evaluate:async(fn,arg)=>dom.window.eval('('+fn.toString()+')('+JSON.stringify(arg)+')')};
