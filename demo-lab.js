@@ -386,6 +386,7 @@ function demoEnsureWorkPanel(){
    '<div class="span2 demoTaskMaterialsField"><div class="demoTaskMaterialsHead"><span>Vật tư sử dụng</span><button id="demoAddTaskMaterial" type="button">+ Thêm vật tư</button></div><div id="demoTaskMaterialsRows" class="demoTaskMaterialsRows"></div><small id="demoTaskMaterialsEmpty" class="demoTaskMaterialsEmpty hide">Chưa có vật tư trong kho dự án.</small></div>'+
    '</div>';
   card.appendChild(box);
+  box.addEventListener("input",e=>{if(["demoTaskCause","demoTaskResult"].includes(e.target.id))window.estaResizeWorkFields?.()});
   $("#demoUseNoteAsResult")?.addEventListener("click",()=>{
    const result=$("#demoTaskResult"),note=$("#note");
    if(!usesSingleTaskResult()||!result||result.value.trim()||!note?.value.trim())return;
