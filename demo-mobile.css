@@ -363,32 +363,91 @@
     line-height:1.25!important;
     border-radius:10px!important;
   }
-  /* One measured 44px control. Native input remains fully clickable;
-     displayed date uses a separate centered text layer for iOS Safari. */
-  #app #workPage #taskForm .workDate{position:relative!important;min-width:0!important}
-  #app #workPage #taskForm .workDate #date{
+  /* WORK MOBILE DATE — one 44px surface, no native-date layout growth.
+     The output owns geometry; the native iOS date picker is an invisible,
+     still-interactive overlay. This single rule set covers add and edit. */
+  #app #workPage #taskForm .workDate,
+  #workEditDrawer #taskForm .workDate{
+    position:relative!important;
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+  #app #workPage #taskForm .workDate .workDateDisplayed,
+  #workEditDrawer #taskForm .workDate .workDateDisplayed{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    position:relative!important;
+    inset:auto!important;
+    z-index:1!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    block-size:44px!important;
+    min-block-size:44px!important;
+    max-block-size:44px!important;
+    margin:0!important;
+    padding:0 10px!important;
+    border:1px solid #c7d9ea!important;
+    border-radius:10px!important;
+    background:#fff!important;
+    color:#183263!important;
+    font:600 16px/1 Inter,Arial,sans-serif!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    pointer-events:none!important;
+  }
+  #app #workPage #taskForm .workDate #date,
+  #workEditDrawer #taskForm .workDate #date{
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    top:auto!important;
+    bottom:0!important;
+    z-index:2!important;
     display:block!important;
     box-sizing:border-box!important;
-    width:100%!important;min-width:0!important;max-width:100%!important;min-inline-size:0!important;
-    height:44px!important;min-height:44px!important;max-height:44px!important;
-    block-size:44px!important;min-block-size:44px!important;max-block-size:44px!important;
-    margin:0!important;padding:0 10px!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    block-size:44px!important;
+    min-block-size:44px!important;
+    max-block-size:44px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:10px!important;
+    background:transparent!important;
+    color:transparent!important;
+    -webkit-text-fill-color:transparent!important;
+    opacity:.01!important;
+    cursor:pointer!important;
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
     overflow:hidden!important;
-    color:transparent!important;-webkit-text-fill-color:transparent!important;
-    font-size:16px!important;line-height:normal!important;
   }
-  #app #workPage #taskForm .workDate #date::-webkit-date-and-time-value,
-  #app #workPage #taskForm .workDate #date::-webkit-datetime-edit{
-    color:transparent!important;-webkit-text-fill-color:transparent!important;
+  #app #workPage #taskForm .workDate:focus-within .workDateDisplayed,
+  #workEditDrawer #taskForm .workDate:focus-within .workDateDisplayed{
+    border-color:#278ac5!important;
+    box-shadow:0 0 0 3px rgba(39,138,197,.16)!important;
   }
-  #app #workPage #taskForm .workDate .workDateDisplayed{
-    display:flex!important;align-items:center!important;justify-content:center!important;
-    position:absolute!important;left:0!important;right:0!important;bottom:0!important;z-index:1!important;
-    width:100%!important;min-width:0!important;
-    height:44px!important;min-height:44px!important;max-height:44px!important;
-    margin:0!important;padding:0 9px!important;box-sizing:border-box!important;
-    color:#183263!important;font:600 16px/1 Inter,Arial,sans-serif!important;
-    white-space:nowrap!important;overflow:hidden!important;pointer-events:none!important;
+  #app.estaBrand130 #workPage #taskForm .workDate .workDateDisplayed{
+    background:#f9f0df!important;
+    border-color:#cfad88!important;
+    color:#000!important;
+  }
+  #workEditDrawer #taskForm .workDate .workDateDisplayed{
+    background:#172239!important;
+    border-color:#34445f!important;
+    color:#f3f6ff!important;
   }
   #app.demoMobilePilot #workPage #taskForm textarea{
     display:block!important;

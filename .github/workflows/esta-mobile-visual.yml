@@ -1,6 +1,12 @@
 name: ESTA Mobile Browser Visual Parity
 
 on:
+  push:
+    paths:
+      - 'demo-mobile.css'
+      - 'update-lab.css'
+      - 'tests/work-date-mobile-browser.cjs'
+      - '.github/workflows/esta-mobile-visual.yml'
   pull_request:
     branches: [main]
     paths:
@@ -78,6 +84,9 @@ jobs:
       - name: Verify Admin editor mobile form geometry
         working-directory: candidate
         run: node tests/admin-work-editor-mobile-browser.cjs
+      - name: Verify 44px date surfaces in rendered mobile browsers
+        working-directory: candidate
+        run: node tests/work-date-mobile-browser.cjs
       - name: Verify all four system menus on phones and laptops
         working-directory: candidate
         run: node tests/four-project-system-rail-geometry.cjs
