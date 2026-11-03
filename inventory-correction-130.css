@@ -127,8 +127,8 @@
   --inv127-muted:#577287;
   --inv127-blue:#215d87;
   --inv127-border:#d5e2ec;
-  --inv127-soft:#f2f7fb;
-  background:#eef4f9!important;
+  --inv127-soft:#f9ecdd;
+  background:#f8ead6!important;
   color:var(--inv127-ink)!important;
 }
 #app #inventoryPage.inventoryRef127 :is(.inventoryWorkspace,.inventoryPane,.inventorySupportGrid){
@@ -147,8 +147,8 @@
 /* Keep existing 127HH blue in the relocated desktop header. */
 @media(min-width:761px){
   #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar{
-    background:#eff5fb!important;
-    border-bottom-color:#c4d7e8!important;
+    background:#f8ead6!important;
+    border-bottom-color:#decbb3!important;
     color:#173e5e!important;
   }
   #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .inventory130PageTitle{
@@ -164,7 +164,7 @@
     color:#23475d!important;-webkit-text-fill-color:#23475d!important;
   }
   #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar :is(#inventoryYear,.headerBell,.account){
-    background:#fff!important;border-color:#bbd2e4!important;
+    background:#f9eedf!important;border-color:#ddc8b0!important;
     color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;
   }
   #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar .account :is(span,b,strong,#headerRole){
@@ -177,7 +177,7 @@
   body #app#app #inventoryPage.inventoryRef127 .monthlyStats article{
     display:flex!important;align-items:center!important;
     min-height:84px!important;padding:14px 18px!important;
-    background:#fff!important;border:1px solid var(--inv127-border)!important;
+    background:#f9eedf!important;border:1px solid var(--inv127-border)!important;
     border-radius:14px!important;box-shadow:0 3px 12px #244b6910!important;
   }
   body #app#app #inventoryPage.inventoryRef127 .monthlyStats article:first-child{display:none!important}
@@ -202,7 +202,7 @@
   /* No oversized empty band between action buttons and the first data row. */
   body #app#app #inventoryPage.inventoryRef127 #inventoryMaterialsPane>.inventoryMonthRail{
     padding:10px!important;margin:0 0 12px!important;
-    background:#fff!important;border:1px solid var(--inv127-border)!important;
+    background:#f9eedf!important;border:1px solid var(--inv127-border)!important;
     border-radius:13px!important;box-shadow:none!important;
   }
   body #app#app #inventoryPage.inventoryRef127 #materialMonthTabs{
@@ -231,7 +231,7 @@
   body #app#app #inventoryPage.inventoryRef127 .inventoryToolbarActions :is(button,summary),
   body #app#app #inventoryPage.inventoryRef127 .inventory130PdfMenu>button{
     min-height:42px!important;padding:0 15px!important;border-radius:10px!important;
-    border:1px solid #c6d9e8!important;background:#fff!important;
+    border:1px solid #ddc8b0!important;background:#f9eedf!important;
     color:#244962!important;-webkit-text-fill-color:#244962!important;
     font-weight:700!important;font-size:13px!important;
   }
@@ -240,7 +240,7 @@
     color:#fff!important;-webkit-text-fill-color:#fff!important;
   }
   body #app#app #inventoryPage.inventoryRef127 .inventory130PdfDropdown{
-    border:1px solid #c6d9e8!important;background:#fff!important;
+    border:1px solid #ddc8b0!important;background:#f9eedf!important;
     box-shadow:0 12px 32px #1e476622!important;
   }
   body #app#app #inventoryPage.inventoryRef127 .inventory130PdfDropdown button{
@@ -325,17 +325,10 @@
   body #app#app #inventoryPage.inventoryRef127 .invRowActions button:hover{
     background:#e1eef7!important;border-color:#9cc4dc!important;
   }
-  /* Tools and low-stock cards follow the same light 127HH hierarchy. */
-  body #app#app #inventoryPage.inventoryRef127 #inventoryToolsPane :is(.inventoryTableCard,.inventoryStats article),
+  /* Keep only low-stock beige surface; tool KPI and table palettes are defined in approved CSS. */
   body #app#app #inventoryPage.inventoryRef127 #stockAlertPanel{
-    background:#fff!important;border:1px solid #d5e2ec!important;
+    background:#f9eedf!important;border:1px solid #ddc8b0!important;
     border-radius:13px!important;color:#193c55!important;
-  }
-  body #app#app #inventoryPage.inventoryRef127 #inventoryToolsPane .toolsTable th{
-    background:#e7f0f7!important;color:#244b68!important;-webkit-text-fill-color:#244b68!important;
-  }
-  body #app#app #inventoryPage.inventoryRef127 #inventoryToolsPane .toolsTable td{
-    background:#fff!important;color:#243f55!important;-webkit-text-fill-color:#243f55!important;
   }
 }
 @media(min-width:761px) and (max-width:1150px){

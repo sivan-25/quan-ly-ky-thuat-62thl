@@ -3208,6 +3208,17 @@ function renderTools(){
  $("#toolCount").textContent=inventoryTools.length;
  $("#toolGoodCount").textContent=inventoryTools.filter(x=>["Tốt","Đang sử dụng"].includes(x.condition_status)).length;
  $("#toolRepairCount").textContent=inventoryTools.filter(x=>["Cần kiểm tra","Cần sửa","Hỏng","Hư hỏng"].includes(x.condition_status)).length;
+ const monthStat=$("#toolMonthlyAddedCount");
+ if(monthStat){
+  const now=new Date();
+  const addedThisMonth=inventoryTools.reduce((total,tool)=>{
+   if(!tool.created_at)return total;
+   const addedAt=new Date(tool.created_at);
+   const inMonth=!Number.isNaN(addedAt.getTime())&&addedAt.getFullYear()===now.getFullYear()&&addedAt.getMonth()===now.getMonth();
+   return inMonth?total+Math.max(0,inventoryNum(tool.qty)):total;
+  },0);
+  monthStat.textContent=inventoryFmt(addedThisMonth);
+ }
 
  const editIcon='<svg viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16v4zM13.5 6.5l4 4"/></svg>';
  const trashIcon='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>';
