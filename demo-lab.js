@@ -359,14 +359,14 @@ function demoEnsureWorkPanel(){
  if(form&&!form.dataset.autoGrowWorkBound){
   form.dataset.autoGrowWorkBound="1";
   const grow=()=>{
-   ["content","demoTaskCause","demoTaskResult"].forEach(id=>{
+   ["demoTaskCause","demoTaskResult"].forEach(id=>{
     const el=document.getElementById(id);
     if(!el||!el.isConnected)return;
     el.style.setProperty("height","auto","important");
     el.style.setProperty("height",Math.max(44,el.scrollHeight)+"px","important");
    });
   };
-  form.addEventListener("input",e=>{if(["content","demoTaskCause","demoTaskResult"].includes(e.target.id))grow()});
+  // The main content field is handled exclusively by syncWorkContentHeight in app.js.
   window.estaResizeWorkFields=grow;
   requestAnimationFrame(grow);
  }
