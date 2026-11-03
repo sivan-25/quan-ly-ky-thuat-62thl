@@ -270,7 +270,7 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
  #ccDispatchModal .ccDispatchInline > label > select{width:100%;height:44px;min-height:44px;font-size:16px}
  #ccDispatchModal .ccDispatchForm .ccDispatchDateControl{
   width:100%;min-width:0;height:44px;min-height:44px;overflow:hidden;
-  border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);
+  border:1px solid var(--ov-line);border-radius:9px;background:#fff;
  }
  #ccDispatchModal .ccDispatchForm .ccDispatchDateValue{
   display:flex;align-items:center;position:absolute;inset:0;
@@ -318,7 +318,7 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 .ccDispatchThumb span{position:absolute;left:4px;bottom:4px;min-width:21px;height:21px;padding:0 5px;display:grid;place-items:center;border-radius:11px;background:rgba(8,21,34,.78);color:#fff;font-size:9px}
 @media(max-width:700px){
  .ccDispatchMedia{padding:11px}
- .ccDispatchMediaHead>div{align-items:flex-start;flex-direction:column;gap:4px}
+ .ccDispatchMediaHead>div{align-items:center;flex-direction:row;gap:5px;flex-wrap:nowrap}
  .ccDispatchMediaActions{display:grid;grid-template-columns:1fr 1fr;width:100%}
  #ccDispatchModal .ccMediaBtn{min-height:46px;width:100%;font-size:13px}
  .ccDispatchThumb{flex-basis:96px;width:96px;height:80px}
