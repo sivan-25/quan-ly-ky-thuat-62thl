@@ -30,6 +30,40 @@ on:
   workflow_dispatch:
 
 jobs:
+  date-control-geometry:
+    name: Measured 44px work date across mobile viewports
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install geometry test browser
+        run: |
+          npm ci
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install chromium
+      - name: Start static browser fixture
+        run: |
+          python3 -m http.server 8766 --bind 127.0.0.1 > /tmp/esta-work-date.log 2>&1 &
+          for i in $(seq 1 15); do
+            if curl -fsS http://127.0.0.1:8766/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/esta-work-date.log
+          exit 1
+      - name: Measure mobile date input and surface (add and edit)
+        run: node tests/work-date-mobile-browser.cjs
+      - name: Upload date measurements screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: esta-work-date-44px
+          path: visual-artifacts/date-44px/
+          if-no-files-found: ignore
+          retention-days: 7
+
   mobile-browser:
     name: Four-project Chromium screenshot and DOM parity
     runs-on: ubuntu-latest
@@ -84,9 +118,6 @@ jobs:
       - name: Verify Admin editor mobile form geometry
         working-directory: candidate
         run: node tests/admin-work-editor-mobile-browser.cjs
-      - name: Verify 44px date surfaces in rendered mobile browsers
-        working-directory: candidate
-        run: node tests/work-date-mobile-browser.cjs
       - name: Verify all four system menus on phones and laptops
         working-directory: candidate
         run: node tests/four-project-system-rail-geometry.cjs
