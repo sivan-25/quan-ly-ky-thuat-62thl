@@ -6,7 +6,7 @@
 #app.homeMode .ccTaskScopes button:focus-visible,#app.homeMode .ccTable tr[data-cc-task]:focus-visible{outline:2px solid var(--ov-accent);outline-offset:-2px}
 @media(max-width:700px){#app.homeMode .ccTaskScopes{gap:6px;padding:8px}#app.homeMode .ccTaskScopes button{flex:1;padding:8px 6px;font-size:12px;flex-wrap:wrap}}
 #app.opsOverviewMode,body:has(#app.homeMode.opsOverviewMode) :is(#updateHealthModal,#updateAiModal,#updateNotificationCenter){--ov-surface:#111b2e;--ov-panel:#11182b;--ov-control:#141e33;--ov-soft:#0f1728;--ov-line:#26334d;--ov-hover:#131e32;--ov-muted:#9aa8c1;--ov-text:#eef4ff;--ov-accent:#18d9f3;color-scheme:dark}
-#ccDispatchModal{--ov-surface:#284c77;--ov-panel:#1b3c64;--ov-control:#2b507b;--ov-soft:#23456d;--ov-line:#52759c;--ov-hover:#36618a;--ov-muted:#c1d2e5;--ov-text:#f4f8ff;--ov-accent:#74e5f3;color-scheme:dark}
+#ccDispatchModal{--ov-surface:#f9fbfe;--ov-panel:#e7effa;--ov-control:#fff;--ov-soft:#dceafb;--ov-line:#c5d4e8;--ov-hover:#e4f1fd;--ov-muted:#59677f;--ov-text:#102249;--ov-accent:#0567ab;color-scheme:light}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode){background:var(--ov-panel)!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) main{background:transparent!important}
 #app.homeMode.opsOverviewMode:is(.adminCommandHome,.updateProjectMode) .homeDashboard{width:100%!important;max-width:none!important;margin:0!important;padding:12px 16px 24px!important;background:transparent!important}
@@ -217,19 +217,23 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
  .ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{font-size:16px}
 }
 .ccModal{position:fixed;inset:0;z-index:2200;display:grid;place-items:center;padding:18px}.ccModal.hide{display:none!important}.ccModalBackdrop{position:absolute;inset:0;border:0;background:rgba(5,22,34,.58);backdrop-filter:blur(2px)}.ccModalCard{position:relative;z-index:1;width:min(940px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--ov-line);border-radius:18px;background:var(--ov-panel);box-shadow:0 28px 90px rgba(0,22,38,.28)}.ccModalHead{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:18px 20px;border-bottom:1px solid var(--ov-line);background:var(--ov-surface)}.ccModalHead span{color:var(--ov-accent);font-size:8.5px;font-weight:800;letter-spacing:1px}.ccModalHead h3{margin:4px 0;color:var(--ov-text);font-size:19px}.ccModalHead p{margin:0;color:var(--ov-muted);font-size:10px}.ccClose{width:36px;height:36px;border:1px solid var(--ov-line);border-radius:10px;background:var(--ov-control);color:var(--ov-muted);font-size:22px}
-.ccDispatchForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 16px 14px}.ccDispatchInline{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.8fr);gap:8px;min-width:0}.ccDispatchInline label{min-width:0}.ccDispatchForm label{display:grid;gap:4px;color:var(--ov-muted);font-size:9px;font-weight:720}.ccDispatchForm label.wide{grid-column:1/-1}.ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{width:100%;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-control);color:var(--ov-text);padding:0 10px;font-size:11px;outline:none}.ccDispatchForm input,.ccDispatchForm select{height:40px}.ccDispatchForm textarea{padding:9px 10px;resize:none;overflow-y:hidden;min-height:42px;line-height:1.4}.ccDispatchForm input:focus,.ccDispatchForm select:focus,.ccDispatchForm textarea:focus{border-color:#66bdcd;background:var(--ov-control);box-shadow:0 0 0 3px rgba(66,170,193,.09)}
-.ccDispatchProjectsHead{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;color:var(--ov-muted);font-size:10px}.ccDispatchProjectsHead label{display:flex;align-items:center;gap:6px}.ccDispatchProjectsHead input{width:15px;height:15px}.ccDispatchProjects{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.ccDispatchProjects label{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--ov-line);border-radius:9px;background:var(--ov-surface);cursor:pointer}.ccDispatchProjects input{width:16px;height:16px;flex:0 0 16px}.ccDispatchProjects span{display:block;color:var(--ov-muted);font-size:9px;font-weight:560}.ccDispatchProjects b{display:block;color:var(--ov-text);font-size:9px}.ccDispatchActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:5px}
+.ccDispatchForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 16px 14px}.ccDispatchInline{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.8fr);gap:8px;min-width:0}.ccDispatchInline label{min-width:0}.ccDispatchForm label{display:grid;gap:4px;color:#14294c;font-size:12px;font-weight:720}.ccDispatchForm label.wide{grid-column:1/-1}.ccDispatchForm input,.ccDispatchForm select,.ccDispatchForm textarea{width:100%;border:1px solid var(--ov-line);border-radius:11px;background:#fff;color:var(--ov-text);padding:0 10px;font-size:14px;font-weight:450;outline:none;box-shadow:0 3px 8px #0c386017}.ccDispatchForm input,.ccDispatchForm select{height:40px}.ccDispatchForm textarea{padding:9px 10px;resize:none;overflow-y:hidden;min-height:42px;line-height:1.4}.ccDispatchForm input:focus,.ccDispatchForm select:focus,.ccDispatchForm textarea:focus{border-color:#2992c9;background:#fff;box-shadow:0 0 0 3px rgba(66,170,193,.12)}
+.ccDispatchProjectsHead{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;color:var(--ov-text);font-size:13px}.ccDispatchProjectsHead label{display:flex;align-items:center;gap:6px}.ccDispatchProjectsHead input{width:15px;height:15px}.ccDispatchProjects{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.ccDispatchProjects label{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--ov-line);border-radius:11px;background:#fff;cursor:pointer;box-shadow:0 3px 9px #0b315c12;min-width:0}.ccDispatchProjects input{width:16px;height:16px;flex:0 0 16px}.ccDispatchProjects span{display:flex;align-items:center;min-width:0;color:var(--ov-text);font-size:13px;font-weight:460;white-space:nowrap}.ccDispatchProjects b{display:block;color:var(--ov-text);font-size:13px;font-weight:500}.ccDispatchActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:5px}
 #ccDispatchModal .ccBtn{min-height:38px;padding:8px 14px;border:1px solid var(--ov-line);border-radius:8px;background:var(--ov-control);color:var(--ov-text);font-size:12px;cursor:pointer}
-#ccDispatchModal .ccBtn.primary{background:#18516d;border-color:#56b8d0;color:#9af3fb}
+#ccDispatchModal .ccBtn.primary{background:linear-gradient(110deg,#079dd0,#07559e 65%,#09377c);border-color:#087fc2;color:#fff;font-weight:750}
 #ccDispatchModal #ccDispatchSave.ccDispatchSaved{background:#176347;border-color:#48b88e;color:#f3fff9;box-shadow:0 0 0 1px rgba(72,184,142,.2)}
 #ccDispatchModal .ccBtn:focus-visible{outline:2px solid #18d9f3;outline-offset:2px}
 
 
 /* Compact dispatch controls share a single baseline; mobile rules follow below. */
 #ccDispatchModal{max-width:100vw;overflow:hidden;overscroll-behavior-x:none}
-#ccDispatchModal .ccModalCard{min-width:0;max-width:min(940px,100%);box-sizing:border-box;overflow-x:hidden;background:linear-gradient(160deg,#20466f 0%,#1b3c64 60%,#1c3e68 100%);border-color:#537da5}
+#ccDispatchModal .ccModalCard{min-width:0;max-width:min(940px,100%);box-sizing:border-box;overflow-x:hidden;background:linear-gradient(165deg,#e8f0fa 0%,#e4edfa 54%,#edf3fc 100%);border-color:#b5cbe4}
 #ccDispatchModal .ccDispatchForm{min-width:0;box-sizing:border-box;background:transparent}
-#ccDispatchModal .ccModalHead{background:linear-gradient(120deg,#1d426b,#244e7b);border-color:#52749a}
+#ccDispatchModal .ccModalHead{background:linear-gradient(120deg,#055eaa 0%,#063c7d 68%,#062d65 100%);border-color:#4e9fca;color:#fff}
+#ccDispatchModal .ccModalHead h3{color:#fff}
+#ccDispatchModal .ccModalHead p{color:#d5e7f9}
+#ccDispatchModal .ccModalHead span{color:#68edff}
+#ccDispatchModal .ccClose{color:#fff;background:#ffffff1c;border-color:#a6c1dc}
 #ccDispatchModal .ccModalHead :is(h3,p){text-shadow:0 1px 1px rgba(0,0,0,.08)}
 #ccDispatchModal .ccDispatchForm :is(#ccDispatchTitle,#ccDispatchNote){
  display:block;width:100%;min-width:0;min-height:42px;height:42px;
@@ -271,7 +275,7 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
  #ccDispatchModal .ccDispatchForm .ccDispatchDateValue{
   display:flex;align-items:center;position:absolute;inset:0;
   padding:0 9px;color:var(--ov-text);font-size:15px;
-  font-weight:500;line-height:1.3;pointer-events:none;white-space:nowrap;
+  font-weight:450;line-height:1.3;pointer-events:none;white-space:nowrap;
  }
  #ccDispatchModal .ccDispatchForm .ccDispatchDateControl input[type="date"]{
   position:absolute;inset:0;width:100%;height:100%;min-width:0;
@@ -298,14 +302,14 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 
 
 /* ADMIN_DISPATCH_MEDIA_20261007 */
-.ccDispatchMedia{grid-column:1/-1;display:grid;gap:10px;padding:12px 14px;border:1px solid var(--ov-line);border-radius:12px;background:var(--ov-surface)}
-.ccDispatchMediaHead>div{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.ccDispatchMediaHead b{color:var(--ov-text);font-size:12px;font-weight:800}
-.ccDispatchMediaHead small{color:var(--ov-muted);font-size:10px}
+.ccDispatchMedia{grid-column:1/-1;display:grid;gap:10px;padding:6px 0;border:0;border-radius:0;background:transparent}
+.ccDispatchMediaHead>div{display:flex;align-items:center;justify-content:flex-start;gap:5px;flex-wrap:nowrap;min-width:0}
+.ccDispatchMediaHead b{color:var(--ov-text);font-size:13px;font-weight:750;white-space:nowrap;flex:none}
+.ccDispatchMediaHead small{color:#43526c;font-size:clamp(8px,2.25vw,12px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .ccDispatchMediaActions{display:flex;gap:9px;flex-wrap:wrap}
 .ccDispatchFileInput{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
-#ccDispatchModal .ccMediaBtn{min-height:42px;padding:0 14px;border:1px solid #54b4d0;border-radius:10px;background:#236185;color:#8ff2fd;font-size:12px;font-weight:750;cursor:pointer}
-#ccDispatchModal .ccMediaBtn:hover{border-color:#80e0ef;background:#2b7296}
+#ccDispatchModal .ccMediaBtn{min-height:42px;padding:0 14px;border:1px solid #0872bd;border-radius:10px;background:#eef7ff;color:#07508d;font-size:12px;font-weight:720;cursor:pointer}
+#ccDispatchModal .ccMediaBtn:hover{border-color:#0c92d0;background:#dceffc}
 .ccDispatchPreview{display:flex;gap:8px;overflow-x:auto;padding-bottom:1px}
 .ccDispatchPreview:empty{display:none}
 .ccDispatchThumb{position:relative;flex:0 0 92px;width:92px;height:76px;border:1px solid var(--ov-line);border-radius:10px;overflow:hidden;background:var(--ov-control)}
@@ -431,20 +435,20 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
 /* Admin work journal: separate from the four operational projects. */
 .ccDispatchProjects .ccPersonalTarget{
  grid-column:1/-1;
- border:1px solid #99aa9d;
- background:linear-gradient(110deg,#e8eddf,#f3eddf);
- padding:12px 13px;
+ border:1px solid #7fb4e5;
+ background:linear-gradient(100deg,#e2f0ff,#d9eafa);
+ padding:10px 13px;
 }
-.ccDispatchProjects .ccPersonalTarget b{font-size:12px;color:#244d43}
-.ccDispatchProjects .ccPersonalTarget span{display:flex;flex-direction:column;gap:2px}
+.ccDispatchProjects .ccPersonalTarget b{font-size:14px;color:#15355e;font-weight:520}
+.ccDispatchProjects .ccPersonalTarget span{display:flex;flex-direction:column;gap:2px;white-space:normal}
 .ccDispatchProjects .ccPersonalTarget:has(input:checked){
- border-color:#32816b;
- box-shadow:0 0 0 2px rgba(50,129,107,.18);
- background:#e2efdf;
+ border-color:#1680cc;
+ box-shadow:0 0 0 2px rgba(22,128,204,.18);
+ background:#d1eaff;
 }
 .ccPersonalMode #ccDispatchAssignee[readonly]{
- color:#244d43;
- background:#e8efdc;
+ color:#14365f;
+ background:#e6f2fc;
  font-weight:750;
  cursor:default;
 }
