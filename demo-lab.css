@@ -2448,28 +2448,34 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   }
   #app.demoMobilePilot #workPage #taskForm input:not([type="hidden"]):not([type="file"]),
   #app.demoMobilePilot #workPage #taskForm select,
-  #app.demoMobilePilot #workPage #taskForm textarea,
   #app.demoMobilePilot #workPage #taskForm .peopleSelectBtn{
     width:100%!important;
     min-width:0!important;
     max-width:100%!important;
-    height:48px!important;
-    min-height:48px!important;
-    max-height:none!important;
-    padding:0 11px!important;
+    box-sizing:border-box!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    padding:0 10px!important;
     font-size:16px!important;
-    line-height:normal!important;
+    line-height:1.25!important;
+    border-radius:10px!important;
   }
   #app.demoMobilePilot #workPage #taskForm textarea{
-    height:44px;
-    min-height:44px!important;
-    padding:9px 11px!important;
+    display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
+    box-sizing:border-box!important;
+    height:auto;min-height:44px!important;max-height:none!important;
+    padding:10px 11px!important;
     border-radius:10px!important;
     resize:none!important;overflow-y:hidden!important;
-    line-height:1.4!important;
+    font-size:16px!important;line-height:1.4!important;
   }
-  #app.demoMobilePilot #workPage #taskForm input[type="date"]{
-    min-inline-size:0!important;
+  #app.demoMobilePilot #workPage #taskForm .workDate input[type="date"]{
+    display:block!important;
+    width:100%!important;min-width:0!important;min-inline-size:0!important;max-width:100%!important;
+    height:44px!important;min-height:44px!important;max-height:44px!important;
+    padding:0 7px!important;box-sizing:border-box!important;
+    font-size:16px!important;line-height:1.25!important;
   }
   #app.demoMobilePilot #workPage #taskForm .workStatus,
   #app.demoMobilePilot #workPage #taskForm .workContent,
@@ -2495,13 +2501,21 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   }
   #app.demoMobilePilot #workPage #taskForm .workFormActions{
     display:flex!important;
-    justify-content:flex-end!important;
-    align-items:center!important;
-    gap:8px!important;
+    justify-content:flex-end!important;align-items:center!important;
+    flex-direction:row!important;gap:8px!important;
+    width:100%!important;grid-template-columns:none!important;
+    padding-inline:0!important;
   }
   #app.demoMobilePilot #workPage #taskForm .workFormActions button{
     flex:0 0 auto!important;width:auto!important;min-width:88px!important;max-width:48%!important;
     padding:8px 15px!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .workFormActions #saveBtn{
+    margin-left:auto!important;order:2!important;
+    width:auto!important;min-width:92px!important;max-width:48%!important;
+  }
+  #app.demoMobilePilot #workPage #taskForm .workFormActions #cancelEdit{
+    order:1!important;
   }
   #app.demoMobilePilot #workPage .existingImagePreview,
   #app.demoMobilePilot #workPage .pendingImagePreview,
@@ -2636,8 +2650,18 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     padding-bottom:env(safe-area-inset-bottom)!important;
   }
   #app.demoMobilePilot .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{
-    display:flex!important;justify-content:flex-end!important;gap:8px!important;
+    display:flex!important;flex-direction:row!important;
+    justify-content:flex-end!important;align-items:center!important;gap:8px!important;
+    grid-template-columns:none!important;
     margin:0 14px calc(16px + env(safe-area-inset-bottom))!important;
+  }
+  #app.demoMobilePilot .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #saveBtn{
+    order:2!important;margin-left:auto!important;
+    width:auto!important;min-width:100px!important;max-width:48%!important;
+    flex:0 0 auto!important;
+  }
+  #app.demoMobilePilot .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter #cancelEdit{
+    order:1!important;flex:0 0 auto!important;width:auto!important;
   }
 
   /* Energy: no whole-page table overflow; use cards and scrollable tabs */
