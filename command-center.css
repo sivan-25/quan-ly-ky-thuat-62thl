@@ -82,6 +82,29 @@
 #app.homeMode .ccPriority.p3{background:#fbe5e5;color:#ab3131;border:1px solid #eab2b2}
 #app.homeMode .ccPriority.p4{background:#f7dada;color:#881e1e;border:1px solid #e09c9c}
 #app.homeMode .ccAlertCount{padding:5px 9px;border-radius:8px;background:#f8e7e7;color:#a64c4c;font-size:13px}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel{
+ --ov-surface:#fff;--ov-panel:#eef7fc;--ov-control:#fff;--ov-soft:#e2f0f8;
+ --ov-line:#bbd0dc;--ov-muted:#526f82;--ov-text:#233e53;--ov-accent:#176b91;
+ background:#eef7fc;border:1px solid #bbd0dc;border-radius:14px;
+ box-shadow:0 3px 14px rgba(7,35,54,.07);min-width:0;overflow:hidden;
+}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccPanelHead{
+ background:#e1eff7;border-bottom:1px solid #c1d9e6;
+}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccPanelHead span{color:#216681}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccPanelHead h3{color:#203950}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccPanelHead p{color:#58758a}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .opsPager{
+ background:#e1eff7;color:#58758a;border-top:1px solid #c1d9e6;padding:9px 12px;
+}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert{
+ background:#fff;border:1px solid #c4d7e2;border-radius:10px;
+ padding:10px;margin-bottom:7px;min-height:44px;
+}
+#app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert:focus-visible{
+ outline:2px solid #228cb4;outline-offset:-2px;
+}
+
 #app.homeMode .ccAlertList{display:grid;max-height:none;padding:4px 10px}
 #app.homeMode .ccAlert{width:100%;display:grid;grid-template-columns:8px minmax(0,1fr) 12px;gap:8px;padding:10px 2px;background:transparent;border:0;border-bottom:1px solid var(--ov-line);text-align:left;cursor:pointer}
 #app.homeMode .ccAlert>i{width:7px;height:7px;border-radius:50%;background:#71848d;margin-top:5px}
@@ -331,21 +354,21 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
    grid-template-columns:minmax(0,1fr);
    gap:16px;align-items:stretch;
  }
- #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace>.opsPanel{
+ #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace>.opsPanel:not(.ccAlertsPanel){
    border:1px solid #34445c!important;border-radius:15px!important;
    background:#141f32!important;box-shadow:0 8px 28px rgba(4,12,27,.14)!important;
  }
- #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanelHead{
+ #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanel:not(.ccAlertsPanel) .opsPanelHead{
    padding:17px 20px!important;background:#17243a!important;
    border-bottom:1px solid #34445c!important;
  }
- #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanelHead span{
+ #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanel:not(.ccAlertsPanel) .opsPanelHead span{
    color:#66cbd1!important;font-size:11px!important;font-weight:700!important;letter-spacing:.09em!important;
  }
- #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanelHead h3{
+ #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanel:not(.ccAlertsPanel) .opsPanelHead h3{
    color:#f1f5fc!important;font-size:19px!important;font-weight:750!important;letter-spacing:-.02em!important;
  }
- #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanelHead p{
+ #app.homeMode.adminCommandHome #estaCommandCenter .ccWorkspace .opsPanel:not(.ccAlertsPanel) .opsPanelHead p{
    color:#a9b9cc!important;font-size:12px!important;
  }
  #app.homeMode.adminCommandHome #estaCommandCenter .ccTaskScopes{
@@ -409,25 +432,26 @@ body:has(#app.homeMode.opsOverviewMode) #updateNotificationCenter :is(aside>head
    color:#b6c5d7!important;
  }
  #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlertList{
-   padding:9px 14px!important;background:#141f32!important;max-height:510px!important;overflow-y:auto!important;
+   padding:10px 12px!important;background:#eef7fc!important;max-height:510px!important;overflow-y:auto!important;
  }
  #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert{
-   padding:14px 10px!important;grid-template-columns:8px minmax(0,1fr) 14px!important;
-   gap:10px!important;border-radius:8px!important;border-bottom:1px solid #33435a!important;
+   padding:12px!important;grid-template-columns:8px minmax(0,1fr) 14px!important;
+   gap:9px!important;border:1px solid #c4d7e2!important;border-radius:10px!important;
+   background:#fff!important;margin-bottom:7px!important;min-height:46px!important;
  }
- #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert:hover{background:#24354c!important}
+ #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert:hover{background:#f2f8fc!important}
  #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert b{
-   color:#edf3fc!important;font-size:14px!important;font-weight:670!important;
+   color:#233e53!important;font-size:14px!important;font-weight:550!important;
    line-height:1.45!important;letter-spacing:-.01em!important;
  }
  #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert :is(span,small){
-   color:#aebcd0!important;font-size:12px!important;line-height:1.5!important;
+   color:#597286!important;font-size:12px!important;line-height:1.45!important;
  }
  #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertsPanel .ccAlert>i{
    width:8px!important;height:8px!important;margin-top:7px!important;
  }
  #app.homeMode.adminCommandHome #estaCommandCenter .ccAlertCount{
-   background:#4b2836!important;color:#ffc7bd!important;font-weight:750!important;
+   background:#f9e7e7!important;color:#9c3543!important;font-weight:650!important;
  }
 }
 
