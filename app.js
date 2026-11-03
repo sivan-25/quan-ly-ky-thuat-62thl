@@ -12,6 +12,16 @@ const load=()=>{try{let v=JSON.parse(localStorage.getItem(taskStorageKey())||"[]
 const save=a=>localStorage.setItem(taskStorageKey(),JSON.stringify(a));
 const today=()=>new Date().toLocaleDateString("en-CA");
 const fmt=d=>new Date(d+"T00:00").toLocaleDateString("vi-VN");
+/* Visible date text is separate from Safari's native date internals, which do
+   not consistently vertically center their localized content on iOS. */
+function syncWorkDateDisplay(){
+ const input=document.getElementById("date");
+ const output=document.querySelector("#taskForm .workDateDisplayed");
+ if(!input||!output)return;
+ const date=/^(\d{4})-(\d{2})-(\d{2})$/.exec(input.value);
+ output.textContent=date?date[3]+"/"+date[2]+"/"+date[1]:"Chọn ngày";
+}
+
 const esc=(s="")=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(s){$("#toast").textContent=s;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),1800)}
 
@@ -1159,6 +1169,7 @@ function restoreDraft(){
   let d=JSON.parse(localStorage.getItem(DRAFT)||"null");if(!d)return;
   $("#date").value=d.d||today();$("#content").value=d.c||"";$("#type").value=d.t||"Hằng ngày";$("#status").value=d.s||"Đang thực hiện";
   setPeopleSelected("task",String(d.a||"").split(",").map(v=>v.trim()).filter(Boolean));$("#note").value=d.n||"";
+  syncWorkDateDisplay();
   requestAnimationFrame(syncWorkContentHeight);
  }catch(e){}
 }
@@ -1235,6 +1246,7 @@ async function deleteStoredMediaRefs(refs){
 }
 function resetForm(clearDraft=true){
  $("#editId").value="";$("#date").value=today();$("#content").value="";$("#type").value="Hằng ngày";$("#status").value="Đang thực hiện";setPeopleSelected("task",[]);$("#note").value="";$("#images").value="";$("#cameraNativeInput").value="";
+ syncWorkDateDisplay();
  syncCompletionNoteRequirement(false);
  const quickResult=document.getElementById("task130Result");if(quickResult)quickResult.value="";
  clearPendingTaskFiles();clearExistingTaskImages();$("#imageInfo").textContent="";setWorkSaveLabel("Lưu");$("#cancelEdit").classList.add("hide");
@@ -1298,6 +1310,9 @@ $("#note")?.addEventListener("input",()=>{
  saveDraft();
 });
 ["date","content","type","performer"].forEach(id=>$("#"+id).addEventListener("input",saveDraft));
+$("#date")?.addEventListener("input",syncWorkDateDisplay);
+$("#date")?.addEventListener("change",syncWorkDateDisplay);
+syncWorkDateDisplay();
 $("#content")?.addEventListener("input",syncWorkContentHeight);
 function clearPendingTaskFiles(){
  pendingPreviewUrls.forEach(u=>URL.revokeObjectURL(u));
@@ -1685,6 +1700,7 @@ window.editTask=id=>{
  clearPendingTaskFiles();
  existingTaskImages=Array.isArray(x.imgs)?[...x.imgs]:[];removedTaskImageRefs=[];
  $("#editId").value=x.id;$("#date").value=x.d;$("#content").value=x.c;$("#type").value=x.t||"Hằng ngày";$("#status").value=x.s;setPeopleSelected("task",performerArray(x));$("#note").value=x.n||"";
+ syncWorkDateDisplay();
  sync130QuickCompletion();if(document.getElementById("task130Result"))document.getElementById("task130Result").value=x.result||"";
  syncCompletionNoteRequirement(false);
  setWorkSaveLabel("Lưu thay đổi");$("#cancelEdit").classList.remove("hide");

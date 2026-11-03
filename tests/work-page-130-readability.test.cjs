@@ -15,3 +15,22 @@ assert.ok(css.includes('#demoWorkLinks > summary'), 'linked-work section heading
 assert.ok(css.includes('.performerChips.pro > span b'), 'performer names are explicitly styled');
 assert.ok(css.includes('border-bottom:1.5px solid #A46427!important'), 'work rows have a strong copper divider');
 console.log('130HH work-page readability checks passed: counts, linked work, priority star, performers, row dividers and project scope.');
+
+/* Regression: iOS native date text must never affect control height/alignment. */
+const mobileDateCss = fs.readFileSync('demo-mobile.css','utf8');
+const mobileEditCss = fs.readFileSync('update-lab.css','utf8');
+const oldDemoCss = fs.readFileSync('demo-lab.css','utf8');
+const appScript = fs.readFileSync('app.js','utf8');
+assert.match(html, /<input id="date" type="date" required aria-label="Ngày thực hiện">\s*<output class="workDateDisplayed" aria-hidden="true"><\/output>/);
+assert.match(mobileDateCss, /\.workDate #date\{[\s\S]*?height:44px!important;min-height:44px!important;max-height:44px!important/);
+assert.match(mobileDateCss, /\.workDate \.workDateDisplayed\{[\s\S]*?align-items:center!important;justify-content:center!important/);
+assert.match(mobileDateCss, /\.workDate \.workDateDisplayed\{[\s\S]*?pointer-events:none!important/);
+assert.match(mobileDateCss, /\.imageActionBtn\{\s*height:44px!important;min-height:44px!important;max-height:44px!important/);
+assert.match(mobileEditCss, /#workEditDrawer #taskForm \.workDateDisplayed\{[\s\S]*?align-items:center!important;justify-content:center!important/);
+assert.equal(oldDemoCss.includes('#app.demoMobilePilot #workPage #taskForm .workDate input[type="date"]'),false,'legacy duplicate date CSS was removed');
+assert.match(appScript, /function syncWorkDateDisplay\(\)/);
+assert.match(appScript, /#date"\)\?\.addEventListener\("change",syncWorkDateDisplay\)/);
+for (const point of ['date after draft restore','date after reset','date after edit']) {
+  assert.ok((appScript.match(/syncWorkDateDisplay\(\);/g)||[]).length>=4, point+' synchronizes visible date');
+}
+console.log('Work mobile date regression checks passed: matching 44px controls, centered native-safe date, draft/edit/reset syncing.');
