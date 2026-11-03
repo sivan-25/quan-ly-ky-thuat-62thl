@@ -10358,44 +10358,6 @@ body.workEditOpen{overflow:hidden!important}
   color:#fff!important;
 }
 
-/* Energy: photo actions as one tidy segmented control */
-#energyPage .energyPhotoActions{
-  display:flex!important;
-  align-items:stretch!important;
-  gap:8px!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-}
-#energyPage .energyPhotoActions button{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:7px!important;
-  flex:1 1 0!important;
-  min-width:0!important;
-  min-height:42px!important;
-  padding:9px 12px!important;
-  border:1px solid #cbb8c8!important;
-  border-radius:9px!important;
-  background:#f7f0f5!important;
-  color:#512448!important;
-  font-size:12px!important;
-  font-weight:750!important;
-  line-height:1.25!important;
-  box-shadow:none!important;
-}
-#energyPage .energyPhotoActions button:hover{
-  border-color:#8f5b83!important;
-  background:#efe1ed!important;
-  color:#411437!important;
-}
-#energyPage .energyPhotoActions button span{
-  color:inherit!important;
-  flex:0 0 auto!important;
-}
 #energyPage .energyForm input,
 #energyPage .energyForm select{
   color:#273f4e!important;
@@ -10579,7 +10541,6 @@ body.workEditOpen{overflow:hidden!important}
 #energyPage .energySummaryCards [class*="unit"]{
   color:#625045!important;
 }
-#energyPage .energyPhotoActions button:focus-visible,
 #contractorPage button:focus-visible,
 #inventoryPage .materialMonthTabs button:focus-visible{
   outline:3px solid #b68b57!important;outline-offset:2px!important;
