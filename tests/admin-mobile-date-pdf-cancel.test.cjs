@@ -6,10 +6,12 @@ const editor=fs.readFileSync('admin-work-editor.js','utf8');
 const css=fs.readFileSync('admin-work-editor.css','utf8');
 const admin=fs.readFileSync('command-center.js','utf8');
 const work=fs.readFileSync('app.js','utf8');
-for(const id of ['ccWeAssigned','ccWeStart','ccWeDue'])
- assert.match(editor,new RegExp('class="ccWeDate"[^>]*><span>[^<]+<\\/span><input id="'+id+'"'));
-assert.match(css,/\.ccWeGrid\s*>\s*label\.ccWeDate[\s\S]*?grid-column:\s*1\/-1/);
-assert.match(css,/max-width:\s*600px/);
+for(const id of ['ccWeAssigned','ccWeStart','ccWeDue']){
+ assert.match(editor,new RegExp('class="ccWeDate"[^>]*><span>[^<]+<\\/span><span class="ccWeDateControl"><span class="ccWeDateValue" aria-hidden="true"><\\/span><input id="'+id+'" type="date" required><\\/span>'));
+}
+assert.match(css,/\.ccAdminWorkEdit \.ccWeGrid \.ccWeDateControl\{position:relative/);
+assert.match(css,/\.ccAdminWorkEdit \.ccWeGrid \.ccWeDateValue\{display:flex;align-items:center/);
+assert.match(css,/@media\(max-width:760px\)/);
 assert.match(admin,/root\.classList\.remove\("ccPdfSelecting","ccSelectMode"\)/);
 assert.match(admin,/root\.querySelector\("#ccBeginPdf"\)\.addEventListener\("click",runAdminPdfAction\)/);
 const start=work.indexOf('let workStatFilter=""');
