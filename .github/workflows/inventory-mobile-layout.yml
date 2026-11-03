@@ -1,0 +1,48 @@
+name: Mobile Inventory Layout & Contrast
+on:
+  push:
+    paths:
+      - 'inventory-approved-four.css'
+      - 'inventory-correction-130.css'
+      - 'inventory-mobile-cards.css'
+      - 'tools-professional.css'
+      - 'update-lab.js'
+      - 'index.html'
+      - 'tests/inventory-mobile-layout-browser.cjs'
+      - '.github/workflows/inventory-mobile-layout.yml'
+  workflow_dispatch:
+jobs:
+  inventory-mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install and prepare browser
+        run: |
+          npm ci
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install chromium
+      - name: Check inventory logic and controls
+        run: |
+          node tests/inventory-mobile-cards.test.cjs
+          node tests/tools-professional.test.cjs
+          node tests/inventory-scope-switch.test.cjs
+      - name: Start local static fixture
+        run: |
+          python3 -m http.server 8766 --bind 127.0.0.1 >/tmp/esta-inventory-ui.log 2>&1 &
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8766/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/esta-inventory-ui.log
+          exit 1
+      - name: Measure contrast and overlap at four phone sizes
+        run: node tests/inventory-mobile-layout-browser.cjs
+      - name: Upload rendered checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inventory-phone-ui
+          path: visual-artifacts/inventory-phone/
+          if-no-files-found: ignore
+          retention-days: 7
