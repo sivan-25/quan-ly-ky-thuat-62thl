@@ -1180,8 +1180,8 @@ function updateEnhanceWorkForm(){
  if(mobileEdit)links.removeAttribute("open");
 
  const cause=$("#demoTaskCause"),result=$("#demoTaskResult");
- if(cause){cause.rows=2;cause.placeholder="Nguyên nhân / chẩn đoán";}
- if(result){result.rows=2;result.placeholder=usesSingleTaskResult()?"Nhập kết quả thực hiện; bắt buộc khi hoàn thành":"Hướng xử lý / kết quả";}
+ if(cause){cause.rows=1;cause.placeholder="Nguyên nhân / chẩn đoán";}
+ if(result){result.rows=1;result.placeholder=usesSingleTaskResult()?"Nhập kết quả thực hiện; bắt buộc khi hoàn thành":"Hướng xử lý / kết quả";}
 
  const priority=$("#demoTaskPriority");
  if(priority&&!priority.dataset.updateOptions){
