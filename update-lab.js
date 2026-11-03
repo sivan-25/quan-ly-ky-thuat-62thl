@@ -1148,6 +1148,10 @@ function updateDecorateInventoryPage(){
  if(!updateIs())return;
  $("#updateInventoryIntel")?.remove();
  const page=$("#inventoryPage");if(!page)return;
+ // The four approved inventory pages already have low-stock counters and
+ // drill-down alerts. Do not prepend the oversized duplicate "TỒN KHO" strip.
+ // Data and alert calculations remain intact and available elsewhere.
+ if(["130HH","127HH","62THL","68PĐL","68PDL"].includes(String(currentBuilding?.id||"")))return;
  const low=updateLowStock().sort((a,b)=>(Number(a._stock)-Number(a.min_qty))-(Number(b._stock)-Number(b.min_qty)));
  if(!low.length)return;
  const panel=document.createElement("section");panel.id="updateInventoryIntel";panel.className="updateIntelligenceStrip";
