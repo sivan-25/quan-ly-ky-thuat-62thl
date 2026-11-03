@@ -362,8 +362,8 @@ function demoEnsureWorkPanel(){
    ["content","demoTaskCause","demoTaskResult"].forEach(id=>{
     const el=document.getElementById(id);
     if(!el||!el.isConnected)return;
-    el.style.height="auto";
-    el.style.height=Math.max(44,el.scrollHeight)+"px";
+    el.style.setProperty("height","auto","important");
+    el.style.setProperty("height",Math.max(44,el.scrollHeight)+"px","important");
    });
   };
   form.addEventListener("input",e=>{if(["content","demoTaskCause","demoTaskResult"].includes(e.target.id))grow()});
