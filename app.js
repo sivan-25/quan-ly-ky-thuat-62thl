@@ -1186,27 +1186,37 @@ function workEntryCard(){return document.querySelector("#workPage .workEntryCard
 function openWorkEditDrawer(){
  const drawer=$("#workEditDrawer"),mount=$("#workEditDrawerMount"),card=workEntryCard();
  if(!drawer||!mount||!card)return;
- const mobile=mobileNavQuery.matches;
- if(mobile){
-   const active=document.activeElement;
-   if(active&&typeof active.blur==="function")active.blur();
-   if(drawer.parentElement!==document.body)document.body.appendChild(drawer);
-   document.body.classList.remove("estaMobileKeyboard");
+ if(mobileNavQuery.matches){
+   // Share the exact same form, theme and controls for Add and Edit on phones.
+   // Moving it into the old drawer changes its CSS scope, making inputs unequal.
+   const anchor=$("#workEntryHomeAnchor");
+   if(anchor&&card.parentElement!==anchor.parentElement)anchor.insertAdjacentElement("afterend",card);
+   drawer.classList.add("hide");drawer.setAttribute("aria-hidden","true");
+   document.body.classList.remove("workEditOpen","estaMobileKeyboard");
    document.documentElement.style.removeProperty("--esta-mobile-keyboard-inset");
+   card.classList.add("workEditInPlace");
+   const title=$("#workEntryTitle");if(title)title.textContent="Chỉnh sửa công việc";
+   requestAnimationFrame(()=>{
+     if(!card.classList.contains("workEditInPlace"))return;
+     card.scrollIntoView({behavior:"auto",block:"start"});
+     syncWorkContentHeight();
+   });
+   return;
  }
  mount.appendChild(card);
  mount.scrollTop=0;
  drawer.classList.remove("hide");drawer.setAttribute("aria-hidden","false");
  document.body.classList.add("workEditOpen");
- $("#workEntryTitle")&&($("#workEntryTitle").textContent="Chỉnh sửa công việc");
- if(!mobile)setTimeout(()=>$("#content")?.focus({preventScroll:true}),60);
+ const title=$("#workEntryTitle");if(title)title.textContent="Chỉnh sửa công việc";
+ setTimeout(()=>$("#content")?.focus({preventScroll:true}),60);
 }
 function restoreWorkEntryCard(){
  const drawer=$("#workEditDrawer"),anchor=$("#workEntryHomeAnchor"),card=workEntryCard();
  if(anchor&&card&&card.parentElement!==anchor.parentElement)anchor.insertAdjacentElement("afterend",card);
+ card?.classList.remove("workEditInPlace");
  drawer?.classList.add("hide");drawer?.setAttribute("aria-hidden","true");
  document.body.classList.remove("workEditOpen");
- $("#workEntryTitle")&&($("#workEntryTitle").textContent="Thêm công việc");
+ const title=$("#workEntryTitle");if(title)title.textContent="Thêm công việc";
 }
 function clearExistingTaskImages(){
  existingTaskImages=[];removedTaskImageRefs=[];

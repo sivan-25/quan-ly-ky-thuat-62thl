@@ -310,6 +310,23 @@
     min-height:62px!important;
   }
 
+  /* Editing on phones uses the same card and CSS as adding work.
+     Scroll the shared card below the sticky topbar; do not create another
+     set of input-height / color overrides. */
+  #app.demoMobilePilot #workPage .workEntryCard.workEditInPlace{
+    scroll-margin-top:calc(74px + env(safe-area-inset-top, 0px));
+  }
+  #app.demoMobilePilot #workPage .workEntryCard.workEditInPlace .workEntryHeaderIcon svg{
+    display:none!important;
+  }
+  #app.demoMobilePilot #workPage .workEntryCard.workEditInPlace .workEntryHeaderIcon:after{
+    content:"✎";
+    display:block;
+    font-size:22px;
+    line-height:1;
+    font-weight:700;
+  }
+
   /* ===== Work ===== */
   #app.demoMobilePilot #workPage{
     padding:10px!important;

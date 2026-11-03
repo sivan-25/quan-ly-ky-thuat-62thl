@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'demo-mobile.css'
+      - 'app.js'
+      - 'tests/work-edit-mobile-shared-form.cjs'
       - 'update-lab.css'
       - 'tests/work-date-mobile-browser.cjs'
       - '.github/workflows/esta-mobile-visual.yml'
@@ -55,6 +57,8 @@ jobs:
           exit 1
       - name: Measure mobile date input and surface (add and edit)
         run: node tests/work-date-mobile-browser.cjs
+      - name: Verify shared mobile edit form and unchanged desktop drawer
+        run: node tests/work-edit-mobile-shared-form.cjs
       - name: Upload date measurements screenshots
         if: always()
         uses: actions/upload-artifact@v4
