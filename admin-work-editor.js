@@ -19,13 +19,22 @@ function refreshDateLabels(){
   value.textContent=parts.length===3?parts[2]+"/"+parts[1]+"/"+parts[0]:"Chọn ngày";
  }
 }
+const expandingFields=["ccWeContent","ccWeNote","ccWeResult"];
+function resizeWorkTextareas(){
+ for(const id of expandingFields){
+  const el=$(id);
+  if(!el)continue;
+  el.style.height="auto";
+  el.style.height=Math.max(44,el.scrollHeight)+"px";
+ }
+}
 function ui(){
  let m=$("ccAdminWorkEdit");if(m)return m;
  m=document.createElement("div");m.id="ccAdminWorkEdit";m.className="ccAdminWorkEdit hide";
  m.innerHTML=`<div class="ccWeBackdrop" data-we-close></div><section class="ccWeCard" role="dialog" aria-modal="true" aria-labelledby="ccWeHeading">
  <header class="ccWeHead"><div><span>ESTA · ADMIN WORK ORDER</span><h2 id="ccWeHeading">Chỉnh sửa công việc Admin đã giao</h2><p id="ccWeProject">Đang tải công việc...</p></div><button type="button" class="ccWeX" data-we-close aria-label="Đóng">×</button></header>
  <form id="ccWeForm"><div class="ccWeGrid">
- <label class="full"><span>Nội dung công việc *</span><textarea id="ccWeContent" rows="3" required maxlength="2500"></textarea></label>
+ <label class="full"><span>Nội dung công việc *</span><textarea id="ccWeContent" rows="1" required maxlength="2500"></textarea></label>
  <div class="ccWePairRow ccWeDispatchRow">
  <label class="ccWeDate"><span>Ngày giao *</span><span class="ccWeDateControl"><span class="ccWeDateValue" aria-hidden="true"></span><input id="ccWeAssigned" type="date" required></span></label>
  <label class="ccWeType"><span>Loại công việc</span><select id="ccWeType"><option>Hằng ngày</option><option>Bảo trì</option><option>Sự cố</option></select></label>
@@ -37,8 +46,8 @@ function ui(){
  <label><span>Mức độ ưu tiên</span><select id="ccWePriority"><option>Thấp</option><option>Trung bình</option><option>Cao</option><option>Khẩn cấp</option></select></label>
  <label><span>Trạng thái</span><select id="ccWeStatus"><option>Đang thực hiện</option><option>Chờ xử lý</option><option>Đã hoàn thành</option><option>Hoàn thành</option><option>Bắt đầu</option></select></label>
  <label class="full"><span>Người thực hiện *</span><input id="ccWeAssignee" required maxlength="200" list="ccWePeople" placeholder="Nhập tên, cách nhau bằng dấu phẩy"><datalist id="ccWePeople"></datalist></label>
- <label class="full"><span>Ghi chú</span><textarea id="ccWeNote" rows="2"></textarea></label>
- <label class="full"><span>Kết quả thực hiện</span><textarea id="ccWeResult" rows="2" placeholder="Điền khi công việc hoàn thành"></textarea></label>
+ <label class="full"><span>Ghi chú</span><textarea id="ccWeNote" rows="1"></textarea></label>
+ <label class="full"><span>Kết quả thực hiện</span><textarea id="ccWeResult" rows="1" placeholder="Điền khi công việc hoàn thành"></textarea></label>
  </div><section class="ccWeImages"><div class="ccWeImagesTitle"><div><b>Hình ảnh công việc</b><small>Giữ, bỏ hoặc bổ sung ảnh. Chỉ thay đổi ảnh nếu có thao tác.</small></div><label class="ccWeUpload">＋ Thêm ảnh<input id="ccWeFiles" type="file" accept="image/*" multiple></label></div><div id="ccWePhotos"></div></section>
  <p id="ccWeError" class="ccWeError hide" role="alert"></p>
  <footer class="ccWeActions"><span>Giữ nguyên mã công việc và dự án đã giao.</span><button type="button" class="ccWeCancel" data-we-close>Hủy</button><button type="submit" id="ccWeSave" class="ccWeSave"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><b>Lưu thay đổi</b></button></footer></form>
@@ -53,6 +62,7 @@ function ui(){
   if(view)void viewImage(view.dataset.weView,Number(view.dataset.index));
  });
  $("ccWeFiles").addEventListener("change",e=>{files.push(...[...e.target.files].filter(f=>f.type.startsWith("image/")));e.target.value="";renderImages()});
+ $("ccWeForm").addEventListener("input",e=>{if(expandingFields.includes(e.target.id))resizeWorkTextareas()});
  $("ccWeForm").addEventListener("change",e=>{if(dateFields.includes(e.target.id))refreshDateLabels()});
  $("ccWeForm").addEventListener("submit",save);
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!m.classList.contains("hide"))close()});
@@ -120,6 +130,7 @@ async function open(buildingId,taskId){
   };
   for(const [id,value] of Object.entries(fill))$(id).value=value;
   refreshDateLabels();
+  resizeWorkTextareas();
   $("ccWePeople").innerHTML=(reply?.snapshot?.people||[]).map(p=>'<option value="'+esc(p.name||"")+'"></option>').join("");
   $("ccWeProject").textContent=projectTitle(buildingId)+" · Mã công việc "+task.id+" · Cập nhật trực tiếp";
   await renderImages();
