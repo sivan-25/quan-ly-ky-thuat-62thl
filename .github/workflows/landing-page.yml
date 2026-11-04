@@ -1,0 +1,49 @@
+name: ESTA Landing Page Browser Check
+on:
+  push:
+    paths:
+      - 'landing/**'
+      - 'tests/landing-page.test.cjs'
+      - 'tests/landing-page-browser.cjs'
+      - '.github/workflows/landing-page.yml'
+  pull_request:
+    paths:
+      - 'landing/**'
+      - 'tests/landing-page.test.cjs'
+      - 'tests/landing-page-browser.cjs'
+      - '.github/workflows/landing-page.yml'
+jobs:
+  responsive-landing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify independent landing page assets and CTA
+        run: node tests/landing-page.test.cjs
+      - name: Install browser test dependencies
+        run: |
+          npm ci
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start static site
+        run: |
+          python3 -m http.server 8766 --bind 127.0.0.1 > /tmp/esta-landing.log 2>&1 &
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8766/landing/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/esta-landing.log
+          exit 1
+      - name: Verify responsive landing in browser
+        run: node tests/landing-page-browser.cjs
+      - name: Save landing page screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: esta-landing-responsive
+          path: visual-artifacts/landing/
+          if-no-files-found: ignore
+          retention-days: 7
