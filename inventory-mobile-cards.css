@@ -657,7 +657,7 @@
     width:100%!important;min-width:0!important;
     height:44px!important;min-height:44px!important;max-height:44px!important;
     padding:0 5px!important;margin:0!important;
-    border:1px solid #bad5e8!important;
+    border:1.5px solid #667a92!important;
     border-radius:10px!important;
     background:#fff!important;
     color:#183263!important;
@@ -681,6 +681,8 @@
     line-height:1.15!important;
     white-space:nowrap!important;
   }
+  /* Both options use a hollow native-size ring; the dark inner dot exists
+     ONLY in the selected input. Never render a solid-filled unchecked dot. */
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]{
     appearance:none!important;-webkit-appearance:none!important;
     display:grid!important;place-items:center!important;
@@ -688,22 +690,34 @@
     width:18px!important;min-width:18px!important;max-width:18px!important;
     height:18px!important;min-height:18px!important;max-height:18px!important;
     margin:0!important;padding:0!important;
-    border:2px solid #7b94b4!important;
+    border:2px solid #263b53!important;
     border-radius:50%!important;
     background:#fff!important;
+    box-shadow:none!important;
     flex:0 0 18px!important;cursor:pointer!important;
   }
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]::after{
+    content:""!important;
+    display:none!important;
+    box-sizing:border-box!important;
+    width:8px!important;
+    height:8px!important;
+    border-radius:50%!important;
+    background:#183263!important;
+  }
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked{
-    border-color:#157e95!important;background:#147f94!important;
-    box-shadow:inset 0 0 0 3px #e1f6f8!important;
+    border-color:#2987c7!important;
+    background:#fff!important;
+    box-shadow:none!important;
+  }
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked::after{
+    display:block!important;
   }
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice:has(input:checked){
-    background:#d8f1ec!important;
-    border-color:#239d9c!important;
-    color:#105971!important;
-  }
-  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoiceOut:has(input:checked){
-    background:#e2ecfa!important;border-color:#367cc1!important;color:#174a83!important;
+    background:#def0fc!important;
+    border-color:#2987c7!important;
+    color:#123d67!important;
+    box-shadow:inset 0 0 0 .5px #2987c7!important;
   }
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice input:focus-visible{
     outline:2px solid #367cc1!important;outline-offset:3px!important;
@@ -808,10 +822,22 @@
    color:#183263!important;
  }
  body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice:has(input:checked){
-   color:#105971!important;
+   background:#def0fc!important;
+   border-color:#2987c7!important;
+   color:#123d67!important;
  }
- body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoiceOut:has(input:checked){
-   color:#174a83!important;
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]{
+   appearance:none!important;-webkit-appearance:none!important;
+   background:#fff!important;
+   border-color:#263b53!important;
+   box-shadow:none!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked{
+   background:#fff!important;
+   border-color:#2987c7!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]::after{
+   background:#183263!important;
  }
  body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions{
    background:#e7f4fc!important;border-color:#d4e5f0!important;
