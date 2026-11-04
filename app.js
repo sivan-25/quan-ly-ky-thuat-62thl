@@ -3325,12 +3325,20 @@ function resetMaterialForm(sampleName="",sampleUnit="Cái"){
  $("#materialModalTitle").textContent="Thêm vật tư";$("#materialSaveBtn").textContent="Lưu vật tư";
  syncMaterialDateDisplay();resizeMaterialNote();
 }
-function openMaterialModal(sampleName="",sampleUnit="Cái"){if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");resetMaterialForm(sampleName,sampleUnit);$("#materialItemModal").classList.remove("hide");setTimeout(()=>$("#materialName").focus(),40)}
+function openMaterialModal(sampleName="",sampleUnit="Cái"){
+ if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");
+ resetMaterialForm(sampleName,sampleUnit);
+ $("#materialItemModal").classList.remove("hide");
+ requestAnimationFrame(resizeMaterialNote);
+ // Keep the mobile modal stable instead of opening the iPhone keyboard immediately.
+ if(!window.matchMedia?.("(max-width:760px)").matches)setTimeout(()=>$("#materialName").focus(),40);
+}
 window.editMaterial=id=>{
  const m=inventoryMaterials.find(x=>String(x.id)===String(id));if(!m)return;
  $("#materialId").value=m.id;$("#materialCode").value=m.code||"";$("#materialName").value=m.name;$("#materialUnit").value=m.unit;$("#materialTrackingStart").value=inventoryTrackingStart(m);$("#materialTrackingStart").max=today();$("#materialOpeningQty").value=m.opening_qty;$("#materialMinQty").value=m.min_qty;$("#materialNote").value=m.note||"";
  $("#materialModalTitle").textContent="Chỉnh sửa vật tư";$("#materialSaveBtn").textContent="Lưu thay đổi";
- syncMaterialDateDisplay();resizeMaterialNote();$("#materialItemModal").classList.remove("hide");
+ syncMaterialDateDisplay();$("#materialItemModal").classList.remove("hide");
+ requestAnimationFrame(resizeMaterialNote);
 };
 window.deleteMaterial=async id=>{
  if(!currentAccount?.is_admin)return toast("Chỉ tài khoản Admin mới được xóa vật tư");
