@@ -5,6 +5,10 @@ const fs=require('fs');
 const path=require('path');
 const app=fs.readFileSync('app.js','utf8');
 for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMaterialNote\(\)/,/materialSaveBtn"\)\.textContent="Lưu thay đổi"/,/materialSaveBtn"\)\.textContent="Lưu vật tư"/,/\/rest\/v1\/inventory_materials/])assert.match(app,expr);
+assert.match(app,/\$\("#materialOpeningQty"\)\.value="";\$\("#materialMinQty"\)\.value="";/,'new material stock amounts must be blank on reset');
+assert.match(app,/opening_qty:inventoryNum\(\$\("#materialOpeningQty"\)\.value\)/,'empty stock amount is still normalized to zero on save');
+assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty minimum is still normalized to zero on save');
+
 (async()=>{
  const browser=await (process.env.ESTA_MATERIAL_BROWSER==='webkit'?webkit:chromium).launch({headless:true});
  const dir='visual-artifacts/material-editor';fs.mkdirSync(dir,{recursive:true});let n=0;
@@ -28,8 +32,8 @@ for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMateri
       document.getElementById('materialUnit').value='Cái';
       document.getElementById('materialTrackingStart').value='2026-11-04';
       document.querySelector('.materialDateDisplayed').textContent='04/11/2026';
-      document.getElementById('materialOpeningQty').value='2';
-      document.getElementById('materialMinQty').value='1';
+      document.getElementById('materialOpeningQty').value=editing?'2':'';
+      document.getElementById('materialMinQty').value=editing?'1':'';
       document.getElementById('materialNote').value=editing?'Đặt ở kho kỹ thuật':'';
      },{project,editing});
      await page.waitForTimeout(40);
@@ -39,6 +43,10 @@ for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMateri
       return {name:box('#materialName'),code:box('#materialCode'),unit:box('#materialUnit'),
        date:box('.materialDateDisplayed'),inputDate:box('#materialTrackingStart'),
        opening:box('#materialOpeningQty'),minimum:box('#materialMinQty'),note:box('#materialNote'),
+       openingValue:document.getElementById('materialOpeningQty').value,
+       minimumValue:document.getElementById('materialMinQty').value,
+       openingPlaceholder:document.getElementById('materialOpeningQty').placeholder,
+       minimumPlaceholder:document.getElementById('materialMinQty').placeholder,
        cancel:box('#cancelMaterialModal'),save:box('#materialSaveBtn'),
        cardBg:bg('#materialItemModal .inventoryModalCard'),formBg:bg('#materialItemForm'),
        headerBg:bg('#materialItemModal .inventoryModalHead'),
@@ -88,6 +96,16 @@ for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMateri
      assert.equal(m.cancelBg,'rgb(252, 233, 230)',title+' Cancel light red');
      assert.equal(m.datePosition,'absolute',title+' date picker overlay');
      assert.equal(m.buttonText,editing?'Lưu thay đổi':'Lưu vật tư',title+' button label');
+     assert.equal(m.openingPlaceholder,'Nhập',title+' opening placeholder');
+     assert.equal(m.minimumPlaceholder,'Nhập',title+' minimum placeholder');
+     assert.equal(m.openingValue,editing?'2':'',title+' add blank / edit keeps real opening stock');
+     assert.equal(m.minimumValue,editing?'1':'',title+' add blank / edit keeps real minimum stock');
+     if(!editing){
+      await page.locator('#materialOpeningQty').fill('5');
+      await page.locator('#materialMinQty').fill('3');
+      assert.equal(await page.locator('#materialOpeningQty').inputValue(),'5',title+' entering opening amount needs no clearing');
+      assert.equal(await page.locator('#materialMinQty').inputValue(),'3',title+' entering minimum amount needs no clearing');
+     }
      await page.locator('#materialNote').fill('Ghi chú quy cách, hãng, vị trí lưu kho kỹ thuật '.repeat(8));
      const grows=await page.locator('#materialNote').evaluate(el=>{el.style.setProperty('height','44px','important');el.style.setProperty('height',Math.max(44,el.scrollHeight)+'px','important');return el.getBoundingClientRect().height;});
      assert.ok(grows>44,title+' long note can expand');

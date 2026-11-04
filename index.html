@@ -2667,8 +2667,8 @@
       <label class="materialCodeField"><span>Mã vật tư</span><input id="materialCode" maxlength="40" placeholder="VD: VT-001"></label>
       <label class="materialUnitField"><span>Đơn vị tính *</span><input id="materialUnit" maxlength="30" required value="Cái"></label>
       <label class="wide materialTrackingField"><span>Ngày bắt đầu quản lý *</span><span class="materialDateControl"><input id="materialTrackingStart" type="date" required aria-label="Ngày bắt đầu quản lý"><output class="materialDateDisplayed" aria-hidden="true"></output></span></label>
-      <label class="materialOpeningField"><span>Tồn đầu</span><input id="materialOpeningQty" type="number" step="0.01" min="0" value="0"></label>
-      <label class="materialMinField"><span>Tồn tối thiểu</span><input id="materialMinQty" type="number" step="0.01" min="0" value="0"></label>
+      <label class="materialOpeningField"><span>Tồn đầu</span><input id="materialOpeningQty" type="number" inputmode="decimal" step="0.01" min="0" placeholder="Nhập"></label>
+      <label class="materialMinField"><span>Tồn tối thiểu</span><input id="materialMinQty" type="number" inputmode="decimal" step="0.01" min="0" placeholder="Nhập"></label>
       <label class="wide materialNoteField"><span>Ghi chú</span><textarea id="materialNote" rows="1" maxlength="300" placeholder="Quy cách, hãng, vị trí lưu..."></textarea></label>
       <div class="inventoryFormActions"><button id="cancelMaterialModal" type="button" class="inventorySecondary">Hủy</button><button id="materialSaveBtn" type="submit" class="inventoryPrimary">Lưu vật tư</button></div>
     </form>
@@ -2823,7 +2823,7 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="data-sync.js?v=20261101-audit02"></script>
-<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261104-material-editor-44"></script><script src="completion-certificate-130.js?v=20261103-export-group-right"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261104-material-qty-placeholder01"></script><script src="completion-certificate-130.js?v=20261103-export-group-right"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261101-audit02"></script><script src="construction.js?v=20261101-audit02"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261101-audit02"></script><script src="demo-lab.js?v=20261103-single-resize"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261103-fastopen01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261103-fastopen01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261103-no-duplicate-stock-strip"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){

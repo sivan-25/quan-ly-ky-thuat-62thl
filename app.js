@@ -3321,7 +3321,7 @@ function resizeMaterialNote(){
 }
 function resetMaterialForm(sampleName="",sampleUnit="Cái"){
  $("#materialId").value="";$("#materialCode").value="";$("#materialName").value=sampleName;$("#materialUnit").value=sampleUnit||"Cái";
- $("#materialTrackingStart").value=today();$("#materialTrackingStart").max=today();$("#materialOpeningQty").value="0";$("#materialMinQty").value="0";$("#materialNote").value="";
+ $("#materialTrackingStart").value=today();$("#materialTrackingStart").max=today();$("#materialOpeningQty").value="";$("#materialMinQty").value="";$("#materialNote").value="";
  $("#materialModalTitle").textContent="Thêm vật tư";$("#materialSaveBtn").textContent="Lưu vật tư";
  syncMaterialDateDisplay();resizeMaterialNote();
 }
@@ -3335,7 +3335,7 @@ function openMaterialModal(sampleName="",sampleUnit="Cái"){
 }
 window.editMaterial=id=>{
  const m=inventoryMaterials.find(x=>String(x.id)===String(id));if(!m)return;
- $("#materialId").value=m.id;$("#materialCode").value=m.code||"";$("#materialName").value=m.name;$("#materialUnit").value=m.unit;$("#materialTrackingStart").value=inventoryTrackingStart(m);$("#materialTrackingStart").max=today();$("#materialOpeningQty").value=m.opening_qty;$("#materialMinQty").value=m.min_qty;$("#materialNote").value=m.note||"";
+ $("#materialId").value=m.id;$("#materialCode").value=m.code||"";$("#materialName").value=m.name;$("#materialUnit").value=m.unit;$("#materialTrackingStart").value=inventoryTrackingStart(m);$("#materialTrackingStart").max=today();$("#materialOpeningQty").value=inventoryNum(m.opening_qty)===0?"":m.opening_qty;$("#materialMinQty").value=inventoryNum(m.min_qty)===0?"":m.min_qty;$("#materialNote").value=m.note||"";
  $("#materialModalTitle").textContent="Chỉnh sửa vật tư";$("#materialSaveBtn").textContent="Lưu thay đổi";
  syncMaterialDateDisplay();$("#materialItemModal").classList.remove("hide");
  requestAnimationFrame(resizeMaterialNote);
