@@ -3308,16 +3308,29 @@ function setInventoryTab(tab){
  $("#inventoryMaterialsPane").classList.toggle("hide",tab!=="materials");
  $("#inventoryToolsPane").classList.toggle("hide",tab!=="tools");
 }
+function syncMaterialDateDisplay(){
+ const date=$("#materialTrackingStart"),out=document.querySelector("#materialItemModal .materialDateDisplayed");
+ if(!date||!out)return;
+ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date.value);
+ out.textContent=m?m[3]+"/"+m[2]+"/"+m[1]:"Chọn ngày";
+}
+function resizeMaterialNote(){
+ const note=$("#materialNote");if(!note)return;
+ note.style.setProperty("height","44px","important");
+ note.style.setProperty("height",Math.max(44,note.scrollHeight)+"px","important");
+}
 function resetMaterialForm(sampleName="",sampleUnit="Cái"){
  $("#materialId").value="";$("#materialCode").value="";$("#materialName").value=sampleName;$("#materialUnit").value=sampleUnit||"Cái";
  $("#materialTrackingStart").value=today();$("#materialTrackingStart").max=today();$("#materialOpeningQty").value="0";$("#materialMinQty").value="0";$("#materialNote").value="";
- $("#materialModalTitle").textContent="Thêm vật tư";
+ $("#materialModalTitle").textContent="Thêm vật tư";$("#materialSaveBtn").textContent="Lưu vật tư";
+ syncMaterialDateDisplay();resizeMaterialNote();
 }
 function openMaterialModal(sampleName="",sampleUnit="Cái"){if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");resetMaterialForm(sampleName,sampleUnit);$("#materialItemModal").classList.remove("hide");setTimeout(()=>$("#materialName").focus(),40)}
 window.editMaterial=id=>{
  const m=inventoryMaterials.find(x=>String(x.id)===String(id));if(!m)return;
  $("#materialId").value=m.id;$("#materialCode").value=m.code||"";$("#materialName").value=m.name;$("#materialUnit").value=m.unit;$("#materialTrackingStart").value=inventoryTrackingStart(m);$("#materialTrackingStart").max=today();$("#materialOpeningQty").value=m.opening_qty;$("#materialMinQty").value=m.min_qty;$("#materialNote").value=m.note||"";
- $("#materialModalTitle").textContent="Chỉnh sửa vật tư";$("#materialItemModal").classList.remove("hide");
+ $("#materialModalTitle").textContent="Chỉnh sửa vật tư";$("#materialSaveBtn").textContent="Lưu thay đổi";
+ syncMaterialDateDisplay();resizeMaterialNote();$("#materialItemModal").classList.remove("hide");
 };
 window.deleteMaterial=async id=>{
  if(!currentAccount?.is_admin)return toast("Chỉ tài khoản Admin mới được xóa vật tư");
@@ -3686,6 +3699,9 @@ $("#addToolBtn").addEventListener("click",()=>{
 document.querySelectorAll("[data-material-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.materialSample.split("|");b.closest("details")?.removeAttribute("open");openMaterialModal(n,u)});
 document.querySelectorAll("[data-tool-sample]").forEach(b=>b.onclick=()=>{const [n,u]=b.dataset.toolSample.split("|");openToolModal(n,u)});
 $("#closeMaterialModal").onclick=$("#cancelMaterialModal").onclick=()=>$("#materialItemModal").classList.add("hide");
+$("#materialTrackingStart").addEventListener("input",syncMaterialDateDisplay);
+$("#materialTrackingStart").addEventListener("change",syncMaterialDateDisplay);
+$("#materialNote").addEventListener("input",resizeMaterialNote);
 $("#closeStockTxnModal").onclick=$("#cancelStockTxnModal").onclick=()=>$("#stockTxnModal").classList.add("hide");
 $("#closeToolModal").onclick=$("#cancelToolModal").onclick=()=>$("#toolItemModal").classList.add("hide");
 $("#materialItemForm").onsubmit=async e=>{

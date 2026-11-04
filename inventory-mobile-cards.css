@@ -89,23 +89,23 @@
 
 /* Inventory editors are top-level modal siblings, not descendants of #inventoryPage. */
 @media(max-width:760px){
-  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryModalCard{
+  :is(#stockTxnModal,#toolItemModal) .inventoryModalCard{
     width:min(96vw,580px)!important;max-height:calc(100dvh - 28px)!important;
     overflow-y:auto!important;overscroll-behavior:contain!important;
     box-sizing:border-box!important;padding:14px!important;
   }
-  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryForm{
+  :is(#stockTxnModal,#toolItemModal) .inventoryForm{
     grid-template-columns:minmax(0,1fr)!important;min-width:0!important;
   }
-  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryForm :is(input,select,textarea){
+  :is(#stockTxnModal,#toolItemModal) .inventoryForm :is(input,select,textarea){
     max-width:100%!important;min-width:0!important;font-size:16px!important;
   }
-  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryFormActions{
+  :is(#stockTxnModal,#toolItemModal) .inventoryFormActions{
     position:sticky!important;bottom:0!important;z-index:3!important;
     display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;
     background:#101b2e!important;padding:10px 0!important;
   }
-  :is(#materialItemModal,#stockTxnModal,#toolItemModal) .inventoryFormActions button{
+  :is(#stockTxnModal,#toolItemModal) .inventoryFormActions button{
     min-width:0!important;min-height:45px!important;font-size:13px!important;
   }
 }
@@ -474,6 +474,146 @@
  #app #inventoryPage.inventorySharedMobileCompact #inventory130FloatingTxn:focus-visible,
  #app #inventoryPage.inventorySharedMobileCompact #inventory130SearchRow :is(input,select,button):focus-visible{
   outline:2px solid #f4cb77!important;outline-offset:2px!important;
+ }
+}
+
+
+/* Material add/edit: single compact mobile design (not a second override layer).
+   The previous shared generic material rules are removed above. */
+#materialItemModal .materialDateDisplayed{display:none!important}
+@media(max-width:760px){
+ #materialItemModal{padding:12px!important;box-sizing:border-box!important;background:rgba(9,26,44,.56)!important;backdrop-filter:blur(5px)!important}
+ #materialItemModal .inventoryModalCard{
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:min(440px,calc(100vw - 24px))!important;max-width:100%!important;
+  max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+  margin:0!important;padding:0!important;border:1px solid #bad5e7!important;border-radius:15px!important;
+  background:#e7f4fc!important;color:#183263!important;overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;box-shadow:0 18px 48px rgba(15,46,78,.2)!important;color-scheme:light!important;
+ }
+ #materialItemModal .inventoryModalHead{
+  padding:16px 52px 13px 16px!important;margin:0!important;
+  border:0!important;border-bottom:1px solid #283953!important;border-radius:14px 14px 0 0!important;
+  background:#111c30!important;color:#f4f8ff!important;
+ }
+ #materialItemModal .inventoryModalHead>span{
+  display:block!important;margin:0 0 5px!important;color:#58cdea!important;
+  font-size:10px!important;letter-spacing:1.25px!important;line-height:1.2!important;font-weight:800!important;
+ }
+ #materialItemModal .inventoryModalHead h3{
+  margin:0!important;color:#f4f8ff!important;font-size:20px!important;line-height:1.25!important;font-weight:800!important;
+ }
+ #materialItemModal .inventoryModalHead p{
+  margin:6px 0 0!important;color:#cadbea!important;font-size:11px!important;line-height:1.35!important;
+ }
+ #materialItemModal .modalClose{
+  display:grid!important;place-items:center!important;position:absolute!important;top:13px!important;right:13px!important;z-index:5!important;
+  width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important;min-height:36px!important;max-height:36px!important;
+  margin:0!important;padding:0!important;border:1px solid #364b66!important;border-radius:10px!important;
+  background:#203148!important;color:#eaf3ff!important;font-size:21px!important;line-height:1!important;
+ }
+ #materialItemModal #materialItemForm.inventoryForm{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row!important;
+  align-items:start!important;gap:11px 9px!important;width:100%!important;min-width:0!important;
+  box-sizing:border-box!important;padding:15px!important;margin:0!important;background:#e7f4fc!important;
+ }
+ #materialItemModal #materialItemForm>label{
+  display:flex!important;flex-direction:column!important;gap:6px!important;min-width:0!important;width:100%!important;
+  max-width:100%!important;box-sizing:border-box!important;margin:0!important;padding:0!important;
+  height:auto!important;min-height:0!important;grid-column:auto!important;
+ }
+ #materialItemModal #materialItemForm>:is(.materialNameField,.materialTrackingField,.materialNoteField,.inventoryFormActions){
+  grid-column:1/-1!important;
+ }
+ #materialItemModal #materialItemForm>:is(.materialCodeField,.materialOpeningField){grid-column:1!important}
+ #materialItemModal #materialItemForm>:is(.materialUnitField,.materialMinField){grid-column:2!important}
+ #materialItemModal #materialItemForm>label>span:first-child{
+  display:block!important;margin:0!important;padding:0!important;color:#183263!important;
+  font-size:12px!important;line-height:1.25!important;font-weight:750!important;
+ }
+ #materialItemModal #materialItemForm :is(input:not([type=hidden]),textarea){
+  display:block!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  height:44px!important;min-height:44px!important;max-height:44px!important;
+  margin:0!important;padding:0 10px!important;border:1px solid #c6d8e7!important;border-radius:10px!important;
+  background:#fff!important;color:#183263!important;-webkit-text-fill-color:#183263!important;
+  outline:none!important;box-shadow:none!important;color-scheme:light!important;
+  font:500 16px/1.2 Inter,Arial,sans-serif!important;
+ }
+ #materialItemModal #materialItemForm :is(input,textarea)::placeholder{
+  color:#8194ad!important;-webkit-text-fill-color:#8194ad!important;opacity:1!important;
+ }
+ #materialItemModal #materialItemForm :is(input,textarea):focus-visible{outline:2px solid #2787cb!important;outline-offset:1px!important}
+ #materialItemModal #materialItemForm #materialNote{
+  min-height:44px!important;max-height:none!important;padding:11px 10px!important;
+  line-height:1.4!important;resize:none!important;overflow-y:hidden!important;overflow-wrap:anywhere!important;
+ }
+ #materialItemModal #materialItemForm .materialDateControl{
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;max-height:44px!important;
+  margin:0!important;padding:0!important;
+ }
+ #materialItemModal #materialItemForm .materialDateControl .materialDateDisplayed{
+  display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;z-index:1!important;
+  width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;max-height:44px!important;
+  box-sizing:border-box!important;margin:0!important;padding:0 8px!important;border:1px solid #c6d8e7!important;
+  border-radius:10px!important;background:#fff!important;color:#183263!important;
+  font:600 15px/1 Inter,Arial,sans-serif!important;white-space:nowrap!important;overflow:hidden!important;pointer-events:none!important;
+ }
+ #materialItemModal #materialItemForm .materialDateControl #materialTrackingStart{
+  position:absolute!important;top:0!important;left:0!important;z-index:2!important;
+  width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;max-height:44px!important;
+  margin:0!important;padding:0!important;opacity:.01!important;background:transparent!important;
+  color:transparent!important;-webkit-text-fill-color:transparent!important;cursor:pointer!important;pointer-events:auto!important;
+ }
+ #materialItemModal #materialItemForm .materialDateControl:focus-within .materialDateDisplayed{
+  border-color:#2787cb!important;box-shadow:0 0 0 2px rgba(39,135,203,.18)!important;
+ }
+ #materialItemModal #materialItemForm .inventoryFormActions{
+  display:grid!important;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)!important;
+  position:sticky!important;bottom:0!important;z-index:3!important;gap:8px!important;
+  width:auto!important;box-sizing:border-box!important;
+  margin:2px -15px -15px!important;padding:12px 15px calc(14px + env(safe-area-inset-bottom,0px))!important;
+  border-top:1px solid #d4e5f0!important;background:#e7f4fc!important;
+ }
+ #materialItemModal #materialItemForm .inventoryFormActions button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;
+  height:48px!important;min-height:48px!important;max-height:48px!important;
+  margin:0!important;padding:0 9px!important;border-radius:10px!important;
+  font:800 14px/1.2 Inter,Arial,sans-serif!important;white-space:nowrap!important;
+ }
+ #materialItemModal #materialItemForm .inventoryFormActions .inventorySecondary{
+  border:1px solid #d78982!important;background:#fce9e6!important;color:#a23933!important;
+ }
+ #materialItemModal #materialItemForm .inventoryFormActions .inventoryPrimary{
+  border:1px solid #205c96!important;background:#205c96!important;color:#fff!important;box-shadow:none!important;
+ }
+}
+@media(max-width:359px){
+ #materialItemModal #materialItemForm.inventoryForm{gap:10px 7px!important;padding:12px!important}
+ #materialItemModal .inventoryModalHead{padding:14px 48px 12px 12px!important}
+ #materialItemModal #materialItemForm .inventoryFormActions{margin:2px -12px -12px!important;padding:10px 12px!important}
+}
+/* 130HH's global theme must not override the uniform work-style material form.
+   Scope this exemption to material form; no project data is changed. */
+@media(max-width:760px){
+ body.estaBrand130 #materialItemModal .inventoryModalCard{background:#e7f4fc!important;color:#183263!important;border-color:#bad5e7!important}
+ body.estaBrand130 #materialItemModal .inventoryModalHead{background:#111c30!important;border-color:#283953!important}
+ body.estaBrand130 #materialItemModal .inventoryModalHead :is(h3,span){color:#f4f8ff!important}
+ body.estaBrand130 #materialItemModal .inventoryModalHead>span{color:#58cdea!important}
+ body.estaBrand130 #materialItemModal .inventoryModalHead p{color:#cadbea!important}
+ body.estaBrand130 #materialItemModal #materialItemForm{background:#e7f4fc!important}
+ body.estaBrand130 #materialItemModal #materialItemForm>label>span:first-child{color:#183263!important}
+ body.estaBrand130 #materialItemModal #materialItemForm :is(input:not([type=hidden]),textarea){
+  background:#fff!important;color:#183263!important;-webkit-text-fill-color:#183263!important;border-color:#c6d8e7!important;
+ }
+ body.estaBrand130 #materialItemModal #materialItemForm .materialDateDisplayed{background:#fff!important;color:#183263!important}
+ body.estaBrand130 #materialItemModal #materialItemForm .inventoryFormActions{background:#e7f4fc!important;border-color:#d4e5f0!important}
+ body.estaBrand130 #materialItemModal #materialItemForm .inventoryFormActions .inventorySecondary{
+  border-color:#d78982!important;background:#fce9e6!important;color:#a23933!important;
+ }
+ body.estaBrand130 #materialItemModal #materialItemForm .inventoryFormActions .inventoryPrimary{
+  border-color:#205c96!important;background:#205c96!important;color:#fff!important;
  }
 }
 
