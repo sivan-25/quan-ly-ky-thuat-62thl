@@ -491,26 +491,37 @@
   background:#e7f4fc!important;color:#183263!important;overflow-x:hidden!important;overflow-y:auto!important;
   overscroll-behavior:contain!important;box-shadow:0 18px 48px rgba(15,46,78,.2)!important;color-scheme:light!important;
  }
- #materialItemModal .inventoryModalHead{
+ /* One continuous light-blue material card (header and body).
+    Remove the obsolete navy bar instead of adding a CSS overlay. */
+ #materialItemModal.materialEditorLight .inventoryModalHead{
   padding:16px 52px 13px 16px!important;margin:0!important;
-  border:0!important;border-bottom:1px solid #283953!important;border-radius:14px 14px 0 0!important;
-  background:#111c30!important;color:#f4f8ff!important;
+  border:0!important;border-bottom:1px solid #cbdfea!important;
+  border-radius:14px 14px 0 0!important;
+  background:#e7f4fc!important;background-image:none!important;
+  color:#183263!important;
  }
- #materialItemModal .inventoryModalHead>span{
-  display:block!important;margin:0 0 5px!important;color:#58cdea!important;
+ #materialItemModal.materialEditorLight .inventoryModalHead>span{
+  display:block!important;margin:0 0 5px!important;
+  color:#287ca4!important;-webkit-text-fill-color:#287ca4!important;
   font-size:10px!important;letter-spacing:1.25px!important;line-height:1.2!important;font-weight:800!important;
  }
- #materialItemModal .inventoryModalHead h3{
-  margin:0!important;color:#f4f8ff!important;font-size:20px!important;line-height:1.25!important;font-weight:800!important;
+ #materialItemModal.materialEditorLight .inventoryModalHead h3{
+  margin:0!important;
+  color:#183263!important;-webkit-text-fill-color:#183263!important;
+  font-size:20px!important;line-height:1.25!important;font-weight:800!important;
  }
- #materialItemModal .inventoryModalHead p{
-  margin:6px 0 0!important;color:#cadbea!important;font-size:11px!important;line-height:1.35!important;
+ #materialItemModal.materialEditorLight .inventoryModalHead p{
+  margin:6px 0 0!important;
+  color:#5b718f!important;-webkit-text-fill-color:#5b718f!important;
+  font-size:11px!important;line-height:1.35!important;
  }
- #materialItemModal .modalClose{
+ #materialItemModal.materialEditorLight .modalClose{
   display:grid!important;place-items:center!important;position:absolute!important;top:13px!important;right:13px!important;z-index:5!important;
   width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important;min-height:36px!important;max-height:36px!important;
-  margin:0!important;padding:0!important;border:1px solid #364b66!important;border-radius:10px!important;
-  background:#203148!important;color:#eaf3ff!important;font-size:21px!important;line-height:1!important;
+  margin:0!important;padding:0!important;
+  border:1px solid #c6d8e7!important;border-radius:10px!important;
+  background:#fff!important;color:#244769!important;-webkit-text-fill-color:#244769!important;
+  font-size:21px!important;line-height:1!important;
  }
  #materialItemModal #materialItemForm.inventoryForm{
   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row!important;
@@ -607,10 +618,23 @@
    Scope this exemption to material form; no project data is changed. */
 @media(max-width:760px){
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard{background:#e7f4fc!important;color:#183263!important;border-color:#bad5e7!important}
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead{background:#111c30!important;border-color:#283953!important}
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead :is(h3,span){color:#f4f8ff!important}
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead>span{color:#58cdea!important}
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead p{color:#cadbea!important}
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead{
+  background:#e7f4fc!important;background-image:none!important;
+  border-color:#cbdfea!important;color:#183263!important;
+ }
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead h3{
+  color:#183263!important;-webkit-text-fill-color:#183263!important;
+ }
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead>span{
+  color:#287ca4!important;-webkit-text-fill-color:#287ca4!important;
+ }
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead p{
+  color:#5b718f!important;-webkit-text-fill-color:#5b718f!important;
+ }
+ body.estaBrand130 #materialItemModal.materialEditorLight .modalClose{
+  background:#fff!important;border-color:#c6d8e7!important;
+  color:#244769!important;-webkit-text-fill-color:#244769!important;
+ }
  body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm{background:#e7f4fc!important}
  body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm>label>span:first-child{
   color:#183263!important;-webkit-text-fill-color:#183263!important;opacity:1!important;

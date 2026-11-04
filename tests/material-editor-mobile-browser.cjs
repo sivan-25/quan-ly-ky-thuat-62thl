@@ -41,6 +41,12 @@ for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMateri
        opening:box('#materialOpeningQty'),minimum:box('#materialMinQty'),note:box('#materialNote'),
        cancel:box('#cancelMaterialModal'),save:box('#materialSaveBtn'),
        cardBg:bg('#materialItemModal .inventoryModalCard'),formBg:bg('#materialItemForm'),
+       headerBg:bg('#materialItemModal .inventoryModalHead'),
+       titleColor:getComputedStyle(document.getElementById('materialModalTitle')).color,
+       kickerColor:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead>span')).color,
+       descriptionColor:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead p')).color,
+       closeBg:bg('#closeMaterialModal'),
+       closeText:getComputedStyle(document.getElementById('closeMaterialModal')).color,
        inputBg:bg('#materialName'),saveBg:bg('#materialSaveBtn'),cancelBg:bg('#cancelMaterialModal'),
        controls:['materialName','materialCode','materialUnit','materialOpeningQty','materialMinQty','materialNote'].map(id=>{
         const e=document.getElementById(id),c=getComputedStyle(e),label=e.closest('label').querySelector('span'),l=getComputedStyle(label),placeholder=getComputedStyle(e,'::placeholder');
@@ -64,6 +70,12 @@ for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMateri
      assert.ok(m.overflow<4,title+' no horizontal overflow');
      assert.equal(m.cardBg,'rgb(231, 244, 252)',title+' modal light blue');
      assert.equal(m.formBg,'rgb(231, 244, 252)',title+' form light blue');
+     assert.equal(m.headerBg,'rgb(231, 244, 252)',title+' header must match blue form background');
+     assert.equal(m.titleColor,'rgb(24, 50, 99)',title+' dark navy title on light header');
+     assert.equal(m.kickerColor,'rgb(40, 124, 164)',title+' readable blue kicker on light header');
+     assert.equal(m.descriptionColor,'rgb(91, 113, 143)',title+' readable subdued description');
+     assert.equal(m.closeBg,'rgb(255, 255, 255)',title+' white close control');
+     assert.equal(m.closeText,'rgb(36, 71, 105)',title+' navy close icon');
      assert.equal(m.inputBg,'rgb(255, 255, 255)',title+' inputs white');
      for(const c of m.controls){
       assert.equal(c.bg,'rgb(255, 255, 255)',title+' '+c.id+' must have white background: '+JSON.stringify(c));
