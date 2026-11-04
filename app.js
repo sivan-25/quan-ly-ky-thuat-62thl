@@ -3342,8 +3342,8 @@ function syncStockTxnDateDisplay(){
 }
 function resizeStockTxnNote(){
  const field=$("#stockTxnNote");if(!field)return;
- field.style.height="44px";
- field.style.height=Math.max(44,field.scrollHeight)+"px";
+ field.style.setProperty("height","44px","important");
+ field.style.setProperty("height",Math.max(44,field.scrollHeight)+"px","important");
 }
 function syncStockTxnQuickChoice(){
  const selected=$("#stockTxnType")?.value==="out"?"out":"in";

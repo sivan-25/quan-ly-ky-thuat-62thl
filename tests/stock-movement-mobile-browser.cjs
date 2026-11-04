@@ -70,10 +70,13 @@ const path=require('path');
     assert.equal(await page.locator('input[name="stockTxnQuickType"][value="out"]').isChecked(),true,name+' out radio');
     await page.locator('#stockTxnNote').fill('Kiểm tra số lượng và ghi nhận xuất kho '.repeat(9));
     const noteHeight=await page.locator('#stockTxnNote').evaluate(el=>el.getBoundingClientRect().height);
-    // CSS supports autoresize on input in real app; the static fixture has no JS listeners.
-    // Validate textarea intrinsic scroll height + absence of overflow clipping instead.
-    const scroll=await page.locator('#stockTxnNote').evaluate(el=>el.scrollHeight);
-    assert.ok(scroll>44,name+' long note needs growth');
+    const scroll=await page.locator('#stockTxnNote').evaluate(el=>{
+      el.style.setProperty('height','44px','important');
+      el.style.setProperty('height',Math.max(44,el.scrollHeight)+'px','important');
+      return el.scrollHeight;
+    });
+    const grown=await page.locator('#stockTxnNote').evaluate(el=>el.getBoundingClientRect().height);
+    assert.ok(scroll>44&&grown>44,name+' long note must truly expand: '+JSON.stringify({scroll,grown}));
     await page.screenshot({path:path.join(dir,project+'-'+width+'.png')});
     console.log('PASS '+name+' stock form: 44px controls, two 50/50 rows, light blue modal, long note scrollHeight '+scroll+' (box '+noteHeight+')');
     total++;

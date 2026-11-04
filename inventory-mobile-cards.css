@@ -625,7 +625,6 @@
     height:44px!important;
     min-height:44px!important;
     max-height:none!important;
-    block-size:auto!important;
     min-block-size:44px!important;
     max-block-size:none!important;
     padding:10px 11px!important;
@@ -789,4 +788,48 @@
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice{gap:4px!important}
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice>span{font-size:12px!important}
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnDateControl .stockTxnDateDisplayed{font-size:13px!important}
+}
+
+/* 130 Hồng Hà has an intentionally strong global beige/plum modal theme.
+   This STOCK-only exemption matches the already-approved Work form light-blue
+   palette without modifying any other 130HH screen or inventory editor. */
+@media(max-width:760px){
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact .inventoryModalCard{
+   background:#e7f4fc!important;color:#102d64!important;border-color:#bad5e7!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact .inventoryModalHead{
+   background:#e7f4fc!important;color:#102d64!important;border-color:#d4e5f0!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm{
+   background:#e7f4fc!important;color:#102d64!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact .inventoryModalHead :is(span,h3),
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm :is(label,legend,label>span){
+   color:#183263!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice:has(input:checked){
+   color:#105971!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoiceOut:has(input:checked){
+   color:#174a83!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions{
+   background:#e7f4fc!important;border-color:#d4e5f0!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm :is(input:not([type=radio]):not([type=hidden]),select,textarea){
+   background:#fff!important;color:#183263!important;-webkit-text-fill-color:#183263!important;
+   border-color:#c6d8e7!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm :is(input,textarea)::placeholder{
+   color:#8194ad!important;-webkit-text-fill-color:#8194ad!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnDateDisplayed{
+   background:#fff!important;color:#183263!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions .inventorySecondary{
+   background:#fce9e6!important;color:#a23933!important;border-color:#d78982!important;
+ }
+ body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions .inventoryPrimary{
+   background:#166983!important;color:#fff!important;border-color:#1b8d9c!important;
+ }
 }
