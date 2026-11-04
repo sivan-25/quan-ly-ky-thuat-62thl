@@ -631,9 +631,11 @@
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalHead p{
   color:#5b718f!important;-webkit-text-fill-color:#5b718f!important;
  }
- body.estaBrand130 #materialItemModal.materialEditorLight .modalClose{
-  background:#fff!important;border-color:#c6d8e7!important;
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard #closeMaterialModal.modalClose{
+  background:#fff!important;background-color:#fff!important;background-image:none!important;
+  border:1px solid #c6d8e7!important;
   color:#244769!important;-webkit-text-fill-color:#244769!important;
+  opacity:1!important;filter:none!important;
  }
  body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm{background:#e7f4fc!important}
  body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm>label>span:first-child{
