@@ -541,8 +541,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article {
     display:flex!important;align-items:center!important;justify-content:center!important;
-    min-width:0!important;min-height:62px!important;max-height:66px!important;
-     padding:5px 3px!important;border:1px solid #d4e2f4!important;
+    min-width:0!important;height:44px!important;min-height:44px!important;max-height:44px!important;
+     padding:2px 3px!important;border:1px solid #d4e2f4!important;
      border-radius:12px!important;background:#e8f2ff!important;
     box-shadow:none!important;box-sizing:border-box!important;
   }
@@ -553,7 +553,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article :is(small,b) {color:inherit!important;-webkit-text-fill-color:currentColor!important}
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article>div {
      display:flex!important;flex-direction:column!important;align-items:center!important;
-     justify-content:center!important;gap:2px!important;width:100%!important;
+     justify-content:center!important;gap:0!important;width:100%!important;
     min-width:0!important;padding:0!important;text-align:left!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article :is(small,b) {
@@ -561,10 +561,10 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     opacity:1!important;text-shadow:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats small {
-    font-size:11px!important;font-weight:650!important;white-space:normal!important;
+    font-size:10px!important;font-weight:650!important;line-height:1.1!important;white-space:normal!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats b {
-    font-size:18px!important;font-weight:800!important;line-height:1.1!important;
+    font-size:17px!important;font-weight:800!important;line-height:1!important;
     white-space:nowrap!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .inventoryMonthRail {
