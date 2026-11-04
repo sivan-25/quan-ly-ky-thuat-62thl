@@ -3337,7 +3337,7 @@ window.deleteMaterial=async id=>{
 function syncStockTxnDateDisplay(){
  const el=$("#stockTxnDate"),out=document.querySelector("#stockTxnModal .stockTxnDateDisplayed");
  if(!el||!out)return;
- const match=/^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(el.value);
+ const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(el.value);
  out.textContent=match?match[3]+"/"+match[2]+"/"+match[1]:"Chọn ngày";
 }
 function resizeStockTxnNote(){

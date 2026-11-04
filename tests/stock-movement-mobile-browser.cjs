@@ -29,6 +29,11 @@ const path=require('path');
      output.textContent='04/11/2026';
      const note=document.getElementById('stockTxnNote');
      note.value='';
+     if(typeof window.syncStockTxnDateDisplay==='function'){
+       window.syncStockTxnDateDisplay();
+       if(output.textContent!=='04/11/2026')throw Error('Stock date output incorrect: '+output.textContent);
+     }
+
      const choice=modal.querySelector('input[name="stockTxnQuickType"][value="in"]');
      choice.checked=true;
      document.getElementById('stockTxnType').value='in';
@@ -71,8 +76,11 @@ const path=require('path');
     await page.locator('#stockTxnNote').fill('Kiểm tra số lượng và ghi nhận xuất kho '.repeat(9));
     const noteHeight=await page.locator('#stockTxnNote').evaluate(el=>el.getBoundingClientRect().height);
     const scroll=await page.locator('#stockTxnNote').evaluate(el=>{
-      el.style.setProperty('height','44px','important');
-      el.style.setProperty('height',Math.max(44,el.scrollHeight)+'px','important');
+      if(typeof window.resizeStockTxnNote==='function')window.resizeStockTxnNote();
+      else{
+        el.style.setProperty('height','44px','important');
+        el.style.setProperty('height',Math.max(44,el.scrollHeight)+'px','important');
+      }
       return el.scrollHeight;
     });
     const grown=await page.locator('#stockTxnNote').evaluate(el=>el.getBoundingClientRect().height);
