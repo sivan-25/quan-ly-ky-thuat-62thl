@@ -239,31 +239,19 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
 
 
-  /* Inventory view: match the work-page canvas on every containing layer. */
+  /* Single mobile canvas and tab surfaces, shared with work-page palette. */
   body:has(#inventoryPage.inventoryRefShared:not(.hide)),
   body:has(#inventoryPage.inventoryRefShared:not(.hide)) #app,
   body:has(#inventoryPage.inventoryRefShared:not(.hide)) #app main,
   body:has(#inventoryPage.inventoryRefShared:not(.hide)) #app .mainContent {
     background-color:#f5f7fb!important;
   }
-  /* Exactly one visible rectangle per tab: remove nested wrappers and pseudo borders. */
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs :is(div,span)::before,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs :is(div,span)::after,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button::before,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button::after {
-    box-shadow:none!important;
+  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs :is(button,button span) {
+    box-shadow:none!important;outline:0!important;
   }
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs::before,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs::after,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button::before,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button::after,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button span::before,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button span::after {
-    content:none!important;display:none!important;
-  }
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button {
-    outline:0!important;outline-offset:0!important;box-shadow:none!important;
+  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs :is(button,button span)::before,
+  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs :is(button,button span)::after {
+    content:none!important;
   }
 
   /* Top bar: a single row, without duplicated "Vật tư" heading or detached bell. */
