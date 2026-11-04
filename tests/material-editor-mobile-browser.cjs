@@ -1,12 +1,12 @@
 'use strict';
 const assert=require('node:assert/strict');
-const {chromium}=require('playwright');
+const {chromium,webkit}=require('playwright');
 const fs=require('fs');
 const path=require('path');
 const app=fs.readFileSync('app.js','utf8');
 for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMaterialNote\(\)/,/materialSaveBtn"\)\.textContent="Lưu thay đổi"/,/materialSaveBtn"\)\.textContent="Lưu vật tư"/,/\/rest\/v1\/inventory_materials/])assert.match(app,expr);
 (async()=>{
- const browser=await chromium.launch({headless:true});
+ const browser=await (process.env.ESTA_MATERIAL_BROWSER==='webkit'?webkit:chromium).launch({headless:true});
  const dir='visual-artifacts/material-editor';fs.mkdirSync(dir,{recursive:true});let n=0;
  try{
   for(const width of [320,375,390,430]){
@@ -42,6 +42,11 @@ for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMateri
        cancel:box('#cancelMaterialModal'),save:box('#materialSaveBtn'),
        cardBg:bg('#materialItemModal .inventoryModalCard'),formBg:bg('#materialItemForm'),
        inputBg:bg('#materialName'),saveBg:bg('#materialSaveBtn'),cancelBg:bg('#cancelMaterialModal'),
+       controls:['materialName','materialCode','materialUnit','materialOpeningQty','materialMinQty','materialNote'].map(id=>{
+        const e=document.getElementById(id),c=getComputedStyle(e),label=e.closest('label').querySelector('span'),l=getComputedStyle(label),placeholder=getComputedStyle(e,'::placeholder');
+        return {id,bg:c.backgroundColor,color:c.color,webkitFill:c.webkitTextFillColor,opacity:c.opacity,
+         appearance:c.webkitAppearance,placeholderColor:placeholder.color,labelColor:l.color};
+       }),
        datePosition:getComputedStyle(document.getElementById('materialTrackingStart')).position,
        title:document.getElementById('materialModalTitle').textContent,
        buttonText:document.getElementById('materialSaveBtn').textContent,
@@ -60,6 +65,13 @@ for(const expr of [/function syncMaterialDateDisplay\(\)/,/function resizeMateri
      assert.equal(m.cardBg,'rgb(231, 244, 252)',title+' modal light blue');
      assert.equal(m.formBg,'rgb(231, 244, 252)',title+' form light blue');
      assert.equal(m.inputBg,'rgb(255, 255, 255)',title+' inputs white');
+     for(const c of m.controls){
+      assert.equal(c.bg,'rgb(255, 255, 255)',title+' '+c.id+' must have white background: '+JSON.stringify(c));
+      assert.equal(c.color,'rgb(24, 50, 99)',title+' '+c.id+' text navy: '+JSON.stringify(c));
+      assert.equal(c.webkitFill,'rgb(24, 50, 99)',title+' '+c.id+' fill navy: '+JSON.stringify(c));
+      assert.equal(c.labelColor,'rgb(24, 50, 99)',title+' '+c.id+' label navy: '+JSON.stringify(c));
+      assert.equal(c.opacity,'1',title+' '+c.id+' must not be dim');
+     }
      assert.equal(m.saveBg,'rgb(32, 92, 150)',title+' Save fixed blue');
      assert.equal(m.cancelBg,'rgb(252, 233, 230)',title+' Cancel light red');
      assert.equal(m.datePosition,'absolute',title+' date picker overlay');
