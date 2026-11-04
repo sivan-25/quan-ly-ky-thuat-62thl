@@ -493,7 +493,7 @@
  }
  /* Approved light blue/white preview. Keep this single shared source for
     Add and Edit, using the same dimensions and task form logic. */
- #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead{
+ #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader{
   padding:16px 52px 13px 16px!important;margin:0!important;
   border:0!important;border-bottom:1px solid #d9e7f5!important;
   border-radius:14px 14px 0 0!important;
@@ -503,17 +503,17 @@
   color:#183263!important;
   color-scheme:only light!important;
  }
- #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead>span{
+ #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader>span{
   display:block!important;margin:0 0 5px!important;
   color:#205c96!important;-webkit-text-fill-color:#205c96!important;
   font-size:10px!important;letter-spacing:1.25px!important;line-height:1.2!important;font-weight:800!important;
  }
- #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead h3{
+ #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader h3{
   margin:0!important;
   color:#183263!important;-webkit-text-fill-color:#183263!important;
   font-size:20px!important;line-height:1.25!important;font-weight:800!important;
  }
- #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead p{
+ #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader p{
   margin:6px 0 0!important;
   color:#526780!important;-webkit-text-fill-color:#526780!important;
   font-size:11px!important;line-height:1.4!important;
@@ -537,13 +537,36 @@
   max-width:100%!important;box-sizing:border-box!important;margin:0!important;padding:0!important;
   height:auto!important;min-height:0!important;grid-column:auto!important;
  }
- /* Material metadata is a single clean vertical column; stock values remain
-    paired, preserving the earlier "Nhập" placeholder workflow. */
- #materialItemModal #materialItemForm>:is(.materialNameField,.materialUnitField,.materialTrackingField,.materialNoteField,.inventoryFormActions){
+ /* Name / (Unit | Start date) / (Opening | Minimum) / Note.
+    Paired fields use equal tracks without fixed widths or horizontal overflow. */
+ #materialItemModal #materialItemForm>:is(.materialNameField,.materialNoteField,.inventoryFormActions){
   grid-column:1/-1!important;
  }
- #materialItemModal #materialItemForm>.materialOpeningField{grid-column:1!important}
- #materialItemModal #materialItemForm>.materialMinField{grid-column:2!important}
+ #materialItemModal #materialItemForm>.materialNameField{grid-row:1!important}
+ #materialItemModal #materialItemForm>.materialUnitField{
+  grid-column:1!important;grid-row:2!important;
+ }
+ #materialItemModal #materialItemForm>.materialTrackingField{
+  grid-column:2!important;grid-row:2!important;
+ }
+ #materialItemModal #materialItemForm>.materialOpeningField{
+  grid-column:1!important;grid-row:3!important;
+ }
+ #materialItemModal #materialItemForm>.materialMinField{
+  grid-column:2!important;grid-row:3!important;
+ }
+ #materialItemModal #materialItemForm>.materialNoteField{grid-row:4!important}
+ #materialItemModal #materialItemForm>.inventoryFormActions{grid-row:5!important}
+ /* Captions align even if the date caption wraps on smaller iPhones. */
+ #materialItemModal.materialEditorLight #materialItemForm.inventoryForm>:is(.materialUnitField,.materialTrackingField)>span:first-child{
+  display:flex!important;align-items:flex-end!important;
+  min-height:28px!important;height:28px!important;
+  font-size:clamp(10px,2.8vw,12px)!important;line-height:1.22!important;
+  overflow-wrap:normal!important;
+ }
+ #materialItemModal.materialEditorLight #materialItemForm.inventoryForm>.materialTrackingField .materialDateControl{
+  width:100%!important;min-width:0!important;
+ }
  #materialItemModal.materialEditorLight #materialItemForm.inventoryForm>label>span:first-child{
   display:block!important;margin:0!important;padding:0!important;
   color:#183263!important;-webkit-text-fill-color:#183263!important;
@@ -617,7 +640,7 @@
 }
 @media(max-width:359px){
  #materialItemModal #materialItemForm.inventoryForm{gap:10px 7px!important;padding:12px!important}
- #materialItemModal .inventoryModalHead{padding:14px 48px 12px 12px!important}
+ #materialItemModal .materialEditorHeader{padding:14px 48px 12px 12px!important}
  #materialItemModal #materialItemForm .inventoryFormActions{margin:2px -12px -12px!important;padding:10px 12px!important}
 }
 /* 130HH's global theme must not override the uniform work-style material form.
@@ -626,18 +649,18 @@
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard{background:#fff!important;color:#183263!important;border-color:#d2e2f1!important}
  /* 130HH uses exactly the approved material palette, not its broader
     project plum dialog theme. This is in the existing material block. */
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead{
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader{
   background:#edf5ff!important;background-color:#edf5ff!important;
   background-image:linear-gradient(180deg,#f5f9ff 0%,#eaf3fd 100%)!important;
   border-color:#d9e7f5!important;color:#183263!important;
  }
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead h3{
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader h3{
   color:#183263!important;-webkit-text-fill-color:#183263!important;
  }
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead>span{
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader>span{
   color:#205c96!important;-webkit-text-fill-color:#205c96!important;
  }
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead p{
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .materialEditorHeader p{
   color:#526780!important;-webkit-text-fill-color:#526780!important;
  }
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard #closeMaterialModal.modalClose{

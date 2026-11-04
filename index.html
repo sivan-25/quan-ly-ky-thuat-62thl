@@ -927,7 +927,7 @@
 <link rel="stylesheet" href="esta-brand-130.css?v=20261101-audit02">
 <link rel="stylesheet" href="esta-brand-130-complete.css?v=20261101-audit02">
 <link rel="stylesheet" href="work-page-130-readability.css?v=20261026-final01">
-<link rel="stylesheet" href="inventory-mobile-cards.css?v=20261104-approved-light-material-v04" media="screen">
+<link rel="stylesheet" href="inventory-mobile-cards.css?v=20261104-isolated-material-header-v05" media="screen">
 </head><body>
 <div id="toast"></div><section id="login" class="loginRebuild loginV8">
   <div class="lv8Left">
@@ -2661,13 +2661,13 @@
 <div id="materialItemModal" class="modal hide materialEditorLight">
   <div class="modalCard inventoryModalCard">
     <button id="closeMaterialModal" class="modalClose" type="button">×</button>
-    <div class="inventoryModalHead"><span>ESTA · MATERIAL MASTER</span><h3 id="materialModalTitle">Thêm vật tư</h3><p>Vật tư chỉ bắt đầu xuất hiện từ tháng có ngày bắt đầu quản lý; các tháng trước không phát sinh dữ liệu.</p></div>
+    <div class="materialEditorHeader"><span>ESTA · MATERIAL MASTER</span><h3 id="materialModalTitle">Thêm vật tư</h3><p>Vật tư chỉ bắt đầu xuất hiện từ tháng có ngày bắt đầu quản lý; các tháng trước không phát sinh dữ liệu.</p></div>
     <form id="materialItemForm" class="inventoryForm">
       <input id="materialId" type="hidden">
       <label class="wide materialNameField"><span>Tên vật tư *</span><input id="materialName" maxlength="120" required placeholder="VD: Băng keo điện 3M"></label>
       <input id="materialCode" type="hidden" value="">
-      <label class="wide materialUnitField"><span>Đơn vị tính *</span><input id="materialUnit" maxlength="30" required value="Cái"></label>
-      <label class="wide materialTrackingField"><span>Ngày bắt đầu quản lý *</span><span class="materialDateControl"><input id="materialTrackingStart" type="date" required aria-label="Ngày bắt đầu quản lý"><output class="materialDateDisplayed" aria-hidden="true"></output></span></label>
+      <label class="materialUnitField"><span>Đơn vị tính *</span><input id="materialUnit" maxlength="30" required value="Cái"></label>
+      <label class="materialTrackingField"><span>Ngày bắt đầu quản lý *</span><span class="materialDateControl"><input id="materialTrackingStart" type="date" required aria-label="Ngày bắt đầu quản lý"><output class="materialDateDisplayed" aria-hidden="true"></output></span></label>
       <label class="materialOpeningField"><span>Tồn đầu</span><input id="materialOpeningQty" type="number" inputmode="decimal" step="0.01" min="0" placeholder="Nhập"></label>
       <label class="materialMinField"><span>Tồn tối thiểu</span><input id="materialMinQty" type="number" inputmode="decimal" step="0.01" min="0" placeholder="Nhập"></label>
       <label class="wide materialNoteField"><span>Ghi chú</span><textarea id="materialNote" rows="1" maxlength="300" placeholder="Quy cách, hãng, vị trí lưu..."></textarea></label>

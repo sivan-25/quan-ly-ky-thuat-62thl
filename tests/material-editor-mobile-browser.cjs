@@ -21,7 +21,10 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
      await page.route('**/*',route=>{const u=new URL(route.request().url());return ['localhost','127.0.0.1'].includes(u.hostname)?route.continue():route.abort()});
      await page.goto('http://127.0.0.1:8766/',{waitUntil:'domcontentloaded'});
      await page.evaluate(({project,editing})=>{
-      if(project==='130HH')document.body.classList.add('estaBrand130');
+      if(project==='130HH'){
+       document.body.classList.add('estaBrand130');
+       document.getElementById('app').classList.add('estaBrand130','demoExactProject','demoProjectMode','updateProjectMode');
+      }
       document.getElementById('app').classList.remove('hide');
       document.getElementById('materialItemModal').classList.remove('hide');
       document.getElementById('materialId').value=editing?'existing-test-id':'';
@@ -44,6 +47,8 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
        hiddenCodeType:document.getElementById('materialCode').type,
        hiddenCodeValue:document.getElementById('materialCode').value,
        date:box('.materialDateDisplayed'),inputDate:box('#materialTrackingStart'),
+       unitLabel:box('.materialUnitField>span:first-child'),
+       dateLabel:box('.materialTrackingField>span:first-child'),
        opening:box('#materialOpeningQty'),minimum:box('#materialMinQty'),note:box('#materialNote'),
        openingValue:document.getElementById('materialOpeningQty').value,
        minimumValue:document.getElementById('materialMinQty').value,
@@ -51,12 +56,13 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
        minimumPlaceholder:document.getElementById('materialMinQty').placeholder,
        cancel:box('#cancelMaterialModal'),save:box('#materialSaveBtn'),
        cardBg:bg('#materialItemModal .inventoryModalCard'),formBg:bg('#materialItemForm'),
-       headerBg:bg('#materialItemModal .inventoryModalHead'),
-       headerGradient:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead')).backgroundImage,
+       headerBg:bg('#materialItemModal .materialEditorHeader'),
+       sharedHeaderCount:document.querySelectorAll('#materialItemModal .inventoryModalHead').length,
+       headerGradient:getComputedStyle(document.querySelector('#materialItemModal .materialEditorHeader')).backgroundImage,
        footerBg:bg('#materialItemModal .inventoryFormActions'),
        titleColor:getComputedStyle(document.getElementById('materialModalTitle')).color,
-       kickerColor:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead>span')).color,
-       descriptionColor:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead p')).color,
+       kickerColor:getComputedStyle(document.querySelector('#materialItemModal .materialEditorHeader>span')).color,
+       descriptionColor:getComputedStyle(document.querySelector('#materialItemModal .materialEditorHeader p')).color,
        closeBg:bg('#closeMaterialModal'),
        closeText:getComputedStyle(document.getElementById('closeMaterialModal')).color,
        inputBg:bg('#materialName'),saveBg:bg('#materialSaveBtn'),cancelBg:bg('#cancelMaterialModal'),
@@ -76,15 +82,20 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
      assert.equal(m.hiddenCodeType,'hidden',title+' old codes must not be visible');
      assert.equal(m.hiddenCodeValue,editing?'VT-001':'',title+' existing code must survive editing');
      for(const key of ['cancel','save'])near(m[key].h,48,key+' must equal 48px');
-     near(m.name.w,m.unit.w,'Name and unit should span the same full width');
-     near(m.unit.w,m.date.w,'Unit and start date should span full width');
-     assert.ok(m.unit.y>m.name.y+20&&m.date.y>m.unit.y+20,title+' metadata fields stack vertically');
+     assert.ok(m.unit.y>m.name.y+20,title+' name must be above unit/date row');
+     near(m.unit.y,m.date.y,'Unit and date input must be on the SAME row');
+     near(m.unit.w,m.date.w,'Unit and date occupy equal half widths');
+     near(m.unitLabel.y,m.dateLabel.y,'unit/date captions start together');
+     near(m.unitLabel.h,m.dateLabel.h,'unit/date captions match height');
+     assert.ok(m.unit.right<=m.date.x+1,title+' unit is left of start date with a gap');
+     assert.ok(m.opening.y>m.unit.y+20,title+' stock row appears below unit/date');
      near(m.opening.y,m.minimum.y,'opening and minimum same row');
      near(m.opening.w,m.minimum.w,'stock fields equal widths');
      near(m.cancel.y,m.save.y,'actions same row');
      assert.ok(m.opening.right<=m.minimum.x+1,title+' stock fields correctly ordered');
      assert.ok(m.cancel.right<=m.save.x+1,title+' Cancel left of Save');
      assert.ok(m.overflow<4,title+' no horizontal overflow');
+     assert.equal(m.sharedHeaderCount,0,title+' dark shared inventory header class must be absent');
      assert.equal(m.cardBg,'rgb(255, 255, 255)',title+' approved white modal card');
      assert.equal(m.formBg,'rgb(255, 255, 255)',title+' approved white form');
      assert.equal(m.headerBg,'rgb(237, 245, 255)',title+' approved pale blue header');
