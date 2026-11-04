@@ -912,7 +912,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="screen">
-<link rel="stylesheet" href="inventory-mobile-cards.css?v=20261101-audit02" media="screen">
+<link rel="stylesheet" href="inventory-mobile-cards.css?v=20261104-stock-work-card01" media="screen">
 <link rel="stylesheet" href="maintenance-130-mobile.css?v=20261101-audit02" media="screen">
 <link rel="stylesheet" href="maintenance-asset-mobile-form.css?v=20261101-audit02" media="screen">
 <link rel="stylesheet" href="maintenance-plan-mobile.css?v=20261101-audit02" media="screen">
@@ -2690,10 +2690,10 @@
           <label class="stockTxnChoice stockTxnChoiceOut"><input type="radio" name="stockTxnQuickType" value="out"><span>Xuất kho</span></label>
         </fieldset>
       </div>
-      <label class="stockTxnDateField"><span>Ngày *</span><input id="stockTxnDate" type="date" required></label>
+      <label class="stockTxnDateField"><span>Ngày *</span><span class="stockTxnDateControl"><input id="stockTxnDate" type="date" required aria-label="Ngày giao dịch"><output class="stockTxnDateDisplayed" aria-hidden="true"></output></span></label>
       <label class="stockTxnQtyField"><span>Số lượng *</span><input id="stockTxnQty" type="number" inputmode="decimal" step="0.01" min="0.01" required placeholder="Nhập số lượng"></label>
       <label class="stockTxnPerformerField"><span>Người thực hiện</span><select id="stockTxnPerformer"><option value="">— Chọn —</option></select></label>
-      <label class="wide stockTxnNoteField"><span>Ghi chú</span><input id="stockTxnNote" maxlength="300" placeholder="Nội dung nhập hoặc xuất..."></label>
+      <label class="wide stockTxnNoteField"><span>Ghi chú</span><textarea id="stockTxnNote" rows="1" maxlength="300" placeholder="Nội dung nhập hoặc xuất..."></textarea></label>
       <div class="inventoryFormActions"><button id="cancelStockTxnModal" type="button" class="inventorySecondary">Hủy</button><button id="stockTxnSubmit" type="submit" class="inventoryPrimary">Lưu giao dịch</button></div>
     </form>
   </div>
@@ -2823,7 +2823,7 @@
 </div>
 <div id="viewer" class="viewer hide"><div class="viewerCard"><button id="closeViewer">×</button><div id="viewerImages"></div></div></div>
 <script src="data-sync.js?v=20261101-audit02"></script>
-<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261103-edit-shared-form"></script><script src="completion-certificate-130.js?v=20261103-export-group-right"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="photo-annotator.js?v=20261007-130hh01"></script><script src="camera-permission.js?v=20261012-seamless02"></script><script src="app.js?v=20261104-stock-work-card01"></script><script src="completion-certificate-130.js?v=20261103-export-group-right"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="contractor.js?v=20261101-audit02"></script><script src="construction.js?v=20261101-audit02"></script><script src="report-model.js?v=20261016-priorityvi01EVN02"></script><script src="report-center.js?v=20261101-audit02"></script><script src="demo-lab.js?v=20261103-single-resize"></script><script src="overview-ui.js?v=20261004-overview03"></script><script src="command-center.js?v=20261103-fastopen01"></script><script src="admin-summary-report.js?v=20261017-fouraccept01"></script><script src="admin-work-editor.js?v=20261103-fastopen01"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="update-lab.js?v=20261103-no-duplicate-stock-strip"></script><script src="upgrade-equipment.js?v=20261018-inspectionflow03"></script><script>
 /* Native due-date picker: work form is moved into the editing drawer dynamically. */
 document.addEventListener("click",function estaDueDatePickerClick(event){

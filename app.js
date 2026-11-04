@@ -3334,6 +3334,17 @@ window.deleteMaterial=async id=>{
    toast("Đã xóa vật tư khỏi danh sách");
  }catch(e){toast(e.message||"Không thể xóa vật tư")}
 };
+function syncStockTxnDateDisplay(){
+ const el=$("#stockTxnDate"),out=document.querySelector("#stockTxnModal .stockTxnDateDisplayed");
+ if(!el||!out)return;
+ const match=/^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(el.value);
+ out.textContent=match?match[3]+"/"+match[2]+"/"+match[1]:"Chọn ngày";
+}
+function resizeStockTxnNote(){
+ const field=$("#stockTxnNote");if(!field)return;
+ field.style.height="44px";
+ field.style.height=Math.max(44,field.scrollHeight)+"px";
+}
 function syncStockTxnQuickChoice(){
  const selected=$("#stockTxnType")?.value==="out"?"out":"in";
  document.querySelectorAll('#stockTxnQuickChoices input[name="stockTxnQuickType"]').forEach(r=>{r.checked=r.value===selected});
@@ -3354,6 +3365,7 @@ window.openStockTxnModal=id=>{
  const maxDay=new Date(y,m,0).getDate();
  const date=y+"-"+String(m).padStart(2,"0")+"-"+String(Math.min(day,maxDay)).padStart(2,"0");
  $("#stockTxnId").value="";$("#stockTxnDate").value=date;$("#stockTxnType").value="in";$("#stockTxnQty").value="";$("#stockTxnPerformer").value="";$("#stockTxnNote").value="";
+ resizeStockTxnNote();
  $("#stockTxnModal").classList.toggle("stockTxnSharedCompact",isEstaInventoryProject());
  syncStockTxnQuickChoice();
  renderMaterials();if(id)$("#stockTxnMaterial").value=id;
@@ -3361,7 +3373,9 @@ window.openStockTxnModal=id=>{
  $("#stockTxnDate").max=today();
  $("#stockTxnDate").min=chosen?inventoryTrackingStart(chosen):"";
  if(chosen&&$("#stockTxnDate").value<inventoryTrackingStart(chosen))$("#stockTxnDate").value=inventoryTrackingStart(chosen);
+ syncStockTxnDateDisplay();
  $("#stockTxnModal").classList.remove("hide");
+ requestAnimationFrame(resizeStockTxnNote);
 };
 window.openLinkedTaskFromStockTxn=id=>{
  const task=load().find(x=>String(x.id)===String(id));
@@ -3695,11 +3709,15 @@ document.querySelectorAll('#stockTxnQuickChoices input[name="stockTxnQuickType"]
  });
 });
 $("#stockTxnType").addEventListener("change",syncStockTxnQuickChoice);
+$("#stockTxnDate").addEventListener("input",syncStockTxnDateDisplay);
+$("#stockTxnDate").addEventListener("change",syncStockTxnDateDisplay);
+$("#stockTxnNote").addEventListener("input",resizeStockTxnNote);
 $("#stockTxnMaterial").onchange=()=>{
  const m=inventoryActiveMaterials().find(x=>x.id===$("#stockTxnMaterial").value);
  $("#stockTxnDate").min=m?inventoryTrackingStart(m):"";
  $("#stockTxnDate").max=today();
  if(m&&$("#stockTxnDate").value<inventoryTrackingStart(m))$("#stockTxnDate").value=inventoryTrackingStart(m);
+ syncStockTxnDateDisplay();
 };
 $("#stockTxnForm").onsubmit=async e=>{
  e.preventDefault();if(!canProjectEdit())return toast("Tài khoản này chỉ có quyền xem");

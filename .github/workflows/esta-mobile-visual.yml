@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'demo-mobile.css'
+      - 'inventory-mobile-cards.css'
+      - 'tests/stock-movement-mobile-browser.cjs'
       - 'app.js'
       - 'tests/work-edit-mobile-shared-form.cjs'
       - 'update-lab.css'
@@ -57,6 +59,8 @@ jobs:
           exit 1
       - name: Measure mobile date input and surface (add and edit)
         run: node tests/work-date-mobile-browser.cjs
+      - name: Verify stock modal matches work form on four projects
+        run: node tests/stock-movement-mobile-browser.cjs
       - name: Verify shared mobile edit form and unchanged desktop drawer
         run: node tests/work-edit-mobile-shared-form.cjs
       - name: Upload date measurements screenshots
