@@ -52,6 +52,8 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
        cancel:box('#cancelMaterialModal'),save:box('#materialSaveBtn'),
        cardBg:bg('#materialItemModal .inventoryModalCard'),formBg:bg('#materialItemForm'),
        headerBg:bg('#materialItemModal .inventoryModalHead'),
+       headerGradient:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead')).backgroundImage,
+       footerBg:bg('#materialItemModal .inventoryFormActions'),
        titleColor:getComputedStyle(document.getElementById('materialModalTitle')).color,
        kickerColor:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead>span')).color,
        descriptionColor:getComputedStyle(document.querySelector('#materialItemModal .inventoryModalHead p')).color,
@@ -83,14 +85,16 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
      assert.ok(m.opening.right<=m.minimum.x+1,title+' stock fields correctly ordered');
      assert.ok(m.cancel.right<=m.save.x+1,title+' Cancel left of Save');
      assert.ok(m.overflow<4,title+' no horizontal overflow');
-     assert.equal(m.cardBg,'rgb(231, 244, 252)',title+' modal light blue');
-     assert.equal(m.formBg,'rgb(231, 244, 252)',title+' form light blue');
-     assert.equal(m.headerBg,'rgb(255, 255, 255)',title+' white Work-style header');
-     assert.equal(m.titleColor,'rgb(23, 59, 86)',title+' Work navy heading on white header');
-     assert.equal(m.kickerColor,'rgb(154, 118, 96)',title+' Work accent eyebrow');
-     assert.equal(m.descriptionColor,'rgb(130, 149, 162)',title+' subdued Work description');
-     assert.equal(m.closeBg,'rgb(242, 248, 250)',title+' pale Work-style close control');
-     assert.equal(m.closeText,'rgb(36, 115, 141)',title+' Work teal close icon');
+     assert.equal(m.cardBg,'rgb(255, 255, 255)',title+' approved white modal card');
+     assert.equal(m.formBg,'rgb(255, 255, 255)',title+' approved white form');
+     assert.equal(m.headerBg,'rgb(237, 245, 255)',title+' approved pale blue header');
+     assert.equal(m.titleColor,'rgb(24, 50, 99)',title+' navy title on pale header');
+     assert.equal(m.kickerColor,'rgb(32, 92, 150)',title+' blue kicker');
+     assert.equal(m.descriptionColor,'rgb(82, 103, 128)',title+' readable muted description');
+     assert.equal(m.closeBg,'rgb(248, 251, 255)',title+' pale close control');
+     assert.equal(m.closeText,'rgb(24, 50, 99)',title+' navy close icon');
+     assert.ok(m.headerGradient.includes('linear-gradient'),title+' approved soft blue header gradient');
+     assert.equal(m.footerBg,'rgb(255, 255, 255)',title+' white action footer');
      assert.equal(m.inputBg,'rgb(255, 255, 255)',title+' inputs white');
      for(const c of m.controls){
       assert.equal(c.bg,'rgb(255, 255, 255)',title+' '+c.id+' must have white background: '+JSON.stringify(c));

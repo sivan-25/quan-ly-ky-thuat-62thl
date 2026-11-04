@@ -487,51 +487,50 @@
   display:block!important;position:relative!important;box-sizing:border-box!important;
   width:min(440px,calc(100vw - 24px))!important;max-width:100%!important;
   max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
-  margin:0!important;padding:0!important;border:1px solid #bad5e7!important;border-radius:15px!important;
-  background:#e7f4fc!important;color:#183263!important;overflow-x:hidden!important;overflow-y:auto!important;
+  margin:0!important;padding:0!important;border:1px solid #d2e2f1!important;border-radius:15px!important;
+  background:#fff!important;color:#183263!important;overflow-x:hidden!important;overflow-y:auto!important;
   overscroll-behavior:contain!important;box-shadow:0 18px 48px rgba(15,46,78,.2)!important;color-scheme:light!important;
  }
- /* Reuse the real Work entry header's light gradient and ink colors.
-    This header belongs to the Add/Edit material editor only; no dark brand
-    header override is allowed to leak into it on iOS. */
+ /* Approved light blue/white preview. Keep this single shared source for
+    Add and Edit, using the same dimensions and task form logic. */
  #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead{
   padding:16px 52px 13px 16px!important;margin:0!important;
-  border:0!important;border-bottom:1px solid #edf1f4!important;
+  border:0!important;border-bottom:1px solid #d9e7f5!important;
   border-radius:14px 14px 0 0!important;
-  background:#fff!important;
-  background-color:#fff!important;
-  background-image:linear-gradient(180deg,#fff 0%,#fbfdfe 100%)!important;
-  color:#173b56!important;
+  background:#edf5ff!important;
+  background-color:#edf5ff!important;
+  background-image:linear-gradient(180deg,#f5f9ff 0%,#eaf3fd 100%)!important;
+  color:#183263!important;
   color-scheme:only light!important;
  }
  #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead>span{
   display:block!important;margin:0 0 5px!important;
-  color:#9a7660!important;-webkit-text-fill-color:#9a7660!important;
+  color:#205c96!important;-webkit-text-fill-color:#205c96!important;
   font-size:10px!important;letter-spacing:1.25px!important;line-height:1.2!important;font-weight:800!important;
  }
  #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead h3{
   margin:0!important;
-  color:#173b56!important;-webkit-text-fill-color:#173b56!important;
+  color:#183263!important;-webkit-text-fill-color:#183263!important;
   font-size:20px!important;line-height:1.25!important;font-weight:800!important;
  }
  #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead p{
   margin:6px 0 0!important;
-  color:#8295a2!important;-webkit-text-fill-color:#8295a2!important;
-  font-size:11px!important;line-height:1.35!important;
+  color:#526780!important;-webkit-text-fill-color:#526780!important;
+  font-size:11px!important;line-height:1.4!important;
  }
  #materialItemModal.materialEditorLight .inventoryModalCard #closeMaterialModal.modalClose{
   display:grid!important;place-items:center!important;position:absolute!important;top:13px!important;right:13px!important;z-index:5!important;
   width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important;min-height:36px!important;max-height:36px!important;
   margin:0!important;padding:0!important;
-  border:1px solid #d7e5eb!important;border-radius:10px!important;
-  background:#f2f8fa!important;background-image:none!important;
-  color:#24738d!important;-webkit-text-fill-color:#24738d!important;
+  border:1px solid #b4cbe5!important;border-radius:10px!important;
+  background:#f8fbff!important;background-image:none!important;
+  color:#183263!important;-webkit-text-fill-color:#183263!important;
   font-size:21px!important;line-height:1!important;
  }
  #materialItemModal #materialItemForm.inventoryForm{
   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row!important;
   align-items:start!important;gap:11px 9px!important;width:100%!important;min-width:0!important;
-  box-sizing:border-box!important;padding:15px!important;margin:0!important;background:#e7f4fc!important;
+  box-sizing:border-box!important;padding:15px!important;margin:0!important;background:#fff!important;
  }
  #materialItemModal #materialItemForm>label{
   display:flex!important;flex-direction:column!important;gap:6px!important;min-width:0!important;width:100%!important;
@@ -559,7 +558,7 @@
   display:block!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;
   height:44px!important;min-height:44px!important;max-height:44px!important;
   margin:0!important;padding:0 10px!important;
-  border:1px solid #c6d8e7!important;border-radius:10px!important;
+  border:1px solid #b9cee5!important;border-radius:10px!important;
   background:#fff!important;background-color:#fff!important;background-image:none!important;
   color:#183263!important;-webkit-text-fill-color:#183263!important;
   opacity:1!important;filter:none!important;-webkit-filter:none!important;
@@ -582,7 +581,7 @@
  #materialItemModal #materialItemForm .materialDateControl .materialDateDisplayed{
   display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;z-index:1!important;
   width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;max-height:44px!important;
-  box-sizing:border-box!important;margin:0!important;padding:0 8px!important;border:1px solid #c6d8e7!important;
+  box-sizing:border-box!important;margin:0!important;padding:0 8px!important;border:1px solid #b9cee5!important;
   border-radius:10px!important;background:#fff!important;color:#183263!important;
   font:600 15px/1 Inter,Arial,sans-serif!important;white-space:nowrap!important;overflow:hidden!important;pointer-events:none!important;
  }
@@ -600,7 +599,7 @@
   position:sticky!important;bottom:0!important;z-index:3!important;gap:8px!important;
   width:auto!important;box-sizing:border-box!important;
   margin:2px -15px -15px!important;padding:12px 15px calc(14px + env(safe-area-inset-bottom,0px))!important;
-  border-top:1px solid #d4e5f0!important;background:#e7f4fc!important;
+  border-top:1px solid #dbe6f3!important;background:#fff!important;
  }
  #materialItemModal #materialItemForm .inventoryFormActions button{
   display:flex!important;align-items:center!important;justify-content:center!important;
@@ -624,30 +623,30 @@
 /* 130HH's global theme must not override the uniform work-style material form.
    Scope this exemption to material form; no project data is changed. */
 @media(max-width:760px){
- body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard{background:#e7f4fc!important;color:#183263!important;border-color:#bad5e7!important}
- /* 130HH specifically: do not allow the project-wide plum dialog theme to
-    override the Work-style material editor header or its close control. */
+ body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard{background:#fff!important;color:#183263!important;border-color:#d2e2f1!important}
+ /* 130HH uses exactly the approved material palette, not its broader
+    project plum dialog theme. This is in the existing material block. */
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead{
-  background:#fff!important;background-color:#fff!important;
-  background-image:linear-gradient(180deg,#fff 0%,#fbfdfe 100%)!important;
-  border-color:#edf1f4!important;color:#173b56!important;
+  background:#edf5ff!important;background-color:#edf5ff!important;
+  background-image:linear-gradient(180deg,#f5f9ff 0%,#eaf3fd 100%)!important;
+  border-color:#d9e7f5!important;color:#183263!important;
  }
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead h3{
-  color:#173b56!important;-webkit-text-fill-color:#173b56!important;
+  color:#183263!important;-webkit-text-fill-color:#183263!important;
  }
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead>span{
-  color:#9a7660!important;-webkit-text-fill-color:#9a7660!important;
+  color:#205c96!important;-webkit-text-fill-color:#205c96!important;
  }
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard .inventoryModalHead p{
-  color:#8295a2!important;-webkit-text-fill-color:#8295a2!important;
+  color:#526780!important;-webkit-text-fill-color:#526780!important;
  }
  body.estaBrand130 #materialItemModal.materialEditorLight .inventoryModalCard #closeMaterialModal.modalClose{
-  background:#f2f8fa!important;background-color:#f2f8fa!important;background-image:none!important;
-  border:1px solid #d7e5eb!important;
-  color:#24738d!important;-webkit-text-fill-color:#24738d!important;
+  background:#f8fbff!important;background-color:#f8fbff!important;background-image:none!important;
+  border:1px solid #b4cbe5!important;
+  color:#183263!important;-webkit-text-fill-color:#183263!important;
   opacity:1!important;filter:none!important;
  }
- body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm{background:#e7f4fc!important}
+ body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm{background:#fff!important}
  body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm>label>span:first-child{
   color:#183263!important;-webkit-text-fill-color:#183263!important;opacity:1!important;
  }
@@ -655,10 +654,10 @@
   -webkit-appearance:none!important;appearance:none!important;
   background:#fff!important;background-color:#fff!important;background-image:none!important;
   color:#183263!important;-webkit-text-fill-color:#183263!important;
-  opacity:1!important;border-color:#c6d8e7!important;color-scheme:only light!important;
+  opacity:1!important;border-color:#b9cee5!important;color-scheme:only light!important;
  }
- body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm .materialDateDisplayed{background:#fff!important;color:#183263!important}
- body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm .inventoryFormActions{background:#e7f4fc!important;border-color:#d4e5f0!important}
+ body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm .materialDateDisplayed{background:#fff!important;color:#183263!important;border-color:#b9cee5!important}
+ body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm .inventoryFormActions{background:#fff!important;border-color:#dbe6f3!important}
  body.estaBrand130 #materialItemModal.materialEditorLight #materialItemForm .inventoryFormActions .inventorySecondary{
   border-color:#d78982!important;background:#fce9e6!important;color:#a23933!important;
  }
