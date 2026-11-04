@@ -536,15 +536,15 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats {
     display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
     gap:5px!important;overflow:visible!important;
-    margin:0!important;padding:0!important;border:0!important;
+    margin:0 0 4px!important;padding:0!important;border:0!important;
     background:transparent!important;box-shadow:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article {
     display:flex!important;align-items:center!important;justify-content:center!important;
-    min-width:0!important;min-height:65px!important;
-    padding:7px 3px!important;border:1px solid #344d64!important;
-    border-radius:12px!important;background:#172d45!important;
-    box-shadow:none!important;box-sizing:border-box!important;
+    min-width:0!important;height:56px!important;min-height:56px!important;max-height:56px!important;
+    padding:5px 2px!important;border:1px solid #c5d7e8!important;
+    border-radius:10px!important;background:#edf5ff!important;
+    box-shadow:0 2px 5px rgba(24,55,91,.07)!important;box-sizing:border-box!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article>div {
     display:flex!important;flex-direction:column!important;align-items:center!important;
@@ -552,14 +552,14 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     min-width:0!important;padding:0!important;text-align:left!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article :is(small,b) {
-    margin:0!important;color:#f6f9ff!important;-webkit-text-fill-color:#f6f9ff!important;
+    margin:0!important;color:#193c61!important;-webkit-text-fill-color:#193c61!important;
     opacity:1!important;text-shadow:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats small {
-    font-size:clamp(8px,2.35vw,11px)!important;font-weight:650!important;white-space:normal!important;text-align:center!important;line-height:1.2!important;
+    font-size:clamp(8px,2.2vw,10px)!important;font-weight:700!important;white-space:normal!important;text-align:center!important;line-height:1.15!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats b {
-    font-size:clamp(17px,4.7vw,23px)!important;font-weight:800!important;line-height:1.15!important;
+    font-size:clamp(16px,4.3vw,20px)!important;font-weight:850!important;line-height:1.05!important;
     white-space:nowrap!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .inventoryMonthRail {
@@ -573,8 +573,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #materialMonthTabs button {
     min-width:0!important;width:100%!important;min-height:40px!important;
-    background:#203b57!important;border:1px solid #385875!important;
-    border-radius:8px!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+    background:#e4effb!important;border:1px solid #bed3e8!important;
+    border-radius:8px!important;color:#173c61!important;-webkit-text-fill-color:#173c61!important;
     font-size:10px!important;font-weight:700!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #materialMonthTabs button.active {
@@ -603,24 +603,24 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     border-color:#a64f18!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 {
-    background:#182f47!important;border:1px solid #35516d!important;
-    color:#fff!important;-webkit-text-fill-color:#fff!important;
+    background:#fff!important;border:1px solid #cbd9e7!important;
+    color:#183550!important;-webkit-text-fill-color:#183550!important;box-shadow:0 3px 9px rgba(20,50,80,.06)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 .invMobileCardName strong,
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 .invMobileValue b {
-    color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;
+    color:#173856!important;-webkit-text-fill-color:#173856!important;opacity:1!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 :is(.invMobileCardName small,.invMobileValue span,.invMobileUnit) {
-    color:#bfd3e6!important;-webkit-text-fill-color:#bfd3e6!important;opacity:1!important;
+    color:#5a7187!important;-webkit-text-fill-color:#5a7187!important;opacity:1!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-in b {
-    color:#8ef8de!important;-webkit-text-fill-color:#8ef8de!important;
+    color:#087e62!important;-webkit-text-fill-color:#087e62!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-out b {
-    color:#ffe0a0!important;-webkit-text-fill-color:#ffe0a0!important;
+    color:#a55c17!important;-webkit-text-fill-color:#a55c17!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 .invMobileValue.is-closing b {
-    color:#a6d4ff!important;-webkit-text-fill-color:#a6d4ff!important;
+    color:#145d9e!important;-webkit-text-fill-color:#145d9e!important;
   }
   /* One compact mobile row per material: name, unit and four stock figures. */
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .invMobileCard130 {padding:10px 9px!important;}
