@@ -324,7 +324,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     height:44px!important;min-height:44px!important;max-height:44px!important;
     margin:0!important;padding:0 5px!important;box-sizing:border-box!important;
     border:1px solid #bdd4ef!important;border-radius:9px!important;
-    background:linear-gradient(145deg,#f5f9ff,#dcecff)!important;color:#163e73!important;-webkit-text-fill-color:#163e73!important;
+    background-color:#e4efff!important;background-image:linear-gradient(145deg,#f5f9ff,#dcecff)!important;color:#163e73!important;-webkit-text-fill-color:#163e73!important;
     opacity:1!important;visibility:visible!important;
     font-size:12px!important;line-height:1.25!important;font-weight:700!important;
     text-align:center!important;text-shadow:none!important;
@@ -338,7 +338,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
   body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button.active {
     border:1px solid #237fd1!important;
-    background:linear-gradient(160deg,#1689e4,#06418b)!important;color:#fff!important;
+    background-color:#07539b!important;background-image:linear-gradient(160deg,#1689e4,#06418b)!important;color:#fff!important;
     -webkit-text-fill-color:#fff!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button.active span {
@@ -583,7 +583,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     font-size:10px!important;font-weight:700!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #materialMonthTabs button.active {
-    background:linear-gradient(160deg,#1689e4,#06418b)!important;
+    background-color:#07539b!important;background-image:linear-gradient(160deg,#1689e4,#06418b)!important;
     border:2px solid #e0444d!important;
     color:#fff!important;-webkit-text-fill-color:#fff!important;
   }
