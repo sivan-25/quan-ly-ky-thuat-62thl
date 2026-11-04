@@ -40,7 +40,9 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
      const m=await page.evaluate(()=>{
       const box=s=>{const r=document.querySelector(s).getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,w:r.width,h:r.height}};
       const bg=s=>getComputedStyle(document.querySelector(s)).backgroundColor;
-      return {name:box('#materialName'),code:box('#materialCode'),unit:box('#materialUnit'),
+      return {name:box('#materialName'),unit:box('#materialUnit'),
+       hiddenCodeType:document.getElementById('materialCode').type,
+       hiddenCodeValue:document.getElementById('materialCode').value,
        date:box('.materialDateDisplayed'),inputDate:box('#materialTrackingStart'),
        opening:box('#materialOpeningQty'),minimum:box('#materialMinQty'),note:box('#materialNote'),
        openingValue:document.getElementById('materialOpeningQty').value,
@@ -56,7 +58,7 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
        closeBg:bg('#closeMaterialModal'),
        closeText:getComputedStyle(document.getElementById('closeMaterialModal')).color,
        inputBg:bg('#materialName'),saveBg:bg('#materialSaveBtn'),cancelBg:bg('#cancelMaterialModal'),
-       controls:['materialName','materialCode','materialUnit','materialOpeningQty','materialMinQty','materialNote'].map(id=>{
+       controls:['materialName','materialUnit','materialOpeningQty','materialMinQty','materialNote'].map(id=>{
         const e=document.getElementById(id),c=getComputedStyle(e),label=e.closest('label').querySelector('span'),l=getComputedStyle(label),placeholder=getComputedStyle(e,'::placeholder');
         return {id,bg:c.backgroundColor,color:c.color,webkitFill:c.webkitTextFillColor,opacity:c.opacity,
          appearance:c.webkitAppearance,placeholderColor:placeholder.color,labelColor:l.color};
@@ -68,22 +70,27 @@ assert.match(app,/min_qty:inventoryNum\(\$\("#materialMinQty"\)\.value\)/,'empty
      });
      const title=project+' '+width+' '+(editing?'edit':'add');
      const near=(a,b,msg)=>assert.ok(Math.abs(a-b)<1.25,title+' '+msg+': '+a+' vs '+b);
-     for(const key of ['name','code','unit','date','inputDate','opening','minimum','note'])near(m[key].h,44,key+' must equal 44px');
+     for(const key of ['name','unit','date','inputDate','opening','minimum','note'])near(m[key].h,44,key+' must equal 44px');
+     assert.equal(m.hiddenCodeType,'hidden',title+' old codes must not be visible');
+     assert.equal(m.hiddenCodeValue,editing?'VT-001':'',title+' existing code must survive editing');
      for(const key of ['cancel','save'])near(m[key].h,48,key+' must equal 48px');
-     near(m.code.y,m.unit.y,'Mã and ĐVT same row');near(m.opening.y,m.minimum.y,'opening and minimum same row');
-     near(m.code.w,m.unit.w,'Mã/ĐVT equal widths');near(m.opening.w,m.minimum.w,'stock fields equal widths');
+     near(m.name.w,m.unit.w,'Name and unit should span the same full width');
+     near(m.unit.w,m.date.w,'Unit and start date should span full width');
+     assert.ok(m.unit.y>m.name.y+20&&m.date.y>m.unit.y+20,title+' metadata fields stack vertically');
+     near(m.opening.y,m.minimum.y,'opening and minimum same row');
+     near(m.opening.w,m.minimum.w,'stock fields equal widths');
      near(m.cancel.y,m.save.y,'actions same row');
-     assert.ok(m.code.right<=m.unit.x+1&&m.opening.right<=m.minimum.x+1,title+' paired columns correctly ordered');
+     assert.ok(m.opening.right<=m.minimum.x+1,title+' stock fields correctly ordered');
      assert.ok(m.cancel.right<=m.save.x+1,title+' Cancel left of Save');
      assert.ok(m.overflow<4,title+' no horizontal overflow');
      assert.equal(m.cardBg,'rgb(231, 244, 252)',title+' modal light blue');
      assert.equal(m.formBg,'rgb(231, 244, 252)',title+' form light blue');
-     assert.equal(m.headerBg,'rgb(231, 244, 252)',title+' header must match blue form background');
-     assert.equal(m.titleColor,'rgb(24, 50, 99)',title+' dark navy title on light header');
-     assert.equal(m.kickerColor,'rgb(40, 124, 164)',title+' readable blue kicker on light header');
-     assert.equal(m.descriptionColor,'rgb(91, 113, 143)',title+' readable subdued description');
-     assert.equal(m.closeBg,'rgb(255, 255, 255)',title+' white close control');
-     assert.equal(m.closeText,'rgb(36, 71, 105)',title+' navy close icon');
+     assert.equal(m.headerBg,'rgb(255, 255, 255)',title+' white Work-style header');
+     assert.equal(m.titleColor,'rgb(23, 59, 86)',title+' Work navy heading on white header');
+     assert.equal(m.kickerColor,'rgb(154, 118, 96)',title+' Work accent eyebrow');
+     assert.equal(m.descriptionColor,'rgb(130, 149, 162)',title+' subdued Work description');
+     assert.equal(m.closeBg,'rgb(242, 248, 250)',title+' pale Work-style close control');
+     assert.equal(m.closeText,'rgb(36, 115, 141)',title+' Work teal close icon');
      assert.equal(m.inputBg,'rgb(255, 255, 255)',title+' inputs white');
      for(const c of m.controls){
       assert.equal(c.bg,'rgb(255, 255, 255)',title+' '+c.id+' must have white background: '+JSON.stringify(c));
