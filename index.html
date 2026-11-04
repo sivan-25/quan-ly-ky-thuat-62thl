@@ -912,7 +912,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="screen">
-<link rel="stylesheet" href="inventory-mobile-cards.css?v=20261104-radio-ring-blue01" media="screen">
+<link rel="stylesheet" href="inventory-mobile-cards.css?v=20261104-native-safe-radio-v02" media="screen">
 <link rel="stylesheet" href="maintenance-130-mobile.css?v=20261101-audit02" media="screen">
 <link rel="stylesheet" href="maintenance-asset-mobile-form.css?v=20261101-audit02" media="screen">
 <link rel="stylesheet" href="maintenance-plan-mobile.css?v=20261101-audit02" media="screen">
@@ -2686,8 +2686,8 @@
         <label class="stockTxnOriginalType"><span>Loại *</span><select id="stockTxnType"><option value="in">Nhập kho</option><option value="out">Xuất kho</option></select></label>
         <fieldset id="stockTxnQuickChoices" class="stockTxnQuickChoices">
           <legend>Loại giao dịch *</legend>
-          <label class="stockTxnChoice stockTxnChoiceIn"><input type="radio" name="stockTxnQuickType" value="in" checked><span>Nhập kho</span></label>
-          <label class="stockTxnChoice stockTxnChoiceOut"><input type="radio" name="stockTxnQuickType" value="out"><span>Xuất kho</span></label>
+          <label class="stockTxnChoice stockTxnChoiceIn"><input type="radio" name="stockTxnQuickType" value="in" checked><i class="stockTxnRadioMark" aria-hidden="true"><i class="stockTxnRadioDot"></i></i><span>Nhập kho</span></label>
+          <label class="stockTxnChoice stockTxnChoiceOut"><input type="radio" name="stockTxnQuickType" value="out"><i class="stockTxnRadioMark" aria-hidden="true"><i class="stockTxnRadioDot"></i></i><span>Xuất kho</span></label>
         </fieldset>
       </div>
       <label class="stockTxnDateField"><span>Ngày *</span><span class="stockTxnDateControl"><input id="stockTxnDate" type="date" required aria-label="Ngày giao dịch"><output class="stockTxnDateDisplayed" aria-hidden="true"></output></span></label>

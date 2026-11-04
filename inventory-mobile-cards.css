@@ -681,46 +681,68 @@
     line-height:1.15!important;
     white-space:nowrap!important;
   }
-  /* Both options use a hollow native-size ring; the dark inner dot exists
-     ONLY in the selected input. Never render a solid-filled unchecked dot. */
-  #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]{
-    appearance:none!important;-webkit-appearance:none!important;
-    display:grid!important;place-items:center!important;
+  /* Safari/iOS can paint its native radio over appearance:none. Keep the
+     accessible input in the label but never use its rendered pixels for UI.
+     Visible ring/dot are ordinary DOM elements; checked state comes from
+     the actual radio input, with no duplicated JS state. */
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice{
+    position:relative!important;
+  }
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice>input[type=radio]{
+    position:absolute!important;
+    display:block!important;
+    width:1px!important;min-width:1px!important;max-width:1px!important;
+    height:1px!important;min-height:1px!important;max-height:1px!important;
+    margin:0!important;padding:0!important;border:0!important;
+    opacity:0!important;
+    clip-path:inset(50%)!important;-webkit-clip-path:inset(50%)!important;
+    overflow:hidden!important;
+    pointer-events:none!important;
+    -webkit-appearance:none!important;appearance:none!important;
+  }
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice>.stockTxnRadioMark{
+    display:inline-flex!important;
+    align-items:center!important;justify-content:center!important;
     box-sizing:border-box!important;
-    width:18px!important;min-width:18px!important;max-width:18px!important;
-    height:18px!important;min-height:18px!important;max-height:18px!important;
+    width:20px!important;min-width:20px!important;max-width:20px!important;
+    height:20px!important;min-height:20px!important;max-height:20px!important;
+    flex:0 0 20px!important;
     margin:0!important;padding:0!important;
     border:2px solid #263b53!important;
     border-radius:50%!important;
     background:#fff!important;
+    color:transparent!important;
     box-shadow:none!important;
-    flex:0 0 18px!important;cursor:pointer!important;
+    font-style:normal!important;
+    pointer-events:none!important;
   }
-  #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]::after{
-    content:""!important;
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice .stockTxnRadioDot{
     display:none!important;
     box-sizing:border-box!important;
-    width:8px!important;
-    height:8px!important;
-    border-radius:50%!important;
+    width:9px!important;min-width:9px!important;max-width:9px!important;
+    height:9px!important;min-height:9px!important;max-height:9px!important;
+    margin:0!important;padding:0!important;
+    border:0!important;border-radius:50%!important;
     background:#183263!important;
-  }
-  #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked{
-    border-color:#2987c7!important;
-    background:#fff!important;
     box-shadow:none!important;
+    pointer-events:none!important;
   }
-  #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked::after{
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice>input[type=radio]:checked+.stockTxnRadioMark{
+    background:#fff!important;
+    border-color:#2987c7!important;
+  }
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice>input[type=radio]:checked+.stockTxnRadioMark>.stockTxnRadioDot{
     display:block!important;
+  }
+  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice>input[type=radio]:focus-visible+.stockTxnRadioMark{
+    outline:2px solid #367cc1!important;
+    outline-offset:3px!important;
   }
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice:has(input:checked){
     background:#def0fc!important;
     border-color:#2987c7!important;
     color:#123d67!important;
     box-shadow:inset 0 0 0 .5px #2987c7!important;
-  }
-  #stockTxnModal.stockTxnSharedCompact #stockTxnForm .stockTxnChoice input:focus-visible{
-    outline:2px solid #367cc1!important;outline-offset:3px!important;
   }
   /* Work-style date display remains in normal layout; native Safari picker
      is an interactive 44px overlay and cannot increase the rendered row. */
@@ -785,12 +807,10 @@
     background:#fce9e6!important;
     color:#a23933!important;
   }
+  /* Same fixed blue for "Xác nhận nhập" AND "Xác nhận xuất". */
   #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions .inventoryPrimary{
-    border:1px solid #1b8d9c!important;
-    background:#166983!important;color:#fff!important;
-  }
-  #stockTxnModal.stockTxnSharedCompact #stockTxnForm:has(.stockTxnChoiceOut input:checked) .inventoryFormActions .inventoryPrimary{
-    border-color:#215b98!important;background:#205c96!important;
+    border:1px solid #205c96!important;
+    background:#205c96!important;color:#fff!important;
   }
 }
 @media(max-width:359px){
@@ -826,19 +846,6 @@
    border-color:#2987c7!important;
    color:#123d67!important;
  }
- body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]{
-   appearance:none!important;-webkit-appearance:none!important;
-   background:#fff!important;
-   border-color:#263b53!important;
-   box-shadow:none!important;
- }
- body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]:checked{
-   background:#fff!important;
-   border-color:#2987c7!important;
- }
- body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm input[type=radio]::after{
-   background:#183263!important;
- }
  body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions{
    background:#e7f4fc!important;border-color:#d4e5f0!important;
  }
@@ -856,6 +863,6 @@
    background:#fce9e6!important;color:#a23933!important;border-color:#d78982!important;
  }
  body.estaBrand130 #stockTxnModal.stockTxnSharedCompact #stockTxnForm .inventoryFormActions .inventoryPrimary{
-   background:#166983!important;color:#fff!important;border-color:#1b8d9c!important;
+   background:#205c96!important;color:#fff!important;border-color:#205c96!important;
  }
 }

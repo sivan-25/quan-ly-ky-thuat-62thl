@@ -71,34 +71,44 @@ const path=require('path');
     assert.ok(measured.overflow<4,name+' horizontal overflow');
     assert.equal(measured.styles.bg,'rgb(231, 244, 252)',name+' modal must use light work-card blue');
     assert.equal(measured.styles.inputBg,'rgb(255, 255, 255)',name+' fields use white background');
-    // The selected control must show a navy 8px center dot in a white ring.
-    // The unselected one must remain white with a dark outline and NO dot.
+    // Verify the ACTUAL decorative circle and dot, not Chromium's native
+    // radio rendering. Safari uses the same DOM decoration and cannot paint
+    // its own dark filled unchecked radio over it.
     async function assertRadioState(selected){
       const ui=await page.evaluate(()=>{
         const read=v=>{
           const input=document.querySelector('#stockTxnQuickChoices input[value="'+v+'"]');
           const label=input.closest('label');
-          const s=getComputedStyle(input),p=getComputedStyle(input,'::after'),l=getComputedStyle(label);
-          return {checked:input.checked,background:s.backgroundColor,border:s.borderTopColor,
-            dotDisplay:p.display,dotColor:p.backgroundColor,dotWidth:p.width,dotHeight:p.height,
-            labelBorder:l.borderTopColor,labelBg:l.backgroundColor};
+          const ring=label.querySelector('.stockTxnRadioMark');
+          const dot=label.querySelector('.stockTxnRadioDot');
+          if(!ring||!dot)throw Error('Missing decorative ring/dot for '+v);
+          const hidden=getComputedStyle(input),r=getComputedStyle(ring),
+            d=getComputedStyle(dot),tile=getComputedStyle(label);
+          return {checked:input.checked,
+            nativeOpacity:hidden.opacity,nativeWidth:hidden.width,
+            ringBg:r.backgroundColor,ringBorder:r.borderTopColor,ringSize:r.width,
+            dotDisplay:d.display,dotBg:d.backgroundColor,dotWidth:d.width,
+            tileBg:tile.backgroundColor,tileBorder:tile.borderTopColor};
         };
-        return {in:read('in'),out:read('out')};
+        const submit=document.querySelector('#stockTxnSubmit');
+        return {in:read('in'),out:read('out'),submitBg:getComputedStyle(submit).backgroundColor};
       });
-      const off=selected==='in'?'out':'in',active=ui[selected],inactive=ui[off];
-      assert.equal(active.checked,true,name+' selected radio state');
-      assert.equal(inactive.checked,false,name+' unchecked radio state');
-      assert.equal(active.background,'rgb(255, 255, 255)',name+' selected ring center is white');
-      assert.equal(inactive.background,'rgb(255, 255, 255)',name+' unchecked ring center is white');
-      assert.equal(active.border,'rgb(41, 135, 199)',name+' selected ring blue border');
-      assert.equal(inactive.border,'rgb(38, 59, 83)',name+' unchecked ring dark border');
-      assert.equal(active.dotDisplay,'block',name+' selected navy dot must display');
-      assert.equal(inactive.dotDisplay,'none',name+' unchecked center must be blank');
-      assert.equal(active.dotWidth,'8px',name+' selected dot width');
-      assert.equal(active.dotHeight,'8px',name+' selected dot height');
-      assert.equal(active.dotColor,'rgb(24, 50, 99)',name+' selected dot navy fill');
-      assert.equal(active.labelBorder,'rgb(41, 135, 199)',name+' selected tile blue border');
-      assert.equal(inactive.labelBg,'rgb(255, 255, 255)',name+' unchecked tile white background');
+      const other=selected==='in'?'out':'in',on=ui[selected],off=ui[other];
+      assert.equal(on.checked,true,name+' selected native radio');
+      assert.equal(off.checked,false,name+' unselected native radio');
+      assert.equal(on.nativeOpacity,'0',name+' native radio painting hidden');
+      assert.equal(off.nativeOpacity,'0',name+' unselected native radio hidden');
+      assert.equal(on.ringBg,'rgb(255, 255, 255)',name+' selected white ring');
+      assert.equal(off.ringBg,'rgb(255, 255, 255)',name+' unselected white ring');
+      assert.equal(on.ringBorder,'rgb(41, 135, 199)',name+' selected blue outline');
+      assert.equal(off.ringBorder,'rgb(38, 59, 83)',name+' unselected dark outline');
+      assert.equal(on.dotDisplay,'block',name+' selected navy dot visible');
+      assert.equal(off.dotDisplay,'none',name+' unselected center must be EMPTY');
+      assert.equal(on.dotBg,'rgb(24, 50, 99)',name+' selected navy dot');
+      assert.equal(on.dotWidth,'9px',name+' selected dot size');
+      assert.equal(on.tileBorder,'rgb(41, 135, 199)',name+' selected tile border blue');
+      assert.equal(off.tileBg,'rgb(255, 255, 255)',name+' unselected tile background white');
+      assert.equal(ui.submitBg,'rgb(32, 92, 150)',name+' confirmation button blue regardless of type');
     }
     await assertRadioState('in');
     await page.screenshot({path:path.join(dir,project+'-'+width+'-nhap.png')});
