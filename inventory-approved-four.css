@@ -557,7 +557,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     min-width:0!important;padding:0!important;text-align:left!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article :is(small,b) {
-    margin:0!important;color:#143b70!important;-webkit-text-fill-color:#143b70!important;
+    margin:0!important;color:inherit!important;-webkit-text-fill-color:currentColor!important;
     opacity:1!important;text-shadow:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats small {
