@@ -546,6 +546,11 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
      border-radius:12px!important;background:#e8f2ff!important;
     box-shadow:none!important;box-sizing:border-box!important;
   }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article:nth-child(1) {background:#e5f1ff!important;border-color:#c9ddfb!important;color:#0861d5!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article:nth-child(2) {background:#e3f8eb!important;border-color:#c5e9d0!important;color:#16843b!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article:nth-child(3) {background:#fff0e1!important;border-color:#f7dfc6!important;color:#e9780b!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article:nth-child(4) {background:#ffe8eb!important;border-color:#f4cdd3!important;color:#d51e35!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article :is(small,b) {color:inherit!important;-webkit-text-fill-color:currentColor!important}
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article>div {
      display:flex!important;flex-direction:column!important;align-items:center!important;
      justify-content:center!important;gap:6px!important;width:100%!important;
