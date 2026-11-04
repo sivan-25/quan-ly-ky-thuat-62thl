@@ -58,7 +58,7 @@ const path=require('path');
     }
     for(const key of ['cancel','submit'])assert.ok(Math.abs(measured[key].h-48)<1.25,name+' '+key+' must be 48px');
     for(const [a,b] of [['in','out'],['date','qty'],['cancel','submit']]){
-     assert.ok(Math.abs(measured[a].y-measured[b].y)<2,name+' '+a+' / '+b+' should share one row');
+     assert.ok(Math.abs(measured[a].y-measured[b].y)<2,name+' '+a+' / '+b+' should share one row: '+JSON.stringify({a:measured[a],b:measured[b],grid:measured.styles.typeColumns}));
      assert.ok(measured[b].x>=measured[a].right-1,name+' '+a+' should be left of '+b);
     }
     assert.ok(Math.abs(measured.in.w-measured.out.w)<2,name+' choice columns equal');
