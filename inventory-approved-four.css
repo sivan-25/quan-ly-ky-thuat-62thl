@@ -221,7 +221,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
    geometry and foreground/background contrast in both tabs. */
 @media (max-width:760px) {
   body #app#app#app #inventoryPage.inventoryRefShared {
-    --inv-mobile-canvas:#f4e9d9;
+    --inv-mobile-canvas:#f5f7fb;
     --inv-mobile-selected:#126879;
     --inv-mobile-ink:#193c55;
     width:100%!important;min-width:0!important;max-width:100%!important;
@@ -230,11 +230,11 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     box-sizing:border-box!important;overflow-x:clip!important;
   }
   body #app#app#app #inventoryPage.inventoryRef127 {
-    --inv-mobile-canvas:#f8ead6;
+    --inv-mobile-canvas:#f5f7fb;
     --inv-mobile-selected:#215d87;
   }
   body #app#app#app #inventoryPage.inventoryRef130 {
-    --inv-mobile-canvas:#f2ddbd;
+    --inv-mobile-canvas:#f5f7fb;
     --inv-mobile-selected:#126879;
   }
 
@@ -313,8 +313,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     width:100%!important;min-width:0!important;max-width:100%!important;
     height:auto!important;min-height:0!important;
     margin:0!important;padding:5px!important;
-    border:1px solid #244763!important;border-radius:12px!important;
-    background:#eaf3ff!important;box-sizing:border-box!important;
+    border:0!important;border-radius:12px!important;
+    background:transparent!important;box-shadow:none!important;box-sizing:border-box!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button,
   body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button:not(.active),
@@ -323,7 +323,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     gap:5px!important;min-width:0!important;width:100%!important;
     height:44px!important;min-height:44px!important;max-height:44px!important;
     margin:0!important;padding:0 5px!important;box-sizing:border-box!important;
-    border:1px solid #bdd4ef!important;border-radius:9px!important;
+    border:1px solid #bdd4ef!important;border-radius:9px!important;box-shadow:none!important;
     background-color:#e4efff!important;background-image:linear-gradient(145deg,#f5f9ff,#dcecff)!important;color:#163e73!important;-webkit-text-fill-color:#163e73!important;
     opacity:1!important;visibility:visible!important;
     font-size:12px!important;line-height:1.25!important;font-weight:700!important;
@@ -332,7 +332,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button span {
     display:inline!important;width:auto!important;height:auto!important;
     min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;
-    border:0!important;border-radius:0!important;background:transparent!important;
+    border:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;outline:0!important;
     color:inherit!important;-webkit-text-fill-color:inherit!important;
     font:inherit!important;white-space:normal!important;opacity:1!important;
   }
@@ -541,8 +541,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article {
     display:flex!important;align-items:center!important;justify-content:center!important;
-    min-width:0!important;min-height:90px!important;
-     padding:8px 3px!important;border:1px solid #d4e2f4!important;
+    min-width:0!important;min-height:62px!important;max-height:66px!important;
+     padding:5px 3px!important;border:1px solid #d4e2f4!important;
      border-radius:12px!important;background:#e8f2ff!important;
     box-shadow:none!important;box-sizing:border-box!important;
   }
@@ -553,7 +553,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article :is(small,b) {color:inherit!important;-webkit-text-fill-color:currentColor!important}
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article>div {
      display:flex!important;flex-direction:column!important;align-items:center!important;
-     justify-content:center!important;gap:6px!important;width:100%!important;
+     justify-content:center!important;gap:2px!important;width:100%!important;
     min-width:0!important;padding:0!important;text-align:left!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats article :is(small,b) {
@@ -564,7 +564,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     font-size:11px!important;font-weight:650!important;white-space:normal!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .monthlyStats b {
-    font-size:21px!important;font-weight:800!important;line-height:1.15!important;
+    font-size:18px!important;font-weight:800!important;line-height:1.1!important;
     white-space:nowrap!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .inventoryMonthRail {
