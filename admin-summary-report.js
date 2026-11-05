@@ -217,6 +217,7 @@
       const tables=[];
       if(state.categories.has("maintenance"))tables.push(["maintenance","esta_maintenance_plan_items"],["maintenance","esta_maintenance_plan_occurrences"]);
       if(state.categories.has("tools"))tables.push(["tools","inventory_tools"]);
+      if(state.categories.has("materials"))tables.push(["materials","inventory_materials"],["materials","inventory_material_transactions"]);
       const chosen=projectSpecs.filter(p=>state.projects.has(p[0]));
       if(state.categories.has("maintenance")&&chosen.length&&typeof window.estaMaintenance130ReportRows!=="function")
        throw new Error("Chưa tải bộ tính lịch bảo trì ESTA. Hãy tải lại trang trước khi xuất PDF.");
@@ -327,8 +328,8 @@
           if(!row)throw new Error("Thiếu dữ liệu dự án "+name+"; đã dừng xuất PDF.");
           const member = (currentAccount?.buildings||[]).find(x=>scope(x.id)===id)||{};
           return {
-            id,name,materials:arr(row.ops?.inventory_materials),
-            transactions:arr(row.ops?.inventory_material_transactions),
+            id,name,materials:arr(state.extra[id]?.inventory_materials),
+            transactions:arr(state.extra[id]?.inventory_material_transactions),
             tools:arr(state.extra[id]?.inventory_tools),tasks:arr(row.snapshot?.tasks),
             signers:{
               prepared_by:currentAccount?.display_name||"",
