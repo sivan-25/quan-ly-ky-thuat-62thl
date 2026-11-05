@@ -214,7 +214,10 @@ async function prep(page,p){
     assert.ok(state.topbar.includes("rgb(65, 20, 55)")&&state.topbar.includes("rgb(43, 21, 38)"),
      "Unbranded blue header "+mode+" width "+width+": "+JSON.stringify(state));
     assert.equal(state.area,cream,"Page background in "+mode+" width "+width);
-    assert.ok(state.overflow<=4,"Horizontal overflow in "+mode+" width "+width+": "+state.overflow);
+    if(state.overflow>4){
+      const offenders=await page.evaluate(()=>[...document.querySelectorAll("#app *")].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&r.right>document.documentElement.clientWidth+8&&getComputedStyle(e).visibility!=="hidden";}).map(e=>({tag:e.tagName,id:e.id,cls:String(e.className||"").slice(0,75),right:Math.round(e.getBoundingClientRect().right),width:Math.round(e.getBoundingClientRect().width),scroll:e.scrollWidth,client:e.clientWidth})).sort((a,b)=>b.right-a.right).slice(0,18));
+      assert.fail("Horizontal overflow in "+mode+" width "+width+": "+state.overflow+" offenders "+JSON.stringify(offenders));
+    }
     for(const key of ["workCard","energyKpi","energyPanel","inventory","energyTable"]){
       if(state[key]!==null)assert.equal(state[key],soft,key+" still has legacy blue/dark surface in "+mode+" width "+width);
     }
