@@ -268,11 +268,11 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     display:none!important;
   }
   body #app#app#app.inventoryMode:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar #menu {
-    order:1!important;flex:0 0 42px!important;width:42px!important;min-width:42px!important;
+    order:1!important;flex:0 0 44px!important;width:44px!important;min-width:44px!important;
     height:44px!important;min-height:44px!important;padding:0!important;
   }
   body #app#app#app.inventoryMode:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar #quickReturnAdmin:not(.hide) {
-    order:2!important;flex:0 0 auto!important;min-width:0!important;
+    order:2!important;flex:0 0 auto!important;min-width:44px!important;
     max-width:110px!important;height:44px!important;margin:0!important;
     padding:0 8px!important;font-size:12px!important;white-space:nowrap!important;
   }
