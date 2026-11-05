@@ -1,3 +1,34 @@
+/* 130 Hồng Hà: single-source UI dimensions and accessible palette.
+   Variables only; existing module selectors consume them with legacy fallbacks.
+   Other buildings retain their existing sizes and colors. */
+body.estaBrand130,
+#app.estaBrand130 {
+  --esta130-control-height: 44px;
+  --esta130-compact-height: 36px;
+  --esta130-kpi-height: 44px;
+  --esta130-table-head-height: 44px;
+  --esta130-table-row-height: 44px;
+  --esta130-ui-radius: 10px;
+  --esta130-ui-gap: 12px;
+  --esta130-ui-font-size: 14px;
+  --esta130-ui-surface: #FBF3E3;
+  --esta130-ui-text: #2B1526;
+  --esta130-ui-muted: #625045;
+  --esta130-ui-border: #D7BE9C;
+  --esta130-table-head-bg: #411437;
+  --esta130-table-head-text: #F3DEBF;
+  --esta130-table-head-border: #A46427;
+  --esta130-table-row-bg: #FBF3E3;
+  --esta130-table-row-text: #2B1526;
+  --esta130-table-row-border: #D7BE9C;
+  --esta130-success-bg: #E8F4E8;
+  --esta130-success-text: #175B36;
+  --esta130-warning-bg: #FFF0DA;
+  --esta130-warning-text: #7A4300;
+  --esta130-danger-bg: #FDE8E8;
+  --esta130-danger-text: #991B1B;
+}
+
 /* ESTA / 130 HONG HA — Full brand visual system, October 2026.
    BRAND SOURCE: user-provided esta-brand.skill
    Explicit 130HH scope; never change Admin or other projects.
