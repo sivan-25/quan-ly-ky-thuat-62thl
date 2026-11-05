@@ -436,6 +436,23 @@ body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hi
   font-size:var(--esta130-ui-font-size)!important;
   border-radius:var(--esta130-ui-radius)!important;
 }
+/* Work form responsive tracks: allocate enough width for native desktop date input
+   instead of clipping the date text inside a 92px cell. Other projects are unchanged. */
+@media (min-width:1280px){
+  #app.estaBrand130.workMode #workPage #taskForm.workEntryForm{
+    grid-template-columns:140px minmax(160px,1.5fr) 110px 116px minmax(155px,1fr) 118px 140px 70px!important;
+  }
+}
+@media (min-width:768px) and (max-width:1279px){
+  #app.estaBrand130.workMode #workPage #taskForm.workEntryForm{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+  }
+  #app.estaBrand130.workMode #workPage #taskForm.workEntryForm > :is(.workField,.workFormActions){
+    grid-row:auto!important;
+    grid-column:auto!important;
+  }
+}
 /* Single-line fields are exactly 44px; free-text content can expand below 44px. */
 #app.estaBrand130 #workPage #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),select),
 body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),select){
