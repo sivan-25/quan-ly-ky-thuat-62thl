@@ -163,6 +163,52 @@
   }
   async function exportPdf() {
     if (!canExport()) return;
+    // The approved landscape template applies ONLY when exporting inventory categories.
+    const chosen = [...state.selected];
+    if (chosen.length && chosen.every(id => id === "materials" || id === "tools")) {
+      const inventory = window.ESTAInventoryControl;
+      if (!inventory) { message("Bộ mẫu PDF vật tư chưa được tải. Vui lòng tải lại trang.", true); return; }
+      const buildingId = state.buildingId;
+      const member = (currentAccount?.buildings || []).find(x => String(x.id) === buildingId) || {};
+      state.busy = true; buttons(); message("Đang tạo PDF kiểm soát vật tư/dụng cụ theo mẫu ESTA…");
+      try {
+        const payload = inventory.buildPayload({
+          from: state.range.from, to: state.range.to, selected: chosen,
+          report_date: M.localDay(), period_label: state.model?.period || (state.range.from + " – " + state.range.to),
+          projects: [{
+            id: buildingId, name: state.buildingName,
+            materials: state.data.materials, transactions: state.data.transactions,
+            tools: state.data.tools, tasks: state.data.snapshot?.tasks || [],
+            signers: {
+              prepared_by: currentAccount?.display_name || "",
+              checked_by: member.report_checker || member.technical_supervisor_name || "",
+              approved_by: member.report_approver || member.chief_engineer_name || ""
+            }
+          }]
+        });
+        const filename = pdfSafeFilename("ESTA_BaoCao_KiemSoat_VatTu_DungCu_" + buildingId +
+          "_" + state.range.from + "_" + state.range.to) + ".pdf";
+        await inventory.exportPdf(payload, filename, centralAuthFetch, readVerifiedEstaPdf);
+        let note = "Đã xuất PDF theo đúng bố cục mẫu ESTA · " + state.buildingName + ".";
+        if (canProjectEdit()) {
+          try {
+            const row = { building_id: buildingId,
+              report_code: "BC-VT-" + buildingId + "-" + Date.now().toString(36).toUpperCase(),
+              report_type: chosen.includes("materials") && chosen.includes("tools") ? "Vật tư & dụng cụ" :
+                           chosen.includes("materials") ? "Vật tư tiêu hao" : "Dụng cụ kỹ thuật",
+              period_label: state.model?.period || "", period_from: state.range.from, period_to: state.range.to,
+              file_name: filename, created_by: currentAccount?.id };
+            await sbFetch("/rest/v1/report_registry", { method:"POST",
+              token:centralSession?.access_token, body:row });
+            state.data.reports.unshift({...row, created_at:new Date().toISOString()}); history();
+          } catch (_) { note += " Lịch sử xuất chưa được ghi nhận."; }
+        }
+        message(note);
+      } catch (error) {
+        message("Xuất PDF vật tư/dụng cụ chưa thành công: " + (error.message || error), true);
+      } finally { state.busy = false; buttons(); }
+      return;
+    }
     const signer = await window.requestPdfSignature?.();
     if (!signer) return;
     const buildingId = state.buildingId, buildingName = state.buildingName, model = state.model;
