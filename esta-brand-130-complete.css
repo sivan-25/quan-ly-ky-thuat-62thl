@@ -181,7 +181,7 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
  box-shadow:var(--esta130-shadow)!important;
 }
 #app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi) :is(small,span:not(.status):not(.badge),p){
- .color:var(--esta130-stat-label)!important;
+  color:var(--esta130-stat-label)!important;
 }
 #app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi) :is(strong,b){
  color:var(--esta130-plum)!important;
