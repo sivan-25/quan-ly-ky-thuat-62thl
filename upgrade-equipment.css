@@ -471,13 +471,13 @@ body:is(.estaUpgradeMode,.estaTechnicalAssetsMode) .ueCustom .ueSpecSection{padd
  flex:1 1 220px;min-width:190px;max-width:365px;
 }
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueMainTools .ueSearch input{
- width:100%;height:44px!important;background:#fbf4e4!important;
+ width:100%;height:var(--esta130-control-height,44px)!important;background:#fbf4e4!important;
  border:1px solid #cdb68c!important;border-radius:12px!important;
  color:#411437!important;font-size:13px;
 }
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueMainTools .ueSearch span{color:#705b52}
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueMainTools>select{
- min-height:40px;width:auto;max-width:172px;
+ min-height:var(--esta130-control-height,40px);width:auto;max-width:172px;
  border:1px solid #d5b98d!important;border-radius:10px;
  background:#fbf4e4!important;color:#411437!important;
  font-size:12px;padding:8px;
