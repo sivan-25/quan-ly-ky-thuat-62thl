@@ -15,7 +15,7 @@
 .demoTimeline{display:grid;gap:10px}.demoTimeline div{display:flex;gap:9px;align-items:flex-start}.demoTimeline i{width:9px;height:9px;border-radius:50%;margin-top:4px;background:#2f80ed}.demoTimeline b{font-size:10px;color:#fff}.demoTimeline span{font-size:10px;color:#8496ac}
 .demoChecklist{display:grid;gap:8px}.demoChecklistRow{display:grid;grid-template-columns:1.4fr 1.1fr 95px 1fr;gap:8px;align-items:center;padding:10px 11px;border:1px solid #29374f;border-radius:10px;background:#141e31}.demoChecklistRow b{font-size:11px}.demoChecklistRow span{font-size:10px;color:#90a1b6}
 .demoDocCats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:12px 0}.demoDocCat{padding:13px;border:1px solid #29364e;border-radius:12px;background:#11192a}.demoDocCat b{font-size:18px}.demoDocCat span{display:block;margin-top:4px;font-size:10px;color:#91a2b7}
-.demoWorkLinks{margin:0 16px 14px;padding:0;border:1px solid #2b3850;border-radius:13px;background:#111a2c;color:#eaf2ff}.demoWorkLinks summary{padding:12px 14px;cursor:pointer;font-weight:800;color:#62dbea;list-style:none}.demoWorkLinks summary::-webkit-details-marker{display:none}.demoWorkLinkGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 12px 12px}.demoWorkLinkGrid label{display:grid;gap:5px;color:#8496ad;font-size:9px;font-weight:800}.demoWorkLinkGrid input,.demoWorkLinkGrid select,.demoWorkLinkGrid textarea{width:100%;min-height:40px;padding:0 10px;border:1px solid #34425e;border-radius:9px;background:#172238;color:#eef3fb;font-size:12px}.demoWorkLinkGrid textarea{min-height:44px;padding:10px;resize:none;overflow-y:hidden}.demoWorkLinkGrid .span2{grid-column:span 2}.demoLinkChips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.demoLinkChip{display:inline-flex;align-items:center;min-height:20px;padding:0 6px;border:1px solid #2c5669;border-radius:999px;background:#132d37;color:#72dce8;font-size:7.5px;font-weight:800}
+.demoWorkLinks{margin:0 16px 14px;padding:0;border:1px solid #2b3850;border-radius:13px;background:#111a2c;color:#eaf2ff}.demoWorkLinks summary{padding:12px 14px;cursor:pointer;font-weight:800;color:#62dbea;list-style:none}.demoWorkLinks summary::-webkit-details-marker{display:none}.demoWorkLinkGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 12px 12px}.demoWorkLinkGrid label{display:grid;gap:5px;color:#8496ad;font-size:9px;font-weight:800}.demoWorkLinkGrid input,.demoWorkLinkGrid select,.demoWorkLinkGrid textarea{width:100%;min-height:var(--esta130-control-height,40px);padding:0 10px;border:1px solid #34425e;border-radius:9px;background:#172238;color:#eef3fb;font-size:12px}.demoWorkLinkGrid textarea{min-height:var(--esta130-control-height,44px);padding:10px;resize:none;overflow-y:hidden}.demoWorkLinkGrid .span2{grid-column:span 2}.demoLinkChips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.demoLinkChip{display:inline-flex;align-items:center;min-height:20px;padding:0 6px;border:1px solid #2c5669;border-radius:999px;background:#132d37;color:#72dce8;font-size:7.5px;font-weight:800}
 .demoDrawer{position:fixed;z-index:1200;inset:0;background:rgba(3,10,21,.65);display:flex;justify-content:flex-end}.demoDrawer.hide{display:none}.demoDrawerCard{width:min(520px,95vw);height:100%;overflow:auto;padding:18px;background:#10192a;color:#eef4ff;box-shadow:-20px 0 60px rgba(0,0,0,.3)}.demoDrawerHead{display:flex;justify-content:space-between;gap:12px}.demoDrawerHead h2{margin:0;font-size:20px}.demoDrawerClose{width:38px;height:38px;border:1px solid #34425e;border-radius:10px;background:#172238;color:#fff;font-size:20px}.demoTabs{display:flex;gap:6px;overflow:auto;margin:14px 0}.demoTabs button{height:32px;padding:0 10px;border:1px solid #34425e;border-radius:9px;background:#172238;color:#dce6f5;font-size:10px;font-weight:800}.demoTabs button.active{border-color:#2f80ed;background:#2f80ed;color:white}.demoTaskDetailGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.demoTaskDetailGrid div{padding:10px;border:1px solid #2b3850;border-radius:10px;background:#141f33}.demoTaskDetailGrid small{display:block;color:#8496ad;font-size:8px}.demoTaskDetailGrid b{display:block;margin-top:4px;font-size:11px}
 .demoHomeOps{margin:12px 0}.demoHomeOps .demoPanel{background:#11192a}.demoOpsCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.demoOpsCard{padding:13px;border:1px solid #29364e;border-radius:12px;background:#141f32;color:#fff;cursor:pointer}.demoOpsCard b{display:block;font-size:23px}.demoOpsCard span{display:block;margin-top:4px;font-size:10px;color:#94a5ba}.demoOpsList{display:grid;gap:7px;margin-top:10px}.demoOpsAlert{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border:1px solid #29364e;border-radius:10px;background:#141f32}.demoOpsAlert b{font-size:10px}.demoOpsAlert span{font-size:9px;color:#8da0b5}
 .demoNoticePanel{position:fixed;z-index:1300;right:88px;top:68px;width:min(390px,calc(100vw - 28px));padding:12px;border:1px solid #32435e;border-radius:14px;background:#10192a;box-shadow:0 18px 50px rgba(0,0,0,.35)}.demoNoticePanel.hide{display:none}.demoNoticePanel h3{margin:0 0 10px;color:#fff}.demoNoticePanel .demoOpsAlert{margin-top:7px}
@@ -76,8 +76,8 @@
   color:#b5c4d6!important;
 }
 #app.demoProjectMode .demoBtn{
-  min-height:42px!important;
-  height:42px!important;
+  min-height:var(--esta130-control-height,42px)!important;
+  height:var(--esta130-control-height,42px)!important;
   font-size:12px!important;
   font-weight:800!important;
 }
@@ -329,7 +329,7 @@
   }
   #app.demoProjectMode .demoHeroActions .demoBtn{
     width:100%!important;
-    min-height:46px!important;
+    min-height:var(--esta130-control-height,46px)!important;
     height:auto!important;
     padding:8px 10px!important;
     font-size:12px!important;
@@ -438,7 +438,7 @@
   #app.demoProjectMode .demoWorkLinkGrid input,
   #app.demoProjectMode .demoWorkLinkGrid select,
   #app.demoProjectMode .demoWorkLinkGrid textarea{
-    min-height:50px!important;
+    min-height:var(--esta130-control-height,50px)!important;
     font-size:16px!important;
   }
   #app.demoProjectMode .demoWorkLinkGrid textarea{min-height:92px!important}
@@ -464,8 +464,8 @@
     flex:0 0 44px!important;
   }
   .demoTabs button{
-    min-height:42px!important;
-    height:42px!important;
+    min-height:var(--esta130-control-height,42px)!important;
+    height:var(--esta130-control-height,42px)!important;
     font-size:11px!important;
     flex:0 0 auto!important;
   }
@@ -1095,7 +1095,7 @@
 }
 #demoTaskDrawer .demoTaskManageActions button{
   min-width:0!important;
-  min-height:46px!important;
+  min-height:var(--esta130-control-height,46px)!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -1169,7 +1169,7 @@
 }
 #app.demoProjectMode.energyMode #energyPage .energyTabs button{
   min-width:0!important;
-  height:42px!important;
+  height:var(--esta130-control-height,42px)!important;
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -1383,8 +1383,8 @@
   }
   #app.demoProjectMode #demoIncidentDetail .demoIncidentHeadActions .demoBtn{
     flex:1 1 0!important;
-    min-height:44px!important;
-    height:44px!important;
+    min-height:var(--esta130-control-height,44px)!important;
+    height:var(--esta130-control-height,44px)!important;
     font-size:11.5px!important;
   }
 }
@@ -1530,7 +1530,7 @@ body.demoModalOpen{overflow:hidden!important}
 }
 #demoIncidentModal .demoIncidentFormGrid input,
 #demoIncidentModal .demoIncidentFormGrid select{
-  height:46px;
+  height:var(--esta130-control-height,46px);
   padding:0 12px;
 }
 #demoIncidentModal .demoIncidentFormGrid textarea{
@@ -1563,7 +1563,7 @@ body.demoModalOpen{overflow:hidden!important}
 }
 #demoIncidentModal .demoIncidentModalFoot .demoBtn{
   min-width:110px;
-  height:42px;
+  height:var(--esta130-control-height,42px);
 }
 #demoIncidentModal #demoIncidentSaveBtn:disabled{
   opacity:.65;
@@ -1607,7 +1607,7 @@ body.demoModalOpen{overflow:hidden!important}
   }
   #demoIncidentModal .demoIncidentFormGrid input,
   #demoIncidentModal .demoIncidentFormGrid select{
-    height:48px;
+    height:var(--esta130-control-height,48px);
   }
   #demoIncidentModal .demoIncidentModalFoot{
     position:sticky;
@@ -1619,8 +1619,8 @@ body.demoModalOpen{overflow:hidden!important}
   }
   #demoIncidentModal .demoIncidentModalFoot .demoBtn{
     flex:1 1 0;
-    min-height:46px;
-    height:46px;
+    min-height:var(--esta130-control-height,46px);
+    height:var(--esta130-control-height,46px);
     font-size:13px;
   }
 }
@@ -1737,7 +1737,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
 }
 #demoChecklistModal .demoChecklistFormGrid input,
 #demoChecklistModal .demoChecklistFormGrid select{
-  height:46px;
+  height:var(--esta130-control-height,46px);
   padding:0 12px;
 }
 #demoChecklistModal .demoChecklistFormGrid textarea{
@@ -1788,7 +1788,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
 }
 #demoChecklistModal .demoChecklistModalFoot .demoBtn{
   min-width:120px;
-  height:42px;
+  height:var(--esta130-control-height,42px);
 }
 #demoChecklistModal #demoChecklistSaveBtn:disabled{
   opacity:.65;
@@ -1832,7 +1832,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   }
   #demoChecklistModal .demoChecklistFormGrid input,
   #demoChecklistModal .demoChecklistFormGrid select{
-    height:48px;
+    height:var(--esta130-control-height,48px);
   }
   #demoChecklistModal .demoChecklistModalFoot{
     position:sticky;
@@ -1844,8 +1844,8 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   }
   #demoChecklistModal .demoChecklistModalFoot .demoBtn{
     flex:1 1 0;
-    min-height:46px;
-    height:46px;
+    min-height:var(--esta130-control-height,46px);
+    height:var(--esta130-control-height,46px);
     font-size:13px;
   }
 }
@@ -2208,8 +2208,8 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   #app.demoMobilePilot .mobileMenuBtn{
     width:44px!important;
     min-width:44px!important;
-    height:44px!important;
-    min-height:44px!important;
+    height:var(--esta130-control-height,44px)!important;
+    min-height:var(--esta130-control-height,44px)!important;
     flex:0 0 44px!important;
     display:grid!important;
     place-items:center!important;
@@ -2385,8 +2385,8 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     width:100%!important;
     min-width:0!important;
     max-width:100%!important;
-    height:48px!important;
-    min-height:48px!important;
+    height:var(--esta130-control-height,48px)!important;
+    min-height:var(--esta130-control-height,48px)!important;
     padding:0 11px!important;
     font-size:16px!important;
     line-height:normal!important;
@@ -2453,9 +2453,9 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     min-width:0!important;
     max-width:100%!important;
     box-sizing:border-box!important;
-    height:44px!important;
-    min-height:44px!important;
-    max-height:44px!important;
+    height:var(--esta130-control-height,44px)!important;
+    min-height:var(--esta130-control-height,44px)!important;
+    max-height:var(--esta130-control-height,44px)!important;
     padding:0 10px!important;
     font-size:16px!important;
     line-height:1.25!important;
@@ -2464,7 +2464,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   #app.demoMobilePilot #workPage #taskForm textarea{
     display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
     box-sizing:border-box!important;
-    height:auto;min-height:44px!important;max-height:none!important;
+    height:auto;min-height:var(--esta130-control-height,44px)!important;max-height:none!important;
     padding:10px 11px!important;
     border-radius:10px!important;
     resize:none!important;overflow-y:hidden!important;
@@ -2487,8 +2487,8 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   #app.demoMobilePilot #workPage #taskForm .imageActionBtn,
   #app.demoMobilePilot #workPage #taskForm .workSave,
   #app.demoMobilePilot #workPage #taskForm .workCancel{
-    min-height:48px!important;
-    height:48px!important;
+    min-height:var(--esta130-control-height,48px)!important;
+    height:var(--esta130-control-height,48px)!important;
     font-size:13px!important;
     touch-action:manipulation!important;
   }
@@ -2591,12 +2591,12 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     width:100%!important;
     min-width:0!important;
     max-width:100%!important;
-    min-height:48px!important;
+    min-height:var(--esta130-control-height,48px)!important;
     font-size:16px!important;
   }
   #app.demoMobilePilot #demoWorkLinks textarea{
-    min-height:44px!important;
-    height:44px;resize:none!important;overflow-y:hidden!important;
+    min-height:var(--esta130-control-height,44px)!important;
+    height:var(--esta130-control-height,44px);resize:none!important;overflow-y:hidden!important;
     border-radius:10px!important;
   }
   #app.demoMobilePilot #demoWorkLinks .demoTaskMaterialRow{
@@ -2682,8 +2682,8 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     flex:0 0 auto!important;
     width:auto!important;
     min-width:88px!important;
-    min-height:44px!important;
-    height:44px!important;
+    min-height:var(--esta130-control-height,44px)!important;
+    height:var(--esta130-control-height,44px)!important;
     padding:0 12px!important;
     font-size:11px!important;
     white-space:nowrap!important;
@@ -2706,7 +2706,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
     width:100%!important;
     min-width:0!important;
     max-width:100%!important;
-    min-height:48px!important;
+    min-height:var(--esta130-control-height,48px)!important;
     font-size:16px!important;
   }
   #app.demoMobilePilot #energyPage input[type="date"]{
@@ -2799,7 +2799,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   }
   #app.demoMobilePilot .demoHeroActions .demoBtn{
     width:100%!important;
-    min-height:46px!important;
+    min-height:var(--esta130-control-height,46px)!important;
     font-size:12.5px!important;
   }
   #app.demoMobilePilot .demoPanel,
@@ -2827,7 +2827,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   #app.demoMobilePilot .inventoryPrimary,
   #app.demoMobilePilot .inventorySecondary,
   #app.demoMobilePilot .contractorBtn{
-    min-height:44px!important;
+    min-height:var(--esta130-control-height,44px)!important;
     touch-action:manipulation!important;
   }
 
@@ -2878,7 +2878,7 @@ body.demoChecklistModalOpen{overflow:hidden!important}
   #app.demoMobilePilot .technicalDocumentForm textarea{
     width:100%!important;
     min-width:0!important;
-    min-height:48px!important;
+    min-height:var(--esta130-control-height,48px)!important;
     font-size:16px!important;
   }
 
@@ -3073,14 +3073,14 @@ body.demoChecklistModalOpen{overflow:hidden!important}
 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskMaterialsEmpty{font-size:11px!important;line-height:1.35!important;margin:2px 0 0!important;color:#788da7!important}
 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks select,
 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks input,
-.workEditDrawer.demoWorkEditDrawer #demoWorkLinks textarea{height:44px;min-height:44px!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:9px 11px!important;border:1px solid #bdd5e8!important;border-radius:9px!important;background:#fff!important;color:#163b63!important;font-size:13px!important;font-weight:600!important;opacity:1!important}
-.workEditDrawer.demoWorkEditDrawer #demoWorkLinks textarea{height:44px;min-height:44px!important;max-height:none!important;resize:none!important;overflow-y:hidden!important;font-weight:500!important;line-height:1.45!important}
+.workEditDrawer.demoWorkEditDrawer #demoWorkLinks textarea{height:var(--esta130-control-height,44px);min-height:var(--esta130-control-height,44px)!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:9px 11px!important;border:1px solid #bdd5e8!important;border-radius:9px!important;background:#fff!important;color:#163b63!important;font-size:13px!important;font-weight:600!important;opacity:1!important}
+.workEditDrawer.demoWorkEditDrawer #demoWorkLinks textarea{height:var(--esta130-control-height,44px);min-height:var(--esta130-control-height,44px)!important;max-height:none!important;resize:none!important;overflow-y:hidden!important;font-weight:500!important;line-height:1.45!important}
 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskResultHead{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;flex-wrap:wrap!important;min-height:22px!important}
 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks .demoTaskResultHead label{font-size:12px!important;font-weight:800!important;color:#184577!important}
 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoUseNoteAsResult:not(.hide){display:inline-flex!important;min-height:29px!important;padding:5px 9px!important;background:#dff2fa!important;color:#0f5c79!important;border:1px solid #9acbe0!important;border-radius:8px!important;font-size:11px!important}
 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoUseNoteAsResult.hide{display:none!important}
 .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter{display:flex!important;justify-content:flex-end!important;grid-template-columns:none!important;gap:10px!important;align-items:center!important;padding:13px 0 5px!important;margin:0 16px 14px!important;border-top:1px solid #334561!important;background:transparent!important}
-.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;min-width:128px!important;max-width:100%!important;min-height:44px!important;padding:10px 20px!important;opacity:1!important;font-size:14px!important;line-height:1.2!important;font-weight:800!important;text-align:center!important;text-indent:0!important}
+.workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter button{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;min-width:128px!important;max-width:100%!important;min-height:var(--esta130-control-height,44px)!important;padding:10px 20px!important;opacity:1!important;font-size:14px!important;line-height:1.2!important;font-weight:800!important;text-align:center!important;text-indent:0!important}
 .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter .workCancel{background:#26344c!important;border:1px solid #5d708c!important;color:#f1f5fa!important}
 .workEditDrawer.demoWorkEditDrawer .workFormActions.demoEditFooter .workSave{background:linear-gradient(100deg,#166ab0,#1695bb)!important;border:1px solid #3aa6ce!important;color:#fff!important;min-width:180px!important;box-shadow:0 4px 12px rgba(5,96,146,.25)!important}
 @media(max-width:800px){
