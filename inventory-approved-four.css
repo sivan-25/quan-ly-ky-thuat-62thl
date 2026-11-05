@@ -295,8 +295,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     display:block!important;position:relative!important;inset:auto!important;
     width:100%!important;max-width:100%!important;min-height:0!important;height:auto!important;
     margin:0 0 10px!important;padding:12px!important;
-    box-sizing:border-box!important;border:1px solid #dbe5f0!important;
-    border-radius:15px!important;background:#fff!important;
+    box-sizing:border-box!important;border:1px solid var(--esta130-stat-border,#dbe5f0)!important;
+    border-radius:15px!important;background:var(--esta130-stat-bg,#fff)!important;
     box-shadow:0 3px 12px rgba(29,55,76,.06)!important;
     overflow:visible!important;
   }
