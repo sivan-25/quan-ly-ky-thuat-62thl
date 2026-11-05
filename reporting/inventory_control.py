@@ -9,7 +9,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from reportlab.lib.units import mm
 from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate, Paragraph,
-                                Table, TableStyle, Spacer, PageBreak,
+                                Table, TableStyle, Spacer, CondPageBreak, PageBreak,
                                 NextPageTemplate, KeepTogether)
 from reporting.pdf_common import ensure_fonts
 
@@ -37,7 +37,7 @@ def style(name, **values):
 ST = {
     "meta": style("inv-meta", fontSize=7, leading=11, textColor=MUTED),
     "section": style("inv-section", fontName="Mont-Bold", fontSize=9.3, leading=12,
-                     textColor=PURPLE, spaceBefore=6, spaceAfter=3, keepWithNext=True),
+                     textColor=PURPLE, spaceBefore=6, spaceAfter=3),
     "head": style("inv-head", fontName="Mont-Bold", fontSize=6.4,
                   leading=8.3, textColor=LIGHT),
     "cell": style("inv-cell", fontSize=6.7, leading=9.2),
@@ -183,6 +183,11 @@ def data_table(headers, raw_rows, widths, alert_rows=None):
     for i in range(1,len(body)):
         commands.append(("BACKGROUND",(0,i),(-1,i),
                          ALERT if i-1 in alert_rows else (CREAM if i%2 else PALE)))
+    if not raw_rows:
+        commands.extend([
+            ("SPAN", (0,1),(-1,1)),
+            ("VALIGN", (0,1),(-1,1), "MIDDLE"),
+        ])
     t.setStyle(TableStyle(commands))
     return t
 
@@ -221,7 +226,8 @@ def project_story(project,selected,from_date,to_date):
     ]
     if "materials" in selected:
         story += [
-            heading("A. VẬT TƯ TIÊU HAO — NHẬP · XUẤT · TỒN "+project["period_label"]),
+            CondPageBreak(45),
+            heading("A. VẬT TƯ TIÊU HAO — NHẬP · XUẤT · TỒN"),
             data_table(
                 ["STT","TÊN VẬT TƯ","ĐVT","TỒN ĐẦU THÁNG","NHẬP","XUẤT","TỒN CUỐI THÁNG",
                  "GHI CHÚ (NGÀY NHẬP – XUẤT, NỘI DUNG)"],
@@ -237,7 +243,8 @@ def project_story(project,selected,from_date,to_date):
         alerts=[i for i,t in enumerate(rows) if
                 str(t.get("status","")).lower() not in ("tốt","đang sử dụng","bình thường")]
         story += [
-            heading("B. DỤNG CỤ KỸ THUẬT — KIỂM KÊ CUỐI "+project["period_label"]),
+            CondPageBreak(45),
+            heading("B. DỤNG CỤ KỸ THUẬT"),
             data_table(
                 ["STT","TÊN DỤNG CỤ","HÃNG","ĐVT","SL","NGƯỜI GIỮ","TÌNH TRẠNG","GHI CHÚ"],
                 [[str(i),t["name"],t["brand"],t["unit"],number(t["qty"]),t["keeper"],
@@ -249,6 +256,7 @@ def project_story(project,selected,from_date,to_date):
         links = project["work"]
         exceptions = [i for i,t in enumerate(links) if not t.get("linked")]
         story += [
+            CondPageBreak(45),
             heading("C. HẠNG MỤC ĐÃ XỬ LÝ — LIÊN KẾT CÔNG VIỆC & VẬT TƯ ĐÃ XUẤT"),
             data_table(
                 ["STT","CÔNG VIỆC ĐÃ LIÊN KẾT","NGÀY HOÀN THÀNH","VẬT TƯ ĐÃ XUẤT",
@@ -257,9 +265,7 @@ def project_story(project,selected,from_date,to_date):
                   number(t["qty"]),t["unit"],safe_text(t.get("performer"),200)]
                  for i,t in enumerate(links,1)],
                 [30,217,76,167,57,42,WIDTH-589],alert_rows=exceptions),
-            Spacer(1,2),
-            para("Tổng SL vật tư xuất ở mục C đối chiếu cột XUẤT của mục A. "
-                 "Các giao dịch chưa liên kết công việc hoàn thành được hiển thị riêng để không bỏ sót số xuất.","note"),
+
         ]
     story.append(signers(project))
     return story
