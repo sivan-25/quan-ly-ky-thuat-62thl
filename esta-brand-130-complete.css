@@ -431,6 +431,11 @@ body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hi
   font-size:var(--esta130-ui-font-size)!important;
   border-radius:var(--esta130-ui-radius)!important;
 }
+/* Single-line fields are exactly 44px; free-text content can expand below 44px. */
+#app.estaBrand130 #workPage #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),select),
+body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),select){
+  height:var(--esta130-control-height)!important;
+}
 #app.estaBrand130 #workPage .stats article[data-work-stat-filter]{
   background:var(--esta130-stat-bg)!important;
   border-color:var(--esta130-stat-border)!important;
