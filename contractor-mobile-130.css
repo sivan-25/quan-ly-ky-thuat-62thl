@@ -74,7 +74,7 @@
   }
   #app.contractorMode #contractorPage.contractorMobileProjects .contractorStats small{
     display:block;margin:0!important;min-width:0!important;color:#bfcde0!important;
-    font-size:9px!important;font-weight:700!important;line-height:1.2!important;
+    font-size:var(--esta130-caption-size,9px)!important;font-weight:700!important;line-height:1.2!important;
     text-transform:none!important;letter-spacing:0!important;white-space:normal!important;
   }
   #app.contractorMode #contractorPage.contractorMobileProjects .contractorStats article:nth-child(3) b{color:#f1c45a!important}
@@ -228,7 +228,7 @@
   }
 }
 @media(max-width:365px){
- #app.contractorMode #contractorPage.contractorMobileProjects .contractorStats small{font-size:8px!important}
+ #app.contractorMode #contractorPage.contractorMobileProjects .contractorStats small{font-size:var(--esta130-caption-size,8px)!important}
  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileSpecialty{font-size:9px}
  #app.contractorMode #contractorPage.contractorMobileProjects .contractorMobileName h3{font-size:14px!important}
 }

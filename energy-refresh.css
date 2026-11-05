@@ -1786,6 +1786,8 @@
   font-size:11px!important;
   line-height:1.25;
   text-align:left;
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
   overflow-wrap:normal;
 }
 @media(max-width:400px){
