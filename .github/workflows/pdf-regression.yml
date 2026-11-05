@@ -38,6 +38,6 @@ jobs:
           python-version: "3.12"
           cache: "pip"
       - name: Install PDF dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt pypdf==5.9.0
       - name: Run PDF regression and benchmark
         run: python -m unittest discover -s tests -p "test_*.py" -v

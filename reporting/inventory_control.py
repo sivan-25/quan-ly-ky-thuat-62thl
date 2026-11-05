@@ -6,7 +6,7 @@ from xml.sax.saxutils import escape
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from reportlab.lib.units import mm
 from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate, Paragraph,
                                 Table, TableStyle, Spacer, PageBreak,
@@ -36,22 +36,24 @@ def style(name, **values):
 
 ST = {
     "meta": style("inv-meta", fontSize=7, leading=11, textColor=MUTED),
-    "section": style("inv-section", fontName="Mont-Bold", fontSize=10, leading=14,
-                     textColor=PURPLE, spaceBefore=10, spaceAfter=6, keepWithNext=True),
-    "head": style("inv-head", fontName="Mont-Bold", fontSize=6.6,
-                  leading=8.8, textColor=LIGHT),
-    "cell": style("inv-cell", fontSize=7, leading=10),
-    "name": style("inv-name", fontName="Mont-Bold", fontSize=7, leading=10),
-    "num": style("inv-num", fontName="Mont-SemiBold", fontSize=7, leading=10, alignment=TA_RIGHT),
-    "note": style("inv-note", fontName="Mont-Light", fontSize=6.3, leading=9, textColor=MUTED),
-    "kpi_number": style("inv-kpi-number", fontName="Mont-XBold", fontSize=22,
-                        leading=27, textColor=PURPLE),
+    "section": style("inv-section", fontName="Mont-Bold", fontSize=9.3, leading=12,
+                     textColor=PURPLE, spaceBefore=6, spaceAfter=3, keepWithNext=True),
+    "head": style("inv-head", fontName="Mont-Bold", fontSize=6.4,
+                  leading=8.3, textColor=LIGHT),
+    "cell": style("inv-cell", fontSize=6.7, leading=9.2),
+    "name": style("inv-name", fontName="Mont-Bold", fontSize=6.7, leading=9.2),
+    "num": style("inv-num", fontName="Mont-SemiBold", fontSize=6.7, leading=9.2, alignment=TA_RIGHT),
+    "note": style("inv-note", fontName="Mont-Light", fontSize=6.3, leading=8.5, textColor=MUTED),
+    "kpi_number": style("inv-kpi-number", fontName="Mont-XBold", fontSize=20,
+                        leading=24, textColor=PURPLE),
     "kpi_label": style("inv-kpi-label", fontName="Mont-Bold", fontSize=6.4,
                        leading=9, textColor=MUTED),
     "sig_head": style("inv-sig-head", fontName="Mont-Bold", fontSize=8,
                       leading=11, textColor=PURPLE, alignment=TA_CENTER),
     "sig_role": style("inv-sig-role", fontSize=7, leading=10,
                       textColor=MUTED, alignment=TA_CENTER),
+    "sig_note": style("inv-sig-note", fontName="Mont-Light", fontSize=6.3,
+                      leading=8.5, textColor=MUTED, alignment=TA_CENTER),
     "sig_name": style("inv-sig-name", fontName="Mont-SemiBold", fontSize=7.2,
                       leading=10, textColor=PURPLE, alignment=TA_CENTER),
 }
@@ -134,7 +136,7 @@ def kpis(project):
             ("LEFTPADDING", (0,0), (-1,-1), 0),
             ("RIGHTPADDING", (0,0), (-1,-1), 0),
             ("TOPPADDING", (0,0), (-1,-1), 0),
-            ("BOTTOMPADDING", (0,0), (-1,-1), 2),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 0),
         ]))
         items.append(inner)
     k = Table([items], colWidths=[WIDTH/3]*3, hAlign="LEFT")
@@ -175,8 +177,8 @@ def data_table(headers, raw_rows, widths, alert_rows=None):
         ("VALIGN",(0,0),(-1,-1),"TOP"),
         ("LEFTPADDING",(0,0),(-1,-1),4),
         ("RIGHTPADDING",(0,0),(-1,-1),4),
-        ("TOPPADDING",(0,0),(-1,-1),5),
-        ("BOTTOMPADDING",(0,0),(-1,-1),5),
+        ("TOPPADDING",(0,0),(-1,-1),3),
+        ("BOTTOMPADDING",(0,0),(-1,-1),3),
     ]
     for i in range(1,len(body)):
         commands.append(("BACKGROUND",(0,i),(-1,i),
@@ -186,32 +188,36 @@ def data_table(headers, raw_rows, widths, alert_rows=None):
 
 
 def signers(project):
-    headers=["PHÊ DUYỆT","NGƯỜI KIỂM TRA","NGƯỜI LẬP"]
-    roles=["Kỹ sư trưởng","Giám sát kỹ thuật","Kỹ thuật dự án"]
-    names=[project.get("approved_by"),project.get("checked_by"),project.get("prepared_by")]
-    content=[
-        [para(x,"sig_head") for x in headers],
-        [para(x,"sig_role") for x in roles],
-        [para("(Ký, ghi rõ họ tên)","note") for _ in roles],
-        [para(x or "—","sig_name") for x in names],
+    """Compact, aligned 3-column signature area; must remain in one project."""
+    headers = ["PHÊ DUYỆT", "NGƯỜI KIỂM TRA", "NGƯỜI LẬP"]
+    roles = ["Kỹ sư trưởng", "Giám sát kỹ thuật", "Kỹ thuật dự án"]
+    names = [project.get("approved_by"), project.get("checked_by"), project.get("prepared_by")]
+    content = [
+        [para(value, "sig_head") for value in headers],
+        [para(value, "sig_role") for value in roles],
+        ["", "", ""],  # reserve a short shared signature line
+        [para(value or "—", "sig_name") for value in names],
+        [para("(Ký, ghi rõ họ tên)", "sig_note") for _ in roles],
     ]
-    t=Table(content,colWidths=[WIDTH/3]*3,rowHeights=[22,18,30,None])
+    t = Table(content, colWidths=[WIDTH / 3] * 3,
+              rowHeights=[16, 14, 19, None, 13], hAlign="CENTER")
     t.setStyle(TableStyle([
-        ("LINEABOVE",(0,0),(-1,0),1,COPPER),
-        ("ALIGN",(0,0),(-1,-1),"CENTER"),
-        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
-        ("TOPPADDING",(0,0),(-1,-1),3),
-        ("BOTTOMPADDING",(0,0),(-1,-1),3),
+        ("LINEABOVE", (0, 0), (-1, 0), .8, COPPER),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 1),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
     ]))
-    return KeepTogether([Spacer(1,14),t])
-
+    return KeepTogether([Spacer(1, 7), t])
 
 def project_story(project,selected,from_date,to_date):
     story=[
         para("Dự án: "+safe_text(project.get("name"))+" · Người lập: "+
              safe_text(project.get("prepared_by"))+" · Ngày chốt số liệu: "+
              project.get("report_date","")+" · Căn cứ: sổ kho, phiếu nhập – xuất và kiểm đếm thực tế","meta"),
-        Spacer(1,7), kpis(project), Spacer(1,5)
+        Spacer(1,5), kpis(project), Spacer(1,2)
     ]
     if "materials" in selected:
         story += [
@@ -223,7 +229,7 @@ def project_story(project,selected,from_date,to_date):
                   number(m["outbound"]),number(m["closing"]),safe_text(m.get("note"),1000)]
                  for i,m in enumerate(project["materials"],1)],
                 [30,226,38,83,48,48,80,WIDTH-553]),
-            Spacer(1,5),
+            Spacer(1,2),
             para("Tồn cuối = Tồn đầu + Nhập − Xuất. Ghi rõ ngày và nội dung phát sinh tại cột Ghi chú.","note"),
         ]
     if "tools" in selected:
@@ -237,7 +243,7 @@ def project_story(project,selected,from_date,to_date):
                 [[str(i),t["name"],t["brand"],t["unit"],number(t["qty"]),t["keeper"],
                   t["status"],safe_text(t.get("note"),500)] for i,t in enumerate(rows,1)],
                 [30,220,71,43,39,94,109,WIDTH-606],alert_rows=alerts),
-            Spacer(1,5),para("Dòng nền đậm = hạng mục cần xử lý.","note")
+            Spacer(1,2),para("Dòng nền đậm = hạng mục cần xử lý.","note")
         ]
     if "materials" in selected:
         links = project["work"]
@@ -251,7 +257,7 @@ def project_story(project,selected,from_date,to_date):
                   number(t["qty"]),t["unit"],safe_text(t.get("performer"),200)]
                  for i,t in enumerate(links,1)],
                 [30,217,76,167,57,42,WIDTH-589],alert_rows=exceptions),
-            Spacer(1,5),
+            Spacer(1,2),
             para("Tổng SL vật tư xuất ở mục C đối chiếu cột XUẤT của mục A. "
                  "Các giao dịch chưa liên kết công việc hoàn thành được hiển thị riêng để không bỏ sót số xuất.","note"),
         ]
@@ -283,7 +289,7 @@ def build_inventory_control_doc(path, payload):
         project["report_date"]=str(payload.get("report_date") or "")[:30]
         for first in (True,False):
             name=("first-" if first else "later-")+str(i)
-            top=111 if first else 46
+            top=105 if first else 42
             frame=Frame(MARGIN,37,WIDTH,PAGE_H-top-37,id=name,
                         leftPadding=0,rightPadding=0,topPadding=0,bottomPadding=0)
             def onpage(canv,doc,p=project,f=first):
@@ -293,10 +299,12 @@ def build_inventory_control_doc(path, payload):
     doc.addPageTemplates(templates)
     story=[]
     for i,project in enumerate(projects):
-        if i:
-            story.extend([NextPageTemplate("first-"+str(i)),PageBreak()])
+        # A/B/C flow together in the available space. Only a finished project's
+        # signature may trigger the next project's forced new page.
         story.extend(project_story(project,selected,payload.get("period_from"),
                                    payload.get("period_to")))
+        if i+1 < len(projects):
+            story.extend([NextPageTemplate("first-"+str(i+1)), PageBreak()])
     doc.build(story)
     return sum((len(p["materials"])+len(p["work"]) if "materials" in selected else 0) +
                (len(p["tools"]) if "tools" in selected else 0) for p in projects)
