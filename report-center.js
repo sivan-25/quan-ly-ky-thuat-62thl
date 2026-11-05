@@ -261,7 +261,16 @@
   q("#rcRefresh").addEventListener("click", () => open(true));
   q("#rcSelectAll").addEventListener("click", () => selectAll(true));
   q("#rcSelectNone").addEventListener("click", () => selectAll(false));
-  q("#demoReportModuleGrid").addEventListener("change", e => { if (e.target.matches('input[type="checkbox"]')) { if (e.target.checked) state.selected.add(e.target.value); else state.selected.delete(e.target.value); render(); } });
+  q("#demoReportModuleGrid").addEventListener("change", e => {
+    if (!e.target.matches('input[type="checkbox"]')) return;
+    const kind=e.target.value, inventory=kind==="materials"||kind==="tools";
+    if (e.target.checked) {
+      if (inventory)state.selected=new Set([...state.selected].filter(x=>x==="materials"||x==="tools"));
+      else {state.selected.delete("materials");state.selected.delete("tools");}
+      state.selected.add(kind);
+    } else state.selected.delete(kind);
+    render();
+  });
   q("#rcIncludePhotos").addEventListener("change", render);
   q("#demoReportCombinedExport").addEventListener("click", exportPdf);
   q("#rcPrint").addEventListener("click", printReport);
