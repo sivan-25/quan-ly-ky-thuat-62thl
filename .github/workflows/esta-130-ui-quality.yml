@@ -49,7 +49,7 @@ jobs:
           node - <<'JS'
           const fs=require('fs'),assert=require('node:assert/strict');
           const html=fs.readFileSync('index.html','utf8');
-          const built=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+\.css)"/g)].map(m=>m[1]);
+          const built=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+\.css(?:\?[^"]*)?)"/g)].map(m=>m[1].split('?')[0]);
           assert.ok(built.length<=19,`Too many CSS requests: ${built.length}`);
           for(const name of built)assert.ok(fs.existsSync(name),'Missing CSS asset: '+name);
           assert.ok(html.includes('data-esta-css-bundle="true"'),'Compiled CSS bundle missing');
