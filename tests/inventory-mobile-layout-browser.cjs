@@ -57,7 +57,8 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
         const text=e.querySelector('span'),cs=getComputedStyle(e),ts=getComputedStyle(text);
         return {name:e.dataset.inventoryTab,active:e.classList.contains('active'),
          foreground:cs.webkitTextFillColor||cs.color,background:cs.backgroundColor,
-         spanForeground:ts.webkitTextFillColor||ts.color,rect:rect('#inventoryPage [data-inventory-tab="'+e.dataset.inventoryTab+'"]')};
+         spanForeground:ts.webkitTextFillColor||ts.color,spanBorder:ts.borderTopWidth,
+         spanShadow:ts.boxShadow,rect:rect('#inventoryPage [data-inventory-tab="'+e.dataset.inventoryTab+'"]')};
       });
       const colors = sel=>{const e=$(sel),cs=getComputedStyle(e);return {color:cs.webkitTextFillColor||cs.color,bg:cs.backgroundColor}};
       const result={
@@ -70,10 +71,13 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
         result.toolbar=rect('#inventoryToolsPane>.inventorySectionBar');
         result.actionGrid=rect('#inventoryToolsPane .inventoryToolbarActions');
         result.toolSearch=rect('#inventoryToolsPane .inventorySearch');
+        const inputStyle=getComputedStyle($('#toolSearch'));
+        result.toolInputBorder=inputStyle.borderTopWidth;
+        result.toolInputShadow=inputStyle.boxShadow;
         result.status=rect('#toolStatusFilter');result.add=rect('#addToolBtn');result.export=rect('#toolExportPdf');
         result.stats=rect('#inventoryToolsPane .toolsStats');
         result.statCards=[...document.querySelectorAll('#inventoryToolsPane .toolsStats article')].map(e=>{
-          const r=e.getBoundingClientRect();return {y:r.y,bottom:r.bottom,h:r.height,bg:getComputedStyle(e).backgroundImage}
+          const r=e.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,h:r.height,bg:getComputedStyle(e).backgroundImage}
         });
         result.statColor=colors('#inventoryToolsPane .toolsStats article small');
       } else {
@@ -95,15 +99,24 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
       assert.ok(contrast(t.foreground,t.background)>=4.5,key+' '+t.name+' tab contrast '+contrast(t.foreground,t.background).toFixed(2));
       assert.ok(contrast(t.spanForeground,t.background)>=4.5,key+' '+t.name+' span contrast');
       assert.ok(Math.abs(t.rect.h-44)<1,key+' '+t.name+' must be 44px');
+      assert.equal(t.spanBorder,'0px',key+' '+t.name+' has nested button border');
+      assert.equal(t.spanShadow,'none',key+' '+t.name+' has nested button shadow');
     }
     if(tab==='tools'){
       assert.equal(metrics.toolSearch.visible,true,key+' search hidden');
+      assert.equal(metrics.toolInputBorder,'0px',key+' search input has a duplicate border');
+      assert.equal(metrics.toolInputShadow,'none',key+' search input has a duplicate shadow');
       assert.ok(metrics.toolbar.bottom<=metrics.stats.y+1,key+' toolbar overlaps KPI: '+JSON.stringify({toolbar:metrics.toolbar,stats:metrics.stats}));
       assert.ok(metrics.stats.y>=metrics.actionGrid.bottom,key+' actions overlap stats');
       assert.ok(Math.abs(metrics.status.y-metrics.add.y)<2&&Math.abs(metrics.add.y-metrics.export.y)<2,key+' actions not in one row');
       assert.ok(metrics.export.right<=width+1,key+' export leaves viewport');
       assert.ok(metrics.statCards.length===4,key+' expected four cards');
-      assert.ok(metrics.statCards[2].y>metrics.statCards[0].y,key+' KPI cards should form two rows');
+      for(const c of metrics.statCards){
+        assert.ok(Math.abs(c.y-metrics.statCards[0].y)<1,key+' four KPI cards must occupy one row');
+        assert.ok(Math.abs(c.h-44)<1,key+' KPI must be 44px high, got '+c.h);
+      }
+      for(let i=1;i<4;i++)assert.ok(metrics.statCards[i].x>metrics.statCards[i-1].x,key+' KPI columns not ordered');
+      assert.ok(metrics.statCards[3].right<=width+1,key+' four KPIs overflow the phone');
       assert.ok(metrics.statColor.color.includes('255'),key+' KPI text not white');
     }else{
       assert.ok(contrast(metrics.materialTitle.color,metrics.materialBackground)>=4.5,key+' material title unreadable');
