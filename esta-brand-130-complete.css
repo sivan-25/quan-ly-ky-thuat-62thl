@@ -1161,16 +1161,16 @@ body.estaBrand130 #app.estaBrand130#app #contractorPage :is(input,textarea)::pla
 }
 /* Preserve status meaning with accessible green / yellow / red variants. */
 body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorStatusBadge.active,.contractorJobStatus.done){
-  background:#EAF8F1!important;border-color:#A7D7BE!important;color:#166534!important;-webkit-text-fill-color:#166534!important;
+  background:var(--esta130-complete-bg)!important;border-color:var(--esta130-complete-border)!important;color:var(--esta130-complete-text)!important;-webkit-text-fill-color:var(--esta130-complete-text)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorStatusBadge.paused,.contractorJobStatus.waiting){
-  background:#FFF0CC!important;border-color:#E6C77F!important;color:#7C4C00!important;-webkit-text-fill-color:#7C4C00!important;
+  background:var(--esta130-pending-bg)!important;border-color:var(--esta130-pending-border)!important;color:var(--esta130-pending-text)!important;-webkit-text-fill-color:var(--esta130-pending-text)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorStatusBadge.inactive,.contractorJobStatus.paused){
   background:#E7E5E4!important;border-color:#C9C4C0!important;color:#57534E!important;-webkit-text-fill-color:#57534E!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorJobStatus.doing{
-  background:#E0F2FE!important;border-color:#7DD3FC!important;color:#075985!important;-webkit-text-fill-color:#075985!important;
+  background:var(--esta130-progress-bg)!important;border-color:var(--esta130-progress-border)!important;color:var(--esta130-progress-text)!important;-webkit-text-fill-color:var(--esta130-progress-text)!important;
 }
 /* Category pills remain distinct but readable on a light surface. */
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorFieldPill{
