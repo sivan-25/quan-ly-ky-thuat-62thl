@@ -75,7 +75,20 @@
   #app #inventoryPage.inventoryRefShared #stockAlertPanel{display:none!important}
   #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.transactionCard{order:6!important}
 }
-@media (min-width:761px) and (max-width:1100px){#app #inventoryPage.inventoryRefShared #materialMonthTabs{overflow-x:auto!important;grid-template-columns:repeat(13,minmax(72px,1fr))!important}#app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar .inventory130PageTitle{font-size:18px!important}}
+@media (min-width:761px) and (max-width:1100px){
+  #app #inventoryPage.inventoryRefShared #materialMonthTabs{overflow-x:auto!important;grid-template-columns:repeat(13,minmax(72px,1fr))!important}
+  #app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar .inventory130PageTitle{font-size:18px!important}
+  /* Tablet header: wrap its actual controls instead of expanding document width. */
+  #app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar{
+    height:auto!important;min-height:62px!important;max-width:100%!important;box-sizing:border-box!important
+  }
+  #app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar>.inventoryCommandControls{
+    display:flex!important;flex-wrap:wrap!important;row-gap:6px!important;min-width:0!important;max-width:100%!important
+  }
+  #app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar .inventoryLocalTabs{
+    max-width:100%!important;min-width:0!important
+  }
+}
 
 /* The older 127HH light table rules have stronger selectors. Override the
    complete surface and text together so project switching never hides names. */
