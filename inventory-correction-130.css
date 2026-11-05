@@ -52,7 +52,7 @@
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar>.inventoryCommandControls::before{display:none!important;content:none!important}
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar .inventory130PageTitle{
    display:block!important;white-space:nowrap!important;font-size:24px!important;line-height:1.25!important;
-   font-weight:800!important;margin:0!important;color:#3d1431!important;-webkit-text-fill-color:#3d1431!important;
+   font-weight:800!important;margin:0!important;color:var(--esta130-cream,#3d1431)!important;-webkit-text-fill-color:var(--esta130-cream,#3d1431)!important;
  }
  #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) header.estaTopbar .inventoryLocalTabs{
    display:flex!important;flex:0 0 auto!important;width:auto!important;margin:0!important;
