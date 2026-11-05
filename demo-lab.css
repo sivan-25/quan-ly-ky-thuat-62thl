@@ -94,7 +94,7 @@
   color:#dbe5f2!important;
 }
 #app.demoProjectMode .demoKpi small{
-  font-size:10.5px!important;
+  font-size:var(--esta130-caption-size,10.5px)!important;
   color:#91a4bc!important;
 }
 #app.demoProjectMode .demoPanelHead{padding:17px 18px!important}
@@ -353,8 +353,8 @@
     flex-basis:38px!important;
   }
   #app.demoProjectMode .demoKpi b{font-size:23px!important}
-  #app.demoProjectMode .demoKpi span{font-size:10px!important}
-  #app.demoProjectMode .demoKpi small{font-size:9px!important}
+  #app.demoProjectMode .demoKpi span{font-size:var(--esta130-label-font-size,10px)!important}
+  #app.demoProjectMode .demoKpi small{font-size:var(--esta130-caption-size,9px)!important}
   #app.demoProjectMode .demoGrid2{
     grid-template-columns:1fr!important;
     gap:10px!important;
