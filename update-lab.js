@@ -987,10 +987,22 @@ function updateSparkline(rows){
 function updateRenderQr(a){
  const box=$("#updateQrBox"),canvas=$("#updateQrCanvas");if(!box||!canvas)return;
  box.classList.remove("hide");canvas.innerHTML="";
+ canvas.dataset.assetCode=String(a.code);
  const url=location.origin+location.pathname+"?project="+encodeURIComponent(updateScopeId())+"&asset="+encodeURIComponent(a.code);
- if(window.QRCode){
+ const show=()=>{
+  if(!canvas.isConnected||box.classList.contains("hide")||canvas.dataset.assetCode!==String(a.code))return;
+  canvas.innerHTML="";
   new QRCode(canvas,{text:url,width:150,height:150,colorDark:"#173b56",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
- }else canvas.innerHTML='<div class="updateQrFallback">'+uEsc(a.code)+'</div>';
+ };
+ const fallback=()=>{
+  if(canvas.isConnected&&!box.classList.contains("hide")&&canvas.dataset.assetCode===String(a.code))
+    canvas.innerHTML='<div class="updateQrFallback">'+uEsc(a.code)+'</div>';
+ };
+ if(window.QRCode){show();return;}
+ canvas.innerHTML='<div class="updateQrFallback">Đang tạo mã QR...</div>';
+ if(typeof window.estaEnsureOptionalLibrary==="function"){
+  window.estaEnsureOptionalLibrary("QRCode").then(show).catch(fallback);
+ }else fallback();
 }
 function updateCloseAssetDrawer(){
  $("#updateAssetDrawer")?.classList.add("hide");$("#updateAssetDrawer")?.classList.remove("show");
