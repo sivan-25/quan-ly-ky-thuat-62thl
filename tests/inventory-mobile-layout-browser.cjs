@@ -85,6 +85,8 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
         result.toolCardBackground=getComputedStyle($('#inventoryToolsPane .estaToolCard')).backgroundColor;
         result.condition=colors('#inventoryToolsPane .estaToolCard .toolCondition.good');
         result.conditionFill=getComputedStyle($('#inventoryToolsPane .estaToolCard .toolCondition.good')).webkitTextFillColor;
+        result.quickAdd=colors('#inventoryToolsPane .toolsQuickAdd');
+        result.quickAddTitle=colors('#inventoryToolsPane .toolsQuickAdd .inventoryQuickAddHead h3');
       } else {
         result.material=rect('#materialMobileCards .invMobileCard130');
         result.materialBackground=getComputedStyle($('#materialMobileCards .invMobileCard130')).backgroundColor;
@@ -127,6 +129,8 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
       assert.notEqual(metrics.toolCardBackground,'rgb(255, 255, 255)',key+' tool cards must not be stark white');
       assert.ok(contrast(metrics.condition.color,metrics.condition.bg)>=4.5,key+' status label unreadable');
       assert.equal(metrics.condition.color,metrics.conditionFill,key+' status iOS text fill mismatch');
+      assert.ok(contrast(metrics.quickAddTitle.color,metrics.quickAdd.bg)>=4.5,key+' quick-add title unreadable');
+      assert.ok(contrast(metrics.quickAdd.color,metrics.quickAdd.bg)>=4.5,key+' quick-add foreground unreadable');
     }else{
       assert.ok(contrast(metrics.materialTitle.color,metrics.materialBackground)>=4.5,key+' material title unreadable');
       assert.ok(contrast(metrics.materialSub.color,metrics.materialBackground)>=4.5,key+' material subtitle unreadable');
