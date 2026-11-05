@@ -80,7 +80,11 @@ async function run(browser,project,module,width){
    const style=getComputedStyle(el);
    return rect.width<43||rect.height<43?[{sel,w:Math.round(rect.width),h:Math.round(rect.height),cssMinHeight:style.minHeight,cssHeight:style.height,cssMaxHeight:style.maxHeight,cssTransform:style.transform,cssZoom:style.zoom,insideApp:!!el.closest("#app")}]:[];
   });
-  return {pageId,visible:visible(container),client:vp,docOverflow:Math.max(0,docOverflow),tooWide:tooWide.slice(0,12),tooWideCount:tooWide.length,small:small.slice(0,20),smallCount:small.length,primary,touchProblems};
+  const overflowSources=docOverflow>4?[...document.querySelectorAll("#app, #app main, #app .page, #app header, #app section, #app .inventoryCommand, #app .inventoryCommandControls, #app .inventoryLocalTabs, #app .inventoryMonthRail, #app #materialMonthTabs, #app .inventoryTableScroll, #app .inventoryWorkspace")]
+   .filter(el=>{const st=getComputedStyle(el),r=el.getBoundingClientRect();return st.display!=="none"&&r.width>0&&(el.scrollWidth>el.clientWidth+12||r.right>vp+12)})
+   .map(el=>({id:el.id||String(el.className).slice(0,60),scroll:el.scrollWidth,client:el.clientWidth,right:Math.round(el.getBoundingClientRect().right),overflow:getComputedStyle(el).overflowX}))
+   .sort((a,b)=>(b.scroll-b.client)-(a.scroll-a.client)).slice(0,14):[];
+  return {pageId,visible:visible(container),client:vp,docOverflow:Math.max(0,docOverflow),overflowSources,tooWide:tooWide.slice(0,12),tooWideCount:tooWide.length,small:small.slice(0,20),smallCount:small.length,primary,touchProblems};
  },{module});
  if(audit.docOverflow>4||audit.tooWideCount||audit.touchProblems.length||errors.length||!audit.visible)console.log("AUDIT_ISSUE "+JSON.stringify({project,module,width,...audit,errors}).slice(0,2900));
  results.push({project,module,width,...audit,errors});

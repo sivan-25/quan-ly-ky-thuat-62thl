@@ -58,3 +58,24 @@ Không tuyên bố đạt 10/10 nếu chưa kiểm thử các màn sau đăng nh
 
 ### Rollback an toàn
 Nếu production phát hiện lỗi nghiêm trọng, quay về deployment ổn định trước khi cập nhật; không xóa hay ghi đè dữ liệu để xử lý lỗi giao diện. Vì thay đổi lần này chỉ liên quan đến tài nguyên frontend/Cache-Control và quy trình build, không chạy migration hoặc cập nhật dữ liệu, việc rollback được giới hạn ở mã và tài nguyên tĩnh.
+
+## Cổng kiểm thử CSS nâng cao — 05/11/2026
+
+**Mục đích:** Không chỉ kiểm tra số lượng file CSS mà kiểm chứng rằng việc gộp file không làm ẩn nút, che ô, đổi chữ, đổi màu, thay kích thước hoặc ảnh hưởng giao diện dự án khác.
+
+- [x] So sánh CSS mã nguồn và CSS sau build trực tiếp bằng Chromium: **120 trường hợp** (10 trang × 3 độ rộng 390/1024/1440 px × 4 giao diện dự án).
+- [x] Đối chiếu **7.644 phần tử** với 22 thuộc tính tính toán, gồm màu chữ/nền/viền, font chữ, chiều cao, chiều rộng, tràn nội dung, mức hiển thị, thuộc tính lưới và màu chữ WebKit. **Không phát hiện sai khác do bundling.**
+- [x] Bổ sung kiểm tra các thành phần quan trọng không bị ẩn bất thường trong chế độ 130 Hồng Hà: biểu mẫu và Lưu công việc, chọn tháng vật tư, bảng bảo trì, nhập năng lượng, thanh Nhà thầu, thêm Sự cố, thêm Checklist, bảng Báo cáo.
+- [x] Kiểm tra ngưỡng yêu cầu CSS trong bản build: không quá 19 stylesheet nội bộ; thực tế **17** so với **47** trong mã nguồn.
+- [x] Thứ tự bắt buộc của CI: **npm ci → npm test mã nguồn → lưu bản index gốc → npm run build → kiểm tra các asset đã sinh → Chromium so sánh giao diện**. Tránh chạy `npm test` trên `index.html` đã biến đổi vì một số test bảo vệ tên/version file nguồn.
+- [x] Chạy riêng PDF regression: **45 Python tests PASS** với các phụ thuộc báo cáo được cài đặt; không gửi ảnh/dữ liệu thật lên bất kỳ dịch vụ kiểm thử nào.
+- [x] Kiểm tra production đang hoạt động: CSS đã gộp, website trả 200, trang login không có JavaScript exception; một lần đo thử Chromium là 17 CSS và 26 JS, khoảng 362 KB CSS transfer và 255–262 ms load event trong điều kiện thử, **không phải cam kết tốc độ mạng thực tế**.
+- [x] Tích hợp GitHub Actions `.github/workflows/esta-130-ui-quality.yml`, cho phép phát hiện lỗi khi có PR/chỉnh sửa CSS/HTML về sau.
+
+**Chưa đủ điều kiện nghiệm thu tuyệt đối 10/10:**
+- [ ] Kiểm tra đầy đủ dữ liệu thật, hover/focus/disabled, quyền truy cập, popup/chuyển trang và giao dịch lưu/xóa sau đăng nhập.
+- [ ] So sánh báo cáo PDF và Excel với dữ liệu gốc của cả bốn dự án trên bản sao độc lập.
+- [ ] Kiểm thử backup → restore trên bản sao trước khi động vào dữ liệu sản xuất.
+- [ ] Chạy thử thực tế với quản lý lần đầu sử dụng; ký biên bản nghiệm thu theo tiêu chí 10 điểm.
+
+**Lưu ý:** Gộp 47 nguồn CSS thành 17 tệp truyền qua mạng không đồng nghĩa đã xóa mọi khai báo CSS lặp trong mã nguồn. Không được xóa hàng loạt các quy tắc cũ khi chưa kiểm chứng thứ tự cascade và hành vi của cả bốn dự án.

@@ -150,7 +150,7 @@ body.estaBrand130,
  background:linear-gradient(180deg,var(--esta130-plum),var(--esta130-deep))!important;
  border-color:rgba(243,222,191,.24)!important;
 }
-#app.estaBrand130 .estaSidebar :is(.brand b,.estaNav button,.sideUserCard,.sideBuilding b,.mobileSidebarHeader){color:var(--esta130-cream)!important}
+#app.estaBrand130 .estaSidebar :is(.brand b,.estaNav button,.sideUserCard,.sideBuilding b,.mobileSidebarHeader){color:var(--esta130-cream)!important;-webkit-text-fill-color:var(--esta130-cream)!important}
 #app.estaBrand130 .estaSidebar :is(.estaNav button.active,.estaNav button[aria-current="page"]) {
  background:rgba(164,100,39,.26)!important;
  border-color:rgba(243,222,191,.35)!important;
@@ -633,12 +633,12 @@ body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inv
 }
 /* Topbar, side navigation and bottom navigation are also dark surfaces. */
 body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav)
-:is(h1,h2,h3,h4,p,span,strong,b,small,label,li,a,div,svg,button)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,li,a,div,svg,button):not(.inventoryLocalTabs *)
 :not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"])
 :not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *){
   color:var(--esta130-cream)!important;
 }
-body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
+body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(.inventoryLocalTabs button):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
   color:var(--esta130-cream)!important;
 }
 /* Dialogs/drawers are mounted beside #app, but inherit the 130HH body scope. */
@@ -878,11 +878,11 @@ body.estaBrand130 #app.estaBrand130#app :is(#workSelectedPdfBar,.opsHeroActions,
   -webkit-text-fill-color:#F3DEBF!important;
 }
 /* Keep toolbar and navigation buttons cream over plum, with light exceptions below. */
-body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]){
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(#inventory130PdfTrigger):not(.inventoryLocalTabs button):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]){
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
-body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(#inventory130PdfTrigger):not(.inventoryLocalTabs button):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
@@ -890,6 +890,8 @@ body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSid
 
 /* High-specificity corrections for legacy task-form controls and active mobile nav. */
 body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn{
+  min-height:var(--esta130-control-height)!important;
+  height:var(--esta130-control-height)!important;
   background:#411437!important;
   border-color:#411437!important;
   color:#F3DEBF!important;
