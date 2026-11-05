@@ -165,7 +165,7 @@ def data_table(headers, raw_rows, widths, alert_rows=None):
             body.append([para(x, "name" if col==1 else
                              "num" if col>=2 and isinstance(x,(int,float)) else "cell")
                          for col,x in enumerate(row)])
-    t=Table(body,colWidths=widths,repeatRows=1,splitByRow=1,hAlign="LEFT")
+    t=Table(body,colWidths=widths,repeatRows=1,splitByRow=1,splitInRow=1,hAlign="LEFT")
     commands=[
         ("BACKGROUND",(0,0),(-1,0),PURPLE),
         ("LINEBELOW",(0,0),(-1,0),1,COPPER),
