@@ -18,7 +18,7 @@
     ["inspection","Kiểm tra định kỳ","Checklist, tồn tại và kiến nghị"],
     ["energy","Năng lượng","Điện EVN1/EVN2, nước, Solar và XLNT"],
     ["maintenance","Bảo trì thiết bị","Lịch bảo trì quá hạn và nhật ký thực hiện"],
-    ["materials","Vật tư","Tồn đầu, nhập, xuất, tồn cuối và cảnh báo"],
+    ["materials","Vật tư tiêu hao","Tồn đầu, nhập, xuất, tồn cuối và cảnh báo"],
     ["tools","Dụng cụ kỹ thuật","Tình trạng thiết bị/dụng cụ tại ngày lập"],
     ["contractor","Nhà thầu","Công việc nhà thầu chưa và đã hoàn thành"]
   ];
@@ -217,6 +217,7 @@
       const tables=[];
       if(state.categories.has("maintenance"))tables.push(["maintenance","esta_maintenance_plan_items"],["maintenance","esta_maintenance_plan_occurrences"]);
       if(state.categories.has("tools"))tables.push(["tools","inventory_tools"]);
+      if(state.categories.has("materials"))tables.push(["materials","inventory_materials"],["materials","inventory_material_transactions"]);
       const chosen=projectSpecs.filter(p=>state.projects.has(p[0]));
       if(state.categories.has("maintenance")&&chosen.length&&typeof window.estaMaintenance130ReportRows!=="function")
        throw new Error("Chưa tải bộ tính lịch bảo trì ESTA. Hãy tải lại trang trước khi xuất PDF.");
@@ -300,6 +301,10 @@
   }
   function chooseReportStyle() {
     if(state.busy||state.loading||!state.loaded||Object.keys(state.errors).length)return;
+    // Inventory categories use the single approved landscape PDF, not the generic style picker.
+    if(state.categories.size && [...state.categories].every(x=>x==="materials"||x==="tools")) {
+      exportPDF("inventory"); return;
+    }
     const dialog=$("#asFormatDialog");
     if(!dialog)return;
     dialog.hidden=false;
@@ -313,6 +318,41 @@
     try {
       const good=await fetchData();
       if(!good)return;
+      const inventoryOnly = state.categories.size &&
+        [...state.categories].every(x=>x==="materials"||x==="tools");
+      if(inventoryOnly) {
+        const report = window.ESTAInventoryControl;
+        if(!report)throw new Error("Chưa tải bộ mẫu PDF kiểm soát vật tư/dụng cụ ESTA.");
+        const projects = projectSpecs.filter(([id])=>state.projects.has(id)).map(([id,name])=>{
+          const row = state.rows.find(x=>scope(x?.building?.id)===id);
+          if(!row)throw new Error("Thiếu dữ liệu dự án "+name+"; đã dừng xuất PDF.");
+          const member = (currentAccount?.buildings||[]).find(x=>scope(x.id)===id)||{};
+          return {
+            id,name,materials:arr(state.extra[id]?.inventory_materials),
+            transactions:arr(state.extra[id]?.inventory_material_transactions),
+            tools:arr(state.extra[id]?.inventory_tools),tasks:arr(row.snapshot?.tasks),
+            signers:{
+              prepared_by:currentAccount?.display_name||"",
+              checked_by:member.report_checker||member.technical_supervisor_name||"",
+              approved_by:member.report_approver||member.chief_engineer_name||""
+            }
+          };
+        });
+        const fullMonth = state.from.endsWith("-01") &&
+          state.to === new Date(Number(state.from.slice(0,4)),
+            Number(state.from.slice(5,7)),0).toLocaleDateString("en-CA");
+        const label = fullMonth ? "THÁNG "+state.from.slice(5,7)+"/"+state.from.slice(0,4) :
+          "TỪ "+vn(state.from)+" ĐẾN "+vn(state.to);
+        const payload = report.buildPayload({
+          selected:[...state.categories],projects,from:state.from,to:state.to,
+          report_date:today(),period_label:label
+        });
+        const filename="ESTA_BaoCao_KiemSoat_TongHop_VatTu_DungCu_"+
+          state.from+"_"+state.to+".pdf";
+        await report.exportPdf(payload,filename,centralAuthFetch,readVerifiedEstaPdf);
+        setMessage("Đã xuất PDF mẫu ESTA: "+projects.length+" dự án, phân chia rõ từng dự án.");
+        return;
+      }
       const records=buildRecords();
       if(records.length>1500)throw new Error("Có "+records.length+" bản ghi, vượt giới hạn 1.500. Hãy thu hẹp kỳ hoặc hạng mục.");
       const selectedNames=categorySpecs.filter(c=>state.categories.has(c[0])).map(c=>c[1]);
@@ -557,7 +597,15 @@
       if(target.id==="asMonth"){applyMonth();return;}
       if(target.id==="asSamples"){state.includeSamples=target.checked;renderResults();return;}
       if(target.dataset.asProject){if(target.checked)state.projects.add(target.dataset.asProject);else state.projects.delete(target.dataset.asProject);fetchData();return;}
-      if(target.dataset.asCategory){if(target.checked)state.categories.add(target.dataset.asCategory);else state.categories.delete(target.dataset.asCategory);fetchData();return;}
+      if(target.dataset.asCategory){
+        const inventory=target.dataset.asCategory==="materials"||target.dataset.asCategory==="tools";
+        if(target.checked){
+          if(inventory)state.categories=new Set([...state.categories].filter(x=>x==="materials"||x==="tools"));
+          else {state.categories.delete("materials");state.categories.delete("tools");}
+          state.categories.add(target.dataset.asCategory);
+        }else state.categories.delete(target.dataset.asCategory);
+        renderSelectors();fetchData();return;
+      }
     });
     $("#navHome")?.addEventListener("click",close);
     for(const id of ["#navAdmin","#navProjectOverview","#navWork","#navEnergy","#navMaintenance","#navInventory","#navContractor"])$(id)?.addEventListener("click",close);
