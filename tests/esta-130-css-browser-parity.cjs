@@ -57,6 +57,15 @@ const sample=async(page,theme)=>{
     const s=getComputedStyle(el);
     return [el.tagName,el.id,typeof el.className==="string"?el.className.slice(0,35):"",...props.map(k=>s[k])];
    });
+   if(theme==="estaBrand130"){
+    const critical={workPage:["#taskForm","#saveBtn"],inventoryPage:["#materialMonthTabs"],maintenancePage:[".maintenanceHistoryTable"],energyPage:["#energyForm"],contractorPage:[".contractorToolbar"],incidentPage:["#demoIncidentAdd"],inspectionPage:["#demoInspectionAdd"],reportsPage:[".rc-workspace"]};
+    for(const selector of critical[id]||[]){
+     const el=pane.querySelector(selector),box=el?.getBoundingClientRect();
+     if(!el||!box||box.width<8||box.height<8||getComputedStyle(el).visibility==="hidden"){
+      (out.__hidden||(out.__hidden=[])).push(id+" "+selector);
+     }
+    }
+   }
   }
   return out;
  },{pages,modes,props,theme});
@@ -68,7 +77,7 @@ const sample=async(page,theme)=>{
   const urls=await Promise.all(servers.map(listen));
   browser=await chromium.launch({headless:true,args:["--no-sandbox","--disable-dev-shm-usage"]});
   let inspected=0,checkedPages=0;
-  for(const width of [390,1024,1440])for(const theme of ["estaBrand130","estaBrand127","estaBrand68"]){
+  for(const width of [390,1024,1440])for(const theme of ["estaBrand130","estaBrand127","estaBrand68","estaBrand62"]){
    const runs=[];
    for(const url of urls){
     const page=await browser.newPage({viewport:{width,height:900}});
@@ -81,6 +90,7 @@ const sample=async(page,theme)=>{
     await page.goto(url,{waitUntil:"domcontentloaded",timeout:30000});
     assert.deepEqual(errors,[],"page error on "+url);
     const data=await sample(page,theme);
+    if(theme==="estaBrand130")assert.deepEqual(data.__hidden||[],[],"Critical 130 Hồng Hà controls unexpectedly hidden");
     if(theme==="estaBrand130"&&width===1440&&url===urls[1]){
      const cssCount=await page.evaluate(()=>[...document.querySelectorAll('link[rel="stylesheet"]')].filter(el=>{const url=new URL(el.href);return url.origin===location.origin&&url.pathname.endsWith(".css");}).length);
      assert.ok(cssCount<=19,"CSS request budget exceeded: "+cssCount);
