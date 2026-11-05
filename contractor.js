@@ -579,8 +579,12 @@ function contractorDownloadCsv(filename,rows){
 }
 function contractorWriteWorkbook(filename,sheets){
   if(!window.XLSX){
-    const first=sheets[0];
-    contractorDownloadCsv(filename,first.rows);
+    if(typeof window.estaEnsureOptionalLibrary==="function"){
+      return window.estaEnsureOptionalLibrary("XLSX")
+        .then(()=>contractorWriteWorkbook(filename,sheets))
+        .catch(()=>contractorDownloadCsv(filename,sheets[0].rows));
+    }
+    contractorDownloadCsv(filename,sheets[0].rows);
     return;
   }
   const wb=XLSX.utils.book_new();
