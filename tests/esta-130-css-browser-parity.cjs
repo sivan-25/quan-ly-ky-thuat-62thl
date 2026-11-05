@@ -74,7 +74,7 @@ const sample=async(page,theme)=>{
     const page=await browser.newPage({viewport:{width,height:900}});
     await page.route("**/*",route=>{
      const dest=new URL(route.request().url());
-     if(dest.origin!==new URL(url).origin||/\\.js(?:\\?|$)/.test(dest.pathname)){route.abort();return;}
+     if(dest.origin!==new URL(url).origin||/\.js(?:\?|$)/.test(dest.pathname)){route.abort();return;}
      route.continue();
     });
     const errors=[];page.on("pageerror",err=>errors.push(err.message));
