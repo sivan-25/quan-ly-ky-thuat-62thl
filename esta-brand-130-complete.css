@@ -890,6 +890,8 @@ body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSid
 
 /* High-specificity corrections for legacy task-form controls and active mobile nav. */
 body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn{
+  min-height:var(--esta130-control-height)!important;
+  height:var(--esta130-control-height)!important;
   background:#411437!important;
   border-color:#411437!important;
   color:#F3DEBF!important;
