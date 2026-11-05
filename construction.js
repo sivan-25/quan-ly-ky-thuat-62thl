@@ -442,7 +442,14 @@ async function constructionExportDetailEstaPdf(){
 }
 
 function constructionDownloadWorkbook(detail=false){
-  if(typeof XLSX==="undefined")return toast("Chưa tải được thư viện Excel");
+  if(typeof XLSX==="undefined"){
+    if(typeof window.estaEnsureOptionalLibrary==="function"){
+      return window.estaEnsureOptionalLibrary("XLSX")
+        .then(()=>constructionDownloadWorkbook(detail))
+        .catch(()=>toast("Không tải được thư viện Excel. Vui lòng thử lại."));
+    }
+    return toast("Chưa tải được thư viện Excel");
+  }
   const wb=XLSX.utils.book_new();
   if(detail){
     const m=constructionMaterials.find(x=>String(x.id)===String(selectedConstructionMaterialId));if(!m)return;
