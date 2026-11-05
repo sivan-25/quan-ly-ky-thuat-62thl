@@ -298,4 +298,5 @@ def build_inventory_control_doc(path, payload):
         story.extend(project_story(project,selected,payload.get("period_from"),
                                    payload.get("period_to")))
     doc.build(story)
-    return sum(len(p["materials"])+len(p["tools"])+len(p["work"]) for p in projects)
+    return sum((len(p["materials"])+len(p["work"]) if "materials" in selected else 0) +
+               (len(p["tools"]) if "tools" in selected else 0) for p in projects)
