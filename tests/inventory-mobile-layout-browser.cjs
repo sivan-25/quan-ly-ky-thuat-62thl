@@ -52,7 +52,7 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
       const strip=document.createElement('div');strip.id='updateInventoryIntel';strip.textContent='TỒN KHO';
       inv.prepend(strip);
       $('#materialMobileCards').innerHTML='<article class="invMobileCard130"><div class="invMobileCardName"><strong>Cảm biến bồn tiểu</strong><small>Thiết bị vật tư</small></div><div class="invMobileValue"><span>Tồn cuối</span><b>3</b></div></article>';
-      $('#toolsMobileCards').innerHTML='<article class="estaToolCard"><div class="invMobileCardName"><strong>Máy đo nhiệt</strong><small>FLUKE</small></div></article>';
+      $('#toolsMobileCards').innerHTML='<article class="estaToolCard"><div class="invMobileCardHead"><div class="invMobileCardName"><strong>Máy đo nhiệt</strong><small>FLUKE</small></div><span class="toolCondition good">Đang dùng</span></div></article>';
       const rect=s=>{const e=$(s),r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom,visible:getComputedStyle(e).display!=='none'}};
       const tabs=[...document.querySelectorAll('#inventoryPage .inventoryLocalTabs button')].map(e=>{
         const text=e.querySelector('span'),cs=getComputedStyle(e),ts=getComputedStyle(text);
@@ -83,6 +83,8 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
         result.statColor=colors('#inventoryToolsPane .toolsStats article small');
         result.statBackground=getComputedStyle($('#inventoryToolsPane .toolsStats article')).backgroundColor;
         result.toolCardBackground=getComputedStyle($('#inventoryToolsPane .estaToolCard')).backgroundColor;
+        result.condition=colors('#inventoryToolsPane .estaToolCard .toolCondition.good');
+        result.conditionFill=getComputedStyle($('#inventoryToolsPane .estaToolCard .toolCondition.good')).webkitTextFillColor;
       } else {
         result.material=rect('#materialMobileCards .invMobileCard130');
         result.materialBackground=getComputedStyle($('#materialMobileCards .invMobileCard130')).backgroundColor;
@@ -123,6 +125,8 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
       assert.ok(contrast(metrics.statColor.color,metrics.statBackground)>=4.5,key+' KPI label contrast too low');
       assert.ok(contrast(metrics.statColor.color,metrics.statBackground)<20,key+' KPI palette unexpectedly stark');
       assert.notEqual(metrics.toolCardBackground,'rgb(255, 255, 255)',key+' tool cards must not be stark white');
+      assert.ok(contrast(metrics.condition.color,metrics.condition.bg)>=4.5,key+' status label unreadable');
+      assert.equal(metrics.condition.color,metrics.conditionFill,key+' status iOS text fill mismatch');
     }else{
       assert.ok(contrast(metrics.materialTitle.color,metrics.materialBackground)>=4.5,key+' material title unreadable');
       assert.ok(contrast(metrics.materialSub.color,metrics.materialBackground)>=4.5,key+' material subtitle unreadable');
