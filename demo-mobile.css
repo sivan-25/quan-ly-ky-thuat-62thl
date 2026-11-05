@@ -457,14 +457,14 @@
     box-shadow:0 0 0 3px rgba(39,138,197,.16)!important;
   }
   #app.estaBrand130 #workPage #taskForm .workDate .workDateDisplayed{
-    background:#f9f0df!important;
-    border-color:#cfad88!important;
-    color:#000!important;
+    background:var(--esta130-field-bg)!important;
+    border-color:var(--esta130-field-border)!important;
+    color:var(--esta130-field-text)!important;
   }
   #workEditDrawer #taskForm .workDate .workDateDisplayed{
-    background:#172239!important;
-    border-color:#34445f!important;
-    color:#f3f6ff!important;
+    background:var(--esta130-field-bg,#172239)!important;
+    border-color:var(--esta130-field-border,#34445f)!important;
+    color:var(--esta130-field-text,#f3f6ff)!important;
   }
   #app.demoMobilePilot #workPage #taskForm textarea{
     display:block!important;
