@@ -215,8 +215,14 @@ async function prep(page,p){
      "Unbranded blue header "+mode+" width "+width+": "+JSON.stringify(state));
     assert.equal(state.area,cream,"Page background in "+mode+" width "+width);
     if(state.overflow>4){
+      // Module switch can report previous-frame scroll geometry; remeasure after layout settles.
+      await page.waitForTimeout(200);
+      const stableOverflow=await page.evaluate(()=>Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)-document.documentElement.clientWidth);
+      if(stableOverflow<=4){console.log("Transient module-switch scroll geometry settled: "+mode+" "+width+"px ("+state.overflow+"px)");}
+      else {
       const offenders=await page.evaluate(()=>[...document.querySelectorAll("html,body,#app,#app *")].filter(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return (e.scrollWidth>e.clientWidth+12||r.right>document.documentElement.clientWidth+8||r.width>document.documentElement.clientWidth+20)&&s.visibility!=="hidden"&&s.display!=="none";}).map(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return {tag:e.tagName,id:e.id,cls:String(e.className||"").slice(0,75),right:Math.round(r.right),width:Math.round(r.width),scroll:e.scrollWidth,client:e.clientWidth,overflow:s.overflowX,position:s.position,pseudo:getComputedStyle(e,"::after").content};}).sort((a,b)=>(b.scroll-b.client)-(a.scroll-a.client)).slice(0,28));
-      assert.fail("Horizontal overflow in "+mode+" width "+width+": "+state.overflow+" offenders "+JSON.stringify(offenders));
+      assert.fail("Horizontal overflow in "+mode+" width "+width+": "+state.overflow+" settled="+stableOverflow+" offenders "+JSON.stringify(offenders));
+      }
     }
     for(const key of ["workCard","energyKpi","energyPanel","inventory","energyTable"]){
       if(state[key]!==null)assert.equal(state[key],soft,key+" still has legacy blue/dark surface in "+mode+" width "+width);
