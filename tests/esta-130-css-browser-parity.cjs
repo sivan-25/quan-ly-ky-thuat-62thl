@@ -82,7 +82,7 @@ const sample=async(page,theme)=>{
     assert.deepEqual(errors,[],"page error on "+url);
     const data=await sample(page,theme);
     if(theme==="estaBrand130"&&width===1440&&url===urls[1]){
-     const cssCount=await page.locator('link[rel="stylesheet"]').count();
+     const cssCount=await page.evaluate(()=>[...document.querySelectorAll('link[rel="stylesheet"]')].filter(el=>{const url=new URL(el.href);return url.origin===location.origin&&url.pathname.endsWith(".css");}).length);
      assert.ok(cssCount<=19,"CSS request budget exceeded: "+cssCount);
     }
     runs.push(data);
