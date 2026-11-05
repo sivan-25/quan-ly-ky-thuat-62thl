@@ -878,11 +878,11 @@ body.estaBrand130 #app.estaBrand130#app :is(#workSelectedPdfBar,.opsHeroActions,
   -webkit-text-fill-color:#F3DEBF!important;
 }
 /* Keep toolbar and navigation buttons cream over plum, with light exceptions below. */
-body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(#inventory130PdfTrigger):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]){
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(#inventory130PdfTrigger):not(.inventoryLocalTabs button):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]){
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
-body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(#inventory130PdfTrigger):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
+body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(#inventory130PdfTrigger):not(.inventoryLocalTabs button):not([aria-current="page"]):not(.active):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
