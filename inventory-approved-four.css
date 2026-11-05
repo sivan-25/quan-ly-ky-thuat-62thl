@@ -591,6 +591,27 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     padding:0!important;flex-shrink:0!important;
   }
 
+  /* Approved light-green status and pale-blue quick-add surface. */
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard .toolCondition.good {
+    background:#d9f4d3!important;border-color:#b8e3b1!important;
+    color:#18592d!important;-webkit-text-fill-color:#18592d!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd {
+    background:#dcecff!important;border:1px solid #b4d1f4!important;
+    box-shadow:none!important;color:#183e67!important;
+    -webkit-text-fill-color:#183e67!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd .inventoryQuickAddHead :is(.inventoryKicker,h3) {
+    color:#173e68!important;-webkit-text-fill-color:#173e68!important;
+    opacity:1!important;text-shadow:none!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd .inventoryQuickAddHead .inventoryKicker {
+    color:#1768ac!important;-webkit-text-fill-color:#1768ac!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd :is(button,summary) {
+    color:#173e68!important;-webkit-text-fill-color:#173e68!important;
+  }
+
   /* Materials tab uses the same visible navy text surface; labels never
      inherit near-white-on-white from the alternate 127HH palette. */
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane {
