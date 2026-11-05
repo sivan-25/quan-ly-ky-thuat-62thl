@@ -52,6 +52,7 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
       const strip=document.createElement('div');strip.id='updateInventoryIntel';strip.textContent='TỒN KHO';
       inv.prepend(strip);
       $('#materialMobileCards').innerHTML='<article class="invMobileCard130"><div class="invMobileCardName"><strong>Cảm biến bồn tiểu</strong><small>Thiết bị vật tư</small></div><div class="invMobileValue"><span>Tồn cuối</span><b>3</b></div></article>';
+      $('#toolsMobileCards').innerHTML='<article class="estaToolCard"><div class="invMobileCardName"><strong>Máy đo nhiệt</strong><small>FLUKE</small></div></article>';
       const rect=s=>{const e=$(s),r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom,visible:getComputedStyle(e).display!=='none'}};
       const tabs=[...document.querySelectorAll('#inventoryPage .inventoryLocalTabs button')].map(e=>{
         const text=e.querySelector('span'),cs=getComputedStyle(e),ts=getComputedStyle(text);
@@ -80,6 +81,8 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
           const r=e.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,h:r.height,bg:getComputedStyle(e).backgroundImage}
         });
         result.statColor=colors('#inventoryToolsPane .toolsStats article small');
+        result.statBackground=getComputedStyle($('#inventoryToolsPane .toolsStats article')).backgroundColor;
+        result.toolCardBackground=getComputedStyle($('#inventoryToolsPane .estaToolCard')).backgroundColor;
       } else {
         result.material=rect('#materialMobileCards .invMobileCard130');
         result.materialBackground=getComputedStyle($('#materialMobileCards .invMobileCard130')).backgroundColor;
@@ -117,7 +120,9 @@ const screenWidths=[320,375,390,430],projects=['130HH','127HH','62THL','68PĐL']
       }
       for(let i=1;i<4;i++)assert.ok(metrics.statCards[i].x>metrics.statCards[i-1].x,key+' KPI columns not ordered');
       assert.ok(metrics.statCards[3].right<=width+1,key+' four KPIs overflow the phone');
-      assert.ok(metrics.statColor.color.includes('255'),key+' KPI text not white');
+      assert.ok(contrast(metrics.statColor.color,metrics.statBackground)>=4.5,key+' KPI label contrast too low');
+      assert.ok(contrast(metrics.statColor.color,metrics.statBackground)<20,key+' KPI palette unexpectedly stark');
+      assert.notEqual(metrics.toolCardBackground,'rgb(255, 255, 255)',key+' tool cards must not be stark white');
     }else{
       assert.ok(contrast(metrics.materialTitle.color,metrics.materialBackground)>=4.5,key+' material title unreadable');
       assert.ok(contrast(metrics.materialSub.color,metrics.materialBackground)>=4.5,key+' material subtitle unreadable');

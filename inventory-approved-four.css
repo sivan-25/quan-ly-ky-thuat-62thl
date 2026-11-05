@@ -129,31 +129,31 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   color:#173e5e!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventorySearch {
-  background:#f9eedf!important;
-  border-color:#d8c7ad!important;
+  background:#f0f5fb!important;
+  border-color:#c5d5e6!important;
   color:#173e5e!important;
   -webkit-text-fill-color:#173e5e!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolStatusFilter {
-  background:#163f61!important;
-  border-color:#123653!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  color-scheme:dark!important;
+  background:#e6eff9!important;
+  border-color:#b9cde1!important;
+  color:#234a6a!important;
+  -webkit-text-fill-color:#234a6a!important;
+  color-scheme:light!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolExportPdf {
-  background:#163f61!important;
-  border-color:#123653!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+  background:#e6eff9!important;
+  border-color:#b9cde1!important;
+  color:#234a6a!important;
+  -webkit-text-fill-color:#234a6a!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolExportPdf svg {
   stroke:#ff8181!important;
   color:#ff8181!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #addToolBtn {
-  background:#ad551a!important;
-  border:1px solid #924515!important;
+  background:#326f91!important;
+  border:1px solid #275b78!important;
   color:#fff!important;
   -webkit-text-fill-color:#fff!important;
 }
@@ -396,8 +396,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     width:100%!important;min-width:0!important;max-width:100%!important;
     min-height:0!important;height:auto!important;
     margin:0 0 10px!important;padding:10px!important;
-    border:1px solid #d9c7ad!important;border-radius:13px!important;
-    background:#fffaf3!important;box-shadow:0 2px 8px rgba(18,36,53,.06)!important;
+    border:1px solid #cad8e6!important;border-radius:13px!important;
+    background:#edf3fa!important;box-shadow:none!important;
     z-index:auto!important;box-sizing:border-box!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane>.inventorySectionBar>div:first-child {
@@ -420,7 +420,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     height:44px!important;min-height:44px!important;max-height:44px!important;
     flex:none!important;margin:0!important;padding:0 9px!important;
     border:1px solid #b8cbd9!important;border-radius:9px!important;
-    background:#fff!important;box-sizing:border-box!important;
+    background:#f8fbff!important;box-sizing:border-box!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolSearch {
     display:block!important;min-width:0!important;max-width:100%!important;
@@ -440,10 +440,10 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     min-width:0!important;max-width:100%!important;width:100%!important;
     height:44px!important;min-height:44px!important;max-height:44px!important;
     padding:0 6px!important;margin:0!important;
-    border:1px solid #2e5878!important;border-radius:9px!important;
-    background:#183f60!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+    border:1px solid #b7cce1!important;border-radius:9px!important;
+    background:#e3eef9!important;color:#234a6a!important;-webkit-text-fill-color:#234a6a!important;
     font-size:12px!important;line-height:normal!important;font-weight:650!important;
-    box-sizing:border-box!important;color-scheme:dark!important;
+    box-sizing:border-box!important;color-scheme:light!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #addToolBtn {
     display:flex!important;align-items:center!important;justify-content:center!important;
@@ -451,8 +451,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     width:100%!important;max-width:100%!important;min-width:0!important;
     height:44px!important;min-height:44px!important;max-height:44px!important;
     margin:0!important;padding:0 4px!important;box-sizing:border-box!important;
-    border-radius:9px!important;border:1px solid #984211!important;
-    background:#ad551a!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+    border-radius:9px!important;border:1px solid #275b78!important;
+    background:#326f91!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
     white-space:nowrap!important;font-size:12px!important;line-height:1.2!important;
     font-weight:750!important;
   }
@@ -462,8 +462,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     width:44px!important;min-width:44px!important;max-width:44px!important;
     height:44px!important;min-height:44px!important;max-height:44px!important;
     margin:0!important;padding:0!important;box-sizing:border-box!important;
-    border:1px solid #2e5878!important;border-radius:9px!important;
-    background:#183f60!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+    border:1px solid #b7cce1!important;border-radius:9px!important;
+    background:#e3eef9!important;color:#234a6a!important;-webkit-text-fill-color:#234a6a!important;
   }
 
   /* Four colored statistics cards sit BELOW the toolbar and never overlap it. */
@@ -486,16 +486,16 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     box-sizing:border-box!important;position:relative!important;overflow:hidden!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(1) {
-    background:linear-gradient(130deg,#0b6da8,#084a82)!important;
+    background:#e3effb!important;border-color:#c4d9ee!important;color:#245b88!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(2) {
-    background:linear-gradient(130deg,#147f51,#0d633d)!important;
+    background:#e3f4ed!important;border-color:#bfdfcf!important;color:#236c4c!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(3) {
-    background:linear-gradient(130deg,#ab4b16,#8c3812)!important;
+    background:#fbefe2!important;border-color:#ead4bc!important;color:#87552a!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(4) {
-    background:linear-gradient(130deg,#7039aa,#592d8b)!important;
+    background:#eeeafa!important;border-color:#d9ceec!important;color:#654f87!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats .invStatIcon {
     display:none!important;
@@ -506,7 +506,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article :is(small,b,em) {
     display:block!important;
-    color:#fff!important;-webkit-text-fill-color:#fff!important;
+    color:inherit!important;-webkit-text-fill-color:currentColor!important;
     opacity:1!important;text-shadow:none!important;
     text-align:center!important;line-height:1.25!important;
   }
@@ -522,11 +522,42 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     display:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsMainCard {
-    margin:0!important;border:1px solid #30465f!important;
-    border-radius:13px!important;background:#101b31!important;overflow:hidden!important;
+    margin:0!important;border:1px solid #c9d8e7!important;
+    border-radius:13px!important;background:#e7eef6!important;overflow:hidden!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolVisibleCount {
-    color:#d8e8fa!important;-webkit-text-fill-color:#d8e8fa!important;
+    color:#345674!important;-webkit-text-fill-color:#345674!important;
+  }
+  /* Soft blue-gray cards replace stark white and the former dark panel. */
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolsMobileCards {
+    background:#e7eef6!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard {
+    background:#f0f5fb!important;border:1px solid #c5d6e6!important;
+    color:#23435e!important;-webkit-text-fill-color:#23435e!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard .invMobileCardName strong {
+    color:#193d5b!important;-webkit-text-fill-color:#193d5b!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard .invMobileCardName small,
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCardCore :is(span,small) {
+    color:#58738b!important;-webkit-text-fill-color:#58738b!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCardCore :is(strong,b),
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolMore .invMobileMeta b {
+    color:#23435e!important;-webkit-text-fill-color:#23435e!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolMore {
+    border-top-color:#cad8e6!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolMore summary {
+    color:#276c90!important;-webkit-text-fill-color:#276c90!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolMore .invMobileMeta small {
+    color:#607b91!important;-webkit-text-fill-color:#607b91!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolMore .invMobileNote {
+    background:#e4edf7!important;color:#355774!important;-webkit-text-fill-color:#355774!important;
   }
 
   /* Materials tab uses the same visible navy text surface; labels never
