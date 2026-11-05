@@ -80,6 +80,49 @@ class InventoryControlReportTests(unittest.TestCase):
         self.assertIn("B. DỤNG CỤ",pages[0])
         self.assertIn("A. VẬT TƯ",pages[0])
 
+    def test_3_materials_20_tools_and_empty_work_uses_available_space(self):
+        # Reproduce the user's actual export: page one previously stopped after
+        # three lines of A, page two contained B/C and page three only signatures.
+        project = self.project(items=3)
+        project["tools"] = [{
+            "name": "Dụng cụ số " + str(i).zfill(2),
+            "brand": "Asaki", "unit": "Cái", "qty": 1,
+            "keeper": "Ân", "status": "Đang sử dụng", "note": "—"
+        } for i in range(1, 21)]
+        project["work"] = []
+        pages = self.page_texts(["materials", "tools"], [project])
+        self.assertLessEqual(len(pages), 2, "Không tạo thêm trang chỉ để ký tên")
+        self.assertIn("A. VẬT TƯ TIÊU HAO", pages[0])
+        self.assertIn("B. DỤNG CỤ KỸ THUẬT", pages[0],
+                      "Mục B phải tiếp tục ngay sau A trên cùng trang nếu đủ chỗ")
+        self.assertIn("Dụng cụ số 01", pages[0],
+                      "Bảng B phải chia dòng qua trang, không đẩy toàn bộ bảng")
+        self.assertIn("C. HẠNG MỤC ĐÃ XỬ LÝ", pages[-1])
+        self.assertIn("PHÊ DUYỆT", pages[-1],
+                      "Chữ ký phải theo ngay C chứ không tạo trang thứ ba")
+        full = "\n".join(pages)
+        self.assertNotIn("KIỂM KÊ CUỐI TỪ", full)
+        self.assertNotIn("TỒN TỪ", full)
+        self.assertNotIn("Tổng SL vật tư xuất ở mục C đối chiếu", full)
+        self.assertIn("Không có dữ liệu trong kỳ", full)
+
+    def test_project_new_page_still_follows_its_signatures(self):
+        a = self.project(name="62 Trần Huy Liệu", items=3)
+        b = self.project(name="127 Hồng Hà", items=3)
+        a["tools"] = [{
+            "name": "Ampe kìm " + str(i), "brand": "Asaki",
+            "unit": "Cái", "qty": 1, "keeper": "Ân",
+            "status": "Đang sử dụng", "note": ""
+        } for i in range(20)]
+        a["work"] = []
+        a["approved_by"] = "NGUOI PHE DUYET 62"
+        b["approved_by"] = "NGUOI PHE DUYET 127"
+        pages = self.page_texts(["materials", "tools"], [a, b])
+        first_sig_page = next(i for i,t in enumerate(pages) if "NGUOI PHE DUYET 62" in t)
+        second_start_page = next(i for i,t in enumerate(pages) if "Dự án: 127 Hồng Hà" in t)
+        self.assertEqual(second_start_page, first_sig_page + 1)
+        self.assertNotIn("NGUOI PHE DUYET 127", pages[first_sig_page])
+
     def test_signature_cells_exactly_centered(self):
         signatures=signers(self.project()) 
         table=signatures._content[-1]
