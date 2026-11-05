@@ -211,7 +211,7 @@
 }
 #app #energyPage .energyTabs button{
   position:relative;
-  height:42px!important;
+  height:var(--esta130-control-height,42px)!important;
   display:flex!important;
   align-items:center!important;
   gap:8px!important;
@@ -402,8 +402,8 @@
 #app #energyPage #energyForm input:not([type="hidden"]),
 #app #energyPage #energyForm .peopleSelectBtn{
   width:100%;
-  height:42px!important;
-  min-height:42px!important;
+  height:var(--esta130-control-height,42px)!important;
+  min-height:var(--esta130-control-height,42px)!important;
   border:1px solid #34415e!important;
   border-radius:10px!important;
   background:#18223b!important;
@@ -729,7 +729,7 @@
     min-width:max-content;
     flex:1;
     justify-content:center!important;
-    height:44px!important;
+    height:var(--esta130-control-height,44px)!important;
     padding:0 8px!important;
     font-size:10.5px!important;
   }
@@ -955,7 +955,7 @@
 }
 #app #energyPage #energyPeopleMenu .peopleEditBtn{
   width:100%!important;
-  height:48px!important;
+  height:var(--esta130-control-height,48px)!important;
   border:0!important;
   border-top:1px solid #25314a!important;
   border-radius:0!important;
@@ -1749,8 +1749,8 @@
   justify-content:center!important;
   gap:5px!important;
   min-width:0!important;
-  min-height:42px!important;
-  height:42px!important;
+  min-height:var(--esta130-control-height,42px)!important;
+  height:var(--esta130-control-height,42px)!important;
   padding:5px 6px!important;
   border:1px solid #3f5470!important;
   border-radius:10px!important;
