@@ -27,6 +27,9 @@ body.estaBrand130,
   --esta130-warning-text: #7A4300;
   --esta130-danger-bg: #FDE8E8;
   --esta130-danger-text: #991B1B;
+  --esta130-kpi-success-text: #116630;
+  --esta130-kpi-warning-text: #874300;
+  --esta130-kpi-danger-text: #A51E32;
 }
 
 /* ESTA / 130 HONG HA — Full brand visual system, October 2026.
@@ -1486,7 +1489,7 @@ body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPrioritySt
 body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPriorityStar[aria-pressed="true"],
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar.is-marked,
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed="true"]{
-  color:#9A6700!important;
+  color:#7A4300!important;
   -webkit-text-fill-color:#9A6700!important;
   background:#FFF0B3!important;
   border:1px solid #D6A12B!important;
