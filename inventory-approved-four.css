@@ -15,7 +15,7 @@
   #app #inventoryPage.inventoryRef127{--inv-accent:#215d87;--inv-selected:#215d87;--inv-top:#f8ead6}
   #app #inventoryPage.inventoryRefShared:not(.inventoryRef130):not(.inventoryRef127){--inv-accent:#216b74;--inv-selected:#216b74;--inv-top:#eaf4f5}
   #app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar{background:var(--inv-top,#eff5fb)!important}
-  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar{background:#f2ddbd!important}
+  #app:has(#inventoryPage.inventoryRef130:not(.hide)) header.estaTopbar{background:var(--esta130-plum,#f2ddbd)!important;background-image:linear-gradient(105deg,var(--esta130-deep,#f2ddbd),var(--esta130-plum,#f2ddbd))!important}
   #app:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar{background:#f8ead6!important}
   #app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar .inventory130PdfMenu{position:relative!important;display:inline-flex!important;flex:0 0 auto!important;order:0!important;margin-left:auto!important}
   #app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar .inventory130PdfMenu>button{min-height:var(--esta130-control-height,44px)!important;padding:0 15px!important;border:1px solid #b9cde0!important;border-radius:11px!important;background:#fff!important;color:#173e5e!important;-webkit-text-fill-color:#173e5e!important;font-size:14px!important;font-weight:750!important;cursor:pointer}
