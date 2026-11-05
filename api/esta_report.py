@@ -678,7 +678,7 @@ def story_generic(data):
         story += [k,Spacer(1,12)]
 
     # Executive decision panel is opt-in: existing per-building PDFs stay intact.
-    priority_items=(data.get("priority_items") or [])[:6]
+    priority_items=data.get("priority_items") or []
     if priority_items:
         story += [P("CÔNG VIỆC ĐÁNH DẤU SAO / CẦN XỬ LÝ",ST["sec"]),Spacer(1,4)]
         small=S("supervision_priority",fontSize=7.0,leading=9.7,textColor=AUB)
@@ -749,7 +749,7 @@ def _prepare_generic_data(payload, token, temp_dir):
     rows=payload.get("rows") or []
     summaries=payload.get("summaries") or []
     raw_priority=payload.get("priority_items") or []
-    if not isinstance(raw_priority,list) or len(raw_priority)>6:
+    if not isinstance(raw_priority,list) or len(raw_priority)>1500:
         raise ValueError("Danh sách công việc ưu tiên không hợp lệ")
     clean_priority=[]
     for item in raw_priority:

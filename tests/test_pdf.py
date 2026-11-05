@@ -509,6 +509,63 @@ class ReportTests(unittest.TestCase):
                             for t in tables for row in t._cellvalues[1:]
                             if isinstance(row[0], type(out[0]))))
 
+    def test_all_starred_work_is_prominent_without_six_item_limit(self):
+        from reporting.admin_executive import _important
+        stars = [
+            {"project": "130 HH", "title": "Công việc có sao %02d" % i,
+             "owner": "Kỹ thuật", "date": "2026-11-04", "due": "2026-11-09",
+             "status": "Đang thực hiện" if i % 4 else "Hoàn thành",
+             "open": i % 4 != 0, "stage": 2 if i % 4 else 4,
+             "detail": "Theo dõi", "category": "work", "starred": True}
+            for i in range(20)
+        ]
+        overdue = {"project": "130 HH", "title": "Không sao, quá hạn",
+                   "owner": "Kỹ thuật", "date": "2026-11-01",
+                   "due": "2026-11-02", "status": "Quá hạn",
+                   "open": True, "stage": 0, "category": "work",
+                   "starred": False}
+        # Stars include finished and not-yet-due work and are not truncated.
+        self.assertEqual(len(_important(stars + [overdue])), len(stars))
+        payload = {
+            "report_type": "generic", "hide_building": True,
+            "title": "BÁO CÁO GIÁM SÁT KỸ THUẬT",
+            "signature_position": "supervision",
+            "kt_signer_name": "Sĩ Văn",
+            "report_date": "05/11/2026",
+            "period_label": "Từ 01/11/2026 đến 07/11/2026",
+            "columns": [{"label": x} for x in (
+                "STT", "Dự án", "Nội dung", "Ngày", "Tình trạng", "Phụ trách")],
+            "rows": [
+                [str(i + 1), "130 HH", item["title"], "04/11/2026",
+                 item["status"], "Kỹ thuật"]
+                for i, item in enumerate(stars + [overdue])
+            ],
+            "priority_items": [
+                {"project": "130 HH", "title": item["title"],
+                 "status": item["status"], "owner": "Kỹ thuật",
+                 "due": "09/11/2026"}
+                for item in stars
+            ],
+            "photos": []
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            cleaned = _prepare_generic_data(payload, "", tmp)
+            self.assertEqual(len(cleaned["priority_items"]), 20)
+            flowables = story_generic(cleaned)
+            self.assertTrue(any(
+                isinstance(f, Table) and len(f._cellvalues) == 21
+                for f in flowables
+            ))
+        compact, missed, count = generate_pdf(payload, "")
+        self.assertTrue(compact.startswith(b"%PDF"))
+        self.assertEqual((missed, count), (0, 21))
+        executive, missed, count = generate_pdf({
+            **payload, "report_style": "executive",
+            "executive_items": stars + [overdue], "executive_image_count": 0
+        }, "")
+        self.assertTrue(executive.startswith(b"%PDF"))
+        self.assertEqual((missed, count), (0, 21))
+
     def test_two_admin_pdf_styles_render_without_changing_style_one(self):
         from reporting.admin_executive import build_executive_doc, _important
         from api.esta_report import energy_signatures

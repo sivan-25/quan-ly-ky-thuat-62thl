@@ -184,7 +184,7 @@ def story(data):
         cards.setStyle(TableStyle(rules))
         story.extend([cards, Spacer(1, 11)])
 
-    priority_items = (data.get("priority_items") or [])[:6]
+    priority_items = data.get("priority_items") or []
     if priority_items:
         story.extend([p("01  CÔNG VIỆC ĐÁNH DẤU SAO / CẦN XỬ LÝ", section), Spacer(1, 5)])
         pr_rows = [[p(s, head) for s in (

@@ -216,11 +216,8 @@ def _important(items):
         x.get("stage", 2), x.get("due") or x.get("date") or "9999",
         _sort_key(x.get("project"))
     ))
-    selected = starred[:3]
-    for item in candidates:
-        if len(selected) >= 3:
-            break
-        selected.append(item)
+    # Every starred task is included; only unstarred fallback items are capped.
+    selected = starred + candidates[:max(0, 3 - len(starred))]
     if not selected:
         return [para("Không có công việc cần lưu ý trong dữ liệu đã chọn.", T["muted"])]
     paragraphs = []
@@ -239,7 +236,9 @@ def _overview(items):
     left_head = _section("THEO DỰ ÁN")
     right_head = _section("ĐIỂM CẦN LƯU Ý")
     left = left_head + [_project_overview(items)]
-    right = right_head + _important(items)
+    # The complete starred list is rendered separately as splittable flowables.
+    # Keep this two-column summary short to avoid ReportLab LayoutError.
+    right = right_head + _important([x for x in items if not x.get("starred")])
     block = Table([[left, right]], colWidths=[93*mm, CONTENT_W - 93*mm], hAlign="LEFT")
     block.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
@@ -434,11 +433,15 @@ def build_executive_doc(path, data, signature_fn):
     ))
     done = sum(not x.get("open") for x in items)
     open_count = sum(x.get("open") for x in items)
-    story = [
-        Spacer(1, 3),
-        _kpis(items), Spacer(1, 9),
-        _overview(items), Spacer(1, 9)
-    ]
+    story = [Spacer(1, 3), _kpis(items), Spacer(1, 9)]
+    # Highlight all starred tasks first, flowing across as many pages as needed.
+    # A nested Table cannot split a long list, so use separate Paragraph flowables.
+    starred = [x for x in items if x.get("starred") and x.get("category") == "work"]
+    if starred:
+        story += _section(f"CÔNG VIỆC ĐÁNH DẤU SAO  ·  {len(starred)} công việc")
+        story += _important(starred)
+        story.append(Spacer(1, 9))
+    story.extend([_overview(items), Spacer(1, 9)])
     story += _section(f"I. VIỆC CHƯA HOÀN THÀNH  ·  {open_count} bản ghi")
     story += [_pending_table(items), Spacer(1, 10)]
     story += _section(f"II. VIỆC ĐÃ HOÀN THÀNH  ·  {done} bản ghi")

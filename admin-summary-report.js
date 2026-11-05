@@ -246,7 +246,9 @@
     // Stars selected by a supervisor outrank overdue status, including planned/completed work.
     const starred=records.filter(r=>r.cat==="work"&&r.starred);
     const urgent=records.filter(r=>r.open&&severity(r)<3&&!r.starred);
-    return [...starred,...urgent].slice(0,6);
+    // Never truncate supervisor-starred work; fill at most six remaining
+    // highlight slots with ordinary urgent/overdue tasks.
+    return [...starred,...urgent.slice(0,Math.max(0,6-starred.length))];
   }
   function updateButtons() {
     const button=$("#asExport"),reload=$("#asRefresh");
