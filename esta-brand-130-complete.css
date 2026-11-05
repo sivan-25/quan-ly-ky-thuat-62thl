@@ -633,12 +633,12 @@ body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inv
 }
 /* Topbar, side navigation and bottom navigation are also dark surfaces. */
 body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav)
-:is(h1,h2,h3,h4,p,span,strong,b,small,label,li,a,div,svg,button)
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,li,a,div,svg,button):not(.inventoryLocalTabs *)
 :not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"])
 :not([class*="status"] *):not([class*="Status"] *):not([class*="badge"] *):not([class*="Badge"] *):not([class*="pill"] *):not([class*="Pill"] *):not([class*="chip"] *):not([class*="Chip"] *){
   color:var(--esta130-cream)!important;
 }
-body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
+body.estaBrand130 #app.estaBrand130 :is(.estaTopbar,.estaSidebar,#mobileSidebar,#estaBottomNav,.liveProjectMobileNav) button:not(.quickReturnAdmin):not(.inventoryLocalTabs button):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]) *{
   color:var(--esta130-cream)!important;
 }
 /* Dialogs/drawers are mounted beside #app, but inherit the 130HH body scope. */
