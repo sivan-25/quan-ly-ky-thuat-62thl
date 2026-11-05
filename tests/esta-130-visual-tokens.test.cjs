@@ -29,7 +29,10 @@ for (const state of ["doing", "done", "waiting"]) {
   assert.ok(base.includes(`.badge.${state}`), `missing semantic status ${state}`);
   assert.ok(base.includes(`.homeStatus.${state}`), `missing home semantic status ${state}`);
 }
-for (const metric of ["today", "doing", "done", "waiting"]) {
+const markup = read("index.html");
+assert.ok(markup.includes('data-work-stat-filter="today"'), "today KPI missing");
+assert.ok(base.includes("article[data-work-stat-filter]>i"), "shared KPI icon styling missing");
+for (const metric of ["doing", "done", "waiting"]) {
   assert.ok(base.includes(`data-work-stat-filter="${metric}"`), `missing work KPI ${metric}`);
 }
 const approved = read("inventory-approved-four.css");
