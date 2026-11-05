@@ -57,7 +57,7 @@ jobs:
           JS
       - name: Install isolated browser test runner
         run: |
-          npm install --no-save --package-lock=false --no-audit --no-fund playwright@1.56.1
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright@1.64.1
           npx playwright install --with-deps chromium
       - name: Compare built and source CSS for 130 and other buildings
         run: node tests/esta-130-css-browser-parity.cjs "${{ runner.temp }}/esta-index-before-build.html"
