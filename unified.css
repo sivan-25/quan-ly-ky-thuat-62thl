@@ -139,7 +139,7 @@
   color:#1b4059!important;font-size:21px!important;line-height:1!important;font-weight:780!important
 }
 .homeKpis article>div:last-child>span,.inventoryStats em,.maintenanceStats em{
-  color:#9aa8b1!important;font-size:6.5px!important
+  color:#9aa8b1!important;font-size:var(--esta130-caption-size,6.5px)!important
 }
 
 /* Panels and directory treatment */
@@ -764,11 +764,13 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
   border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
 }
 #app.maintenanceMode #maintenancePage .maintenanceStats article{
-  border-color:#25314a!important;background:#11182b!important;box-shadow:none!important
+  border-color:var(--esta130-stat-border,#25314a)!important;
+  background:var(--esta130-stat-bg,#11182b)!important;
+  box-shadow:none!important
 }
-#app.maintenanceMode #maintenancePage .maintenanceStats small{color:#7b89a4!important}
-#app.maintenanceMode #maintenancePage .maintenanceStats b{color:#f6f8ff!important}
-#app.maintenanceMode #maintenancePage .maintenanceStats em{color:#5f6e8a!important}
+#app.maintenanceMode #maintenancePage .maintenanceStats small{color:var(--esta130-stat-label,#7b89a4)!important;font-size:var(--esta130-caption-size,9px)!important}
+#app.maintenanceMode #maintenancePage .maintenanceStats b{color:var(--esta130-stat-text,#f6f8ff)!important}
+#app.maintenanceMode #maintenancePage .maintenanceStats em{color:var(--esta130-stat-label,#5f6e8a)!important}
 #app.maintenanceMode #maintenancePage .maintStatIcon{
   border:1px solid #30405f!important;background:#1a2540!important;color:#18d9f3!important
 }
@@ -783,11 +785,12 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
 #app.maintenanceMode #maintenancePage .maintenanceScheduleHead,
 #app.maintenanceMode #maintenancePage .maintenanceToolbar,
 #app.maintenanceMode #maintenancePage .inventorySectionHead{
-  border-bottom-color:#202c44!important;background:#11182b!important
+  border-bottom-color:var(--esta130-stat-border,#202c44)!important;
+  background:var(--esta130-stat-bg,#11182b)!important
 }
-#app.maintenanceMode #maintenancePage .inventoryKicker{color:#18d9f3!important}
-#app.maintenanceMode #maintenancePage :is(.maintenanceScheduleHead h2,.maintenanceToolbar h2,.inventorySectionHead h3){color:#f5f7ff!important}
-#app.maintenanceMode #maintenancePage :is(.maintenanceToolbar p,.inventorySectionHead p){color:#71809e!important}
+#app.maintenanceMode #maintenancePage .inventoryKicker{color:var(--esta130-stat-text,#18d9f3)!important;font-size:var(--esta130-caption-size,9px)!important}
+#app.maintenanceMode #maintenancePage :is(.maintenanceScheduleHead h2,.maintenanceToolbar h2,.inventorySectionHead h3){color:var(--esta130-stat-text,#f5f7ff)!important}
+#app.maintenanceMode #maintenancePage :is(.maintenanceToolbar p,.inventorySectionHead p){color:var(--esta130-stat-label,#71809e)!important;font-size:var(--esta130-caption-size,9px)!important}
 #app.maintenanceMode #maintenancePage #maintenanceMonthClear{
   border-color:#34415b!important;background:#151f34!important;color:#aab5ca!important
 }
@@ -836,10 +839,14 @@ body:has(#app.maintenanceMode) :is(#maintenanceAssetModal,#maintenanceRecordModa
   border-color:#55333a!important;background:#2a1a23!important;color:#e58a97!important
 }
 #app.maintenanceMode #maintenancePage .maintenanceHistoryCard th{
-  background:#101729!important;color:#7583a1!important;border-bottom-color:#202c44!important
+  font-size:var(--esta130-table-font-size,11px)!important;
+  background:var(--esta130-table-head-bg,#101729)!important;
+  color:var(--esta130-table-head-text,#7583a1)!important;
+  border-bottom-color:var(--esta130-table-head-border,#202c44)!important
 }
 #app.maintenanceMode #maintenancePage .maintenanceHistoryCard td{
-  color:#aab6cc!important;border-bottom-color:#19253b!important
+  color:var(--esta130-table-row-text,#aab6cc)!important;
+  border-bottom-color:var(--esta130-table-row-border,#19253b)!important
 }
 
 /* ---------- ADMIN / PROJECTS ---------- */
