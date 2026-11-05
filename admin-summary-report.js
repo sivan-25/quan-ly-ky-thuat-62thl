@@ -18,7 +18,7 @@
     ["inspection","Kiểm tra định kỳ","Checklist, tồn tại và kiến nghị"],
     ["energy","Năng lượng","Điện EVN1/EVN2, nước, Solar và XLNT"],
     ["maintenance","Bảo trì thiết bị","Lịch bảo trì quá hạn và nhật ký thực hiện"],
-    ["materials","Vật tư","Tồn đầu, nhập, xuất, tồn cuối và cảnh báo"],
+    ["materials","Vật tư tiêu hao","Tồn đầu, nhập, xuất, tồn cuối và cảnh báo"],
     ["tools","Dụng cụ kỹ thuật","Tình trạng thiết bị/dụng cụ tại ngày lập"],
     ["contractor","Nhà thầu","Công việc nhà thầu chưa và đã hoàn thành"]
   ];
@@ -596,7 +596,15 @@
       if(target.id==="asMonth"){applyMonth();return;}
       if(target.id==="asSamples"){state.includeSamples=target.checked;renderResults();return;}
       if(target.dataset.asProject){if(target.checked)state.projects.add(target.dataset.asProject);else state.projects.delete(target.dataset.asProject);fetchData();return;}
-      if(target.dataset.asCategory){if(target.checked)state.categories.add(target.dataset.asCategory);else state.categories.delete(target.dataset.asCategory);fetchData();return;}
+      if(target.dataset.asCategory){
+        const inventory=target.dataset.asCategory==="materials"||target.dataset.asCategory==="tools";
+        if(target.checked){
+          if(inventory)state.categories=new Set([...state.categories].filter(x=>x==="materials"||x==="tools"));
+          else {state.categories.delete("materials");state.categories.delete("tools");}
+          state.categories.add(target.dataset.asCategory);
+        }else state.categories.delete(target.dataset.asCategory);
+        renderSelectors();fetchData();return;
+      }
     });
     $("#navHome")?.addEventListener("click",close);
     for(const id of ["#navAdmin","#navProjectOverview","#navWork","#navEnergy","#navMaintenance","#navInventory","#navContractor"])$(id)?.addEventListener("click",close);
