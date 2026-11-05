@@ -215,7 +215,7 @@ async function prep(page,p){
      "Unbranded blue header "+mode+" width "+width+": "+JSON.stringify(state));
     assert.equal(state.area,cream,"Page background in "+mode+" width "+width);
     if(state.overflow>4){
-      const offenders=await page.evaluate(()=>[...document.querySelectorAll("#app *")].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&r.right>document.documentElement.clientWidth+8&&getComputedStyle(e).visibility!=="hidden";}).map(e=>({tag:e.tagName,id:e.id,cls:String(e.className||"").slice(0,75),right:Math.round(e.getBoundingClientRect().right),width:Math.round(e.getBoundingClientRect().width),scroll:e.scrollWidth,client:e.clientWidth})).sort((a,b)=>b.right-a.right).slice(0,18));
+      const offenders=await page.evaluate(()=>[...document.querySelectorAll("html,body,#app,#app *")].filter(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return (e.scrollWidth>e.clientWidth+12||r.right>document.documentElement.clientWidth+8||r.width>document.documentElement.clientWidth+20)&&s.visibility!=="hidden"&&s.display!=="none";}).map(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return {tag:e.tagName,id:e.id,cls:String(e.className||"").slice(0,75),right:Math.round(r.right),width:Math.round(r.width),scroll:e.scrollWidth,client:e.clientWidth,overflow:s.overflowX,position:s.position,pseudo:getComputedStyle(e,"::after").content};}).sort((a,b)=>(b.scroll-b.client)-(a.scroll-a.client)).slice(0,28));
       assert.fail("Horizontal overflow in "+mode+" width "+width+": "+state.overflow+" offenders "+JSON.stringify(offenders));
     }
     for(const key of ["workCard","energyKpi","energyPanel","inventory","energyTable"]){
