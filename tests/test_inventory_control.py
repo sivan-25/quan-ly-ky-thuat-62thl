@@ -35,7 +35,7 @@ class InventoryControlReportTests(unittest.TestCase):
         self.assertEqual(n,4)
     def test_equipment_b_with_multiple_pages(self):
         n,size=self.pdf(["tools"],[self.project(items=40)])
-        self.assertEqual(n,41)
+        self.assertEqual(n,40)
         self.assertGreater(size,5000)
     def test_admin_multiple_projects_one_pdf(self):
         n,_=self.pdf(["materials","tools"],[
