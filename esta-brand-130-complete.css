@@ -11,6 +11,9 @@ body.estaBrand130,
   --esta130-ui-radius: 10px;
   --esta130-ui-gap: 12px;
   --esta130-ui-font-size: 14px;
+  --esta130-label-font-size: 12px;
+  --esta130-caption-size: 12px;
+  --esta130-table-font-size: 13px;
   --esta130-ui-surface: #FBF3E3;
   --esta130-ui-text: #2B1526;
   --esta130-ui-muted: #625045;
@@ -30,7 +33,7 @@ body.estaBrand130,
   /* One visual role = one color family across every 130HH module. */
   --esta130-field-bg: #FBF3E3;
   --esta130-field-text: #2B1526;
-  --esta130-field-border: #D7BE9C;
+  --esta130-field-border: #987759;
   --esta130-stat-bg: #F5ECD0;
   --esta130-stat-text: #411437;
   --esta130-stat-label: #625045;
@@ -419,6 +422,8 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
 body.estaBrand130 .workEditDrawer #taskForm .workField > span{
   color:var(--esta130-field-text)!important;
   -webkit-text-fill-color:var(--esta130-field-text)!important;
+  font-size:var(--esta130-label-font-size)!important;
+  line-height:1.35;
 }
 #app.estaBrand130 #workPage #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),textarea,select),
 body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),textarea,select){
@@ -600,7 +605,7 @@ body.estaBrand130 #app.estaBrand130{
   color-scheme:light;
 }
 body.estaBrand130 #app.estaBrand130#app :is(#homePage,#workPage,#energyPage,#inventoryPage,#maintenancePage,#contractorPage,#incidentPage,#inspectionPage,#documentsPage,#reportsPage,#constructionMaterialPage,#updateAssetsPage)
-:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,th,li,a,dt,dd,legend,summary,em,div):where(:not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"]):not(button)){
+:is(h1,h2,h3,h4,p,span,strong,b,small,label,td,li,a,dt,dd,legend,summary,em,div):where(:not(button *):not([class*="status"]):not([class*="Status"]):not([class*="badge"]):not([class*="Badge"]):not([class*="typeBadge"]):not([class*="pill"]):not([class*="Pill"]):not([class*="chip"]):not([class*="Chip"]):not([class*="tag"]):not([class*="Tag"]):not([class*="priority"]):not([class*="Priority"]):not(button)){
   color:var(--esta130-text)!important;
 }
 /* The named dark brand surfaces always use cream text, including nested labels. */
@@ -632,7 +637,7 @@ body.estaBrand130 :is(.workEditDrawerHead,.workEditDrawer .workEntryHeader,.demo
 body.estaBrand130 #app.estaBrand130 :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea,.peopleSelectBtn,.peopleSelectMenu,.energyImagePicker,.imagePicker,.uploadBox){
   background:#FBF3E3!important;
   color:var(--esta130-text)!important;
-  border-color:#CFB394!important;
+  border-color:var(--esta130-field-border)!important;
   -webkit-text-fill-color:var(--esta130-text);
 }
 body.estaBrand130 #app.estaBrand130#app :is(input,textarea)::placeholder{
