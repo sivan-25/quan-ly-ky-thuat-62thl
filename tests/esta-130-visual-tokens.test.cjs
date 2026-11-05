@@ -41,6 +41,9 @@ for (const n of [1, 2, 3, 4]) {
   assert.ok(part, `inventory KPI ${n} missing`);
   assert.ok(part[1].includes("background:var(--esta130-stat-bg,"), `inventory KPI ${n} inconsistent`);
 }
+assert.ok(base.includes(".inventoryMetric.lowMetric{\n  background:var(--esta130-stat-bg)!important;"), "low-stock tile shares KPI background");
+const workMobile = read("demo-mobile.css");
+assert.ok(workMobile.includes("background:var(--esta130-field-bg)!important"), "visible date output uses normal form field color");
 const mobile = read("inventory-mobile-cards.css");
 assert.ok(mobile.includes("background:var(--esta130-stat-bg,#16233a)"), "mobile KPI role");
 assert.ok(mobile.includes("color:var(--esta130-stat-label,#a9b8d2)"), "mobile KPI label role");
