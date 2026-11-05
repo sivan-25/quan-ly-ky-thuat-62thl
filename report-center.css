@@ -21,7 +21,7 @@
 #reportsPage .rc-eyebrow { display: block; color: var(--rc-accent); font-size: 11px; font-weight: 700; letter-spacing: 1.7px; margin-bottom: 10px; }
 #reportsPage .rc-heading h2 { font-size: clamp(23px,2.2vw,30px); font-weight: 600; color: var(--rc-brand); letter-spacing: -.7px; line-height: 1.25; }
 #reportsPage .rc-heading p { margin-top: 8px; font-size: 13px; color: #5c6673; line-height: 1.6; }
-#reportsPage .rc-button { min-height: 42px; border: 1px solid #cbd8e2; border-radius: 9px; padding: 10px 16px; background: #fff; color: var(--rc-brand); font-weight: 600; font-size: 13px; white-space: nowrap; transition: background .15s; }
+#reportsPage .rc-button { min-height:var(--esta130-control-height,42px); border: 1px solid #cbd8e2; border-radius: 9px; padding: 10px 16px; background: #fff; color: var(--rc-brand); font-weight: 600; font-size: 13px; white-space: nowrap; transition: background .15s; }
 #reportsPage .rc-button:hover:not(:disabled) { background: #edf5fa; }
 #reportsPage .rc-primary { background: var(--rc-accent); color: #fff; border-color: var(--rc-accent); }
 #reportsPage .rc-primary:hover:not(:disabled) { background: #006f89; }
@@ -32,7 +32,7 @@
 #reportsPage .rc-segments button.active { background: #fff; box-shadow: 0 1px 5px #18354d1a; color: #007f9e; font-weight: 600; }
 #reportsPage .rc-field { display: grid; gap: 6px; min-width: 0; }
 #reportsPage .rc-field > span { color: var(--rc-muted); font-size: 11px; }
-#reportsPage .rc-field :is(input,select) { min-width: 0; max-width: 100%; width: 100%; min-height: 42px; border: 1px solid #cbd9e5; border-radius: 8px; padding: 8px 10px; color: var(--rc-ink); background: #fff; font-size: 14px; }
+#reportsPage .rc-field :is(input,select) { min-width: 0; max-width: 100%; width: 100%; min-height:var(--esta130-control-height,42px); border: 1px solid #cbd9e5; border-radius: 8px; padding: 8px 10px; color: var(--rc-ink); background: #fff; font-size: 14px; }
 #reportsPage .rc-custom-dates { display: flex; gap: 8px; }
 #reportsPage .rc-range-hint { flex: 1 0 100%; font-size: 12px; color: var(--rc-muted); line-height: 1.5; }
 #reportsPage .rc-range-hint.is-error { color: #b83d42; }
