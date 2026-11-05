@@ -223,7 +223,7 @@
   #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats{
     display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
     gap:0!important;padding:0!important;margin:0 0 9px!important;
-    background:#16233a!important;border:1px solid #24344f!important;
+    background:var(--esta130-stat-bg,#16233a)!important;border:1px solid var(--esta130-stat-border,#24344f)!important;
     border-radius:12px!important;overflow:hidden!important;box-shadow:none!important;
   }
   #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article{
@@ -245,14 +245,14 @@
     line-height:1.1!important;margin:0 0 3px!important;
   }
   #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats article small{
-    color:#a9b8d2!important;letter-spacing:0!important;
+    color:var(--esta130-stat-label,#a9b8d2)!important;letter-spacing:0!important;
     font-size:9px!important;font-weight:500!important;line-height:1.25!important;
     white-space:normal!important;
   }
-  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .inMetric b{color:#5eead4!important}
-  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .outMetric b{color:#fbbf5c!important}
-  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .stockMetric b{color:#8dbbff!important}
-  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .lowMetric b{color:#d0d9e8!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .inMetric b{color:var(--esta130-stat-text,#5eead4)!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .outMetric b{color:var(--esta130-stat-text,#fbbf5c)!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .stockMetric b{color:var(--esta130-stat-text,#8dbbff)!important}
+  #app #inventoryPage.inventorySharedMobileCompact #inventoryMaterialsPane .monthlyStats .lowMetric b{color:var(--esta130-pending-text,#d0d9e8)!important}
   #app #inventoryPage.inventorySharedMobileCompact #inventory130ListBar{
     display:flex!important;align-items:center!important;gap:6px!important;
     min-height:45px!important;padding:0 0 6px!important;width:100%!important;

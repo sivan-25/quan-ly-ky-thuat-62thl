@@ -9,7 +9,7 @@
 #app.inventoryMode #inventoryToolsPane .inventoryToolbarActions .inventorySearch{flex:1 1 195px!important;min-width:155px!important;max-width:340px!important;height:45px!important}
 #app.inventoryMode #inventoryToolsPane .inventoryToolbarActions .inventorySearch input{font-size:14px!important;min-width:0!important}
 #app.inventoryMode #inventoryToolsPane #toolStatusFilter{flex:0 1 195px;min-width:155px;max-width:100%;height:45px;box-sizing:border-box;border:1px solid #465b76;border-radius:10px;padding:0 11px;background:#152742;color:#e8f2ff;font:600 13px Inter,sans-serif;cursor:pointer}
-#app.inventoryMode #inventoryToolsPane :is(#toolExportPdf,#addToolBtn){min-height:45px!important;font-size:13px!important;font-weight:750!important;padding:0 13px!important;white-space:nowrap!important}
+#app.inventoryMode #inventoryToolsPane :is(#toolExportPdf,#addToolBtn){min-height:var(--esta130-control-height,45px)!important;font-size:13px!important;font-weight:750!important;padding:0 13px!important;white-space:nowrap!important}
 #app.inventoryMode #inventoryToolsPane :is(#toolStatusFilter,#toolSearch,#toolExportPdf,#addToolBtn):focus-visible{outline:2px solid #f1c37d!important;outline-offset:3px!important}
 #app.inventoryMode #inventoryToolsPane #toolVisibleCount{display:block;margin:0;padding:0 15px 12px;font-size:12px;font-weight:650;line-height:1.5;color:#a9c3dc}
 #app.inventoryMode #inventoryToolsPane .toolsStats article{min-width:0!important}
@@ -37,9 +37,9 @@
 #app.inventoryMode #inventoryToolsPane .toolsQuickAdd .inventoryExamples button{height:auto!important;min-height:36px!important;padding:7px 12px!important;font-size:12px!important;line-height:1.4!important}
 #app.inventoryMode #inventoryToolsPane #toolsEmpty{font-size:13px!important;line-height:1.6!important;padding:28px 14px!important;text-align:center!important}
 #toolItemModal .inventoryForm label>span{font-size:12px!important;font-weight:700!important;line-height:1.5!important}
-#toolItemModal .inventoryForm :is(input,select){min-height:44px!important;height:44px!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;font-size:14px!important}
+#toolItemModal .inventoryForm :is(input,select){min-height:var(--esta130-control-height,44px)!important;height:var(--esta130-control-height,44px)!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;font-size:14px!important}
 #toolItemModal .inventoryForm :is(input,select):focus-visible{outline:2px solid #eac380!important;outline-offset:2px!important}
-#toolItemModal .inventoryFormActions button{min-height:45px!important;font-size:13px!important;font-weight:750!important}
+#toolItemModal .inventoryFormActions button{min-height:var(--esta130-control-height,45px)!important;font-size:13px!important;font-weight:750!important}
 @media(min-width:1401px){
  #app.inventoryMode #inventoryToolsPane .toolsTable{min-width:1120px!important;width:100%!important}
  #app.inventoryMode #inventoryToolsPane .inventoryTableScroll{overflow-x:auto!important}
@@ -87,7 +87,7 @@
  #app.inventoryMode #inventoryToolsPane .estaToolMore .invMobileMeta b{font-size:12px!important;line-height:1.5!important;color:#eaf2ff!important;font-weight:700!important}
  #app.inventoryMode #inventoryToolsPane .estaToolMore .invMobileNote{margin:0 11px 11px!important;padding:8px!important;background:#1a2b44!important;border-radius:8px!important;color:#c6d8ed!important;font-size:12px!important;overflow-wrap:anywhere}
  #app.inventoryMode #inventoryToolsPane .estaToolCard .invMobileCardActions{display:flex!important;align-items:center!important;gap:9px!important;margin-top:10px!important;padding-top:10px!important;border-top:1px solid #324962!important}
- #app.inventoryMode #inventoryToolsPane .estaToolCard .invMobileCardActions button{flex:1 1 0!important;min-width:0!important;min-height:44px!important;font-size:12px!important;font-weight:750!important;border-radius:9px!important}
+ #app.inventoryMode #inventoryToolsPane .estaToolCard .invMobileCardActions button{flex:1 1 0!important;min-width:0!important;min-height:var(--esta130-control-height,44px)!important;font-size:12px!important;font-weight:750!important;border-radius:9px!important}
  #app.inventoryMode #inventoryToolsPane .estaToolCard :is(summary,button):focus-visible{outline:2px solid #f1c37d!important;outline-offset:2px!important}
 }
 @media(max-width:760px){
@@ -117,7 +117,7 @@
  #toolItemModal .inventoryForm label.toolField-qty,
  #toolItemModal .inventoryForm label.toolField-unit{grid-column:auto!important}
  #toolItemModal .inventoryFormActions{grid-column:1/-1!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;position:sticky!important;bottom:0!important;background:#101b2e!important;padding:10px 0!important;z-index:4!important}
- #toolItemModal .inventoryForm :is(input,select){font-size:16px!important;min-height:44px!important}
+ #toolItemModal .inventoryForm :is(input,select){font-size:16px!important;min-height:var(--esta130-control-height,44px)!important}
 }
 @media(max-width:370px){
  #app.inventoryMode #inventoryToolsPane .estaToolCard .invMobileCardHead{flex-wrap:wrap!important}
@@ -176,8 +176,8 @@
   width:100%!important;
   min-width:0!important;
   max-width:100%!important;
-  height:40px!important;
-  min-height:40px!important;
+  height:var(--esta130-control-height,40px)!important;
+  min-height:var(--esta130-control-height,40px)!important;
   padding:7px 10px!important;
   box-sizing:border-box!important;
   font-size:16px!important;
@@ -239,7 +239,7 @@
 #toolItemModal #toolItemForm .inventoryFormActions button{
   width:100%!important;
   min-width:0!important;
-  min-height:43px!important;
+  min-height:var(--esta130-control-height,43px)!important;
   padding:8px!important;
   border-radius:9px!important;
   font-size:13px!important;
@@ -279,7 +279,7 @@
   width:100%!important;height:42px!important;padding:0 8px!important;font-size:12px!important
  }
  #app #inventoryPage #inventoryToolsPane #addToolBtn{
-  grid-column:2!important;grid-row:2!important;min-height:42px!important;width:100%!important;
+  grid-column:2!important;grid-row:2!important;min-height:var(--esta130-control-height,42px)!important;width:100%!important;
   min-width:0!important;padding:0 6px!important;font-size:12px!important;letter-spacing:0!important
  }
  #app #inventoryPage #inventoryToolsPane #toolExportPdf{

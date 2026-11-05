@@ -1,3 +1,59 @@
+/* 130 Hồng Hà: single-source UI dimensions and accessible palette.
+   Variables only; existing module selectors consume them with legacy fallbacks.
+   Other buildings retain their existing sizes and colors. */
+body.estaBrand130,
+#app.estaBrand130 {
+  --esta130-control-height: 44px;
+  --esta130-compact-height: 36px;
+  --esta130-kpi-height: 44px;
+  --esta130-table-head-height: 44px;
+  --esta130-table-row-height: 44px;
+  --esta130-ui-radius: 10px;
+  --esta130-ui-gap: 12px;
+  --esta130-ui-font-size: 14px;
+  --esta130-ui-surface: #FBF3E3;
+  --esta130-ui-text: #2B1526;
+  --esta130-ui-muted: #625045;
+  --esta130-ui-border: #D7BE9C;
+  --esta130-table-head-bg: #411437;
+  --esta130-table-head-text: #F3DEBF;
+  --esta130-table-head-border: #A46427;
+  --esta130-table-row-bg: #FBF3E3;
+  --esta130-table-row-text: #2B1526;
+  --esta130-table-row-border: #D7BE9C;
+  --esta130-success-bg: #E8F4E8;
+  --esta130-success-text: #175B36;
+  --esta130-warning-bg: #FFF0DA;
+  --esta130-warning-text: #7A4300;
+  --esta130-danger-bg: #FDE8E8;
+  --esta130-danger-text: #991B1B;
+  /* One visual role = one color family across every 130HH module. */
+  --esta130-field-bg: #FBF3E3;
+  --esta130-field-text: #2B1526;
+  --esta130-field-border: #D7BE9C;
+  --esta130-stat-bg: #F5ECD0;
+  --esta130-stat-text: #411437;
+  --esta130-stat-label: #625045;
+  --esta130-stat-border: #D7BE9C;
+  --esta130-today-bg: #EFE4ED;
+  --esta130-today-text: #411437;
+  --esta130-progress-bg: #E7F0FA;
+  --esta130-progress-text: #164A70;
+  --esta130-progress-border: #A6C5DD;
+  --esta130-complete-bg: #E8F4E8;
+  --esta130-complete-text: #175B36;
+  --esta130-complete-border: #B3D7B9;
+  --esta130-pending-bg: #FFF0DA;
+  --esta130-pending-text: #7A4300;
+  --esta130-pending-border: #E8C88F;
+  --esta130-overdue-bg: #FDE8E8;
+  --esta130-overdue-text: #991B1B;
+  --esta130-overdue-border: #E7B2B2;
+  --esta130-kpi-success-text: #116630;
+  --esta130-kpi-warning-text: #874300;
+  --esta130-kpi-danger-text: #A51E32;
+}
+
 /* ESTA / 130 HONG HA — Full brand visual system, October 2026.
    BRAND SOURCE: user-provided esta-brand.skill
    Explicit 130HH scope; never change Admin or other projects.
@@ -119,13 +175,13 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
  color:var(--esta130-cream)!important;
 }
 #app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi,.updateKpi,.homeActivity,.opsPanel,.ccProjectCard){
- background:var(--esta130-soft)!important;
- border-color:var(--esta130-line)!important;
- color:var(--esta130-text)!important;
+ background:var(--esta130-stat-bg)!important;
+ border-color:var(--esta130-stat-border)!important;
+ color:var(--esta130-stat-text)!important;
  box-shadow:var(--esta130-shadow)!important;
 }
 #app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi) :is(small,span:not(.status):not(.badge),p){
- color:var(--esta130-secondary)!important;
+  color:var(--esta130-stat-label)!important;
 }
 #app.estaBrand130 :is(.stats article,.kpiCard,.energySummaryCards article,.maintenanceStats article,.contractorStats article,.demoKpi,.demoOpsCard,.opsKpi) :is(strong,b){
  color:var(--esta130-plum)!important;
@@ -356,7 +412,90 @@ body.estaBrand130 :is(.workEditDrawerCard,.demoDrawerCard,.modalCard,.contractor
  outline:2px solid #A46427!important;
  outline-offset:2px!important;
 }
-/* No global treatment of status and warning/error/success badges: retain meaning. */
+/* Functional palette for 130HH: labels, fields, KPI tiles and states are
+   identical by role across pages. Scope is intentionally limited to this project.
+   Status colors communicate meaning; ordinary tiles all stay neutral. */
+#app.estaBrand130 #workPage #taskForm .workField > span,
+body.estaBrand130 .workEditDrawer #taskForm .workField > span{
+  color:var(--esta130-field-text)!important;
+  -webkit-text-fill-color:var(--esta130-field-text)!important;
+}
+#app.estaBrand130 #workPage #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),textarea,select),
+body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),textarea,select){
+  box-sizing:border-box;
+  min-height:var(--esta130-control-height)!important;
+  border-color:var(--esta130-field-border)!important;
+  background:var(--esta130-field-bg)!important;
+  color:var(--esta130-field-text)!important;
+  -webkit-text-fill-color:var(--esta130-field-text)!important;
+  font-size:var(--esta130-ui-font-size)!important;
+  border-radius:var(--esta130-ui-radius)!important;
+}
+/* Single-line fields are exactly 44px; free-text content can expand below 44px. */
+#app.estaBrand130 #workPage #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),select),
+body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),select){
+  height:var(--esta130-control-height)!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter]{
+  background:var(--esta130-stat-bg)!important;
+  border-color:var(--esta130-stat-border)!important;
+  color:var(--esta130-stat-text)!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter] :is(small,strong){
+  color:var(--esta130-stat-text)!important;
+  -webkit-text-fill-color:var(--esta130-stat-text)!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter]>i{
+  background:var(--esta130-today-bg)!important;
+  border:1px solid var(--esta130-stat-border)!important;
+  color:var(--esta130-today-text)!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter="doing"]>i{
+  background:var(--esta130-progress-bg)!important;
+  border-color:var(--esta130-progress-border)!important;
+  color:var(--esta130-progress-text)!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter="done"]>i{
+  background:var(--esta130-complete-bg)!important;
+  border-color:var(--esta130-complete-border)!important;
+  color:var(--esta130-complete-text)!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter="waiting"]>i{
+  background:var(--esta130-pending-bg)!important;
+  border-color:var(--esta130-pending-border)!important;
+  color:var(--esta130-pending-text)!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter]>i svg,
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter]>i svg :is(path,rect,circle,line){
+  stroke:currentColor!important;
+}
+#app.estaBrand130 #workPage .stats article[data-work-stat-filter].active{
+  border-color:var(--esta130-plum)!important;
+  background:var(--esta130-stat-bg)!important;
+  box-shadow:0 0 0 2px rgba(65,20,55,.15)!important;
+}
+#app.estaBrand130 :is(.badge.doing,.homeStatus.doing),
+body.estaBrand130 .workEditDrawer .badge.doing{
+  background:var(--esta130-progress-bg)!important;
+  border-color:var(--esta130-progress-border)!important;
+  color:var(--esta130-progress-text)!important;
+  -webkit-text-fill-color:var(--esta130-progress-text)!important;
+}
+#app.estaBrand130 :is(.badge.done,.homeStatus.done),
+body.estaBrand130 .workEditDrawer .badge.done{
+  background:var(--esta130-complete-bg)!important;
+  border-color:var(--esta130-complete-border)!important;
+  color:var(--esta130-complete-text)!important;
+  -webkit-text-fill-color:var(--esta130-complete-text)!important;
+}
+#app.estaBrand130 :is(.badge.waiting,.homeStatus.waiting),
+body.estaBrand130 .workEditDrawer .badge.waiting{
+  background:var(--esta130-pending-bg)!important;
+  border-color:var(--esta130-pending-border)!important;
+  color:var(--esta130-pending-text)!important;
+  -webkit-text-fill-color:var(--esta130-pending-text)!important;
+}
+
 @media(max-width:760px){
  #app.estaBrand130 .estaTopbar{border-bottom-color:#A46427!important}
  #app.estaBrand130 #workPage :is(.workEntryCard,.premiumTableCard,#mobileCards){background:#F5ECD0!important}
@@ -859,12 +998,12 @@ body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(input:not([type="chec
   opacity:1!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric{
-  background:#FFF0CC!important;
-  border-color:#E6C77F!important;
+  background:var(--esta130-stat-bg)!important;
+  border-color:var(--esta130-stat-border)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric :is(small,b,em,span){
-  color:#7C4C00!important;
-  -webkit-text-fill-color:#7C4C00!important;
+  color:var(--esta130-pending-text)!important;
+  -webkit-text-fill-color:var(--esta130-pending-text)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty{
   background:#EAF8F1!important;
@@ -1455,7 +1594,7 @@ body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPrioritySt
 body.estaBrand130 #app.estaBrand130#app #workPage .estaStarStack .estaPriorityStar[aria-pressed="true"],
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar.is-marked,
 body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed="true"]{
-  color:#9A6700!important;
+  color:#7A4300!important;
   -webkit-text-fill-color:#9A6700!important;
   background:#FFF0B3!important;
   border:1px solid #D6A12B!important;

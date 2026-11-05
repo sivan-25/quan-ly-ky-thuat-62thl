@@ -9,10 +9,10 @@
 #app:has(#inventoryPage:is(.inventoryRef130,.inventoryRef127):not(.hide)) .account{order:9!important;margin-left:0!important}
 #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventoryToolbarActions{justify-content:flex-end!important}
 #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfMenu{position:relative;display:inline-flex;align-items:center;min-width:0}
-#app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfMenu>button{min-height:44px;border:1px solid #dccbb3;border-radius:12px;padding:0 14px;background:#fbf3e6;color:#392c31;-webkit-text-fill-color:#392c31;font-weight:750;font-size:14px;cursor:pointer}
+#app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfMenu>button{min-height:var(--esta130-control-height,44px);border:1px solid #dccbb3;border-radius:12px;padding:0 14px;background:#fbf3e6;color:#392c31;-webkit-text-fill-color:#392c31;font-weight:750;font-size:14px;cursor:pointer}
 #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfMenu[open]>button{background:#401533;color:#fff;-webkit-text-fill-color:#fff}
 #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfDropdown{position:absolute;top:calc(100% + 5px);right:0;z-index:999;min-width:240px;display:grid;gap:4px;padding:6px;border:1px solid #d9c5a9;border-radius:12px;background:#fffaf0;box-shadow:0 10px 25px #341b2929}
-#app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfDropdown button{width:100%;min-height:44px;white-space:normal;text-align:left;padding:10px 12px;border:0;border-radius:8px;background:transparent;color:#361a30;-webkit-text-fill-color:#361a30;font-size:13px;font-weight:700;cursor:pointer}
+#app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfDropdown button{width:100%;min-height:var(--esta130-control-height,44px);white-space:normal;text-align:left;padding:10px 12px;border:0;border-radius:8px;background:transparent;color:#361a30;-webkit-text-fill-color:#361a30;font-size:13px;font-weight:700;cursor:pointer}
 #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfDropdown button:hover,#app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventory130PdfDropdown button:focus-visible{background:#f1ddc5}
 #app #inventoryPage:is(.inventoryRef130,.inventoryRef127) #materialExportPdf{display:none!important}
 @media(min-width:761px){#app #inventoryPage:is(.inventoryRef130,.inventoryRef127) .inventoryCommandControls:before{flex:none!important}}
@@ -169,7 +169,7 @@
   }
   body #app#app #inventoryPage.inventoryRef127 .monthlyStats article{
     display:flex!important;align-items:center!important;
-    min-height:84px!important;padding:14px 18px!important;
+    min-height:var(--esta130-kpi-height,84px)!important;padding:14px 18px!important;
     background:#f9eedf!important;border:1px solid var(--inv127-border)!important;
     border-radius:14px!important;box-shadow:0 3px 12px #244b6910!important;
   }
@@ -203,7 +203,7 @@
     border:0!important;background:transparent!important;
   }
   body #app#app #inventoryPage.inventoryRef127 #materialMonthTabs button{
-    min-height:39px!important;height:39px!important;
+    min-height:var(--esta130-compact-height,39px)!important;height:var(--esta130-compact-height,39px)!important;
     border:1px solid #d6e3ee!important;border-radius:9px!important;
     background:#f4f8fc!important;color:#37576c!important;
     -webkit-text-fill-color:#37576c!important;
@@ -223,7 +223,7 @@
   body #app#app #inventoryPage.inventoryRef127 .inventoryToolbarActions{gap:10px!important}
   body #app#app #inventoryPage.inventoryRef127 .inventoryToolbarActions :is(button,summary),
   body #app#app #inventoryPage.inventoryRef127 .inventory130PdfMenu>button{
-    min-height:42px!important;padding:0 15px!important;border-radius:10px!important;
+    min-height:var(--esta130-control-height,42px)!important;padding:0 15px!important;border-radius:10px!important;
     border:1px solid #ddc8b0!important;background:#f9eedf!important;
     color:#244962!important;-webkit-text-fill-color:#244962!important;
     font-weight:700!important;font-size:13px!important;
@@ -266,7 +266,7 @@
   }
   body #app#app #inventoryPage.inventoryRef127 .materialMonthlyTable tbody td,
   body #app#app #inventoryPage.inventoryRef127 .inventoryTableCard.materialMonthlyCard td{
-    height:62px!important;padding:10px 13px!important;
+    height:var(--esta130-table-row-height,62px)!important;padding:10px 13px!important;
     background:#fff!important;color:#243f55!important;
     -webkit-text-fill-color:#243f55!important;
     border-bottom:1px solid #e3ecf3!important;
@@ -325,7 +325,7 @@
   }
 }
 @media(min-width:761px) and (max-width:1150px){
-  body #app#app #inventoryPage.inventoryRef127 .monthlyStats article{min-height:76px!important;padding:11px 12px!important}
+  body #app#app #inventoryPage.inventoryRef127 .monthlyStats article{min-height:var(--esta130-kpi-height,76px)!important;padding:11px 12px!important}
   body #app#app #inventoryPage.inventoryRef127 .monthlyStats b{font-size:24px!important}
 }
 /* The legacy three-ID topbar rule must not tint the 127HH tab plum. */
@@ -355,7 +355,7 @@ body #app#app#app.inventoryMode:has(#inventoryPage.inventoryRef127:not(.hide)) h
   }
   #app #inventoryPage.inventoryRef127 .inventoryMobilePeriod select{
     background:#fff!important;border:1px solid #b7d0e3!important;
-    min-height:44px!important;color-scheme:light!important;
+    min-height:var(--esta130-control-height,44px)!important;color-scheme:light!important;
   }
   #app #inventoryPage.inventoryRef127 .monthlyStats article{
     background:#fff!important;border:1px solid #d5e2ec!important;
@@ -392,7 +392,7 @@ body #app#app#app.inventoryMode:has(#inventoryPage.inventoryRef127:not(.hide)) h
     border-top-color:#deebf3!important;
   }
   #app #inventoryPage.inventoryRef127 .invMobileCardActions button{
-    min-height:44px!important;border:1px solid #c6d9e8!important;
+    min-height:var(--esta130-control-height,44px)!important;border:1px solid #c6d9e8!important;
     background:#f1f7fb!important;color:#245978!important;
     -webkit-text-fill-color:#245978!important;
   }
@@ -411,12 +411,12 @@ body #app#app.inventoryMode :is(header.estaTopbar,#inventoryPage) .inventoryLoca
 body #app.inventoryMode #topInventoryTitle p{display:none!important}
 /* One compact summary and period rail across all four buildings; retain data nodes. */
 @media(min-width:761px){
- body #app#app #inventoryPage .monthlyStats article{min-height:68px!important;padding:10px 14px!important;border-radius:12px!important}
+ body #app#app #inventoryPage .monthlyStats article{min-height:var(--esta130-kpi-height,68px)!important;padding:10px 14px!important;border-radius:12px!important}
  body #app#app #inventoryPage .monthlyStats small{font-size:12px!important;letter-spacing:0!important;line-height:1.35!important}
  body #app#app #inventoryPage .monthlyStats b{font-size:24px!important;line-height:1.2!important;margin-top:3px!important}
  body #app#app #inventoryPage .monthlyStats em{display:none!important}
  body #app#app #inventoryPage #materialMonthTabs{display:grid!important;grid-template-columns:repeat(13,minmax(0,1fr))!important;gap:4px!important;padding:0!important}
- body #app#app #inventoryPage #materialMonthTabs button{min-width:0!important;min-height:34px!important;height:34px!important;padding:2px!important;font-size:12px!important;white-space:nowrap!important}
+ body #app#app #inventoryPage #materialMonthTabs button{min-width:0!important;min-height:var(--esta130-compact-height,34px)!important;height:var(--esta130-compact-height,34px)!important;padding:2px!important;font-size:12px!important;white-space:nowrap!important}
  body #app#app #inventoryPage #materialMonthTabs .yearOverviewBtn{display:block!important}
  body #app#app #inventoryPage #inventoryMaterialsPane>.inventoryStats{gap:8px!important;margin-bottom:10px!important}
  body #app#app #inventoryPage #inventoryMaterialsPane>.inventoryMonthRail{margin-bottom:10px!important}

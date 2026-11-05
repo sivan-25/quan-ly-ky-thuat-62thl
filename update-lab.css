@@ -879,7 +879,7 @@
   padding:0 12px 12px!important;
 }
 #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid textarea{
-  min-height:56px!important;
+  min-height:var(--esta130-control-height,56px)!important;
   max-height:120px!important;
   padding:8px 10px!important;
   line-height:1.35!important;
@@ -1036,8 +1036,8 @@
 #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > select,
 #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > input,
 #app.updateProjectMode #demoWorkLinks .updateUniformLinkField > select{
-  min-height:42px!important;
-  height:42px!important;
+  min-height:var(--esta130-control-height,42px)!important;
+  height:var(--esta130-control-height,42px)!important;
   padding:0 9px!important;
   border-radius:8px!important;
 }
@@ -1067,8 +1067,8 @@
 }
 #app.updateProjectMode .updateSystemField.hide{display:none!important}
 #app.updateProjectMode .updateSystemField select{
-  min-height:42px!important;
-  height:42px!important;
+  min-height:var(--esta130-control-height,42px)!important;
+  height:var(--esta130-control-height,42px)!important;
   padding:0 9px!important;
   border:1px solid #c7e3f5!important;
   border-radius:8px!important;
@@ -1116,8 +1116,8 @@
   gap:3px!important;
 }
 #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid textarea{
-  min-height:42px!important;
-  height:42px!important;
+  min-height:var(--esta130-control-height,42px)!important;
+  height:var(--esta130-control-height,42px)!important;
   max-height:84px!important;
   padding:7px 9px!important;
   border-radius:8px!important;
@@ -1143,9 +1143,9 @@
   #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > select,
   #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid > label:not(.span2) > input,
   #app.updateProjectMode #demoWorkLinks .updateUniformLinkField > select{
-    min-height:44px!important;
-    height:44px!important;
-    max-height:44px!important;
+    min-height:var(--esta130-control-height,44px)!important;
+    height:var(--esta130-control-height,44px)!important;
+    max-height:var(--esta130-control-height,44px)!important;
     block-size:44px!important;
     padding:0 8px!important;
     font-size:16px!important;
@@ -1166,8 +1166,8 @@
     grid-template-rows:auto 46px!important;
   }
   #app.updateProjectMode .updateSystemField select{
-    min-height:46px!important;
-    height:46px!important;
+    min-height:var(--esta130-control-height,46px)!important;
+    height:var(--esta130-control-height,46px)!important;
     font-size:16px!important;
   }
   #app.updateProjectMode #demoWorkLinks .demoTaskMaterialsField.updateUniformMaterialField{
@@ -1178,8 +1178,8 @@
     height:auto!important;
   }
   #app.updateProjectMode #demoWorkLinks .demoWorkLinkGrid textarea{
-    min-height:44px!important;
-    height:44px!important;
+    min-height:var(--esta130-control-height,44px)!important;
+    height:var(--esta130-control-height,44px)!important;
     max-height:none!important;
     font-size:16px!important;
   }
@@ -1874,12 +1874,12 @@
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleOption.selected{background:#e3f0ff!important;border-color:#317dff!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleNativeCheck{display:block!important;position:static!important;appearance:auto!important;-webkit-appearance:checkbox!important;width:22px!important;height:22px!important;min-height:22px!important;flex:0 0 22px!important;margin:0!important;padding:0!important;opacity:1!important;accent-color:#183263}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleName{min-width:0!important;white-space:normal!important;font-size:14px!important;line-height:20px!important;font-weight:500!important;color:inherit!important;overflow-wrap:anywhere}
- :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleEditBtn{display:block!important;width:100%!important;min-height:44px!important;margin:8px 0 0!important;padding:8px!important;border:1px solid #bdd8eb!important;border-radius:9px!important;background:#eaf5fc!important;color:#183263!important;font-size:15px!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleEditBtn{display:block!important;width:100%!important;min-height:var(--esta130-control-height,44px)!important;margin:8px 0 0!important;padding:8px!important;border:1px solid #bdd8eb!important;border-radius:9px!important;background:#eaf5fc!important;color:#183263!important;font-size:15px!important}
 
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker:not(.hide){display:block!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker.hide{display:none!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineActions{display:flex!important;gap:8px!important;margin-top:8px!important}
- :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineActions .peopleEditBtn{width:44px!important;min-width:44px!important;height:44px!important;flex:0 0 44px!important;margin:0!important;font-size:22px!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineActions .peopleEditBtn{width:44px!important;min-width:44px!important;height:var(--esta130-control-height,44px)!important;flex:0 0 44px!important;margin:0!important;font-size:22px!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineConfirm{display:block!important;flex:1 1 auto!important;min-width:0!important;min-height:44px!important;margin:0!important;padding:8px 12px!important;border:0!important;border-radius:9px!important;background:#183263!important;color:#fff!important;font-size:16px!important;font-weight:600!important;scroll-margin-bottom:120px!important}
 
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker{font-family:Inter,Arial,sans-serif!important;color-scheme:light!important;padding:10px!important;background:#f5fbff!important;border-color:#bdd8eb!important;border-radius:12px!important}
@@ -1923,20 +1923,20 @@
  .mobilePeopleSheet .peopleName{font-size:15px!important;line-height:20px!important;color:inherit!important}
  .mobilePeopleSheet .peopleAvatar{width:32px!important;height:32px!important;border-radius:9px!important;background:#1c2940!important;border:1px solid #39516c!important;color:#75d5e5!important;font-size:12px!important}
  .mobilePeopleSheet .peopleCheck{width:24px!important;height:24px!important;border:1px solid #60708c!important;border-radius:6px!important;font-size:16px!important}
- .mobilePeopleSheet .peopleEditBtn{display:block!important;flex:0 0 48px!important;width:100%!important;height:48px!important;min-height:48px!important;margin:0!important;padding:8px!important;border:0!important;border-top:1px solid #33435f!important;border-radius:0!important;background:#1c2940!important;color:#fff!important;font-size:15px!important;font-weight:600!important}
+ .mobilePeopleSheet .peopleEditBtn{display:block!important;flex:0 0 48px!important;width:100%!important;height:var(--esta130-control-height,48px)!important;min-height:var(--esta130-control-height,48px)!important;margin:0!important;padding:8px!important;border:0!important;border-top:1px solid #33435f!important;border-radius:0!important;background:#1c2940!important;color:#fff!important;font-size:15px!important;font-weight:600!important}
  body:has(#peopleManagerModal:not(.hide)) #toast{z-index:4800!important}
  #peopleManagerModal{z-index:4700!important;padding:8px!important;overflow:auto!important}
  #peopleManagerModal .peopleManagerCard{display:flex!important;flex-direction:column!important;width:100%!important;max-width:520px!important;max-height:calc(100vh - 32px)!important;max-height:calc(100dvh - 32px)!important;min-height:0!important;overflow:hidden!important}
  #peopleManagerModal .peopleManagerHead{flex:0 0 auto!important;padding:18px 50px 12px 14px!important}
  #peopleManagerModal .peopleManagerHead p{font-size:13px!important}
  #peopleManagerModal .peopleAddForm{display:grid!important;grid-template-columns:minmax(0,1fr) 80px!important;flex:0 0 auto!important;gap:8px!important;margin:12px!important}
- #peopleManagerModal .peopleAddForm input{min-width:0!important;width:100%!important;height:44px!important;font-size:16px!important}
- #peopleManagerModal .peopleAddForm button{height:44px!important;font-size:14px!important}
+ #peopleManagerModal .peopleAddForm input{min-width:0!important;width:100%!important;height:var(--esta130-control-height,44px)!important;font-size:16px!important}
+ #peopleManagerModal .peopleAddForm button{height:var(--esta130-control-height,44px)!important;font-size:14px!important}
  #peopleManagerModal .peopleManagerList{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow:auto!important;overscroll-behavior:contain!important;margin:0 12px!important}
  #peopleManagerModal .peopleManagerRow{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;min-height:52px!important}
  #peopleManagerModal .peopleManagerRow>div{min-width:0!important}
  #peopleManagerModal .peopleManagerRow b{font-size:15px!important;overflow-wrap:anywhere!important}
- #peopleManagerModal .peopleManagerRow button{min-width:52px!important;min-height:44px!important;font-size:14px!important}
+ #peopleManagerModal .peopleManagerRow button{min-width:52px!important;min-height:var(--esta130-control-height,44px)!important;font-size:14px!important}
  #peopleManagerModal .peopleManagerFoot{flex:0 0 auto!important;font-size:12px!important;padding:10px 12px!important}
  #peopleManagerModal .modalClose{width:36px!important;height:36px!important;font-size:24px!important}
 }
@@ -1995,7 +1995,7 @@
  :is(#app #workPage #taskForm,.workEditDrawer #taskForm).peopleCompact62 .workChoiceTile[aria-checked="true"] .workChoiceCircle{background:#102d64!important}
  :is(#app #workPage #taskForm,.workEditDrawer #taskForm).peopleCompact62 .workChoiceTile[aria-checked="true"] .workChoiceCircle:after{content:""!important;position:absolute!important;left:5px!important;top:3px!important;width:5px!important;height:9px!important;border:solid #fff!important;border-width:0 2px 2px 0!important;transform:rotate(45deg)!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineActions{display:grid!important;grid-template-columns:2fr 3fr!important;gap:8px!important}
- :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineActions .peopleEditBtn{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;flex:auto!important;margin:0!important;padding:6px!important;border:1px solid #82b9f7!important;border-radius:9px!important;background:#f5fbff!important;color:#1674ed!important;box-shadow:none!important;font-size:14px!important;font-weight:500!important}
+ :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineActions .peopleEditBtn{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;width:100%!important;min-width:0!important;height:var(--esta130-control-height,44px)!important;min-height:var(--esta130-control-height,44px)!important;flex:auto!important;margin:0!important;padding:6px!important;border:1px solid #82b9f7!important;border-radius:9px!important;background:#f5fbff!important;color:#1674ed!important;box-shadow:none!important;font-size:14px!important;font-weight:500!important}
  :is(#app #workPage #taskForm #taskPeopleMenu,.workEditDrawer #taskForm #taskPeopleMenu,#app #energyPage #energyPeopleMenu).inlinePeoplePicker .peopleInlineConfirm{width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;padding:6px!important;font-size:15px!important}
 }
 @media(max-width:359px){:is(#app #workPage #taskForm,.workEditDrawer #taskForm).peopleCompact62 .workChoiceTile>b{font-size:10px!important}}
@@ -2037,11 +2037,11 @@
  .workEditDrawer #taskForm.workEntryForm{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;width:100%!important;padding:12px 14px 8px!important;box-sizing:border-box!important}
  .workEditDrawer #taskForm .workField,.workEditDrawer #taskForm .workContent,.workEditDrawer #taskForm .workPerformer,.workEditDrawer #taskForm .workNote,.workEditDrawer #taskForm .workImage{grid-column:1/-1!important;min-width:0!important}
  .workEditDrawer #taskForm .workField>span{margin-bottom:5px!important;font-size:12px!important;line-height:1.2!important}
- .workEditDrawer #taskForm input:not([type="hidden"]),.workEditDrawer #taskForm select,.workEditDrawer #taskForm .peopleSelectBtn{width:100%!important;min-width:0!important;min-height:44px!important;height:44px!important;padding:8px 11px!important;border-radius:10px!important;font-size:16px!important;box-sizing:border-box!important}
- .workEditDrawer #taskForm #content.workContentInput{display:block!important;width:100%!important;min-width:0!important;min-height:44px!important;height:auto;padding:11px 12px!important;overflow-y:hidden!important;resize:none!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;word-break:break-word!important;line-height:1.45!important;font-size:16px!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm input:not([type="hidden"]),.workEditDrawer #taskForm select,.workEditDrawer #taskForm .peopleSelectBtn{width:100%!important;min-width:0!important;min-height:var(--esta130-control-height,44px)!important;height:var(--esta130-control-height,44px)!important;padding:8px 11px!important;border-radius:10px!important;font-size:16px!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm #content.workContentInput{display:block!important;width:100%!important;min-width:0!important;min-height:var(--esta130-control-height,44px)!important;height:auto;padding:11px 12px!important;overflow-y:hidden!important;resize:none!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;word-break:break-word!important;line-height:1.45!important;font-size:16px!important;box-sizing:border-box!important}
  .workEditDrawer #taskForm #note{min-height:44px!important;height:44px!important}
  .workEditDrawer #taskForm .workImage .imageNativeActions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%!important}
- .workEditDrawer #taskForm .workImage .imageActionBtn{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;max-height:44px!important;padding:0 10px!important;overflow:hidden!important;border-radius:10px!important;font-size:14px!important;line-height:1!important;box-sizing:border-box!important}
+ .workEditDrawer #taskForm .workImage .imageActionBtn{display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:100%!important;min-width:0!important;height:var(--esta130-control-height,44px)!important;min-height:var(--esta130-control-height,44px)!important;max-height:var(--esta130-control-height,44px)!important;padding:0 10px!important;overflow:hidden!important;border-radius:10px!important;font-size:14px!important;line-height:1!important;box-sizing:border-box!important}
  .workEditDrawer #taskForm .workImage .imageActionBtn svg{display:block!important;width:22px!important;min-width:22px!important;max-width:22px!important;height:22px!important;min-height:22px!important;max-height:22px!important;flex:0 0 22px!important}
  .workEditDrawer #taskForm .workImage .imageActionBtn span{display:inline!important;margin:0!important;font-size:14px!important;line-height:1!important;white-space:nowrap!important}
  .workEditDrawer .workImageInfo{min-height:0!important;margin:0 14px!important;padding:0 0 6px!important;font-size:11px!important;line-height:1.3!important}
@@ -2058,8 +2058,8 @@
  .workEditDrawer #demoWorkLinks .demoWorkLinkGrid .span2{grid-column:1/-1!important}
  .workEditDrawer #demoWorkLinks .demoAdvancedAsset,.workEditDrawer #demoWorkLinks .demoAdvancedInspection{display:none!important}
  .workEditDrawer #demoWorkLinks .demoWorkLinkGrid label{min-width:0!important;gap:5px!important;color:#79d9e6!important;font-size:11px!important;line-height:1.2!important}
- .workEditDrawer #demoWorkLinks input,.workEditDrawer #demoWorkLinks select{width:100%!important;min-width:0!important;min-height:44px!important;height:44px!important;padding:7px 9px!important;border:1px solid #42536d!important;border-radius:9px!important;background:#172238!important;color:#eef3fb!important;font-size:16px!important;box-sizing:border-box!important}
- .workEditDrawer #demoWorkLinks textarea{width:100%!important;min-width:0!important;min-height:44px!important;padding:9px 10px!important;border:1px solid #42536d!important;border-radius:9px!important;background:#172238!important;color:#eef3fb!important;font-size:16px!important;line-height:1.4!important;box-sizing:border-box!important;resize:vertical!important}
+ .workEditDrawer #demoWorkLinks input,.workEditDrawer #demoWorkLinks select{width:100%!important;min-width:0!important;min-height:var(--esta130-control-height,44px)!important;height:var(--esta130-control-height,44px)!important;padding:7px 9px!important;border:1px solid #42536d!important;border-radius:9px!important;background:#172238!important;color:#eef3fb!important;font-size:16px!important;box-sizing:border-box!important}
+ .workEditDrawer #demoWorkLinks textarea{width:100%!important;min-width:0!important;min-height:var(--esta130-control-height,44px)!important;padding:9px 10px!important;border:1px solid #42536d!important;border-radius:9px!important;background:#172238!important;color:#eef3fb!important;font-size:16px!important;line-height:1.4!important;box-sizing:border-box!important;resize:vertical!important}
  .workEditDrawer #demoWorkLinks .demoTaskMaterialsField{grid-column:1/-1!important;min-width:0!important;padding:9px!important;border:1px solid #33445f!important;border-radius:10px!important}
  .workEditDrawer #demoWorkLinks .demoTaskMaterialsHead{gap:8px!important;margin-bottom:6px!important}
  .workEditDrawer #demoWorkLinks #demoAddTaskMaterial{min-height:36px!important;height:36px!important;padding:0 10px!important;font-size:12px!important}
@@ -2073,7 +2073,7 @@
  .workEditDrawer #demoWorkLinks .demoWorkLinkGrid .span2{grid-column:1!important}
 }
 @media(min-width:761px){
- #taskForm #content.workContentInput{height:46px!important;min-height:46px!important;overflow-y:auto!important;resize:none!important}
+ #taskForm #content.workContentInput{height:var(--esta130-control-height,46px)!important;min-height:var(--esta130-control-height,46px)!important;overflow-y:auto!important;resize:none!important}
 }
 
 
@@ -2136,9 +2136,9 @@
     width:100%!important;
     min-width:0!important;
     max-width:none!important;
-    height:48px!important;
-    min-height:48px!important;
-    max-height:48px!important;
+    height:var(--esta130-control-height,48px)!important;
+    min-height:var(--esta130-control-height,48px)!important;
+    max-height:var(--esta130-control-height,48px)!important;
     margin:0!important;
     align-self:stretch!important;
   }
@@ -2291,8 +2291,8 @@
   }
   #energyPeopleMenu.mobilePeopleSheet .peopleEditBtn{
     width:100%!important;
-    height:48px!important;
-    min-height:48px!important;
+    height:var(--esta130-control-height,48px)!important;
+    min-height:var(--esta130-control-height,48px)!important;
     margin:0!important;
     border-radius:0!important;
     font-size:14px!important;
