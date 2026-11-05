@@ -1,0 +1,63 @@
+name: ESTA 130 UI and CSS release quality
+on:
+  pull_request:
+    paths:
+      - '**/*.css'
+      - '**/*.js'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/**'
+      - 'tests/esta-130-css-browser-parity.cjs'
+      - '.github/workflows/esta-130-ui-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.css'
+      - 'index.html'
+      - 'scripts/build-styles.cjs'
+      - 'tests/esta-130-css-browser-parity.cjs'
+      - '.github/workflows/esta-130-ui-quality.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: esta-130-ui-quality-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-build-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install audited source dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Test the SOURCE manifest before bundling
+        run: npm test
+      - name: Snapshot exact original document
+        run: cp index.html "${{ runner.temp }}/esta-index-before-build.html"
+      - name: Build the deployable CSS bundles
+        run: npm run build
+      - name: Verify built assets and link budget
+        run: |
+          node - <<'JS'
+          const fs=require('fs'),assert=require('node:assert/strict');
+          const html=fs.readFileSync('index.html','utf8');
+          const built=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+\.css)"/g)].map(m=>m[1]);
+          assert.ok(built.length<=19,`Too many CSS requests: ${built.length}`);
+          for(const name of built)assert.ok(fs.existsSync(name),'Missing CSS asset: '+name);
+          assert.ok(html.includes('data-esta-css-bundle="true"'),'Compiled CSS bundle missing');
+          console.log('PASS CSS asset budget:',built.length,'local stylesheets');
+          JS
+      - name: Install isolated browser test runner
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Compare built and source CSS for 130 and other buildings
+        run: node tests/esta-130-css-browser-parity.cjs "${{ runner.temp }}/esta-index-before-build.html"
