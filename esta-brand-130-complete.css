@@ -993,12 +993,12 @@ body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(input:not([type="chec
   opacity:1!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric{
-  background:#FFF0CC!important;
-  border-color:#E6C77F!important;
+  background:var(--esta130-stat-bg)!important;
+  border-color:var(--esta130-stat-border)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryMetric.lowMetric :is(small,b,em,span){
-  color:#7C4C00!important;
-  -webkit-text-fill-color:#7C4C00!important;
+  color:var(--esta130-pending-text)!important;
+  -webkit-text-fill-color:var(--esta130-pending-text)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage #stockAlertPanel .stockAlertEmpty{
   background:#EAF8F1!important;
