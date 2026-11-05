@@ -90,7 +90,7 @@ async function capture(browser,site,scenario,viewport){
    const rect=document.querySelector(selector).getBoundingClientRect();
    return {section:selector,rect:[rect.x,rect.y,rect.width,rect.height].map(x=>Math.round(x*10)/10),
      docWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,
-     tasks:document.querySelectorAll('#tbody tr').length,drawerOpen:!!document.querySelector('#workEditDrawer:not(.hide)'),title:document.title};
+     tasks:document.querySelectorAll('#tbody tr').length,drawerOpen:!!document.querySelector('#workEditDrawer:not(.hide)'),editInPlace:!!document.querySelector('#workPage .workEntryCard.workEditInPlace'),title:document.title};
  });
  const png=await page.screenshot({animations:'disabled',fullPage:false});
  await context.close();
@@ -110,7 +110,13 @@ async function capture(browser,site,scenario,viewport){
     assert.equal(base.stats.section,expected,'main source should display '+expected+' for '+scenario);
     assert.equal(next.stats.section,expected,'candidate should display '+expected+' for '+scenario);
     if(scenario.startsWith('work-'))assert.ok(base.stats.tasks>=2,'fixture work tasks must actually render for '+scenario);
-    if(scenario.startsWith('edit-'))assert.equal(base.stats.drawerOpen,true,'editing drawer must actually open for '+scenario);
+    if(scenario.startsWith('edit-')){
+      const shouldEditInPlace=viewport.width<=760;
+      assert.equal(base.stats.editInPlace,shouldEditInPlace,'baseline must use approved inline edit on phones for '+scenario);
+      assert.equal(base.stats.drawerOpen,!shouldEditInPlace,'baseline desktop edit drawer must match viewport for '+scenario);
+      assert.equal(next.stats.editInPlace,shouldEditInPlace,'candidate must preserve mobile inline editing for '+scenario);
+      assert.equal(next.stats.drawerOpen,!shouldEditInPlace,'candidate must preserve desktop drawer for '+scenario);
+     }
     const a=PNG.sync.read(base.png),b=PNG.sync.read(next.png);
     assert.equal(a.width,b.width);
     assert.equal(a.height,b.height);
