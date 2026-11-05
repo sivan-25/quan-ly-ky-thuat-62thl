@@ -128,7 +128,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   border-color:#ddc7a9!important;
   color:#173e5e!important;
 }
-body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane :is(.inventorySearch,#toolSearch) {
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventorySearch {
   background:#f9eedf!important;
   border-color:#d8c7ad!important;
   color:#173e5e!important;
@@ -325,16 +325,14 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs {
     grid-area:tabs!important;
     display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    align-items:stretch!important;gap:6px!important;
+    align-items:stretch!important;gap:8px!important;
     width:100%!important;min-width:0!important;max-width:100%!important;
     height:auto!important;min-height:0!important;
-    margin:0!important;padding:5px!important;
+    margin:0!important;padding:0!important;
     border:0!important;border-radius:12px!important;
     background:transparent!important;box-shadow:none!important;box-sizing:border-box!important;
   }
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button,
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button:not(.active),
-  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button:not(.active) span {
+  body #app#app#app #inventoryPage.inventoryRefShared .inventoryCommand .inventoryLocalTabs button {
     display:flex!important;align-items:center!important;justify-content:center!important;
     gap:5px!important;min-width:0!important;width:100%!important;
     height:44px!important;min-height:44px!important;max-height:44px!important;
@@ -427,8 +425,11 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolSearch {
     display:block!important;min-width:0!important;max-width:100%!important;
     width:100%!important;height:40px!important;min-height:40px!important;
+    padding:0!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;outline-offset:2px!important;
+    -webkit-appearance:none!important;appearance:none!important;
     color:#173d58!important;-webkit-text-fill-color:#173d58!important;
-    background:transparent!important;font-size:16px!important;
+    background:transparent!important;background-image:none!important;font-size:16px!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolSearch::placeholder {
     color:#60798b!important;-webkit-text-fill-color:#60798b!important;opacity:1!important;
@@ -468,8 +469,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   /* Four colored statistics cards sit BELOW the toolbar and never overlap it. */
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats {
     display:grid!important;position:relative!important;inset:auto!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:9px!important;width:100%!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;width:100%!important;
     min-width:0!important;max-width:100%!important;
     height:auto!important;min-height:0!important;
     margin:0 0 12px!important;padding:0!important;z-index:0!important;
@@ -478,11 +479,11 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article {
     display:flex!important;align-items:center!important;justify-content:center!important;
     min-width:0!important;width:100%!important;
-    min-height:86px!important;height:auto!important;
-    padding:11px 8px!important;margin:0!important;
+    height:44px!important;min-height:44px!important;max-height:44px!important;
+    padding:3px 2px!important;margin:0!important;
     border:1px solid rgba(255,255,255,.22)!important;
-    border-radius:13px!important;box-shadow:0 3px 10px rgba(16,32,55,.12)!important;
-    box-sizing:border-box!important;position:relative!important;
+    border-radius:9px!important;box-shadow:none!important;
+    box-sizing:border-box!important;position:relative!important;overflow:hidden!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(1) {
     background:linear-gradient(130deg,#0b6da8,#084a82)!important;
@@ -496,6 +497,13 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(4) {
     background:linear-gradient(130deg,#7039aa,#592d8b)!important;
   }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats .invStatIcon {
+    display:none!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article>div {
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+    gap:0!important;width:100%!important;min-width:0!important;height:100%!important;margin:0!important;padding:0!important;
+  }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article :is(small,b,em) {
     display:block!important;
     color:#fff!important;-webkit-text-fill-color:#fff!important;
@@ -503,10 +511,12 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     text-align:center!important;line-height:1.25!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats small {
-    font-size:11px!important;font-weight:750!important;letter-spacing:0!important;
+    max-width:100%!important;overflow:hidden!important;text-overflow:clip!important;
+    white-space:nowrap!important;font-size:clamp(8px,2.3vw,10px)!important;
+    font-weight:750!important;letter-spacing:-.15px!important;line-height:1.15!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats b {
-    margin:6px 0 0!important;font-size:23px!important;line-height:1.1!important;
+    margin:1px 0 0!important;font-size:15px!important;line-height:1.1!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats em {
     display:none!important;
