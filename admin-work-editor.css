@@ -109,6 +109,12 @@
  .ccAdminWorkEdit .ccWeGrid > .ccWePairRow :is(input,select){padding-inline:4px;font-size:12px}
 }
 
+/* Narrow phones: keep dispatch/start/due on independent rows while
+   priority and status remain a balanced two-column pair above 370px. */
+@media (min-width:371px) and (max-width:600px){
+ .ccAdminWorkEdit .ccWeGrid > .ccWePairRow > :is(label.ccWeDate,label.ccWeType){grid-column:1/-1}
+}
+
 /* Mobile viewport containment and uniform date control surfaces.
    The native date input remains interactive, over an abbreviated visible date. */
 .ccAdminWorkEdit,.ccAdminWorkEdit .ccWeCard{max-width:100vw;overflow-x:clip;overscroll-behavior-x:none}
