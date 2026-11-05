@@ -560,6 +560,37 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     background:#e4edf7!important;color:#355774!important;-webkit-text-fill-color:#355774!important;
   }
 
+  /* Keep status labels readable regardless of legacy dark-theme text-fill rules. */
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard .toolCondition.good {
+    background:#dcefe4!important;border:1px solid #b5d9c5!important;
+    color:#215c42!important;-webkit-text-fill-color:#215c42!important;
+    opacity:1!important;text-shadow:none!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard .toolCondition.warn {
+    background:#fff0d7!important;border:1px solid #e7cea6!important;
+    color:#80501e!important;-webkit-text-fill-color:#80501e!important;
+    opacity:1!important;text-shadow:none!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard .toolCondition.bad {
+    background:#f9e2e2!important;border:1px solid #e8bdbd!important;
+    color:#963b3b!important;-webkit-text-fill-color:#963b3b!important;
+    opacity:1!important;text-shadow:none!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .estaToolCard .toolCondition :is(span,b,strong) {
+    color:inherit!important;-webkit-text-fill-color:currentColor!important;
+  }
+  /* Stats retain the 44px row while preventing legacy title spacing from clipping. */
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article>div {
+    min-height:0!important;overflow:hidden!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats small {
+    margin:0!important;padding:0!important;
+    line-height:1.1!important;flex-shrink:0!important;
+  }
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats b {
+    padding:0!important;flex-shrink:0!important;
+  }
+
   /* Materials tab uses the same visible navy text surface; labels never
      inherit near-white-on-white from the alternate 127HH palette. */
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane {
