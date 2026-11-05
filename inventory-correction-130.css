@@ -411,7 +411,7 @@ body #app#app.inventoryMode :is(header.estaTopbar,#inventoryPage) .inventoryLoca
 body #app.inventoryMode #topInventoryTitle p{display:none!important}
 /* One compact summary and period rail across all four buildings; retain data nodes. */
 @media(min-width:761px){
- body #app#app #inventoryPage .inventoryCommandMeta.inventoryYearOnly #inventoryYear{min-height:44px!important;height:44px!important;box-sizing:border-box!important}
+ body #app#app:has(#inventoryPage.inventoryRefShared:not(.hide)) header.estaTopbar .inventoryCommandMeta.inventoryYearOnly #inventoryYear{min-height:44px!important;height:44px!important;box-sizing:border-box!important}
  body #app#app #inventoryPage .monthlyStats article{min-height:var(--esta130-kpi-height,68px)!important;padding:10px 14px!important;border-radius:12px!important}
  body #app#app #inventoryPage .monthlyStats small{font-size:12px!important;letter-spacing:0!important;line-height:1.35!important}
  body #app#app #inventoryPage .monthlyStats b{font-size:24px!important;line-height:1.2!important;margin-top:3px!important}
