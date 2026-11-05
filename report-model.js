@@ -95,7 +95,7 @@
     if (!validRange(r)) throw new Error("Vui lòng chọn ngày hợp lệ; ngày kết thúc phải từ ngày bắt đầu trở đi.");
     const chosen = new Set(selected), sections = [], photos = [], notes = [];
     const raw = data.snapshot || {};
-    const tasks = arr(raw.tasks).filter(x => inRange(x.d, r)).slice().sort((a, b) => String(a.d).localeCompare(String(b.d)));
+    const tasks = arr(raw.tasks).filter(x => inRange(x.d, r)).slice().sort((a, b) => Number(b.supervisorStarred === true) - Number(a.supervisorStarred === true) || String(a.d).localeCompare(String(b.d)));
     const incidents = arr(data.incidents).filter(x => inRange(x.detected_at, r));
     const inspections = arr(data.inspections).filter(x => inRange(x.inspection_date, r));
     const assets = arr(data.assets), contractors = arr(data.contractors);

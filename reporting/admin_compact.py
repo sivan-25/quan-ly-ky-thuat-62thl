@@ -186,7 +186,7 @@ def story(data):
 
     priority_items = (data.get("priority_items") or [])[:6]
     if priority_items:
-        story.extend([p("01  CÔNG VIỆC CẦN ƯU TIÊN XỬ LÝ", section), Spacer(1, 5)])
+        story.extend([p("01  CÔNG VIỆC ĐÁNH DẤU SAO / CẦN XỬ LÝ", section), Spacer(1, 5)])
         pr_rows = [[p(s, head) for s in (
             "STT", "DỰ ÁN", "NỘI DUNG CÔNG VIỆC", "PHỤ TRÁCH", "HẠN", "TÌNH TRẠNG"
         )]]

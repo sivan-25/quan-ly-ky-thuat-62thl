@@ -25,6 +25,15 @@ check('Inventory stock uses opening and dated transactions',()=>{
 check('Checklist counts records, retains all detailed items',()=>{
  const model=M.build({inspections:[{inspection_date:'2026-09-01',items:[{item:'A'},{item:'B'}]}]},r,['inspection']);assert.equal(model.count,1);assert.equal(model.sections[0].rows.length,2);
 });
+check('Supervisor starred work appears before overdue and unstarred work',()=>{
+ const m=M.build({snapshot:{tasks:[
+  {d:'2026-09-01',c:'Công việc quá hạn',supervisorStarred:false},
+  {d:'2026-09-20',c:'Công việc đánh sao',supervisorStarred:true},
+  {d:'2026-09-10',c:'Công việc bình thường',supervisorStarred:false}
+ ]}},r,['work']);
+ assert.ok(m.sections[0].rows[0].some(v=>String(v).includes('Công việc đánh sao')));
+ assert.equal(m.sections[0].rows.length,3);
+});
 check('No selection produces no report or photos',()=>{const m=M.build({snapshot:{tasks:[{d:'2026-09-01',imgs:['storage:x']}]}},r,[]);assert.equal(m.count,0);assert.equal(m.photos.length,0)});
 check('Linked contractor task not counted twice',()=>{const m=M.build({snapshot:{tasks:[{id:1,d:'2026-09-01',contractorId:'c'}]},jobs:[{source_task_id:'1',contractor_id:'c',work_date:'2026-09-01'}]},r,['contractor']);assert.equal(m.count,1)});
 check('XLNT uses m³',()=>{const m=M.build({snapshot:{energy:[{date:'2026-09-01',type:'xlnt',value:1}]}},r,['energy_xlnt']);assert.equal(m.energyTotals[0].unit,'m³');assert.ok(m.sections[0].columns[1].includes('m³'))});

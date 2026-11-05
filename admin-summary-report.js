@@ -173,7 +173,7 @@
       if(!include(start,!done,due))continue;
       push("work","Admin · Cá nhân",t.title||"Công việc Admin",start,t.status||"Đang thực hiện",
         [t.assignee,t.notes,t.task_type].filter(Boolean).join(" · "),
-        {open:!done,due,priority:t.priority,photos:t.image_paths,
+        {open:!done,due,priority:t.priority,starred:t.supervisorStarred===true||t.supervisor_starred===true||t.starred===true,photos:t.image_paths,
          owner:t.assignee||"Admin",cause:t.cause||"",plan:t.solution||t.action_plan||"",source:"Admin · Công việc cá nhân"});
     }
     out.sort((a,b)=>Number(b.starred)-Number(a.starred)||severity(a)-severity(b)||String(a.due||a.when).localeCompare(String(b.due||b.when))||String(a.proj).localeCompare(String(b.proj)));
@@ -242,7 +242,12 @@
     } finally {if(request===state.request){state.loading=false;updateButtons();}}
   }
   function selectedCount(records){return records.filter(r=>r.open && severity(r)<3).length;}
-  function priorityItems(records){return records.filter(r=>r.open&&severity(r)<3).slice(0,6);}
+  function priorityItems(records){
+    // Stars selected by a supervisor outrank overdue status, including planned/completed work.
+    const starred=records.filter(r=>r.cat==="work"&&r.starred);
+    const urgent=records.filter(r=>r.open&&severity(r)<3&&!r.starred);
+    return [...starred,...urgent].slice(0,6);
+  }
   function updateButtons() {
     const button=$("#asExport"),reload=$("#asRefresh");
     if(button)button.disabled=state.loading||state.busy||!state.loaded||!state.categories.size||!state.projects.size||!!Object.keys(state.errors).length;
@@ -532,7 +537,7 @@
       '<div class="asCard"><h3>1. Kỳ báo cáo</h3><div class="asActions" role="group" aria-label="Lựa chọn kỳ báo cáo"><button id="asWeek" class="asBtn asPeriod active" type="button">Theo tuần</button><button id="asMonthApply" class="asBtn asPeriod" type="button">Theo tháng</button><button id="asCustom" class="asBtn asPeriod" type="button">Từ ngày đến ngày</button></div><div class="asDateFields"><label>Chọn tháng<input id="asMonth" type="month" aria-label="Tháng báo cáo"></label><label>Từ ngày<input id="asFrom" type="date"></label><label>Đến ngày<input id="asTo" type="date"></label></div><div class="asActions"><button id="asRefresh" class="asBtn" type="button">↻ Làm mới dữ liệu</button><span class="asHint" id="asPeriodSummary"></span></div></div>'+
       '<div class="asGrid"><div class="asCard"><h3>2. Chọn dự án</h3><div class="asActions"><button class="asBtn" data-as-project-all="1">Chọn cả 4</button><button class="asBtn" data-as-project-all="0">Bỏ chọn</button></div><div class="asChecks" id="asProjectList"></div><p class="asHint">Công việc riêng của Admin đi kèm khi tích “Công việc”, kể cả không liên kết dự án.</p></div>'+
       '<div class="asCard"><h3>3. Chọn hạng mục cần xuất PDF</h3><div class="asActions"><button class="asBtn" data-as-cat-all="1">Chọn tất cả</button><button class="asBtn" data-as-cat-all="0">Bỏ chọn</button></div><div class="asChecks" id="asCategoryList"></div><label class="asHint" style="display:block;margin-top:8px"><input type="checkbox" id="asSamples"> Hiện dữ liệu mẫu (mặc định ẩn khỏi báo cáo và PDF chính thức)</label></div></div>'+
-      '<div class="asCard asPriorityCard"><h3>4. Công việc cần ưu tiên xử lý</h3><p class="asHint">Chỉ hiển thị việc quá hạn, khẩn cấp hoặc cần xử lý ngay. Không tính các việc chưa đến hạn.</p><div class="asTable"><table><thead><tr><th>#</th><th>Công việc / Nguồn</th><th>Người phụ trách</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hạn dự kiến</th></tr></thead><tbody id="asPriorityRows"></tbody></table></div><p class="asHint" id="asPriorityEmpty"></p></div>'+ 
+      '<div class="asCard asPriorityCard"><h3>4. Công việc đánh dấu sao và cần xử lý</h3><p class="asHint">Công việc có sao vàng được ưu tiên trước, kể cả chưa đến hạn hoặc đã hoàn thành; sau đó là các việc quá hạn và cần xử lý.</p><div class="asTable"><table><thead><tr><th>#</th><th>Công việc / Nguồn</th><th>Người phụ trách</th><th>Nguyên nhân</th><th>Hướng xử lý</th><th>Hạn dự kiến</th></tr></thead><tbody id="asPriorityRows"></tbody></table></div><p class="asHint" id="asPriorityEmpty"></p></div>'+ 
       '<div class="asCard"><h3>5. Xem trước và xuất báo cáo</h3><label style="font-size:12px"><input type="checkbox" id="asPhotos" checked> Kèm ảnh hiện trường (tối đa 180 ảnh)</label><p class="asMessage" id="asMessage" role="status" aria-live="polite"></p><div class="asKpis" id="asKpis"></div><p class="asHint" id="asPreviewHint"></p><div class="asTable"><table><thead><tr><th>STT</th><th>Hạng mục</th><th>Dự án / Nguồn</th><th>Nội dung</th><th>Ngày / Hạn</th><th>Trạng thái</th></tr></thead><tbody id="asRows"></tbody></table></div><p class="asHint" id="asTrunc"></p><p class="asHint">File PDF: BÁO CÁO GIÁM SÁT KỸ THUẬT · Người ký: Giám sát kỹ thuật – Sĩ Văn. Dữ liệu các dự án được giữ độc lập.</p></div>';
     document.body.appendChild(view);
     const formatDialog=document.createElement("div");

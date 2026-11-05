@@ -202,26 +202,25 @@ def _project_overview(items):
 
 
 def _important(items):
-    # A factual shortlist, based on real unfinished work; never synthetic prose.
-    candidates = [x for x in items if x.get("open") and item_stage(x) != "planned"]
-    candidates.sort(key=lambda x: (
-        not x.get("starred"), x.get("stage", 2),
+    # Show supervisor-starred work first, regardless of deadline or completion.
+    # Only unstarred slots fall back to unfinished urgent/overdue work.
+    starred = [x for x in items if x.get("starred") and x.get("category") == "work"]
+    starred.sort(key=lambda x: (
         x.get("due") or x.get("date") or "9999", _sort_key(x.get("project"))
     ))
-    selected, seen = [], set()
-    # Spread items across projects first for a more representative management brief.
+    candidates = [
+        x for x in items if not x.get("starred")
+        and x.get("open") and item_stage(x) != "planned"
+    ]
+    candidates.sort(key=lambda x: (
+        x.get("stage", 2), x.get("due") or x.get("date") or "9999",
+        _sort_key(x.get("project"))
+    ))
+    selected = starred[:3]
     for item in candidates:
-        if item["project"] in seen:
-            continue
+        if len(selected) >= 3:
+            break
         selected.append(item)
-        seen.add(item["project"])
-        if len(selected) >= 3:
-            break
-    for item in candidates:
-        if len(selected) >= 3:
-            break
-        if item not in selected:
-            selected.append(item)
     if not selected:
         return [para("Không có công việc cần lưu ý trong dữ liệu đã chọn.", T["muted"])]
     paragraphs = []
@@ -235,7 +234,6 @@ def _important(items):
             text += ": " + detail
         paragraphs.append(para("▪ " + text, T["note"]))
     return paragraphs
-
 
 def _overview(items):
     left_head = _section("THEO DỰ ÁN")

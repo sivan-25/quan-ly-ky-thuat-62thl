@@ -680,7 +680,7 @@ def story_generic(data):
     # Executive decision panel is opt-in: existing per-building PDFs stay intact.
     priority_items=(data.get("priority_items") or [])[:6]
     if priority_items:
-        story += [P("CÔNG VIỆC CẦN ƯU TIÊN XỬ LÝ",ST["sec"]),Spacer(1,4)]
+        story += [P("CÔNG VIỆC ĐÁNH DẤU SAO / CẦN XỬ LÝ",ST["sec"]),Spacer(1,4)]
         small=S("supervision_priority",fontSize=7.0,leading=9.7,textColor=AUB)
         muted=S("supervision_priority_muted",fontSize=6.8,leading=9.3,textColor=STONE)
         priority_rows=[[P(h,ST["th"]) for h in ["ƯU TIÊN / DỰ ÁN","NỘI DUNG / PHỤ TRÁCH","NGUYÊN NHÂN / HƯỚNG XỬ LÝ","HẠN"]]]
