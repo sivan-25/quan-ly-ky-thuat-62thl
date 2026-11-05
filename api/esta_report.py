@@ -1091,7 +1091,7 @@ def generate_pdf(payload, token):
     with tempfile.TemporaryDirectory(prefix="esta_report_") as td:
         report_type = str(payload.get("report_type") or "work").lower()
         out_path = os.path.join(td, OUTPUT_NAME)
-        if report_type != "completion":
+        if report_type not in ("completion", "inventory_control"):
             _prepare_signature(payload, td)
 
         if report_type == "completion":
@@ -1127,6 +1127,10 @@ def generate_pdf(payload, token):
             images = [item for item in prepared if item.get("prepared")]
             missing_images = missing + unsafe
             item_count = build_completion_doc(out_path, payload, photos=images)
+        elif report_type == "inventory_control":
+            from reporting.inventory_control import build_inventory_control_doc
+            missing_images = 0
+            item_count = build_inventory_control_doc(out_path, payload)
         elif report_type == "operations":
             from reporting.report_center import build_operations_doc
             ensure_fonts()
