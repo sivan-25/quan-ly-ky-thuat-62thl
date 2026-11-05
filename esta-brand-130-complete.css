@@ -150,7 +150,7 @@ body.estaBrand130,
  background:linear-gradient(180deg,var(--esta130-plum),var(--esta130-deep))!important;
  border-color:rgba(243,222,191,.24)!important;
 }
-#app.estaBrand130 .estaSidebar :is(.brand b,.estaNav button,.sideUserCard,.sideBuilding b,.mobileSidebarHeader){color:var(--esta130-cream)!important}
+#app.estaBrand130 .estaSidebar :is(.brand b,.estaNav button,.sideUserCard,.sideBuilding b,.mobileSidebarHeader){color:var(--esta130-cream)!important;-webkit-text-fill-color:var(--esta130-cream)!important}
 #app.estaBrand130 .estaSidebar :is(.estaNav button.active,.estaNav button[aria-current="page"]) {
  background:rgba(164,100,39,.26)!important;
  border-color:rgba(243,222,191,.35)!important;
