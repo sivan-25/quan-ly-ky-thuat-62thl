@@ -85,7 +85,7 @@
  #estaCommandCenter .ccAdminTaskEdit{font-size:11px;padding:5px 8px}
 }
 @media(max-width:370px){
- .ccWeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ccWeGrid{grid-template-columns:minmax(0,1fr)}
  .ccWeCancel{flex-basis:79px}
  .ccWeCancel,.ccWeSave{font-size:12px;padding:0 8px}
 }
@@ -105,7 +105,7 @@
  .ccAdminWorkEdit .ccWeGrid > label.full textarea{min-height:var(--esta130-control-height,44px)}
 }
 @media (max-width:370px){
- .ccAdminWorkEdit .ccWeGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px}
+ .ccAdminWorkEdit .ccWeGrid{grid-template-columns:minmax(0,1fr);gap:8px;padding:10px}
  .ccAdminWorkEdit .ccWeGrid > .ccWePairRow :is(input,select){padding-inline:4px;font-size:12px}
 }
 
@@ -132,6 +132,7 @@
  .ccAdminWorkEdit .ccWeGrid > label.full{grid-column:1/-1}
 }
 @media(max-width:370px){
+ .ccAdminWorkEdit .ccWeGrid{grid-template-columns:minmax(0,1fr)}
  .ccAdminWorkEdit .ccWeGrid .ccWeDateValue{font-size:13px;padding-inline:7px}
  .ccAdminWorkEdit .ccWeGrid > .ccWePairRow select{font-size:13px}
 }
