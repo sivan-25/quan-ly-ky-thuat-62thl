@@ -52,4 +52,8 @@ for (const name of ["style.css","unified.css","demo-lab.css","update-lab.css","i
   assert.ok(!css.includes(",undefined)"), `invalid legacy fallback in ${name}`);
   assert.ok(!css.includes(".color:var(--esta130-"), `invalid color declaration in ${name}`);
 }
+const singleCountRule = /body\.estaBrand130 #app\.estaBrand130#app#app #workPage \.workTableMeta #count\{\s*color:var\(--esta130-stat-text\)!important;\s*-webkit-text-fill-color:var\(--esta130-stat-text\)!important;/;
+assert.match(base, singleCountRule, "task count uses the shared 130HH semantic token");
+assert.ok(!base.includes("body.estaBrand130 #app.estaBrand130#app #workPage .workTableMeta #count{"),
+  "obsolete lower-specificity task count override must be removed");
 console.log("PASS 130HH visual roles: fields, KPI cards, 3 statuses, desktop/mobile inventory and safe fallbacks");
