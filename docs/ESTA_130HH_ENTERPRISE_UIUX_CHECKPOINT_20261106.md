@@ -48,3 +48,13 @@ BATCH 03: PASSED (code + test)
 BATCH 04–19: PENDING  
 BATCH 20: BLOCKED (thiếu QA người dùng sau đăng nhập)  
 PRODUCTION RELEASE: NOT AUTHORIZED BY RELEASE GATE — không tự nhận 10/10.
+
+## Batches 04–06 — Bổ sung ngày 06/11/2026
+
+**Batch 04 — Design Tokens / Theme:** PASSED trong sandbox (CI trên GitHub đang được xác minh). Thống nhất 14 cặp khai báo nền, màu chữ, viền và trạng thái của 130 Hồng Hà bằng biến cùng vai trò. Các màu đã được kiểm tra giá trị khai báo, không đổi thiết kế nhận diện 127/62/68.
+
+**Batch 05 — Nhãn & điều khiển nhỏ:** PASSED trong sandbox (CI đang xác minh). Nhãn nhập liệu 12px → 13px, kích thước compact 36px → 40px, bảo toàn nút form chính 44px. Kiểm tra trực quan trình duyệt ở bản mới và màn hình thật cần tiếp tục trước release.
+
+**Batch 06 — Keyboard/accessibility:** PASSED trong sandbox (CI đang xác minh). Mở rộng quy tắc focus có sẵn cho summary và nút role=button trong khu vực 130HH, thay vì thêm tệp CSS đè lớp. Bổ sung test tương phản AA cho màu hoàn thành, chờ xử lý, quá hạn, đang thực hiện và topbar.
+
+Các Batch 07–19: PENDING. Batch 20: BLOCKED vì chưa đủ dữ liệu giả lập và tài khoản thử nghiệm an toàn cho full end-user QA. Production: KHÔNG PHÁT HÀNH. Các bài kiểm thử source không tương đương nghiệm thu thực tế sau đăng nhập.
