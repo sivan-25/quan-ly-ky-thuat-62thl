@@ -24,4 +24,14 @@ for(const name of ["overview","work","materials","tools","maintenance"])
  assert.ok(preview.includes('data-view="'+name+'"'),"review tab missing: "+name);
 assert.ok(!/https:\/\/[^\s"']+\/rest\/v1\//.test(preview),"mock preview must not call production database");
 assert.ok(!preview.includes("supabase.co"),"mock must stay disconnected from Supabase");
+// Verify project isolation and reuse of existing 127 mobile components (no app.js rewrites).
+assert.match(css,/#inventoryPage\.inventoryRef127[\s\S]*?#materialMonthTabs\{display:none!important\}/);
+assert.match(css,/#materialMobilePeriod\{/);
+assert.match(css,/#materialMobileCards,#toolsMobileCards/);
+assert.ok(html.includes('id="materialMobilePeriod"'),"the existing real-app mobile month picker must stay intact");
+assert.ok(html.includes('id="materialMobileCards"')&&html.includes('id="toolsMobileCards"'),"do not replace business-backed mobile cards");
+assert.match(preview,/id="mobileMonth"/);
+assert.match(preview,/id="mobileMaintenance"/);
+assert.match(preview,/\.tablewrap tbody tr\{display:grid/);
+assert.match(preview,/overflow-x:clip/);
 console.log("PASS 127HH preview gate: scoped theme, stylesheet order, five review tabs, backend-free mock");
