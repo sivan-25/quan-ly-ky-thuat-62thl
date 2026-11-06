@@ -29,6 +29,24 @@ Triển khai: **PREVIEW ONLY**. Cấm merge vào `main`, cấm promotion/product
 | 05–19 | Component, sidebar, topbar, các trang, hiệu năng, regression | PENDING | Chưa kiểm thử hoàn chỉnh |
 | 20 | Independent End-User Acceptance | PENDING | Chưa có nghiệm thu của chủ sở hữu |
 
+## Nghiệm thu mobile-first — bổ sung 06/11/2026
+
+Yêu cầu đã được người dùng duyệt: **điện thoại hiển thị thông tin chính trong đúng chiều ngang một màn hình; chỉ cuộn dọc, không cuộn ngang toàn trang hoặc bảng nội dung chính.** Đây là điều kiện bắt buộc trước khi phát hành production.
+
+### Thay đổi trên nhánh Preview
+
+- Mẫu `127hh-review.html`: dưới 700px chuyển các bảng của Tổng quan, Công việc, Vật tư, Dụng cụ sang **thẻ theo dòng với nhãn từng trường**, không cuộn ngang; menu 2 cột; KPI 2 cột.
+- Mẫu vật tư: **select tháng/cả năm** thay cho 13 nút tháng; desktop và mobile đồng bộ lựa chọn.
+- Mẫu lịch: **danh sách sự kiện theo ngày** thay cho lưới tháng 7 cột; dùng cùng nguồn dữ liệu mô phỏng.
+- Ứng dụng ESTA trên nhánh: CSS riêng cho **127HH** dùng `#materialMobileCards`, `#toolsMobileCards` và `#materialMobilePeriod` có sẵn; không sửa mã xử lý nghiệp vụ và không tạo bản ghi trùng lặp. KPI vật tư và dụng cụ tối đa 2 cột trên điện thoại.
+- Không ảnh hưởng `main`, production hoặc 130HH/62THL/68PĐL.
+
+### Quality gate còn cần xác nhận
+
+- Test tự động cấp DOM và mã nguồn: `tests/127hh-review-browser.test.cjs`, `tests/127hh-preview-gate.test.cjs`.
+- **Chưa có bằng chứng kiểm thử pixel bằng trình duyệt thật**, nên cần kiểm tra kích thước 320/360/390/430/768px, đo `scrollWidth <= innerWidth`, không có nút hay nội dung bị che.
+- Mẫu chỉ để nghiệm thu hình thức; 127HH trong root preview vẫn kết nối database thật. Không ghi dữ liệu thử qua root.
+
 ## Điều kiện trước khi phê duyệt chuyển production
 
 1. Hoàn thành tất cả batch theo phạm vi đã chốt và có commit từng checkpoint.
