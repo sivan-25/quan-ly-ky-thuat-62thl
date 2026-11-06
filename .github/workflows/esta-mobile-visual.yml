@@ -175,6 +175,9 @@ jobs:
       - name: Validate 130HH work form heights, badges and selectable text in Chromium
         working-directory: candidate
         run: node tests/130hh-work-form-contrast-geometry-browser.cjs
+      - name: Verify 130HH material and tool table label contrast on desktop
+        working-directory: candidate
+        run: node tests/130hh-inventory-desktop-contrast-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
