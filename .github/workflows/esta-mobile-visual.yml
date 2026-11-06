@@ -172,9 +172,13 @@ jobs:
       - name: Verify inventory popup names, help text, and existing actions
         working-directory: candidate
         run: node tests/130hh-inventory-modal-semantics.test.cjs
+      - name: Validate 130HH work form heights, badges and selectable text in Chromium
+        working-directory: candidate
+        run: node tests/130hh-work-form-contrast-geometry-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
+          ESTA_VISUAL_130HH_WORK_FIELDS: '1'
           ESTA_VISUAL_TOUCH_IMPROVEMENTS: '1'
           ESTA_VISUAL_COMPACT_ADMIN_OVERVIEW: '1'
           ESTA_VISUAL_COMPACT_PROJECT_OVERVIEW: '1'

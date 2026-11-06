@@ -160,7 +160,19 @@ async function capture(browser,site,scenario,viewport){
     // a NEW candidate error; removing an old baseline error must not fail visual parity.
     const newErrors=next.errors.filter(error=>!base.errors.includes(error));
     const intendedBrandChange=brand130FirstRollout&&scenario.endsWith("-130HH");
-    if(intendedBrandChange){
+    // The explicitly reviewed 130HH work-field/pill refinement is allowed to
+    // change only 130HH work/add/edit pixels. All other buildings and routes
+    // remain on exact visual parity; geometry/interactions are tested separately.
+    const reviewed130Work=process.env.ESTA_VISUAL_130HH_WORK_FIELDS==="1"&&
+      ["work-130HH","edit-130HH"].includes(scenario);
+    if(reviewed130Work){
+      const coreUnchanged=next.stats.section===base.stats.section&&
+       next.stats.tasks===base.stats.tasks&&next.stats.drawerOpen===base.stats.drawerOpen&&
+       next.stats.editInPlace===base.stats.editInPlace&&next.stats.title===base.stats.title;
+      if(newErrors.length||introducedOverflow||!coreUnchanged||significantDifferentPixels===0){
+       failures++;console.error("130HH WORK COLOR/FORM REGRESSION "+label+": "+JSON.stringify({...item,newErrors,introducedOverflow,coreUnchanged}).slice(0,900));
+      }else console.log("PASS intentional 130HH work field/color refinement "+label+"; strict other-project parity retained");
+    }else if(intendedBrandChange){
      const coreUnchanged=next.stats.section===base.stats.section&&
        next.stats.tasks===base.stats.tasks&&next.stats.drawerOpen===base.stats.drawerOpen&&
        next.stats.title===base.stats.title;
