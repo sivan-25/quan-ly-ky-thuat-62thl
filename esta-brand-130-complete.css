@@ -608,6 +608,51 @@ body.estaBrand130 .workEditDrawer :is(.badge.waiting,.badge.wait){
 
 @media(max-width:760px){
  #app.estaBrand130 .estaTopbar{border-bottom-color:#A46427!important}
+
+ /* The actual mobile Loại/Trạng thái controls are choice tiles; legacy CSS
+    made them 62px even though the form's other controls are 44px. */
+ #app.estaBrand130 #workPage #taskForm .workChoiceTile{
+   box-sizing:border-box!important;
+   height:var(--esta130-control-height)!important;
+   min-height:var(--esta130-control-height)!important;
+   max-height:var(--esta130-control-height)!important;
+   padding:3px 3px!important;
+   gap:2px!important;
+   border-color:var(--esta130-field-border)!important;
+   background:var(--esta130-field-bg)!important;
+   color:var(--esta130-field-text)!important;
+   -webkit-text-fill-color:var(--esta130-field-text)!important;
+   box-shadow:none!important;
+ }
+ #app.estaBrand130 #workPage #taskForm .workChoiceTile[aria-checked="true"]{
+   border-color:var(--esta130-copper)!important;
+   background:var(--esta130-stat-bg)!important;
+   color:var(--esta130-stat-text)!important;
+   -webkit-text-fill-color:var(--esta130-stat-text)!important;
+ }
+ #app.estaBrand130 #workPage #taskForm .workChoiceTile>b{
+   max-width:100%!important;
+   color:inherit!important;
+   -webkit-text-fill-color:inherit!important;
+   font-size:11px!important;
+   line-height:13px!important;
+   white-space:nowrap!important;
+   overflow:hidden!important;
+   text-overflow:ellipsis!important;
+ }
+ #app.estaBrand130 #workPage #taskForm .workChoiceCircle{
+   width:15px!important;
+   height:15px!important;
+   flex:0 0 15px!important;
+   border-color:var(--esta130-plum)!important;
+ }
+ #app.estaBrand130 #workPage #taskForm .workChoiceTile[aria-checked="true"] .workChoiceCircle{
+   background:var(--esta130-plum)!important;
+ }
+ #app.estaBrand130 #workPage #taskForm .workChoiceTile[aria-checked="true"] .workChoiceCircle:after{
+   left:4px!important;top:1px!important;width:4px!important;height:8px!important;
+ }
+
  #app.estaBrand130 #workPage :is(.workEntryCard,.premiumTableCard,#mobileCards){background:#F5ECD0!important}
  #app.estaBrand130 #energyPage :is(.energySummaryCards article,.energyCard,.energyTableCard,#energyMobileCards){background:#F5ECD0!important}
  #app.estaBrand130 :is(.demoPanel,.contractorRowCard,.estaToolCard){background:#F5ECD0!important}

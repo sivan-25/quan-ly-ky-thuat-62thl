@@ -45,6 +45,10 @@ const ratio=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math
       performer:"#taskPeopleButton",note:"#note",
       camera:"#openNativeCamera",library:"#openNativeLibrary"
     }).map(([k,sel])=>[k,record(select(sel))]));
+    const tiles=Object.fromEntries(["type","status"].map(name=>[
+      name,[...root.querySelectorAll(".work"+name[0].toUpperCase()+name.slice(1)+" .workChoiceTile")].map(record)
+    ]));
+    const inlinePerformer=record(root.querySelector("#taskPeopleMenu.inlinePeoplePicker"));
     const tests=[
       ["done","badge done","Đã hoàn thành"],
       ["doing","badge doing","Đang thực hiện"],
@@ -60,18 +64,38 @@ const ratio=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math
     }
     return {isBrand:app.classList.contains("estaBrand130"),
       isWork:app.classList.contains("workMode"),width:document.documentElement.clientWidth,
-      documentWidth:document.documentElement.scrollWidth,fields,pills};
+      documentWidth:document.documentElement.scrollWidth,fields,tiles,inlinePerformer,pills};
    });
    const prefix="130HH work "+width+"px";
    assert.equal(result.isBrand,true,prefix+" lost scoped brand");
    assert.equal(result.isWork,true,prefix+" wrong mode");
    assert.ok(result.documentWidth<=result.width+2,prefix+" introduced horizontal overflow "+JSON.stringify(result));
    for(const [name,field] of Object.entries(result.fields)){
-     assert.ok(field&&field.visible,prefix+" missing "+name);
+     assert.ok(field,prefix+" missing "+name);
+     if(width<=760&&(name==="type"||name==="status")){
+       assert.equal(field.visible,false,prefix+" native "+name+" must be replaced by visible choice tiles");
+       continue;
+     }
+     if(name==="performer"&&!field.visible){
+       assert.ok(width<=760&&result.inlinePerformer?.visible,prefix+" hidden performer control without inline picker");
+       continue;
+     }
+     assert.ok(field.visible,prefix+" missing visible "+name+": "+JSON.stringify(field));
      assert.ok(Math.abs(field.height-44)<=1,prefix+" "+name+" not 44px: "+JSON.stringify(field));
      assert.ok(field.width>=52,prefix+" "+name+" too narrow: "+JSON.stringify(field));
      const fg=parse(field.color),bg=parse(field.background);
      if(fg&&bg&&name!=="date")assert.ok(ratio(fg,bg)>=4.5,prefix+" low contrast "+name+" "+JSON.stringify(field));
+   }
+   if(width<=760){
+     for(const name of ["type","status"]){
+       const tiles=result.tiles[name];
+       assert.equal(tiles.length,3,prefix+" missing three "+name+" choices: "+JSON.stringify(tiles));
+       for(const tile of tiles){
+         assert.ok(tile.visible&&Math.abs(tile.height-44)<=1,prefix+" "+name+" tile not 44px: "+JSON.stringify(tile));
+         const fg=parse(tile.color),bg=parse(tile.background);
+         assert.ok(fg&&bg&&ratio(fg,bg)>=4.5,prefix+" unreadable "+name+" tile: "+JSON.stringify(tile));
+       }
+     }
    }
    for(const [name,pill] of Object.entries(result.pills)){
      assert.ok(pill&&pill.visible,prefix+" missing "+name);
@@ -80,7 +104,7 @@ const ratio=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math
      assert.ok(lum(bg)>.70,prefix+" legacy dark pill "+name+" "+JSON.stringify(pill));
      assert.ok(ratio(fg,bg)>=4.5,prefix+" unreadable pill "+name+" "+JSON.stringify(pill));
    }
-   console.log("PASS "+prefix+" all 8 controls 44px, 6 light badges/type labels, AA contrast and no page overflow");
+   console.log("PASS "+prefix+" visible form controls / mobile choices 44px, 6 light badges/type labels, AA contrast, no overflow");
    await context.close();
   }
  }finally{await browser.close();}
