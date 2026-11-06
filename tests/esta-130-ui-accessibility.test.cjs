@@ -21,7 +21,7 @@ assert.match(brand,/--esta130-field-border:\s*#987759/);
 assert.match(brand,/grid-template-columns:140px minmax\(160px,1\.5fr\)/,"desktop work date receives a usable track");
 assert.match(brand,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important/,"tablet work form wraps into four columns");
 assert.match(brand,/grid-row:auto!important;/,"tablet fields must release legacy first-row layout");
-assert.match(brand,/--esta130-label-font-size:\s*13px/);
+assert.match(brand,/--esta130-label-font-size:\s*12px/);
 assert.match(brand,/body\.estaBrand130 #app\.estaBrand130#app #workPage #saveBtn\{\s*min-height:var\(--esta130-control-height\)!important;\s*height:var\(--esta130-control-height\)!important;/,"main Save button must use 44px control height");
 assert.match(brand,/--esta130-caption-size:\s*12px/);
 assert.match(brand,/:not\(button \*\):not\(\[class\*="status"\]\)/,"buttons inherit semantic foreground");

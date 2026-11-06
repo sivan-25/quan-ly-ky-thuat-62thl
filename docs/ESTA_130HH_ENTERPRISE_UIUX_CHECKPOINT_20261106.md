@@ -58,3 +58,9 @@ PRODUCTION RELEASE: NOT AUTHORIZED BY RELEASE GATE — không tự nhận 10/10.
 **Batch 06 — Keyboard/accessibility:** PASSED trong sandbox (CI đang xác minh). Mở rộng quy tắc focus có sẵn cho summary và nút role=button trong khu vực 130HH, thay vì thêm tệp CSS đè lớp. Bổ sung test tương phản AA cho màu hoàn thành, chờ xử lý, quá hạn, đang thực hiện và topbar.
 
 Các Batch 07–19: PENDING. Batch 20: BLOCKED vì chưa đủ dữ liệu giả lập và tài khoản thử nghiệm an toàn cho full end-user QA. Production: KHÔNG PHÁT HÀNH. Các bài kiểm thử source không tương đương nghiệm thu thực tế sau đăng nhập.
+
+## Correction / QA regression gate — 06/11/2026
+
+Trong bài kiểm thử visual baseline với main, Batch 05 (tăng cỡ chữ nhãn 12px→13px và compact 36px→40px) dẫn đến **3 trường hợp pixel/layout regression**: inspection-130HH-320, inspection-130HH-390, contractor-130HH-768. Việc thay đổi kích thước đã **được hoàn tác** để giữ thiết kế đang nghiệm thu, không nới lỏng test hoặc che giấu lỗi. Thiết kế số chuẩn 13px/40px cần xây dựng theo từng form và được nghiệm thu bằng ảnh thật trước khi mở lại.
+
+Batch 04: duy trì thay đổi alias màu không đổi pixel. Batch 06: duy trì focus-visible và kiểm tra độ tương phản. Batch 05: **REVERTED / PENDING DESIGN APPROVAL**. Chưa triển khai production; đợi CI visual cho commit sửa lỗi và Batch 20.

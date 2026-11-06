@@ -4,14 +4,14 @@
 body.estaBrand130,
 #app.estaBrand130 {
   --esta130-control-height: 44px;
-  --esta130-compact-height: 40px;
+  --esta130-compact-height: 36px;
   --esta130-kpi-height: 44px;
   --esta130-table-head-height: 44px;
   --esta130-table-row-height: 44px;
   --esta130-ui-radius: 10px;
   --esta130-ui-gap: 12px;
   --esta130-ui-font-size: 14px;
-  --esta130-label-font-size: 13px;
+  --esta130-label-font-size: 12px;
   --esta130-caption-size: 12px;
   --esta130-table-font-size: 13px;
   --esta130-ui-surface: #FBF3E3;

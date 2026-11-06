@@ -5,7 +5,7 @@ const read = (name) => fs.readFileSync(path.join(__dirname, "..", name), "utf8")
 const base = read("esta-brand-130-complete.css");
 const tokens = {
   "control-height": "44px",
-  "compact-height": "40px",
+  "compact-height": "36px",
   "kpi-height": "44px",
   "table-head-height": "44px",
   "table-row-height": "44px",
