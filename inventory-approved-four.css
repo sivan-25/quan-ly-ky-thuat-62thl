@@ -94,6 +94,25 @@
    complete surface and text together so project switching never hides names. */
 @media (min-width:761px) {
   body #app#app#app #inventoryPage.inventoryRefShared #updateInventoryIntel{display:none!important}
+
+  /* 130HH only: a bounded internal table viewport lets the header remain
+     visible when users browse long stock/tool lists. Tablet still scrolls
+     horizontally; phones retain their existing one-item-per-card layout.
+     Keep this in the existing inventory layout source, not an override file. */
+  body.estaBrand130 #app.estaBrand130 #inventoryPage.inventoryRef130
+  :is(#inventoryMaterialsPane .materialMonthlyCard,#inventoryToolsPane .toolsMainCard) > .inventoryTableScroll {
+    max-height:min(72vh,680px)!important;
+    overflow-x:auto!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+  }
+  body.estaBrand130 #app.estaBrand130 #inventoryPage.inventoryRef130
+  :is(#inventoryMaterialsPane .materialMonthlyTable,#inventoryToolsPane .toolsTable) thead th {
+    position:sticky!important;
+    top:0!important;
+    z-index:2!important;
+  }
+
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.materialMonthlyCard{
     background:#101b31!important;border:1px solid #30415d!important;box-shadow:none!important
   }

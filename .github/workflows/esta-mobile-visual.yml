@@ -166,6 +166,9 @@ jobs:
       - name: Verify all four system menus on phones and laptops
         working-directory: candidate
         run: node tests/four-project-system-rail-geometry.cjs
+      - name: Verify 130HH pinned material and tool table headers with long lists
+        working-directory: candidate
+        run: node tests/130hh-inventory-table-sticky-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
