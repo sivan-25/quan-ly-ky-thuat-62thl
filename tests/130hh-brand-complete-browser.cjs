@@ -151,6 +151,32 @@ async function prep(page,p){
         if(fg&&fg.a>=.95){const worst=Math.min(...bg.map(c=>ratio(fg,c)));if(worst+0.12<4.5)failures.push({tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,70),text:(el.value||el.placeholder||"").slice(0,50),color:st.color,bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:4.5});}
         if(el.placeholder){const p=parseColor(getComputedStyle(el,"::placeholder").color);if(p&&p.a>=.95){const worst=Math.min(...bg.map(c=>ratio(p,c)));if(worst+0.12<4.5)failures.push({tag:el.tagName.toLowerCase()+"::placeholder",text:el.placeholder.slice(0,40),color:getComputedStyle(el,"::placeholder").color,bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:4.5});}}
       }
+      /* Prior iterations excluded badges and selected controls entirely,
+         allowing the dark legacy 130HH pills to pass despite unreadable text.
+         Audit the actual painted status/type surface on every visible route. */
+      const semanticPaints=[
+        ...document.body.querySelectorAll(
+          ".badge,.homeStatus,.typeBadge,.workChoiceTile,.toolCondition,.maintenanceStatus,.statusBadge"
+        )
+      ];
+      for(const el of semanticPaints){
+        if(!el.getClientRects().length||el.closest(".hide,[aria-hidden=true]"))continue;
+        const st=getComputedStyle(el),ownBg=parseColor(st.backgroundColor);
+        if(st.display==="none"||st.visibility==="hidden"||!ownBg||ownBg.a<.95)continue;
+        const label=(el.querySelector("b,span,strong")||el),labelStyle=getComputedStyle(label);
+        const fg=parseColor(labelStyle.webkitTextFillColor||labelStyle.color);
+        if(!fg||fg.a<.95)continue;
+        const labelText=(label.innerText||label.textContent||"").trim();
+        if(!labelText)continue;
+        const f=parseFloat(labelStyle.fontSize)||12,w=parseInt(labelStyle.fontWeight,10)||400;
+        const required=(f>=24||(f>=18.66&&w>=700))?3:4.5;
+        const measured=ratio(fg,ownBg);
+        if(measured+0.12<required)failures.push({
+          tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,90),
+          text:labelText.slice(0,55),fg:labelStyle.color,
+          bg:st.backgroundColor,contrast:Number(measured.toFixed(2)),required
+        });
+      }
       return {count:failures.length,failures:failures.slice(0,12)};
     });
     assert.equal(contrastAudit.count,0,"130HH text contrast failed in "+mode+" width "+width+": "+JSON.stringify(contrastAudit.failures));
