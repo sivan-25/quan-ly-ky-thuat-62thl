@@ -169,6 +169,9 @@ jobs:
       - name: Verify 130HH pinned material and tool table headers with long lists
         working-directory: candidate
         run: node tests/130hh-inventory-table-sticky-browser.cjs
+      - name: Verify inventory popup names, help text, and existing actions
+        working-directory: candidate
+        run: node tests/130hh-inventory-modal-semantics.test.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:

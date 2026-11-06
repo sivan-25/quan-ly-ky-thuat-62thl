@@ -2658,10 +2658,10 @@
     </form>
   </div>
 </div>
-<div id="materialItemModal" class="modal hide materialEditorLight">
+<div id="materialItemModal" class="modal hide materialEditorLight" role="dialog" aria-labelledby="materialModalTitle" aria-describedby="materialModalHelp">
   <div class="modalCard inventoryModalCard">
-    <button id="closeMaterialModal" class="modalClose" type="button">×</button>
-    <div class="materialEditorHeader"><span>ESTA · MATERIAL MASTER</span><h3 id="materialModalTitle">Thêm vật tư</h3><p>Vật tư chỉ bắt đầu xuất hiện từ tháng có ngày bắt đầu quản lý; các tháng trước không phát sinh dữ liệu.</p></div>
+    <button id="closeMaterialModal" class="modalClose" type="button" aria-label="Đóng biểu mẫu vật tư">×</button>
+    <div class="materialEditorHeader"><span>ESTA · MATERIAL MASTER</span><h3 id="materialModalTitle">Thêm vật tư</h3><p id="materialModalHelp">Vật tư chỉ bắt đầu xuất hiện từ tháng có ngày bắt đầu quản lý; các tháng trước không phát sinh dữ liệu.</p></div>
     <form id="materialItemForm" class="inventoryForm">
       <input id="materialId" type="hidden">
       <label class="wide materialNameField"><span>Tên vật tư *</span><input id="materialName" maxlength="120" required placeholder="VD: Băng keo điện 3M"></label>
@@ -2676,10 +2676,10 @@
   </div>
 </div>
 
-<div id="stockTxnModal" class="modal hide">
+<div id="stockTxnModal" class="modal hide" role="dialog" aria-labelledby="stockTxnModalTitle" aria-describedby="stockTxnModalHelp">
   <div class="modalCard inventoryModalCard">
-    <button id="closeStockTxnModal" class="modalClose" type="button">×</button>
-    <div class="inventoryModalHead"><span>ESTA · STOCK MOVEMENT</span><h3 id="stockTxnModalTitle">Nhập / Xuất vật tư</h3><p>Mọi phát sinh sẽ tự động cập nhật tồn kho theo tháng.</p></div>
+    <button id="closeStockTxnModal" class="modalClose" type="button" aria-label="Đóng biểu mẫu nhập xuất vật tư">×</button>
+    <div class="inventoryModalHead"><span>ESTA · STOCK MOVEMENT</span><h3 id="stockTxnModalTitle">Nhập / Xuất vật tư</h3><p id="stockTxnModalHelp">Mọi phát sinh sẽ tự động cập nhật tồn kho theo tháng.</p></div>
     <form id="stockTxnForm" class="inventoryForm">
       <input id="stockTxnId" type="hidden">
       <label class="wide stockTxnMaterialField"><span>Vật tư *</span><select id="stockTxnMaterial" required></select></label>
@@ -2700,10 +2700,10 @@
   </div>
 </div>
 
-<div id="toolItemModal" class="modal hide">
+<div id="toolItemModal" class="modal hide" role="dialog" aria-labelledby="toolModalTitle" aria-describedby="toolModalHelp">
   <div class="modalCard inventoryModalCard">
     <button id="closeToolModal" class="modalClose" type="button" aria-label="Đóng chỉnh sửa dụng cụ">×</button>
-    <div class="inventoryModalHead"><span>ESTA · TOOL REGISTER</span><h3 id="toolModalTitle">Thêm dụng cụ</h3><p>Quản lý dụng cụ kỹ thuật riêng cho từng dự án.</p></div>
+    <div class="inventoryModalHead"><span>ESTA · TOOL REGISTER</span><h3 id="toolModalTitle">Thêm dụng cụ</h3><p id="toolModalHelp">Quản lý dụng cụ kỹ thuật riêng cho từng dự án.</p></div>
     <form id="toolItemForm" class="inventoryForm">
       <input id="toolId" type="hidden">
       <label class="wide toolField-name"><span>Tên dụng cụ *</span><input id="toolName" maxlength="120" required placeholder="VD: Ampe kìm"></label>
