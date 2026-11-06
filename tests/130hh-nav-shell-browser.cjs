@@ -32,14 +32,18 @@ const ratio=(x,y)=>{const a=lum(x),b=lum(y);return(Math.max(a,b)+.05)/(Math.min(
     const topbar=document.querySelector("#app .estaTopbar");
     const title=document.querySelector("#topWorkTitle h1");
     const style=e=>getComputedStyle(e);
-    const active=style(selected),svg=style(selected.querySelector("svg"));
+    const active=style(selected),svg=style(selected.querySelector("svg")),activeLabel=style(selected.querySelector("span"));
+    const idle=[...document.querySelectorAll("#mobileSidebar .estaNav button")].find(e=>
+      !e.classList.contains("active")&&e.getAttribute("aria-current")!=="page"&&!e.classList.contains("hide"));
+    const idleStyle=idle?style(idle):null;
     const pseudo=style(selected,"::before"),head=style(topbar),heading=style(title);
     const button=style(document.querySelector("#menu"));
     const bottom=document.querySelector("#estaBottomNav button[aria-current='page']");
     const bottomButton=bottom?style(bottom):null;
     return {
       brand:document.querySelector("#app").classList.contains("estaBrand130"),
-      selectedId:selected.id,activeText:active.color,activeBg:active.backgroundColor,icon:svg.color,pseudo:pseudo.backgroundColor,
+      selectedId:selected.id,activeText:active.color,activeLabel:activeLabel.color,activeBg:active.backgroundColor,icon:svg.color,pseudo:pseudo.backgroundColor,
+      idleId:idle?.id,idleText:idleStyle?.color,idleBg:idleStyle?.backgroundColor,idleImage:idleStyle?.backgroundImage,
       pseudoContent:pseudo.content,head:head.backgroundColor,headBackground:head.backgroundImage,
       title:heading.color,menu:button.color,menuBg:button.backgroundColor,
       bottomText:bottomButton?.color,bottomBg:bottomButton?.backgroundColor,
@@ -51,6 +55,11 @@ const ratio=(x,y)=>{const a=lum(x),b=lum(y);return(Math.max(a,b)+.05)/(Math.min(
    assert.ok(stats.selectedId,label+" must mark an active navigation item");
    assert.equal(stats.activeBg,"rgb(245, 236, 208)",label+" active nav light surface");
    assert.equal(stats.activeText,"rgb(65, 20, 55)",label+" active nav label");
+   assert.equal(stats.activeLabel,"rgb(65, 20, 55)",label+" active nested text color");
+   assert.ok(stats.idleId,label+" missing ordinary menu item");
+   assert.equal(stats.idleImage,"none",label+" idle button must not inherit legacy gradient");
+   assert.equal(stats.idleBg,"rgba(0, 0, 0, 0)",label+" idle button stays dark via sidebar, not cream fill");
+   assert.equal(stats.idleText,"rgb(243, 222, 191)",label+" idle text stays cream");
    assert.equal(stats.icon,"rgb(65, 20, 55)",label+" active icon must not remain neon blue");
    assert.ok(ratio(rgba(stats.activeText),rgba(stats.activeBg))>=4.5,label+" active nav contrast");
    assert.equal(stats.pseudo,"rgb(164, 100, 39)",label+" selected stripe should be copper");
