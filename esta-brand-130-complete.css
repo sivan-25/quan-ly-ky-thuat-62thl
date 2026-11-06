@@ -452,6 +452,10 @@ body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hi
     grid-row:auto!important;
     grid-column:auto!important;
   }
+  /* Tablet photo actions need two tracks, not squeezed into one 110px cell. */
+  #app.estaBrand130.workMode #workPage #taskForm.workEntryForm > .workImage{
+    grid-column:span 2!important;
+  }
 }
 /* Single-line fields are exactly 44px; free-text content can expand below 44px. */
 #app.estaBrand130 #workPage #taskForm .workField > :is(input:not([type="hidden"]):not([type="file"]),select),
@@ -611,6 +615,13 @@ body.estaBrand130 .workEditDrawer :is(.badge.waiting,.badge.wait){
 
  /* The actual mobile Loại/Trạng thái controls are choice tiles; legacy CSS
     made them 62px even though the form's other controls are 44px. */
+ /* Keep camera and library on one line even on 320px phones. */
+ #app.estaBrand130 #workPage #taskForm .workImage .imageNativeActions{
+   display:grid!important;
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   gap:6px!important;
+   align-items:center!important;
+ }
  #app.estaBrand130 #workPage #taskForm .workChoiceTile{
    box-sizing:border-box!important;
    height:var(--esta130-control-height)!important;

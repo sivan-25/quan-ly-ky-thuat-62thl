@@ -49,6 +49,7 @@ const ratio=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math
       name,[...root.querySelectorAll(".work"+name[0].toUpperCase()+name.slice(1)+" .workChoiceTile")].map(record)
     ]));
     const inlinePerformer=record(root.querySelector("#taskPeopleMenu.inlinePeoplePicker"));
+    const photoActions=record(root.querySelector(".workImage .imageNativeActions"));
     const tests=[
       ["done","badge done","Đã hoàn thành"],
       ["doing","badge doing","Đang thực hiện"],
@@ -64,7 +65,7 @@ const ratio=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math
     }
     return {isBrand:app.classList.contains("estaBrand130"),
       isWork:app.classList.contains("workMode"),width:document.documentElement.clientWidth,
-      documentWidth:document.documentElement.scrollWidth,fields,tiles,inlinePerformer,pills};
+      documentWidth:document.documentElement.scrollWidth,fields,tiles,inlinePerformer,photoActions,pills};
    });
    const prefix="130HH work "+width+"px";
    assert.equal(result.isBrand,true,prefix+" lost scoped brand");
@@ -87,6 +88,8 @@ const ratio=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math
      if(fg&&bg&&name!=="date")assert.ok(ratio(fg,bg)>=4.5,prefix+" low contrast "+name+" "+JSON.stringify(field));
    }
    if(width<=760){
+     assert.ok(result.photoActions?.visible&&Math.abs(result.photoActions.height-44)<=1,
+       prefix+" camera and gallery must fit one 44px row: "+JSON.stringify(result.photoActions));
      for(const name of ["type","status"]){
        const tiles=result.tiles[name];
        assert.equal(tiles.length,3,prefix+" missing three "+name+" choices: "+JSON.stringify(tiles));
