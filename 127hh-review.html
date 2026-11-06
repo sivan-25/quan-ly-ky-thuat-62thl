@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESTA · Nghiệm thu giao diện 127 Hồng Hà</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{font-family:"Be Vietnam Pro",Arial,sans-serif;color:#152a3c;background:#f7f9fc;font-size:14px;--blue:#215d87;--light:#e8f2fa;--border:#dce5ee;--shadow:0 5px 18px rgba(17,50,81,.045)}
+*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+aside{background:#153b5a;color:#edf7ff;padding:22px 14px;position:sticky;top:0;height:100vh}
+.logo{font-size:23px;font-weight:800;letter-spacing:.08em;padding:6px 16px}.logo span{display:block;font-size:10px;letter-spacing:.09em;font-weight:500;color:#b4cede;margin-top:3px}
+.project{border:1px solid #50738d;background:#214e70;border-radius:11px;padding:12px;margin:22px 0 25px;font-size:13px}.project strong{display:block;font-size:15px}
+nav{display:grid;gap:7px}nav button{border:0;width:100%;text-align:left;border-radius:9px;background:transparent;color:#dfedfa;padding:12px 13px;min-height:44px}
+nav button[aria-current="page"]{background:#dceefa;color:#143e61;font-weight:750}
+nav button:hover:not([aria-current]){background:#295575}
+.sidefoot{position:absolute;bottom:21px;padding:0 12px;color:#bfd2df;font-size:11px}
+main{min-width:0}.bar{display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--border);min-height:64px;padding:10px 25px;gap:12px}
+.bar h1{font-size:19px;margin:0;line-height:1.35}.bar small{color:#526579}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button.action{border:1px solid #bbd3e4;background:#fff;color:#234d6d;border-radius:9px;min-height:42px;padding:0 14px;font-weight:650}
+button.action.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.content{padding:22px 25px;max-width:1640px;margin:auto}
+.note{background:#fff7e5;border:1px solid #eed7a5;padding:10px 14px;border-radius:10px;color:#73501d;font-size:12px;line-height:1.6;margin-bottom:18px}
+.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:0 0 16px}.intro h2{font-size:22px;letter-spacing:-.025em;margin:0 0 4px}.intro p{color:#526579;margin:0}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.card{border:1px solid var(--border);background:#fff;border-radius:12px;box-shadow:var(--shadow);min-width:0}
+.metric{padding:16px}.metric span{font-size:12px;color:#526579;display:block}.metric strong{font-size:24px;display:block;margin-top:4px;letter-spacing:-.04em}.metric small{color:#557087;font-size:11px}
+.panel{padding:18px;margin-bottom:16px}.panel h3{font-size:15px;margin:0}.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 15px}
+.head small{color:#597084}.layout{display:grid;grid-template-columns:3fr 1fr;gap:14px}
+table{border-collapse:collapse;width:100%;font-size:13px;text-align:left}th{height:44px;background:#e9f2f8;color:#1e4c6b;font-weight:700;white-space:nowrap}th,td{padding:10px 12px;border-bottom:1px solid #e6edf3}td{height:48px;color:#244056}tr:last-child td{border-bottom:0}.tablewrap{overflow-x:auto;border-radius:9px;border:1px solid var(--border)}
+.badge{display:inline-flex;padding:5px 8px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap}.done{background:#dcfce7;color:#166534}.wait{background:#fef3c7;color:#92400e}.late{background:#fee2e2;color:#991b1b}.info{background:#dcecf8;color:#215d87}
+.warning{padding:10px 0;border-bottom:1px solid #e6edf3;display:grid;gap:4px}.warning strong{font-size:12px}.warning:last-child{border:0}.warning span{color:#6a7d8f;font-size:11px}
+.toolbar{display:flex;gap:9px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.toolbar input{min-height:44px;padding:0 12px;min-width:220px;max-width:100%;border:1px solid var(--border);border-radius:9px;background:#fff;color:#152a3c}
+.months{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:6px;margin:12px 0 16px}
+.months button{position:relative;min-height:44px;border:1px solid #ccdeec;border-radius:9px;background:#edf5fb;color:#234d6d;font-weight:750;font-size:12px}
+.months button[aria-pressed="true"]{background:#215d87;border:2px solid #e63946;color:#fff}.months button[aria-pressed="true"]:after{content:"★";position:absolute;top:1px;right:4px;font-size:11px;color:#ffe19a}
+.months button:hover{filter:brightness(.97)}.tabpage[hidden]{display:none!important}
+.twocol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.placeholder{border:1px dashed #a9bfd0;background:#f7fafc;border-radius:9px;padding:24px;text-align:center;color:#526579}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;color:#61768a;font-size:12px}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.day{min-height:90px;padding:8px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:12px;background:#fff}
+.day b{font-size:13px}.event{display:block;margin:6px 0 0;border-radius:5px;background:#e8f2fa;color:#164c71;padding:5px;font-size:10px;line-height:1.5}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.months{display:flex;overflow:auto}.months button{flex:0 0 55px}}
+@media(max-width:700px){.app{display:block}aside{height:auto;position:static;padding:12px}.logo{font-size:19px}.logo span,.project,.sidefoot{display:none}nav{display:flex;overflow:auto;gap:5px}nav button{width:auto;flex:none;font-size:12px;padding:9px}.bar{padding:12px 15px;align-items:start;flex-wrap:wrap}.bar h1{font-size:17px}.content{padding:15px}.cards{gap:8px}.metric{padding:12px}.metric strong{font-size:21px}.twocol{grid-template-columns:1fr}.day{min-height:72px;padding:4px}.event{font-size:9px}}
+</style></head><body>
+<div class="app"><aside aria-label="Điều hướng mẫu"><div class="logo">ESTA<span>PROPERTY OPERATIONS</span></div><div class="project">DỰ ÁN ĐANG XEM<strong>127 Hồng Hà</strong></div>
+<nav id="navigation">
+<button aria-current="page" data-page="overview">▦ &nbsp; Tổng quan</button>
+<button data-page="work">☷ &nbsp; Công việc</button>
+<button data-page="materials">▤ &nbsp; Vật tư tiêu hao</button>
+<button data-page="tools">♧ &nbsp; Dụng cụ kỹ thuật</button>
+<button data-page="maintenance">▣ &nbsp; Lịch bảo trì</button>
+</nav><div class="sidefoot">GIAO DIỆN THỬ NGHIỆM · 127 HH</div></aside>
+<main><header class="bar"><div><h1 id="pageTitle">Tổng quan · 127 Hồng Hà</h1><small>Thiết kế chuẩn hóa doanh nghiệp — phiên bản nghiệm thu</small></div>
+<div class="actions"><button class="action" type="button" id="yearButton">Năm 2026</button><button class="action" type="button" id="exportButton">⇩ Xuất file</button><button class="action primary" type="button">127 Hồng Hà</button></div></header>
+<div class="content">
+<div class="note"><strong>CHỈ XEM GIAO DIỆN.</strong> Tất cả dữ liệu, công việc, vật tư và số liệu trên trang này đều là mô phỏng. Không kết nối Supabase, không ghi dữ liệu thật. Chưa phải kết quả kiểm thử chức năng thực tế.</div>
+<section class="tabpage" data-view="overview"><div class="intro"><div><h2>Xin chào, Quản trị viên</h2><p>Toàn cảnh vận hành tại 127 Hồng Hà</p></div><span class="badge info">Dự án 127 HH</span></div>
+<div class="cards"><div class="card metric"><span>Công việc theo dõi</span><strong>24</strong><small>Công việc đang được quản lý</small></div><div class="card metric"><span>Công việc trong ngày</span><strong>8</strong><small>4 công việc đã hoàn thành</small></div><div class="card metric"><span>Chờ xử lý</span><strong>3</strong><small>Ưu tiên kiểm tra trong ngày</small></div><div class="card metric"><span>Tỷ lệ hoàn thành</span><strong>86%</strong><small>Số liệu minh họa</small></div></div>
+<div class="layout"><div class="card panel"><div class="head"><h3>Công việc đã giao</h3><small>Ưu tiên công việc có dấu sao</small></div><div class="tablewrap"><table><thead><tr><th>Ưu tiên</th><th>Công việc</th><th>Hệ thống</th><th>Trạng thái</th></tr></thead><tbody><tr><td>★</td><td>Kiểm tra hệ thống điều hòa tầng 5</td><td>HVAC</td><td><span class="badge wait">Đang chờ xử lý</span></td></tr><tr><td>★</td><td>Kiểm tra điện chiếu sáng hành lang</td><td>Điện</td><td><span class="badge info">Đang thực hiện</span></td></tr><tr><td>☆</td><td>Kiểm tra áp lực nước cấp</td><td>Nước</td><td><span class="badge done">Đã hoàn thành</span></td></tr></tbody></table></div></div>
+<div class="card panel"><div class="head"><h3>Cảnh báo cần xử lý</h3></div><div class="warning"><strong>Kiểm tra định kỳ HVAC</strong><span><span class="badge late">Quá hạn</span> · Ví dụ</span></div><div class="warning"><strong>Vật tư sắp hết</strong><span><span class="badge wait">Đang chờ xử lý</span> · Ví dụ</span></div></div></div></section>
+<section class="tabpage" data-view="work" hidden><div class="intro"><div><h2>Công việc</h2><p>Biểu mẫu rõ ràng, bảng dữ liệu dễ đọc, trạng thái dễ nhận diện</p></div></div>
+<div class="card panel"><div class="head"><h3>Danh sách công việc</h3><button class="action primary" type="button" data-demo-action>+ Thêm công việc</button></div><div class="toolbar"><input id="workSearch" placeholder="Tìm công việc..." aria-label="Tìm công việc"><span class="badge info">Ưu tiên dấu sao</span></div><div class="tablewrap"><table><thead><tr><th>★</th><th>Nội dung công việc</th><th>Ngày</th><th>Trạng thái</th></tr></thead><tbody id="workRows"><tr><td>★</td><td>Kiểm tra hệ thống điện tầng 3</td><td>06/11/2026</td><td><span class="badge wait">Chờ xử lý</span></td></tr><tr><td>★</td><td>Rà soát thiết bị PCCC</td><td>06/11/2026</td><td><span class="badge info">Đang thực hiện</span></td></tr><tr><td>☆</td><td>Vệ sinh FCU khu vực làm việc</td><td>05/11/2026</td><td><span class="badge done">Đã hoàn thành</span></td></tr></tbody></table></div></div></section>
+<section class="tabpage" data-view="materials" hidden><div class="intro"><div><h2>Vật tư tiêu hao</h2><p>Nhập – xuất – tồn trong cùng một bảng, thiết kế gọn</p></div></div>
+<div class="cards"><div class="card metric"><span>Nhập tháng</span><strong>18</strong></div><div class="card metric"><span>Xuất tháng</span><strong>6</strong></div><div class="card metric"><span>Hàng tồn</span><strong>89</strong></div><div class="card metric"><span>Sắp hết</span><strong>2</strong></div></div><div class="months" id="months"></div>
+<div class="card panel"><div class="toolbar"><h3 style="margin:0">Danh sách vật tư</h3><div class="actions"><input id="materialSearch" placeholder="Tìm vật tư..." aria-label="Tìm vật tư"><button class="action primary" type="button" data-demo-action>+ Thêm vật tư</button></div></div>
+<div class="tablewrap"><table><thead><tr><th>STT</th><th>Tên vật tư</th><th>ĐVT</th><th>Tồn đầu</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối</th><th>Thao tác</th></tr></thead><tbody id="materialRows"><tr><td>01</td><td>Bóng đèn LED</td><td>Cái</td><td>20</td><td>10</td><td>4</td><td>26</td><td><button class="action" type="button" data-demo-action>Sửa</button></td></tr><tr><td>02</td><td>Van nước cấp</td><td>Cái</td><td>8</td><td>3</td><td>1</td><td>10</td><td><button class="action" type="button" data-demo-action>Sửa</button></td></tr></tbody></table></div></div></section>
+<section class="tabpage" data-view="tools" hidden><div class="intro"><div><h2>Dụng cụ kỹ thuật</h2><p>Đồng bộ với vật tư tiêu hao, giữ chức năng quản lý riêng</p></div></div><div class="cards"><div class="card metric"><span>Tổng danh mục</span><strong>18</strong></div><div class="card metric"><span>Sẵn sàng</span><strong>16</strong></div><div class="card metric"><span>Đang kiểm tra</span><strong>1</strong></div><div class="card metric"><span>Hư hỏng</span><strong>1</strong></div></div><div class="card panel"><div class="head"><h3>Danh sách dụng cụ</h3><button class="action primary" data-demo-action>+ Thêm dụng cụ</button></div><div class="tablewrap"><table><thead><tr><th>STT</th><th>Tên dụng cụ</th><th>Số lượng</th><th>Trạng thái</th></tr></thead><tbody><tr><td>01</td><td>Đồng hồ vạn năng</td><td>2</td><td><span class="badge done">Sẵn sàng</span></td></tr><tr><td>02</td><td>Máy khoan</td><td>1</td><td><span class="badge wait">Đang kiểm tra</span></td></tr></tbody></table></div></div></section>
+<section class="tabpage" data-view="maintenance" hidden><div class="intro"><div><h2>Lịch bảo trì thiết bị</h2><p>Thể hiện công việc và hệ thống cùng ngày, dễ đọc trên nhiều màn hình</p></div></div><div class="card panel"><div class="head"><h3>Tháng 11/2026</h3><span class="badge info">Dữ liệu mô phỏng</span></div><div class="calendar" id="calendar"></div><div class="legend"><span>■ Lịch kiểm tra</span><span>■ Tên hệ thống đi cùng công việc</span></div></div></section>
+<div id="notification" role="status" aria-live="polite" style="color:#526579;font-size:12px;margin-top:14px"></div>
+</div></main></div>
+<script>
+const names={overview:"Tổng quan",work:"Công việc",materials:"Vật tư tiêu hao",tools:"Dụng cụ kỹ thuật",maintenance:"Lịch bảo trì"};
+document.querySelectorAll("nav button[data-page]").forEach(btn=>btn.addEventListener("click",()=>{
+const page=btn.dataset.page;document.querySelectorAll("nav button").forEach(el=>el.removeAttribute("aria-current"));btn.setAttribute("aria-current","page");
+document.querySelectorAll(".tabpage").forEach(el=>el.hidden=el.dataset.view!==page);document.getElementById("pageTitle").textContent=names[page]+" · 127 Hồng Hà";
+}));
+const months=document.getElementById("months");
+["Cả năm",...Array.from({length:12},(_,i)=>"T"+(i+1))].forEach((name,i)=>{
+const b=document.createElement("button");b.type="button";b.textContent=name;b.setAttribute("aria-pressed",i===11?"true":"false");
+b.addEventListener("click",()=>{months.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true")});months.appendChild(b);
+});
+const calendar=document.getElementById("calendar");
+for(let i=1;i<=35;i++){const div=document.createElement("div");div.className="day";const day=i<=30?i:"";div.innerHTML="<b>"+day+"</b>";if(i===6||i===10||i===18){const ev=document.createElement("span");ev.className="event";ev.textContent=i===6?"Điện · Kiểm tra chiếu sáng":i===10?"HVAC · Vệ sinh FCU":"PCCC · Kiểm tra hệ thống";div.appendChild(ev)}calendar.appendChild(div)}
+for(const [inputId,rowId] of [["workSearch","workRows"],["materialSearch","materialRows"]]){document.getElementById(inputId).addEventListener("input",e=>{const q=e.target.value.trim().toLocaleLowerCase("vi");document.querySelectorAll("#"+rowId+" tr").forEach(tr=>tr.hidden=!tr.textContent.toLocaleLowerCase("vi").includes(q))})}
+const note=document.getElementById("notification");document.addEventListener("click",e=>{if(e.target.closest("[data-demo-action],#exportButton,#yearButton")){note.textContent="Đây là màn hình nghiệm thu giao diện, không ghi dữ liệu và không xuất báo cáo thật.";}}); 
+</script></body></html>
