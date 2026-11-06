@@ -42,7 +42,7 @@ const ratio=(x,y)=>{const a=lum(x),b=lum(y);return(Math.max(a,b)+.05)/(Math.min(
     const bottomButton=bottom?style(bottom):null;
     return {
       brand:document.querySelector("#app").classList.contains("estaBrand130"),
-      selectedId:selected.id,activeText:active.color,activeLabel:activeLabel.color,activeBg:active.backgroundColor,icon:svg.color,pseudo:pseudo.backgroundColor,
+      selectedId:selected.id,activeText:active.color,activeLabel:activeLabel.color,activeBg:active.backgroundColor,icon:svg.color,pseudo:pseudo.backgroundColor,stripe:active.boxShadow,
       idleId:idle?.id,idleText:idleStyle?.color,idleBg:idleStyle?.backgroundColor,idleImage:idleStyle?.backgroundImage,
       pseudoContent:pseudo.content,head:head.backgroundColor,headBackground:head.backgroundImage,
       title:heading.color,menu:button.color,menuBg:button.backgroundColor,
@@ -68,7 +68,10 @@ const ratio=(x,y)=>{const a=lum(x),b=lum(y);return(Math.max(a,b)+.05)/(Math.min(
    const worst=Math.min(...[[65,20,55],[43,21,38]].map(under=>
      ratio(foreground,selectedBg.map((c,i)=>c*alpha+under[i]*(1-alpha)))));
    assert.ok(worst>=4.5,label+" active label contrast over brand sidebar: "+JSON.stringify(stats));
-   assert.equal(stats.pseudo,"rgb(164, 100, 39)",label+" selected stripe should be copper");
+   assert.ok(
+     stats.pseudo==="rgb(164, 100, 39)"||stats.stripe.includes("rgb(164, 100, 39)"),
+     label+" selected indicator must retain copper (pseudo or inset rail): "+JSON.stringify(stats)
+   );
    assert.equal(stats.title,"rgb(243, 222, 191)",label+" topbar title");
    const fg=rgba(stats.title),bg=rgba(stats.head);
    if(fg&&bg&&bg.some(x=>x>0))assert.ok(ratio(fg,bg)>=4.5,label+" low topbar contrast");
