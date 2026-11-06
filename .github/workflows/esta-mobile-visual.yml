@@ -151,6 +151,9 @@ jobs:
       - name: Verify 130HH complete ESTA brand on every page and device width
         working-directory: candidate
         run: node tests/130hh-brand-complete-browser.cjs
+      - name: Verify 130HH sidebar selection and topbar text contrast
+        working-directory: candidate
+        run: node tests/130hh-nav-shell-browser.cjs
       - name: Check asset modal save visibility on iPhone viewports
         working-directory: candidate
         run: node tests/maintenance-asset-mobile-browser.cjs

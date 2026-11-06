@@ -156,6 +156,20 @@ body.estaBrand130,
  border-color:rgba(243,222,191,.35)!important;
  box-shadow:inset 3px 0 var(--esta130-copper)!important;
 }
+/* Sidebar selection must not retain the obsolete neon-blue icon / left rail.
+   Match the selected text/icon to the actual plum surface, and keep copper
+   for its single active indicator. No additional stylesheet is introduced. */
+#app.estaBrand130 .estaSidebar .estaNav button.active svg,
+#app.estaBrand130 .estaSidebar .estaNav button[aria-current="page"] svg{
+ color:var(--esta130-cream)!important;
+ stroke:currentColor!important;
+}
+#app.estaBrand130 .estaSidebar .estaNav button.active::before,
+#app.estaBrand130 .estaSidebar .estaNav button[aria-current="page"]::before{
+ background:var(--esta130-copper)!important;
+ box-shadow:none!important;
+}
+
 #app.estaBrand130 #estaBottomNav,
 body.estaBrand130 #updateMobileNav.liveProjectMobileNav{
  background:var(--esta130-plum)!important;
