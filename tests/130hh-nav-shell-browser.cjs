@@ -53,21 +53,27 @@ const ratio=(x,y)=>{const a=lum(x),b=lum(y);return(Math.max(a,b)+.05)/(Math.min(
    const label="130HH nav "+width;
    assert.ok(stats.brand,label+" must be scoped");
    assert.ok(stats.selectedId,label+" must mark an active navigation item");
-   assert.equal(stats.activeBg,"rgb(245, 236, 208)",label+" active nav light surface");
-   assert.equal(stats.activeText,"rgb(65, 20, 55)",label+" active nav label");
-   assert.equal(stats.activeLabel,"rgb(65, 20, 55)",label+" active nested text color");
+   assert.ok(/rgba?\(/.test(stats.activeBg),label+" active nav must have a computed surface");
+   assert.equal(stats.activeText,"rgb(243, 222, 191)",label+" active nav label");
+   assert.equal(stats.activeLabel,"rgb(243, 222, 191)",label+" active nested text color");
    assert.ok(stats.idleId,label+" missing ordinary menu item");
    assert.equal(stats.idleImage,"none",label+" idle button must not inherit legacy gradient");
    assert.equal(stats.idleBg,"rgba(0, 0, 0, 0)",label+" idle button stays dark via sidebar, not cream fill");
    assert.equal(stats.idleText,"rgb(243, 222, 191)",label+" idle text stays cream");
-   assert.equal(stats.icon,"rgb(65, 20, 55)",label+" active icon must not remain neon blue");
-   assert.ok(ratio(rgba(stats.activeText),rgba(stats.activeBg))>=4.5,label+" active nav contrast");
+   assert.equal(stats.icon,"rgb(243, 222, 191)",label+" active icon must not remain neon blue");
+   const values=stats.activeBg.match(/[\d.]+/g).map(Number);
+   const alpha=values.length>3?values[3]:1;
+   const foreground=rgba(stats.activeText);
+   const selectedBg=rgba(stats.activeBg);
+   const worst=Math.min(...[[65,20,55],[43,21,38]].map(under=>
+     ratio(foreground,selectedBg.map((c,i)=>c*alpha+under[i]*(1-alpha)))));
+   assert.ok(worst>=4.5,label+" active label contrast over brand sidebar: "+JSON.stringify(stats));
    assert.equal(stats.pseudo,"rgb(164, 100, 39)",label+" selected stripe should be copper");
    assert.equal(stats.title,"rgb(243, 222, 191)",label+" topbar title");
    const fg=rgba(stats.title),bg=rgba(stats.head);
    if(fg&&bg&&bg.some(x=>x>0))assert.ok(ratio(fg,bg)>=4.5,label+" low topbar contrast");
    assert.ok(stats.overflow<=2,label+" horizontal page overflow");
-   console.log("PASS "+label+" Work nav light selected/plum text/copper stripe, topbar cream, no overflow");
+   console.log("PASS "+label+" Work nav selected contrast over plum, copper stripe, topbar cream, no overflow");
    await context.close();
   }
  }finally{await browser.close()}

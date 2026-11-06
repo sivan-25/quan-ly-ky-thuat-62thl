@@ -164,18 +164,20 @@ body.estaBrand130 #app.estaBrand130#app #mobileSidebar .estaNav button:not(.acti
  -webkit-text-fill-color:var(--esta130-cream)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #mobileSidebar .estaNav :is(button.active,button[aria-current="page"]){
- background-color:var(--esta130-soft)!important;
+ /* The real selected row is a translucent highlight over the plum sidebar,
+    not an opaque light tile. Keep its foreground cream for actual contrast. */
+ background-color:rgba(245,236,208,.12)!important;
  background-image:none!important;
- color:var(--esta130-plum)!important;
- -webkit-text-fill-color:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ -webkit-text-fill-color:var(--esta130-cream)!important;
  border-color:var(--esta130-copper)!important;
  box-shadow:inset 3px 0 var(--esta130-copper)!important;
 }
 /* Selected sidebar row is a light pill: plum text/icons and copper indicator.
    Resolve legacy work-mode cyan selectors without adding another stylesheet. */
 body.estaBrand130 #app.estaBrand130#app #mobileSidebar .estaNav :is(button.active,button[aria-current="page"]) > :is(span,svg){
- color:var(--esta130-plum)!important;
- -webkit-text-fill-color:var(--esta130-plum)!important;
+ color:var(--esta130-cream)!important;
+ -webkit-text-fill-color:var(--esta130-cream)!important;
  stroke:currentColor!important;
 }
 body.estaBrand130 #app.estaBrand130#app #mobileSidebar .estaNav button.active::before,
