@@ -196,19 +196,24 @@ async function prep(page,p){
       const icons=[...pageRoot.querySelectorAll("button svg,.formSectionMark svg,.summaryIcon svg,.workEntryHeaderIcon svg")]
         .filter(visible);
       const heights=controls.map(el=>({id:el.id||el.className||el.tagName,
-        height:Math.round(el.getBoundingClientRect().height)}));
+        height:Math.round(el.getBoundingClientRect().height),
+        minHeight:getComputedStyle(el).minHeight,maxHeight:getComputedStyle(el).maxHeight,
+        transform:getComputedStyle(el).transform}));
       const dimIcons=icons.filter(el=>{
         const c=getComputedStyle(el),parent=el.closest("button");
         return Number(c.opacity)<.5&&!parent?.disabled;
       }).map(el=>({parent:el.parentElement?.id||el.parentElement?.className||"",
         color:getComputedStyle(el).color,opacity:getComputedStyle(el).opacity})).slice(0,8);
       return {controls:controls.length,icons:icons.length,
-        heights:heights.slice(0,8),dimIcons};
+        heights:heights.slice(0,8),
+        shortControls:heights.filter(x=>x.height<44).slice(0,20),dimIcons};
     },root);
     console.log("130HH ALL-PAGE FORM/ICON AUDIT "+mode+" "+width+"px "+JSON.stringify(componentAudit));
     assert.equal(componentAudit.dimIcons.length,0,
       "Visible 130HH enabled control/icon dimmed below 50% in "+mode+" "+width+
       "px: "+JSON.stringify(componentAudit.dimIcons));
+    if(width<768)assert.equal(componentAudit.shortControls.length,0,
+      "130HH mobile controls below 44px in "+mode+" "+width+"px: "+JSON.stringify(componentAudit.shortControls));
 
     if(mode==="energy"){
       const energyAudit=await page.evaluate(()=>{

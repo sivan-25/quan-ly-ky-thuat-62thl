@@ -21,6 +21,7 @@ body.estaBrand130,
   --esta130-table-row-height: 44px;
   --esta130-year-month-width: 90px;
   --esta130-year-month-font-size: 12px;
+  --esta130-month-font-size: 12px;
   --esta130-ui-radius: 10px;
   --esta130-ui-gap: 12px;
   --esta130-ui-font-size: 14px;
@@ -99,4 +100,10 @@ body.estaBrand130,
  --upd-line:#D7BE9C;
  --upd-teal:#A46427;
  --upd-shadow:0 8px 23px rgba(65,20,55,.08);
+}
+@media (max-width: 767px) {
+  body.estaBrand130,
+  #app[data-project="130-hong-ha"] {
+    --esta130-compact-height: 44px;
+  }
 }

@@ -402,7 +402,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     order:unset!important;min-width:0!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared .inventory130PdfMenu>button {
-    min-height:40px!important;height:40px!important;padding:0 11px!important;
+    min-height:var(--esta130-control-height,40px)!important;height:var(--esta130-control-height,40px)!important;padding:0 11px!important;
     border:1px solid #d4bda0!important;border-radius:10px!important;
     background:#f5e8d5!important;color:#263d51!important;
     -webkit-text-fill-color:#263d51!important;font-size:12px!important;
@@ -735,7 +735,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     min-width:0!important;width:100%!important;min-height:var(--esta130-compact-height,40px)!important;
     background:linear-gradient(145deg,#f0f7ff,#d4e9ff)!important;border:1px solid #bfd7ef!important;
      border-radius:10px!important;color:#143c72!important;-webkit-text-fill-color:#143c72!important;
-    font-size:10px!important;font-weight:700!important;
+    font-size:var(--esta130-month-font-size,10px)!important;font-weight:700!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #materialMonthTabs button.active {
     background-color:var(--esta130-plum,#07539b)!important;background-image:linear-gradient(160deg,var(--esta130-plum,#1689e4),var(--esta130-deep,#06418b))!important;

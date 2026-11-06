@@ -35,10 +35,12 @@ assert.match(energy,/#energyPage #energyForm \.energyPhotoActions \.energyAction
 assert.match(contractor,/#app\.contractorMode #contractorPage \.contractorStats small\{\s*font-size:var\(--esta130-caption-size,8px\)!important;/);
 assert.match(contractorMobile,/contractorMobileProjects \.contractorStats small\{font-size:var\(--esta130-caption-size,8px\)!important\}/);
 assert.match(incident,/\.demoKpi small\{[^}]*font-size:var\(--esta130-caption-size,9px\)/);
-for(const name of ["inventory-approved-four.css","energy-refresh.css","unified.css","contractor.css","contractor-mobile-130.css","demo-lab.css"]) {
+for(const name of ["energy-refresh.css","unified.css","contractor.css","demo-lab.css"]) {
  assert.ok(markup.includes('href="'+name+'?v=20261105-130-ui-readability-v3"'),"missing cache bust for "+name);
 }
 assert.ok(markup.includes('href="esta-brand-130-complete.css?v=20261106-approved44"'));
+assert.ok(markup.includes('href="inventory-approved-four.css?v=20261106-130-touch44"'));
+assert.ok(markup.includes('href="contractor-mobile-130.css?v=20261106-130-touch44"'));
 for (const [bg,fg] of [
   ["#E8F4E8","#175B36"], // completed work
   ["#FFF0DA","#7A4300"], // waiting work
