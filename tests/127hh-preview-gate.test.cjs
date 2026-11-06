@@ -9,7 +9,7 @@ const app=read("app.js");
 const html=read("index.html");
 const preview=read("127hh-review.html");
 
-assert.match(css,/#app\[data-building-id="127HH"\]/,"127HH theme must be project-scoped");
+assert.match(css,/#app\.estaFourProjectCompact\[data-building-id="127HH"\]/,"127HH theme must be active-project scoped");
 assert.ok(!css.includes("#app.estaBrand130"),"127HH theme must not target 130HH styles");
 for(const token of ["--esta127-primary","--esta127-canvas","--esta127-surface","--esta127-text","--esta127-border","--esta127-control-height"])
  assert.ok(css.includes(token+":"),"missing 127HH token: "+token);
