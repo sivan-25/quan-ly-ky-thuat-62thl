@@ -1,7 +1,7 @@
 /* ESTA 127 Hồng Hà — single, project-scoped presentation authority.
    Pilot visual theme (no business logic/data overrides). Colors preserve 127HH blue identity.
    Only load after the four-project styles. Remove obsolete competing rules in later refactor batches. */
-#app[data-building-id="127HH"]{
+#app.estaFourProjectCompact[data-building-id="127HH"]{
   --esta127-primary:#215d87;
   --esta127-primary-hover:#194c71;
   --esta127-primary-soft:#e8f2fa;
@@ -23,46 +23,46 @@
   line-height:1.5;
 }
 /* Admin shell — one project only. */
-#app[data-building-id="127HH"] :is(main,.mainContent){background:var(--esta127-canvas)}
-#app[data-building-id="127HH"] .estaTopbar{
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(main,.mainContent){background:var(--esta127-canvas)}
+#app.estaFourProjectCompact[data-building-id="127HH"] .estaTopbar{
   min-height:60px;
   border-bottom:1px solid var(--esta127-border);
 }
-#app[data-building-id="127HH"] .estaSidebar{border-right:1px solid rgba(255,255,255,.16)}
-#app[data-building-id="127HH"] :is(.topModuleTitle h1,.proPageHead h1,.workEntryHeader h2){
+#app.estaFourProjectCompact[data-building-id="127HH"] .estaSidebar{border-right:1px solid rgba(255,255,255,.16)}
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(.topModuleTitle h1,.proPageHead h1,.workEntryHeader h2){
   font-family:inherit;
   font-size:clamp(19px,1.7vw,24px);
   font-weight:700;
   letter-spacing:-.02em;
 }
-#app[data-building-id="127HH"] :is(.topModuleTitle p,.proPageHead p){font-size:13px;line-height:1.5}
-#app[data-building-id="127HH"] :is(button,input,select,textarea){font-family:inherit}
-#app[data-building-id="127HH"] :is(input,select,textarea,button):focus-visible{
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(.topModuleTitle p,.proPageHead p){font-size:13px;line-height:1.5}
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(button,input,select,textarea){font-family:inherit}
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(input,select,textarea,button):focus-visible{
   outline:2px solid var(--esta127-primary);
   outline-offset:2px;
 }
-#app[data-building-id="127HH"] :is(.primary,.inventoryPrimary,.workSave,#saveBtn){
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(.primary,.inventoryPrimary,.workSave,#saveBtn){
   min-height:var(--esta127-control-height);
   border-radius:9px;
 }
-#app[data-building-id="127HH"] :is(.workEntryCard,.premiumTableCard,.inventorySectionBar,.materialMonthlyCard){
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(.workEntryCard,.premiumTableCard,.inventorySectionBar,.materialMonthlyCard){
   border-radius:var(--esta127-radius);
 }
-#app[data-building-id="127HH"] :is(.badge,.homeStatus){
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(.badge,.homeStatus){
   font-size:12px;
   line-height:1.4;
   font-weight:650;
   border-radius:8px;
 }
-#app[data-building-id="127HH"] :is(.badge.done,.homeStatus.done){
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(.badge.done,.homeStatus.done){
   background:#dcfce7;color:var(--esta127-success);
 }
-#app[data-building-id="127HH"] :is(.badge.waiting,.homeStatus.waiting){
+#app.estaFourProjectCompact[data-building-id="127HH"] :is(.badge.waiting,.homeStatus.waiting){
   background:#fef3c7;color:var(--esta127-warning);
 }
 /* Materials — use existing shared structure, but 127HH palette is light and readable. */
 @media (min-width:761px){
-  body #app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127{
+  body #app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127{
     --inv-accent:var(--esta127-primary);
     --inv-selected:var(--esta127-primary);
     --inv-top:#eef5fb;
@@ -83,60 +83,60 @@
     --esta130-table-row-height:48px;
     --esta130-compact-height:44px;
   }
-  #app[data-building-id="127HH"]:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar{
+  #app.estaFourProjectCompact[data-building-id="127HH"]:has(#inventoryPage.inventoryRef127:not(.hide)) header.estaTopbar{
     background:#eef5fb!important;
   }
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   #inventoryMaterialsPane .monthlyStats article{
     min-height:44px!important;height:auto!important;padding:8px 12px!important;
     background:var(--esta127-surface-alt)!important;border-color:var(--esta127-border)!important;
     color:var(--esta127-text)!important;box-shadow:none!important;
   }
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   #inventoryMaterialsPane .monthlyStats :is(small,b){
     color:var(--esta127-text)!important;-webkit-text-fill-color:var(--esta127-text)!important;
   }
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   #inventoryMaterialsPane .monthlyStats b{font-size:20px!important}
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .inventorySectionBar{background:#f0f6fb!important;border-color:var(--esta127-border)!important;box-shadow:none!important}
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .materialMonthlyCard{background:#fff!important;border-color:var(--esta127-border)!important;box-shadow:none!important}
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .materialMonthlyCard .inventoryTableScroll{background:#fff!important}
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .materialMonthlyTable thead th{
     background:#e9f2f8!important;color:#1e4c6b!important;-webkit-text-fill-color:#1e4c6b!important;
     border-color:var(--esta127-border)!important;
   }
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .materialMonthlyTable tbody td{
     background:#fff!important;color:#20384c!important;-webkit-text-fill-color:#20384c!important;
     border-color:#e2e8f0!important;
   }
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .materialMonthlyTable .materialNameCell b{
     color:#20384c!important;-webkit-text-fill-color:#20384c!important;
   }
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .materialMonthlyTable .materialNameCell small{
     color:#526579!important;-webkit-text-fill-color:#526579!important;
   }
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   .materialMonthlyTable thead th:last-child{background:#d8e8f4!important}
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   #materialMonthTabs button:not(.active){background:#edf5fb!important;color:#234d6d!important;-webkit-text-fill-color:#234d6d!important;border-color:#ccdeec!important}
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127
   #materialMonthTabs button.active{background:var(--esta127-primary)!important}
 }
 @media (max-width:760px){
-  body #app#app#app[data-building-id="127HH"] #inventoryPage.inventoryRef127{
+  body #app#app#app.estaFourProjectCompact[data-building-id="127HH"] #inventoryPage.inventoryRef127{
     --inv-mobile-canvas:#f7f9fc;
     --inv-mobile-selected:#215d87;
     --inv-mobile-ink:#173e5e;
   }
 }
 @media (prefers-reduced-motion:reduce){
-  #app[data-building-id="127HH"] *,#app[data-building-id="127HH"] *::before,
-  #app[data-building-id="127HH"] *::after{scroll-behavior:auto!important;animation-duration:.01ms!important}
+  #app.estaFourProjectCompact[data-building-id="127HH"] *,#app.estaFourProjectCompact[data-building-id="127HH"] *::before,
+  #app.estaFourProjectCompact[data-building-id="127HH"] *::after{scroll-behavior:auto!important;animation-duration:.01ms!important}
 }
