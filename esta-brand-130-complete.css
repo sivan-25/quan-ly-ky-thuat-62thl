@@ -1760,13 +1760,8 @@ body.estaBrand130 #app.estaBrand130#app #inventoryPage .materialTaskLink:hover{
   -webkit-text-fill-color:#2B1526!important;
   background:#EAD6BD!important;
 }
-/* The task-count pill has a more specific legacy .workTableMeta rule; keep its final text plum. */
-body.estaBrand130 #app.estaBrand130#app #workPage .workTableMeta #count{
-  color:#411437!important;
-  -webkit-text-fill-color:#411437!important;
-}
-/* Final override matches the triple-app specificity used by the old count pill rule. */
+/* Single legacy-specificity count rule; reuse the 130HH design token. */
 body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
-  color:#411437!important;
-  -webkit-text-fill-color:#411437!important;
+  color:var(--esta130-stat-text)!important;
+  -webkit-text-fill-color:var(--esta130-stat-text)!important;
 }
