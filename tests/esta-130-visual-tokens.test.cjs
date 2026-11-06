@@ -5,7 +5,7 @@ const read = (name) => fs.readFileSync(path.join(__dirname, "..", name), "utf8")
 const base = read("esta-brand-130-complete.css");
 const tokens = {
   "control-height": "44px",
-  "compact-height": "36px",
+  "compact-height": "40px",
   "kpi-height": "44px",
   "table-head-height": "44px",
   "table-row-height": "44px",
@@ -22,8 +22,25 @@ const tokens = {
   "overdue-text": "#991B1B",
 };
 assert.match(base, /body\.estaBrand130,\s*#app\.estaBrand130\s*\{/);
+const tokenValue = name => {
+  const raw = base.split("--esta130-"+name+":")[1]?.split(";")[0]?.trim();
+  assert.ok(raw, "missing token "+name);
+  const alias = /^var\(--esta130-([a-z-]+)\)$/.exec(raw);
+  return alias ? tokenValue(alias[1]) : raw;
+};
 for (const [name, value] of Object.entries(tokens)) {
-  assert.ok(base.includes(`--esta130-${name}: ${value};`), `missing token ${name}`);
+  assert.equal(tokenValue(name), value, "wrong resolved 130HH token "+name);
+}
+for (const [name, source] of Object.entries({
+  "table-row-bg":"ui-surface", "table-row-text":"ui-text", "table-row-border":"ui-border",
+  "field-bg":"ui-surface", "field-text":"ui-text",
+  "stat-label":"ui-muted", "stat-border":"ui-border", "today-text":"stat-text",
+  "complete-bg":"success-bg", "complete-text":"success-text",
+  "pending-bg":"warning-bg", "pending-text":"warning-text",
+  "overdue-bg":"danger-bg", "overdue-text":"danger-text"
+})) {
+  assert.ok(base.includes("--esta130-"+name+": var(--esta130-"+source+");"),
+    "duplicate color should use the 130HH role token: "+name);
 }
 for (const state of ["doing", "done", "waiting"]) {
   assert.ok(base.includes(`.badge.${state}`), `missing semantic status ${state}`);

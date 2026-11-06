@@ -4,14 +4,14 @@
 body.estaBrand130,
 #app.estaBrand130 {
   --esta130-control-height: 44px;
-  --esta130-compact-height: 36px;
+  --esta130-compact-height: 40px;
   --esta130-kpi-height: 44px;
   --esta130-table-head-height: 44px;
   --esta130-table-row-height: 44px;
   --esta130-ui-radius: 10px;
   --esta130-ui-gap: 12px;
   --esta130-ui-font-size: 14px;
-  --esta130-label-font-size: 12px;
+  --esta130-label-font-size: 13px;
   --esta130-caption-size: 12px;
   --esta130-table-font-size: 13px;
   --esta130-ui-surface: #FBF3E3;
@@ -21,9 +21,9 @@ body.estaBrand130,
   --esta130-table-head-bg: #411437;
   --esta130-table-head-text: #F3DEBF;
   --esta130-table-head-border: #A46427;
-  --esta130-table-row-bg: #FBF3E3;
-  --esta130-table-row-text: #2B1526;
-  --esta130-table-row-border: #D7BE9C;
+  --esta130-table-row-bg: var(--esta130-ui-surface);
+  --esta130-table-row-text: var(--esta130-ui-text);
+  --esta130-table-row-border: var(--esta130-ui-border);
   --esta130-success-bg: #E8F4E8;
   --esta130-success-text: #175B36;
   --esta130-warning-bg: #FFF0DA;
@@ -31,26 +31,26 @@ body.estaBrand130,
   --esta130-danger-bg: #FDE8E8;
   --esta130-danger-text: #991B1B;
   /* One visual role = one color family across every 130HH module. */
-  --esta130-field-bg: #FBF3E3;
-  --esta130-field-text: #2B1526;
+  --esta130-field-bg: var(--esta130-ui-surface);
+  --esta130-field-text: var(--esta130-ui-text);
   --esta130-field-border: #987759;
   --esta130-stat-bg: #F5ECD0;
   --esta130-stat-text: #411437;
-  --esta130-stat-label: #625045;
-  --esta130-stat-border: #D7BE9C;
+  --esta130-stat-label: var(--esta130-ui-muted);
+  --esta130-stat-border: var(--esta130-ui-border);
   --esta130-today-bg: #EFE4ED;
-  --esta130-today-text: #411437;
+  --esta130-today-text: var(--esta130-stat-text);
   --esta130-progress-bg: #E7F0FA;
   --esta130-progress-text: #164A70;
   --esta130-progress-border: #A6C5DD;
-  --esta130-complete-bg: #E8F4E8;
-  --esta130-complete-text: #175B36;
+  --esta130-complete-bg: var(--esta130-success-bg);
+  --esta130-complete-text: var(--esta130-success-text);
   --esta130-complete-border: #B3D7B9;
-  --esta130-pending-bg: #FFF0DA;
-  --esta130-pending-text: #7A4300;
+  --esta130-pending-bg: var(--esta130-warning-bg);
+  --esta130-pending-text: var(--esta130-warning-text);
   --esta130-pending-border: #E8C88F;
-  --esta130-overdue-bg: #FDE8E8;
-  --esta130-overdue-text: #991B1B;
+  --esta130-overdue-bg: var(--esta130-danger-bg);
+  --esta130-overdue-text: var(--esta130-danger-text);
   --esta130-overdue-border: #E7B2B2;
   --esta130-kpi-success-text: #116630;
   --esta130-kpi-warning-text: #874300;
