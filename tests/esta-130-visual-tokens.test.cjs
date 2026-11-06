@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const assert = require("node:assert/strict");
 const read = (name) => fs.readFileSync(path.join(__dirname, "..", name), "utf8");
-const base = read("esta-brand-130-complete.css");
+const base = read("esta-130-tokens.css") + read("esta-brand-130-complete.css");
 const tokens = {
   "control-height": "44px",
   "compact-height": "36px",

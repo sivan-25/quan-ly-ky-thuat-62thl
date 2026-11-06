@@ -3,7 +3,7 @@ const assert=require("node:assert/strict");
 const fs=require("node:fs");
 const path=require("node:path");
 const read=name=>fs.readFileSync(path.join(__dirname,"..",name),"utf8");
-const brand=read("esta-brand-130-complete.css");
+const brand=read("esta-130-tokens.css")+read("esta-brand-130-complete.css");
 const stock=read("inventory-approved-four.css");
 const unified=read("unified.css");
 const energy=read("energy-refresh.css");
@@ -35,9 +35,10 @@ assert.match(energy,/#energyPage #energyForm \.energyPhotoActions \.energyAction
 assert.match(contractor,/#app\.contractorMode #contractorPage \.contractorStats small\{\s*font-size:var\(--esta130-caption-size,8px\)!important;/);
 assert.match(contractorMobile,/contractorMobileProjects \.contractorStats small\{font-size:var\(--esta130-caption-size,8px\)!important\}/);
 assert.match(incident,/\.demoKpi small\{[^}]*font-size:var\(--esta130-caption-size,9px\)/);
-for(const name of ["esta-brand-130-complete.css","inventory-approved-four.css","energy-refresh.css","unified.css","contractor.css","contractor-mobile-130.css","demo-lab.css"]) {
+for(const name of ["inventory-approved-four.css","energy-refresh.css","unified.css","contractor.css","contractor-mobile-130.css","demo-lab.css"]) {
  assert.ok(markup.includes('href="'+name+'?v=20261105-130-ui-readability-v3"'),"missing cache bust for "+name);
 }
+assert.ok(markup.includes('href="esta-brand-130-complete.css?v=20261106-approved44"'));
 for (const [bg,fg] of [
   ["#E8F4E8","#175B36"], // completed work
   ["#FFF0DA","#7A4300"], // waiting work

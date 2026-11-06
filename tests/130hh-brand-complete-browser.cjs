@@ -4,7 +4,7 @@ const assert=require("node:assert/strict");
 const {chromium}=require("playwright");
 const fs=require("node:fs");
 const path=require("node:path");
-const sizes=[320,390,768,1440];
+const sizes=[360,390,768,1024,1366,1920];
 const projects=[
  {id:"130HH",name:"130 Hồng Hà",role:"editor"},
  {id:"62THL",name:"62 Trần Huy Liệu",role:"editor"},
@@ -332,6 +332,13 @@ async function prep(page,p){
       if(state[key]!==null)assert.equal(state[key],soft,key+" still has legacy blue/dark surface in "+mode+" width "+width);
     }
     assert.equal(errors.length,0,"JavaScript errors in "+mode+": "+errors.join(", "));
+    if(mode==="inventory"){
+     const yearLabels=await page.locator("#inventoryPage .yearMonthHead :is(span,small)").evaluateAll(nodes=>nodes.filter(n=>n.getClientRects().length).map(n=>parseFloat(getComputedStyle(n).fontSize)));
+     assert.ok(yearLabels.every(size=>size>=12),"130HH year table month labels must be at least 12px: "+yearLabels.join(","));
+    }
+    if(process.env.ESTA_SCREENSHOTS==="1" && ["home","work","energy","inventory","maintenance"].includes(mode)){
+     await page.screenshot({path:path.join(output,mode+"-"+width+".png"),fullPage:true});
+    }
    }
    await context.close();
   }
@@ -346,6 +353,6 @@ async function prep(page,p){
   });
   assert.ok(state.other&&state.admin,"Theme must reset for other project AND Admin");
   await context.close();
-  console.log("PASS 130HH all project modes across 4 viewport widths; header and 5 key panels use ESTA brand; zero horizontal overflow; other projects/Admin isolated");
+  console.log("PASS 130HH all project modes across 6 viewport widths; header and 5 key panels use ESTA brand; zero horizontal overflow; other projects/Admin isolated");
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});
