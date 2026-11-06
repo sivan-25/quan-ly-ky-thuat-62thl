@@ -45,6 +45,9 @@ function contrast(a,b){const x=light(a),y=light(b);return (Math.max(x,y)+.05)/(M
      const bg=rgb(result.quick.bg),fg=rgb(result.quick.fg);
      assert.ok(bg&&fg,key+" invalid quick add text/bg "+JSON.stringify(result));
      assert.ok(light(bg)>.7,key+" legacy navy quick-add button "+JSON.stringify(result.quick));
+     assert.ok(Math.abs(result.quick.h-44)<=1,key+" inconsistent 44px quick-add button "+JSON.stringify(result.quick));
+     const areaBg=rgb(result.quickArea.bg);
+     assert.ok(areaBg&&light(areaBg)>.7,key+" legacy navy quick-add container "+JSON.stringify(result.quickArea));
      assert.ok(contrast(fg,bg)>=4.5,key+" low contrast quick-add action "+JSON.stringify(result.quick));
    }
    if(result.table?.visible){

@@ -1130,7 +1130,8 @@ body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(
   .inventoryWorkspace,.inventoryPane,.inventoryMonthRail,.inventoryMonthTabs,
   .inventoryTableCard,.inventoryTableScroll,.inventorySupportGrid,.inventoryCommand,
   .inventoryStats,.inventorySectionBar,.inventory130ListBar,.inventory130QuickMenu,
-  .inventoryQuickAdd,.inventoryMetric,.inventoryEmpty,.inventorySearch,.inventorySupportCard
+  .inventoryQuickAdd,.inventoryMetric,.inventoryEmpty,.inventorySearch,.inventorySupportCard,
+  .inventoryExamples,.inventoryExamples button
 ){
   background:#F5ECD0!important;
   border-color:#D8BEA0!important;
@@ -1139,6 +1140,16 @@ body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(.inventoryTableCard,.inventoryTableScroll,.inventoryEmpty){
   background:#FBF3E3!important;
+}
+/* 130HH quick tools: keep the same 44px touch/label geometry as other controls,
+   and counter only the legacy navy quick-add button palette at its source role. */
+body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryExamples button{
+  box-sizing:border-box!important;
+  min-height:var(--esta130-control-height)!important;
+  height:var(--esta130-control-height)!important;
+  border-color:#D8BEA0!important;
+  color:var(--esta130-ui-text)!important;
+  -webkit-text-fill-color:var(--esta130-ui-text)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .inventoryTableCard th{
   background:#EBD7BE!important;
