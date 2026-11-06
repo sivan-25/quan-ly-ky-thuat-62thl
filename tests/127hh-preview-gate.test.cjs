@@ -16,7 +16,7 @@ for(const token of ["--esta127-primary","--esta127-canvas","--esta127-surface","
 assert.ok(css.includes("--esta130-table-head-bg"),"shared inventory uses existing themed variables");
 assert.ok(css.includes("#materialMonthTabs button.active"),"selected month remains distinctive");
 assert.ok(css.includes(".materialMonthlyTable"),"tables should share 127HH theme");
-assert.ok(html.includes('href="esta-brand-127.css?v=20261106-pilot01"'),"127HH theme stylesheet missing");
+assert.ok(html.includes('href="esta-brand-127.css?v=20261106-mobile02"'),"127HH theme stylesheet missing");
 assert.ok(html.indexOf("inventory-approved-four.css")<html.indexOf("esta-brand-127.css"),"theme must follow shared inventory styles");
 assert.ok(app.includes('$("#app").dataset.buildingId=String(currentBuilding?.id||"");'),"project-specific scope must follow selected project");
 assert.ok(preview.includes("CHỈ XEM GIAO DIỆN"),"mock-data warning missing");
