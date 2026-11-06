@@ -39,7 +39,7 @@ const ratio=(x,y)=>{const a=lum(x),b=lum(y);return(Math.max(a,b)+.05)/(Math.min(
     const bottomButton=bottom?style(bottom):null;
     return {
       brand:document.querySelector("#app").classList.contains("estaBrand130"),
-      selectedId:selected.id,activeText:active.color,icon:svg.color,pseudo:pseudo.backgroundColor,
+      selectedId:selected.id,activeText:active.color,activeBg:active.backgroundColor,icon:svg.color,pseudo:pseudo.backgroundColor,
       pseudoContent:pseudo.content,head:head.backgroundColor,headBackground:head.backgroundImage,
       title:heading.color,menu:button.color,menuBg:button.backgroundColor,
       bottomText:bottomButton?.color,bottomBg:bottomButton?.backgroundColor,
@@ -49,14 +49,16 @@ const ratio=(x,y)=>{const a=lum(x),b=lum(y);return(Math.max(a,b)+.05)/(Math.min(
    const label="130HH nav "+width;
    assert.ok(stats.brand,label+" must be scoped");
    assert.ok(stats.selectedId,label+" must mark an active navigation item");
-   assert.equal(stats.activeText,"rgb(243, 222, 191)",label+" active nav label");
-   assert.equal(stats.icon,"rgb(243, 222, 191)",label+" active icon must not remain neon blue");
+   assert.equal(stats.activeBg,"rgb(245, 236, 208)",label+" active nav light surface");
+   assert.equal(stats.activeText,"rgb(65, 20, 55)",label+" active nav label");
+   assert.equal(stats.icon,"rgb(65, 20, 55)",label+" active icon must not remain neon blue");
+   assert.ok(ratio(rgba(stats.activeText),rgba(stats.activeBg))>=4.5,label+" active nav contrast");
    assert.equal(stats.pseudo,"rgb(164, 100, 39)",label+" selected stripe should be copper");
    assert.equal(stats.title,"rgb(243, 222, 191)",label+" topbar title");
    const fg=rgba(stats.title),bg=rgba(stats.head);
    if(fg&&bg&&bg.some(x=>x>0))assert.ok(ratio(fg,bg)>=4.5,label+" low topbar contrast");
    assert.ok(stats.overflow<=2,label+" horizontal page overflow");
-   console.log("PASS "+label+" Work nav selected cream/copper, topbar cream, no overflow");
+   console.log("PASS "+label+" Work nav light selected/plum text/copper stripe, topbar cream, no overflow");
    await context.close();
   }
  }finally{await browser.close()}

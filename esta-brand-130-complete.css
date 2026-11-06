@@ -151,17 +151,21 @@ body.estaBrand130,
  border-color:rgba(243,222,191,.24)!important;
 }
 #app.estaBrand130 .estaSidebar :is(.brand b,.estaNav button,.sideUserCard,.sideBuilding b,.mobileSidebarHeader){color:var(--esta130-cream)!important;-webkit-text-fill-color:var(--esta130-cream)!important}
-#app.estaBrand130 .estaSidebar :is(.estaNav button.active,.estaNav button[aria-current="page"]) {
- background:rgba(164,100,39,.26)!important;
- border-color:rgba(243,222,191,.35)!important;
+body.estaBrand130 #app.estaBrand130#app .estaSidebar :is(.estaNav button.active,.estaNav button[aria-current="page"]) {
+ background:var(--esta130-soft)!important;
+ color:var(--esta130-plum)!important;
+ -webkit-text-fill-color:var(--esta130-plum)!important;
+ border-color:var(--esta130-copper)!important;
  box-shadow:inset 3px 0 var(--esta130-copper)!important;
 }
-/* Sidebar selection must not retain the obsolete neon-blue icon / left rail.
-   Match the selected text/icon to the actual plum surface, and keep copper
-   for its single active indicator. No additional stylesheet is introduced. */
-#app.estaBrand130 .estaSidebar .estaNav button.active svg,
-#app.estaBrand130 .estaSidebar .estaNav button[aria-current="page"] svg{
- color:var(--esta130-cream)!important;
+/* Selected sidebar row is a light pill: plum text/icons and copper indicator.
+   Resolve legacy work-mode cyan selectors without adding another stylesheet. */
+body.estaBrand130 #app.estaBrand130#app .estaSidebar .estaNav button.active svg,
+body.estaBrand130 #app.estaBrand130#app .estaSidebar .estaNav button[aria-current="page"] svg,
+body.estaBrand130 #app.estaBrand130#app .estaSidebar .estaNav button.active > span,
+body.estaBrand130 #app.estaBrand130#app .estaSidebar .estaNav button[aria-current="page"] > span{
+ color:var(--esta130-plum)!important;
+ -webkit-text-fill-color:var(--esta130-plum)!important;
  stroke:currentColor!important;
 }
 #app.estaBrand130 .estaSidebar .estaNav button.active::before,
