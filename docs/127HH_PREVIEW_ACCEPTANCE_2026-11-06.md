@@ -47,6 +47,22 @@ Yêu cầu đã được người dùng duyệt: **điện thoại hiển thị 
 - **Chưa có bằng chứng kiểm thử pixel bằng trình duyệt thật**, nên cần kiểm tra kích thước 320/360/390/430/768px, đo `scrollWidth <= innerWidth`, không có nút hay nội dung bị che.
 - Mẫu chỉ để nghiệm thu hình thức; 127HH trong root preview vẫn kết nối database thật. Không ghi dữ liệu thử qua root.
 
+## Bản dùng thử có thể thao tác — cập nhật theo yêu cầu mới
+
+Truy cập **`/127hh-trial.html`** trong Vercel Preview. Đây không phải trang ảnh hay mẫu nút vô hiệu. Những hành vi đã có:
+
+- Tổng quan tự thay đổi theo dữ liệu thử; sao ưu tiên sắp trước trong danh sách công việc.
+- Công việc: thêm / sửa / xóa / tìm / lọc / đánh dấu sao / hoàn thành và mở lại.
+- Vật tư: thêm / sửa / xóa / tìm / chọn tháng / xem số tồn / nhập xuất có kiểm tra đủ tồn kho.
+- Dụng cụ: thêm / sửa / xóa / tìm / lọc tình trạng.
+- Bảo trì: thêm / sửa / xóa / đánh dấu hoàn thành / nhân bản vào ngày trống / chuyển tháng.
+- Xuất CSV theo trang; đặt lại dữ liệu thử về mẫu ban đầu.
+- Trên điện thoại: thẻ thông tin dọc và khu vực nhập liệu một cột, không chủ ý tạo vùng cuộn ngang.
+
+**Giới hạn quan trọng:** đây là bản dùng thử độc lập, dùng `localStorage` trong trình duyệt, **không đăng nhập vào hệ thống chính và không đồng bộ giữa các thiết bị**. Thao tác ghi được lưu trên **cùng thiết bị/trình duyệt và cùng tên miền Preview**. Đây là prototype chức năng với các quy tắc thử cơ bản, không thể coi là QA xong toàn bộ nghiệp vụ production. Để nghiệm thu dữ liệu và phân quyền thực, cần một cơ sở dữ liệu staging tách biệt.
+
+Test: `tests/127hh-trial-browser.test.cjs` trong `npm test`.
+
 ## Điều kiện trước khi phê duyệt chuyển production
 
 1. Hoàn thành tất cả batch theo phạm vi đã chốt và có commit từng checkpoint.
@@ -58,7 +74,8 @@ Yêu cầu đã được người dùng duyệt: **điện thoại hiển thị 
 
 ## Cách kiểm tra
 
-- Xem mock tại `/127hh-review.html` trên URL Vercel Preview của nhánh.
+- **Trải nghiệm có thao tác** tại `/127hh-trial.html` trên URL Vercel Preview của nhánh.
+- Xem mock cũ tại `/127hh-review.html` nếu muốn so sánh với thiết kế chỉ xem.
 - Trang ứng dụng thực tại `/` trên Preview chỉ xem, không thay đổi dữ liệu.
 - Không xem bản mock là chứng cứ chức năng đã đạt.
 
