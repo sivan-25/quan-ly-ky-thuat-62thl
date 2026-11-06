@@ -268,6 +268,108 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
  border-color:var(--esta130-line)!important;
  color:var(--esta130-text)!important;
 }
+/* 130HH energy form: a single accessible geometry and contrast role.
+   Existing generic legacy Energy rules made photo buttons navy, note disclosure
+   transparent/40px and notes 48-88px. Keep editing behaviour and camera handlers. */
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+:is(#energyDate,#energyValue,#energyValue2,#energyPeopleButton,
+   .energyPhotoActions button,#energyNoteToggle){
+  box-sizing:border-box!important;
+  min-height:var(--esta130-control-height)!important;
+  height:var(--esta130-control-height)!important;
+  max-height:var(--esta130-control-height)!important;
+  border-radius:var(--esta130-ui-radius)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+:is(.energyPhotoActions button,#energyNoteToggle){
+  min-width:0!important;
+  padding:0 10px!important;
+  border:1px solid var(--esta130-field-border)!important;
+  background:var(--esta130-field-bg)!important;
+  color:var(--esta130-field-text)!important;
+  -webkit-text-fill-color:var(--esta130-field-text)!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+  opacity:1!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+.energyPhotoActions{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+.energyPhotoActions button:last-child{
+  background:var(--esta130-field-bg)!important;
+  border-color:var(--esta130-field-border)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+.energyPhotoActions .energyActionIcon{
+  color:var(--esta130-field-text)!important;
+  stroke:currentColor!important;
+  fill:none!important;
+  opacity:1!important;
+  filter:none!important;
+  width:18px!important;
+  height:18px!important;
+  flex:0 0 18px!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+.energyPhotoActions .energyActionText{
+  color:var(--esta130-field-text)!important;
+  -webkit-text-fill-color:var(--esta130-field-text)!important;
+  opacity:1!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+#energyNoteToggle{
+  width:100%!important;
+  max-width:100%!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  margin:0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+#energyNote{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-height:var(--esta130-control-height)!important;
+  height:var(--esta130-control-height)!important;
+  max-height:180px!important;
+  padding:9px 11px!important;
+  background:var(--esta130-field-bg)!important;
+  color:var(--esta130-field-text)!important;
+  -webkit-text-fill-color:var(--esta130-field-text)!important;
+  border-color:var(--esta130-field-border)!important;
+  font-size:13px!important;
+  line-height:1.3!important;
+  resize:vertical!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
+:is(label > span:first-child,.energyImageField > span:first-child,.energyImage2Field > span:first-child){
+  color:var(--esta130-stat-text)!important;
+  -webkit-text-fill-color:var(--esta130-stat-text)!important;
+  font-size:var(--esta130-label-font-size)!important;
+  font-weight:650!important;
+  opacity:1!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage
+.energyCardTitle .energyMark{
+  background:var(--esta130-plum)!important;
+  color:var(--esta130-cream)!important;
+  border-color:var(--esta130-copper)!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage
+.energyCardTitle .energyMark svg{
+  color:var(--esta130-cream)!important;
+  stroke:currentColor!important;
+  opacity:1!important;
+  filter:none!important;
+}
+
 /* Energy: all navy panels to warm cards and light input controls. */
 #app.estaBrand130 #energyPage :is(.energyTabs,.energyCard,.energyTableCard,.energySummaryCards,.energySummaryCards article,.energyForm,.energyTableTop,.energyDesktopTable,.energyHistoryTable,.energyHistoryTable tbody,.energyHistoryTable tbody tr,.energyHistoryTable tbody td,#energyMobileCards,.energyCardTitle){
  background:var(--esta130-soft)!important;
@@ -465,6 +567,17 @@ body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hi
   -webkit-text-fill-color:var(--esta130-field-text)!important;
   font-size:var(--esta130-ui-font-size)!important;
   border-radius:var(--esta130-ui-radius)!important;
+}
+/* 130HH only: compact the work entry grid, NOT its 44px click targets.
+   The old 16-18px panel inset plus 12px gutters made fields feel oversized. */
+#app.estaBrand130.workMode #workPage #taskForm.workEntryForm{
+  padding:10px 12px 12px!important;
+  column-gap:8px!important;
+  row-gap:8px!important;
+}
+#app.estaBrand130.workMode #workPage #taskForm .workField > span{
+  margin-bottom:4px!important;
+  font-weight:600!important;
 }
 /* Work form responsive tracks: allocate enough width for native desktop date input
    instead of clipping the date text inside a 92px cell. Other projects are unchanged. */

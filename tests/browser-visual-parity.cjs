@@ -10,7 +10,7 @@ const standardWidths=[{width:320,height:720},{width:390,height:844},{width:768,h
 const widths=process.env.ESTA_VISUAL_WIDTHS
  ? process.env.ESTA_VISUAL_WIDTHS.split(',').map(Number).filter(Number.isFinite).map(width=>({width,height:width<500?844:1024}))
  : standardWidths;
-const standardScenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL','inventory-62THL','maintenance-68PĐL','contractor-130HH','incident-127HH','inspection-130HH','documents-62THL','reports-68PĐL'];
+const standardScenarios=['login','admin','admin-home','work-62THL','work-68PĐL','work-127HH','work-130HH','edit-62THL','edit-130HH','energy-68PĐL','energy-130HH','inventory-62THL','maintenance-68PĐL','contractor-130HH','incident-127HH','inspection-130HH','documents-62THL','reports-68PĐL'];
 const scenarios=process.env.ESTA_VISUAL_SCENARIOS
  ? process.env.ESTA_VISUAL_SCENARIOS.split(',').map(x=>x.trim()).filter(Boolean)
  : standardScenarios;
@@ -164,7 +164,7 @@ async function capture(browser,site,scenario,viewport){
     // change only 130HH work/add/edit pixels. All other buildings and routes
     // remain on exact visual parity; geometry/interactions are tested separately.
     const reviewed130Work=process.env.ESTA_VISUAL_130HH_WORK_FIELDS==="1"&&
-      ["work-130HH","edit-130HH"].includes(scenario);
+      ["work-130HH","edit-130HH","energy-130HH"].includes(scenario);
     if(reviewed130Work){
       const coreUnchanged=next.stats.section===base.stats.section&&
        next.stats.tasks===base.stats.tasks&&next.stats.drawerOpen===base.stats.drawerOpen&&

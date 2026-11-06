@@ -181,6 +181,84 @@ async function prep(page,p){
     });
     assert.equal(contrastAudit.count,0,"130HH text contrast failed in "+mode+" width "+width+": "+JSON.stringify(contrastAudit.failures));
 
+    // Every visible 130HH route is inspected for actual form geometry and
+    // interactive SVG opacity, not just correct colors on the main background.
+    const componentAudit=await page.evaluate(root=>{
+      const pageRoot=document.querySelector(root);
+      const visible=el=>{
+        if(!el||!el.getClientRects().length)return false;
+        const c=getComputedStyle(el);
+        return c.display!=="none"&&c.visibility!=="hidden"&&
+          !el.closest(".hide,[aria-hidden='true']");
+      };
+      const controls=[...pageRoot.querySelectorAll("input:not([type='file']):not([type='hidden']),textarea,select,button")]
+        .filter(visible);
+      const icons=[...pageRoot.querySelectorAll("button svg,.formSectionMark svg,.summaryIcon svg,.workEntryHeaderIcon svg")]
+        .filter(visible);
+      const heights=controls.map(el=>({id:el.id||el.className||el.tagName,
+        height:Math.round(el.getBoundingClientRect().height)}));
+      const dimIcons=icons.filter(el=>{
+        const c=getComputedStyle(el),parent=el.closest("button");
+        return Number(c.opacity)<.5&&!parent?.disabled;
+      }).map(el=>({parent:el.parentElement?.id||el.parentElement?.className||"",
+        color:getComputedStyle(el).color,opacity:getComputedStyle(el).opacity})).slice(0,8);
+      return {controls:controls.length,icons:icons.length,
+        heights:heights.slice(0,8),dimIcons};
+    },root);
+    console.log("130HH ALL-PAGE FORM/ICON AUDIT "+mode+" "+width+"px "+JSON.stringify(componentAudit));
+    assert.equal(componentAudit.dimIcons.length,0,
+      "Visible 130HH enabled control/icon dimmed below 50% in "+mode+" "+width+
+      "px: "+JSON.stringify(componentAudit.dimIcons));
+
+    if(mode==="energy"){
+      const energyAudit=await page.evaluate(()=>{
+        const root=document.querySelector("#energyPage");
+        const visible=el=>!!el&&!!el.getClientRects().length&&
+          getComputedStyle(el).display!=="none"&&!el.closest(".hide");
+        const measure=el=>{
+          if(!visible(el))return null;
+          const c=getComputedStyle(el),r=el.getBoundingClientRect();
+          return {h:+r.height.toFixed(2),w:+r.width.toFixed(2),
+            color:c.webkitTextFillColor||c.color,background:c.backgroundColor,opacity:c.opacity,
+            stroke:c.stroke,fill:c.fill,filter:c.filter};
+        };
+        const photos=[...root.querySelectorAll("#energyForm .energyImageField .energyPhotoActions button")].map(measure).filter(Boolean);
+        const photoIcons=[...root.querySelectorAll("#energyForm .energyImageField .energyPhotoActions svg")].map(measure).filter(Boolean);
+        return {
+          photos,photoIcons,
+          noteToggle:measure(root.querySelector("#energyNoteToggle")),
+          noteInput:measure(root.querySelector("#energyNote")),
+          mainIndex:measure(root.querySelector("#energyValue")),
+          date:measure(root.querySelector("#energyDate")),
+          people:measure(root.querySelector("#energyPeopleButton")),
+          mark:measure(root.querySelector(".energyCardTitle .energyMark svg"))
+        };
+      });
+      const label="Energy 130HH "+width+"px";
+      assert.equal(energyAudit.photos.length,2,label+" camera+library count");
+      assert.equal(energyAudit.photoIcons.length,2,label+" photo SVG count");
+      const [camera,library]=energyAudit.photos;
+      for(const [name,x] of [["camera",camera],["library",library]]){
+        assert.ok(Math.abs(x.h-44)<=1,label+" "+name+" must be 44px: "+JSON.stringify(x));
+        assert.equal(x.background,"rgb(251, 243, 227)",label+" "+name+" must use light background");
+        assert.equal(x.color,"rgb(43, 21, 38)",label+" "+name+" text must use dark ink");
+      }
+      for(const icon of energyAudit.photoIcons){
+        assert.equal(icon.opacity,"1",label+" photo icon must not be faded");
+        assert.equal(icon.color,"rgb(43, 21, 38)",label+" icon ink");
+        assert.ok(icon.w>=16&&icon.h>=16,label+" icon appears too small "+JSON.stringify(icon));
+      }
+      for(const [name,field] of [["date",energyAudit.date],["main index",energyAudit.mainIndex],["performer",energyAudit.people],["note toggle",energyAudit.noteToggle],["note input",energyAudit.noteInput]]){
+        if(!field)continue;
+        assert.ok(Math.abs(field.h-44)<=1,label+" "+name+" not aligned 44px: "+JSON.stringify(field));
+      }
+      if(energyAudit.mark){
+        assert.equal(energyAudit.mark.opacity,"1",label+" meter header icon faded");
+        assert.equal(energyAudit.mark.color,"rgb(243, 222, 191)",label+" header meter icon color");
+      }
+      console.log("PASS "+label+" 44px energy controls, clear SVG, light photo buttons, compact note");
+    }
+
     if(mode==="work"){
      const workReadability=await page.evaluate(()=>{
       const root=document.querySelector("#workPage");
