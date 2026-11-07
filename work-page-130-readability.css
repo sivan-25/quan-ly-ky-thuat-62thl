@@ -46,51 +46,58 @@ body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed
 }
 
 /* Linked-work section and link text use ESTA plum/copper, not the legacy blue. */
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks > summary {
-  background:#F5ECD0!important;
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks > summary {
+  background:var(--esta130-soft)!important;
   background-image:none!important;
   border-color:#A46427!important;
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
   box-shadow:none!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks > summary,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks > summary *,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoWorkLinkGrid > label,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoWorkLinkGrid > label *,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskResultHead label,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialsHead > span,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialsEmpty,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoTaskLinkSummary,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskLinkSummary,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks a {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks > summary,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks > summary *,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoWorkLinkGrid > label,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoWorkLinkGrid > label *,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskResultHead label,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialsHead > span,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialsEmpty,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks #demoTaskLinkSummary,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskLinkSummary,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks a {
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
   text-decoration-color:#A46427!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks :is(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),select,textarea) {
-  background:#FBF3E3!important;
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks :is(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),select,textarea) {
+  background:var(--esta130-lift)!important;
   border:1px solid #A46427!important;
   color:#2B1526!important;
   -webkit-text-fill-color:#2B1526!important;
   box-shadow:none!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks button:not(#demoAddTaskMaterial):not(.demoTaskMaterialRemove) {
-  background:#F5ECD0!important;
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks button:not(#demoAddTaskMaterial):not(.demoTaskMaterialRemove) {
+  background:var(--esta130-soft)!important;
   border-color:#A46427!important;
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoAddTaskMaterial {
-  background:#411437!important;
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks #demoAddTaskMaterial {
+  background:var(--esta130-save-bg)!important;
   border:1px solid #A46427!important;
-  color:#F3DEBF!important;
-  -webkit-text-fill-color:#F3DEBF!important;
+  color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialRemove {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialRemove {
   color:#991B1B!important;
   -webkit-text-fill-color:#991B1B!important;
+}
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialsField{
+  background:var(--esta130-lift)!important;border-color:#A46427!important;
+}
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks #demoUseNoteAsResult:not(.hide){
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .materialTaskLink,
 body.estaBrand130 #app.estaBrand130#app #workPage .materialTaskLink {
@@ -101,7 +108,7 @@ body.estaBrand130 #app.estaBrand130#app #workPage .materialTaskLink {
 
 /* Performer names remain readable on the light work cards and in the selector. */
 body.estaBrand130 #app.estaBrand130#app #workPage .performerChips.pro > span {
-  background:#FBF3E3!important;
+  background:var(--esta130-lift)!important;
   border:1px solid #A46427!important;
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
@@ -121,13 +128,127 @@ body.estaBrand130 #app.estaBrand130#app #workPage .mutedDash {
 body.estaBrand130 #app.estaBrand130#app #workPage .workPerformer .peopleSelectBtn,
 body.estaBrand130 #app.estaBrand130#app #workPage .workPerformer .peopleSelectBtn > span,
 body.estaBrand130 #app.estaBrand130#app #workPage .workPerformer .peopleSelectBtn > b {
-  background:#FBF3E3!important;
+  background:var(--esta130-lift)!important;
   border-color:#A46427!important;
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
 
 /* A stronger copper divider separates every work row and mobile card. */
+/* Form states and compact task cards share the same 130HH field/action roles. */
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm .requiredField>span::after,
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #task130ResultField label b{
+  color:var(--esta130-required)!important;-webkit-text-fill-color:var(--esta130-required)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm .requiredField :is(input:not([type="hidden"]),select,textarea,.peopleSelectBtn,.inlinePeoplePicker,.workDateDisplayed,.workChoiceTile),
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) :is(#task130Result,#task130ResultField,#demoTaskResult[required]){
+  border-color:var(--esta130-required-border)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #demoTaskResultLabel[data-required="true"]::after{
+  content:" *";color:var(--esta130-required)!important;-webkit-text-fill-color:var(--esta130-required)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm .workChoiceTile[aria-checked="true"]{
+  background:var(--esta130-selected-bg)!important;border:2px solid var(--esta130-plum)!important;
+  color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
+  box-shadow:inset 0 0 0 1px var(--esta130-soft)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm .workChoiceTile[aria-checked="false"]{
+  background:var(--esta130-soft)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm .workChoiceTile>b{
+  white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+  font-size:10.5px!important;line-height:12px!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm :is(.peopleOption,#task130Result){
+  background:var(--esta130-lift)!important;background-image:none!important;
+  color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm :is(#taskPeopleMenu,#task130ResultField){
+  background:var(--esta130-soft)!important;background-image:none!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm :is(.peopleOptions,.peopleEmpty){
+  background:transparent!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm .peopleOption.selected{
+  background:var(--esta130-selected-bg)!important;border-color:var(--esta130-plum)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #taskForm :is(.peopleEmpty,.peopleOption) :is(b,span){
+  color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) :is(#task130QuickSave,#saveBtn){
+  background:var(--esta130-save-bg)!important;color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;border-color:var(--esta130-copper)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) :is(#task130QuickSave,#saveBtn) *{
+  color:var(--esta130-action-text)!important;-webkit-text-fill-color:var(--esta130-action-text)!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #demoWorkLinks{
+  border-radius:12px!important;overflow:hidden!important;
+}
+body.estaBrand130 :is(#app.estaBrand130#app #workPage,#workEditDrawer#workEditDrawer) #demoWorkLinks>summary{
+  border-radius:11px!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workTableMeta{display:none!important}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .workCompact130{
+  position:relative!important;overflow:visible!important;padding:10px 12px!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardHeading{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:8px;
+  padding-right:42px;
+  min-height:36px;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardHeading .taskTitle{
+  flex:1;min-width:0;margin:0!important;overflow-wrap:anywhere;line-height:1.4!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine{
+  display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:4px 7px!important;
+  margin:4px 0!important;min-width:0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine :is(time,.badge,.typeBadge,.performerChips,.performerChips>span,.performerChips b){
+  font-size:10px!important;line-height:14px!important;min-height:0!important;margin:0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine .performerChips{
+  display:flex!important;flex-wrap:wrap!important;gap:3px!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine .performerChips :is(i,em){display:none!important}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine .performerChips>span{
+  padding:1px 6px!important;max-width:100%!important;white-space:normal!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMenu{position:absolute!important;top:4px!important;right:4px!important;z-index:2}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMenu>summary{
+  display:grid;place-items:center;list-style:none;cursor:pointer;width:44px;height:44px;
+  border:1px solid var(--esta130-copper);border-radius:9px;background:var(--esta130-lift);
+  color:var(--esta130-deep);font-size:24px;line-height:1;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMenu>summary::-webkit-details-marker{display:none}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMenu>div{
+  position:absolute!important;right:0!important;left:auto!important;top:calc(100% + 4px)!important;
+  display:grid!important;gap:6px!important;width:170px!important;min-width:170px!important;max-width:calc(100vw - 48px)!important;
+  padding:5px!important;z-index:20!important;box-sizing:border-box!important;
+  border:1px solid var(--esta130-copper);border-radius:10px;background:var(--esta130-soft);
+  box-shadow:0 8px 22px rgba(43,21,38,.16);
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardMenu button{
+  display:block!important;width:100%!important;min-height:44px!important;padding:8px 10px!important;
+  border:1px solid var(--esta130-line)!important;background:var(--esta130-lift)!important;
+  color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
+  font-size:13px!important;text-align:left!important;white-space:nowrap!important;border-radius:6px!important;cursor:pointer;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage :is(.premiumTableCard,#mobileCards):has(.workCardMenu[open]){overflow:visible!important}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardNotes:empty{display:none!important}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardAttachments{
+  display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardAttachments:empty{display:none}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardAttachments .demoLinkChips{
+  display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:4px!important;margin:0!important;
+}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardPhotoCount{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:11px;line-height:1.4}
+body.estaBrand130 #app.estaBrand130#app #workPage .workCardAttachments .demoLinkChip{
+  background:var(--esta130-lift)!important;border-color:var(--esta130-line)!important;
+  color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
+  font-size:10px!important;line-height:14px!important;white-space:normal!important;
+}
 body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr > td {
   border-bottom:1.5px solid #A46427!important;
   border-bottom-color:#A46427!important;
@@ -138,6 +259,14 @@ body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr:last-c
 body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .proTaskCard {
   border:1px solid #A46427!important;
   border-bottom:2px solid #A46427!important;
-  background:#F5ECD0!important;
+  background:var(--esta130-soft)!important;
   margin-bottom:10px!important;
 }
+
+body.estaBrand130 #app.estaBrand130#app #workPage :is(.workCompact130,.workTaskTable) :is(.badge,.typeBadge,.performerChips>span,.demoLinkChip){display:inline-flex!important;align-items:center!important;box-sizing:border-box!important;min-height:20px!important;height:auto!important;padding:2px 6px!important;border-width:1px!important;line-height:14px!important;font-size:10px!important;border-radius:6px!important}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .workCompact130[data-work-state="done"],
+body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr[data-work-state="done"]>td{background:var(--esta130-work-done)!important}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .workCompact130[data-work-state="doing"],
+body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr[data-work-state="doing"]>td{background:var(--esta130-work-doing)!important}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .workCompact130[data-work-state="late"],
+body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr[data-work-state="late"]>td{background:var(--esta130-work-late)!important}

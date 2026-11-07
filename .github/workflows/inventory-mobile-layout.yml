@@ -10,6 +10,18 @@ on:
       - 'index.html'
       - 'tests/inventory-mobile-layout-browser.cjs'
       - '.github/workflows/inventory-mobile-layout.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'inventory-approved-four.css'
+      - 'inventory-correction-130.css'
+      - 'inventory-mobile-cards.css'
+      - 'tools-professional.css'
+      - 'esta-brand-130-complete.css'
+      - 'update-lab.js'
+      - 'index.html'
+      - 'tests/inventory-mobile-layout-browser.cjs'
+      - '.github/workflows/inventory-mobile-layout.yml'
   workflow_dispatch:
 jobs:
   inventory-mobile:

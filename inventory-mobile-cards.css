@@ -167,7 +167,7 @@
   }
   #app #inventoryPage.inventorySharedMobileCompact #inventory130Year,
   #app #inventoryPage.inventorySharedMobileCompact #inventory130Pdf{
-    flex:none!important;height:42px!important;min-height:42px!important;
+    flex:none!important;height:var(--esta130-control-height,42px)!important;min-height:var(--esta130-control-height,42px)!important;
     background:#16233a!important;border:1px solid #24344f!important;
     border-radius:10px!important;color:#eaf0fa!important;font-size:13px!important;
   }
@@ -262,9 +262,9 @@
     color:#eaf0fa!important;font-size:12px!important;font-weight:750!important;
   }
   #app #inventoryPage.inventorySharedMobileCompact #inventory130ListBar :is(summary,button){
-    min-height:39px!important;height:39px!important;padding:0 8px!important;
+    min-height:var(--esta130-control-height,39px)!important;height:var(--esta130-control-height,39px)!important;padding:0 8px!important;
     border-radius:10px!important;font-weight:700!important;
-    font-size:11px!important;white-space:nowrap!important;
+    font-size:var(--esta130-caption-size,11px)!important;white-space:nowrap!important;
   }
   #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickMenu{
     position:relative!important;flex:0 0 auto!important;z-index:12!important;
@@ -283,7 +283,7 @@
     box-shadow:0 10px 26px #0006!important;
   }
   #app #inventoryPage.inventorySharedMobileCompact #inventory130QuickChoices button{
-    height:auto!important;min-height:40px!important;
+    height:auto!important;min-height:var(--esta130-control-height,40px)!important;
     display:block!important;white-space:normal!important;
     text-align:left!important;color:#eaf0fa!important;background:#16233a!important;
     border:1px solid #304965!important;

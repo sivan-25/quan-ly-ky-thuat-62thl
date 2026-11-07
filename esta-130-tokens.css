@@ -1,0 +1,130 @@
+/* 130 Hồng Hà: approved aubergine, beige and copper palette.
+   One declaration source; activate only while the selected project is 130HH. */
+body.estaBrand130,
+#app[data-project="130-hong-ha"] {
+  --esta130-font: Inter, Arial, system-ui, sans-serif;
+  --esta-aubergine: #411437;
+  --esta-aubergine-dark: #2b1526;
+  --esta-cream: #f3debf;
+  --esta-card: var(--esta130-soft);
+  --esta-copper: #a46427;
+  --esta-taupe: #a99586;
+  --esta-stone: #625045;
+  --upd-warn: #a46427;
+}
+body.estaBrand130,
+#app.estaBrand130 {
+  --esta130-control-height: 44px;
+  --esta130-save-bg: #7A4300;
+  --esta130-photo-bg: #F3DEC7;
+  --esta130-photo-text: #542F12;
+  --esta130-work-done: #EFF7F0;
+  --esta130-work-doing: #FAF1E3;
+  --esta130-work-late: #FCEEEF;
+  --esta130-action-text: #FFFFFF;
+  --esta130-required: #B42332;
+  --esta130-required-border: #DA9BA3;
+  --esta130-selected-bg: #E5CFDE;
+  --esta130-compact-height: 36px;
+  --esta130-kpi-height: 44px;
+  --esta130-tool-kpi-desktop: 66px;
+  --esta130-tool-kpi-mobile: 58px;
+  --esta130-system-card-height: 50px;
+  --esta130-system-card-mobile-height: 50px;
+  --esta130-system-button-font: 12px;
+  --esta130-system-button-border: #A46427;
+  --esta130-tool-stat-1: var(--esta130-stat-bg);
+  --esta130-tool-stat-2: var(--esta130-stat-bg);
+  --esta130-tool-stat-3: var(--esta130-stat-bg);
+  --esta130-tool-stat-4: var(--esta130-stat-bg);
+  --esta130-table-head-height: 44px;
+  --esta130-table-row-height: 44px;
+  --esta130-year-month-width: 90px;
+  --esta130-year-month-font-size: 12px;
+  --esta130-month-font-size: 12px;
+  --esta130-ui-radius: 10px;
+  --esta130-ui-gap: 12px;
+  --esta130-ui-font-size: 14px;
+  --esta130-label-font-size: 12px;
+  --esta130-caption-size: 12px;
+  --esta130-table-font-size: 13px;
+  --esta130-ui-surface: var(--esta130-lift);
+  --esta130-ui-text: #2B1526;
+  --esta130-ui-muted: #625045;
+  --esta130-ui-border: #D7BE9C;
+  --esta130-table-head-bg: #411437;
+  --esta130-table-head-text: #F3DEBF;
+  --esta130-table-head-border: #A46427;
+  --esta130-table-row-bg: var(--esta130-soft);
+  --esta130-table-row-text: var(--esta130-ui-text);
+  --esta130-table-row-border: var(--esta130-ui-border);
+  --esta130-success-bg: #E8F4E8;
+  --esta130-success-text: #175B36;
+  --esta130-warning-bg: #FFF0DA;
+  --esta130-warning-text: #7A4300;
+  --esta130-danger-bg: #FDE8E8;
+  --esta130-danger-text: #991B1B;
+  /* One visual role = one color family across every 130HH module. */
+  --esta130-field-bg: var(--esta130-ui-surface);
+  --esta130-field-text: var(--esta130-ui-text);
+  --esta130-field-border: #987759;
+  --esta130-stat-bg: #EEE1EA;
+  --esta130-stat-text: #411437;
+  --esta130-stat-label: var(--esta130-ui-muted);
+  --esta130-stat-border: var(--esta130-ui-border);
+  --esta130-today-bg: #EFE4ED;
+  --esta130-today-text: var(--esta130-stat-text);
+  --esta130-progress-bg: #E7F0FA;
+  --esta130-progress-text: #164A70;
+  --esta130-progress-border: #A6C5DD;
+  --esta130-complete-bg: var(--esta130-success-bg);
+  --esta130-complete-text: var(--esta130-success-text);
+  --esta130-complete-border: #B3D7B9;
+  --esta130-pending-bg: var(--esta130-warning-bg);
+  --esta130-pending-text: var(--esta130-warning-text);
+  --esta130-pending-border: #E8C88F;
+  --esta130-overdue-bg: var(--esta130-danger-bg);
+  --esta130-overdue-text: var(--esta130-danger-text);
+  --esta130-overdue-border: #E7B2B2;
+  --esta130-kpi-success-text: #116630;
+  --esta130-kpi-warning-text: #874300;
+  --esta130-kpi-danger-text: #A51E32;
+}
+body.estaBrand130,
+#app[data-project="130-hong-ha"] {
+ --esta130-plum:#411437;
+ --esta130-deep:#2B1526;
+ --esta130-cream:#F3DEBF;
+ /* Beige belongs to page space; cards are warm white and fields are plum-tinted. */
+ --esta130-soft:#FFFDFC;
+ --esta130-lift:#F1E7EF;
+ --esta130-copper:#A46427;
+ --esta130-text:#2B1526;
+ --esta130-secondary:#625045;
+ --esta130-line:#D7BE9C;
+ --esta130-shadow:0 8px 23px rgba(65,20,55,.08);
+ --esta-primary:#411437;
+ --esta-border:#D7BE9C;
+ --esta-shadow:0 8px 23px rgba(65,20,55,.08);
+ --ov-navy:#411437;
+ --ov-deep:#2B1526;
+ --ov-cream:#F3DEBF;
+ --ov-panel:var(--esta130-soft);
+ --ov-line:#D7BE9C;
+ --upd-navy:#411437;
+ --upd-navy-2:#2B1526;
+ --upd-ink:#2B1526;
+ --upd-muted:#625045;
+ --upd-cream:#F3DEBF;
+ --upd-cream-2:var(--esta130-lift);
+ --upd-card:var(--esta130-soft);
+ --upd-line:#D7BE9C;
+ --upd-teal:#A46427;
+ --upd-shadow:0 8px 23px rgba(65,20,55,.08);
+}
+@media (max-width: 767px) {
+  body.estaBrand130,
+  #app[data-project="130-hong-ha"] {
+    --esta130-compact-height: 44px;
+  }
+}

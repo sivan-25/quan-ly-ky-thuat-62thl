@@ -23,7 +23,7 @@
   #app.contractorMode #contractorPage.contractorMobileProjects #contractorExportExcel,
   #app.contractorMode #contractorPage.contractorMobileProjects #contractorExportPdf{display:none!important}
   #app.contractorMode #contractorPage.contractorMobileProjects #addContractorBtn{
-    order:1;min-width:0!important;width:auto!important;height:42px!important;min-height:42px!important;
+    order:1;min-width:0!important;width:auto!important;height:var(--esta130-control-height,42px)!important;min-height:var(--esta130-control-height,42px)!important;
     padding:0 15px!important;margin:0!important;font-size:13px!important;
     border-radius:11px!important;white-space:nowrap!important;
   }

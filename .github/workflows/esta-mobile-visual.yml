@@ -151,6 +151,9 @@ jobs:
       - name: Verify 130HH complete ESTA brand on every page and device width
         working-directory: candidate
         run: node tests/130hh-brand-complete-browser.cjs
+      - name: Verify 130HH sidebar selection and topbar text contrast
+        working-directory: candidate
+        run: node tests/130hh-nav-shell-browser.cjs
       - name: Check asset modal save visibility on iPhone viewports
         working-directory: candidate
         run: node tests/maintenance-asset-mobile-browser.cjs
@@ -166,9 +169,22 @@ jobs:
       - name: Verify all four system menus on phones and laptops
         working-directory: candidate
         run: node tests/four-project-system-rail-geometry.cjs
+      - name: Verify 130HH pinned material and tool table headers with long lists
+        working-directory: candidate
+        run: node tests/130hh-inventory-table-sticky-browser.cjs
+      - name: Verify inventory popup names, help text, and existing actions
+        working-directory: candidate
+        run: node tests/130hh-inventory-modal-semantics.test.cjs
+      - name: Validate 130HH work form heights, badges and selectable text in Chromium
+        working-directory: candidate
+        run: node tests/130hh-work-form-contrast-geometry-browser.cjs
+      - name: Verify 130HH material and tool table label contrast on desktop
+        working-directory: candidate
+        run: node tests/130hh-inventory-desktop-contrast-browser.cjs
       - name: Compare real Chromium screenshots for four projects
         working-directory: candidate
         env:
+          ESTA_VISUAL_130HH_WORK_FIELDS: '1'
           ESTA_VISUAL_TOUCH_IMPROVEMENTS: '1'
           ESTA_VISUAL_COMPACT_ADMIN_OVERVIEW: '1'
           ESTA_VISUAL_COMPACT_PROJECT_OVERVIEW: '1'

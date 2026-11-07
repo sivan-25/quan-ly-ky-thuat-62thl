@@ -18,7 +18,7 @@ assert.ok(selectors.length>=65,"Shared layout must retain complete 130HH styling
 for(const selector of selectors){
  assert.ok(selector.startsWith("#app.estaFourProjectCompact "),"unscoped CSS rule: "+selector);
 }
-const match=appSource.match(/function syncOverviewNavigation\(\)\{[\s\S]*?\n\}\nfunction showHome/);
+const match=appSource.match(/function setBrand130\(enabled\)\{[\s\S]*?\n\}\nfunction syncOverviewNavigation\(\)\{[\s\S]*?\n\}\nfunction showHome/);
 assert.ok(match,"shared project navigation exists");
 const fn=match[0].slice(0,-"\nfunction showHome".length);
 const fake=()=>({
@@ -28,7 +28,7 @@ const fake=()=>({
   contains(k){return this.values.has(k)}
  },
  querySelector(){return {textContent:""}},
- setAttribute(){},textContent:""
+ setAttribute(){},textContent:"",dataset:{}
 });
 const app=fake(),nodes=new Map();
 const select=id=>{if(!nodes.has(id))nodes.set(id,fake());return nodes.get(id)};
@@ -42,6 +42,7 @@ for(const project of projects){
  ctx.currentBuilding={id:project};ctx.projectOverviewActive=true;
  vm.runInContext(fn+"\nsyncOverviewNavigation();",ctx);
  assert.equal(app.classList.contains("estaFourProjectCompact"),true,project+" should use approved shared layout");
+ assert.equal(app.dataset.project,project==="130HH"?"130-hong-ha":undefined,"brand scope must follow the active building");
 }
 ctx.currentBuilding={id:"NANGCAP"};
 vm.runInContext("syncOverviewNavigation();",ctx);

@@ -60,8 +60,10 @@
  flex-wrap:wrap;margin:0 0 8px;
 }
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefActions button{
- font-size:10px;font-weight:700;color:#65445d;background:transparent;
- border:1px solid transparent;border-radius:7px;min-height:27px;padding:4px 7px;
+ font-size:var(--esta130-system-button-font,10px);font-weight:700;
+ color:var(--esta130-plum,#65445d);background:var(--esta130-soft,transparent);
+ border:1px solid var(--esta130-system-button-border,transparent);border-radius:7px;
+ min-height:var(--esta130-control-height,27px);padding:4px 7px;
  cursor:pointer;
 }
 #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRefActions button:hover{

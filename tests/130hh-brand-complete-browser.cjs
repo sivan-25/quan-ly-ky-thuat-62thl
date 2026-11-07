@@ -4,7 +4,7 @@ const assert=require("node:assert/strict");
 const {chromium}=require("playwright");
 const fs=require("node:fs");
 const path=require("node:path");
-const sizes=[320,390,768,1440];
+const sizes=[360,390,768,1024,1366,1920];
 const projects=[
  {id:"130HH",name:"130 Hồng Hà",role:"editor"},
  {id:"62THL",name:"62 Trần Huy Liệu",role:"editor"},
@@ -24,7 +24,7 @@ const modes=[
  ["reports","#reportsPage",".rc-period"],
  ["construction","#constructionMaterialPage",".constructionCommand"]
 ];
-const cream="rgb(243, 222, 191)",soft="rgb(245, 236, 208)";
+const cream="rgb(243, 222, 191)",soft="rgb(255, 253, 252)";
 const output=process.env.ESTA_VISUAL_DIR||"visual-artifacts";
 fs.mkdirSync(output,{recursive:true});
 async function prep(page,p){
@@ -143,7 +143,7 @@ async function prep(page,p){
         const threshold=(size>=24||(size>=18.66&&weight>=700))?3:4.5;
         const bg=backgrounds(el);
         const worst=Math.min(...bg.map(c=>ratio(fg,c)));
-        if(worst+0.12<threshold)failures.push({tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,70),text:(el.innerText||el.textContent||"").trim().replace(/\s+/g," ").slice(0,50),color:st.color,textFill:st.webkitTextFillColor,html:el.outerHTML.slice(0,180),ancestors:[el.parentElement,el.parentElement?.parentElement,el.parentElement?.parentElement?.parentElement].filter(Boolean).map(n=>n.tagName.toLowerCase()+"#"+n.id+"."+String(n.className||"").replace(/\s+/g,".").slice(0,90)),actionMatch:el.matches('button[data-update-action="work-new"]'),heroActions:!!el.closest(".opsHeroActions"),updateHeroActions:!!el.closest(".updateHeroActions"),matchedColorRules:(()=>{const out=[];const walk=rules=>{for(const r of rules){try{if(r.cssRules)walk(r.cssRules);if(r.selectorText&&r.style&&r.style.getPropertyValue("color")&&el.matches(r.selectorText)){const v=r.style.getPropertyValue("color");if(/243|222|191|411437|plum/i.test(v))out.push({selector:r.selectorText.slice(0,220),color:v,important:r.style.getPropertyPriority("color")});}}catch(e){}}};for(const sh of [...document.styleSheets]){try{walk(sh.cssRules)}catch(e){}}return out.slice(-16)})(),bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:threshold});
+        if(worst+0.12<threshold)failures.push({tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,70),text:(el.innerText||el.textContent||"").trim().replace(/\s+/g," ").slice(0,50),color:st.color,textFill:st.webkitTextFillColor,html:el.outerHTML.slice(0,180),ancestors:[el.parentElement,el.parentElement?.parentElement,el.parentElement?.parentElement?.parentElement].filter(Boolean).map(n=>n.tagName.toLowerCase()+"#"+n.id+"."+String(n.className||"").replace(/\s+/g,".").slice(0,90)),actionMatch:el.matches('button[data-update-action="work-new"]'),heroActions:!!el.closest(".opsHeroActions"),updateHeroActions:!!el.closest(".updateHeroActions"),matchedColorRules:(()=>{const out=[];const walk=rules=>{for(const r of rules){try{if(r.cssRules)walk(r.cssRules);if(r.selectorText&&r.style&&r.style.getPropertyValue("color")&&el.matches(r.selectorText)){const v=r.style.getPropertyValue("color");if(/243|222|191|411437|plum/i.test(v))out.push({selector:r.selectorText.slice(0,220),color:v,important:r.style.getPropertyPriority("color")});}}catch(e){}}};for(const sh of [...document.styleSheets]){try{walk(sh.cssRules)}catch(e){}}return out.slice(-16)})(),parentPaint:(()=>{const n=el.parentElement;if(!n)return null;const p=getComputedStyle(n);return {id:n.id,className:n.className,display:p.display,backgroundColor:p.backgroundColor,backgroundImage:p.backgroundImage,color:p.color,textFill:p.webkitTextFillColor,opacity:p.opacity};})(),bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:threshold});
       }
       for(const el of document.body.querySelectorAll('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea')){
         if(!el.getClientRects().length||el.closest('.hide,[aria-hidden="true"]'))continue;
@@ -151,9 +151,190 @@ async function prep(page,p){
         if(fg&&fg.a>=.95){const worst=Math.min(...bg.map(c=>ratio(fg,c)));if(worst+0.12<4.5)failures.push({tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,70),text:(el.value||el.placeholder||"").slice(0,50),color:st.color,bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:4.5});}
         if(el.placeholder){const p=parseColor(getComputedStyle(el,"::placeholder").color);if(p&&p.a>=.95){const worst=Math.min(...bg.map(c=>ratio(p,c)));if(worst+0.12<4.5)failures.push({tag:el.tagName.toLowerCase()+"::placeholder",text:el.placeholder.slice(0,40),color:getComputedStyle(el,"::placeholder").color,bg:bg.map(c=>"rgb("+c.r+","+c.g+","+c.b+")"),contrast:Number(worst.toFixed(2)),required:4.5});}}
       }
+      /* Prior iterations excluded badges and selected controls entirely,
+         allowing the dark legacy 130HH pills to pass despite unreadable text.
+         Audit the actual painted status/type surface on every visible route. */
+      const semanticPaints=[
+        ...document.body.querySelectorAll(
+          ".badge,.homeStatus,.typeBadge,.workChoiceTile,.toolCondition,.maintenanceStatus,.statusBadge"
+        )
+      ];
+      for(const el of semanticPaints){
+        if(!el.getClientRects().length||el.closest(".hide,[aria-hidden=true]"))continue;
+        const st=getComputedStyle(el),ownBg=parseColor(st.backgroundColor);
+        if(st.display==="none"||st.visibility==="hidden"||!ownBg||ownBg.a<.95)continue;
+        const label=(el.querySelector("b,span,strong")||el),labelStyle=getComputedStyle(label);
+        const fg=parseColor(labelStyle.webkitTextFillColor||labelStyle.color);
+        if(!fg||fg.a<.95)continue;
+        const labelText=(label.innerText||label.textContent||"").trim();
+        if(!labelText)continue;
+        const f=parseFloat(labelStyle.fontSize)||12,w=parseInt(labelStyle.fontWeight,10)||400;
+        const required=(f>=24||(f>=18.66&&w>=700))?3:4.5;
+        const measured=ratio(fg,ownBg);
+        if(measured+0.12<required)failures.push({
+          tag:el.tagName.toLowerCase(),className:String(el.className||"").slice(0,90),
+          text:labelText.slice(0,55),fg:labelStyle.color,
+          bg:st.backgroundColor,contrast:Number(measured.toFixed(2)),required
+        });
+      }
       return {count:failures.length,failures:failures.slice(0,12)};
     });
     assert.equal(contrastAudit.count,0,"130HH text contrast failed in "+mode+" width "+width+": "+JSON.stringify(contrastAudit.failures));
+    const backgroundLeaks=await page.evaluate(root=>{
+      const area=document.querySelector(root);
+      const candidates=[...area.querySelectorAll('button,input,select,textarea,article,.demoPanel,.tableCard,.energyCard,.energyTableCard,.inventoryTableCard,.inventorySearch,.inventory130SearchField,.contractorSearch,.contractorRowCard,.proTaskCard,.maintenanceBoard,.maintenanceSchedule,.demoDocCat'),
+        ...document.querySelectorAll('.estaTopbar button,#updateMobileNav button')];
+      return candidates.filter(el=>el.getClientRects().length&&!el.closest('.hide,[aria-hidden="true"]'))
+        .filter(el=>{const s=getComputedStyle(el);return s.backgroundColor==='rgb(243, 222, 191)'&&s.backgroundImage==='none'})
+        .map(el=>({id:el.id,cls:el.className,text:el.textContent.trim().slice(0,45)}));
+    },root);
+    assert.deepEqual(backgroundLeaks,[],"130HH control/card reused page background in "+mode+" "+width+"px: "+JSON.stringify(backgroundLeaks));
+
+    // Every visible 130HH route is inspected for actual form geometry and
+    // interactive SVG opacity, not just correct colors on the main background.
+    const componentAudit=await page.evaluate(root=>{
+      const pageRoot=document.querySelector(root);
+      const visible=el=>{
+        if(!el||!el.getClientRects().length)return false;
+        const c=getComputedStyle(el);
+        return c.display!=="none"&&c.visibility!=="hidden"&&
+          !el.closest(".hide,[aria-hidden='true']");
+      };
+      const controls=[...pageRoot.querySelectorAll("input:not([type='file']):not([type='hidden']),textarea,select,button")]
+        .filter(visible);
+      const icons=[...pageRoot.querySelectorAll("button svg,.formSectionMark svg,.summaryIcon svg,.workEntryHeaderIcon svg")]
+        .filter(visible);
+      const heights=controls.map(el=>({id:el.id||el.className||el.tagName,
+        height:Math.round(el.getBoundingClientRect().height),
+        minHeight:getComputedStyle(el).minHeight,maxHeight:getComputedStyle(el).maxHeight,
+        transform:getComputedStyle(el).transform}));
+      const dimIcons=icons.filter(el=>{
+        const c=getComputedStyle(el),parent=el.closest("button");
+        return Number(c.opacity)<.5&&!parent?.disabled;
+      }).map(el=>({parent:el.parentElement?.id||el.parentElement?.className||"",
+        color:getComputedStyle(el).color,opacity:getComputedStyle(el).opacity})).slice(0,8);
+      return {controls:controls.length,icons:icons.length,
+        heights:heights.slice(0,8),
+        shortControls:heights.filter(x=>x.height<44).slice(0,20),dimIcons};
+    },root);
+    console.log("130HH ALL-PAGE FORM/ICON AUDIT "+mode+" "+width+"px "+JSON.stringify(componentAudit));
+    assert.equal(componentAudit.dimIcons.length,0,
+      "Visible 130HH enabled control/icon dimmed below 50% in "+mode+" "+width+
+      "px: "+JSON.stringify(componentAudit.dimIcons));
+    if(width<768)assert.equal(componentAudit.shortControls.length,0,
+      "130HH mobile controls below 44px in "+mode+" "+width+"px: "+JSON.stringify(componentAudit.shortControls));
+
+    if(mode==="contractor"){
+      const fit=await page.evaluate(()=>{
+        const stats=[...document.querySelectorAll("#contractorPage .contractorStats article")];
+        const input=document.querySelector("#contractorSearch");
+        return {height:Math.max(...stats.map(x=>x.getBoundingClientRect().height)),
+          clipped:stats.some(x=>[...x.querySelectorAll("small,b")].some(t=>t.scrollHeight>t.clientHeight+1)),
+          inputBg:getComputedStyle(input).backgroundColor,
+          wrapperBg:getComputedStyle(input.closest(".contractorSearch")).backgroundColor};
+      });
+      assert.ok(fit.height<=(width<761?74:82),"contractor KPI too tall: "+JSON.stringify(fit));
+      assert.equal(fit.clipped,false,"contractor KPI label clipped: "+JSON.stringify(fit));
+      assert.equal(fit.inputBg,"rgba(0, 0, 0, 0)","contractor search has nested surface");
+      assert.equal(fit.wrapperBg,"rgb(241, 231, 239)","contractor search surface");
+    }
+    if(mode==="inventory"){
+      const fit=await page.evaluate(()=>{
+        const rail=document.querySelector("#materialMonthTabs");
+        const month=rail.querySelector("button:not(.active)");
+        const search=document.querySelector("#inventory130Search");
+        const tools=document.querySelector("#inventoryToolsPane");
+        const materials=document.querySelector("#inventoryMaterialsPane");
+        tools.classList.remove("hide");materials.classList.add("hide");
+        const toolCards=[...tools.querySelectorAll(".toolsStats article")];
+        const toolHeight=Math.max(...toolCards.map(x=>x.getBoundingClientRect().height));
+        const toolClipped=toolCards.some(x=>[...x.querySelectorAll("small,b,em")].some(t=>getComputedStyle(t).display!=="none"&&t.scrollHeight>t.clientHeight+1));
+        const toolBg=getComputedStyle(tools.querySelector(".toolsMainCard")).backgroundColor;
+        tools.classList.add("hide");materials.classList.remove("hide");
+        return {railBg:getComputedStyle(rail).backgroundColor,monthBg:getComputedStyle(month).backgroundColor,
+          searchBg:getComputedStyle(search).backgroundColor,toolHeight,toolClipped,toolBg};
+      });
+      assert.equal(fit.railBg,"rgba(0, 0, 0, 0)","month rail retained an outer fill");
+      assert.equal(fit.searchBg,"rgba(0, 0, 0, 0)","material search has nested surface");
+      assert.ok(["rgb(255, 253, 252)","rgb(255, 246, 233)"].includes(fit.monthBg),"month tiles retained blue fill");
+      assert.ok(fit.toolHeight<=(width<761?72:80),"tool KPI too tall: "+JSON.stringify(fit));
+      assert.equal(fit.toolClipped,false,"tool KPI label clipped: "+JSON.stringify(fit));
+      assert.ok(["rgb(241, 231, 239)","rgb(255, 253, 252)"].includes(fit.toolBg),"tool list retained navy surface");
+    }
+
+    if(mode==="energy"){
+      const energyAudit=await page.evaluate(()=>{
+        const root=document.querySelector("#energyPage");
+        const visible=el=>!!el&&!!el.getClientRects().length&&
+          getComputedStyle(el).display!=="none"&&!el.closest(".hide");
+        const measure=el=>{
+          if(!visible(el))return null;
+          const c=getComputedStyle(el),r=el.getBoundingClientRect();
+          return {h:+r.height.toFixed(2),w:+r.width.toFixed(2),left:r.left,right:r.right,
+            color:c.webkitTextFillColor||c.color,background:c.backgroundColor,opacity:c.opacity,
+            stroke:c.stroke,fill:c.fill,filter:c.filter};
+        };
+        const photos=[...root.querySelectorAll("#energyForm .energyImageField .energyPhotoActions button")].map(measure).filter(Boolean);
+        const photoIcons=[...root.querySelectorAll("#energyForm .energyImageField .energyPhotoActions svg")].map(measure).filter(Boolean);
+        return {
+          photos,photoIcons,
+          noteToggle:measure(root.querySelector("#energyNoteToggle")),
+          noteInput:measure(root.querySelector("#energyNote")),
+          mainIndex:measure(root.querySelector("#energyValue")),
+          date:measure(root.querySelector("#energyDate")),
+          people:measure(root.querySelector("#energyPeopleButton")),
+          save:measure(root.querySelector("#energySaveBtn")),
+          form:measure(root.querySelector("#energyForm")),
+          notePlaceholder:root.querySelector("#energyNote").placeholder,
+          noteCollapsed:root.querySelector(".energyNoteField").classList.contains("energyNoteCollapsed"),
+          tabSizes:[...root.querySelectorAll('.energyTabs button')].filter(visible).map(measure),
+          hiddenTabs:[...root.querySelectorAll('.energyTabs button.hide')].map(x=>getComputedStyle(x).display),
+          tabWrapper:getComputedStyle(root.querySelector('.energyTabs')).backgroundColor,
+          kpiWrapper:getComputedStyle(root.querySelector('.energySummaryCards')).backgroundColor,
+          kpiHeights:[...root.querySelectorAll('.energySummaryCards article')].map(x=>x.getBoundingClientRect().height),
+          mark:measure(root.querySelector(".energyCardTitle .energyMark svg"))
+        };
+      });
+      const label="Energy 130HH "+width+"px";
+      assert.equal(energyAudit.tabSizes.length,2,label+' must show only the supported electricity/water tabs');
+      assert.ok(energyAudit.hiddenTabs.every(x=>x==='none'),label+' unsupported tabs must not occupy any space');
+      assert.ok(Math.max(...energyAudit.tabSizes.map(x=>x.w))-Math.min(...energyAudit.tabSizes.map(x=>x.w))<2,label+' energy tabs must have equal widths');
+      assert.equal(energyAudit.tabWrapper,'rgba(0, 0, 0, 0)',label+' tabs must not have an outer fill');
+      assert.equal(energyAudit.kpiWrapper,'rgba(0, 0, 0, 0)',label+' KPI strip must not have an outer fill');
+      assert.ok(energyAudit.kpiHeights.every(x=>Math.abs(x-44)<1),label+' KPI cards must be 44px');
+      assert.equal(energyAudit.photos.length,2,label+" camera+library count");
+      assert.equal(energyAudit.photoIcons.length,2,label+" photo SVG count");
+      const [camera,library]=energyAudit.photos;
+      for(const [name,x] of [["camera",camera],["library",library]]){
+        assert.ok(Math.abs(x.h-44)<=1,label+" "+name+" must be 44px: "+JSON.stringify(x));
+        assert.ok(x.w>=110,label+" "+name+" must fit its icon and label");
+        assert.equal(x.color,"rgb(84, 47, 18)",label+" "+name+" text must use cream ink");
+      }
+      assert.equal(camera.background,"rgb(243, 222, 199)",label+" camera button must be plum");
+      assert.equal(library.background,camera.background,label+" camera and gallery must share one color");
+      assert.equal(energyAudit.noteToggle,null,label+" add/hide note toggle must not be visible");
+      assert.ok(energyAudit.noteInput,label+" note field must always be visible");
+      assert.equal(energyAudit.notePlaceholder,"Ghi chú",label+" note placeholder");
+      assert.equal(energyAudit.noteCollapsed,false,label+" note must not collapse");
+      assert.equal(energyAudit.save.background,"rgb(122, 67, 0)",label+" save uses distinct copper");
+      assert.ok(energyAudit.save.left>=energyAudit.form.left-1&&energyAudit.save.right<=energyAudit.form.right+1,
+        label+" save action escaped form: "+JSON.stringify(energyAudit));
+      assert.equal(energyAudit.save.h,44,label+" save action height");
+      for(const icon of energyAudit.photoIcons){
+        assert.equal(icon.opacity,"1",label+" photo icon must not be faded");
+        assert.equal(icon.color,"rgb(84, 47, 18)",label+" icon ink");
+        assert.ok(icon.w>=16&&icon.h>=16,label+" icon appears too small "+JSON.stringify(icon));
+      }
+      for(const [name,field] of [["date",energyAudit.date],["main index",energyAudit.mainIndex],["performer",energyAudit.people],["note toggle",energyAudit.noteToggle],["note input",energyAudit.noteInput]]){
+        if(!field)continue;
+        assert.ok(Math.abs(field.h-44)<=1,label+" "+name+" not aligned 44px: "+JSON.stringify(field));
+      }
+      if(energyAudit.mark){
+        assert.equal(energyAudit.mark.opacity,"1",label+" meter header icon faded");
+        assert.equal(energyAudit.mark.color,"rgb(255, 255, 255)",label+" header meter icon color");
+      }
+      console.log("PASS "+label+" 44px energy controls, clear SVG, light photo buttons, compact note");
+    }
 
     if(mode==="work"){
      const workReadability=await page.evaluate(()=>{
@@ -201,15 +382,70 @@ async function prep(page,p){
      assert.equal(workReadability.statCountColor,"rgb(65, 20, 55)","130HH work statistic number must be plum, not yellow/low-contrast");
      assert.equal(workReadability.tableCountColor,"rgb(65, 20, 55)","130HH work list count must be plum");
      assert.equal(workReadability.starMarkedColor,"rgb(244, 180, 0)","130HH priority star must be bright gold when marked");
-     assert.equal(workReadability.performerBackground,"rgb(251, 243, 227)","130HH performer chip must use a light ESTA surface");
+     assert.equal(workReadability.performerBackground,"rgb(241, 231, 239)","130HH performer chip must use a light ESTA surface");
      assert.equal(workReadability.performerTextColor,"rgb(65, 20, 55)","130HH performer name must be readable plum");
      assert.equal(workReadability.dividerColor,"rgb(164, 100, 39)","130HH desktop work rows must have a strong copper divider");
      assert.equal(workReadability.mobileDividerColor,"rgb(164, 100, 39)","130HH mobile work cards must have a strong copper divider");
-     assert.equal(workReadability.linkBackground,"rgb(245, 236, 208)","130HH work-link panel must use the ESTA cream surface");
+     assert.equal(workReadability.linkBackground,"rgb(255, 253, 252)","130HH work-link panel must use the ESTA cream surface");
      assert.equal(workReadability.linkSummaryColor,"rgb(65, 20, 55)","130HH work-link title must use plum, not blue");
      assert.equal(workReadability.linkMaterialTitleColor,"rgb(65, 20, 55)","130HH materials heading must use plum");
-     assert.equal(workReadability.addButtonBackground,"rgb(65, 20, 55)","130HH add-material button must use plum");
-     assert.equal(workReadability.addButtonColor,"rgb(243, 222, 191)","130HH add-material button text must use cream");
+     assert.equal(workReadability.addButtonBackground,"rgb(122, 67, 0)","130HH add-material button must use plum");
+     assert.equal(workReadability.addButtonColor,"rgb(255, 255, 255)","130HH add-material button text must use cream");
+     if(width===390){
+       const formState=await page.evaluate(()=>{
+         const status=document.querySelector('#status');status.value='Đã hoàn thành';status.dispatchEvent(new Event('change',{bubbles:true}));
+         sync130QuickCompletion();
+         const css=x=>getComputedStyle(x),root=document.querySelector('#workPage');
+         document.querySelector('#mobileCards').innerHTML=workMobileCard130({id:5002,d:'2026-12-05',c:'Thay đèn trần',s:'Đã hoàn thành',t:'Hằng ngày',a:'Nguyễn An',performers:['Nguyễn An'],result:'Đạt',imgs:['offline.jpg']});
+         const card=root.querySelector('.workCompact130'),meta=card.querySelector('.workCardMetaLine');
+         const person=document.createElement('label');person.className='peopleOption';person.textContent='Nhà thầu';
+         document.querySelector('#taskPeopleOptions').appendChild(person);
+         const peopleBackgrounds=[css(document.querySelector('#taskPeopleMenu')).backgroundColor,css(person).backgroundColor];person.remove();
+         card.querySelector('.workCardAttachments').insertAdjacentHTML('afterbegin','<div class="demoLinkChips"><span class="demoLinkChip">Đèn LED âm trần 12W × 2</span></div>');
+         const attachments=[...card.querySelector('.workCardAttachments').children].map(x=>x.getBoundingClientRect());
+         const boxes=[...meta.children].map(x=>x.getBoundingClientRect());
+         return {requiredMark:getComputedStyle(root.querySelector('.workContent>span'),'::after').webkitTextFillColor,
+           contentBorder:css(document.querySelector('#content')).borderColor,
+           selected:css(root.querySelector('#workChoices-type [aria-checked="true"]')).backgroundColor,
+           idle:css(root.querySelector('#workChoices-type [aria-checked="false"]')).backgroundColor,
+           resultBg:css(document.querySelector('#task130Result')).backgroundColor,
+           resultParentBg:css(document.querySelector('#task130ResultField')).backgroundColor,
+           peopleBackgrounds,
+           resultBorder:css(document.querySelector('#task130Result')).borderColor,
+           quickSaveBg:css(document.querySelector('#task130QuickSave')).backgroundColor,
+           quickSaveText:css(document.querySelector('#task130QuickSave')).webkitTextFillColor,
+           countDisplay:css(root.querySelector('.workTableMeta')).display,
+           sameLine:Math.max(...boxes.map(x=>x.top))-Math.min(...boxes.map(x=>x.top))<12,
+           attachmentLine:Math.max(...attachments.map(x=>x.top))-Math.min(...attachments.map(x=>x.top))<8,
+           menuClosed:!card.querySelector('details').open,oldFooter:!!card.querySelector('.mobileCardFoot')};
+       });
+       assert.equal(formState.requiredMark,'rgb(180, 35, 50)');
+       assert.equal(formState.contentBorder,'rgb(218, 155, 163)');
+       assert.notEqual(formState.selected,formState.idle);
+       assert.equal(formState.resultBg,'rgb(241, 231, 239)');
+       assert.notEqual(formState.resultParentBg,formState.resultBg,'result parent and input must be visually distinct');
+       assert.notEqual(...formState.peopleBackgrounds,'people container and individual choices must be visually distinct');
+       assert.equal(formState.idle,'rgb(255, 253, 252)','unselected work choices must be white');
+       assert.equal(formState.resultBorder,'rgb(218, 155, 163)');
+       assert.equal(formState.quickSaveBg,'rgb(122, 67, 0)');
+       assert.equal(formState.quickSaveText,'rgb(255, 255, 255)');
+       assert.equal(formState.countDisplay,'none');
+       assert.ok(formState.sameLine,'normal task metadata must fit one line: '+JSON.stringify(formState));
+       assert.ok(formState.attachmentLine,'photo count and material must share a row: '+JSON.stringify(formState));
+       assert.ok(formState.menuClosed&&!formState.oldFooter,'task actions must live inside a collapsed menu');
+       await page.locator('.workCompact130 .workCardMenu summary').click();
+       assert.equal(await page.locator('.workCompact130 .workCardMenu[open] button').count(),2);
+       const menuFit=await page.evaluate(()=>{
+         const menu=document.querySelector('.workCardMenu[open]>div');
+         return {width:menu.getBoundingClientRect().width,clipped:[...menu.querySelectorAll('button')].some(x=>x.scrollWidth>x.clientWidth+1)};
+       });
+       assert.ok(menuFit.width>=160&&!menuFit.clipped,'task action menu text must fit '+JSON.stringify(menuFit));
+       if(process.env.ESTA_SCREENSHOTS==='1'){
+         await page.locator('#mobileCards').screenshot({path:path.join(output,'work-card-menu-390.png')});
+         await page.locator('#task130ResultField').screenshot({path:path.join(output,'work-completed-390.png')});
+       }
+       await page.evaluate(()=>{document.querySelector('.workCardMenu').open=false;document.querySelector('#status').value='Đang thực hiện';document.querySelector('#status').dispatchEvent(new Event('change',{bubbles:true}));render()});
+     }
     }
     assert.ok(state.topbar.includes("rgb(65, 20, 55)")&&state.topbar.includes("rgb(43, 21, 38)"),
      "Unbranded blue header "+mode+" width "+width+": "+JSON.stringify(state));
@@ -225,9 +461,26 @@ async function prep(page,p){
       }
     }
     for(const key of ["workCard","energyKpi","energyPanel","inventory","energyTable"]){
-      if(state[key]!==null)assert.equal(state[key],soft,key+" still has legacy blue/dark surface in "+mode+" width "+width);
+      if(state[key]!==null)assert.ok([soft,"rgb(238, 225, 234)","rgb(241, 231, 239)"].includes(state[key]),key+" must use a content surface distinct from page background in "+mode+" width "+width+": "+state[key]);
     }
     assert.equal(errors.length,0,"JavaScript errors in "+mode+": "+errors.join(", "));
+    if(mode==="inventory"){
+     const yearLabels=await page.locator("#inventoryPage .yearMonthHead :is(span,small)").evaluateAll(nodes=>nodes.filter(n=>n.getClientRects().length).map(n=>parseFloat(getComputedStyle(n).fontSize)));
+     assert.ok(yearLabels.every(size=>size>=12),"130HH year table month labels must be at least 12px: "+yearLabels.join(","));
+    }
+    if(process.env.ESTA_SCREENSHOTS==="1" && ["home","work","energy","inventory","maintenance"].includes(mode)){
+     await page.screenshot({path:path.join(output,mode+"-"+width+".png"),fullPage:true});
+    }
+   }
+   const actionColors=await page.evaluate(()=>{
+     const save=[...document.querySelectorAll('button[type="submit"]')].filter(x=>/Lưu|Cập nhật|Xác nhận/.test(x.textContent));
+     const photos=[...document.querySelectorAll('.imageActionBtn,button[data-energy-picker],.contractorImageAdd')];
+     return [...save,...photos].map(x=>({photo:photos.includes(x),id:x.id||x.textContent.trim(),bg:getComputedStyle(x).backgroundColor,
+       color:getComputedStyle(x).webkitTextFillColor||getComputedStyle(x).color}));
+   });
+   for(const action of actionColors){
+     assert.equal(action.bg,action.photo?"rgb(243, 222, 199)":"rgb(122, 67, 0)","Inconsistent 130HH save/photo background "+width+"px "+JSON.stringify(action));
+     assert.equal(action.color,action.photo?"rgb(84, 47, 18)":"rgb(255, 255, 255)","Inconsistent 130HH save/photo text "+width+"px "+JSON.stringify(action));
    }
    await context.close();
   }
@@ -242,6 +495,6 @@ async function prep(page,p){
   });
   assert.ok(state.other&&state.admin,"Theme must reset for other project AND Admin");
   await context.close();
-  console.log("PASS 130HH all project modes across 4 viewport widths; header and 5 key panels use ESTA brand; zero horizontal overflow; other projects/Admin isolated");
+  console.log("PASS 130HH all project modes across 6 viewport widths; header and 5 key panels use ESTA brand; zero horizontal overflow; other projects/Admin isolated");
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

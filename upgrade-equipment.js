@@ -424,7 +424,7 @@ function render(page,skipLoad=false){
      '<select id="ueGroup" aria-label="Chọn hệ thống kỹ thuật"><option value="">Tất cả hệ thống</option>'+opt(gopts(),group)+'</select></label>'+
     '<p id="ueResultCount" aria-live="polite"></p></div>'+
     '<div class="ueRefTools"><label class="ueRefSearch"><span class="ueVisuallyHidden">Tìm thiết bị</span>'+
-     '<input id="ueSearch" type="search" placeholder="Tìm theo tên, vị trí, ghi chú" autocomplete="off" value="'+esc(search)+'"></label>'+
+     '<input id="ueSearch" type="search" placeholder="'+(currentEquipmentProjectId()==="130HH"?"Tìm thiết bị...":"Tìm theo tên, vị trí, ghi chú")+'" autocomplete="off" value="'+esc(search)+'"></label>'+
      '<select id="ueStatus" aria-label="Lọc tình trạng"><option value="">Mọi tình trạng</option>'+
       '<option value="mau"'+(status==="mau"?' selected':'')+'>Chưa nhập</option>'+
       Object.entries(CONDITIONS).filter(([k])=>k!=="mau"&&k!=="quahan").map(([k,v])=>'<option value="'+k+'"'+(status===k?' selected':'')+'>'+(k==="unverified"?"Đã lưu / chưa xác minh":esc(v))+'</option>').join("")+

@@ -8322,19 +8322,19 @@ i{
   background:#f4f7f9!important;
 }
 #inventoryPage .yearMonthHead{
-  min-width:70px!important;
+  min-width:var(--esta130-year-month-width,70px)!important;
 }
 #inventoryPage .yearMonthHead span{
   display:block!important;
-  color:#49697c!important;
-  font-size:7px!important;
+  color:var(--esta130-table-head-text,#49697c)!important;
+  font-size:var(--esta130-year-month-font-size,7px)!important;
   font-weight:800!important;
 }
 #inventoryPage .yearMonthHead small{
   display:block!important;
   margin-top:2px!important;
-  color:#9aa8b0!important;
-  font-size:5.8px!important;
+  color:var(--esta130-table-head-text,#9aa8b0)!important;
+  font-size:var(--esta130-year-month-font-size,5.8px)!important;
   font-weight:650!important;
 }
 #inventoryPage .yearMonthCell{

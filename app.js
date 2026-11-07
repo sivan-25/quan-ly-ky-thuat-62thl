@@ -867,6 +867,15 @@ function renderHomeDashboard(){
  $("#homeSolar").textContent=homeNumber(homeEnergyUse(energy,"solar"));
  $("#homeActivity").innerHTML=homeActivityRows(tasks,energy)||'<div class="homeEmpty">Chưa có hoạt động gần đây.</div>';
 }
+function setBrand130(enabled){
+ const root=document.getElementById("app");
+ root?.classList.toggle("estaBrand130",enabled);
+ document.body.classList.toggle("estaBrand130",enabled);
+ if(root){
+  if(enabled)root.dataset.project="130-hong-ha";
+  else delete root.dataset.project;
+ }
+}
 function syncOverviewNavigation(){
  const upgrade=false; // Retired sandbox; preserve 4-building shared equipment styling.
  document.getElementById("app")?.classList.toggle("estaUpgradeMode",upgrade);
@@ -874,8 +883,7 @@ function syncOverviewNavigation(){
  const admin=!!currentAccount?.is_admin;
  const project=!!projectOverviewActive;
  const brand130=project&&String(currentBuilding?.id||"")==="130HH";
- document.getElementById("app")?.classList.toggle("estaBrand130",brand130);
- document.body.classList.toggle("estaBrand130",brand130);
+ setBrand130(brand130);
  document.getElementById("app")?.classList.toggle("estaFourProjectCompact",project&&["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding?.id||"")));
  $("#peopleSettingsBtn")?.classList.toggle("hide",!project||!currentBuilding?.id);
  $("#navHomeLabel").textContent=admin?"Tổng quan Admin":"Tổng quan";
@@ -980,8 +988,7 @@ function prepareProjectContext(building){
  currentBuilding={...building};
  // Ensure the pilot scope follows the newly selected building, not the previous project.
  document.getElementById("app")?.classList.toggle("estaFourProjectCompact",["68PĐL","62THL","127HH","130HH"].includes(String(currentBuilding.id)));
- document.getElementById("app")?.classList.toggle("estaBrand130",String(currentBuilding.id)==="130HH");
- document.body.classList.toggle("estaBrand130",String(currentBuilding.id)==="130HH");
+ setBrand130(String(currentBuilding.id)==="130HH");
  sessionStorage.setItem("esta_building",JSON.stringify(currentBuilding));
  taskSelectedPeople=[];energySelectedPeople=[];projectPeople=[];inventoryLoadedBuilding="";maintenanceLoadedBuilding="";
  if(typeof contractorLoadedBuilding!=="undefined")contractorLoadedBuilding="";
@@ -1686,6 +1693,19 @@ document.addEventListener("click",event=>{
  event.preventDefault();event.stopPropagation();
  toggleEstaPriorityStar(button.dataset.starTask);
 });
+function workVisualState130(x){
+ return x.s==="Đã hoàn thành"?"done":((x.dueDateExplicit||(x.dueDate&&x.dueDate!==x.d))&&x.dueDate<today()?"late":"doing");
+}
+function workMobileCard130(x){
+ const id=Number(x.id);
+ const state=workVisualState130(x);
+ return '<article class="mcard proTaskCard workCompact130" data-work-state="'+state+'">'+workRowCheckbox(x)+
+  '<div class="workCardHeading"><h4 class="taskTitle">'+esc(x.c)+'</h4><details class="workCardMenu"><summary aria-label="Thao tác công việc" title="Thao tác công việc">⋯</summary><div>'+
+  '<button type="button" onclick="demoOpenTaskDrawer('+id+');this.closest(\'details\').removeAttribute(\'open\')">Hồ sơ liên kết</button>'+
+  '<button type="button" onclick="editTask('+id+');this.closest(\'details\').removeAttribute(\'open\')">Chỉnh sửa</button></div></details></div>'+
+  '<div class="workCardMetaLine"><time datetime="'+esc(x.d)+'">'+fmt(x.d)+'</time>'+statusBadge(x.s)+typeBadge(x.t)+performerChipsHtml(x)+'</div>'+
+  '<p class="workCardNotes">'+((String(x.n||"").trim()||String(x.result||"").trim())?taskNoteSummaryHtml(x):"")+'</p><div class="workCardAttachments">'+(x.imgs?.length?'<span class="workCardPhotoCount"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 6h3l2-3h4l2 3h3a2 2 0 0 1 2 2v11H3V8a2 2 0 0 1 2-2Z"/><circle cx="12" cy="12" r="3"/></svg>'+x.imgs.length+' hình</span>':'')+'</div></article>';
+}
 function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div class="thumbs" onclick="viewImages('+x.id+')">'+x.imgs.slice(0,3).map(v=>mediaImgHtml(v)).join("")+(x.imgs.length>3?'<span class="thumbMore">+'+(x.imgs.length-3)+'</span>':'')+'</div>'}function render(){
  const all=load(),a=filtered(),td=today();
  $("#statToday").textContent=all.filter(x=>x.d===td).length;
@@ -1699,8 +1719,8 @@ function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div 
    card.setAttribute("aria-pressed",String(active));
  });
  $("#empty").classList.toggle("hide",a.length>0);
- $("#tbody").innerHTML=a.map((x,i)=>'<tr><td class="sttCell">'+workRowCheckbox(x)+'<span class="estaStarStack">'+estaPriorityStar(x)+'<span>'+(i+1)+'</span></span></td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"—"))+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
- $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard">'+workRowCheckbox(x)+'<div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"Không có ghi chú"))+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
+ $("#tbody").innerHTML=a.map((x,i)=>'<tr'+(currentBuilding?.id==="130HH"?' data-work-state="'+workVisualState130(x)+'"':'')+'><td class="sttCell">'+workRowCheckbox(x)+'<span class="estaStarStack">'+estaPriorityStar(x)+'<span>'+(i+1)+'</span></span></td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"—"))+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
+ $("#mobileCards").innerHTML=a.map(x=>String(currentBuilding?.id||"")==="130HH"?workMobileCard130(x):'<article class="mcard proTaskCard">'+workRowCheckbox(x)+'<div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"Không có ghi chú"))+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
  hydrateMediaImages($("#tbody"));
  syncWorkSelection();
 }
@@ -2350,9 +2370,13 @@ $("#energyDate")?.addEventListener("change",syncEnergyDateCompact);
 function setEnergyNoteOpen(open,{focus=false}={}){
  const field=$("#energyForm .energyNoteField"),btn=$("#energyNoteToggle");
  if(!field||!btn)return;
- field.classList.toggle("energyNoteCollapsed",!open);
- btn.setAttribute("aria-expanded",String(!!open));
+ const inline=String(currentBuilding?.id||"")==="130HH";
+ field.classList.toggle("energyNoteCollapsed",!inline&&!open);
+ btn.hidden=inline;
+ btn.setAttribute("aria-expanded",String(inline||!!open));
  btn.textContent=open?"− Ẩn ghi chú":"＋ Thêm ghi chú";
+ const note=$("#energyNote");
+ if(note)note.placeholder=inline?"Ghi chú":"Nhập ghi chú...";
  if(open&&focus)setTimeout(()=>$("#energyNote")?.focus(),30);
 }
 $("#energyNoteToggle")?.addEventListener("click",()=>{
@@ -2391,6 +2415,7 @@ function resetEnergyForm(){
  $("#energyFormTitle").textContent=m.form;
  $("#energyUnitHint").textContent="Đơn vị: "+m.unit;
  $("#energyValueLabel").textContent=dual?"EVN1 (kWh)":m.valueLabel;
+ $("#energyValue").setAttribute("aria-label",dual?"EVN1 (kWh)":m.valueLabel);
  $("#energyValue2Label").textContent="EVN2 (kWh)";
  $("#energyImageLabel").textContent=dual?"Ảnh đồng hồ EVN1":"Ảnh đồng hồ";
  $("#energyTableTitle").textContent="Bảng theo dõi "+m.name.toLowerCase();
@@ -2520,6 +2545,7 @@ function syncEnergyManageUI(){
  document.querySelectorAll("#energyTbody [data-energy-id],#energyMobileCards [data-energy-id]").forEach(el=>el.classList.toggle("energyManageSelected",energySelectedIds.has(el.dataset.energyId)));
 }
 function renderEnergy(){
+ setEnergyNoteOpen($("#energyNoteToggle")?.getAttribute("aria-expanded")==="true");
  sync68EnergyTabs();
  const m=ENERGY_META[energyType]||ENERGY_META.electric;
  const dual=is68DualElectric();
@@ -2529,6 +2555,7 @@ function renderEnergy(){
  $("#energyFormTitle").textContent=m.form;
  $("#energyUnitHint").textContent="Đơn vị: "+m.unit;
  $("#energyValueLabel").textContent=dual?"EVN1 (kWh)":m.valueLabel;
+ $("#energyValue").setAttribute("aria-label",dual?"EVN1 (kWh)":m.valueLabel);
  $("#energyValue2Field").classList.toggle("hide",!dual);
  $("#energyImage2Field").classList.toggle("hide",!dual);
  $("#energyImage2Preview").classList.toggle("hide",!dual);
