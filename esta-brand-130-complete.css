@@ -2160,7 +2160,7 @@ body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
 
 /* Detail surfaces use the same light palette as their parent module. */
 body.estaBrand130 #app.estaBrand130#app#app #energyPeopleMenu .peopleAvatar{background:var(--esta130-selected-bg)!important;color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important}
-body.estaBrand130 #app.estaBrand130#app#app #energyValueLabel,
+body.estaBrand130 #app.estaBrand130#app#app #energyValueLabel{visibility:hidden}
 body.estaBrand130 #app.estaBrand130#app#app #maintenancePage .maintenanceProjectMeta{display:none!important}
 body.estaBrand130 #app.estaBrand130#app#app #inventoryPage #inventory130QuickMenu{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:var(--esta130-ui-radius)!important}
 body.estaBrand130 #app.estaBrand130#app#app #inventoryPage :is(.inventory130Transaction,.inventory130TxnMain,.inventory130TxnText,.inventory130TxnActions button,.stockAlertIcon,.stockAlertStatus,#stockAlertOnly){background:var(--esta130-lift)!important;background-image:none!important;color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;border-color:var(--esta130-line)!important;opacity:1!important}
@@ -2172,3 +2172,5 @@ body.estaBrand130 #m130Overlay#m130Overlay .m130ModalHead #m130ModalTitle{color:
 
 body.estaBrand130 #app.estaBrand130#app#app #estamHeaderPdf *{color:var(--esta130-photo-text)!important;-webkit-text-fill-color:var(--esta130-photo-text)!important}
 body.estaBrand130 #app.estaBrand130#app#app #contractorPage input::placeholder{color:var(--esta130-secondary)!important;-webkit-text-fill-color:var(--esta130-secondary)!important;opacity:1!important}
+
+body.estaBrand130 #app.estaBrand130#app#app #energyPeopleMenu input[type="checkbox"]{color-scheme:light;accent-color:var(--esta130-plum)}
