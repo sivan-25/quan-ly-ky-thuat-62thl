@@ -205,14 +205,14 @@ body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine{
   margin:4px 0!important;min-width:0!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine :is(time,.badge,.typeBadge,.performerChips,.performerChips>span,.performerChips b){
-  font-size:10px!important;line-height:1.35!important;min-height:0!important;margin:0!important;
+  font-size:10px!important;line-height:14px!important;min-height:0!important;margin:0!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine .performerChips{
   display:flex!important;flex-wrap:wrap!important;gap:3px!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine .performerChips :is(i,em){display:none!important}
 body.estaBrand130 #app.estaBrand130#app #workPage .workCardMetaLine .performerChips>span{
-  padding:1px 3px!important;max-width:100%!important;white-space:normal!important;
+  padding:1px 6px!important;max-width:100%!important;white-space:normal!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .workCardMenu{position:absolute!important;top:4px!important;right:4px!important;z-index:2}
 body.estaBrand130 #app.estaBrand130#app #workPage .workCardMenu>summary{
@@ -247,7 +247,7 @@ body.estaBrand130 #app.estaBrand130#app #workPage .workCardPhotoCount{display:in
 body.estaBrand130 #app.estaBrand130#app #workPage .workCardAttachments .demoLinkChip{
   background:var(--esta130-lift)!important;border-color:var(--esta130-line)!important;
   color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
-  font-size:11px!important;line-height:1.4!important;white-space:normal!important;
+  font-size:10px!important;line-height:14px!important;white-space:normal!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr > td {
   border-bottom:1.5px solid #A46427!important;
@@ -262,3 +262,11 @@ body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .proTaskCard {
   background:var(--esta130-soft)!important;
   margin-bottom:10px!important;
 }
+
+body.estaBrand130 #app.estaBrand130#app #workPage :is(.workCompact130,.workTaskTable) :is(.badge,.typeBadge,.performerChips>span,.demoLinkChip){display:inline-flex!important;align-items:center!important;box-sizing:border-box!important;min-height:20px!important;height:auto!important;padding:2px 6px!important;border-width:1px!important;line-height:14px!important;font-size:10px!important;border-radius:6px!important}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .workCompact130[data-work-state="done"],
+body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr[data-work-state="done"]>td{background:var(--esta130-work-done)!important}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .workCompact130[data-work-state="doing"],
+body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr[data-work-state="doing"]>td{background:var(--esta130-work-doing)!important}
+body.estaBrand130 #app.estaBrand130#app #workPage #mobileCards .workCompact130[data-work-state="late"],
+body.estaBrand130 #app.estaBrand130#app #workPage .workTaskTable tbody tr[data-work-state="late"]>td{background:var(--esta130-work-late)!important}

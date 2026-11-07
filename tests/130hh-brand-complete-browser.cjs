@@ -308,21 +308,21 @@ async function prep(page,p){
       for(const [name,x] of [["camera",camera],["library",library]]){
         assert.ok(Math.abs(x.h-44)<=1,label+" "+name+" must be 44px: "+JSON.stringify(x));
         assert.ok(x.w>=110,label+" "+name+" must fit its icon and label");
-        assert.equal(x.color,"rgb(255, 255, 255)",label+" "+name+" text must use cream ink");
+        assert.equal(x.color,"rgb(84, 47, 18)",label+" "+name+" text must use cream ink");
       }
-      assert.equal(camera.background,"rgb(122, 67, 0)",label+" camera button must be plum");
+      assert.equal(camera.background,"rgb(243, 222, 199)",label+" camera button must be plum");
       assert.equal(library.background,camera.background,label+" camera and gallery must share one color");
       assert.equal(energyAudit.noteToggle,null,label+" add/hide note toggle must not be visible");
       assert.ok(energyAudit.noteInput,label+" note field must always be visible");
       assert.equal(energyAudit.notePlaceholder,"Ghi chú",label+" note placeholder");
       assert.equal(energyAudit.noteCollapsed,false,label+" note must not collapse");
-      assert.equal(energyAudit.save.background,camera.background,label+" save/photo action colors must agree");
+      assert.equal(energyAudit.save.background,"rgb(122, 67, 0)",label+" save uses distinct copper");
       assert.ok(energyAudit.save.left>=energyAudit.form.left-1&&energyAudit.save.right<=energyAudit.form.right+1,
         label+" save action escaped form: "+JSON.stringify(energyAudit));
       assert.equal(energyAudit.save.h,44,label+" save action height");
       for(const icon of energyAudit.photoIcons){
         assert.equal(icon.opacity,"1",label+" photo icon must not be faded");
-        assert.equal(icon.color,"rgb(255, 255, 255)",label+" icon ink");
+        assert.equal(icon.color,"rgb(84, 47, 18)",label+" icon ink");
         assert.ok(icon.w>=16&&icon.h>=16,label+" icon appears too small "+JSON.stringify(icon));
       }
       for(const [name,field] of [["date",energyAudit.date],["main index",energyAudit.mainIndex],["performer",energyAudit.people],["note toggle",energyAudit.noteToggle],["note input",energyAudit.noteInput]]){
@@ -475,12 +475,12 @@ async function prep(page,p){
    const actionColors=await page.evaluate(()=>{
      const save=[...document.querySelectorAll('button[type="submit"]')].filter(x=>/Lưu|Cập nhật|Xác nhận/.test(x.textContent));
      const photos=[...document.querySelectorAll('.imageActionBtn,button[data-energy-picker],.contractorImageAdd')];
-     return [...save,...photos].map(x=>({id:x.id||x.textContent.trim(),bg:getComputedStyle(x).backgroundColor,
+     return [...save,...photos].map(x=>({photo:photos.includes(x),id:x.id||x.textContent.trim(),bg:getComputedStyle(x).backgroundColor,
        color:getComputedStyle(x).webkitTextFillColor||getComputedStyle(x).color}));
    });
    for(const action of actionColors){
-     assert.equal(action.bg,"rgb(122, 67, 0)","Inconsistent 130HH save/photo background "+width+"px "+JSON.stringify(action));
-     assert.equal(action.color,"rgb(255, 255, 255)","Inconsistent 130HH save/photo text "+width+"px "+JSON.stringify(action));
+     assert.equal(action.bg,action.photo?"rgb(243, 222, 199)":"rgb(122, 67, 0)","Inconsistent 130HH save/photo background "+width+"px "+JSON.stringify(action));
+     assert.equal(action.color,action.photo?"rgb(84, 47, 18)":"rgb(255, 255, 255)","Inconsistent 130HH save/photo text "+width+"px "+JSON.stringify(action));
    }
    await context.close();
   }

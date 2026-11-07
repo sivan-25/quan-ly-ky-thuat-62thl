@@ -209,8 +209,8 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
   padding:0 10px!important;
   border:1px solid var(--esta130-field-border)!important;
   background:var(--esta130-photo-bg)!important;
-  color:var(--esta130-action-text)!important;
-  -webkit-text-fill-color:var(--esta130-action-text)!important;
+  color:var(--esta130-photo-text)!important;
+  -webkit-text-fill-color:var(--esta130-photo-text)!important;
   box-shadow:none!important;
   font-size:12px!important;
   font-weight:650!important;
@@ -240,7 +240,7 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 .energyPhotoActions .energyActionIcon{
-  color:var(--esta130-action-text)!important;
+  color:var(--esta130-photo-text)!important;
   stroke:currentColor!important;
   fill:none!important;
   opacity:1!important;
@@ -251,8 +251,8 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 .energyPhotoActions .energyActionText{
-  color:var(--esta130-action-text)!important;
-  -webkit-text-fill-color:var(--esta130-action-text)!important;
+  color:var(--esta130-photo-text)!important;
+  -webkit-text-fill-color:var(--esta130-photo-text)!important;
   opacity:1!important;
   font-size:12px!important;
   flex:0 1 auto!important;
@@ -633,8 +633,8 @@ body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hi
   padding:0 9px!important;
   background:var(--esta130-photo-bg)!important;
   border-color:var(--esta130-field-border)!important;
-  color:var(--esta130-action-text)!important;
-  -webkit-text-fill-color:var(--esta130-action-text)!important;
+  color:var(--esta130-photo-text)!important;
+  -webkit-text-fill-color:var(--esta130-photo-text)!important;
 }
 #app.estaBrand130 #workPage #taskForm .workImage .imageActionBtn :is(span,svg){
   color:inherit!important;-webkit-text-fill-color:inherit!important;
@@ -968,7 +968,7 @@ body.estaBrand130 #app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.co
 }
 body.estaBrand130 :is(#app#app,#workEditDrawer#workEditDrawer,#contractorJobModal#contractorJobModal) :is(.imageActionBtn,button[data-energy-picker],.contractorImageAdd){
   background:var(--esta130-photo-bg)!important;border-color:var(--esta130-copper)!important;
-  color:var(--esta130-action-text)!important;-webkit-text-fill-color:var(--esta130-action-text)!important;
+  color:var(--esta130-photo-text)!important;-webkit-text-fill-color:var(--esta130-photo-text)!important;
 }
 body.estaBrand130 #app.estaBrand130 :is(.secondary,.inventorySecondary,.contractorBtn.secondary,.workCancel,.rc-button:not(.primary),.quickReturnAdmin){
   background:var(--esta130-lift)!important;
@@ -1268,7 +1268,7 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyDateCompa
 body.estaBrand130 #app.estaBrand130#app #inventoryPage :is(
   .inventoryWorkspace,.inventoryPane,.inventoryMonthRail,.inventoryMonthTabs,
   .inventoryTableCard,.inventoryTableScroll,.inventorySupportGrid,.inventoryCommand,
-  .inventoryStats,.inventorySectionBar,.inventory130ListBar,.inventory130QuickMenu,
+  .inventoryStats,.inventorySectionBar,.inventory130ListBar,
   .inventoryQuickAdd,.inventoryMetric,.inventoryEmpty,.inventorySearch,.inventorySupportCard,
   .inventoryExamples,.inventoryExamples button
 ){
@@ -1569,7 +1569,7 @@ body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorFieldPill{
   background:var(--esta130-soft)!important;border-color:#D8BEA0!important;color:var(--esta130-plum)!important;-webkit-text-fill-color:var(--esta130-plum)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorFieldPill.hvac,.contractorFieldPill.electric){
-  background:#DDF5F5!important;border-color:#8ACBCB!important;color:#155E63!important;-webkit-text-fill-color:#155E63!important;
+  background:#DDF5F5!important;border-color:#8ACBCB!important;color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorFieldPill.pccc{
   background:var(--esta130-danger-bg)!important;border-color:#F1B5B5!important;color:var(--esta130-danger-text)!important;-webkit-text-fill-color:var(--esta130-danger-text)!important;
@@ -1615,7 +1615,7 @@ body.estaBrand130 #app.estaBrand130#app #contractorPage :is(.contractorProfile,.
   border-color:#D8BEA0!important;color:var(--esta130-deep)!important;box-shadow:none!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain>span{
-  color:var(--esta130-copper)!important;-webkit-text-fill-color:var(--esta130-copper)!important;
+  color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #contractorPage .contractorProfileMain h1{
   color:var(--esta130-plum)!important;-webkit-text-fill-color:var(--esta130-plum)!important;
@@ -1847,10 +1847,10 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOpt
   color:var(--esta130-plum)!important;-webkit-text-fill-color:var(--esta130-plum)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption.selected{
-  background:#DDF5F5!important;border-color:#8ACBCB!important;box-shadow:inset 3px 0 0 #2B7A78!important;
+  background:var(--esta130-selected-bg)!important;border-color:var(--esta130-plum)!important;box-shadow:inset 3px 0 0 var(--esta130-plum)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleOption.selected :is(.peopleName,.peopleAvatar){
-  color:#155E63!important;-webkit-text-fill-color:#155E63!important;
+  color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyPeopleMenu .peopleEditBtn{
   background:var(--esta130-soft)!important;border-color:#D8BEA0!important;color:var(--esta130-plum)!important;
@@ -2157,3 +2157,18 @@ body.estaBrand130 #app.estaBrand130#app#app #workPage .workTableMeta #count{
   color:var(--esta130-stat-text)!important;
   -webkit-text-fill-color:var(--esta130-stat-text)!important;
 }
+
+/* Detail surfaces use the same light palette as their parent module. */
+body.estaBrand130 #app.estaBrand130#app#app #energyPeopleMenu .peopleAvatar{background:var(--esta130-selected-bg)!important;color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important}
+body.estaBrand130 #app.estaBrand130#app#app #energyValueLabel,
+body.estaBrand130 #app.estaBrand130#app#app #maintenancePage .maintenanceProjectMeta{display:none!important}
+body.estaBrand130 #app.estaBrand130#app#app #inventoryPage #inventory130QuickMenu{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:var(--esta130-ui-radius)!important}
+body.estaBrand130 #app.estaBrand130#app#app #inventoryPage :is(.inventory130Transaction,.inventory130TxnMain,.inventory130TxnText,.inventory130TxnActions button,.stockAlertIcon,.stockAlertStatus,#stockAlertOnly){background:var(--esta130-lift)!important;background-image:none!important;color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;border-color:var(--esta130-line)!important;opacity:1!important}
+body.estaBrand130 #app.estaBrand130#app#app #inventoryPage :is(.stockAlertIcon svg,#stockAlertOnly *){color:var(--esta130-deep)!important;opacity:1!important}
+body.estaBrand130 #app.estaBrand130#app#app #contractorPage :is(.contractorDetailActions .contractorBtn,.contractorMobileDetailNote,.contractorJobStatusMini,.contractorJobRail span,.contractorJobActions button:not(.danger)){background:var(--esta130-soft)!important;background-image:none!important;color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important;border-color:var(--esta130-line)!important}
+body.estaBrand130 #app.estaBrand130#app#app #contractorPage :is(.contractorDetailActions .contractorBtn *,.contractorMobileDetailNote *,#contractorMobileJobCount){color:var(--esta130-deep)!important;-webkit-text-fill-color:var(--esta130-deep)!important}
+body.estaBrand130 #app.estaBrand130#app#app :is(#maintenanceExportPdf,#estamHeaderPdf,#m130Pdf){background:var(--esta130-photo-bg)!important;background-image:none!important;color:var(--esta130-photo-text)!important;-webkit-text-fill-color:var(--esta130-photo-text)!important;border-color:var(--esta130-copper)!important}
+body.estaBrand130 #m130Overlay#m130Overlay .m130ModalHead #m130ModalTitle{color:var(--esta130-cream)!important;-webkit-text-fill-color:var(--esta130-cream)!important}
+
+body.estaBrand130 #app.estaBrand130#app#app #estamHeaderPdf *{color:var(--esta130-photo-text)!important;-webkit-text-fill-color:var(--esta130-photo-text)!important}
+body.estaBrand130 #app.estaBrand130#app#app #contractorPage input::placeholder{color:var(--esta130-secondary)!important;-webkit-text-fill-color:var(--esta130-secondary)!important;opacity:1!important}

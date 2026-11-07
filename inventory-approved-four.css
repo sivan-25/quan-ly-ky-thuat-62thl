@@ -760,7 +760,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     opacity:1!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #inventory130QuickMenu summary {
-    background:#eff7ff!important;color:#164d8c!important;-webkit-text-fill-color:#164d8c!important;
+    background:var(--esta130-photo-bg,#eff7ff)!important;color:var(--esta130-photo-text,#164d8c)!important;-webkit-text-fill-color:var(--esta130-photo-text,#164d8c)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #inventory130AddMaterial {
     background:linear-gradient(145deg,var(--esta130-plum,#148be2),var(--esta130-deep,#074b9d))!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
