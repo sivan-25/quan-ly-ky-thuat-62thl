@@ -240,7 +240,7 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 .energyPhotoActions .energyActionIcon{
-  color:var(--esta130-cream)!important;
+  color:var(--esta130-action-text)!important;
   stroke:currentColor!important;
   fill:none!important;
   opacity:1!important;
@@ -251,8 +251,8 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 .energyPhotoActions .energyActionText{
-  color:var(--esta130-cream)!important;
-  -webkit-text-fill-color:var(--esta130-cream)!important;
+  color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
   opacity:1!important;
   font-size:12px!important;
   flex:0 1 auto!important;
@@ -309,12 +309,12 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 body.estaBrand130 #app.estaBrand130#app #energyPage
 .energyCardTitle .energyMark{
   background:var(--esta130-plum)!important;
-  color:var(--esta130-cream)!important;
+  color:var(--esta130-action-text)!important;
   border-color:var(--esta130-copper)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage
 .energyCardTitle .energyMark svg{
-  color:var(--esta130-cream)!important;
+  color:var(--esta130-action-text)!important;
   stroke:currentColor!important;
   opacity:1!important;
   filter:none!important;
@@ -947,7 +947,7 @@ body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="S
 }
 /* Reapply high-contrast button states after neutral/dark-surface rules. */
 body.estaBrand130 #app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.contractorPrimary,.constructionPrimaryBtn,.m130AddButton,#saveBtn,#energySaveBtn,.formPrimary,button[type="submit"].primary,.demoHeroActions .primary,.contractorBtn.primary,.demoBtn.primary,.rc-button.primary),
-body.estaBrand130 :is(#app#app,#workEditDrawer#workEditDrawer,.modal,#m130Overlay,.ueOverlay) :is(button[type="submit"],#saveBtn,#energySaveBtn){
+body.estaBrand130 :is(#app#app,#workEditDrawer#workEditDrawer,.modal,#m130Overlay,.ueOverlay) :is(button[type="submit"],#saveBtn,#energySaveBtn,#task130QuickSave){
   background:var(--esta130-save-bg)!important;
   border-color:var(--esta130-plum)!important;
   color:var(--esta130-cream)!important;
@@ -1165,14 +1165,14 @@ body.estaBrand130 #app.estaBrand130 :is(#workSelectedPdfBar,.estaTopbar,.estaSid
 body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn{
   min-height:var(--esta130-control-height)!important;
   height:var(--esta130-control-height)!important;
-  background:var(--esta130-plum)!important;
+  background:var(--esta130-save-bg)!important;
   border-color:var(--esta130-plum)!important;
-  color:var(--esta130-cream)!important;
-  -webkit-text-fill-color:var(--esta130-cream)!important;
+  color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #workPage #saveBtn *{
-  color:var(--esta130-cream)!important;
-  -webkit-text-fill-color:var(--esta130-cream)!important;
+  color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #cc130Launch{
   background:var(--esta130-soft)!important;
@@ -2088,14 +2088,14 @@ body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks select optio
 }
 body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoAddTaskMaterial,
 body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoAddTaskMaterial{
-  background:var(--esta130-plum)!important;
+  background:var(--esta130-save-bg)!important;
   border:1px solid var(--esta130-copper)!important;
-  color:var(--esta130-cream)!important;
-  -webkit-text-fill-color:var(--esta130-cream)!important;
+  color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
 }
 body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoAddTaskMaterial:hover,
 body.estaBrand130 .workEditDrawer.demoWorkEditDrawer #demoWorkLinks #demoAddTaskMaterial:hover{
-  background:var(--esta130-deep)!important;
+  background:var(--esta130-save-bg)!important;
   border-color:var(--esta130-copper)!important;
 }
 body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoUseNoteAsResult:not(.hide),

@@ -297,9 +297,9 @@ async function prep(page,p){
       for(const [name,x] of [["camera",camera],["library",library]]){
         assert.ok(Math.abs(x.h-44)<=1,label+" "+name+" must be 44px: "+JSON.stringify(x));
         assert.ok(x.w>=110,label+" "+name+" must fit its icon and label");
-        assert.equal(x.color,"rgb(243, 222, 191)",label+" "+name+" text must use cream ink");
+        assert.equal(x.color,"rgb(255, 255, 255)",label+" "+name+" text must use cream ink");
       }
-      assert.equal(camera.background,"rgb(65, 20, 55)",label+" camera button must be plum");
+      assert.equal(camera.background,"rgb(122, 67, 0)",label+" camera button must be plum");
       assert.equal(library.background,camera.background,label+" camera and gallery must share one color");
       assert.equal(energyAudit.noteToggle,null,label+" add/hide note toggle must not be visible");
       assert.ok(energyAudit.noteInput,label+" note field must always be visible");
@@ -311,7 +311,7 @@ async function prep(page,p){
       assert.equal(energyAudit.save.h,44,label+" save action height");
       for(const icon of energyAudit.photoIcons){
         assert.equal(icon.opacity,"1",label+" photo icon must not be faded");
-        assert.equal(icon.color,"rgb(243, 222, 191)",label+" icon ink");
+        assert.equal(icon.color,"rgb(255, 255, 255)",label+" icon ink");
         assert.ok(icon.w>=16&&icon.h>=16,label+" icon appears too small "+JSON.stringify(icon));
       }
       for(const [name,field] of [["date",energyAudit.date],["main index",energyAudit.mainIndex],["performer",energyAudit.people],["note toggle",energyAudit.noteToggle],["note input",energyAudit.noteInput]]){
@@ -320,7 +320,7 @@ async function prep(page,p){
       }
       if(energyAudit.mark){
         assert.equal(energyAudit.mark.opacity,"1",label+" meter header icon faded");
-        assert.equal(energyAudit.mark.color,"rgb(243, 222, 191)",label+" header meter icon color");
+        assert.equal(energyAudit.mark.color,"rgb(255, 255, 255)",label+" header meter icon color");
       }
       console.log("PASS "+label+" 44px energy controls, clear SVG, light photo buttons, compact note");
     }
@@ -378,8 +378,51 @@ async function prep(page,p){
      assert.equal(workReadability.linkBackground,"rgb(255, 253, 252)","130HH work-link panel must use the ESTA cream surface");
      assert.equal(workReadability.linkSummaryColor,"rgb(65, 20, 55)","130HH work-link title must use plum, not blue");
      assert.equal(workReadability.linkMaterialTitleColor,"rgb(65, 20, 55)","130HH materials heading must use plum");
-     assert.equal(workReadability.addButtonBackground,"rgb(65, 20, 55)","130HH add-material button must use plum");
-     assert.equal(workReadability.addButtonColor,"rgb(243, 222, 191)","130HH add-material button text must use cream");
+     assert.equal(workReadability.addButtonBackground,"rgb(122, 67, 0)","130HH add-material button must use plum");
+     assert.equal(workReadability.addButtonColor,"rgb(255, 255, 255)","130HH add-material button text must use cream");
+     if(width===390){
+       const formState=await page.evaluate(()=>{
+         const status=document.querySelector('#status');status.value='Đã hoàn thành';status.dispatchEvent(new Event('change',{bubbles:true}));
+         sync130QuickCompletion();
+         const css=x=>getComputedStyle(x),root=document.querySelector('#workPage');
+         document.querySelector('#mobileCards').innerHTML=workMobileCard130({id:5002,d:'2026-12-05',c:'Kiểm tra máy bơm',s:'Đã hoàn thành',t:'Hằng ngày',a:'Nguyễn An',performers:['Nguyễn An'],result:'Đạt',imgs:[]});
+         const card=root.querySelector('.workCompact130'),meta=card.querySelector('.workCardMetaLine');
+         const boxes=[...meta.children].map(x=>x.getBoundingClientRect());
+         return {requiredMark:getComputedStyle(root.querySelector('.workContent>span'),'::after').webkitTextFillColor,
+           contentBorder:css(document.querySelector('#content')).borderColor,
+           selected:css(root.querySelector('#workChoices-type [aria-checked="true"]')).backgroundColor,
+           idle:css(root.querySelector('#workChoices-type [aria-checked="false"]')).backgroundColor,
+           resultBg:css(document.querySelector('#task130Result')).backgroundColor,
+           resultBorder:css(document.querySelector('#task130Result')).borderColor,
+           quickSaveBg:css(document.querySelector('#task130QuickSave')).backgroundColor,
+           quickSaveText:css(document.querySelector('#task130QuickSave')).webkitTextFillColor,
+           countDisplay:css(root.querySelector('.workTableMeta')).display,
+           sameLine:Math.max(...boxes.map(x=>x.top))-Math.min(...boxes.map(x=>x.top))<12,
+           menuClosed:!card.querySelector('details').open,oldFooter:!!card.querySelector('.mobileCardFoot')};
+       });
+       assert.equal(formState.requiredMark,'rgb(180, 35, 50)');
+       assert.equal(formState.contentBorder,'rgb(218, 155, 163)');
+       assert.notEqual(formState.selected,formState.idle);
+       assert.equal(formState.resultBg,'rgb(241, 231, 239)');
+       assert.equal(formState.resultBorder,'rgb(218, 155, 163)');
+       assert.equal(formState.quickSaveBg,'rgb(122, 67, 0)');
+       assert.equal(formState.quickSaveText,'rgb(255, 255, 255)');
+       assert.equal(formState.countDisplay,'none');
+       assert.ok(formState.sameLine,'normal task metadata must fit one line: '+JSON.stringify(formState));
+       assert.ok(formState.menuClosed&&!formState.oldFooter,'task actions must live inside a collapsed menu');
+       await page.locator('.workCompact130 .workCardMenu summary').click();
+       assert.equal(await page.locator('.workCompact130 .workCardMenu[open] button').count(),2);
+       const menuFit=await page.evaluate(()=>{
+         const menu=document.querySelector('.workCardMenu[open]>div');
+         return {width:menu.getBoundingClientRect().width,clipped:[...menu.querySelectorAll('button')].some(x=>x.scrollWidth>x.clientWidth+1)};
+       });
+       assert.ok(menuFit.width>=160&&!menuFit.clipped,'task action menu text must fit '+JSON.stringify(menuFit));
+       if(process.env.ESTA_SCREENSHOTS==='1'){
+         await page.locator('#mobileCards').screenshot({path:path.join(output,'work-card-menu-390.png')});
+         await page.locator('#task130ResultField').screenshot({path:path.join(output,'work-completed-390.png')});
+       }
+       await page.evaluate(()=>{document.querySelector('.workCardMenu').open=false;document.querySelector('#status').value='Đang thực hiện';document.querySelector('#status').dispatchEvent(new Event('change',{bubbles:true}));render()});
+     }
     }
     assert.ok(state.topbar.includes("rgb(65, 20, 55)")&&state.topbar.includes("rgb(43, 21, 38)"),
      "Unbranded blue header "+mode+" width "+width+": "+JSON.stringify(state));
@@ -413,8 +456,8 @@ async function prep(page,p){
        color:getComputedStyle(x).webkitTextFillColor||getComputedStyle(x).color}));
    });
    for(const action of actionColors){
-     assert.equal(action.bg,"rgb(65, 20, 55)","Inconsistent 130HH save/photo background "+width+"px "+JSON.stringify(action));
-     assert.equal(action.color,"rgb(243, 222, 191)","Inconsistent 130HH save/photo text "+width+"px "+JSON.stringify(action));
+     assert.equal(action.bg,"rgb(122, 67, 0)","Inconsistent 130HH save/photo background "+width+"px "+JSON.stringify(action));
+     assert.equal(action.color,"rgb(255, 255, 255)","Inconsistent 130HH save/photo text "+width+"px "+JSON.stringify(action));
    }
    await context.close();
   }

@@ -448,7 +448,11 @@ function demo130MissingNotice(message,el){
 function demoSyncCompletionFields(){
  const single=usesSingleTaskResult(),result=$("#demoTaskResult"),done=$("#status")?.value==="Đã hoàn thành";
  const label=$("#demoTaskResultLabel"),cause=$("#demoTaskCause"),note=$("#note");
- if(label)label.textContent=single?"Kết quả thực hiện"+(done?" *":""):"Hướng xử lý / Kết quả";
+ if(label){
+  const branded=String(currentBuilding?.id||"")==="130HH";
+  label.textContent=single?"Kết quả thực hiện"+(done&&!branded?" *":""):"Hướng xử lý / Kết quả";
+  label.dataset.required=String(branded&&single&&done);
+ }
  if(result){
   const quick=demo130MobileQuick()&&done,topResult=document.getElementById("task130Result");
   if(quick&&topResult&&document.activeElement===topResult)result.value=topResult.value;

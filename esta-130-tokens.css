@@ -15,9 +15,12 @@ body.estaBrand130,
 body.estaBrand130,
 #app.estaBrand130 {
   --esta130-control-height: 44px;
-  --esta130-save-bg: #411437;
-  --esta130-photo-bg: #411437;
-  --esta130-action-text: #F3DEBF;
+  --esta130-save-bg: #7A4300;
+  --esta130-photo-bg: #7A4300;
+  --esta130-action-text: #FFFFFF;
+  --esta130-required: #B42332;
+  --esta130-required-border: #DA9BA3;
+  --esta130-selected-bg: #E5CFDE;
   --esta130-compact-height: 36px;
   --esta130-kpi-height: 44px;
   --esta130-tool-kpi-desktop: 66px;

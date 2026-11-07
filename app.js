@@ -1693,6 +1693,15 @@ document.addEventListener("click",event=>{
  event.preventDefault();event.stopPropagation();
  toggleEstaPriorityStar(button.dataset.starTask);
 });
+function workMobileCard130(x){
+ const id=Number(x.id);
+ return '<article class="mcard proTaskCard workCompact130">'+workRowCheckbox(x)+
+  '<div class="workCardHeading"><h4 class="taskTitle">'+esc(x.c)+'</h4><details class="workCardMenu"><summary aria-label="Thao tác công việc" title="Thao tác công việc">⋯</summary><div>'+
+  '<button type="button" onclick="demoOpenTaskDrawer('+id+');this.closest(\'details\').removeAttribute(\'open\')">Hồ sơ liên kết</button>'+
+  '<button type="button" onclick="editTask('+id+');this.closest(\'details\').removeAttribute(\'open\')">Chỉnh sửa</button></div></details></div>'+
+  '<div class="workCardMetaLine"><time datetime="'+esc(x.d)+'">'+fmt(x.d)+'</time>'+statusBadge(x.s)+typeBadge(x.t)+performerChipsHtml(x)+'</div>'+
+  '<p class="workCardNotes">'+((String(x.n||"").trim()||String(x.result||"").trim())?taskNoteSummaryHtml(x):"")+'</p>'+(x.imgs?.length?'<span class="workCardPhotoCount">📷 '+x.imgs.length+' hình</span>':'')+'</article>';
+}
 function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div class="thumbs" onclick="viewImages('+x.id+')">'+x.imgs.slice(0,3).map(v=>mediaImgHtml(v)).join("")+(x.imgs.length>3?'<span class="thumbMore">+'+(x.imgs.length-3)+'</span>':'')+'</div>'}function render(){
  const all=load(),a=filtered(),td=today();
  $("#statToday").textContent=all.filter(x=>x.d===td).length;
@@ -1707,7 +1716,7 @@ function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div 
  });
  $("#empty").classList.toggle("hide",a.length>0);
  $("#tbody").innerHTML=a.map((x,i)=>'<tr><td class="sttCell">'+workRowCheckbox(x)+'<span class="estaStarStack">'+estaPriorityStar(x)+'<span>'+(i+1)+'</span></span></td><td class="taskContentCell"><span class="taskTitle">'+esc(x.c)+'</span><small>'+esc(x.n||"Không có ghi chú")+'</small></td><td>'+typeBadge(x.t)+'</td><td>'+statusBadge(x.s)+'</td><td class="dateCell">'+fmt(x.d)+'</td><td>'+performerChipsHtml(x)+'</td><td>'+thumbs(x)+'</td><td class="noteCell">'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"—"))+'</td><td class="actionCell"><details class="rowActionMenu"><summary title="Thao tác">•••</summary><div><button type="button" onclick="editTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Sửa công việc</button>'+(x.imgs?.length?'<button type="button" onclick="viewImages('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xem hình ảnh</button>':'')+'<button class="danger" type="button" onclick="delTask('+x.id+');this.closest(\'details\').removeAttribute(\'open\')">Xóa</button></div></details></td></tr>').join("");
- $("#mobileCards").innerHTML=a.map(x=>'<article class="mcard proTaskCard">'+workRowCheckbox(x)+'<div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"Không có ghi chú"))+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
+ $("#mobileCards").innerHTML=a.map(x=>String(currentBuilding?.id||"")==="130HH"?workMobileCard130(x):'<article class="mcard proTaskCard">'+workRowCheckbox(x)+'<div class="mobileCardTop"><div><small>'+fmt(x.d)+'</small><h4 class="taskTitle">'+esc(x.c)+'</h4></div>'+statusBadge(x.s)+'</div><div class="mobileMeta">'+typeBadge(x.t)+performerChipsHtml(x,2)+'</div><p>'+(usesSingleTaskResult()?taskNoteSummaryHtml(x):esc(x.n||"Không có ghi chú"))+'</p><div class="mobileCardFoot"><span>'+(x.imgs?.length?"📷 "+x.imgs.length+" hình":"Không có hình")+'</span><button onclick="editTask('+x.id+')">Chỉnh sửa →</button></div></article>').join("");
  hydrateMediaImages($("#tbody"));
  syncWorkSelection();
 }
