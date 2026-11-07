@@ -45,7 +45,7 @@
 #app.estaBrand130 .updateHero:after { border-color: rgba(243, 222, 191, .19); }
 #app.estaBrand130 .updateHeroTags b,
 #app.estaBrand130 .updateHeroActions button:first-child {
-  background: var(--esta-cream) !important;
+  background: var(--esta-card) !important;
   color: var(--esta-aubergine) !important;
   border-color: var(--esta-cream) !important;
 }
@@ -266,7 +266,7 @@ body.estaBrand130 :is(.modalCard, .workEditDrawerCard, #m130Overlay .m130Dialog)
   }
   body.estaBrand130 #updateMobileNav.updateMobileNav.liveProjectMobileNav button { color: var(--esta130-cream) !important; }
   body.estaBrand130 #updateMobileNav.updateMobileNav.liveProjectMobileNav button.active {
-    background: var(--esta130-cream) !important;
+    background: var(--esta130-lift) !important;
     color: var(--esta130-plum) !important;
   }
   body.estaBrand130 #updateMobileNav.updateMobileNav.liveProjectMobileNav button > span { color: inherit !important; }

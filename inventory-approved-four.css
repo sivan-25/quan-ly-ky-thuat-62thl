@@ -407,7 +407,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared .inventory130PdfMenu>button {
     min-height:var(--esta130-control-height,40px)!important;height:var(--esta130-control-height,40px)!important;padding:0 11px!important;
     border:1px solid #d4bda0!important;border-radius:10px!important;
-    background:#f5e8d5!important;color:#263d51!important;
+    background:var(--esta130-lift,#f5e8d5)!important;color:#263d51!important;
     -webkit-text-fill-color:#263d51!important;font-size:12px!important;
     font-weight:750!important;white-space:nowrap!important;
   }

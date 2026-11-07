@@ -24,7 +24,7 @@ const modes=[
  ["reports","#reportsPage",".rc-period"],
  ["construction","#constructionMaterialPage",".constructionCommand"]
 ];
-const cream="rgb(243, 222, 191)",soft="rgb(245, 236, 208)";
+const cream="rgb(243, 222, 191)",soft="rgb(255, 253, 252)";
 const output=process.env.ESTA_VISUAL_DIR||"visual-artifacts";
 fs.mkdirSync(output,{recursive:true});
 async function prep(page,p){
@@ -180,6 +180,15 @@ async function prep(page,p){
       return {count:failures.length,failures:failures.slice(0,12)};
     });
     assert.equal(contrastAudit.count,0,"130HH text contrast failed in "+mode+" width "+width+": "+JSON.stringify(contrastAudit.failures));
+    const backgroundLeaks=await page.evaluate(root=>{
+      const area=document.querySelector(root);
+      const candidates=[...area.querySelectorAll('button,input,select,textarea,article,.demoPanel,.tableCard,.energyCard,.energyTableCard,.inventoryTableCard,.inventorySearch,.inventory130SearchField,.contractorSearch,.contractorRowCard,.proTaskCard,.maintenanceBoard,.maintenanceSchedule,.demoDocCat'),
+        ...document.querySelectorAll('.estaTopbar button,#updateMobileNav button')];
+      return candidates.filter(el=>el.getClientRects().length&&!el.closest('.hide,[aria-hidden="true"]'))
+        .filter(el=>{const s=getComputedStyle(el);return s.backgroundColor==='rgb(243, 222, 191)'&&s.backgroundImage==='none'})
+        .map(el=>({id:el.id,cls:el.className,text:el.textContent.trim().slice(0,45)}));
+    },root);
+    assert.deepEqual(backgroundLeaks,[],"130HH control/card reused page background in "+mode+" "+width+"px: "+JSON.stringify(backgroundLeaks));
 
     // Every visible 130HH route is inspected for actual form geometry and
     // interactive SVG opacity, not just correct colors on the main background.
@@ -227,7 +236,7 @@ async function prep(page,p){
       assert.ok(fit.height<=(width<761?74:82),"contractor KPI too tall: "+JSON.stringify(fit));
       assert.equal(fit.clipped,false,"contractor KPI label clipped: "+JSON.stringify(fit));
       assert.equal(fit.inputBg,"rgba(0, 0, 0, 0)","contractor search has nested surface");
-      assert.equal(fit.wrapperBg,"rgb(251, 243, 227)","contractor search surface");
+      assert.equal(fit.wrapperBg,"rgb(241, 231, 239)","contractor search surface");
     }
     if(mode==="inventory"){
       const fit=await page.evaluate(()=>{
@@ -247,10 +256,10 @@ async function prep(page,p){
       });
       assert.equal(fit.railBg,"rgba(0, 0, 0, 0)","month rail retained an outer fill");
       assert.equal(fit.searchBg,"rgba(0, 0, 0, 0)","material search has nested surface");
-      assert.ok(["rgb(245, 236, 208)","rgb(255, 246, 233)"].includes(fit.monthBg),"month tiles retained blue fill");
+      assert.ok(["rgb(255, 253, 252)","rgb(255, 246, 233)"].includes(fit.monthBg),"month tiles retained blue fill");
       assert.ok(fit.toolHeight<=(width<761?72:80),"tool KPI too tall: "+JSON.stringify(fit));
       assert.equal(fit.toolClipped,false,"tool KPI label clipped: "+JSON.stringify(fit));
-      assert.ok(["rgb(251, 243, 227)","rgb(245, 236, 208)"].includes(fit.toolBg),"tool list retained navy surface");
+      assert.ok(["rgb(241, 231, 239)","rgb(255, 253, 252)"].includes(fit.toolBg),"tool list retained navy surface");
     }
 
     if(mode==="energy"){
@@ -362,11 +371,11 @@ async function prep(page,p){
      assert.equal(workReadability.statCountColor,"rgb(65, 20, 55)","130HH work statistic number must be plum, not yellow/low-contrast");
      assert.equal(workReadability.tableCountColor,"rgb(65, 20, 55)","130HH work list count must be plum");
      assert.equal(workReadability.starMarkedColor,"rgb(244, 180, 0)","130HH priority star must be bright gold when marked");
-     assert.equal(workReadability.performerBackground,"rgb(251, 243, 227)","130HH performer chip must use a light ESTA surface");
+     assert.equal(workReadability.performerBackground,"rgb(241, 231, 239)","130HH performer chip must use a light ESTA surface");
      assert.equal(workReadability.performerTextColor,"rgb(65, 20, 55)","130HH performer name must be readable plum");
      assert.equal(workReadability.dividerColor,"rgb(164, 100, 39)","130HH desktop work rows must have a strong copper divider");
      assert.equal(workReadability.mobileDividerColor,"rgb(164, 100, 39)","130HH mobile work cards must have a strong copper divider");
-     assert.equal(workReadability.linkBackground,"rgb(245, 236, 208)","130HH work-link panel must use the ESTA cream surface");
+     assert.equal(workReadability.linkBackground,"rgb(255, 253, 252)","130HH work-link panel must use the ESTA cream surface");
      assert.equal(workReadability.linkSummaryColor,"rgb(65, 20, 55)","130HH work-link title must use plum, not blue");
      assert.equal(workReadability.linkMaterialTitleColor,"rgb(65, 20, 55)","130HH materials heading must use plum");
      assert.equal(workReadability.addButtonBackground,"rgb(65, 20, 55)","130HH add-material button must use plum");
@@ -386,7 +395,7 @@ async function prep(page,p){
       }
     }
     for(const key of ["workCard","energyKpi","energyPanel","inventory","energyTable"]){
-      if(state[key]!==null)assert.equal(state[key],soft,key+" still has legacy blue/dark surface in "+mode+" width "+width);
+      if(state[key]!==null)assert.ok([soft,"rgb(238, 225, 234)","rgb(241, 231, 239)"].includes(state[key]),key+" must use a content surface distinct from page background in "+mode+" width "+width+": "+state[key]);
     }
     assert.equal(errors.length,0,"JavaScript errors in "+mode+": "+errors.join(", "));
     if(mode==="inventory"){

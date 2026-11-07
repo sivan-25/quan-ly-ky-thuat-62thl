@@ -9,8 +9,8 @@ const tokens = {
   "kpi-height": "44px",
   "table-head-height": "44px",
   "table-row-height": "44px",
-  "field-bg": "#FBF3E3",
-  "stat-bg": "#F5ECD0",
+  "field-bg": "#F1E7EF",
+  "stat-bg": "#EEE1EA",
   "stat-text": "#411437",
   "progress-bg": "#E7F0FA",
   "progress-text": "#164A70",
@@ -32,7 +32,7 @@ for (const [name, value] of Object.entries(tokens)) {
   assert.equal(tokenValue(name), value, "wrong resolved 130HH token "+name);
 }
 for (const [name, source] of Object.entries({
-  "table-row-bg":"ui-surface", "table-row-text":"ui-text", "table-row-border":"ui-border",
+  "table-row-bg":"soft", "table-row-text":"ui-text", "table-row-border":"ui-border",
   "field-bg":"ui-surface", "field-text":"ui-text",
   "stat-label":"ui-muted", "stat-border":"ui-border", "today-text":"stat-text",
   "complete-bg":"success-bg", "complete-text":"success-text",
