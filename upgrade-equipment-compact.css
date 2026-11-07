@@ -172,8 +172,8 @@
   grid-template-columns:26px minmax(0,1fr) 11px!important;
   column-gap:9px!important;
   row-gap:0!important;
-  min-height:58px!important;
-  padding:8px 10px!important;
+  min-height:var(--esta130-system-card-height,58px)!important;
+  padding:6px 10px!important;
   background:#fffaf1!important;
   border:1px solid #ebd8bc!important;
   border-radius:10px!important;
@@ -412,8 +412,8 @@
   #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRailCard,
   #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRailCard.active{
     grid-template-columns:20px minmax(0,1fr) 10px!important;
-    padding:7px!important;
-    min-height:54px!important;
+    padding:6px!important;
+    min-height:var(--esta130-system-card-mobile-height,54px)!important;
   }
   #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRailCard svg{width:18px!important;height:18px!important}
   #app:is(.estaUpgradeMode,.estaTechnicalAssetsMode) #updateAssetsPage .ueRailText b{font-size:10.5px!important}

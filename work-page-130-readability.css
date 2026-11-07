@@ -46,8 +46,8 @@ body.estaBrand130 #app.estaBrand130#app #workPage .estaPriorityStar[aria-pressed
 }
 
 /* Linked-work section and link text use ESTA plum/copper, not the legacy blue. */
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks > summary {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks > summary {
   background:#F5ECD0!important;
   background-image:none!important;
   border-color:#A46427!important;
@@ -55,42 +55,49 @@ body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks > summary {
   -webkit-text-fill-color:#411437!important;
   box-shadow:none!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks > summary,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks > summary *,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoWorkLinkGrid > label,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoWorkLinkGrid > label *,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskResultHead label,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialsHead > span,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialsEmpty,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoTaskLinkSummary,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskLinkSummary,
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks a {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks > summary,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks > summary *,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoWorkLinkGrid > label,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoWorkLinkGrid > label *,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskResultHead label,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialsHead > span,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialsEmpty,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks #demoTaskLinkSummary,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskLinkSummary,
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks a {
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
   text-decoration-color:#A46427!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks :is(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),select,textarea) {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks :is(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),select,textarea) {
   background:#FBF3E3!important;
   border:1px solid #A46427!important;
   color:#2B1526!important;
   -webkit-text-fill-color:#2B1526!important;
   box-shadow:none!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks button:not(#demoAddTaskMaterial):not(.demoTaskMaterialRemove) {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks button:not(#demoAddTaskMaterial):not(.demoTaskMaterialRemove) {
   background:#F5ECD0!important;
   border-color:#A46427!important;
   color:#411437!important;
   -webkit-text-fill-color:#411437!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks #demoAddTaskMaterial {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks #demoAddTaskMaterial {
   background:#411437!important;
   border:1px solid #A46427!important;
   color:#F3DEBF!important;
   -webkit-text-fill-color:#F3DEBF!important;
 }
-body.estaBrand130 #workEditDrawer#workEditDrawer #demoWorkLinks .demoTaskMaterialRemove {
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialRemove {
   color:#991B1B!important;
   -webkit-text-fill-color:#991B1B!important;
+}
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks .demoTaskMaterialsField{
+  background:#FBF3E3!important;border-color:#A46427!important;
+}
+body.estaBrand130 :is(#workEditDrawer#workEditDrawer,#app.estaBrand130#app #workPage) #demoWorkLinks #demoUseNoteAsResult:not(.hide){
+  background:#411437!important;border-color:#A46427!important;
+  color:#F3DEBF!important;-webkit-text-fill-color:#F3DEBF!important;
 }
 body.estaBrand130 #app.estaBrand130#app #inventoryPage .materialTaskLink,
 body.estaBrand130 #app.estaBrand130#app #workPage .materialTaskLink {

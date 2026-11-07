@@ -16,7 +16,9 @@ for(const role of ["plum","deep","cream","soft","lift","copper","text","secondar
 }
 for(const [file,baseline] of Object.entries({
  "esta-brand-130.css":{hex:24,important:133},
- "esta-brand-130-complete.css":{hex:128,important:1118}
+ // Content-fit rules for contractor, inventory, documents and energy replace
+ // legacy project colors in the existing 130HH stylesheet (no extra override file).
+ "esta-brand-130-complete.css":{hex:128,important:1260}
 })){
  const css=read(file);
  const hex=(css.match(/#[0-9a-fA-F]{3,8}(?![\w-])/g)||[]).length;

@@ -281,19 +281,18 @@ body.estaBrand130 :is(.modalCard, .workEditDrawerCard, #m130Overlay .m130Dialog)
   color:var(--esta-cream)!important;
 }
 
-/* 320px pilot: the inherited system-rail rules can leave a 36px card.
-   Give the 130HH branded text a real 64px touch area; no other project changes. */
+/* 130HH system choices stay compact while long names can grow vertically. */
 @media(max-width:560px){
  #app.estaBrand130 #updateAssetsPage .ueRailCard{
   box-sizing:border-box!important;
-  min-height:64px!important;
+  min-height:50px!important;
   height:auto!important;
-  padding:9px 12px!important;
+  padding:6px 9px!important;
   align-items:center!important;
  }
  #app.estaBrand130 #updateAssetsPage .ueRailCard .ueRailText{
   height:auto!important;
-  min-height:40px!important;
+  min-height:0!important;
   overflow:visible!important;
  }
 }
@@ -301,15 +300,15 @@ body.estaBrand130 :is(.modalCard, .workEditDrawerCard, #m130Overlay .m130Dialog)
 @media(min-width:0px){
  #app.estaBrand130.estaFourProjectCompact #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard,
  body.estaBrand130 #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard{
-  min-height:64px!important;
+  min-height:50px!important;
   height:auto!important;
   max-height:none!important;
-  padding:10px 12px!important;
+  padding:6px 9px!important;
   box-sizing:border-box!important;
  }
  #app.estaBrand130.estaFourProjectCompact #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard .ueRailText,
  body.estaBrand130 #updateAssetsPage.ueSnapshot .ueSystemRail .ueRailCard .ueRailText{
-  min-height:40px!important;
+  min-height:0!important;
   height:auto!important;
   overflow:visible!important;
  }

@@ -17,6 +17,16 @@ body.estaBrand130,
   --esta130-control-height: 44px;
   --esta130-compact-height: 36px;
   --esta130-kpi-height: 44px;
+  --esta130-tool-kpi-desktop: 66px;
+  --esta130-tool-kpi-mobile: 58px;
+  --esta130-system-card-height: 50px;
+  --esta130-system-card-mobile-height: 50px;
+  --esta130-system-button-font: 12px;
+  --esta130-system-button-border: #A46427;
+  --esta130-tool-stat-1: #F2E6D1;
+  --esta130-tool-stat-2: #EAE0CB;
+  --esta130-tool-stat-3: #F5E3C8;
+  --esta130-tool-stat-4: #EADBE2;
   --esta130-table-head-height: 44px;
   --esta130-table-row-height: 44px;
   --esta130-year-month-width: 90px;

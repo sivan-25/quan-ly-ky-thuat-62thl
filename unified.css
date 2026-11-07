@@ -696,7 +696,7 @@
 }
 #app.inventoryMode #inventoryPage .stockAlertTitle h3{color:#f5f7ff!important}
 #app.inventoryMode #inventoryPage .stockAlertTitle p{color:#71809e!important}
-#app.inventoryMode #inventoryPage .stockAlertList{background:#11182b!important}
+#app.inventoryMode #inventoryPage .stockAlertList{background:var(--esta130-soft,#11182b)!important}
 #app.inventoryMode #inventoryPage .stockAlertItem{border-bottom-color:#1b2740!important}
 #app.inventoryMode #inventoryPage .stockAlertItem:hover{background:#131d31!important}
 #app.inventoryMode #inventoryPage .stockAlertName b,
@@ -2478,7 +2478,7 @@ body:has(#app.adminMode) #adminSettingsModal .modalClose{
   font-size:10px!important;
 }
 #app.inventoryMode #inventoryMaterialsPane .stockAlertList{
-  background:#11182b!important;
+  background:var(--esta130-soft,#11182b)!important;
 }
 #app.inventoryMode #inventoryMaterialsPane .inventoryExamples{
   border-color:#202c44!important;

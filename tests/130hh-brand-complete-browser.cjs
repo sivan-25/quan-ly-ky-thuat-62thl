@@ -215,6 +215,44 @@ async function prep(page,p){
     if(width<768)assert.equal(componentAudit.shortControls.length,0,
       "130HH mobile controls below 44px in "+mode+" "+width+"px: "+JSON.stringify(componentAudit.shortControls));
 
+    if(mode==="contractor"){
+      const fit=await page.evaluate(()=>{
+        const stats=[...document.querySelectorAll("#contractorPage .contractorStats article")];
+        const input=document.querySelector("#contractorSearch");
+        return {height:Math.max(...stats.map(x=>x.getBoundingClientRect().height)),
+          clipped:stats.some(x=>[...x.querySelectorAll("small,b")].some(t=>t.scrollHeight>t.clientHeight+1)),
+          inputBg:getComputedStyle(input).backgroundColor,
+          wrapperBg:getComputedStyle(input.closest(".contractorSearch")).backgroundColor};
+      });
+      assert.ok(fit.height<=(width<761?74:82),"contractor KPI too tall: "+JSON.stringify(fit));
+      assert.equal(fit.clipped,false,"contractor KPI label clipped: "+JSON.stringify(fit));
+      assert.equal(fit.inputBg,"rgba(0, 0, 0, 0)","contractor search has nested surface");
+      assert.equal(fit.wrapperBg,"rgb(251, 243, 227)","contractor search surface");
+    }
+    if(mode==="inventory"){
+      const fit=await page.evaluate(()=>{
+        const rail=document.querySelector("#materialMonthTabs");
+        const month=rail.querySelector("button:not(.active)");
+        const search=document.querySelector("#inventory130Search");
+        const tools=document.querySelector("#inventoryToolsPane");
+        const materials=document.querySelector("#inventoryMaterialsPane");
+        tools.classList.remove("hide");materials.classList.add("hide");
+        const toolCards=[...tools.querySelectorAll(".toolsStats article")];
+        const toolHeight=Math.max(...toolCards.map(x=>x.getBoundingClientRect().height));
+        const toolClipped=toolCards.some(x=>[...x.querySelectorAll("small,b,em")].some(t=>getComputedStyle(t).display!=="none"&&t.scrollHeight>t.clientHeight+1));
+        const toolBg=getComputedStyle(tools.querySelector(".toolsMainCard")).backgroundColor;
+        tools.classList.add("hide");materials.classList.remove("hide");
+        return {railBg:getComputedStyle(rail).backgroundColor,monthBg:getComputedStyle(month).backgroundColor,
+          searchBg:getComputedStyle(search).backgroundColor,toolHeight,toolClipped,toolBg};
+      });
+      assert.equal(fit.railBg,"rgba(0, 0, 0, 0)","month rail retained an outer fill");
+      assert.equal(fit.searchBg,"rgba(0, 0, 0, 0)","material search has nested surface");
+      assert.ok(["rgb(245, 236, 208)","rgb(255, 246, 233)"].includes(fit.monthBg),"month tiles retained blue fill");
+      assert.ok(fit.toolHeight<=(width<761?72:80),"tool KPI too tall: "+JSON.stringify(fit));
+      assert.equal(fit.toolClipped,false,"tool KPI label clipped: "+JSON.stringify(fit));
+      assert.ok(["rgb(251, 243, 227)","rgb(245, 236, 208)"].includes(fit.toolBg),"tool list retained navy surface");
+    }
+
     if(mode==="energy"){
       const energyAudit=await page.evaluate(()=>{
         const root=document.querySelector("#energyPage");
@@ -245,12 +283,14 @@ async function prep(page,p){
       const [camera,library]=energyAudit.photos;
       for(const [name,x] of [["camera",camera],["library",library]]){
         assert.ok(Math.abs(x.h-44)<=1,label+" "+name+" must be 44px: "+JSON.stringify(x));
-        assert.equal(x.background,"rgb(251, 243, 227)",label+" "+name+" must use light background");
-        assert.equal(x.color,"rgb(43, 21, 38)",label+" "+name+" text must use dark ink");
+        assert.ok(x.w>=110,label+" "+name+" must fit its icon and label");
+        assert.equal(x.color,"rgb(243, 222, 191)",label+" "+name+" text must use cream ink");
       }
+      assert.equal(camera.background,"rgb(65, 20, 55)",label+" camera button must be plum");
+      assert.equal(library.background,"rgb(122, 67, 0)",label+" gallery button must be dark copper");
       for(const icon of energyAudit.photoIcons){
         assert.equal(icon.opacity,"1",label+" photo icon must not be faded");
-        assert.equal(icon.color,"rgb(43, 21, 38)",label+" icon ink");
+        assert.equal(icon.color,"rgb(243, 222, 191)",label+" icon ink");
         assert.ok(icon.w>=16&&icon.h>=16,label+" icon appears too small "+JSON.stringify(icon));
       }
       for(const [name,field] of [["date",energyAudit.date],["main index",energyAudit.mainIndex],["performer",energyAudit.people],["note toggle",energyAudit.noteToggle],["note input",energyAudit.noteInput]]){

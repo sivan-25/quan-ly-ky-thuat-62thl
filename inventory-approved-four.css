@@ -41,7 +41,7 @@
   #app #inventoryPage.inventoryRefShared .monthlyStats :is(.invStatIcon,em){display:none!important}
   #app #inventoryPage.inventoryRefShared #inventoryMaterialsPane>.inventoryMonthRail{order:2!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
   #app #inventoryPage.inventoryRefShared .inventoryMonthRailHead{display:none!important}
-  #app #inventoryPage.inventoryRefShared #materialMonthTabs{display:grid!important;grid-template-columns:repeat(13,minmax(0,1fr))!important;gap:4px!important;margin:0!important;padding:0!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #materialMonthTabs{display:grid!important;grid-template-columns:repeat(13,minmax(0,1fr))!important;gap:4px!important;margin:0!important;padding:0!important;background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important}
   #app #inventoryPage.inventoryRefShared #materialMonthTabs button{display:block!important;height:var(--esta130-compact-height,46px)!important;min-height:var(--esta130-compact-height,46px)!important;min-width:0!important;padding:0 2px!important;background:#fff6e9!important;border:1px solid #d9c7b2!important;border-radius:11px!important;color:#665a55!important;-webkit-text-fill-color:#665a55!important;font-size:13px!important;font-weight:750!important;position:relative!important;overflow:visible!important}
   #app #inventoryPage.inventoryRefShared #materialMonthTabs .yearOverviewBtn{display:block!important}
   body #app#app#app #inventoryPage.inventoryRefShared #materialMonthTabs button.active{background:var(--esta130-plum,var(--inv-selected))!important;transition:none!important;border:2px solid #e63946!important;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:0 0 0 2px rgba(230,57,70,.16)!important}
@@ -148,12 +148,12 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane {
   color:#eff5ff!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane :is(.toolsMainCard,.inventoryTableCard,.inventoryTableScroll) {
-  background:#101b31!important;
-  border-color:#30415d!important;
+  background:var(--esta130-lift,#101b31)!important;
+  border-color:var(--esta130-line,#30415d)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryCardTitle {
-  background:#101b31!important;
-  color:#eff5ff!important;
+  background:var(--esta130-soft,#101b31)!important;
+  color:var(--esta130-deep,#eff5ff)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventorySectionBar {
   background:transparent!important;
@@ -161,10 +161,10 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   color:#173e5e!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventorySearch {
-  background:#f0f5fb!important;
-  border-color:#c5d5e6!important;
-  color:#173e5e!important;
-  -webkit-text-fill-color:#173e5e!important;
+  background:var(--esta130-lift,#f0f5fb)!important;
+  border-color:var(--esta130-copper,#c5d5e6)!important;
+  color:var(--esta130-deep,#173e5e)!important;
+  -webkit-text-fill-color:var(--esta130-deep,#173e5e)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolStatusFilter {
   background:#e6eff9!important;
@@ -184,10 +184,10 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolExp
   color:#ff8181!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #addToolBtn {
-  background:#326f91!important;
-  border:1px solid #275b78!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+  background:var(--esta130-plum,#326f91)!important;
+  border:1px solid var(--esta130-copper,#275b78)!important;
+  color:var(--esta130-cream,#fff)!important;
+  -webkit-text-fill-color:var(--esta130-cream,#fff)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats {
   display:grid!important;
@@ -196,28 +196,31 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article {
   min-width:0!important;
-  min-height:78px!important;
-  padding:13px 18px!important;
+  min-height:var(--esta130-tool-kpi-desktop,78px)!important;
+  padding:9px 12px!important;
   border:1px solid rgba(255,255,255,.18)!important;
   border-radius:13px!important;
   box-shadow:0 5px 12px rgba(12,37,68,.12)!important;
 }
-body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(1) {background:linear-gradient(135deg,#269be9,#1266c7)!important}
-body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(2) {background:linear-gradient(135deg,#33b977,#07864e)!important}
-body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(3) {background:linear-gradient(135deg,#f99b36,#e96116)!important}
-body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(4) {background:linear-gradient(135deg,#a064e4,#7135bc)!important}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(1) {background:var(--esta130-tool-stat-1,linear-gradient(135deg,#269be9,#1266c7))!important}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(2) {background:var(--esta130-tool-stat-2,linear-gradient(135deg,#33b977,#07864e))!important}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(3) {background:var(--esta130-tool-stat-3,linear-gradient(135deg,#f99b36,#e96116))!important}
+body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article:nth-child(4) {background:var(--esta130-tool-stat-4,linear-gradient(135deg,#a064e4,#7135bc))!important}
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article :is(small,b,em) {
-  color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important
+  color:var(--esta130-stat-text,#fff)!important;-webkit-text-fill-color:var(--esta130-stat-text,#fff)!important;opacity:1!important
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats .invStatIcon {
   background:rgba(255,255,255,.13)!important;color:#fff!important
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats .invStatIcon svg{stroke:currentColor!important}
+@media(min-width:761px){
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats em{display:none!important}
+}
 @media(max-width:1080px){
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats {grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:480px){
-  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article {min-height:75px!important;padding:10px!important}
+  body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryStats article {min-height:var(--esta130-tool-kpi-mobile,75px)!important;padding:7px!important}
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsTable thead th,
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .materialMonthlyTable thead th {
@@ -229,20 +232,20 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .mat
   border-color:var(--esta130-table-head-border,#30415d)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsTable tbody td {
-  background:#101b31!important;
-  color:#eff5ff!important;
-  -webkit-text-fill-color:#eff5ff!important;
-  border-bottom:1px solid #263750!important;
+  background:var(--esta130-lift,#101b31)!important;
+  color:var(--esta130-deep,#eff5ff)!important;
+  -webkit-text-fill-color:var(--esta130-deep,#eff5ff)!important;
+  border-bottom:1px solid var(--esta130-line,#263750)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsTable tbody tr:hover td {
-  background:#17253a!important;
+  background:var(--esta130-soft,#17253a)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolNameCell b {
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+  color:var(--esta130-plum,#fff)!important;
+  -webkit-text-fill-color:var(--esta130-plum,#fff)!important;
 }
 body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .inventoryCardTitle :is(h2,h3,b,strong,span) {
-  color:#eff5ff!important;
+  color:var(--esta130-plum,#eff5ff)!important;
   -webkit-text-fill-color:#eff5ff!important;
 }
 
@@ -429,8 +432,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     width:100%!important;min-width:0!important;max-width:100%!important;
     min-height:0!important;height:auto!important;
     margin:0 0 10px!important;padding:10px!important;
-    border:1px solid #cad8e6!important;border-radius:13px!important;
-    background:#edf3fa!important;box-shadow:none!important;
+    border:1px solid var(--esta130-line,#cad8e6)!important;border-radius:13px!important;
+    background:var(--esta130-soft,#edf3fa)!important;box-shadow:none!important;
     z-index:auto!important;box-sizing:border-box!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane>.inventorySectionBar>div:first-child {
@@ -452,8 +455,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     width:100%!important;max-width:100%!important;min-width:0!important;
     height:44px!important;min-height:44px!important;max-height:44px!important;
     flex:none!important;margin:0!important;padding:0 9px!important;
-    border:1px solid #b8cbd9!important;border-radius:9px!important;
-    background:#f8fbff!important;box-sizing:border-box!important;
+    border:1px solid var(--esta130-copper,#b8cbd9)!important;border-radius:9px!important;
+    background:var(--esta130-lift,#f8fbff)!important;box-sizing:border-box!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolSearch {
     display:block!important;min-width:0!important;max-width:100%!important;
@@ -461,7 +464,7 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     padding:0!important;border:0!important;border-radius:0!important;
     box-shadow:none!important;outline-offset:2px!important;
     -webkit-appearance:none!important;appearance:none!important;
-    color:#173d58!important;-webkit-text-fill-color:#173d58!important;
+    color:var(--esta130-deep,#173d58)!important;-webkit-text-fill-color:var(--esta130-deep,#173d58)!important;
     background:transparent!important;background-image:none!important;font-size:16px!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolSearch::placeholder {
@@ -484,8 +487,8 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     width:100%!important;max-width:100%!important;min-width:0!important;
     height:var(--esta130-control-height,44px)!important;min-height:var(--esta130-control-height,44px)!important;max-height:var(--esta130-control-height,44px)!important;
     margin:0!important;padding:0 4px!important;box-sizing:border-box!important;
-    border-radius:9px!important;border:1px solid #275b78!important;
-    background:#326f91!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+    border-radius:9px!important;border:1px solid var(--esta130-copper,#275b78)!important;
+    background:var(--esta130-plum,#326f91)!important;color:var(--esta130-cream,#fff)!important;-webkit-text-fill-color:var(--esta130-cream,#fff)!important;
     white-space:nowrap!important;font-size:12px!important;line-height:1.2!important;
     font-weight:750!important;
   }
@@ -512,23 +515,23 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article {
     display:flex!important;align-items:center!important;justify-content:center!important;
     min-width:0!important;width:100%!important;
-    height:44px!important;min-height:44px!important;max-height:44px!important;
+    height:auto!important;min-height:var(--esta130-tool-kpi-mobile,44px)!important;max-height:none!important;
     padding:3px 2px!important;margin:0!important;
     border:1px solid rgba(255,255,255,.22)!important;
     border-radius:9px!important;box-shadow:none!important;
-    box-sizing:border-box!important;position:relative!important;overflow:hidden!important;
+    box-sizing:border-box!important;position:relative!important;overflow:visible!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(1) {
-    background:#e3effb!important;border-color:#c4d9ee!important;color:#245b88!important;
+    background:var(--esta130-tool-stat-1,#e3effb)!important;border-color:var(--esta130-line,#c4d9ee)!important;color:var(--esta130-plum,#245b88)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(2) {
-    background:#e3f4ed!important;border-color:#bfdfcf!important;color:#236c4c!important;
+    background:var(--esta130-tool-stat-2,#e3f4ed)!important;border-color:var(--esta130-line,#bfdfcf)!important;color:var(--esta130-plum,#236c4c)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(3) {
-    background:#fbefe2!important;border-color:#ead4bc!important;color:#87552a!important;
+    background:var(--esta130-tool-stat-3,#fbefe2)!important;border-color:var(--esta130-line,#ead4bc)!important;color:var(--esta130-plum,#87552a)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats article:nth-child(4) {
-    background:#eeeafa!important;border-color:#d9ceec!important;color:#654f87!important;
+    background:var(--esta130-tool-stat-4,#eeeafa)!important;border-color:var(--esta130-line,#d9ceec)!important;color:var(--esta130-plum,#654f87)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats .invStatIcon {
     display:none!important;
@@ -564,12 +567,12 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsStats em {
     display:block!important;position:static!important;margin:0!important;padding:0!important;
-    font-style:normal!important;font-size:clamp(8px,2.1vw,10px)!important;line-height:12px!important;
-    font-weight:650!important;white-space:nowrap!important;letter-spacing:-.2px!important;
+    font-style:normal!important;font-size:10px!important;line-height:1.15!important;
+    font-weight:700!important;white-space:normal!important;overflow-wrap:anywhere!important;letter-spacing:0!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsMainCard {
-    margin:0!important;border:1px solid #c9d8e7!important;
-    border-radius:13px!important;background:#e7eef6!important;overflow:hidden!important;
+    margin:0!important;border:1px solid var(--esta130-line,#c9d8e7)!important;
+    border-radius:13px!important;background:var(--esta130-soft,#e7eef6)!important;overflow:hidden!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane #toolVisibleCount {
     color:#345674!important;-webkit-text-fill-color:#345674!important;
@@ -643,19 +646,19 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     color:#18592d!important;-webkit-text-fill-color:#18592d!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd {
-    background:#dcecff!important;border:1px solid #b4d1f4!important;
-    box-shadow:none!important;color:#183e67!important;
-    -webkit-text-fill-color:#183e67!important;
+    background:var(--esta130-soft,#dcecff)!important;border:1px solid var(--esta130-line,#b4d1f4)!important;
+    box-shadow:none!important;color:var(--esta130-deep,#183e67)!important;
+    -webkit-text-fill-color:var(--esta130-deep,#183e67)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd .inventoryQuickAddHead :is(.inventoryKicker,h3) {
-    color:#173e68!important;-webkit-text-fill-color:#173e68!important;
+    color:var(--esta130-plum,#173e68)!important;-webkit-text-fill-color:var(--esta130-plum,#173e68)!important;
     opacity:1!important;text-shadow:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd .inventoryQuickAddHead .inventoryKicker {
-    color:#1768ac!important;-webkit-text-fill-color:#1768ac!important;
+    color:var(--esta130-secondary,#1768ac)!important;-webkit-text-fill-color:var(--esta130-secondary,#1768ac)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .toolsQuickAdd :is(button,summary) {
-    color:#173e68!important;-webkit-text-fill-color:#173e68!important;
+    color:var(--esta130-plum,#173e68)!important;-webkit-text-fill-color:var(--esta130-plum,#173e68)!important;
   }
 
   /* Materials tab uses the same visible navy text surface; labels never
@@ -674,11 +677,12 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
     background:transparent!important;box-shadow:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #inventory130SearchRow .inventory130SearchField {
-    background:#f3f8ff!important;border:1px solid #c2d7f0!important;
-    color:#eff6ff!important;box-sizing:border-box!important;
+    background:var(--esta130-lift,#f3f8ff)!important;border:1px solid var(--esta130-copper,#c2d7f0)!important;
+    color:var(--esta130-plum,#173c70)!important;box-sizing:border-box!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #inventory130Search {
-     color:#173c70!important;-webkit-text-fill-color:#173c70!important;
+     background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+     color:var(--esta130-deep,#173c70)!important;-webkit-text-fill-color:var(--esta130-deep,#173c70)!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #inventory130Search::placeholder {
     color:var(--esta130-secondary,#7187a5)!important;-webkit-text-fill-color:var(--esta130-secondary,#7187a5)!important;opacity:1!important;
@@ -724,17 +728,17 @@ body #app#app#app #inventoryPage.inventoryRefShared #inventoryToolsPane .invento
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane .inventoryMonthRail {
     position:static!important;inset:auto!important;min-height:0!important;
-    padding:0!important;margin:0!important;box-shadow:none!important;
+    padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #materialMonthTabs {
     display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
     gap:5px!important;width:100%!important;min-width:0!important;
-    overflow:visible!important;
+    overflow:visible!important;background:transparent!important;border:0!important;padding:0!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #materialMonthTabs button {
     min-width:0!important;width:100%!important;min-height:var(--esta130-compact-height,40px)!important;
-    background:linear-gradient(145deg,#f0f7ff,#d4e9ff)!important;border:1px solid #bfd7ef!important;
-     border-radius:10px!important;color:#143c72!important;-webkit-text-fill-color:#143c72!important;
+    background:var(--esta130-soft,linear-gradient(145deg,#f0f7ff,#d4e9ff))!important;border:1px solid var(--esta130-line,#bfd7ef)!important;
+     border-radius:10px!important;color:var(--esta130-plum,#143c72)!important;-webkit-text-fill-color:var(--esta130-plum,#143c72)!important;
     font-size:var(--esta130-month-font-size,10px)!important;font-weight:700!important;
   }
   body #app#app#app #inventoryPage.inventoryRefShared #inventoryMaterialsPane #materialMonthTabs button.active {
