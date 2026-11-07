@@ -321,7 +321,7 @@ body.estaBrand130 #app.estaBrand130#app #energyPage
 }
 
 /* Energy: all navy panels to warm cards and light input controls. */
-#app.estaBrand130 #energyPage :is(.energyTabs,.energyCard,.energyTableCard,.energySummaryCards,.energySummaryCards article,.energyForm,.energyTableTop,.energyDesktopTable,.energyHistoryTable,.energyHistoryTable tbody,.energyHistoryTable tbody tr,.energyHistoryTable tbody td,#energyMobileCards,.energyCardTitle){
+#app.estaBrand130 #energyPage :is(.energyCard,.energyTableCard,.energySummaryCards article,.energyForm,.energyTableTop,.energyDesktopTable,.energyHistoryTable,.energyHistoryTable tbody,.energyHistoryTable tbody tr,.energyHistoryTable tbody td,#energyMobileCards,.energyCardTitle){
  background:var(--esta130-soft)!important;
  border-color:var(--esta130-line)!important;
  color:var(--esta130-text)!important;
@@ -351,12 +351,22 @@ body.estaBrand130 #app.estaBrand130#app #energyPage
   color:var(--esta130-plum)!important;-webkit-text-fill-color:var(--esta130-plum)!important;
   opacity:1!important;text-overflow:clip!important;
 }
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySummaryCards{
+  background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;
+  padding:0!important;gap:6px!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySummaryCards article{
+  display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;
+  height:44px!important;min-height:44px!important;max-height:44px!important;
+  padding:4px 8px!important;gap:1px!important;box-sizing:border-box!important;overflow:visible!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySummaryCards .summaryIcon{display:none!important}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energySummaryCards strong{
+  margin:0!important;font-size:15px!important;line-height:16px!important;
+}
 @media(max-width:640px){
-  body.estaBrand130 #app.estaBrand130#app #energyPage .energySummaryCards article{
-    height:auto!important;min-height:66px!important;overflow:visible!important;
-  }
   body.estaBrand130 #app.estaBrand130#app #energyPage .energySummaryCards small[data-mobile-label]{
-    font-size:11px!important;white-space:normal!important;line-height:1.2!important;
+    font-size:10px!important;white-space:normal!important;line-height:12px!important;
     overflow:visible!important;
   }
   body.estaBrand130 #app.estaBrand130#app #energyPage .energySummaryCards small[data-mobile-label]::after{content:none!important}
@@ -1698,15 +1708,24 @@ body.estaBrand130 #app.estaBrand130#app :is(
 
 /* Energy tabs: explicit selected/unselected states after legacy blue tab rules. */
 body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs{
-  background:var(--esta130-soft)!important;border-color:#D8BEA0!important;box-shadow:none!important;
+  display:flex!important;gap:6px!important;
+  background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;
+  padding:0!important;width:100%!important;overflow:visible!important;
 }
-body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button{
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button:not(.hide){
   background:var(--esta130-soft)!important;border-color:#D8BEA0!important;
   color:var(--esta130-plum)!important;-webkit-text-fill-color:var(--esta130-plum)!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;
+  width:0!important;min-width:0!important;max-width:100%!important;flex:1 1 0!important;
+  height:44px!important;min-height:44px!important;box-sizing:border-box!important;padding:4px!important;
+  font-size:12px!important;white-space:normal!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button *{
   color:var(--esta130-plum)!important;-webkit-text-fill-color:var(--esta130-plum)!important;
+  font-size:12px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
 }
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs [data-mobile-label]::after{content:none!important}
+body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button.hide{display:none!important}
 body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button.active,
 body.estaBrand130 #app.estaBrand130#app #energyPage .energyTabs button[aria-selected="true"]{
   background:var(--esta130-plum)!important;border-color:var(--esta130-copper)!important;

@@ -1700,7 +1700,7 @@ function workMobileCard130(x){
   '<button type="button" onclick="demoOpenTaskDrawer('+id+');this.closest(\'details\').removeAttribute(\'open\')">Hồ sơ liên kết</button>'+
   '<button type="button" onclick="editTask('+id+');this.closest(\'details\').removeAttribute(\'open\')">Chỉnh sửa</button></div></details></div>'+
   '<div class="workCardMetaLine"><time datetime="'+esc(x.d)+'">'+fmt(x.d)+'</time>'+statusBadge(x.s)+typeBadge(x.t)+performerChipsHtml(x)+'</div>'+
-  '<p class="workCardNotes">'+((String(x.n||"").trim()||String(x.result||"").trim())?taskNoteSummaryHtml(x):"")+'</p>'+(x.imgs?.length?'<span class="workCardPhotoCount">📷 '+x.imgs.length+' hình</span>':'')+'</article>';
+  '<p class="workCardNotes">'+((String(x.n||"").trim()||String(x.result||"").trim())?taskNoteSummaryHtml(x):"")+'</p><div class="workCardAttachments">'+(x.imgs?.length?'<span class="workCardPhotoCount"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 6h3l2-3h4l2 3h3a2 2 0 0 1 2 2v11H3V8a2 2 0 0 1 2-2Z"/><circle cx="12" cy="12" r="3"/></svg>'+x.imgs.length+' hình</span>':'')+'</div></article>';
 }
 function thumbs(x){if(!x.imgs?.length)return x.i?"📷 "+x.i:"—";return '<div class="thumbs" onclick="viewImages('+x.id+')">'+x.imgs.slice(0,3).map(v=>mediaImgHtml(v)).join("")+(x.imgs.length>3?'<span class="thumbMore">+'+(x.imgs.length-3)+'</span>':'')+'</div>'}function render(){
  const all=load(),a=filtered(),td=today();

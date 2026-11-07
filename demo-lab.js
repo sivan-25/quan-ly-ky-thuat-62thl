@@ -861,7 +861,12 @@ function demoDecorateWork(){
  const cards=[...document.querySelectorAll("#mobileCards .proTaskCard")];
  cards.forEach((card,i)=>{
   const x=data[i];if(!x)return;
-  if(!card.querySelector(".demoLinkChips"))card.querySelector("p")?.insertAdjacentHTML("afterend",'<div class="demoLinkChips">'+demoTaskLinkHtml(x)+'</div>');
+  if(!card.querySelector(".demoLinkChips")){
+   const links='<div class="demoLinkChips">'+demoTaskLinkHtml(x)+'</div>';
+   const attachments=card.querySelector(".workCardAttachments");
+   if(attachments)attachments.insertAdjacentHTML("afterbegin",links);
+   else card.querySelector("p")?.insertAdjacentHTML("afterend",links);
+  }
   const foot=card.querySelector(".mobileCardFoot");
   if(foot&&!foot.querySelector(".demoViewTask"))foot.insertAdjacentHTML("beforeend",'<button class="demoViewTask" type="button" onclick="demoOpenTaskDrawer('+x.id+')">Hồ sơ liên kết</button>');
  });

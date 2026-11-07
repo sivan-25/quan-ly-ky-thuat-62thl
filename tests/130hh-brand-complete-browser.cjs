@@ -287,10 +287,21 @@ async function prep(page,p){
           form:measure(root.querySelector("#energyForm")),
           notePlaceholder:root.querySelector("#energyNote").placeholder,
           noteCollapsed:root.querySelector(".energyNoteField").classList.contains("energyNoteCollapsed"),
+          tabSizes:[...root.querySelectorAll('.energyTabs button')].filter(visible).map(measure),
+          hiddenTabs:[...root.querySelectorAll('.energyTabs button.hide')].map(x=>getComputedStyle(x).display),
+          tabWrapper:getComputedStyle(root.querySelector('.energyTabs')).backgroundColor,
+          kpiWrapper:getComputedStyle(root.querySelector('.energySummaryCards')).backgroundColor,
+          kpiHeights:[...root.querySelectorAll('.energySummaryCards article')].map(x=>x.getBoundingClientRect().height),
           mark:measure(root.querySelector(".energyCardTitle .energyMark svg"))
         };
       });
       const label="Energy 130HH "+width+"px";
+      assert.equal(energyAudit.tabSizes.length,2,label+' must show only the supported electricity/water tabs');
+      assert.ok(energyAudit.hiddenTabs.every(x=>x==='none'),label+' unsupported tabs must not occupy any space');
+      assert.ok(Math.max(...energyAudit.tabSizes.map(x=>x.w))-Math.min(...energyAudit.tabSizes.map(x=>x.w))<2,label+' energy tabs must have equal widths');
+      assert.equal(energyAudit.tabWrapper,'rgba(0, 0, 0, 0)',label+' tabs must not have an outer fill');
+      assert.equal(energyAudit.kpiWrapper,'rgba(0, 0, 0, 0)',label+' KPI strip must not have an outer fill');
+      assert.ok(energyAudit.kpiHeights.every(x=>Math.abs(x-44)<1),label+' KPI cards must be 44px');
       assert.equal(energyAudit.photos.length,2,label+" camera+library count");
       assert.equal(energyAudit.photoIcons.length,2,label+" photo SVG count");
       const [camera,library]=energyAudit.photos;
@@ -385,30 +396,42 @@ async function prep(page,p){
          const status=document.querySelector('#status');status.value='Đã hoàn thành';status.dispatchEvent(new Event('change',{bubbles:true}));
          sync130QuickCompletion();
          const css=x=>getComputedStyle(x),root=document.querySelector('#workPage');
-         document.querySelector('#mobileCards').innerHTML=workMobileCard130({id:5002,d:'2026-12-05',c:'Kiểm tra máy bơm',s:'Đã hoàn thành',t:'Hằng ngày',a:'Nguyễn An',performers:['Nguyễn An'],result:'Đạt',imgs:[]});
+         document.querySelector('#mobileCards').innerHTML=workMobileCard130({id:5002,d:'2026-12-05',c:'Thay đèn trần',s:'Đã hoàn thành',t:'Hằng ngày',a:'Nguyễn An',performers:['Nguyễn An'],result:'Đạt',imgs:['offline.jpg']});
          const card=root.querySelector('.workCompact130'),meta=card.querySelector('.workCardMetaLine');
+         const person=document.createElement('label');person.className='peopleOption';person.textContent='Nhà thầu';
+         document.querySelector('#taskPeopleOptions').appendChild(person);
+         const peopleBackgrounds=[css(document.querySelector('#taskPeopleMenu')).backgroundColor,css(person).backgroundColor];person.remove();
+         card.querySelector('.workCardAttachments').insertAdjacentHTML('afterbegin','<div class="demoLinkChips"><span class="demoLinkChip">Đèn LED âm trần 12W × 2</span></div>');
+         const attachments=[...card.querySelector('.workCardAttachments').children].map(x=>x.getBoundingClientRect());
          const boxes=[...meta.children].map(x=>x.getBoundingClientRect());
          return {requiredMark:getComputedStyle(root.querySelector('.workContent>span'),'::after').webkitTextFillColor,
            contentBorder:css(document.querySelector('#content')).borderColor,
            selected:css(root.querySelector('#workChoices-type [aria-checked="true"]')).backgroundColor,
            idle:css(root.querySelector('#workChoices-type [aria-checked="false"]')).backgroundColor,
            resultBg:css(document.querySelector('#task130Result')).backgroundColor,
+           resultParentBg:css(document.querySelector('#task130ResultField')).backgroundColor,
+           peopleBackgrounds,
            resultBorder:css(document.querySelector('#task130Result')).borderColor,
            quickSaveBg:css(document.querySelector('#task130QuickSave')).backgroundColor,
            quickSaveText:css(document.querySelector('#task130QuickSave')).webkitTextFillColor,
            countDisplay:css(root.querySelector('.workTableMeta')).display,
            sameLine:Math.max(...boxes.map(x=>x.top))-Math.min(...boxes.map(x=>x.top))<12,
+           attachmentLine:Math.max(...attachments.map(x=>x.top))-Math.min(...attachments.map(x=>x.top))<8,
            menuClosed:!card.querySelector('details').open,oldFooter:!!card.querySelector('.mobileCardFoot')};
        });
        assert.equal(formState.requiredMark,'rgb(180, 35, 50)');
        assert.equal(formState.contentBorder,'rgb(218, 155, 163)');
        assert.notEqual(formState.selected,formState.idle);
        assert.equal(formState.resultBg,'rgb(241, 231, 239)');
+       assert.notEqual(formState.resultParentBg,formState.resultBg,'result parent and input must be visually distinct');
+       assert.notEqual(...formState.peopleBackgrounds,'people container and individual choices must be visually distinct');
+       assert.equal(formState.idle,'rgb(255, 253, 252)','unselected work choices must be white');
        assert.equal(formState.resultBorder,'rgb(218, 155, 163)');
        assert.equal(formState.quickSaveBg,'rgb(122, 67, 0)');
        assert.equal(formState.quickSaveText,'rgb(255, 255, 255)');
        assert.equal(formState.countDisplay,'none');
        assert.ok(formState.sameLine,'normal task metadata must fit one line: '+JSON.stringify(formState));
+       assert.ok(formState.attachmentLine,'photo count and material must share a row: '+JSON.stringify(formState));
        assert.ok(formState.menuClosed&&!formState.oldFooter,'task actions must live inside a collapsed menu');
        await page.locator('.workCompact130 .workCardMenu summary').click();
        assert.equal(await page.locator('.workCompact130 .workCardMenu[open] button').count(),2);
