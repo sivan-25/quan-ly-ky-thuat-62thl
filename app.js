@@ -2357,9 +2357,13 @@ $("#energyDate")?.addEventListener("change",syncEnergyDateCompact);
 function setEnergyNoteOpen(open,{focus=false}={}){
  const field=$("#energyForm .energyNoteField"),btn=$("#energyNoteToggle");
  if(!field||!btn)return;
- field.classList.toggle("energyNoteCollapsed",!open);
- btn.setAttribute("aria-expanded",String(!!open));
+ const inline=String(currentBuilding?.id||"")==="130HH";
+ field.classList.toggle("energyNoteCollapsed",!inline&&!open);
+ btn.hidden=inline;
+ btn.setAttribute("aria-expanded",String(inline||!!open));
  btn.textContent=open?"− Ẩn ghi chú":"＋ Thêm ghi chú";
+ const note=$("#energyNote");
+ if(note)note.placeholder=inline?"Ghi chú":"Nhập ghi chú...";
  if(open&&focus)setTimeout(()=>$("#energyNote")?.focus(),30);
 }
 $("#energyNoteToggle")?.addEventListener("click",()=>{
@@ -2527,6 +2531,7 @@ function syncEnergyManageUI(){
  document.querySelectorAll("#energyTbody [data-energy-id],#energyMobileCards [data-energy-id]").forEach(el=>el.classList.toggle("energyManageSelected",energySelectedIds.has(el.dataset.energyId)));
 }
 function renderEnergy(){
+ setEnergyNoteOpen($("#energyNoteToggle")?.getAttribute("aria-expanded")==="true");
  sync68EnergyTabs();
  const m=ENERGY_META[energyType]||ENERGY_META.electric;
  const dual=is68DualElectric();

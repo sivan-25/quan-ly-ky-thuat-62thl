@@ -261,7 +261,7 @@ async function prep(page,p){
         const measure=el=>{
           if(!visible(el))return null;
           const c=getComputedStyle(el),r=el.getBoundingClientRect();
-          return {h:+r.height.toFixed(2),w:+r.width.toFixed(2),
+          return {h:+r.height.toFixed(2),w:+r.width.toFixed(2),left:r.left,right:r.right,
             color:c.webkitTextFillColor||c.color,background:c.backgroundColor,opacity:c.opacity,
             stroke:c.stroke,fill:c.fill,filter:c.filter};
         };
@@ -274,6 +274,10 @@ async function prep(page,p){
           mainIndex:measure(root.querySelector("#energyValue")),
           date:measure(root.querySelector("#energyDate")),
           people:measure(root.querySelector("#energyPeopleButton")),
+          save:measure(root.querySelector("#energySaveBtn")),
+          form:measure(root.querySelector("#energyForm")),
+          notePlaceholder:root.querySelector("#energyNote").placeholder,
+          noteCollapsed:root.querySelector(".energyNoteField").classList.contains("energyNoteCollapsed"),
           mark:measure(root.querySelector(".energyCardTitle .energyMark svg"))
         };
       });
@@ -287,7 +291,15 @@ async function prep(page,p){
         assert.equal(x.color,"rgb(243, 222, 191)",label+" "+name+" text must use cream ink");
       }
       assert.equal(camera.background,"rgb(65, 20, 55)",label+" camera button must be plum");
-      assert.equal(library.background,"rgb(122, 67, 0)",label+" gallery button must be dark copper");
+      assert.equal(library.background,camera.background,label+" camera and gallery must share one color");
+      assert.equal(energyAudit.noteToggle,null,label+" add/hide note toggle must not be visible");
+      assert.ok(energyAudit.noteInput,label+" note field must always be visible");
+      assert.equal(energyAudit.notePlaceholder,"Ghi chú",label+" note placeholder");
+      assert.equal(energyAudit.noteCollapsed,false,label+" note must not collapse");
+      assert.equal(energyAudit.save.background,camera.background,label+" save/photo action colors must agree");
+      assert.ok(energyAudit.save.left>=energyAudit.form.left-1&&energyAudit.save.right<=energyAudit.form.right+1,
+        label+" save action escaped form: "+JSON.stringify(energyAudit));
+      assert.equal(energyAudit.save.h,44,label+" save action height");
       for(const icon of energyAudit.photoIcons){
         assert.equal(icon.opacity,"1",label+" photo icon must not be faded");
         assert.equal(icon.color,"rgb(243, 222, 191)",label+" icon ink");
@@ -384,6 +396,16 @@ async function prep(page,p){
     if(process.env.ESTA_SCREENSHOTS==="1" && ["home","work","energy","inventory","maintenance"].includes(mode)){
      await page.screenshot({path:path.join(output,mode+"-"+width+".png"),fullPage:true});
     }
+   }
+   const actionColors=await page.evaluate(()=>{
+     const save=[...document.querySelectorAll('button[type="submit"]')].filter(x=>/Lưu|Cập nhật|Xác nhận/.test(x.textContent));
+     const photos=[...document.querySelectorAll('.imageActionBtn,button[data-energy-picker],.contractorImageAdd')];
+     return [...save,...photos].map(x=>({id:x.id||x.textContent.trim(),bg:getComputedStyle(x).backgroundColor,
+       color:getComputedStyle(x).webkitTextFillColor||getComputedStyle(x).color}));
+   });
+   for(const action of actionColors){
+     assert.equal(action.bg,"rgb(65, 20, 55)","Inconsistent 130HH save/photo background "+width+"px "+JSON.stringify(action));
+     assert.equal(action.color,"rgb(243, 222, 191)","Inconsistent 130HH save/photo text "+width+"px "+JSON.stringify(action));
    }
    await context.close();
   }

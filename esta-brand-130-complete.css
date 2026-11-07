@@ -196,7 +196,7 @@ body.estaBrand130 #updateMobileNav.liveProjectMobileNav button.active{
    transparent/40px and notes 48-88px. Keep editing behaviour and camera handlers. */
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 :is(#energyDate,#energyValue,#energyValue2,#energyPeopleButton,
-   .energyPhotoActions button,#energyNoteToggle){
+   .energyPhotoActions button){
   box-sizing:border-box!important;
   min-height:var(--esta130-control-height)!important;
   height:var(--esta130-control-height)!important;
@@ -204,13 +204,13 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
   border-radius:var(--esta130-ui-radius)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
-:is(.energyPhotoActions button,#energyNoteToggle){
+.energyPhotoActions button{
   min-width:0!important;
   padding:0 10px!important;
   border:1px solid var(--esta130-field-border)!important;
-  background:var(--esta130-action-bg,var(--esta130-plum))!important;
-  color:var(--esta130-cream)!important;
-  -webkit-text-fill-color:var(--esta130-cream)!important;
+  background:var(--esta130-photo-bg)!important;
+  color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
   box-shadow:none!important;
   font-size:12px!important;
   font-weight:650!important;
@@ -229,11 +229,6 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
   body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyImageField:not(.hide){
     grid-column:1/-1!important;width:100%!important;max-width:none!important;
   }
-}
-body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
-.energyPhotoActions button:last-child{
-  --esta130-action-bg:var(--esta130-pending-text);
-  border-color:var(--esta130-copper)!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 .energyPhotoActions button{
@@ -268,11 +263,24 @@ body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 #energyNoteToggle{
-  width:100%!important;
-  max-width:100%!important;
-  justify-content:flex-start!important;
-  text-align:left!important;
-  margin:0!important;
+  display:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyNoteField{
+  display:block!important;grid-column:1/-1!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyNoteField>span{
+  display:none!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyActions{
+  position:static!important;inset:auto!important;transform:none!important;
+  grid-column:1/-1!important;display:flex!important;justify-content:flex-end!important;
+  width:100%!important;max-width:100%!important;box-sizing:border-box!important;
+  margin:0!important;padding:0!important;gap:8px!important;
+}
+body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm .energyActions button{
+  width:auto!important;min-width:140px!important;max-width:100%!important;
+  min-height:var(--esta130-control-height)!important;height:var(--esta130-control-height)!important;
+  flex:0 1 auto!important;box-sizing:border-box!important;
 }
 body.estaBrand130 #app.estaBrand130#app #energyPage #energyForm
 #energyNote{
@@ -613,10 +621,10 @@ body.estaBrand130 .workEditDrawer #taskForm .workField > :is(input:not([type="hi
 #app.estaBrand130 #workPage #taskForm .workImage .imageActionBtn{
   flex:1 1 0!important;min-width:0!important;
   padding:0 9px!important;
-  background:var(--esta130-field-bg)!important;
+  background:var(--esta130-photo-bg)!important;
   border-color:var(--esta130-field-border)!important;
-  color:var(--esta130-field-text)!important;
-  -webkit-text-fill-color:var(--esta130-field-text)!important;
+  color:var(--esta130-action-text)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
 }
 #app.estaBrand130 #workPage #taskForm .workImage .imageActionBtn :is(span,svg){
   color:inherit!important;-webkit-text-fill-color:inherit!important;
@@ -938,13 +946,19 @@ body.estaBrand130 #app.estaBrand130 button:not([class*="status"]):not([class*="S
   color:inherit!important;
 }
 /* Reapply high-contrast button states after neutral/dark-surface rules. */
-body.estaBrand130 #app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.contractorPrimary,.constructionPrimaryBtn,.m130AddButton,#saveBtn,#energySaveBtn,.formPrimary,button[type="submit"].primary,.demoHeroActions .primary,.contractorBtn.primary,.demoBtn.primary,.rc-button.primary){
-  background:var(--esta130-plum)!important;
+body.estaBrand130 #app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.contractorPrimary,.constructionPrimaryBtn,.m130AddButton,#saveBtn,#energySaveBtn,.formPrimary,button[type="submit"].primary,.demoHeroActions .primary,.contractorBtn.primary,.demoBtn.primary,.rc-button.primary),
+body.estaBrand130 :is(#app#app,#workEditDrawer#workEditDrawer,.modal,#m130Overlay,.ueOverlay) :is(button[type="submit"],#saveBtn,#energySaveBtn){
+  background:var(--esta130-save-bg)!important;
   border-color:var(--esta130-plum)!important;
   color:var(--esta130-cream)!important;
+  -webkit-text-fill-color:var(--esta130-action-text)!important;
 }
 body.estaBrand130 #app.estaBrand130 :is(.primary,.workSave,.inventoryPrimary,.contractorPrimary,.constructionPrimaryBtn,.m130AddButton,#saveBtn,#energySaveBtn,.formPrimary,button[type="submit"].primary,.demoHeroActions .primary,.contractorBtn.primary,.demoBtn.primary,.rc-button.primary) *{
   color:var(--esta130-cream)!important;
+}
+body.estaBrand130 :is(#app#app,#workEditDrawer#workEditDrawer,#contractorJobModal#contractorJobModal) :is(.imageActionBtn,button[data-energy-picker],.contractorImageAdd){
+  background:var(--esta130-photo-bg)!important;border-color:var(--esta130-copper)!important;
+  color:var(--esta130-action-text)!important;-webkit-text-fill-color:var(--esta130-action-text)!important;
 }
 body.estaBrand130 #app.estaBrand130 :is(.secondary,.inventorySecondary,.contractorBtn.secondary,.workCancel,.rc-button:not(.primary),.quickReturnAdmin){
   background:var(--esta130-lift)!important;
