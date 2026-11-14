@@ -930,8 +930,7 @@ def _b2_download(source, token):
     bucket = os.environ.get("ESTA_B2_BUCKET", "")
     key_id = os.environ.get("ESTA_B2_KEY_ID", "")
     secret = os.environ.get("ESTA_B2_APPLICATION_KEY", "")
-    if (os.environ.get("ESTA_B2_ENABLED") != "true"
-        or not re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]{3}", region)
+    if (not re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]{3}", region)
         or not re.fullmatch(r"[a-z0-9-]{6,63}", bucket)
         or not key_id or not secret):
         return None, ".jpg"
