@@ -312,7 +312,11 @@ window.downloadViewerMedia=async index=>{
  const ref=viewerMediaRefs[index];if(!ref)return;
  try{
    let blob;
-   if(isStorageRef(ref)){
+   if(isB2Ref(ref)){
+     const res=await centralAuthFetch("/api/b2-media?path="+encodeURIComponent(b2PathFromRef(ref)));
+     if(!res.ok)throw new Error("Không thể tải hình từ Backblaze B2");
+     blob=await res.blob();
+   }else if(isStorageRef(ref)){
      const path=storagePathFromRef(ref);
      const res=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path));
      if(!res.ok)throw new Error("Không thể tải hình");
