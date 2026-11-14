@@ -17,11 +17,11 @@ function getConfig() {
   const bucket = String(process.env.ESTA_B2_BUCKET || "").trim();
   const accessKey = String(process.env.ESTA_B2_KEY_ID || "").trim();
   const secretKey = String(process.env.ESTA_B2_APPLICATION_KEY || "");
-  const enabled = process.env.ESTA_B2_ENABLED === "true" &&
-    /^[a-z]{2}-[a-z]+-\d{3}$/.test(region) &&
+  const available = /^[a-z]{2}-[a-z]+-\d{3}$/.test(region) &&
     /^[a-z0-9-]{6,63}$/.test(bucket) &&
     !!accessKey && !!secretKey;
-  return { enabled, region, bucket, accessKey, secretKey };
+  const enabled = available && process.env.ESTA_B2_ENABLED === "true";
+  return { available, enabled, region, bucket, accessKey, secretKey };
 }
 function encodedBuilding(id) {
   return "b-" + Buffer.from(String(id), "utf8").toString("hex");
@@ -118,10 +118,11 @@ module.exports = async function handler(req, res) {
     if (req.method === "GET" && url.searchParams.get("status") === "1") {
       return respond(res, 200, { enabled: cfg.enabled, provider: cfg.enabled ? "b2" : "supabase" });
     }
-    if (!cfg.enabled) return respond(res, 503, { error:"Chưa cấu hình kho Backblaze B2." });
+    if (!cfg.available) return respond(res, 503, { error:"Chưa cấu hình kho Backblaze B2." });
     const token = /^Bearer (.+)$/i.exec(String(req.headers.authorization || ""))?.[1] || "";
     if (!token) return respond(res, 401, { error:"Vui lòng đăng nhập ESTA." });
     if (req.method === "POST") {
+      if (!cfg.enabled) return respond(res, 503, { error:"Chức năng tải ảnh mới vào B2 đang tạm tắt." });
       const buildingId = url.searchParams.get("buildingId") || "";
       const kind = url.searchParams.get("kind") || "";
       const recordId = url.searchParams.get("recordId") || "";
