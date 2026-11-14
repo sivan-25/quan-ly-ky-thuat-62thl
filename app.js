@@ -158,6 +158,18 @@ async function sbFetch(path,{method="GET",body=null,token=null}={}){
  return data;
 }
 const MEDIA_BUCKET="task-images";
+const B2_PREFIX="b2:";
+let b2UploadEnabledCache=null;
+function isB2Ref(value){return typeof value==="string"&&value.startsWith(B2_PREFIX)}
+function b2PathFromRef(value){return isB2Ref(value)?value.slice(B2_PREFIX.length):value}
+async function b2UploadsEnabled(){
+ if(b2UploadEnabledCache!==null)return b2UploadEnabledCache;
+ const res=await fetch("/api/b2-media?status=1",{cache:"no-store"});
+ if(!res.ok)throw new Error("Không xác định được trạng thái kho ảnh B2");
+ const info=await res.json();
+ b2UploadEnabledCache=info.enabled===true;
+ return b2UploadEnabledCache;
+}
 const CLIENT_IMAGE_COMPRESSION_ENABLED=true;
 const CLIENT_IMAGE_MAX_PX=1600;
 const CLIENT_IMAGE_JPEG_QUALITY=.85;
@@ -171,27 +183,33 @@ function storageProjectSegment(buildingId){
 }
 async function mediaObjectUrl(ref){
  if(!ref)return "";
- if(!isStorageRef(ref))return ref;
- const path=storagePathFromRef(ref),cached=mediaUrlCache.get(path);
+ const fromSupabase=isStorageRef(ref),fromB2=isB2Ref(ref);
+ if(!fromSupabase&&!fromB2)return ref;
+ const path=fromB2?b2PathFromRef(ref):storagePathFromRef(ref);
+ const cacheKey=(fromB2?B2_PREFIX:"storage:")+path,cached=mediaUrlCache.get(cacheKey);
  if(cached?.url)return cached.url;
  if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
- const res=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path));
+ const url=fromB2?"/api/b2-media?path="+encodeURIComponent(path):
+   SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path);
+ const res=await centralAuthFetch(url);
  if(!res.ok)throw new Error("Không thể tải hình ảnh");
- const blob=await res.blob(),url=URL.createObjectURL(blob);
- mediaUrlCache.set(path,{url});
- return url;
+ const blob=await res.blob(),objectUrl=URL.createObjectURL(blob);
+ mediaUrlCache.set(cacheKey,{url:objectUrl});
+ return objectUrl;
 }
 function mediaImgHtml(ref,cls=""){
  if(!ref)return "";
  if(isStorageRef(ref))return '<img class="'+cls+'" data-storage-path="'+esc(storagePathFromRef(ref))+'" alt="Hình ảnh">';
+ if(isB2Ref(ref))return '<img class="'+cls+'" data-b2-path="'+esc(b2PathFromRef(ref))+'" alt="Hình ảnh">';
  return '<img class="'+cls+'" src="'+esc(ref)+'" alt="Hình ảnh">';
 }
 async function hydrateMediaImages(root=document){
- const imgs=[...(root||document).querySelectorAll?.("img[data-storage-path]")||[]];
+ const imgs=[...(root||document).querySelectorAll?.("img[data-storage-path],img[data-b2-path]")||[]];
  await Promise.all(imgs.map(async im=>{
    if(im.dataset.loaded==="1")return;
    try{
-     const url=await mediaObjectUrl("storage:"+im.dataset.storagePath);
+     const ref=im.dataset.b2Path!==undefined?B2_PREFIX+im.dataset.b2Path:"storage:"+im.dataset.storagePath;
+     const url=await mediaObjectUrl(ref);
      im.src=url;im.dataset.loaded="1";
    }catch(e){
      im.classList.add("imageLoadError");
@@ -223,6 +241,16 @@ function imageFileToBlob(file){
 }
 async function uploadMediaBlob(blob,kind,recordId,index=0,buildingId=currentBuilding.id){
  if(!centralSession?.access_token)throw new Error("Cần đăng nhập tài khoản trung tâm để tải hình");
+ if(await b2UploadsEnabled()){
+   if(blob.size>3500000)throw new Error("Ảnh sau nén vượt 3,5 MB. Vui lòng chọn ảnh nhỏ hơn.");
+   const query=new URLSearchParams({buildingId:String(buildingId),kind:String(kind),recordId:String(recordId)});
+   const res=await centralAuthFetch("/api/b2-media?"+query,{
+     method:"POST",headers:{"Content-Type":"image/jpeg"},body:blob
+   });
+   const data=await res.json().catch(()=>({}));
+   if(!res.ok||!isB2Ref(data.ref))throw new Error(data.error||"Không thể lưu ảnh vào Backblaze B2");
+   return data.ref;
+ }
  const uid=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));
  const path=storageProjectSegment(buildingId)+"/"+kind+"/"+recordId+"/"+Date.now()+"-"+index+"-"+uid+".jpg";
  const res=await centralAuthFetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{
@@ -1240,17 +1268,19 @@ window.removeExistingTaskImage=i=>{
  renderExistingTaskImages();updateTaskImageInfo();
 };
 async function deleteStoredMediaRefs(refs){
- const paths=[...new Set((refs||[]).filter(isStorageRef).map(storagePathFromRef).filter(Boolean))];
+ const paths=[...new Set((refs||[]).filter(ref=>isStorageRef(ref)||isB2Ref(ref)))];
  if(!paths.length||!centralSession?.access_token)return;
- await Promise.allSettled(paths.map(async path=>{
-   const cached=mediaUrlCache.get(path);
+ await Promise.allSettled(paths.map(async ref=>{
+   const fromB2=isB2Ref(ref);
+   const path=fromB2?b2PathFromRef(ref):storagePathFromRef(ref);
+   const cached=mediaUrlCache.get(ref);
    if(cached?.url?.startsWith("blob:"))URL.revokeObjectURL(cached.url);
-   mediaUrlCache.delete(path);
-   const res=await centralAuthFetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET,{
-     method:"DELETE",
-     headers:{"Content-Type":"application/json"},
-     body:JSON.stringify({prefixes:[path]})
-   });
+   mediaUrlCache.delete(ref);
+   const res=fromB2
+     ?await centralAuthFetch("/api/b2-media?path="+encodeURIComponent(path),{method:"DELETE"})
+     :await centralAuthFetch(SB_URL+"/storage/v1/object/"+MEDIA_BUCKET,{
+       method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({prefixes:[path]})
+     });
    if(!res.ok)throw new Error("Không thể dọn file ảnh "+path);
  }));
 }
@@ -2094,7 +2124,10 @@ async function reportImageDataUrl(ref){
  if(/^data:image\//i.test(ref))return ref;
  try{
    let response;
-   if(isStorageRef(ref)){
+   if(isB2Ref(ref)){
+     if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
+     response=await centralAuthFetch("/api/b2-media?path="+encodeURIComponent(b2PathFromRef(ref)));
+   }else if(isStorageRef(ref)){
      if(!centralSession?.access_token)throw new Error("Phiên đăng nhập đã hết hạn");
      const path=storagePathFromRef(ref);
      response=await centralAuthFetch(SB_URL+"/storage/v1/object/authenticated/"+MEDIA_BUCKET+"/"+mediaPathUrl(path),{cache:"force-cache"});
