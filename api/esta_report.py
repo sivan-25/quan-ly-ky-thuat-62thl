@@ -863,6 +863,10 @@ import traceback
 import urllib.parse
 import urllib.request
 import urllib.error
+import hashlib
+import hmac
+import re
+from contextvars import ContextVar
 from http.server import BaseHTTPRequestHandler
 
 
@@ -870,6 +874,96 @@ SB_URL = "https://upcjcrycahdfroxggsdz.supabase.co"
 SB_KEY = "sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa"
 MEDIA_BUCKET = "task-images"
 OUTPUT_NAME = "ESTA_BaoCao_KyThuat_TongHop_ChiTiet.pdf"
+_B2_REQUEST_CONTEXT = ContextVar("esta_b2_request_context", default=None)
+_B2_PATH_PATTERN = re.compile(r"^b-([0-9a-f]{2,160})/(tasks|energy)/[A-Za-z0-9_-]{1,70}/[A-Za-z0-9-]{1,120}\\.jpg$")
+
+
+def _b2_authorized(token, building_id):
+    """Only allow image refs belonging to projects the report user can read."""
+    context = _B2_REQUEST_CONTEXT.get()
+    if context is None:
+        context = {"user": _validate_token(token), "allowed": {}}
+    if building_id in context["allowed"]:
+        return context["allowed"][building_id]
+    user = context["user"]
+    uid = user.get("id", "")
+    if not uid:
+        return False
+
+    def query(path):
+        req = urllib.request.Request(
+            SB_URL + path,
+            headers={"apikey": SB_KEY, "Authorization": "Bearer " + token},
+        )
+        with urllib.request.urlopen(req, timeout=9) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+
+    from urllib.parse import quote
+    profiles = query("/rest/v1/profiles?select=is_admin,active&id=eq." + quote(uid, safe=""))
+    buildings = query("/rest/v1/buildings?select=id&deleted_at=is.null&id=eq." + quote(building_id, safe=""))
+    allowed = bool(profiles and profiles[0].get("active") is not False and buildings)
+    if allowed and not profiles[0].get("is_admin"):
+        members = query(
+            "/rest/v1/building_members?select=role&building_id=eq." + quote(building_id, safe="")
+            + "&user_id=eq." + quote(uid, safe="")
+        )
+        allowed = bool(members)
+    context["allowed"][building_id] = allowed
+    return allowed
+
+
+def _b2_download(source, token):
+    path = source[3:]
+    match = _B2_PATH_PATTERN.fullmatch(path)
+    if not match:
+        return None, ".jpg"
+    try:
+        building_id = bytes.fromhex(match.group(1)).decode("utf-8", errors="strict")
+    except (UnicodeError, ValueError):
+        return None, ".jpg"
+    if ("b-" + building_id.encode("utf-8").hex()) != path.split("/", 1)[0]:
+        return None, ".jpg"
+    if not _b2_authorized(token, building_id):
+        return None, ".jpg"
+    region = os.environ.get("ESTA_B2_REGION", "")
+    bucket = os.environ.get("ESTA_B2_BUCKET", "")
+    key_id = os.environ.get("ESTA_B2_KEY_ID", "")
+    secret = os.environ.get("ESTA_B2_APPLICATION_KEY", "")
+    if (os.environ.get("ESTA_B2_ENABLED") != "true"
+        or not re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]{3}", region)
+        or not re.fullmatch(r"[a-z0-9-]{6,63}", bucket)
+        or not key_id or not secret):
+        return None, ".jpg"
+    from urllib.parse import quote
+    host = "s3." + region + ".backblazeb2.com"
+    canonical_uri = "/" + "/".join(quote(p, safe="") for p in [bucket, *path.split("/")])
+    now = datetime.datetime.now(datetime.timezone.utc)
+    timestamp = now.strftime("%Y%m%dT%H%M%SZ")
+    date = timestamp[:8]
+    digest = hashlib.sha256(b"").hexdigest()
+    canonical_headers = "host:" + host + "\n" + "x-amz-content-sha256:" + digest + "\n" + "x-amz-date:" + timestamp + "\n"
+    signed_headers = "host;x-amz-content-sha256;x-amz-date"
+    canonical_request = "\n".join(["GET", canonical_uri, "", canonical_headers, signed_headers, digest])
+    scope = date + "/" + region + "/s3/aws4_request"
+    string_to_sign = "\n".join(["AWS4-HMAC-SHA256", timestamp, scope, hashlib.sha256(canonical_request.encode()).hexdigest()])
+    def mac(key, message):
+        return hmac.new(key, message.encode(), hashlib.sha256).digest()
+    signing_key = mac(mac(mac(mac(("AWS4" + secret).encode(), date), region), "s3"), "aws4_request")
+    signature = hmac.new(signing_key, string_to_sign.encode(), hashlib.sha256).hexdigest()
+    authorization = ("AWS4-HMAC-SHA256 Credential=" + key_id + "/" + scope
+                     + ", SignedHeaders=" + signed_headers + ", Signature=" + signature)
+    req = urllib.request.Request("https://" + host + canonical_uri, headers={
+        "x-amz-date":timestamp, "x-amz-content-sha256":digest, "Authorization":authorization,
+        "User-Agent":"ESTA-Report-Generator/1.0"
+    })
+    with urllib.request.urlopen(req, timeout=22) as resp:
+        if int(resp.headers.get("Content-Length", "0") or "0") > 4_200_000:
+            return None, ".jpg"
+        raw = resp.read(4_200_001)
+    if not raw or len(raw) > 4_200_000:
+        return None, ".jpg"
+    return raw, ".jpg"
+
 
 def _prepare_signature(payload, temp_dir):
     name=str(payload.get("kt_signer_name") or "").strip()
@@ -925,6 +1019,8 @@ def _validate_token(token):
 def _download_image(source, token):
     if not source:
         return None, ".jpg"
+    if source.startswith("b2:"):
+        return _b2_download(source, token)
     if source.startswith("data:image/"):
         head, encoded = source.split(",", 1)
         ext = ".png" if "png" in head.lower() else ".jpg"
@@ -1112,6 +1208,7 @@ def generate_pdf(payload, token):
                     unsafe += 1
                     continue
                 if not (source.startswith("storage:") or
+                        source.startswith("b2:") or
                         source.startswith("data:image/") or
                         source.startswith(SB_URL + "/storage/v1/object/")):
                     unsafe += 1
@@ -1186,7 +1283,8 @@ class handler(BaseHTTPRequestHandler):
         try:
             auth = self.headers.get("Authorization", "")
             token = auth[7:].strip() if auth.lower().startswith("bearer ") else ""
-            _validate_token(token)
+            user = _validate_token(token)
+            request_ctx = _B2_REQUEST_CONTEXT.set({"user": user, "allowed": {}})
 
             length = int(self.headers.get("Content-Length") or 0)
             if length <= 0 or length > 2_500_000:
@@ -1211,3 +1309,6 @@ class handler(BaseHTTPRequestHandler):
         except Exception as exc:
             traceback.print_exc()
             self._send_json(500, {"error": "Không thể tạo PDF ESTA", "detail": str(exc)[:300]})
+        finally:
+            if "request_ctx" in locals():
+                _B2_REQUEST_CONTEXT.reset(request_ctx)
