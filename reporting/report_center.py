@@ -111,7 +111,13 @@ def data_table(columns, rows, st, widths=None):
 def _validated_photo(index, photo, data):
     ref=str(photo.get("ref") or "")
     caption=str(photo.get("caption") or f"Hình {index+1}")
-    if ref.startswith("storage:"):
+    if ref.startswith("b2:"):
+        storage_path=ref[3:]
+        building_id=str(data.get("building_id") or "")
+        encoded_segment="b-"+"".join(f"{byte:02x}" for byte in building_id.encode("utf-8"))
+        if building_id and not storage_path.startswith(encoded_segment+"/"):
+            raise ValueError("Ảnh B2 không thuộc dự án báo cáo")
+    elif ref.startswith("storage:"):
         storage_path=ref[8:]
         building_id=str(data.get("building_id") or "")
         encoded_segment="b-"+"".join(f"{byte:02x}" for byte in building_id.encode("utf-8"))
