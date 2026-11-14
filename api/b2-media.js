@@ -28,7 +28,7 @@ function encodedBuilding(id) {
 }
 function parseObjectPath(path) {
   if (typeof path !== "string" || path.length > 512) return null;
-  const m = /^b-([0-9a-f]{2,160})\/(tasks|energy)\/([A-Za-z0-9_-]{1,70})\/([A-Za-z0-9-]{1,120})\.jpg$/.exec(path);
+  const m = /^b-([0-9a-f]{2,160})\/(tasks|energy|incident-before|incident-after|maintenance-before|maintenance-after)\/([A-Za-z0-9_-]{1,70})\/([A-Za-z0-9-]{1,120})\.jpg$/.exec(path);
   if (!m || m[1].length % 2) return null;
   const buildingId = Buffer.from(m[1], "hex").toString("utf8");
   if (!buildingId || encodedBuilding(buildingId) !== "b-" + m[1]) return null;
