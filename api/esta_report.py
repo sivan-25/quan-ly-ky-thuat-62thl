@@ -867,6 +867,7 @@ import hashlib
 import hmac
 import re
 from contextvars import ContextVar
+import datetime
 from http.server import BaseHTTPRequestHandler
 
 
@@ -875,7 +876,7 @@ SB_KEY = "sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa"
 MEDIA_BUCKET = "task-images"
 OUTPUT_NAME = "ESTA_BaoCao_KyThuat_TongHop_ChiTiet.pdf"
 _B2_REQUEST_CONTEXT = ContextVar("esta_b2_request_context", default=None)
-_B2_PATH_PATTERN = re.compile(r"^b-([0-9a-f]{2,160})/(tasks|energy)/[A-Za-z0-9_-]{1,70}/[A-Za-z0-9-]{1,120}\\.jpg$")
+_B2_PATH_PATTERN = re.compile(r"^b-([0-9a-f]{2,160})/(tasks|energy|incident-before|incident-after|maintenance-before|maintenance-after)/[A-Za-z0-9_-]{1,70}/[A-Za-z0-9-]{1,120}\\.jpg$")
 
 
 def _b2_authorized(token, building_id):
