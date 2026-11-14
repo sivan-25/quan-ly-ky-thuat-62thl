@@ -10,7 +10,7 @@ const SUPABASE_URL = "https://upcjcrycahdfroxggsdz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_WQiZyrTXCeRr6BgfXAtQSg_zX_eUBsa";
 const MAX_UPLOAD_BYTES = 3_500_000; // below Vercel's 4.5 MB request limit
 const MAX_IMAGE_BYTES = 4_200_000; // below Vercel's 4.5 MB response limit
-const VALID_KIND = new Set(["tasks", "energy"]);
+const VALID_KIND = new Set(["tasks", "energy", "incident-before", "incident-after", "maintenance-before", "maintenance-after"]);
 
 function getConfig() {
   const region = String(process.env.ESTA_B2_REGION || "").trim();
