@@ -1,0 +1,22 @@
+name: ESTA B2 Private Media Gateway
+on:
+  pull_request:
+    paths:
+      - 'api/b2-media.js'
+      - 'api/esta_report.py'
+      - 'reporting/report_center.py'
+      - 'tests/esta-b2-storage.test.cjs'
+      - '.github/workflows/esta-b2-storage.yml'
+  workflow_dispatch:
+jobs:
+  verify-b2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check browser and gateway syntax
+        run: |
+          node --check app.js
+          node --check api/b2-media.js
+          python3 -m py_compile api/esta_report.py reporting/report_center.py
+      - name: Test private image gateway without real credentials
+        run: node --test tests/esta-b2-storage.test.cjs
